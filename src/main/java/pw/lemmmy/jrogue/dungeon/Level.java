@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.utils.Utils;
+
 import java.util.Arrays;
 
 public class Level {
@@ -33,7 +35,7 @@ public class Level {
 		discoveredTiles = new boolean[width * height];
 		visibleTiles = new boolean[width * height];
 
-		Arrays.fill(tiles, Tiles.TILE_GROUND);
+		Arrays.fill(tiles, Tiles.TILE_EMPTY);
 		Arrays.fill(discoveredTiles, false);
 		Arrays.fill(visibleTiles, false);
 	}
@@ -51,19 +53,30 @@ public class Level {
 	}
 
 	public Tiles getTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return null;
+		}
+
 		return tiles[width * y + x];
 	}
 
-	public Tiles setTile(int x, int y, Tiles tile) {
-		return tiles[width * y + x] = tile;
+	public void setTile(int x, int y, Tiles tile) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		tiles[width * y + x] = tile;
 	}
 
 	public Tiles[] getAdjacentTiles(int x, int y) {
-		return new Tiles[] {
-			getTile(x + 1, y),
-			getTile(x - 1, y),
-			getTile(x, y + 1),
-			getTile(x, y - 1)
-		};
+		Tiles[] t = new Tiles[Utils.DIRECTIONS.length];
+
+		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
+			int[] direction = Utils.DIRECTIONS[i];
+
+			t[i] = getTile(x + direction[0], y + direction[1]);
+		}
+
+		return t;
 	}
 }

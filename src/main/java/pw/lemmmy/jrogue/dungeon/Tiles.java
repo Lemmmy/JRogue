@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 public enum Tiles {
-	TILE_GROUND(Solidity.SOLID, true),
+	TILE_EMPTY(Solidity.SOLID, true),
 
 	TILE_ROOM_WALL(Solidity.SOLID),
 	TILE_ROOM_FLOOR(Solidity.WALK_ON),

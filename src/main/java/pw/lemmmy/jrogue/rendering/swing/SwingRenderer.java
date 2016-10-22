@@ -34,8 +34,6 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 
 		setLocationRelativeTo(null);
 		setVisible(true);
-
-		mapComponent.renderMap();
 	}
 
 	private void initialiseLayout() {

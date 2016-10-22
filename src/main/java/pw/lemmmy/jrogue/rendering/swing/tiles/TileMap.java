@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.rendering.swing.tiles;
 import pw.lemmmy.jrogue.dungeon.Tiles;
 
 public enum TileMap {
-	TILE_GROUND(null),
+	TILE_EMPTY(null),
 
 	TILE_ROOM_WALL(new TileRendererWall()),
 	TILE_ROOM_FLOOR(0, 1),

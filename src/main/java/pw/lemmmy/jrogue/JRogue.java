@@ -17,7 +17,7 @@ public class JRogue {
 
 	public JRogue() {
 		dungeon = new Dungeon();
-		renderer = new SwingRenderer(dungeon); // TO-DO: Make this configurable
+		renderer = new SwingRenderer(dungeon); // TODO: Make this configurable
 	}
 
 	public static void main(String[] args) {
