@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class TileRendererWall extends TileRenderer {
 	@Override
-	public void draw(Graphics g, Graphics2D g2d, Dungeon d, int x, int y) {
+	public void draw(Graphics2D g2d, Dungeon d, int x, int y) {
 
 	}
 }

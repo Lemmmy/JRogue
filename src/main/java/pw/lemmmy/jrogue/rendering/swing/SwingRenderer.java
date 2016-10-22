@@ -13,6 +13,8 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 
 	public Dungeon dungeon;
 
+	private MapComponent mapComponent;
+
 	public SwingRenderer(Dungeon dungeon) {
 		super(WINDOW_TITLE);
 
@@ -32,11 +34,16 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 
 		setLocationRelativeTo(null);
 		setVisible(true);
+
+		mapComponent.renderMap();
 	}
 
 	private void initialiseLayout() {
 		setLayout(new BorderLayout());
 		setMinimumSize(new Dimension(480, 240));
+
+		mapComponent = new MapComponent(dungeon, dungeon.getLevel());
+		add(mapComponent);
 
 		pack();
 	}

@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue;
 
+import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -20,6 +21,23 @@ public class JRogue {
 	}
 
 	public static void main(String[] args) {
+		Options opts = new Options();
+
+		opts.addOption("h", "help", false, "Shows the help information");
+		CommandLine cmd = null;
+
+		try {
+			cmd = new DefaultParser().parse(opts, args);
+		} catch (ParseException e) {
+			new HelpFormatter().printHelp("JRogue", opts);
+			System.exit(1);
+		}
+
+		if (cmd.hasOption('h')) {
+			new HelpFormatter().printHelp("JRogue", opts);
+			System.exit(1);
+		}
+
 		JRogue.INSTANCE = new JRogue();
 	}
 

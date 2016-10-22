@@ -19,7 +19,7 @@ public class ImageLoader {
 			JRogue.getLogger().debug("Loading image {}", file);
 
 			try {
-				BufferedImage image = ImageIO.read(new File(file));
+				BufferedImage image = ImageIO.read(ImageLoader.class.getResource("/" + file));
 				imageCache.put(file, image);
 
 				JRogue.getLogger().debug("Loaded and cached image {}", file);

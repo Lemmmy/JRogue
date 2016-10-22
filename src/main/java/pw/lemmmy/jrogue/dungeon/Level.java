@@ -51,11 +51,11 @@ public class Level {
 	}
 
 	public Tiles getTile(int x, int y) {
-		return tiles[width * x + y];
+		return tiles[width * y + x];
 	}
 
 	public Tiles setTile(int x, int y, Tiles tile) {
-		return tiles[width * x + y] = tile;
+		return tiles[width * y + x] = tile;
 	}
 
 	public Tiles[] getAdjacentTiles(int x, int y) {
