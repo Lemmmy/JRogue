@@ -1,6 +1,9 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Dungeon {
 	public static interface Listener {
@@ -18,7 +21,7 @@ public class Dungeon {
 	 */
 	private String name;
 
-	private final ArrayList<Listener> listeners = new ArrayList<>();
+	private final List<Listener> listeners = new ArrayList<>();
 
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();

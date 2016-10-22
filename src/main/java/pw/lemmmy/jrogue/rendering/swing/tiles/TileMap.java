@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.swing;
+package pw.lemmmy.jrogue.rendering.swing.tiles;
 
 import pw.lemmmy.jrogue.dungeon.Tiles;
 

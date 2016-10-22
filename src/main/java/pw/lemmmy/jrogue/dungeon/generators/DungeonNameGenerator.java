@@ -1,7 +1,7 @@
-package pw.lemmmy.jrogue.dungeon;
+package pw.lemmmy.jrogue.dungeon.generators;
 
-import pw.lemmmy.jrogue.util.StringReplacer;
-import pw.lemmmy.jrogue.util.Utils;
+import pw.lemmmy.jrogue.utils.StringReplacer;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;

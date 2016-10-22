@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.util;
+package pw.lemmmy.jrogue.utils;
 
 import java.util.Random;
 

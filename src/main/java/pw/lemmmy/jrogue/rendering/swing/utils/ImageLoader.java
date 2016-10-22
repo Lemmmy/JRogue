@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.swing;
+package pw.lemmmy.jrogue.rendering.swing.utils;
 
 import pw.lemmmy.jrogue.JRogue;
 
@@ -7,9 +7,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ImageLoader {
-	private static final HashMap<String, BufferedImage> imageCache = new HashMap<>();
+	private static final Map<String, BufferedImage> imageCache = new HashMap<>();
 
 	public static BufferedImage getImage(String file) {
 		if (imageCache.containsKey(file)) {

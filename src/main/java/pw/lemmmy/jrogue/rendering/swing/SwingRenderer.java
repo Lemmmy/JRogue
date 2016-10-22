@@ -3,9 +3,10 @@ package pw.lemmmy.jrogue.rendering.swing;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.Renderer;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.JFrame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";

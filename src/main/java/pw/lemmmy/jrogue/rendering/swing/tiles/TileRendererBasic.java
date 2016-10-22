@@ -1,11 +1,12 @@
-package pw.lemmmy.jrogue.rendering.swing;
+package pw.lemmmy.jrogue.rendering.swing.tiles;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class TileRendererBasic implements TileRenderer {
+public class TileRendererBasic extends TileRenderer {
 	private BufferedImage image;
 
 	public TileRendererBasic(String sheetName, int sheetX, int sheetY) {

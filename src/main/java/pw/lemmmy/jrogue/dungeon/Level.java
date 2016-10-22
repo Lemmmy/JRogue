@@ -1,70 +1,69 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import java.util.Arrays;
+
 public class Level {
-	/***
-	 * Temporary room positions used during generation
-	 */
-	private class Room {
-		private int roomX;
-		private int roomY;
-		private int roomWidth;
-		private int roomHeight;
-
-		/***
-		 * List of rooms this room should be connected to
-		 */
-		private Room[] touching;
-
-		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
-			this.roomX = roomX;
-			this.roomY = roomY;
-			this.roomWidth = roomWidth;
-			this.roomHeight = roomHeight;
-		}
-
-		public int getRoomX() {
-			return roomX;
-		}
-
-		public int getRoomY() {
-			return roomY;
-		}
-
-		public int getCenterX() {
-			return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
-		}
-
-		public int getCenterY() {
-			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
-		}
-
-		public int getRoomWidth() {
-			return roomWidth;
-		}
-
-		public int getRoomHeight() {
-			return roomHeight;
-		}
-
-		public Room[] getTouching() {
-			return touching;
-		}
-	}
-
-	private Tiles[] tiles;
+	public Tiles[] tiles;
 
 	/***
 	 * Tiles the player thinks exist
 	 */
-	private boolean[] discoveredTiles;
+	public boolean[] discoveredTiles;
 
 	/***
 	 * Tiles visible this turn
 	 */
-	private boolean[] visibleTiles;
+	public boolean[] visibleTiles;
+
+	private int width;
+	private int height;
 
 	/**
 	 * The "level" of this floor - how deep it is in the dungeon and ground
 	 */
 	private int depth;
+
+	public Level(int width, int height, int depth) {
+		this.width = width;
+		this.height = height;
+
+		this.depth = depth;
+
+		tiles = new Tiles[width * height];
+		discoveredTiles = new boolean[width * height];
+		visibleTiles = new boolean[width * height];
+
+		Arrays.fill(tiles, Tiles.TILE_GROUND);
+		Arrays.fill(discoveredTiles, false);
+		Arrays.fill(visibleTiles, false);
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public Tiles getTile(int x, int y) {
+		return tiles[width * x + y];
+	}
+
+	public Tiles setTile(int x, int y, Tiles tile) {
+		return tiles[width * x + y] = tile;
+	}
+
+	public Tiles[] getAdjacentTiles(int x, int y) {
+		return new Tiles[] {
+			getTile(x + 1, y),
+			getTile(x - 1, y),
+			getTile(x, y + 1),
+			getTile(x, y - 1)
+		};
+	}
 }

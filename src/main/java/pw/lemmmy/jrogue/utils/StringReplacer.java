@@ -1,7 +1,7 @@
-package pw.lemmmy.jrogue.util;
+package pw.lemmmy.jrogue.utils;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringReplacer {
 	public interface Callback {
