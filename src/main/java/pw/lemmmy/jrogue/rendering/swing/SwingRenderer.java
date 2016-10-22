@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.JFrame;
 
-public class SwingRenderer extends JFrame implements KeyListener, Renderer {
+public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 
 	public Dungeon dungeon;
@@ -16,6 +16,7 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer {
 		super(WINDOW_TITLE);
 
 		this.dungeon = dungeon;
+		dungeon.addListener(this);
 
 		initialiseWindow();
 	}
@@ -55,6 +56,16 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer {
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
+
+	}
+
+	@Override
+	public void onTurn() {
+
+	}
+
+	@Override
+	public void onLog(String log) {
 
 	}
 }
