@@ -5,6 +5,7 @@ import pw.lemmmy.jrogue.dungeon.Tiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class DungeonGenerator {
 	/***
@@ -58,7 +59,10 @@ public abstract class DungeonGenerator {
 	}
 
 	private List<Room> rooms = new ArrayList<>();
-	private Level level;
+
+	protected Level level;
+
+	protected Random rand = new Random();
 
 	public DungeonGenerator(Level level) {
 		this.level = level;
@@ -66,7 +70,7 @@ public abstract class DungeonGenerator {
 
 	public abstract void generate();
 
-	private boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
+	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		for (int y = roomY; y < roomY + roomHeight; y++) {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
 				if (!level.getTile(x, y).isBuildable()) {
@@ -78,7 +82,7 @@ public abstract class DungeonGenerator {
 		return true;
 	}
 
-	private Room buildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
+	protected Room buildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		for (int y = roomY; y < roomY + roomHeight; y++) {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
 				boolean wall = x == roomX || x == roomX + roomWidth || y == roomY || y == roomY + roomHeight;
@@ -86,5 +90,9 @@ public abstract class DungeonGenerator {
 				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_FLOOR);
 			}
 		}
+
+		Room room = new Room(roomX, roomY, roomWidth, roomHeight);
+		rooms.add(room);
+		return room;
 	}
 }

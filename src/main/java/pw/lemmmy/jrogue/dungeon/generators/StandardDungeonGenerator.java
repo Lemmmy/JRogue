@@ -9,5 +9,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	@Override
 	public void generate() {
+		buildRoom(1, 1, 10, 6);
 	}
 }

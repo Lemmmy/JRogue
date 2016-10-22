@@ -1,8 +1,13 @@
 apply plugin: "java"
 apply plugin: "idea"
+apply plugin: "application"
+
 archivesBaseName = "JRogue"
-sourceCompatibility = 1.8
+mainClassName = "pw.lemmmy.jrogue.JRogue"
 version = "0.1"
+
+sourceCompatibility = 1.8
+
 
 repositories {
 	mavenCentral()
