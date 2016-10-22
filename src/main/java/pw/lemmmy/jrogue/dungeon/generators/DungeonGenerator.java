@@ -85,7 +85,7 @@ public abstract class DungeonGenerator {
 	protected Room buildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		for (int y = roomY; y < roomY + roomHeight; y++) {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
-				boolean wall = x == roomX || x == roomX + roomWidth || y == roomY || y == roomY + roomHeight;
+				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
 				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_FLOOR);
 			}
