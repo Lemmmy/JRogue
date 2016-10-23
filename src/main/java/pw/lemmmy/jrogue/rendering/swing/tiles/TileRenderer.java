@@ -14,13 +14,13 @@ public abstract class TileRenderer {
 			int height = TileMap.TILE_HEIGHT;
 
 			g2d.drawImage(
-					image,
-					x * width,
-					y * height,
-					(x * width) + width,
-					(y * height) + height,
-					0, 0, width, height,
-					null
+				image,
+				x * width,
+				y * height,
+				(x * width) + width,
+				(y * height) + height,
+				0, 0, width, height,
+				null
 			);
 		}
 	}

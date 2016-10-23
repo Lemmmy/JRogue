@@ -8,7 +8,7 @@ import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class TileRendererWater extends TileRendererBlob  {
+public class TileRendererWater extends TileRendererBlob {
 	private BufferedImage water;
 	private BufferedImage floor;
 

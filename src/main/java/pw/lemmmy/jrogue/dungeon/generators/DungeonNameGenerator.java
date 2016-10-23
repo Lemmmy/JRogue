@@ -9,9 +9,19 @@ import java.util.regex.Pattern;
 
 public class DungeonNameGenerator {
 	private static final HashMap<String, String[]> NAME_OBJECTS = new HashMap<>();
+	private static final String[] NAME_TEMPLATES = {
+		"{roomType} of the {pronoun}",
+		"{roomType} of the {pronounAdjective} {pronoun}",
+		"The {roomAdjective} {roomType}",
+		"The {roomType}",
+		"The {pronoun}'s {roomType}",
+		"The {pronoun}'s {roomAdjective} {roomType}",
+		"The {pronounAdjective} {pronoun}'s {roomType}",
+		"The {pronounAdjective} {pronoun}'s {roomAdjective} {roomType}"
+	};
 
 	static {
-		NAME_OBJECTS.put("roomType", new String[] {
+		NAME_OBJECTS.put("roomType", new String[]{
 			"Burrows",
 			"Caverns",
 			"Cells",
@@ -31,7 +41,7 @@ public class DungeonNameGenerator {
 			"Vaults"
 		});
 
-		NAME_OBJECTS.put("pronoun", new String[] {
+		NAME_OBJECTS.put("pronoun", new String[]{
 			"Arachnid",
 			"Army",
 			"Basilisk",
@@ -56,7 +66,7 @@ public class DungeonNameGenerator {
 			"Wolf"
 		});
 
-		NAME_OBJECTS.put("pronounAdjective", new String[] {
+		NAME_OBJECTS.put("pronounAdjective", new String[]{
 			"Barbaric",
 			"Blooded",
 			"Chaotic",
@@ -85,7 +95,7 @@ public class DungeonNameGenerator {
 			"Vanishing"
 		});
 
-		NAME_OBJECTS.put("roomAdjective", new String[] {
+		NAME_OBJECTS.put("roomAdjective", new String[]{
 			"Ancient",
 			"Arid",
 			"Bellowing",
@@ -137,17 +147,6 @@ public class DungeonNameGenerator {
 			"Yawning"
 		});
 	}
-
-	private static final String[] NAME_TEMPLATES = {
-		"{roomType} of the {pronoun}",
-		"{roomType} of the {pronounAdjective} {pronoun}",
-		"The {roomAdjective} {roomType}",
-		"The {roomType}",
-		"The {pronoun}'s {roomType}",
-		"The {pronoun}'s {roomAdjective} {roomType}",
-		"The {pronounAdjective} {pronoun}'s {roomType}",
-		"The {pronounAdjective} {pronoun}'s {roomAdjective} {roomType}"
-	};
 
 	public static String generate() {
 		return StringReplacer.replace(Utils.randomFrom(NAME_TEMPLATES), Pattern.compile("\\{(\\w+)}"), (Matcher m) -> {

@@ -24,7 +24,7 @@ public abstract class LivingEntity extends Entity {
 		onDamage(damageSource, damage);
 
 		if (health <= 0) {
-			die();
+			die(damageSource);
 		}
 
 		return health <= 0;
@@ -32,11 +32,11 @@ public abstract class LivingEntity extends Entity {
 
 	protected abstract void onDamage(DamageSource damageSource, int damage);
 
-	protected void die() {
-		onDie();
+	protected void die(DamageSource damageSource) {
+		onDie(damageSource);
 	}
 
-	protected abstract void onDie();
+	protected abstract void onDie(DamageSource damageSource);
 
 	public int getHealth() {
 		return health;

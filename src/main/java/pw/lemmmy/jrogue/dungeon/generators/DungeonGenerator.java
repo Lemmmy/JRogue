@@ -9,116 +9,8 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class DungeonGenerator {
-	protected class ConnectionPoint {
-		private int ax, ay;
-		private int bx, by;
-
-		private Orientation intendedOrientation;
-		private Orientation orientationA;
-		private Orientation orientationB;
-
-		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
-			this.ax = ax;
-			this.ay = ay;
-			this.bx = bx;
-			this.by = by;
-			this.intendedOrientation = intendedOrientation;
-			this.orientationA = getWallOrientation(ax, ay);
-			this.orientationB = getWallOrientation(bx, by);
-		}
-
-		public int getAX() {
-			return ax;
-		}
-
-		public int getAY() {
-			return ay;
-		}
-
-		public int getBX() {
-			return bx;
-		}
-
-		public int getBY() {
-			return by;
-		}
-
-		public Orientation getIntendedOrientation() {
-			return intendedOrientation;
-		}
-
-		public Orientation getOrientationA() {
-			return orientationA;
-		}
-
-		public Orientation getOrientationB() {
-			return orientationB;
-		}
-	}
-
-	protected enum Orientation {
-		HORIZONTAL,
-		VERTICAL,
-		CORNER
-	}
-
-	/***
-	 * Temporary room positions used during generation
-	 */
-	public class Room {
-		private int roomX;
-		private int roomY;
-		private int roomWidth;
-		private int roomHeight;
-
-		/***
-		 * List of rooms this room should be connected to
-		 */
-		private List<Room> touching = new ArrayList<Room>();
-
-		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
-			this.roomX = roomX;
-			this.roomY = roomY;
-			this.roomWidth = roomWidth;
-			this.roomHeight = roomHeight;
-		}
-
-		public int getRoomX() {
-			return roomX;
-		}
-
-		public int getRoomY() {
-			return roomY;
-		}
-
-		public int getCenterX() {
-			return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
-		}
-
-		public int getCenterY() {
-			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
-		}
-
-		public int getRoomWidth() {
-			return roomWidth;
-		}
-
-		public int getRoomHeight() {
-			return roomHeight;
-		}
-
-		public List<Room> getTouching() {
-			return touching;
-		}
-
-		public boolean addTouching(Room room) {
-			return touching.add(room);
-		}
-	}
-
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
-
 	protected Random rand = new Random();
 
 	public DungeonGenerator(Level level) {
@@ -274,6 +166,113 @@ public abstract class DungeonGenerator {
 			} else if (t == Tiles.TILE_ROOM_WATER) {
 				level.setTile(nx, ny, Tiles.TILE_ROOM_FLOOR);
 			}
+		}
+	}
+
+	protected enum Orientation {
+		HORIZONTAL,
+		VERTICAL,
+		CORNER
+	}
+
+	protected class ConnectionPoint {
+		private int ax, ay;
+		private int bx, by;
+
+		private Orientation intendedOrientation;
+		private Orientation orientationA;
+		private Orientation orientationB;
+
+		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
+			this.ax = ax;
+			this.ay = ay;
+			this.bx = bx;
+			this.by = by;
+			this.intendedOrientation = intendedOrientation;
+			this.orientationA = getWallOrientation(ax, ay);
+			this.orientationB = getWallOrientation(bx, by);
+		}
+
+		public int getAX() {
+			return ax;
+		}
+
+		public int getAY() {
+			return ay;
+		}
+
+		public int getBX() {
+			return bx;
+		}
+
+		public int getBY() {
+			return by;
+		}
+
+		public Orientation getIntendedOrientation() {
+			return intendedOrientation;
+		}
+
+		public Orientation getOrientationA() {
+			return orientationA;
+		}
+
+		public Orientation getOrientationB() {
+			return orientationB;
+		}
+	}
+
+	/***
+	 * Temporary room positions used during generation
+	 */
+	public class Room {
+		private int roomX;
+		private int roomY;
+		private int roomWidth;
+		private int roomHeight;
+
+		/***
+		 * List of rooms this room should be connected to
+		 */
+		private List<Room> touching = new ArrayList<Room>();
+
+		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
+			this.roomX = roomX;
+			this.roomY = roomY;
+			this.roomWidth = roomWidth;
+			this.roomHeight = roomHeight;
+		}
+
+		public int getRoomX() {
+			return roomX;
+		}
+
+		public int getRoomY() {
+			return roomY;
+		}
+
+		public int getCenterX() {
+			return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
+		}
+
+		public int getCenterY() {
+			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
+		}
+
+		public int getRoomWidth() {
+			return roomWidth;
+		}
+
+		public int getRoomHeight() {
+			return roomHeight;
+		}
+
+		public List<Room> getTouching() {
+			return touching;
+		}
+
+		public boolean addTouching(Room room) {
+			return touching.add(room);
 		}
 	}
 }

@@ -4,10 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringReplacer {
-	public interface Callback {
-		public String replace(Matcher match);
-	}
-
 	public static String replace(String input, Pattern regex, Callback callback) {
 		StringBuffer resultString = new StringBuffer();
 		Matcher regexMatcher = regex.matcher(input);
@@ -19,5 +15,9 @@ public class StringReplacer {
 		regexMatcher.appendTail(resultString);
 
 		return resultString.toString();
+	}
+
+	public interface Callback {
+		public String replace(Matcher match);
 	}
 }

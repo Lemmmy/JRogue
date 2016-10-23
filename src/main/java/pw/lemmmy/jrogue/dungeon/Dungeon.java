@@ -1,7 +1,5 @@
 package pw.lemmmy.jrogue.dungeon;
 
-import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 
@@ -11,12 +9,7 @@ import java.util.List;
 public class Dungeon {
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
-
-	public static interface Listener {
-		public void onTurn();
-		public void onLog(String log);
-	}
-
+	private final List<Listener> listeners = new ArrayList<>();
 	/**
 	 * Randomly generated name of this dungeon
 	 */
@@ -28,8 +21,6 @@ public class Dungeon {
 	private String name;
 
 	private Level level;
-
-	private final List<Listener> listeners = new ArrayList<>();
 
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();
@@ -62,5 +53,11 @@ public class Dungeon {
 
 	public Level getLevel() {
 		return level;
+	}
+
+	public static interface Listener {
+		public void onTurn();
+
+		public void onLog(String log);
 	}
 }

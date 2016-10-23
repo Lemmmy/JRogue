@@ -5,7 +5,6 @@ import pw.lemmmy.jrogue.dungeon.Tiles;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Collections;
-import java.util.List;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int MIN_ROOM_WIDTH = 5;
@@ -60,12 +59,12 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 				int newRoomHeight = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 
-				int newRoomX = roomX + (direction[0] * roomWidth)  +
-						(direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X)) +
-						(direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X));
+				int newRoomX = roomX + (direction[0] * roomWidth) +
+					(direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X)) +
+					(direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X));
 				int newRoomY = roomY + (direction[1] * roomHeight) +
-						(direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y)) +
-						(direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y));
+					(direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y)) +
+					(direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y));
 
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight);

@@ -8,7 +8,7 @@ import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class TileRendererCorridor extends TileRendererBlob  {
+public class TileRendererCorridor extends TileRendererBlob {
 	private BufferedImage corridor;
 	private BufferedImage empty;
 

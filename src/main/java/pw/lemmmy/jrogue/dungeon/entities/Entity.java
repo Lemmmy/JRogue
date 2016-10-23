@@ -20,6 +20,7 @@ public abstract class Entity {
 	}
 
 	public abstract String getName();
+
 	public abstract Appearance getAppearance();
 
 	public int getMovementPoints() {
@@ -44,8 +45,16 @@ public abstract class Entity {
 		return x;
 	}
 
+	public void setX(int x) {
+		this.x = x;
+	}
+
 	public int getY() {
 		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	public Dungeon getDungeon() {
@@ -54,14 +63,6 @@ public abstract class Entity {
 
 	public Level getLevel() {
 		return level;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public void setY(int y) {
-		this.y = y;
 	}
 
 	public void setLevel(Level level) {
