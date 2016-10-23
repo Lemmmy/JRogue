@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
-	private static final int MIN_ROOM_WIDTH = 4;
+	private static final int MIN_ROOM_WIDTH = 5;
 	private static final int MAX_ROOM_WIDTH = 20;
 
-	private static final int MIN_ROOM_HEIGHT = 4;
+	private static final int MIN_ROOM_HEIGHT = 5;
 	private static final int MAX_ROOM_HEIGHT = 12;
 
 	private static final int MIN_ROOM_DISTANCE_X = 1;
@@ -56,7 +56,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		for (int[] direction : Utils.DIRECTIONS) {
 			int attempts = 0;
 
-			while (attempts < 3) {
+			while (attempts < 5) {
 				attempts++;
 
 				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);

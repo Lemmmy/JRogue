@@ -43,9 +43,6 @@ public class MapComponent extends Canvas {
 
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setColor(Color.BLACK);
-		g2d.fillRect(0, 0, getWidth(), getHeight());
-
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
