@@ -32,12 +32,12 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	@Override
 	public List<Room> generate() {
-		int width = rand.nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
-		int height = rand.nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
+		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 
 		createRoom(
-				rand.nextInt(1, level.getWidth() - width - 1),
-				rand.nextInt(1, level.getHeight() - height - 1),
+				nextInt(1, level.getWidth() - width - 1),
+				nextInt(1, level.getHeight() - height - 1),
 				width,
 				height
 		);
@@ -59,15 +59,15 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			while (attempts < 3) {
 				attempts++;
 
-				int newRoomWidth = rand.nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
-				int newRoomHeight = rand.nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
+				int newRoomHeight = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 
 				int newRoomX = roomX + (direction[0] * roomWidth)  +
-						(direction[0] * rand.nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X)) +
-						(direction[1] * rand.nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X));
+						(direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X)) +
+						(direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X));
 				int newRoomY = roomY + (direction[1] * roomHeight) +
-						(direction[1] * rand.nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y)) +
-						(direction[0] * rand.nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y));
+						(direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y)) +
+						(direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y));
 
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight);

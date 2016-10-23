@@ -3,13 +3,13 @@ package pw.lemmmy.jrogue.rendering.swing.tiles;
 import pw.lemmmy.jrogue.dungeon.Tiles;
 
 public enum TileMap {
-	TILE_EMPTY(null),
+	TILE_EMPTY(1, 1),
 
 	TILE_ROOM_WALL(new TileRendererWall()),
-	TILE_ROOM_FLOOR(0, 1),
+	TILE_ROOM_FLOOR(8, 0),
 	TILE_ROOM_DOOR(new TileRendererDoor()),
 
-	TILE_CORRIDOR(7, 1);
+	TILE_CORRIDOR(new TileRendererCorridor());
 
 	public static final int TILE_WIDTH = 16;
 	public static final int TILE_HEIGHT = 16;

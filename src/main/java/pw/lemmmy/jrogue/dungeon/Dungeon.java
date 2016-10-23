@@ -55,6 +55,11 @@ public class Dungeon {
 		listeners.remove(listener);
 	}
 
+	public void regenerateLevel() {
+		level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+		rooms = new StandardDungeonGenerator(level).generate();
+	}
+
 	public String getOriginalName() {
 		return originalName;
 	}

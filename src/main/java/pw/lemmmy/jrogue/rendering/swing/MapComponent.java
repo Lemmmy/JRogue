@@ -10,11 +10,9 @@ import java.awt.*;
 
 public class MapComponent extends Canvas {
 	private Dungeon dungeon;
-	private Level level;
 
-	public MapComponent(Dungeon dungeon, Level level) {
+	public MapComponent(Dungeon dungeon) {
 		this.dungeon = dungeon;
-		this.level = level;
 
 		initializeComponent();
 	}
@@ -23,7 +21,7 @@ public class MapComponent extends Canvas {
 		int tileWidth = TileMap.TILE_WIDTH;
 		int tileHeight = TileMap.TILE_HEIGHT;
 
-		Dimension size = new Dimension(tileWidth * level.getWidth(), tileHeight * level.getHeight());
+		Dimension size = new Dimension(tileWidth * dungeon.getLevel().getWidth(), tileHeight * dungeon.getLevel().getHeight());
 
 		setSize(size);
 		setPreferredSize(size);
@@ -49,9 +47,9 @@ public class MapComponent extends Canvas {
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
-		for (int y = 0; y < level.getHeight(); y++) {
-			for (int x = 0; x < level.getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(level.getTile(x, y).name());
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
 
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().draw(g2d, dungeon, x, y);
@@ -59,6 +57,14 @@ public class MapComponent extends Canvas {
 			}
 		}
 
+		// drawDebugLines(g2d);
+
+		getBufferStrategy().show();
+
+		g.dispose();
+	}
+
+	private void drawDebugLines(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(1.0f));
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -94,24 +100,8 @@ public class MapComponent extends Canvas {
 							b.getCenterX() * TileMap.TILE_WIDTH + (TileMap.TILE_WIDTH / 2),
 							b.getCenterY() * TileMap.TILE_HEIGHT + (TileMap.TILE_HEIGHT / 2)
 					);
-
-					g2d.setPaint(Color.white);
-
-					int x = (a.getCenterX() * TileMap.TILE_WIDTH + (TileMap.TILE_WIDTH / 2)) +
-							(((b.getCenterX() * TileMap.TILE_WIDTH + (TileMap.TILE_WIDTH / 2)) -
-							(a.getCenterX() * TileMap.TILE_WIDTH + (TileMap.TILE_WIDTH / 2))) / 2);
-
-					int y = (a.getCenterY() * TileMap.TILE_HEIGHT + (TileMap.TILE_HEIGHT / 2)) +
-							(((b.getCenterY() * TileMap.TILE_HEIGHT + (TileMap.TILE_HEIGHT / 2)) -
-							(a.getCenterY() * TileMap.TILE_HEIGHT + (TileMap.TILE_HEIGHT / 2))) / 2);
-
-					g2d.drawString("" + slope, x, y);
 				}
 			}
 		}
-
-		getBufferStrategy().show();
-
-		g.dispose();
 	}
 }

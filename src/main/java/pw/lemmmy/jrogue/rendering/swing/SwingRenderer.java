@@ -31,6 +31,7 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 		updateWindowTitle();
 
 		addKeyListener(this);
+		mapComponent.addKeyListener(this);
 
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -40,7 +41,7 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 		setLayout(new BorderLayout());
 		setMinimumSize(new Dimension(480, 240));
 
-		mapComponent = new MapComponent(dungeon, dungeon.getLevel());
+		mapComponent = new MapComponent(dungeon);
 		add(mapComponent);
 
 		pack();
@@ -57,7 +58,10 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
-
+		if (keyEvent.getKeyCode() == KeyEvent.VK_R) {
+			dungeon.regenerateLevel();
+			mapComponent.repaint();
+		}
 	}
 
 	@Override

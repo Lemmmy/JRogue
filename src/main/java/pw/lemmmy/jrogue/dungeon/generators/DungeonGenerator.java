@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public abstract class DungeonGenerator {
 	/***
@@ -66,7 +66,7 @@ public abstract class DungeonGenerator {
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
 
-	protected ThreadLocalRandom rand = ThreadLocalRandom.current();
+	protected Random rand = new Random();
 
 	public DungeonGenerator(Level level) {
 		this.level = level;
@@ -74,6 +74,10 @@ public abstract class DungeonGenerator {
 
 	// TODO: Returning List<Room> is temporary
 	public abstract List<Room> generate();
+
+	protected int nextInt(int min, int max) {
+		return rand.nextInt(max - min) + min;
+	}
 
 	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		// the offsets are to prevent rooms directly touching each other
