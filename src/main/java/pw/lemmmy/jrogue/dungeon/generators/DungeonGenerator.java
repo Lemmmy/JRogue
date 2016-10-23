@@ -9,6 +9,59 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class DungeonGenerator {
+	protected class ConnectionPoint {
+		private int ax, ay;
+		private int bx, by;
+
+		private Orientation intendedOrientation;
+		private Orientation orientationA;
+		private Orientation orientationB;
+
+		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
+			this.ax = ax;
+			this.ay = ay;
+			this.bx = bx;
+			this.by = by;
+			this.intendedOrientation = intendedOrientation;
+			this.orientationA = getWallOrientation(ax, ay);
+			this.orientationB = getWallOrientation(bx, by);
+		}
+
+		public int getAX() {
+			return ax;
+		}
+
+		public int getAY() {
+			return ay;
+		}
+
+		public int getBX() {
+			return bx;
+		}
+
+		public int getBY() {
+			return by;
+		}
+
+		public Orientation getIntendedOrientation() {
+			return intendedOrientation;
+		}
+
+		public Orientation getOrientationA() {
+			return orientationA;
+		}
+
+		public Orientation getOrientationB() {
+			return orientationB;
+		}
+	}
+
+	protected enum Orientation {
+		HORIZONTAL,
+		VERTICAL,
+		CORNER
+	}
+
 	/***
 	 * Temporary room positions used during generation
 	 */
@@ -72,8 +125,7 @@ public abstract class DungeonGenerator {
 		this.level = level;
 	}
 
-	// TODO: Returning List<Room> is temporary
-	public abstract List<Room> generate();
+	public abstract void generate();
 
 	protected int nextInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
@@ -126,33 +178,84 @@ public abstract class DungeonGenerator {
 		}
 	}
 
-	protected int[][] getConnectionPoints(Room a, Room b) {
+	protected Orientation getWallOrientation(int x, int y) {
+		Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
+
+		boolean h = adjacentTiles[0] == Tiles.TILE_ROOM_WALL || adjacentTiles[1] == Tiles.TILE_ROOM_WALL;
+		boolean v = adjacentTiles[2] == Tiles.TILE_ROOM_WALL || adjacentTiles[3] == Tiles.TILE_ROOM_WALL;
+
+		if (h && !v) {
+			return Orientation.HORIZONTAL;
+		} else if (!h && v) {
+			return Orientation.VERTICAL;
+		} else {
+			return Orientation.CORNER;
+		}
+	}
+
+	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
 		int dx = Math.abs(b.getCenterX() - a.getCenterX());
 		int dy = Math.abs(b.getCenterY() - a.getCenterY());
 
 		if (dx > dy) {
-			if (b.getCenterX() > a.getCenterX()) {
-				return new int[][] {
-					{a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY()},
-					{b.getRoomX(), b.getCenterY()}
-				};
+			if (dx <= 3) {
+				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
+					return new ConnectionPoint(
+						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
+						b.getCenterX(), b.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
+						a.getCenterX(), a.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				}
 			} else {
-				return new int[][] {
-					{b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY()},
-					{a.getRoomX(), a.getCenterY()}
-				};
+				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
+					return new ConnectionPoint(
+						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
+						b.getRoomX(), b.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
+						a.getRoomX(), a.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				}
 			}
 		} else {
-			if (b.getCenterY() > a.getCenterY()) {
-				return new int[][] {
-					{a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1},
-					{b.getCenterX(), b.getRoomY()}
-				};
+			if (dy <= 3) {
+				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
+					return new ConnectionPoint(
+						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
+						b.getCenterX(), b.getCenterY(),
+						Orientation.VERTICAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
+						a.getCenterX(), a.getCenterY(),
+						Orientation.VERTICAL
+					);
+				}
 			} else {
-				return new int[][] {
-					{b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1},
-					{a.getCenterX(), a.getRoomY()}
-				};
+				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
+					return new ConnectionPoint(
+						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
+						b.getCenterX(), b.getRoomY(),
+						Orientation.VERTICAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
+						a.getCenterX(), a.getRoomY(),
+						Orientation.VERTICAL
+					);
+				}
 			}
 		}
 	}

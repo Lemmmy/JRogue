@@ -31,23 +31,21 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	@Override
-	public List<Room> generate() {
+	public void generate() {
 		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 
 		createRoom(
-				nextInt(1, level.getWidth() - width - 1),
-				nextInt(1, level.getHeight() - height - 1),
-				width,
-				height
+			nextInt(1, level.getWidth() - width - 1),
+			nextInt(1, level.getHeight() - height - 1),
+			width,
+			height
 		);
 
 		Collections.shuffle(rooms);
 
 		graphRooms();
 		buildCorridors();
-
-		return rooms;
 	}
 
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
@@ -122,10 +120,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 						slope = Math.abs(-1f / slope);
 					}
 
-					int[][] points = getConnectionPoints(a, b);
+					ConnectionPoint point = getConnectionPoint(a, b);
 
 					if (slope <= CORRIDOR_LINE_SLOPE) {
-						buildLine(points[0][0], points[0][1], points[1][0], points[1][1], Tiles.TILE_CORRIDOR, true);
+						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), Tiles.TILE_CORRIDOR, true);
 					} else {
 						// TODO: L and S corridors
 
@@ -135,13 +133,65 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 						// L shape connects to walls of different axis (one horizontal, one vertical)
 						// S shape connects to walls of the same axis (both rooms horizontal, or both rooms vertical walls)
+
+						if (point.getOrientationA() == point.getOrientationB()) {
+							buildSCorridor(point);
+						} else {
+							buildLCorridor(point);
+						}
 					}
 
-					for (int[] point : points) {
-						safePlaceDoor(point[0], point[1]);
-					}
+					safePlaceDoor(point.getAX(), point.getAY());
+					safePlaceDoor(point.getBX(), point.getBY());
 				}
 			}
+		}
+	}
+
+	private void buildLCorridor(ConnectionPoint point) {
+		int ax = point.getAX();
+		int ay = point.getAY();
+
+		int bx = point.getBX();
+		int by = point.getBY();
+
+		int dx = bx - ax;
+		int dy = by - ay;
+
+		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
+			buildLine(ax, ay, bx, by, Tiles.TILE_CORRIDOR, true);
+
+			return;
+		}
+
+		buildLine(ax, ay, bx, ay, Tiles.TILE_CORRIDOR, true);
+		buildLine(bx, ay, bx, by, Tiles.TILE_CORRIDOR, true);
+	}
+
+	private void buildSCorridor(ConnectionPoint point) {
+		int ax = point.getAX();
+		int ay = point.getAY();
+
+		int bx = point.getBX();
+		int by = point.getBY();
+
+		int dx = bx - ax;
+		int dy = by - ay;
+
+		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
+			buildLine(ax, ay, bx, by, Tiles.TILE_CORRIDOR, true);
+
+			return;
+		}
+
+		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
+			buildLine(ax, ay, ax + (int) Math.floor(dx / 2), ay, Tiles.TILE_CORRIDOR, true);
+			buildLine(ax + (int) Math.floor(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
+			buildLine(bx, by, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
+		} else {
+			buildLine(ax, ay, ax, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay + (int) Math.floor(dy / 2), bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
+			buildLine(bx, by, bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
 		}
 	}
 }

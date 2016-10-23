@@ -31,20 +31,12 @@ public class Dungeon {
 
 	private final List<Listener> listeners = new ArrayList<>();
 
-	public List<DungeonGenerator.Room> rooms = new ArrayList<>();
-
 	public Dungeon() {
-		JRogue.getLogger().debug("Creating new dungeon");
-
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
 
-		JRogue.getLogger().debug("Dungeon is called {}", originalName);
-
 		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-		rooms = new StandardDungeonGenerator(this.level).generate();
-
-		JRogue.getLogger().debug("Generated first level, got {} rooms", rooms.size());
+		new StandardDungeonGenerator(level).generate();
 	}
 
 	public void addListener(Listener listener) {
@@ -57,7 +49,7 @@ public class Dungeon {
 
 	public void regenerateLevel() {
 		level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-		rooms = new StandardDungeonGenerator(level).generate();
+		new StandardDungeonGenerator(level).generate();
 	}
 
 	public String getOriginalName() {
