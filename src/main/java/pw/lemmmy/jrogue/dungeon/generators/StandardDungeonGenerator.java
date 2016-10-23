@@ -125,15 +125,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 					if (slope <= CORRIDOR_LINE_SLOPE) {
 						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), Tiles.TILE_CORRIDOR, true);
 					} else {
-						// TODO: L and S corridors
-
-						// 33% chance to build L shape
-						// 33% chance to build S shape
-						// 33% chance to build both
-
-						// L shape connects to walls of different axis (one horizontal, one vertical)
-						// S shape connects to walls of the same axis (both rooms horizontal, or both rooms vertical walls)
-
 						if (point.getOrientationA() == point.getOrientationB()) {
 							buildSCorridor(point);
 						} else {
@@ -185,12 +176,12 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		}
 
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
-			buildLine(ax, ay, ax + (int) Math.floor(dx / 2), ay, Tiles.TILE_CORRIDOR, true);
-			buildLine(ax + (int) Math.floor(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, Tiles.TILE_CORRIDOR, true);
+			buildLine(ax + (int) Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
 			buildLine(bx, by, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
 		} else {
-			buildLine(ax, ay, ax, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
-			buildLine(ax, ay + (int) Math.floor(dy / 2), bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay, ax, ay + (int) Math.ceil(dy / 2), Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay + (int) Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
 			buildLine(bx, by, bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
 		}
 	}

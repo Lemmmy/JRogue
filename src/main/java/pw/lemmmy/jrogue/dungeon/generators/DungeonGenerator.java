@@ -150,7 +150,7 @@ public abstract class DungeonGenerator {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
 				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
-				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_FLOOR);
+				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_WATER);
 			}
 		}
 
@@ -198,17 +198,17 @@ public abstract class DungeonGenerator {
 		int dy = Math.abs(b.getCenterY() - a.getCenterY());
 
 		if (dx > dy) {
-			if (dx <= 3) {
+			if (dx <= 5 || (b.getCenterX() - a.getCenterX() < 0)) {
 				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
 					return new ConnectionPoint(
 						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
-						b.getCenterX(), b.getCenterY(),
+						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
 						Orientation.HORIZONTAL
 					);
 				} else {
 					return new ConnectionPoint(
 						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
-						a.getCenterX(), a.getCenterY(),
+						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
 						Orientation.HORIZONTAL
 					);
 				}
@@ -228,17 +228,17 @@ public abstract class DungeonGenerator {
 				}
 			}
 		} else {
-			if (dy <= 3) {
+			if (dy <= 5 || (b.getCenterY() - a.getCenterY() < 0)) {
 				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
 					return new ConnectionPoint(
 						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
-						b.getCenterX(), b.getCenterY(),
+						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
 						Orientation.VERTICAL
 					);
 				} else {
 					return new ConnectionPoint(
 						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
-						a.getCenterX(), a.getCenterY(),
+						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
 						Orientation.VERTICAL
 					);
 				}
@@ -267,8 +267,12 @@ public abstract class DungeonGenerator {
 			int nx = x + direction[0];
 			int ny = y + direction[1];
 
-			if (level.getTile(nx, ny) == Tiles.TILE_EMPTY) {
+			Tiles t = level.getTile(nx, ny);
+
+			if (t == Tiles.TILE_EMPTY) {
 				level.setTile(nx, ny, Tiles.TILE_CORRIDOR);
+			} else if (t == Tiles.TILE_ROOM_WATER) {
+				level.setTile(nx, ny, Tiles.TILE_ROOM_FLOOR);
 			}
 		}
 	}

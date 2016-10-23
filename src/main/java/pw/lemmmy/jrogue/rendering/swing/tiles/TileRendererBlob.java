@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public abstract class TileRendererBlob extends TileRenderer {
-	private static final int BLOB_SHEET_WIDTH = 8;
-	private static final int BLOB_SHEET_HEIGHT = 6;
+	protected static final int BLOB_SHEET_WIDTH = 8;
+	protected static final int BLOB_SHEET_HEIGHT = 6;
 
 	private static final int[][] LOCATIONS = {
 		{2, 1}, {8, 2}, {10, 3}, {11, 4}, {16, 5}, {18, 6}, {22, 7}, {24, 8}, {26, 9}, {27, 10}, {30, 11}, {31, 12},
@@ -37,6 +37,10 @@ public abstract class TileRendererBlob extends TileRenderer {
 	}
 
 	public TileRendererBlob(int blobOffsetX, int blobOffsetY) {
+		loadBlob(images, blobOffsetX, blobOffsetY);
+	}
+
+	protected void loadBlob(BufferedImage[] set, int blobOffsetX, int blobOffsetY) {
 		BufferedImage sheet = ImageLoader.getImage("blobs.png");
 
 		if (sheet == null) {
@@ -48,7 +52,7 @@ public abstract class TileRendererBlob extends TileRenderer {
 			int sheetX = (i % BLOB_SHEET_WIDTH) + (BLOB_SHEET_WIDTH * blobOffsetX);
 			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + (BLOB_SHEET_HEIGHT * blobOffsetY);
 
-			images[i] = sheet.getSubimage(sheetX * TileMap.TILE_WIDTH, sheetY * TileMap.TILE_HEIGHT, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
+			set[i] = sheet.getSubimage(sheetX * TileMap.TILE_WIDTH, sheetY * TileMap.TILE_HEIGHT, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 		}
 	}
 
@@ -69,6 +73,10 @@ public abstract class TileRendererBlob extends TileRenderer {
 	}
 
 	protected BufferedImage getImageFromMask(int mask) {
-		return images[MAP[mask]];
+		return getImageFromMask(images, mask);
+	}
+
+	protected BufferedImage getImageFromMask(BufferedImage[] set, int mask) {
+		return set[MAP[mask]];
 	}
 }

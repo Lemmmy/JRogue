@@ -7,6 +7,7 @@ public enum TileMap {
 
 	TILE_ROOM_WALL(new TileRendererWall()),
 	TILE_ROOM_FLOOR(8, 0),
+	TILE_ROOM_WATER(new TileRendererWater(2, 1)),
 	TILE_ROOM_DOOR(new TileRendererDoor()),
 
 	TILE_CORRIDOR(new TileRendererCorridor());

@@ -5,6 +5,7 @@ public enum Tiles {
 
 	TILE_ROOM_WALL(Solidity.SOLID),
 	TILE_ROOM_FLOOR(Solidity.WALK_ON),
+	TILE_ROOM_WATER(Solidity.WALK_ON),
 	TILE_ROOM_DOOR(Solidity.WALK_THROUGH),
 
 	TILE_CORRIDOR(Solidity.WALK_ON, true);
