@@ -5,6 +5,7 @@ import pw.lemmmy.jrogue.dungeon.Tiles;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int MIN_ROOM_WIDTH = 5;
@@ -122,7 +123,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 					ConnectionPoint point = getConnectionPoint(a, b);
 
 					if (slope <= CORRIDOR_LINE_SLOPE) {
-						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), Tiles.TILE_CORRIDOR, true);
+						Tiles tile = point.getDebugTile() != null ? point.getDebugTile() : Tiles.TILE_CORRIDOR;
+
+						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), tile, true, false);
 					} else {
 						if (point.getOrientationA() == point.getOrientationB()) {
 							buildSCorridor(point);
@@ -148,14 +151,16 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 
+		Tiles tile = point.getDebugTile() != null ? point.getDebugTile() : Tiles.TILE_CORRIDOR;
+
 		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
-			buildLine(ax, ay, bx, by, Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay, bx, by, tile, true, true);
 
 			return;
 		}
 
-		buildLine(ax, ay, bx, ay, Tiles.TILE_CORRIDOR, true);
-		buildLine(bx, ay, bx, by, Tiles.TILE_CORRIDOR, true);
+		buildLine(ax, ay, bx, ay, tile, true, true);
+		buildLine(bx, ay, bx, by, tile, true, true);
 	}
 
 	private void buildSCorridor(ConnectionPoint point) {
@@ -168,20 +173,16 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 
-		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
-			buildLine(ax, ay, bx, by, Tiles.TILE_CORRIDOR, true);
-
-			return;
-		}
+		Tiles tile = point.getDebugTile() != null ? point.getDebugTile() : Tiles.TILE_CORRIDOR;
 
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
-			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, Tiles.TILE_CORRIDOR, true);
-			buildLine(ax + (int) Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
-			buildLine(bx, by, ax + (int) Math.floor(dx / 2), by, Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, tile, true, true);
+			buildLine(ax + (int) Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, tile, true, true);
+			buildLine(bx, by, ax + (int) Math.floor(dx / 2), by, tile, true, true);
 		} else {
-			buildLine(ax, ay, ax, ay + (int) Math.ceil(dy / 2), Tiles.TILE_CORRIDOR, true);
-			buildLine(ax, ay + (int) Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
-			buildLine(bx, by, bx, ay + (int) Math.floor(dy / 2), Tiles.TILE_CORRIDOR, true);
+			buildLine(ax, ay, ax, ay + (int) Math.ceil(dy / 2), tile, true, true);
+			buildLine(ax, ay + (int) Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), tile, true, true);
+			buildLine(bx, by, bx, ay + (int) Math.floor(dy / 2), tile, true, true);
 		}
 	}
 }

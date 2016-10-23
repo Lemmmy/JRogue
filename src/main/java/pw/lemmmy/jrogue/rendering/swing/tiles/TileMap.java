@@ -5,6 +5,15 @@ import pw.lemmmy.jrogue.dungeon.Tiles;
 public enum TileMap {
 	TILE_EMPTY(1, 1),
 
+	TILE_DEBUG_A(0, 15),
+	TILE_DEBUG_B(1, 15),
+	TILE_DEBUG_C(2, 15),
+	TILE_DEBUG_D(3, 15),
+	TILE_DEBUG_E(4, 15),
+	TILE_DEBUG_F(5, 15),
+	TILE_DEBUG_G(6, 15),
+	TILE_DEBUG_H(7, 15),
+
 	TILE_ROOM_WALL(new TileRendererWall()),
 	TILE_ROOM_FLOOR(8, 0),
 	TILE_ROOM_WATER(new TileRendererWater(2, 1)),

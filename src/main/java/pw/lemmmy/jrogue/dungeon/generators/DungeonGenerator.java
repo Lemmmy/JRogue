@@ -42,7 +42,7 @@ public abstract class DungeonGenerator {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
 				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
-				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_WATER);
+				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_FLOOR);
 			}
 		}
 
@@ -51,7 +51,7 @@ public abstract class DungeonGenerator {
 		return room;
 	}
 
-	protected void buildLine(int startX, int startY, int endX, int endY, Tiles tile, boolean buildableCheck) {
+	protected void buildLine(int startX, int startY, int endX, int endY, Tiles tile, boolean buildableCheck, boolean buildDoors) {
 		float diffX = endX - startX;
 		float diffY = endY - startY;
 
@@ -66,13 +66,33 @@ public abstract class DungeonGenerator {
 
 			if (level.getTile(x, y).isBuildable()) {
 				level.setTile(x, y, tile);
+			} else if (buildDoors && canPlaceDoor(x, y)) {
+				safePlaceDoor(x, y);
 			}
 		}
 	}
 
-	protected Orientation getWallOrientation(int x, int y) {
-		Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
+	public boolean canPlaceDoor(int x, int y) {
+		if (level.getTile(x, y) == Tiles.TILE_ROOM_WALL) {
+			Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
 
+			for (Tiles tile : adjacentTiles) {
+				if (tile == Tiles.TILE_ROOM_DOOR) {
+					return false;
+				}
+			}
+
+			return getWallOrientation(adjacentTiles) != Orientation.CORNER;
+		}
+
+		return false;
+	}
+
+	protected Orientation getWallOrientation(int x, int y) {
+		return getWallOrientation(level.getAdjacentTiles(x, y));
+	}
+
+	protected Orientation getWallOrientation(Tiles[] adjacentTiles) {
 		boolean h = adjacentTiles[0] == Tiles.TILE_ROOM_WALL || adjacentTiles[1] == Tiles.TILE_ROOM_WALL;
 		boolean v = adjacentTiles[2] == Tiles.TILE_ROOM_WALL || adjacentTiles[3] == Tiles.TILE_ROOM_WALL;
 
@@ -90,7 +110,7 @@ public abstract class DungeonGenerator {
 		int dy = Math.abs(b.getCenterY() - a.getCenterY());
 
 		if (dx > dy) {
-			if (dx <= 5 || (b.getCenterX() - a.getCenterX() < 0)) {
+			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getRoomX() + a.getRoomWidth() >= b.getRoomX() || b.getRoomX() + b.getRoomWidth() <= a.getRoomX()) {
 				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
 					return new ConnectionPoint(
 						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
@@ -105,7 +125,7 @@ public abstract class DungeonGenerator {
 					);
 				}
 			} else {
-				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
+				if (b.getRoomX() > a.getRoomX() || b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
 					return new ConnectionPoint(
 						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
 						b.getRoomX(), b.getCenterY(),
@@ -120,7 +140,7 @@ public abstract class DungeonGenerator {
 				}
 			}
 		} else {
-			if (dy <= 5 || (b.getCenterY() - a.getCenterY() < 0)) {
+			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getRoomHeight() == b.getRoomY() || b.getRoomY() + b.getRoomHeight() == a.getRoomY()) {
 				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
 					return new ConnectionPoint(
 						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
@@ -183,14 +203,23 @@ public abstract class DungeonGenerator {
 		private Orientation orientationA;
 		private Orientation orientationB;
 
+		private Tiles debugTile;
+
 		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
+			this(ax, ay, bx, by, intendedOrientation, null);
+		}
+
+		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation, Tiles debugTile) {
 			this.ax = ax;
 			this.ay = ay;
 			this.bx = bx;
 			this.by = by;
+
 			this.intendedOrientation = intendedOrientation;
 			this.orientationA = getWallOrientation(ax, ay);
 			this.orientationB = getWallOrientation(bx, by);
+
+			this.debugTile = debugTile;
 		}
 
 		public int getAX() {
@@ -219,6 +248,10 @@ public abstract class DungeonGenerator {
 
 		public Orientation getOrientationB() {
 			return orientationB;
+		}
+
+		public Tiles getDebugTile() {
+			return debugTile;
 		}
 	}
 
