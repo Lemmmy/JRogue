@@ -53,7 +53,7 @@ public class TileRendererWater extends TileRendererBlob {
 
 		Composite oc = g2d.getComposite();
 
-		ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
+		ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
 		g2d.setComposite(ac);
 
 		drawTile(g2d, getImageFromMask(overlayImages, getPositionMask(d.getLevel(), x, y)), x, y);
