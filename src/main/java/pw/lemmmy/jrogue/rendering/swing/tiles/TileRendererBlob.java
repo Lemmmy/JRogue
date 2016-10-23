@@ -4,12 +4,11 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Tiles;
 import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-public abstract class TileRendererBlob extends TileRenderer  {
+public abstract class TileRendererBlob extends TileRenderer {
 	private static final int BLOB_SHEET_WIDTH = 8;
 	private static final int BLOB_SHEET_HEIGHT = 6;
 

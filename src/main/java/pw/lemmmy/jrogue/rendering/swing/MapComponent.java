@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.rendering.swing;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.rendering.swing.tiles.TileMap;
 
