@@ -181,7 +181,7 @@ public abstract class DungeonGenerator {
 
 			Tiles t = level.getTile(nx, ny);
 
-			if (t == Tiles.TILE_EMPTY) {
+			if (t == Tiles.TILE_GROUND) {
 				level.setTile(nx, ny, Tiles.TILE_CORRIDOR);
 			} else if (t == Tiles.TILE_ROOM_WATER) {
 				level.setTile(nx, ny, Tiles.TILE_ROOM_FLOOR);
@@ -267,7 +267,10 @@ public abstract class DungeonGenerator {
 		/***
 		 * List of rooms this room should be connected to
 		 */
-		private List<Room> touching = new ArrayList<Room>();
+		private List<Room> touching = new ArrayList<>();
+
+		private List<ConnectionPoint> connectionPoints = new ArrayList<>();
+		private boolean isSpawn;
 
 		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
 			this.roomX = roomX;
@@ -306,6 +309,35 @@ public abstract class DungeonGenerator {
 
 		public boolean addTouching(Room room) {
 			return touching.add(room);
+		}
+
+		public List<ConnectionPoint> getConnectionPoints() {
+			return connectionPoints;
+		}
+
+		public boolean addConnectionPoint(ConnectionPoint point) {
+			return connectionPoints.add(point);
+		}
+
+		@Override
+		public String toString() {
+			return String.format(
+				"x: %d y: %d %dx%d %d touching %d connection point(s)",
+				getRoomX(),
+				getRoomY(),
+				getRoomWidth(),
+				getRoomHeight(),
+				getTouching().size(),
+				getConnectionPoints().size()
+			);
+		}
+
+		public boolean isSpawn() {
+			return isSpawn;
+		}
+
+		public void setSpawn(boolean spawn) {
+			this.isSpawn = spawn;
 		}
 	}
 }

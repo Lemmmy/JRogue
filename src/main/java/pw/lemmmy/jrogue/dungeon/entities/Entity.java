@@ -57,6 +57,11 @@ public abstract class Entity {
 		this.y = y;
 	}
 
+	public void setPosition(int x, int y) {
+		setX(x);
+		setY(y);
+	}
+
 	public Dungeon getDungeon() {
 		return dungeon;
 	}

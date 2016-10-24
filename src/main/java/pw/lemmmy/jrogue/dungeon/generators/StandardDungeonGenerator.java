@@ -2,9 +2,10 @@ package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
@@ -26,6 +27,11 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private static final float CORRIDOR_LINE_SLOPE = 0.2f;
 
+	private static final double WATER_NOISE_THRESHOLD = 0.2;
+	private static final double WATER_NOISE_SCALE = 0.2;
+
+	private OpenSimplexNoise simplexNoise;
+
 	public StandardDungeonGenerator(Level level) {
 		super(level);
 	}
@@ -34,6 +40,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	public void generate() {
 		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+
+		simplexNoise = new OpenSimplexNoise();
 
 		createRoom(
 			nextInt(1, level.getWidth() - width - 1),
@@ -46,6 +54,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		graphRooms();
 		buildCorridors();
+		removeStrayRooms();
+		addWaterBodies();
+		chooseSpawnRoom();
+		chooseDownstairsRoom();
 	}
 
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
@@ -122,6 +134,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 					ConnectionPoint point = getConnectionPoint(a, b);
 
+					a.addConnectionPoint(point);
+					b.addConnectionPoint(point);
+
 					if (slope <= CORRIDOR_LINE_SLOPE) {
 						Tiles tile = point.getDebugTile() != null ? point.getDebugTile() : Tiles.TILE_CORRIDOR;
 
@@ -177,12 +192,72 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
 			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, tile, true, true);
-			buildLine(ax + (int) Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, tile, true, true);
+			buildLine(ax + Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, tile, true, true);
 			buildLine(bx, by, ax + (int) Math.floor(dx / 2), by, tile, true, true);
 		} else {
 			buildLine(ax, ay, ax, ay + (int) Math.ceil(dy / 2), tile, true, true);
-			buildLine(ax, ay + (int) Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), tile, true, true);
+			buildLine(ax, ay + Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), tile, true, true);
 			buildLine(bx, by, bx, ay + (int) Math.floor(dy / 2), tile, true, true);
 		}
+	}
+
+	private void removeStrayRooms() {
+		rooms.removeIf(room -> room.getConnectionPoints().size() <= 0);
+	}
+
+	private void addWaterBodies() {
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				double noise = simplexNoise.eval(x * WATER_NOISE_SCALE, y * WATER_NOISE_SCALE);
+				
+				if (noise > WATER_NOISE_THRESHOLD && level.getTile(x, y) == Tiles.TILE_GROUND) {
+					Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
+
+					boolean skip = false;
+
+					for (Tiles tile : adjacentTiles) {
+						if (tile != null && tile != Tiles.TILE_GROUND && tile != Tiles.TILE_GROUND_WATER) {
+							skip = true;
+						}
+					}
+
+					if (skip) {
+						continue;
+					}
+
+					level.setTile(x, y, Tiles.TILE_GROUND_WATER);
+				}
+			}
+		}
+	}
+
+	private void chooseSpawnRoom() {
+		List<Room> temp = new ArrayList<>(rooms);
+		temp.sort((a, b) -> a.getConnectionPoints().size() - b.getConnectionPoints().size());
+
+		List<Room> temp2 = temp.stream()
+			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
+			.collect(Collectors.toList());
+
+		Room spawnRoom = Utils.randomFrom(temp2);
+
+		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
+		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
+
+		level.setTile(stairX, stairY, Tiles.TILE_ROOM_STAIRS_UP);
+
+		spawnRoom.setSpawn(true);
+		level.setSpawnPoint(stairX, stairY);
+	}
+
+	private void chooseDownstairsRoom() {
+		List<Room> temp = rooms.stream().filter(room -> !room.isSpawn()).collect(Collectors.toList());
+
+		Room downstairsRoom = Utils.randomFrom(temp);
+
+		int stairX = nextInt(downstairsRoom.getRoomX() + 2, downstairsRoom.getRoomX() + downstairsRoom.getRoomWidth() - 2);
+		int stairY = nextInt(downstairsRoom.getRoomY() + 2, downstairsRoom.getRoomY() + downstairsRoom.getRoomHeight() - 2);
+
+		level.setTile(stairX, stairY, Tiles.TILE_ROOM_STAIRS_DOWN);
 	}
 }

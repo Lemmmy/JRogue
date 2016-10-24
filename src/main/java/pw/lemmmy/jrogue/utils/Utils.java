@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.utils;
 
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -10,5 +11,9 @@ public class Utils {
 	@SafeVarargs
 	public static <T> T randomFrom(T... items) {
 		return items[rand.nextInt(items.length)];
+	}
+
+	public static <T> T randomFrom(List<T> items) {
+		return items.get(rand.nextInt(items.size()));
 	}
 }

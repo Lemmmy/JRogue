@@ -5,9 +5,12 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.swing.tiles.TileMap;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class MapComponent extends Canvas {
 	private Dungeon dungeon;
+
+	private final double zoom = 1.0;
 
 	public MapComponent(Dungeon dungeon) {
 		this.dungeon = dungeon;
@@ -41,6 +44,9 @@ public class MapComponent extends Canvas {
 		}
 
 		Graphics2D g2d = (Graphics2D) g;
+		AffineTransform ot = g2d.getTransform();
+
+		g2d.scale(zoom, zoom);
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
@@ -51,8 +57,10 @@ public class MapComponent extends Canvas {
 				}
 			}
 		}
-		getBufferStrategy().show();
 
+		g2d.setTransform(ot);
+
+		getBufferStrategy().show();
 		g.dispose();
 	}
 }

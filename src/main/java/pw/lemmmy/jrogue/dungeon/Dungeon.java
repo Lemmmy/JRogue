@@ -55,6 +55,11 @@ public class Dungeon {
 		return level;
 	}
 
+	public void rerollName() {
+		this.originalName = DungeonNameGenerator.generate();
+		this.name = this.originalName;
+	}
+
 	public static interface Listener {
 		public void onTurn();
 

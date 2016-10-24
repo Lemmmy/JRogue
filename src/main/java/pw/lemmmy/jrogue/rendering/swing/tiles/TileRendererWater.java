@@ -14,7 +14,7 @@ public class TileRendererWater extends TileRendererBlob {
 
 	private BufferedImage[] overlayImages = new BufferedImage[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 
-	public TileRendererWater(int sheetX, int sheetY) {
+	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY) {
 		super(1, 0);
 
 		BufferedImage sheet = ImageLoader.getImage("tiles.png");
@@ -25,14 +25,16 @@ public class TileRendererWater extends TileRendererBlob {
 		}
 
 		water = sheet.getSubimage(sheetX * TileMap.TILE_WIDTH, sheetY * TileMap.TILE_HEIGHT, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
-		floor = sheet.getSubimage(8 * TileMap.TILE_WIDTH, 0, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
+		floor = sheet.getSubimage(floorSheetX * TileMap.TILE_WIDTH, floorSheetY * TileMap.TILE_HEIGHT, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 
 		loadBlob(overlayImages, 2, 0);
 	}
 
 	@Override
 	boolean isJoinedTile(Tiles tile) {
-		return tile == Tiles.TILE_ROOM_WATER;
+		return tile == null /* so the water looks like its going offscreen */ ||
+			tile == Tiles.TILE_ROOM_WATER ||
+			tile == Tiles.TILE_GROUND_WATER;
 	}
 
 	@Override

@@ -25,6 +25,9 @@ public class Level {
 	 */
 	private int depth;
 
+	private int spawnX;
+	private int spawnY;
+
 	public Level(int width, int height, int depth) {
 		this.width = width;
 		this.height = height;
@@ -35,7 +38,7 @@ public class Level {
 		discoveredTiles = new boolean[width * height];
 		visibleTiles = new boolean[width * height];
 
-		Arrays.fill(tiles, Tiles.TILE_EMPTY);
+		Arrays.fill(tiles, Tiles.TILE_GROUND);
 		Arrays.fill(discoveredTiles, false);
 		Arrays.fill(visibleTiles, false);
 	}
@@ -78,5 +81,10 @@ public class Level {
 		}
 
 		return t;
+	}
+
+	public void setSpawnPoint(int x, int y) {
+		spawnX = x;
+		spawnY = y;
 	}
 }
