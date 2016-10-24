@@ -28,6 +28,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final float CORRIDOR_LINE_SLOPE = 0.2f;
 
 	private static final double WATER_NOISE_THRESHOLD = 0.2;
+	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
 	private static final double WATER_NOISE_SCALE = 0.2;
 
 	private OpenSimplexNoise simplexNoise;
@@ -210,22 +211,26 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			for (int x = 0; x < level.getWidth(); x++) {
 				double noise = simplexNoise.eval(x * WATER_NOISE_SCALE, y * WATER_NOISE_SCALE);
 				
-				if (noise > WATER_NOISE_THRESHOLD && level.getTile(x, y) == Tiles.TILE_GROUND) {
-					Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
+				if (noise > WATER_NOISE_THRESHOLD && (level.getTile(x, y) == Tiles.TILE_GROUND || level.getTile(x, y) == Tiles.TILE_ROOM_FLOOR)) {
+					if (level.getTile(x, y) == Tiles.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
+						level.setTile(x, y, Tiles.TILE_ROOM_PUDDLE);
+					} else {
+						Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
 
-					boolean skip = false;
+						boolean skip = false;
 
-					for (Tiles tile : adjacentTiles) {
-						if (tile != null && tile != Tiles.TILE_GROUND && tile != Tiles.TILE_GROUND_WATER) {
-							skip = true;
+						for (Tiles tile : adjacentTiles) {
+							if (tile != null && tile != Tiles.TILE_GROUND && tile != Tiles.TILE_GROUND_WATER) {
+								skip = true;
+							}
 						}
-					}
 
-					if (skip) {
-						continue;
-					}
+						if (skip) {
+							continue;
+						}
 
-					level.setTile(x, y, Tiles.TILE_GROUND_WATER);
+						level.setTile(x, y, Tiles.TILE_GROUND_WATER);
+					}
 				}
 			}
 		}

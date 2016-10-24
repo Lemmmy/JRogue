@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon;
 
 public enum Tiles {
 	TILE_GROUND(Solidity.SOLID, true),
-	TILE_GROUND_WATER(Solidity.WALK_ON),
+	TILE_GROUND_WATER(Solidity.WATER),
 
 //	TILE_DEBUG_A(Solidity.WALK_ON),
 //	TILE_DEBUG_B(Solidity.WALK_ON),
@@ -15,7 +15,8 @@ public enum Tiles {
 
 	TILE_ROOM_WALL(Solidity.SOLID),
 	TILE_ROOM_FLOOR(Solidity.WALK_ON),
-	TILE_ROOM_WATER(Solidity.WALK_ON),
+	TILE_ROOM_WATER(Solidity.WATER),
+	TILE_ROOM_PUDDLE(Solidity.WALK_ON),
 	TILE_ROOM_DOOR(Solidity.WALK_THROUGH),
 
 	TILE_ROOM_STAIRS_UP(Solidity.WALK_ON),

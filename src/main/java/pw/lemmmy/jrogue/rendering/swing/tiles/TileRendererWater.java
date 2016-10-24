@@ -14,8 +14,18 @@ public class TileRendererWater extends TileRendererBlob {
 
 	private BufferedImage[] overlayImages = new BufferedImage[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 
+	private boolean connectToOthers;
+	private Tiles self;
+
 	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY) {
+		this(sheetX, sheetY, floorSheetX, floorSheetY, true, null);
+	}
+
+	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, boolean connectToOthers, Tiles self) {
 		super(1, 0);
+
+		this.connectToOthers = connectToOthers;
+		this.self = self;
 
 		BufferedImage sheet = ImageLoader.getImage("tiles.png");
 
@@ -32,9 +42,13 @@ public class TileRendererWater extends TileRendererBlob {
 
 	@Override
 	boolean isJoinedTile(Tiles tile) {
-		return tile == null /* so the water looks like its going offscreen */ ||
-			tile == Tiles.TILE_ROOM_WATER ||
-			tile == Tiles.TILE_GROUND_WATER;
+		if (connectToOthers) {
+			return tile == null /* so the water looks like its going offscreen */ ||
+				tile == Tiles.TILE_ROOM_WATER ||
+				tile == Tiles.TILE_GROUND_WATER;
+		} else {
+			return tile == self;
+		}
 	}
 
 	@Override

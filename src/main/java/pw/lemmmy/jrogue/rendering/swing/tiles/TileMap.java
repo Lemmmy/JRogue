@@ -18,6 +18,7 @@ public enum TileMap {
 	TILE_ROOM_WALL(new TileRendererWall()),
 	TILE_ROOM_FLOOR(8, 0),
 	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0)),
+	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, Tiles.TILE_ROOM_PUDDLE)),
 	TILE_ROOM_DOOR(new TileRendererDoor()),
 
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
