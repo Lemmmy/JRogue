@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+@Deprecated
 public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 

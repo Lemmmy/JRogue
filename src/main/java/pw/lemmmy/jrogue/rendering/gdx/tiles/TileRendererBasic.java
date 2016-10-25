@@ -15,6 +15,5 @@ public class TileRendererBasic extends TileRenderer {
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		drawTile(batch, image, x, y);
-		drawLight(batch, dungeon, x, y);
 	}
 }

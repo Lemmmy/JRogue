@@ -43,7 +43,7 @@ public class TileRendererWater extends TileRendererBlob {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon d, int x, int y) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		// TODO
 	}
 }

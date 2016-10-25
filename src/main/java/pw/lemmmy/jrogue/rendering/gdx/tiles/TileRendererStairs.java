@@ -24,9 +24,8 @@ public class TileRendererStairs extends TileRenderer {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon d, int x, int y) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		drawTile(batch, image, x, y);
-		drawLight(batch, d, x, y);
 
 		switch (direction) {
 			case UP:

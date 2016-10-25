@@ -13,8 +13,7 @@ public class TileRendererDoor extends TileRenderer {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon d, int x, int y) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		drawTile(batch, closed, x, y); // TODO: Make this dependent on door state
-		drawLight(batch, d, x, y);
 	}
 }

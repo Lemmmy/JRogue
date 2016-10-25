@@ -20,8 +20,8 @@ public class TileRendererWall extends TileRenderer {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon d, int x, int y) {
-		TileType[] adjacentTiles = d.getLevel().getAdjacentTiles(x, y);
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
 
 		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
 		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
@@ -37,7 +37,5 @@ public class TileRendererWall extends TileRenderer {
 				drawTile(batch, wallCB, x, y);
 			}
 		}
-
-		drawLight(batch, d, x, y);
 	}
 }
