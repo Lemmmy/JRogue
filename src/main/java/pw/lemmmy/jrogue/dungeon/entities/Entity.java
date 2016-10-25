@@ -73,4 +73,6 @@ public abstract class Entity {
 	public void setLevel(Level level) {
 		this.level = level;
 	}
+
+	protected abstract void onKick(Entity kicker);
 }
