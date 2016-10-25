@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import pw.lemmmy.jrogue.JRogue;
@@ -11,23 +12,32 @@ import java.util.Map;
 public class FontLoader {
 	private static final Map<String, BitmapFont> fontCache = new HashMap<>();
 
-	public static BitmapFont getFont(String file, int size) {
-		if (fontCache.containsKey(file + "_" + size)) {
-			return fontCache.get(file + "_" + size);
+	public static BitmapFont getFont(String file, int size, boolean shadow) {
+		String cacheString = file + "_" + size + (shadow ? " _shadow" : "");
+
+		if (fontCache.containsKey(cacheString)) {
+			return fontCache.get(cacheString);
 		} else {
 			JRogue.getLogger().debug("Loading font {}", file);
 
 			FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(file));
 			FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-			parameter.flip = true;
+
 			parameter.size = size;
 
-			BitmapFont font = generator.generateFont(parameter);
-			fontCache.put(file + "_" + size, font);
+			if (shadow) {
+				parameter.shadowColor = new Color(0.0f, 0.0f, 0.0f, 0.75f);
+				parameter.shadowOffsetX = size / 16;
+				parameter.shadowOffsetY = size / 16;
+			}
 
-			generator.dispose();
+			BitmapFont font = generator.generateFont(parameter);
+			font.getData().markupEnabled = true;
+
+			fontCache.put(cacheString, font);
 
 			JRogue.getLogger().debug("Loaded and cached font {}", file);
+			generator.dispose();
 
 			return font;
 		}

@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 
@@ -21,6 +22,7 @@ public class Dungeon {
 	private String name;
 
 	private Level level;
+	private Player player;
 
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();
@@ -38,6 +40,10 @@ public class Dungeon {
 	}
 
 	public void generateLevel() {
+		if (level != null) {
+			level.removeEntity(player);
+		}
+
 		boolean gotLevel = false;
 
 		do {
@@ -51,6 +57,14 @@ public class Dungeon {
 
 			gotLevel = true;
 		} while (!gotLevel);
+
+		if (player == null) {
+			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), System.getProperty("user.name"));
+		} else {
+			player.setPosition(level.getSpawnX(), level.getSpawnY());
+		}
+
+		level.addEntity(player);
 
 		for (Listener listener : listeners) {
 			listener.onLevelChange(level);
@@ -72,6 +86,22 @@ public class Dungeon {
 	public void rerollName() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void You(String s) {
+		for (Listener listener : listeners) {
+			listener.onLog("You " + s);
+		}
+	}
+
+	public void Your(String s) {
+		for (Listener listener : listeners) {
+			listener.onLog("Your " + s);
+		}
 	}
 
 	public static interface Listener {

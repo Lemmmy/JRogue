@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
@@ -35,6 +36,8 @@ public class Level {
 	private int spawnX;
 	private int spawnY;
 
+	private List<Entity> entities;
+
 	public Level(int width, int height, int depth) {
 		this.width = width;
 		this.height = height;
@@ -51,6 +54,8 @@ public class Level {
 
 		Arrays.fill(discoveredTiles, false);
 		Arrays.fill(visibleTiles, false);
+
+		entities = new ArrayList<>();
 	}
 
 	public int getWidth() {
@@ -101,9 +106,29 @@ public class Level {
 		return t;
 	}
 
+	public int getSpawnX() {
+		return spawnX;
+	}
+
+	public int getSpawnY() {
+		return spawnY;
+	}
+
 	public void setSpawnPoint(int x, int y) {
 		spawnX = x;
 		spawnY = y;
+	}
+
+	public List<Entity> getEntities() {
+		return entities;
+	}
+
+	public boolean addEntity(Entity entity) {
+		return entities.add(entity);
+	}
+
+	public boolean removeEntity(Object o) {
+		return entities.remove(o);
 	}
 
 	public Color getAmbientLight() {

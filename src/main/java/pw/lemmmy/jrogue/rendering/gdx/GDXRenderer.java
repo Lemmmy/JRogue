@@ -6,15 +6,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
+import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
@@ -24,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
-	private static final String WINDOW_TITLE = "GayRogue";
+	private static final String WINDOW_TITLE = "JRogue";
 
 	private LwjglApplication application;
 	private SpriteBatch batch;
@@ -38,12 +44,57 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private List<ParticleEffectPool.PooledEffect> pooledEffects = new ArrayList<>();
 
+	private float zoom = 1.0f;
+
 	public GDXRenderer(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 800;
+		config.height = 640;
 		application = new LwjglApplication(this, config);
+
+		addColours();
+	}
+
+	private void addColours() {
+		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
+		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
+		Colors.put("P_GREY_2", new Color(0x777777ff));
+		Colors.put("P_GREY_3", new Color(0xacacacff));
+		Colors.put("P_GREY_4", new Color(0xd4d4d4ff));
+
+		Colors.put("P_RED", new Color(0xc91616ff));
+		Colors.put("P_ORANGE_0", new Color(0xd0391bff));
+		Colors.put("P_ORANGE_1", new Color(0xe0762fff));
+		Colors.put("P_ORANGE_2", new Color(0xf8981bff));
+		Colors.put("P_ORANGE_3", new Color(0xf8bc1bff));
+		Colors.put("P_YELLOW", new Color(0xf8eb1bff));
+
+		Colors.put("P_GREEN_0", new Color(0x1d7907ff));
+		Colors.put("P_GREEN_1", new Color(0x2b9f10ff));
+		Colors.put("P_GREEN_2", new Color(0x3bba1eff));
+		Colors.put("P_GREEN_3", new Color(0x52d234ff));
+		Colors.put("P_GREEN_4", new Color(0x85ed6dff));
+
+		Colors.put("P_CYAN_0", new Color(0x047ca4ff));
+		Colors.put("P_CYAN_1", new Color(0x28b5e3ff));
+
+		Colors.put("P_BLUE_0", new Color(0x0b1b93ff));
+		Colors.put("P_BLUE_1", new Color(0x0b4fb5ff));
+		Colors.put("P_BLUE_2", new Color(0x3177e0ff));
+
+		Colors.put("P_PURPLE_0", new Color(0x560670ff));
+		Colors.put("P_PURPLE_1", new Color(0x720d93ff));
+		Colors.put("P_PURPLE_2", new Color(0x8e25b1ff));
+		Colors.put("P_PURPLE_3", new Color(0xae3fd2ff));
+
+		Colors.put("P_PINK_0", new Color(0x77026dff));
+		Colors.put("P_PINK_1", new Color(0x980c8cff));
+		Colors.put("P_PINK_2", new Color(0xb81eabff));
+		Colors.put("P_PINK_3", new Color(0xe13ed4ff));
+		Colors.put("P_PINK_4", new Color(0xf356e6ff));
 	}
 
 	private void updateWindowTitle() {
@@ -56,8 +107,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		updateWindowTitle();
 
+		zoom = 24 * TileMap.TILE_WIDTH;
+
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		camera.viewportWidth = zoom;
+		camera.viewportHeight = zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth();
 
 		camera.update();
 
@@ -76,11 +132,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		handleInput();
 
+		if (dungeon.getPlayer() != null) {
+			camera.position.x = (dungeon.getPlayer().getX() * TileMap.TILE_WIDTH) + (TileMap.TILE_WIDTH / 2);
+			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
+		}
+
 		camera.update();
 
 		batch.setProjectionMatrix(camera.combined);
 		lightBatch.setProjectionMatrix(camera.combined);
-		hudBatch.setProjectionMatrix(camera.combined);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -89,6 +149,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawMap();
 		drawParticles(delta);
+		drawEntities();
 
 		batch.end();
 
@@ -101,7 +162,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudBatch.begin();
 
-		FontLoader.getFont("PixelOperator.ttf", 16).draw(hudBatch, pooledEffects.size() + " pooled particles", 2, 4);
+		drawHUD();
 
 		hudBatch.end();
 	}
@@ -131,6 +192,16 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 	}
 
+	private void drawEntities() {
+		for (Entity entity : dungeon.getLevel().getEntities()) {
+			EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+
+			if (em.getRenderer() != null) {
+				em.getRenderer().draw(batch, dungeon, entity);
+			}
+		}
+	}
+
 	private void drawLights() {
 		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -147,6 +218,36 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightBatch.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	private void drawHUD() {
+		Player player = dungeon.getPlayer();
+
+		drawHUDString(
+			String.format(
+				"[P_YELLOW]%s[WHITE] the [P_BLUE_2]%s[WHITE] - HP [%s]%d[WHITE]/%d",
+				StringUtils.capitalize(player.getName()),
+				"Wizard",
+				"P_GREEN_3",
+				10,
+				10
+			),
+			6, 7,
+			Color.WHITE,
+			32
+		);
+	}
+
+	private void drawHUDString(String text, int x, int y) {
+		drawHUDString(text, x, y, Color.WHITE, 16);
+	}
+
+	private void drawHUDString(String text, int x, int y, Color colour, int size) {
+		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHudY(y));
+	}
+
+	private int getHudY(int y) {
+		return Gdx.graphics.getHeight() - y;
 	}
 
 	private void handleInput() {
@@ -174,6 +275,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		super.resize(width, height);
 
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		camera.viewportWidth = zoom;
+		camera.viewportHeight = zoom * height / width;
 	}
 
 	@Override

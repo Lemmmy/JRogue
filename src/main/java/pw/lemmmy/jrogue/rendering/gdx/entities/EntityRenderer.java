@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Tile;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -14,7 +15,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.awt.*;
 
 public abstract class EntityRenderer {
-	public abstract void draw(SpriteBatch batch, Dungeon d, int x, int y);
+	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity);
 
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
 		Texture sheet = ImageLoader.getImage(sheetName);
@@ -33,7 +34,7 @@ public abstract class EntityRenderer {
 		return region;
 	}
 
-	protected void drawEntity(SpriteBatch batch, TextureRegion image, int x, int y) {
+	protected void drawTile(SpriteBatch batch, TextureRegion image, int x, int y) {
 		if (image != null) {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;

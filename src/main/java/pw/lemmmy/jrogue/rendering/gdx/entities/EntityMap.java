@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.rendering.gdx.entities;
 import pw.lemmmy.jrogue.dungeon.entities.Appearance;
 
 public enum EntityMap {
-	;
+	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0));
 
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;
