@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.rendering.gdx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -25,6 +26,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private OrthographicCamera camera;
 
 	private Dungeon dungeon;
+
+	private boolean drawLights = true;
 
 	public GDXRenderer(Dungeon dungeon) {
 		this.dungeon = dungeon;
@@ -56,6 +59,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void render() {
 		super.render();
 
+		handleInput();
+
 		camera.update();
 
 		batch.setProjectionMatrix(camera.combined);
@@ -81,26 +86,50 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
+		if (drawLights) {
+			lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+			for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+				for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+					TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
 
-				if (tm.getRenderer() != null) {
-					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
+					if (tm.getRenderer() != null) {
+						tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
+					}
 				}
 			}
+
+			lightBatch.end();
+
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
+	}
+
+	private void handleInput() {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+			dungeon.generateLevel();
 		}
 
-		lightBatch.end();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+			dungeon.rerollName();
+			updateWindowTitle();
+		}
 
-		Gdx.gl.glDisable(GL20.GL_BLEND);
+		if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+			drawLights = !drawLights;
+		}
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override

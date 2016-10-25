@@ -40,11 +40,11 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	@Override
-	public void generate() {
+	public boolean generate() {
 		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 
-		simplexNoise = new OpenSimplexNoise();
+		simplexNoise = new OpenSimplexNoise(rand.nextLong());
 
 		createRoom(
 			nextInt(1, level.getWidth() - width - 1),
@@ -59,8 +59,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		buildCorridors();
 		removeStrayRooms();
 		addWaterBodies();
-		chooseSpawnRoom();
+		if (!chooseSpawnRoom()) return false;
 		chooseDownstairsRoom();
+
+		return true;
 	}
 
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
@@ -238,13 +240,17 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		}
 	}
 
-	private void chooseSpawnRoom() {
+	private boolean chooseSpawnRoom() {
 		List<Room> temp = new ArrayList<>(rooms);
 		temp.sort((a, b) -> a.getConnectionPoints().size() - b.getConnectionPoints().size());
 
 		List<Room> temp2 = temp.stream()
 			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
 			.collect(Collectors.toList());
+
+		if (temp2.isEmpty()) {
+			return false;
+		}
 
 		Room spawnRoom = Utils.randomFrom(temp2);
 
@@ -255,6 +261,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		spawnRoom.setSpawn(true);
 		level.setSpawnPoint(stairX, stairY);
+
+		return true;
 	}
 
 	private void chooseDownstairsRoom() {

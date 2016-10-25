@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -24,6 +26,21 @@ public class TileRendererCorridor extends TileRendererBlob {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		// TODO
+		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+
+		drawTile(batch, corridor, x, y);
+		batch.flush();
+
+		Gdx.gl.glColorMask(false, false, false, true);
+		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		drawTile(batch, blobImage, x, y);
+		batch.flush();
+
+		Gdx.gl.glColorMask(true, true, true, true);
+		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+		drawTile(batch, empty, x, y);
+		batch.flush();
+
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 }

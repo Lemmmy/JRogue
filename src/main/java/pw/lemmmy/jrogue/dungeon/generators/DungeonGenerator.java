@@ -17,7 +17,7 @@ public abstract class DungeonGenerator {
 		this.level = level;
 	}
 
-	public abstract void generate();
+	public abstract boolean generate();
 
 	protected int nextInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
@@ -101,8 +101,8 @@ public abstract class DungeonGenerator {
 	}
 
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
-		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
-		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
+		boolean h = adjacentTiles[0].isWallType() || adjacentTiles[1].isWallType();
+		boolean v = adjacentTiles[2].isWallType() || adjacentTiles[3].isWallType();
 
 		if (h && !v) {
 			return Orientation.HORIZONTAL;

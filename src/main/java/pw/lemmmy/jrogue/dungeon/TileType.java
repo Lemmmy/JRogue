@@ -82,4 +82,8 @@ public enum TileType {
 	public int getAbsorb() {
 		return absorb;
 	}
+
+	public boolean isWallType() {
+		return this == TILE_ROOM_WALL || this == TILE_ROOM_TORCH_FIRE || this == TILE_ROOM_TORCH_ICE || this == TILE_ROOM_DOOR;
+	}
 }

@@ -1,5 +1,8 @@
 package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -26,7 +29,7 @@ public class TileRendererWater extends TileRendererBlob {
 		this.self = self;
 
 		water = getImageFromSheet("tiles.png", sheetX, sheetY);
-		water = getImageFromSheet("tiles.png", floorSheetX, floorSheetY);
+		floor = getImageFromSheet("tiles.png", floorSheetX, floorSheetY);
 
 		loadBlob(overlayImages, 2, 0);
 	}
@@ -44,6 +47,28 @@ public class TileRendererWater extends TileRendererBlob {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		// TODO
+		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
+
+		Color colourOld = batch.getColor();
+
+		drawTile(batch, water, x, y);
+		batch.flush();
+
+		Gdx.gl.glColorMask(false, false, false, true);
+		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		drawTile(batch, blobImage, x, y);
+		batch.flush();
+
+		Gdx.gl.glColorMask(true, true, true, true);
+		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+		drawTile(batch, floor, x, y);
+		batch.flush();
+
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 0.5f);
+		drawTile(batch, overlayImage, x, y);
+
+		batch.setColor(colourOld);
 	}
 }

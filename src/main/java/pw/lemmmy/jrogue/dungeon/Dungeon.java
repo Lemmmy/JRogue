@@ -38,9 +38,19 @@ public class Dungeon {
 	}
 
 	public void generateLevel() {
-		level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-		new StandardDungeonGenerator(level).generate();
-		level.buildLight();
+		boolean gotLevel = false;
+
+		do {
+			level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+
+			if (!(new StandardDungeonGenerator(level).generate())) {
+				continue;
+			}
+
+			level.buildLight();
+
+			gotLevel = true;
+		} while (!gotLevel);
 	}
 
 	public String getOriginalName() {
