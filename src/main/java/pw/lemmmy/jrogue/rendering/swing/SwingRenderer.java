@@ -60,7 +60,7 @@ public class SwingRenderer extends JFrame implements KeyListener, Renderer, Dung
 	public void keyPressed(KeyEvent keyEvent) {
 		switch (keyEvent.getKeyCode()) {
 			case KeyEvent.VK_R:
-				dungeon.regenerateLevel();
+				dungeon.generateLevel();
 				mapComponent.repaint();
 
 				break;

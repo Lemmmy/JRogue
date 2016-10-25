@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.rendering.swing.tiles;
 
-import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.dungeon.TileType;
 
 public enum TileMap {
 	TILE_GROUND(1, 1),
@@ -16,9 +16,11 @@ public enum TileMap {
 //	TILE_DEBUG_H(7, 15),
 
 	TILE_ROOM_WALL(new TileRendererWall()),
+	TILE_ROOM_TORCH_FIRE(new TileRendererTorch(6, 1)),
+	TILE_ROOM_TORCH_ICE(new TileRendererTorch(7, 1)),
 	TILE_ROOM_FLOOR(8, 0),
 	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0)),
-	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, Tiles.TILE_ROOM_PUDDLE)),
+	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, TileType.TILE_ROOM_PUDDLE)),
 	TILE_ROOM_DOOR(new TileRendererDoor()),
 
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
@@ -46,8 +48,8 @@ public enum TileMap {
 		this.renderer = new TileRendererBasic(sheetName, sheetX, sheetY);
 	}
 
-	public Tiles getTile() {
-		return Tiles.valueOf(name());
+	public TileType getTile() {
+		return TileType.valueOf(name());
 	}
 
 	public TileRenderer getRenderer() {

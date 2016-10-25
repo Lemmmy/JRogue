@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.rendering.swing.tiles;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 
 import java.awt.image.BufferedImage;
@@ -56,7 +56,7 @@ public abstract class TileRendererBlob extends TileRenderer {
 		}
 	}
 
-	abstract boolean isJoinedTile(Tiles tile);
+	abstract boolean isJoinedTile(TileType tile);
 
 	protected int getPositionMask(Level level, int x, int y) {
 		int n = (isJoinedTile(level.getTile(x, y - 1))) ? 1 : 0;

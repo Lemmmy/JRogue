@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
@@ -42,7 +42,15 @@ public abstract class DungeonGenerator {
 			for (int x = roomX; x < roomX + roomWidth; x++) {
 				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
-				level.setTile(x, y, wall ? Tiles.TILE_ROOM_WALL : Tiles.TILE_ROOM_FLOOR);
+				if (wall) {
+					if (y == roomY && x > roomX && x < roomX + roomWidth - 1 && x % 5 == 0) {
+						level.setTile(x, y, rand.nextFloat() < 0.25f ? TileType.TILE_ROOM_TORCH_ICE : TileType.TILE_ROOM_TORCH_FIRE);
+					} else {
+						level.setTile(x, y, TileType.TILE_ROOM_WALL);
+					}
+				} else {
+					level.setTile(x, y, TileType.TILE_ROOM_FLOOR);
+				}
 			}
 		}
 
@@ -51,7 +59,7 @@ public abstract class DungeonGenerator {
 		return room;
 	}
 
-	protected void buildLine(int startX, int startY, int endX, int endY, Tiles tile, boolean buildableCheck, boolean buildDoors) {
+	protected void buildLine(int startX, int startY, int endX, int endY, TileType tile, boolean buildableCheck, boolean buildDoors) {
 		float diffX = endX - startX;
 		float diffY = endY - startY;
 
@@ -73,11 +81,11 @@ public abstract class DungeonGenerator {
 	}
 
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTile(x, y) == Tiles.TILE_ROOM_WALL) {
-			Tiles[] adjacentTiles = level.getAdjacentTiles(x, y);
+		if (level.getTile(x, y) == TileType.TILE_ROOM_WALL) {
+			TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
 
-			for (Tiles tile : adjacentTiles) {
-				if (tile == Tiles.TILE_ROOM_DOOR) {
+			for (TileType tile : adjacentTiles) {
+				if (tile == TileType.TILE_ROOM_DOOR) {
 					return false;
 				}
 			}
@@ -92,9 +100,9 @@ public abstract class DungeonGenerator {
 		return getWallOrientation(level.getAdjacentTiles(x, y));
 	}
 
-	protected Orientation getWallOrientation(Tiles[] adjacentTiles) {
-		boolean h = adjacentTiles[0] == Tiles.TILE_ROOM_WALL || adjacentTiles[1] == Tiles.TILE_ROOM_WALL;
-		boolean v = adjacentTiles[2] == Tiles.TILE_ROOM_WALL || adjacentTiles[3] == Tiles.TILE_ROOM_WALL;
+	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
+		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
+		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
 
 		if (h && !v) {
 			return Orientation.HORIZONTAL;
@@ -173,18 +181,18 @@ public abstract class DungeonGenerator {
 	}
 
 	protected void safePlaceDoor(int x, int y) {
-		level.setTile(x, y, Tiles.TILE_ROOM_DOOR);
+		level.setTile(x, y, TileType.TILE_ROOM_DOOR);
 
 		for (int[] direction : Utils.DIRECTIONS) {
 			int nx = x + direction[0];
 			int ny = y + direction[1];
 
-			Tiles t = level.getTile(nx, ny);
+			TileType t = level.getTile(nx, ny);
 
-			if (t == Tiles.TILE_GROUND) {
-				level.setTile(nx, ny, Tiles.TILE_CORRIDOR);
-			} else if (t == Tiles.TILE_ROOM_WATER) {
-				level.setTile(nx, ny, Tiles.TILE_ROOM_FLOOR);
+			if (t == TileType.TILE_GROUND) {
+				level.setTile(nx, ny, TileType.TILE_CORRIDOR);
+			} else if (t == TileType.TILE_ROOM_WATER) {
+				level.setTile(nx, ny, TileType.TILE_ROOM_FLOOR);
 			}
 		}
 	}
@@ -203,13 +211,13 @@ public abstract class DungeonGenerator {
 		private Orientation orientationA;
 		private Orientation orientationB;
 
-		private Tiles debugTile;
+		private TileType debugTile;
 
 		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
 			this(ax, ay, bx, by, intendedOrientation, null);
 		}
 
-		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation, Tiles debugTile) {
+		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation, TileType debugTile) {
 			this.ax = ax;
 			this.ay = ay;
 			this.bx = bx;
@@ -250,7 +258,7 @@ public abstract class DungeonGenerator {
 			return orientationB;
 		}
 
-		public Tiles getDebugTile() {
+		public TileType getDebugTile() {
 			return debugTile;
 		}
 	}

@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.rendering.swing.tiles;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 
 import java.awt.*;
@@ -27,8 +27,8 @@ public class TileRendererCorridor extends TileRendererBlob {
 	}
 
 	@Override
-	boolean isJoinedTile(Tiles tile) {
-		return tile == Tiles.TILE_CORRIDOR || tile == Tiles.TILE_ROOM_DOOR || tile == Tiles.TILE_ROOM_WALL;
+	boolean isJoinedTile(TileType tile) {
+		return tile == TileType.TILE_CORRIDOR || tile == TileType.TILE_ROOM_DOOR || tile == TileType.TILE_ROOM_WALL;
 	}
 
 	@Override
@@ -46,5 +46,6 @@ public class TileRendererCorridor extends TileRendererBlob {
 		drawTile(gbi, blobImage, 0, 0);
 
 		drawTile(g2d, t, x, y);
+		drawLight(g2d, d, x, y);
 	}
 }

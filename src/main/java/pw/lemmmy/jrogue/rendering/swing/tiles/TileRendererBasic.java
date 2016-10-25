@@ -24,5 +24,6 @@ public class TileRendererBasic extends TileRenderer {
 	@Override
 	public void draw(Graphics2D g2d, Dungeon d, int x, int y) {
 		drawTile(g2d, image, x, y);
+		drawLight(g2d, d, x, y);
 	}
 }

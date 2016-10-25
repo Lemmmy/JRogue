@@ -8,13 +8,15 @@ import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class TileRendererWall extends TileRenderer {
+public class TileRendererTorch extends TileRenderer {
 	private BufferedImage wallH;
 	private BufferedImage wallV;
 	private BufferedImage wallCT;
 	private BufferedImage wallCB;
 
-	public TileRendererWall() {
+	private BufferedImage torch;
+
+	public TileRendererTorch(int sheetX, int sheetY) {
 		BufferedImage sheet = ImageLoader.getImage("tiles.png");
 
 		if (sheet == null) {
@@ -26,6 +28,8 @@ public class TileRendererWall extends TileRenderer {
 		wallV = sheet.getSubimage(0, 0, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 		wallCT = sheet.getSubimage(2 * TileMap.TILE_WIDTH, 0, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 		wallCB = sheet.getSubimage(3 * TileMap.TILE_WIDTH, 0, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
+
+		torch = sheet.getSubimage(sheetX * TileMap.TILE_WIDTH, sheetY * TileMap.TILE_HEIGHT, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 	}
 
 	@Override
@@ -48,5 +52,6 @@ public class TileRendererWall extends TileRenderer {
 		}
 
 		drawLight(g2d, d, x, y);
+		drawTile(g2d, torch, x, y);
 	}
 }

@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.rendering.swing.tiles;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Tiles;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.rendering.swing.utils.ImageLoader;
 
 import java.awt.*;
@@ -15,13 +15,13 @@ public class TileRendererWater extends TileRendererBlob {
 	private BufferedImage[] overlayImages = new BufferedImage[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 
 	private boolean connectToOthers;
-	private Tiles self;
+	private TileType self;
 
 	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY) {
 		this(sheetX, sheetY, floorSheetX, floorSheetY, true, null);
 	}
 
-	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, boolean connectToOthers, Tiles self) {
+	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, boolean connectToOthers, TileType self) {
 		super(1, 0);
 
 		this.connectToOthers = connectToOthers;
@@ -41,11 +41,11 @@ public class TileRendererWater extends TileRendererBlob {
 	}
 
 	@Override
-	boolean isJoinedTile(Tiles tile) {
+	boolean isJoinedTile(TileType tile) {
 		if (connectToOthers) {
 			return tile == null /* so the water looks like its going offscreen */ ||
-				tile == Tiles.TILE_ROOM_WATER ||
-				tile == Tiles.TILE_GROUND_WATER;
+				tile == TileType.TILE_ROOM_WATER ||
+				tile == TileType.TILE_GROUND_WATER;
 		} else {
 			return tile == self;
 		}
@@ -75,5 +75,7 @@ public class TileRendererWater extends TileRendererBlob {
 		drawTile(g2d, getImageFromMask(overlayImages, getPositionMask(d.getLevel(), x, y)), x, y);
 
 		g2d.setComposite(oc);
+
+		drawLight(g2d, d, x, y);
 	}
 }

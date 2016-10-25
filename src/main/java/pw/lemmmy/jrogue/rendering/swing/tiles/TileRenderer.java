@@ -24,4 +24,25 @@ public abstract class TileRenderer {
 			);
 		}
 	}
+
+	protected void drawLight(Graphics2D g2d, Dungeon d, int x, int y) {
+		int width = TileMap.TILE_WIDTH;
+		int height = TileMap.TILE_HEIGHT;
+
+		Color colour = d.getLevel().getTileInfo(x, y).getLight();
+
+		Composite originalComposite = g2d.getComposite();
+		Paint originalPaint = g2d.getPaint();
+
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+		g2d.setPaint(colour);
+
+		try {
+			g2d.fillRect(x * width, y * height, width, height);
+		} catch (InternalError ignored) {
+		}
+
+		g2d.setPaint(originalPaint);
+		g2d.setComposite(originalComposite);
+	}
 }

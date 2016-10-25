@@ -8,9 +8,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class MapComponent extends Canvas {
-	private Dungeon dungeon;
-
 	private final double zoom = 1.0;
+	private Dungeon dungeon;
 
 	public MapComponent(Dungeon dungeon) {
 		this.dungeon = dungeon;
@@ -46,6 +45,9 @@ public class MapComponent extends Canvas {
 		Graphics2D g2d = (Graphics2D) g;
 		AffineTransform ot = g2d.getTransform();
 
+		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
 		g2d.scale(zoom, zoom);
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
@@ -53,7 +55,11 @@ public class MapComponent extends Canvas {
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
 
 				if (tm.getRenderer() != null) {
-					tm.getRenderer().draw(g2d, dungeon, x, y);
+					try {
+						tm.getRenderer().draw(g2d, dungeon, x, y);
+					} catch (InternalError ignored) {
+						// why
+					}
 				}
 			}
 		}

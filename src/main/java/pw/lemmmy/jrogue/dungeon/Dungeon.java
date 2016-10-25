@@ -26,8 +26,7 @@ public class Dungeon {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
 
-		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-		new StandardDungeonGenerator(level).generate();
+		generateLevel();
 	}
 
 	public void addListener(Listener listener) {
@@ -38,9 +37,10 @@ public class Dungeon {
 		listeners.remove(listener);
 	}
 
-	public void regenerateLevel() {
+	public void generateLevel() {
 		level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 		new StandardDungeonGenerator(level).generate();
+		level.buildLight();
 	}
 
 	public String getOriginalName() {

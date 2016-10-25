@@ -8,16 +8,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class TileRendererStairs extends TileRenderer {
-	protected enum StairDirection {
-		UP,
-		DOWN
-	}
-
 	private static BufferedImage up;
 	private static BufferedImage down;
-
 	private BufferedImage image;
-
 	private StairDirection direction;
 
 	public TileRendererStairs(StairDirection direction, int sheetX, int sheetY) {
@@ -41,6 +34,7 @@ public class TileRendererStairs extends TileRenderer {
 	@Override
 	public void draw(Graphics2D g2d, Dungeon d, int x, int y) {
 		drawTile(g2d, image, x, y);
+		drawLight(g2d, d, x, y);
 
 		switch (direction) {
 			case UP:
@@ -50,5 +44,10 @@ public class TileRendererStairs extends TileRenderer {
 				drawTile(g2d, down, x, y);
 				break;
 		}
+	}
+
+	protected enum StairDirection {
+		UP,
+		DOWN
 	}
 }

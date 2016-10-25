@@ -24,5 +24,6 @@ public class TileRendererDoor extends TileRenderer {
 	@Override
 	public void draw(Graphics2D g2d, Dungeon d, int x, int y) {
 		drawTile(g2d, closed, x, y); // TODO: Make this dependent on door state
+		drawLight(g2d, d, x, y);
 	}
 }
