@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.Renderer;
+import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.rendering.swing.SwingRenderer;
 
 public class JRogue {
@@ -17,7 +18,7 @@ public class JRogue {
 
 	public JRogue() {
 		dungeon = new Dungeon();
-		renderer = new SwingRenderer(dungeon); // TODO: Make this configurable
+		renderer = new GDXRenderer(dungeon); // TODO: Make this configurable
 	}
 
 	public static void main(String[] args) {
