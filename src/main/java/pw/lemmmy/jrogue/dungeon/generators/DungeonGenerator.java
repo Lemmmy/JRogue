@@ -43,7 +43,7 @@ public abstract class DungeonGenerator {
 				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
 				if (wall) {
-					if (y == roomY && x > roomX && x < roomX + roomWidth - 1 && x % 5 == 0) {
+					if (x > roomX && x < roomX + roomWidth - 1 && x % 5 == 0) {
 						level.setTile(x, y, rand.nextFloat() < 0.25f ? TileType.TILE_ROOM_TORCH_ICE : TileType.TILE_ROOM_TORCH_FIRE);
 					} else {
 						level.setTile(x, y, TileType.TILE_ROOM_WALL);

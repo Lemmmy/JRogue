@@ -85,4 +85,8 @@ public abstract class TileRenderer {
 	public int getParticleYOffset() {
 		return TileMap.TILE_HEIGHT / 2;
 	}
+
+	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
+		return true;
+	}
 }

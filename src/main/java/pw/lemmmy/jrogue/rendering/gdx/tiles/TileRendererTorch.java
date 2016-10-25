@@ -40,6 +40,10 @@ public class TileRendererTorch extends TileRenderer {
 
 		if (h && !v) {
 			drawTile(batch, wallH, x, y);
+
+			if (adjacentTiles[2] == TileType.TILE_ROOM_FLOOR) {
+				drawTile(batch, torch, x, y);
+			}
 		} else if (!h && v) {
 			drawTile(batch, wallV, x, y);
 		} else {
@@ -49,12 +53,26 @@ public class TileRendererTorch extends TileRenderer {
 				drawTile(batch, wallCB, x, y);
 			}
 		}
-
-		drawTile(batch, torch, x, y);
 	}
 
 	@Override
 	public int getParticleYOffset() {
 		return super.getParticleYOffset() - 3;
+	}
+
+	@Override
+	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
+		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
+
+		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
+		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
+
+		if (h && !v) {
+			if (adjacentTiles[2] == TileType.TILE_ROOM_FLOOR) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

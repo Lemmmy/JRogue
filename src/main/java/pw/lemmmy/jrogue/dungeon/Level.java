@@ -111,7 +111,7 @@ public class Level {
 	}
 
 	public int getAmbientLightIntensity() {
-		return 15;
+		return 20;
 	}
 
 	protected Color mixColours(Color c1, Color c2) {

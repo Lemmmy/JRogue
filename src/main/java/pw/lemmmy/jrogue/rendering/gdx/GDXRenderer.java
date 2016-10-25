@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
-	private static final String WINDOW_TITLE = "JRogue";
+	private static final String WINDOW_TITLE = "GayRogue";
 
 	private LwjglApplication application;
 	private SpriteBatch batch;
@@ -87,6 +87,26 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		batch.begin();
 		batch.enableBlending();
 
+		drawMap();
+		drawParticles(delta);
+
+		batch.end();
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+		if (drawLights) {
+			drawLights();
+		}
+
+		hudBatch.begin();
+
+		FontLoader.getFont("PixelOperator.ttf", 16).draw(hudBatch, pooledEffects.size() + " pooled particles", 2, 4);
+
+		hudBatch.end();
+	}
+
+	private void drawMap() {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
@@ -96,7 +116,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				}
 			}
 		}
+	}
 
+	private void drawParticles(float delta) {
 		for (Iterator<ParticleEffectPool.PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
 			ParticleEffectPool.PooledEffect effect = iterator.next();
 
@@ -107,35 +129,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				iterator.remove();
 			}
 		}
+	}
 
-		batch.end();
+	private void drawLights() {
+		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
 
-		if (drawLights) {
-			lightBatch.begin(ShapeRenderer.ShapeType.Filled);
-
-			for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-				for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-					TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
-
-					if (tm.getRenderer() != null) {
-						tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
-					}
+				if (tm.getRenderer() != null) {
+					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
 				}
 			}
-
-			lightBatch.end();
-
-			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 
-		hudBatch.begin();
+		lightBatch.end();
 
-		FontLoader.getFont("PixelOperator.ttf", 16).draw(hudBatch, pooledEffects.size() + " pooled particles", 2, 4);
-
-		hudBatch.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	private void handleInput() {
@@ -183,7 +194,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 				TileRenderer renderer = tm.getRenderer();
 
-				if (renderer.getParticleEffectPool() == null) {
+				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
 					continue;
 				}
 
