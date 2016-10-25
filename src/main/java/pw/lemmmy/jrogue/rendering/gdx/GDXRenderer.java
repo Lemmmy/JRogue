@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -36,10 +37,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private SpriteBatch batch;
 	private ShapeRenderer lightBatch;
 	private SpriteBatch hudBatch;
+
 	private OrthographicCamera camera;
+	private OrthographicCamera hudCamera;
 
 	private Dungeon dungeon;
 
+	private FrameBuffer lightBuffer;
 	private boolean drawLights = true;
 
 	private List<ParticleEffectPool.PooledEffect> pooledEffects = new ArrayList<>();
@@ -117,6 +121,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		camera.update();
 
+		hudCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		hudCamera.update();
+
 		batch = new SpriteBatch();
 		lightBatch = new ShapeRenderer();
 		hudBatch = new SpriteBatch();
@@ -138,9 +147,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 
 		camera.update();
+		hudCamera.update();
 
 		batch.setProjectionMatrix(camera.combined);
 		lightBatch.setProjectionMatrix(camera.combined);
+		hudBatch.setProjectionMatrix(hudCamera.combined);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -278,10 +289,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		camera.viewportWidth = zoom;
 		camera.viewportHeight = zoom * height / width;
+
+		hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
 	public void onLevelChange(Level level) {
+		findPooledParticles();
+		renderLightsToFB();
+	}
+
+	private void findPooledParticles() {
 		for (ParticleEffectPool.PooledEffect effect : pooledEffects) {
 			effect.free();
 		}
@@ -311,6 +329,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 				pooledEffects.add(effect);
 			}
+		}
+	}
+
+	private void renderLightsToFB() {
+		if (lightBuffer != null) {
+			lightBuffer.dispose();
 		}
 	}
 

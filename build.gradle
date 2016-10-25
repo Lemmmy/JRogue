@@ -5,8 +5,6 @@ buildscript {
 		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 		jcenter()
 	}
-	dependencies {
-	}
 }
 
 apply plugin: "java"

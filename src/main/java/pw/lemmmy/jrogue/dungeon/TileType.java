@@ -4,7 +4,7 @@ import java.awt.*;
 
 public enum TileType {
 	TILE_GROUND(Solidity.SOLID, true),
-	TILE_GROUND_WATER(Solidity.WATER),
+	TILE_GROUND_WATER(Solidity.WATER, true, new Color(0x3072D6), 40, 5),
 
 //	TILE_DEBUG_A(Solidity.WALK_ON),
 //	TILE_DEBUG_B(Solidity.WALK_ON),
@@ -55,8 +55,8 @@ public enum TileType {
 
 		if (light == null) {
 			if (solidity == Solidity.SOLID) {
-				this.light = Color.BLACK;
-				this.absorb = 100;
+				this.light = Color.DARK_GRAY;
+				this.absorb = 40;
 			} else {
 				this.absorb = 15;
 			}
