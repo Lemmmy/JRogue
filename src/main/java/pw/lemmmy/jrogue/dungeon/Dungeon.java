@@ -51,6 +51,10 @@ public class Dungeon {
 
 			gotLevel = true;
 		} while (!gotLevel);
+
+		for (Listener listener : listeners) {
+			listener.onLevelChange(level);
+		}
 	}
 
 	public String getOriginalName() {
@@ -71,8 +75,8 @@ public class Dungeon {
 	}
 
 	public static interface Listener {
+		public void onLevelChange(Level level);
 		public void onTurn();
-
 		public void onLog(String log);
 	}
 }

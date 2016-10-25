@@ -16,8 +16,8 @@ public enum TileMap {
 //	TILE_DEBUG_H(7, 15),
 
 	TILE_ROOM_WALL(new TileRendererWall()),
-	TILE_ROOM_TORCH_FIRE(new TileRendererTorch(6, 1)),
-	TILE_ROOM_TORCH_ICE(new TileRendererTorch(7, 1)),
+	TILE_ROOM_TORCH_FIRE(new TileRendererTorch(6, 1, "torch_fire")),
+	TILE_ROOM_TORCH_ICE(new TileRendererTorch(7, 1, "torch_ice")),
 	TILE_ROOM_FLOOR(8, 0),
 	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0)),
 	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, TileType.TILE_ROOM_PUDDLE)),

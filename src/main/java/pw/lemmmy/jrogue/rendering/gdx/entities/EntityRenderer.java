@@ -1,28 +1,20 @@
-package pw.lemmmy.jrogue.rendering.gdx.tiles;
+package pw.lemmmy.jrogue.rendering.gdx.entities;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Tile;
+import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.awt.Color;
+import java.awt.*;
 
-public abstract class TileRenderer {
-	protected ParticleEffectPool effectPool;
-
-	public abstract void draw(SpriteBatch batch, Dungeon dungeon, int x, int y);
-
-	public ParticleEffectPool getParticleEffectPool() {
-		return effectPool;
-	}
+public abstract class EntityRenderer {
+	public abstract void draw(SpriteBatch batch, Dungeon d, int x, int y);
 
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
 		Texture sheet = ImageLoader.getImage(sheetName);
@@ -41,7 +33,7 @@ public abstract class TileRenderer {
 		return region;
 	}
 
-	protected void drawTile(SpriteBatch batch, TextureRegion image, int x, int y) {
+	protected void drawEntity(SpriteBatch batch, TextureRegion image, int x, int y) {
 		if (image != null) {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
@@ -76,13 +68,5 @@ public abstract class TileRenderer {
 			Utils.awtColourToGdx(cbr),
 			Utils.awtColourToGdx(cbl)
 		);
-	}
-
-	public int getParticleXOffset() {
-		return TileMap.TILE_WIDTH / 2;
-	}
-
-	public int getParticleYOffset() {
-		return TileMap.TILE_HEIGHT / 2;
 	}
 }

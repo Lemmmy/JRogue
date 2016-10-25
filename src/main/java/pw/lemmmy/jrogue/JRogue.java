@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
-import pw.lemmmy.jrogue.rendering.swing.SwingRenderer;
 
 public class JRogue {
 	private static final Logger logger = LogManager.getLogger("JRogue");

@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.swing.entities;
+package pw.lemmmy.jrogue.rendering.gdx.entities;
 
 import pw.lemmmy.jrogue.dungeon.entities.Appearance;
 
