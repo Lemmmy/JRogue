@@ -107,7 +107,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void updateWindowTitle() {
-		Gdx.graphics.setTitle(WINDOW_TITLE + " - " + dungeon.getName());
+		Gdx.graphics.setTitle(String.format(
+			"%s - %s - Turn %,d",
+			WINDOW_TITLE,
+			dungeon.getName(),
+			dungeon.getTurn()
+		));
 	}
 
 	@Override
@@ -437,6 +442,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onTurn(long turn) {
+		updateWindowTitle();
+
 		Player player = dungeon.getPlayer();
 
 		hudPlayerLabel.setText(String.format(
