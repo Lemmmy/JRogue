@@ -10,8 +10,6 @@ import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 public class JRogue {
 	private static final Logger logger = LogManager.getLogger("JRogue");
 
-	public static JRogue INSTANCE;
-
 	public Dungeon dungeon;
 	public Renderer renderer;
 
@@ -38,14 +36,10 @@ public class JRogue {
 			System.exit(1);
 		}
 
-		JRogue.INSTANCE = new JRogue();
+		new JRogue();
 	}
 
 	public static Logger getLogger() {
 		return logger;
-	}
-
-	public static JRogue get() {
-		return INSTANCE;
 	}
 }
