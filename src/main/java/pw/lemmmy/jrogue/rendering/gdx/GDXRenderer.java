@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -150,7 +151,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	protected void setupHUD() {
-		hudStage = new Stage();
+		hudStage = new Stage(new ScreenViewport());
 		setupSkin();
 
 		Table hudTable = new Table();
