@@ -130,8 +130,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		camera.viewportWidth = zoom;
-		camera.viewportHeight = zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth();
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() /  Gdx.graphics.getWidth());
 
 		camera.update();
 
@@ -406,8 +406,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		camera.viewportWidth = zoom;
-		camera.viewportHeight = zoom * height / width;
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * height / width);
 
 		hudStage.getViewport().update(width, height, true);
 	}

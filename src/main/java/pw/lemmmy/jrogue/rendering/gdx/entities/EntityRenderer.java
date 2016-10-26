@@ -24,7 +24,7 @@ public abstract class EntityRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 
-			batch.draw(image, x * width, y * height);
+			batch.draw(image, x * width + 0.01f, y * height + 0.01f);
 		}
 	}
 
