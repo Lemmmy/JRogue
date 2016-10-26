@@ -50,7 +50,8 @@ public class ImageLoader {
 		for (Texture texture : imageCache.values()) {
 			try {
 				texture.dispose();
-			} catch (GdxRuntimeException ignored) {}
+			} catch (GdxRuntimeException ignored) {
+			}
 		}
 	}
 }

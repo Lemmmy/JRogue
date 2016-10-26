@@ -18,6 +18,6 @@ public class StringReplacer {
 	}
 
 	public interface Callback {
-		public String replace(Matcher match);
+		String replace(Matcher match);
 	}
 }

@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Level {
-	private static final int LIGHT_MAX_LIGHTLEVEL = 100;
+	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 
 	public Tile[] tiles;
@@ -128,8 +128,8 @@ public class Level {
 		return entities.add(entity);
 	}
 
-	public boolean removeEntity(Object o) {
-		return entities.remove(o);
+	public boolean removeEntity(Entity entity) {
+		return entities.remove(entity);
 	}
 
 	public Color getAmbientLight() {
@@ -149,10 +149,6 @@ public class Level {
 		);
 	}
 
-	protected void addIntensity(Tile tile, int intensity, Color colour) {
-		tile.setLight(mixColours(tile.getLight(), applyIntensity(colour, intensity)));
-	}
-
 	protected void setIntensity(Tile tile, int intensity, Color colour) {
 		if (tile == null) {
 			return;
@@ -168,7 +164,7 @@ public class Level {
 			int index = tile.getLightIntensity() - 1;
 
 			if (index < 0) return;
-			if (index >= LIGHT_MAX_LIGHTLEVEL) return;
+			if (index >= LIGHT_MAX_LIGHT_LEVEL) return;
 
 			lightTiles.get(index).add(tile);
 		}
@@ -240,7 +236,7 @@ public class Level {
 	protected void resetLight() {
 		lightTiles = new ArrayList<>();
 
-		for (int i = 0; i < LIGHT_MAX_LIGHTLEVEL; i++) {
+		for (int i = 0; i < LIGHT_MAX_LIGHT_LEVEL; i++) {
 			lightTiles.add(i, new ArrayList<>());
 		}
 
@@ -256,17 +252,15 @@ public class Level {
 			int index = tile.getLightIntensity() - 1;
 
 			if (index < 0) continue;
-			if (index >= LIGHT_MAX_LIGHTLEVEL) continue;
+			if (index >= LIGHT_MAX_LIGHT_LEVEL) continue;
 
 			lightTiles.get(index).add(tile);
 		}
 
-		for (int i = LIGHT_MAX_LIGHTLEVEL - 1; i >= 0; i--) {
+		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {
 			List<Tile> lights = lightTiles.get(i);
 
-			for (int i1 = 0; i1 < lights.size(); i1++) {
-				Tile tile = lights.get(i1);
-
+			for (Tile tile : lights) {
 				if (tile.getLightIntensity() != i + 1) continue;
 
 				propagateLighting(tile);
@@ -275,11 +269,8 @@ public class Level {
 	}
 
 	public boolean isTileDiscovered(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return false;
-		}
+		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[width * y + x];
 
-		return discoveredTiles[width * y + x];
 	}
 
 	public void discoverTile(int x, int y) {
@@ -291,11 +282,8 @@ public class Level {
 	}
 
 	public boolean isTileVisible(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return false;
-		}
+		return !(x < 0 || y < 0 || x >= width || y >= height) && visibleTiles[width * y + x];
 
-		return visibleTiles[width * y + x];
 	}
 
 	public void seeTile(int x, int y) {

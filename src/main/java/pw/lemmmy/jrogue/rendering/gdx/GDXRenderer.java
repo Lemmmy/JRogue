@@ -5,15 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-
+import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
@@ -26,9 +24,8 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
@@ -60,7 +57,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 640;
-		LwjglApplication application = new LwjglApplication(this, config);
+		new LwjglApplication(this, config);
 
 		addColours();
 	}
@@ -327,19 +324,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 //			drawHUDString(entry, 6, 34 + (16 * i), Color.WHITE, 16);
 //		}
 //	}
-//
-//	private void drawHUDString(String text, int x, int y) {
-//		drawHUDString(text, x, y, Color.WHITE, 16);
-//	}
-//
-//	private void drawHUDString(String text, int x, int y, Color colour, int size) {
-//		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHUDY(y));
-//	}
-//
-//	private int getHUDY(int y) {
-//		return Gdx.graphics.getHeight() - y;
-//	}
-
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);

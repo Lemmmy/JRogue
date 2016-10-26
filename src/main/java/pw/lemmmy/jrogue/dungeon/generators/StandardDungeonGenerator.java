@@ -259,7 +259,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		level.setTile(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
 
-		spawnRoom.setSpawn(true);
+		spawnRoom.setSpawn();
 		level.setSpawnPoint(stairX, stairY);
 
 		return true;

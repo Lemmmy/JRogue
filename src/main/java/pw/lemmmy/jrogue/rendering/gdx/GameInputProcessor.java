@@ -12,16 +12,16 @@ public class GameInputProcessor implements InputProcessor {
 	private static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
 
 	static {
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[] {-1, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new Integer[] {0, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new Integer[] {1, 1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[]{-1, 1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new Integer[]{0, 1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new Integer[]{1, 1});
 
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new Integer[] {-1, 0});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new Integer[] {1, 0});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new Integer[]{-1, 0});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new Integer[]{1, 0});
 
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new Integer[] {-1, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new Integer[] {0, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[] {1, -1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new Integer[]{-1, -1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new Integer[]{0, -1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[]{1, -1});
 	}
 
 	private Dungeon dungeon;
@@ -32,9 +32,8 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (handleMovementCommands()) return true;
+		return handleMovementCommands();
 
-		return false;
 	}
 
 	@Override

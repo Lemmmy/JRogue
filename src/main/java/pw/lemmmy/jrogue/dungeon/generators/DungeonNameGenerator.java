@@ -149,8 +149,10 @@ public class DungeonNameGenerator {
 	}
 
 	public static String generate() {
-		return StringReplacer.replace(Utils.randomFrom(NAME_TEMPLATES), Pattern.compile("\\{(\\w+)}"), (Matcher m) -> {
-			return Utils.randomFrom(NAME_OBJECTS.get(m.group(1)));
-		});
+		return StringReplacer.replace(
+			Utils.randomFrom(NAME_TEMPLATES),
+			Pattern.compile("\\{(\\w+)}"),
+			(Matcher m) -> Utils.randomFrom(NAME_OBJECTS.get(m.group(1)))
+		);
 	}
 }

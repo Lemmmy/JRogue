@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 
 public class TileRendererBasic extends TileRenderer {

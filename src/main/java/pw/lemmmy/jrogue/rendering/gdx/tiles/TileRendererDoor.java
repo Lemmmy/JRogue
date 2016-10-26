@@ -1,18 +1,16 @@
 package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.TileType;
 
 public class TileRendererDoor extends TileRenderer {
-	private DoorState state;
-
 	private static TextureRegion closed;
 	private static TextureRegion openH;
 	private static TextureRegion openV;
 	private static TextureRegion broken;
+	private DoorState state;
 
 	public TileRendererDoor(DoorState state) {
 		if (closed == null || openH == null || openV == null || broken == null) {

@@ -48,7 +48,8 @@ public class FontLoader {
 		for (BitmapFont font : fontCache.values()) {
 			try {
 				font.dispose();
-			} catch (GdxRuntimeException ignored) {}
+			} catch (GdxRuntimeException ignored) {
+			}
 		}
 	}
 }

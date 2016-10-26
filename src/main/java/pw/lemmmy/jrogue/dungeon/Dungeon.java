@@ -140,10 +140,13 @@ public class Dungeon {
 		return turn;
 	}
 
-	public static interface Listener {
-		public void onLevelChange(Level level);
-		public void onBeforeTurn(long turn);
-		public void onTurn(long turn);
-		public void onLog(String log);
+	public interface Listener {
+		void onLevelChange(Level level);
+
+		void onBeforeTurn(long turn);
+
+		void onTurn(long turn);
+
+		void onLog(String log);
 	}
 }

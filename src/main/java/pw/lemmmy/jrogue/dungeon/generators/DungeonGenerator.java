@@ -211,13 +211,7 @@ public abstract class DungeonGenerator {
 		private Orientation orientationA;
 		private Orientation orientationB;
 
-		private TileType debugTile;
-
 		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
-			this(ax, ay, bx, by, intendedOrientation, null);
-		}
-
-		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation, TileType debugTile) {
 			this.ax = ax;
 			this.ay = ay;
 			this.bx = bx;
@@ -226,8 +220,6 @@ public abstract class DungeonGenerator {
 			this.intendedOrientation = intendedOrientation;
 			this.orientationA = getWallOrientation(ax, ay);
 			this.orientationB = getWallOrientation(bx, by);
-
-			this.debugTile = debugTile;
 		}
 
 		public int getAX() {
@@ -257,10 +249,6 @@ public abstract class DungeonGenerator {
 		public Orientation getOrientationB() {
 			return orientationB;
 		}
-
-		public TileType getDebugTile() {
-			return debugTile;
-		}
 	}
 
 	/***
@@ -278,7 +266,7 @@ public abstract class DungeonGenerator {
 		private List<Room> touching = new ArrayList<>();
 
 		private List<ConnectionPoint> connectionPoints = new ArrayList<>();
-		private boolean isSpawn;
+		private boolean isSpawn = false;
 
 		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
 			this.roomX = roomX;
@@ -344,8 +332,8 @@ public abstract class DungeonGenerator {
 			return isSpawn;
 		}
 
-		public void setSpawn(boolean spawn) {
-			this.isSpawn = spawn;
+		public void setSpawn() {
+			this.isSpawn = true;
 		}
 	}
 }
