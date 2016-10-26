@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Solidity;
 import pw.lemmmy.jrogue.dungeon.Tile;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -16,9 +17,11 @@ import java.awt.Color;
 
 public abstract class TileRenderer {
 	private static TextureRegion dim;
+	private static TextureRegion dimLight;
 
 	static {
 		dim = getImageFromSheet("tiles.png", 9, 1);
+		dimLight = getImageFromSheet("tiles.png", 10, 1);
 	}
 
 	protected ParticleEffectPool effectPool;
@@ -88,7 +91,11 @@ public abstract class TileRenderer {
 		int height = TileMap.TILE_HEIGHT;
 
 		if (!dungeon.getLevel().isTileVisible(x, y)) {
-			batch.draw(dim, x * width, y * height, width, height);
+			if (dungeon.getLevel().getTile(x, y).getSolidity() == Solidity.SOLID) {
+				batch.draw(dimLight, x * width, y * height, width, height);
+			} else {
+				batch.draw(dim, x * width, y * height, width, height);
+			}
 		}
 	}
 
