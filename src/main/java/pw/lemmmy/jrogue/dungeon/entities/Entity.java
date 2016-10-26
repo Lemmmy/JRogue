@@ -56,6 +56,8 @@ public abstract class Entity {
 
 		actionExecuteQueue.get(0).execute();
 		actionExecuteQueue.clear();
+
+		actionPoints = 0;
 	}
 
 	public void addAction(EntityAction action) {
