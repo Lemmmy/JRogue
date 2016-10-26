@@ -25,7 +25,7 @@ public class Dungeon {
 	private Level level;
 	private Player player;
 
-	private long turn = 1;
+	private long turn = 0;
 
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();
@@ -116,6 +116,7 @@ public class Dungeon {
 
 	public void start() {
 		You("descend the stairs into [CYAN]%s[].", this.name);
+		turn();
 	}
 
 	public void turn() {
@@ -125,6 +126,7 @@ public class Dungeon {
 
 		for (Entity entity : level.getEntities()) {
 			entity.move();
+			entity.update();
 		}
 
 		turn++;

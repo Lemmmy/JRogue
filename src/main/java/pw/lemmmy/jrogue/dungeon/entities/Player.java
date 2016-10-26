@@ -14,7 +14,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	public int getMaxHealth() {
-		return 0;
+		return 10;
 	}
 
 	@Override
@@ -47,6 +47,11 @@ public class Player extends LivingEntity {
 		getDungeon().You("step on your own foot.");
 	}
 
+	@Override
+	public void update() {
+		getLevel().updateSight(this);
+	}
+
 	public void walk(int dx, int dy) {
 		dx = Math.max(-1, Math.min(1, dx));
 		dy = Math.max(-1, Math.min(1, dy));
@@ -56,14 +61,30 @@ public class Player extends LivingEntity {
 
 		Tile tile = getLevel().getTileInfo(newX, newY);
 
+		// TODO: More in-depth movement verification
+		// 		 e.g. a player shouldn't be able to travel diagonally to
+		//       a different tile type than the one they are standing on
+		//       unless it is a door
+
 		if (tile.getType().getSolidity() != Solidity.SOLID) {
 			addAction(new ActionMove(this, newX, newY));
 		} else {
 			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 				getDungeon().The("door is locked.");
+
+				getDungeon().You("kick the door down!"); // TODO: Temporary
+				getLevel().setTile(newX, newY, TileType.TILE_ROOM_DOOR_BROKEN);
 			}
 		}
 
 		getDungeon().turn();
+	}
+
+	public int getVisibilityRange() {
+		return 15; // TODO: Make this vary based on light
+	}
+
+	public int getCorridorVisibilityRange() {
+		return 3; // TODO: Make this vary based on light
 	}
 }

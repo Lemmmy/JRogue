@@ -8,6 +8,8 @@ public abstract class LivingEntity extends Entity {
 
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+
+		health = getMaxHealth();
 	}
 
 	public abstract int getMaxHealth();

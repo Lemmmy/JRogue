@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
@@ -269,6 +270,69 @@ public class Level {
 				if (tile.getLightIntensity() != i + 1) continue;
 
 				propagateLighting(tile);
+			}
+		}
+	}
+
+	public boolean isTileDiscovered(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return false;
+		}
+
+		return discoveredTiles[width * y + x];
+	}
+
+	public void discoverTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		discoveredTiles[width * y + x] = true;
+	}
+
+	public boolean isTileVisible(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return false;
+		}
+
+		return visibleTiles[width * y + x];
+	}
+
+	public void seeTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		visibleTiles[width * y + x] = true;
+	}
+
+	public void updateSight(Player player) {
+		Arrays.fill(visibleTiles, false);
+
+		int x = player.getX();
+		int y = player.getY();
+
+		for (int r = 0; r < 360; r++) {
+			int corridorVisibility = 0;
+
+			for (int i = 0; i < player.getVisibilityRange(); i++) {
+				int dx = x + (int) Math.floor(i * Math.cos(r));
+				int dy = y + (int) Math.floor(i * Math.sin(r));
+
+				if (getTile(dx, dy) == TileType.TILE_CORRIDOR) {
+					corridorVisibility += 1;
+				}
+
+				if (corridorVisibility >= player.getCorridorVisibilityRange()) {
+					break;
+				}
+
+				discoverTile(dx, dy);
+				seeTile(dx, dy);
+
+				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTile(dx, dy).getSolidity() == Solidity.SOLID) {
+					break;
+				}
 			}
 		}
 	}

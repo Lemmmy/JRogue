@@ -22,6 +22,7 @@ import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
+import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 
@@ -48,6 +49,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private LwjglApplication application;
 	private SpriteBatch batch;
 	private ShapeRenderer lightBatch;
+	private SpriteBatch lightSpriteBatch;
 	private SpriteBatch hudBatch;
 
 	private OrthographicCamera camera;
@@ -59,7 +61,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private boolean drawLights = true;
 
-	private List<ParticleEffectPool.PooledEffect> pooledEffects = new ArrayList<>();
+	private List<TilePooledEffect> pooledEffects = new ArrayList<>();
 
 	private float zoom = 1.0f;
 
@@ -141,6 +143,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		batch = new SpriteBatch();
 		lightBatch = new ShapeRenderer();
+		lightSpriteBatch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
 
 		onLevelChange(dungeon.getLevel());
@@ -165,6 +168,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		batch.setProjectionMatrix(camera.combined);
 		lightBatch.setProjectionMatrix(camera.combined);
+		lightSpriteBatch.setProjectionMatrix(camera.combined);
 		hudBatch.setProjectionMatrix(hudCamera.combined);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -177,9 +181,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		drawEntities();
 
 		batch.end();
-
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (drawLights) {
 			drawLights();
@@ -195,6 +196,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void drawMap() {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				if (!dungeon.getLevel().isTileDiscovered(x, y)) {
+					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
+					continue;
+				}
+
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
 
 				if (tm.getRenderer() != null) {
@@ -205,13 +211,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawParticles(float delta) {
-		for (Iterator<ParticleEffectPool.PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
-			ParticleEffectPool.PooledEffect effect = iterator.next();
+		for (Iterator<TilePooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
+			TilePooledEffect effect = iterator.next();
 
-			effect.draw(batch, delta * 0.25f);
+			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
+				continue;
+			}
 
-			if (effect.isComplete()) {
-				effect.free();
+			effect.getPooledEffect().draw(batch, delta * 0.25f);
+
+			if (effect.getPooledEffect().isComplete()) {
+				effect.getPooledEffect().free();
 				iterator.remove();
 			}
 		}
@@ -228,6 +238,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawLights() {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
@@ -241,6 +254,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 
 		lightBatch.end();
+
+		lightSpriteBatch.begin();
+
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+
+				if (tm.getRenderer() != null) {
+					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);
+				}
+			}
+		}
+
+		lightSpriteBatch.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
@@ -280,10 +307,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawHUDString(String text, int x, int y, Color colour, int size) {
-		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHudY(y));
+		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHUDY(y));
 	}
 
-	private int getHudY(int y) {
+	private int getHUDY(int y) {
 		return Gdx.graphics.getHeight() - y;
 	}
 
@@ -308,11 +335,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void handleRendererCommands() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			dungeon.generateLevel();
-		}
-
-		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-			dungeon.rerollName();
-			updateWindowTitle();
+			dungeon.turn();
 		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
@@ -343,8 +366,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void findPooledParticles() {
-		for (ParticleEffectPool.PooledEffect effect : pooledEffects) {
-			effect.free();
+		for (TilePooledEffect effect : pooledEffects) {
+			effect.getPooledEffect().free();
 		}
 
 		pooledEffects.clear();
@@ -370,7 +393,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
 				);
 
-				pooledEffects.add(effect);
+				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
+				pooledEffects.add(tilePooledEffect);
 			}
 		}
 	}

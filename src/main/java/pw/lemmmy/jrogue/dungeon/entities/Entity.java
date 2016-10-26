@@ -96,4 +96,6 @@ public abstract class Entity {
 	}
 
 	protected abstract void onKick(Entity kicker);
+
+	public abstract void update();
 }
