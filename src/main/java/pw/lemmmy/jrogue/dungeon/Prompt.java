@@ -34,12 +34,16 @@ public class Prompt {
 	}
 
 	public void respond(char response) {
-		response = Character.toLowerCase(response);
-
-		if (ArrayUtils.contains(options, response)) {
+		if (options == null) {
 			callback.onResponse(response);
 		} else {
-			callback.onInvalidResponse(response);
+			response = Character.toLowerCase(response);
+
+			if (ArrayUtils.contains(options, response)) {
+				callback.onResponse(response);
+			} else {
+				callback.onInvalidResponse(response);
+			}
 		}
 	}
 

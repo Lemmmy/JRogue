@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,10 @@ public class Dungeon {
 
 	public void The(String s, Object... objects) {
 		log("The " + s, objects);
+	}
+
+	public void logRandom(String... strings) {
+		log(Utils.randomFrom(strings));
 	}
 
 	public void start() {

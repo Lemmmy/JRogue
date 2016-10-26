@@ -484,11 +484,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		if (prompt == null) {
 			hudPromptLabel.setText("");
 		} else {
-			hudPromptLabel.setText(String.format(
-				"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
-				prompt.getMessage(),
-				new String(prompt.getOptions())
-			));
+			if (prompt.getOptions() == null) {
+				hudPromptLabel.setText(String.format(
+					"[P_BLUE_1]%s[]",
+					prompt.getMessage()
+				));
+			} else {
+				hudPromptLabel.setText(String.format(
+					"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
+					prompt.getMessage(),
+					new String(prompt.getOptions())
+				));
+			}
 		}
 	}
 

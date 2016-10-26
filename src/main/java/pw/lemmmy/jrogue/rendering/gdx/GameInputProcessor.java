@@ -4,28 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-
-import java.util.HashMap;
-import java.util.Map;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public class GameInputProcessor implements InputProcessor {
-	private static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
-
-	static {
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[]{-1, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new Integer[]{0, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new Integer[]{1, 1});
-
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new Integer[]{-1, 0});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new Integer[]{1, 0});
-
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new Integer[]{-1, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new Integer[]{0, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[]{1, -1});
-	}
-
 	private Dungeon dungeon;
 	private GDXRenderer renderer;
+
+	private boolean dontHandleNext = false;
 
 	public GameInputProcessor(Dungeon dungeon, GDXRenderer renderer) {
 		this.dungeon = dungeon;
@@ -44,8 +29,9 @@ public class GameInputProcessor implements InputProcessor {
 			}
 		}
 
-		if (handleMovementCommands()) return true;
-		if (handleRendererCommands()) return true;
+		if (handleMovementCommands(keycode)) return true;
+		if (handlePlayerCommands(keycode)) return true;
+		if (handleRendererCommands(keycode)) return true;
 
 		return false;
 	}
@@ -57,6 +43,11 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
+		if (dontHandleNext) {
+			dontHandleNext = false;
+			return false;
+		}
+
 		if (dungeon.hasPrompt()) {
 			dungeon.promptRespond(character);
 		}
@@ -64,13 +55,25 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 
-	private boolean handleMovementCommands() {
-		for (Integer key : MOVEMENT_KEYS.keySet()) {
-			if (Gdx.input.isKeyJustPressed(key)) {
-				Integer[] d = MOVEMENT_KEYS.get(key);
+	private boolean handleMovementCommands(int keycode) {
+		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
+			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
 
-				dungeon.getPlayer().walk(d[0], d[1]);
+			dungeon.getPlayer().walk(d[0], d[1]);
 
+			dontHandleNext = true;
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean handlePlayerCommands(int keycode) {
+		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+			if (keycode == Input.Keys.D) {
+				dungeon.getPlayer().kick();
+
+				dontHandleNext = true;
 				return true;
 			}
 		}
@@ -78,9 +81,9 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 
-	private boolean handleRendererCommands() {
+	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-			if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+			if (keycode == Input.Keys.H) {
 				renderer.setupHUD();
 
 				return true;

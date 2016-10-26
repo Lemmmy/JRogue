@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.*;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public class Player extends LivingEntity {
 	private String name;
@@ -75,9 +76,6 @@ public class Player extends LivingEntity {
 		} else {
 			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 				getDungeon().The("door is locked.");
-
-				getDungeon().You("kick the door down!"); // TODO: Temporary
-				getLevel().setTile(newX, newY, TileType.TILE_ROOM_DOOR_BROKEN);
 			}
 		}
 
@@ -90,5 +88,73 @@ public class Player extends LivingEntity {
 
 	public int getCorridorVisibilityRange() {
 		return 3; // TODO: Make this vary based on light
+	}
+
+	public void kick() {
+		getDungeon().prompt(new Prompt("Kick in what direction?", null, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {}
+
+			@Override
+			public void onResponse(char response) {
+				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+					getDungeon().log(String.format("Invalid direction [YELLOW]'%s'[].", response));
+				} else {
+					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+
+					// TODO: Check for entities
+
+					int dx = getX() + d[0];
+					int dy = getY() + d[1];
+
+					TileType tile = getLevel().getTile(dx, dy);
+
+					if (tile == null || tile.getSolidity() != Solidity.SOLID) {
+						getDungeon().You("kick thin air.");
+						return;
+					}
+
+					switch (tile) {
+						case TILE_ROOM_DOOR_CLOSED:
+							if (Utils.roll(6) == 1) {
+								getDungeon().logRandom(
+									"The door crashes open!",
+									"The door falls off its hinges!",
+									"You kick the door off its hinges!",
+									"You kick the door down!"
+								);
+
+								getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
+							} else {
+								getDungeon().logRandom(
+									"WHAMM!!",
+									"CRASH!!"
+								);
+							}
+
+							break;
+						case TILE_ROOM_TORCH_FIRE:
+						case TILE_ROOM_TORCH_ICE:
+						case TILE_ROOM_WALL:
+							getDungeon().You("kick the wall!");
+
+							if (Utils.roll(5) == 1) {
+								damage(DamageSource.KICKING_A_WALL, 1);
+								getDungeon().log("Ouch! That hurt a lot!");
+							} else {
+								getDungeon().log("Ouch! That hurt!");
+							}
+							break;
+						default:
+							getDungeon().You("kick it!");
+					}
+				}
+			}
+		}, true));
 	}
 }
