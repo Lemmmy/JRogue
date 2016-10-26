@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import pw.lemmmy.jrogue.JRogue;
 
 import java.util.HashMap;
@@ -40,6 +41,14 @@ public class FontLoader {
 			generator.dispose();
 
 			return font;
+		}
+	}
+
+	public static void disposeAll() {
+		for (BitmapFont font : fontCache.values()) {
+			try {
+				font.dispose();
+			} catch (GdxRuntimeException ignored) {}
 		}
 	}
 }

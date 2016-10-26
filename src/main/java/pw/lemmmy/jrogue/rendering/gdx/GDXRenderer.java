@@ -2,19 +2,18 @@ package pw.lemmmy.jrogue.rendering.gdx;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import org.apache.commons.lang3.StringUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
@@ -25,41 +24,30 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
+import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.List;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
-	private static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
-
-	static {
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[] {-1, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new Integer[] {0, 1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new Integer[] {1, 1});
-
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new Integer[] {-1, 0});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new Integer[] {1, 0});
-
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new Integer[] {-1, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new Integer[] {0, -1});
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[] {1, -1});
-	}
-
 	private static final String WINDOW_TITLE = "JRogue";
 
-	private LwjglApplication application;
 	private SpriteBatch batch;
 	private ShapeRenderer lightBatch;
 	private SpriteBatch lightSpriteBatch;
-	private SpriteBatch hudBatch;
 
 	private OrthographicCamera camera;
-	private OrthographicCamera hudCamera;
+
+	private Skin hudSkin;
+	private Stage hudStage;
+	private Label hudPlayerLabel;
+	private VerticalGroup hudLog;
 
 	private Dungeon dungeon;
 
 	private List<String> log = new ArrayList<>();
-
-	private boolean drawLights = true;
 
 	private List<TilePooledEffect> pooledEffects = new ArrayList<>();
 
@@ -72,7 +60,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 640;
-		application = new LwjglApplication(this, config);
+		LwjglApplication application = new LwjglApplication(this, config);
 
 		addColours();
 	}
@@ -136,18 +124,65 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		camera.update();
 
-		hudCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		hudCamera.update();
-
 		batch = new SpriteBatch();
 		lightBatch = new ShapeRenderer();
 		lightSpriteBatch = new SpriteBatch();
-		hudBatch = new SpriteBatch();
+
+		setupHUD();
+
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon));
+		inputMultiplexer.addProcessor(hudStage);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		onLevelChange(dungeon.getLevel());
 		dungeon.start();
+	}
+
+	private void setupHUD() {
+		hudStage = new Stage();
+		setupSkin();
+
+		Table hudTable = new Table();
+		hudTable.setFillParent(true);
+
+		VerticalGroup hudTop = new VerticalGroup();
+
+		hudPlayerLabel = new Label("", hudSkin, "large");
+		hudTop.addActor(hudPlayerLabel);
+
+		hudTable.add(hudTop);
+		hudStage.addActor(hudTable);
+	}
+
+	private void setupSkin() {
+		hudSkin = new Skin();
+
+		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		pixmap.setColor(Color.WHITE);
+		pixmap.fill();
+		hudSkin.add("white", new Texture(pixmap));
+
+		hudSkin.add("default", FontLoader.getFont("PixelOperator.ttf", 16, true));
+		hudSkin.add("defaultNoShadow", FontLoader.getFont("PixelOperator.ttf", 16, false));
+		hudSkin.add("large", FontLoader.getFont("PixelOperator.ttf", 32, true));
+		hudSkin.add("largeNoShadow", FontLoader.getFont("PixelOperator.ttf", 32, false));
+
+		Label.LabelStyle labelStyle = new Label.LabelStyle();
+		labelStyle.font = hudSkin.getFont("default");
+		hudSkin.add("default", labelStyle);
+
+		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
+		largeLabelStyle.font = hudSkin.getFont("large");
+		hudSkin.add("large", largeLabelStyle);
+
+		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+		textButtonStyle.up = hudSkin.newDrawable("white", Colors.get("WHITE"));
+		textButtonStyle.down = hudSkin.newDrawable("white", Colors.get("P_GREY_4"));
+		textButtonStyle.checked = hudSkin.newDrawable("white", Colors.get("P_GREY_1"));
+		textButtonStyle.over = hudSkin.newDrawable("white", Colors.get("P_GREY_3"));
+		textButtonStyle.font = hudSkin.getFont("default");
+		hudSkin.add("default", textButtonStyle);
 	}
 
 	@Override
@@ -156,20 +191,16 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		float delta = Gdx.graphics.getDeltaTime();
 
-		handleInput();
-
 		if (dungeon.getPlayer() != null) {
 			camera.position.x = (dungeon.getPlayer().getX() * TileMap.TILE_WIDTH) + (TileMap.TILE_WIDTH / 2);
 			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
 		}
 
 		camera.update();
-		hudCamera.update();
 
 		batch.setProjectionMatrix(camera.combined);
 		lightBatch.setProjectionMatrix(camera.combined);
 		lightSpriteBatch.setProjectionMatrix(camera.combined);
-		hudBatch.setProjectionMatrix(hudCamera.combined);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -182,15 +213,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		batch.end();
 
-		if (drawLights) {
-			drawLights();
-		}
+		drawLights();
 
-		hudBatch.begin();
-
-		drawHUD();
-
-		hudBatch.end();
+		hudStage.act(delta);
+		hudStage.draw();
 	}
 
 	private void drawMap() {
@@ -272,81 +298,47 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
-	private void drawHUD() {
-		Player player = dungeon.getPlayer();
-
-		drawHUDString(
-			String.format(
-				"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
-				StringUtils.capitalize(player.getName()),
-				"Wizard",
-				"P_GREEN_3",
-				player.getHealth(),
-				player.getMaxHealth()
-			),
-			6, 7,
-			Color.WHITE,
-			32
-		);
-
-		int logSize = Math.min(5, log.size());
-
-		for (int i = 0; i < logSize; i++) {
-			String entry = log.get(log.size() - (logSize - i));
-
-			if (i < logSize - 1) {
-				entry = "[#CCCCCCEE]" + entry;
-			}
-
-			drawHUDString(entry, 6, 34 + (16 * i), Color.WHITE, 16);
-		}
-	}
-
-	private void drawHUDString(String text, int x, int y) {
-		drawHUDString(text, x, y, Color.WHITE, 16);
-	}
-
-	private void drawHUDString(String text, int x, int y, Color colour, int size) {
-		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHUDY(y));
-	}
-
-	private int getHUDY(int y) {
-		return Gdx.graphics.getHeight() - y;
-	}
-
-	private void handleInput() {
-		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-			handleRendererCommands();
-		} else {
-			handleMovementCommands();
-		}
-	}
-
-	private void handleMovementCommands() {
-		for (Integer key : MOVEMENT_KEYS.keySet()) {
-			if (Gdx.input.isKeyJustPressed(key)) {
-				Integer[] d = MOVEMENT_KEYS.get(key);
-
-				dungeon.getPlayer().walk(d[0], d[1]);
-			}
-		}
-	}
-
-	private void handleRendererCommands() {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-			dungeon.generateLevel();
-			dungeon.turn();
-		}
-
-		if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-			drawLights = !drawLights;
-		}
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
+//	private void drawHUD() {
+//		Player player = dungeon.getPlayer();
+//
+//		drawHUDString(
+//			String.format(
+//				"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
+//				StringUtils.capitalize(player.getName()),
+//				"Wizard",
+//				"P_GREEN_3",
+//				player.getHealth(),
+//				player.getMaxHealth()
+//			),
+//			6, 7,
+//			Color.WHITE,
+//			32
+//		);
+//
+//		int logSize = Math.min(5, log.size());
+//
+//		for (int i = 0; i < logSize; i++) {
+//			String entry = log.get(log.size() - (logSize - i));
+//
+//			if (i < logSize - 1) {
+//				entry = "[#CCCCCCEE]" + entry;
+//			}
+//
+//			drawHUDString(entry, 6, 34 + (16 * i), Color.WHITE, 16);
+//		}
+//	}
+//
+//	private void drawHUDString(String text, int x, int y) {
+//		drawHUDString(text, x, y, Color.WHITE, 16);
+//	}
+//
+//	private void drawHUDString(String text, int x, int y, Color colour, int size) {
+//		FontLoader.getFont("PixelOperator.ttf", size, true).draw(hudBatch, text, x, getHUDY(y));
+//	}
+//
+//	private int getHUDY(int y) {
+//		return Gdx.graphics.getHeight() - y;
+//	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -357,7 +349,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera.viewportWidth = zoom;
 		camera.viewportHeight = zoom * height / width;
 
-		hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		hudStage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -406,7 +398,16 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onTurn(long turn) {
+		Player player = dungeon.getPlayer();
 
+		hudPlayerLabel.setText(String.format(
+			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
+			StringUtils.capitalize(player.getName()),
+			"Wizard",
+			"P_GREEN_3",
+			player.getHealth(),
+			player.getMaxHealth()
+		));
 	}
 
 	@Override
@@ -418,5 +419,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		// TODO: Add more replacements
 
 		log.add(entry);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		batch.dispose();
+		lightBatch.dispose();
+		lightSpriteBatch.dispose();
+
+		hudStage.dispose();
+		hudSkin.dispose();
+
+		for (TilePooledEffect effect : pooledEffects) {
+			effect.getPooledEffect().free();
+		}
+
+		ImageLoader.disposeAll();
+		FontLoader.disposeAll();
 	}
 }

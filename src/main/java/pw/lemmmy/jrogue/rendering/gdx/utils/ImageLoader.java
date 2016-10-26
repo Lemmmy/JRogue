@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.rendering.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import pw.lemmmy.jrogue.JRogue;
 
 import java.util.HashMap;
@@ -22,6 +23,14 @@ public class ImageLoader {
 			JRogue.getLogger().debug("Loaded and cached image {}", file);
 
 			return texture;
+		}
+	}
+
+	public static void disposeAll() {
+		for (Texture texture : imageCache.values()) {
+			try {
+				texture.dispose();
+			} catch (GdxRuntimeException ignored) {}
 		}
 	}
 }
