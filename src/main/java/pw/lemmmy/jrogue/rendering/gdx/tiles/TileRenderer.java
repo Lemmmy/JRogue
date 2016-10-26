@@ -33,20 +33,7 @@ public abstract class TileRenderer {
 	}
 
 	protected static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
-		Texture sheet = ImageLoader.getImage(sheetName);
-
-		if (sheet == null) {
-			JRogue.getLogger().fatal("Failed to load spritesheet {}.", sheetName);
-			System.exit(1);
-		}
-
-		int width = TileMap.TILE_WIDTH;
-		int height = TileMap.TILE_HEIGHT;
-
-		TextureRegion region = new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
-		region.flip(false, true);
-
-		return region;
+		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
 	}
 
 	protected void drawTile(SpriteBatch batch, TextureRegion image, int x, int y) {
