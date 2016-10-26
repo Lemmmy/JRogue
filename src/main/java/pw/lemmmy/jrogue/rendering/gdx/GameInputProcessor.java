@@ -25,15 +25,19 @@ public class GameInputProcessor implements InputProcessor {
 	}
 
 	private Dungeon dungeon;
+	private GDXRenderer renderer;
 
-	public GameInputProcessor(Dungeon dungeon) {
+	public GameInputProcessor(Dungeon dungeon, GDXRenderer renderer) {
 		this.dungeon = dungeon;
+		this.renderer = renderer;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		return handleMovementCommands();
+		if (handleMovementCommands()) return true;
+		if (handleRendererCommands()) return true;
 
+		return false;
 	}
 
 	@Override
@@ -52,6 +56,18 @@ public class GameInputProcessor implements InputProcessor {
 				Integer[] d = MOVEMENT_KEYS.get(key);
 
 				dungeon.getPlayer().walk(d[0], d[1]);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean handleRendererCommands() {
+		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+				renderer.setupHUD();
 
 				return true;
 			}

@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -40,7 +41,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Skin hudSkin;
 	private Stage hudStage;
 	private Label hudPlayerLabel;
-	private VerticalGroup hudLog;
+	private Table hudLog;
 
 	private Dungeon dungeon;
 
@@ -128,7 +129,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		setupHUD();
 
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon));
+		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
 		inputMultiplexer.addProcessor(hudStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
@@ -136,19 +137,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dungeon.start();
 	}
 
-	private void setupHUD() {
+	protected void setupHUD() {
 		hudStage = new Stage();
 		setupSkin();
 
 		Table hudTable = new Table();
 		hudTable.setFillParent(true);
 
-		VerticalGroup hudTop = new VerticalGroup();
-
 		hudPlayerLabel = new Label("", hudSkin, "large");
-		hudTop.addActor(hudPlayerLabel);
+		hudPlayerLabel.setAlignment(Align.left);
+		hudTable.add(hudPlayerLabel).top().growX().pad(0, 2, 0, 2);
+		hudTable.row();
 
-		hudTable.add(hudTop);
+		hudLog = new Table();
+		hudLog.left();
+		hudTable.setFillParent(true);
+		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
+
+		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
 	}
 
@@ -403,6 +409,22 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		// TODO: Add more replacements
 
 		log.add(entry);
+
+		hudLog.clearChildren();
+
+		int logSize = Math.min(5, log.size());
+
+		for (int i = 0; i < logSize; i++) {
+			String s = log.get(log.size() - (logSize - i));
+
+			if (i < logSize - 1) {
+				s = "[#CCCCCCEE]" + s;
+			}
+
+			Label newEntry = new Label(s, hudSkin, "default");
+			hudLog.add(newEntry).left().growX();
+			hudLog.row();
+		}
 	}
 
 	@Override

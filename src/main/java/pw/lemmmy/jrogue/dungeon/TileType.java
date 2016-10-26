@@ -100,4 +100,15 @@ public enum TileType {
 			this == TILE_ROOM_STAIRS_UP ||
 			this == TILE_ROOM_STAIRS_DOWN;
 	}
+
+	public String onWalk() {
+		switch (this) {
+			case TILE_ROOM_STAIRS_UP:
+				return "There is a staircase up here.";
+			case TILE_ROOM_STAIRS_DOWN:
+				return "There is a staircase down here.";
+		}
+
+		return null;
+	}
 }

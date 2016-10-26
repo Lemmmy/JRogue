@@ -68,6 +68,10 @@ public class Player extends LivingEntity {
 
 		if (tile.getType().getSolidity() != Solidity.SOLID) {
 			addAction(new ActionMove(this, newX, newY));
+
+			if (tile.getType().onWalk() != null) {
+				getDungeon().log(tile.getType().onWalk());
+			}
 		} else {
 			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 				getDungeon().The("door is locked.");
