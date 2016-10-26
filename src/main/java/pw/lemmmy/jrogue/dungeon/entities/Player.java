@@ -1,11 +1,16 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.*;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
+import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class Player extends LivingEntity {
 	private String name;
+
+	private int baseSpeed = 12;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name) {
 		super(dungeon, level, x, y);
@@ -30,7 +35,17 @@ public class Player extends LivingEntity {
 
 	@Override
 	public int getMovementSpeed() {
-		return 12;
+		int speed = baseSpeed;
+
+		if (hasStatusEffect(InjuredFoot.class)) {
+			baseSpeed -= 1;
+		}
+
+		if (hasStatusEffect(StrainedLeg.class)) {
+			baseSpeed -= 1;
+		}
+
+		return speed;
 	}
 
 	@Override
@@ -50,6 +65,8 @@ public class Player extends LivingEntity {
 
 	@Override
 	public void update() {
+		super.update();
+
 		getLevel().updateSight(this);
 	}
 
@@ -68,7 +85,7 @@ public class Player extends LivingEntity {
 		//       unless it is a door
 
 		if (tile.getType().getSolidity() != Solidity.SOLID) {
-			addAction(new ActionMove(this, newX, newY));
+			addAction(new ActionMove(getDungeon(), this, newX, newY));
 
 			if (tile.getType().onWalk() != null) {
 				getDungeon().log(tile.getType().onWalk());
@@ -106,53 +123,8 @@ public class Player extends LivingEntity {
 					getDungeon().log(String.format("Invalid direction [YELLOW]'%s'[].", response));
 				} else {
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-
-					// TODO: Check for entities
-
-					int dx = getX() + d[0];
-					int dy = getY() + d[1];
-
-					TileType tile = getLevel().getTile(dx, dy);
-
-					if (tile == null || tile.getSolidity() != Solidity.SOLID) {
-						getDungeon().You("kick thin air.");
-						return;
-					}
-
-					switch (tile) {
-						case TILE_ROOM_DOOR_CLOSED:
-							if (Utils.roll(6) == 1) {
-								getDungeon().logRandom(
-									"The door crashes open!",
-									"The door falls off its hinges!",
-									"You kick the door off its hinges!",
-									"You kick the door down!"
-								);
-
-								getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
-							} else {
-								getDungeon().logRandom(
-									"WHAMM!!",
-									"CRASH!!"
-								);
-							}
-
-							break;
-						case TILE_ROOM_TORCH_FIRE:
-						case TILE_ROOM_TORCH_ICE:
-						case TILE_ROOM_WALL:
-							getDungeon().You("kick the wall!");
-
-							if (Utils.roll(5) == 1) {
-								damage(DamageSource.KICKING_A_WALL, 1);
-								getDungeon().log("Ouch! That hurt a lot!");
-							} else {
-								getDungeon().log("Ouch! That hurt!");
-							}
-							break;
-						default:
-							getDungeon().You("kick it!");
-					}
+					addAction(new ActionKick(getDungeon(), Player.this, d));
+					getDungeon().turn();
 				}
 			}
 		}, true));

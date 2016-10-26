@@ -20,6 +20,7 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
@@ -44,6 +45,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Skin hudSkin;
 	private Stage hudStage;
 	private Label hudPlayerLabel;
+	private Label hudStatsLabel;
+	private Label hudEffectsLabel;
 	private Table hudLog;
 	private Label hudPromptLabel;
 
@@ -153,7 +156,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Table hudTable = new Table();
 		hudTable.setFillParent(true);
 
-		hudPlayerLabel = new Label("", hudSkin, "large");
+		hudPlayerLabel = new Label(null, hudSkin, "large");
 		hudPlayerLabel.setAlignment(Align.left);
 		hudTable.add(hudPlayerLabel).top().growX().pad(0, 2, 0, 2);
 		hudTable.row();
@@ -164,8 +167,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
 		hudTable.row();
 
-		hudPromptLabel = new Label("", hudSkin);
+		hudPromptLabel = new Label(null, hudSkin);
 		hudTable.add(hudPromptLabel).growX().left().pad(0, 1, 0, 1);
+		hudTable.row();
+
+		hudTable.add(new Container()).expand();
+		hudTable.row();
+
+		hudEffectsLabel = new Label(null, hudSkin);
+		hudTable.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
+		hudTable.row();
+
+		hudStatsLabel = new Label(null, hudSkin);
+		hudTable.add(hudStatsLabel).growX().left().pad(0, 1, 0, 1);
+		hudTable.row();
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
@@ -454,6 +469,23 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			player.getHealth(),
 			player.getMaxHealth()
 		));
+
+		if (player.getStatusEffects().size() > 0) {
+			List<String> effects = new ArrayList<>();
+
+			for (StatusEffect effect : player.getStatusEffects()) {
+				switch (effect.getSeverity()) {
+					case MAJOR:
+						effects.add("[P_ORANGE_2]" + effect.getName() + "[]");
+						break;
+					case CRITICAL:
+						effects.add("[P_RED]" + effect.getName() + "[]");
+						break;
+				}
+			}
+
+			hudEffectsLabel.setText(StringUtils.join(effects, " "));
+		}
 	}
 
 	@Override

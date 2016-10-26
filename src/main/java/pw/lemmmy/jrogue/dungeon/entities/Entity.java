@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,8 @@ public abstract class Entity {
 	private int actionPoints = 0;
 	private List<EntityAction> actionQueue = new ArrayList<>();
 	private List<EntityAction> actionExecuteQueue = new ArrayList<>();
+
+	private List<StatusEffect> statusEffects = new ArrayList<>();
 
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
 		this.dungeon = dungeon;
@@ -55,7 +58,7 @@ public abstract class Entity {
 
 	public void addAction(EntityAction action) {
 		actionQueue.add(action);
-		addActionPoints(action.getSpeed());
+		addActionPoints(action.getTurnsRequired());
 	}
 
 	public boolean hasQueuedAction() {
@@ -97,5 +100,26 @@ public abstract class Entity {
 
 	protected abstract void onKick(Entity kicker);
 
-	public abstract void update();
+	public void update() {
+		for (StatusEffect statusEffect : statusEffects) {
+			statusEffect.turn();
+
+			if (statusEffect.getTurnsPassed() >= statusEffect.getDuration()) {
+				statusEffect.onEnd();
+				statusEffects.remove(statusEffect);
+			}
+		}
+	}
+
+	public void addStatusEffect(StatusEffect effect) {
+		statusEffects.add(effect);
+	}
+
+	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
+		return statusEffects.stream().filter(statusEffect::isInstance).findFirst().isPresent();
+	}
+
+	public List<StatusEffect> getStatusEffects() {
+		return statusEffects;
+	}
 }
