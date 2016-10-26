@@ -38,6 +38,12 @@ dependencies {
 	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.4:natives-desktop"
 }
 
+run {
+	if (project.hasProperty("appArgs")) {
+		args Eval.me(appArgs)
+	}
+}
+
 task fatJar(type: Jar) {
 	baseName = "JRogue"
 

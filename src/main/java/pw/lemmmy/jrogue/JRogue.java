@@ -13,15 +13,19 @@ public class JRogue {
 	public Dungeon dungeon;
 	public Renderer renderer;
 
-	public JRogue() {
+	public JRogue(LaunchSettings settings) {
 		dungeon = new Dungeon();
-		renderer = new GDXRenderer(dungeon); // TODO: Make this configurable
+		renderer = new GDXRenderer(dungeon, settings.getScreenWidth(), settings.getScreenHeight()); // TODO: Make this configurable
 	}
 
 	public static void main(String[] args) {
+		LaunchSettings settings = new LaunchSettings();
 		Options opts = new Options();
-
+g
 		opts.addOption("h", "help", false, "Shows the help information");
+		opts.addOption(null, "width", true, "Sets the game window width");
+		opts.addOption(null, "height", true, "Sets the game window height");
+
 		CommandLine cmd = null;
 
 		try {
@@ -36,7 +40,15 @@ public class JRogue {
 			System.exit(1);
 		}
 
-		new JRogue();
+		if (cmd.hasOption("width")) {
+			settings.setScreenWidth(Integer.parseInt(cmd.getOptionValue("width")));
+		}
+
+		if (cmd.hasOption("height")) {
+			settings.setScreenHeight(Integer.parseInt(cmd.getOptionValue("height")));
+		}
+
+		new JRogue(settings);
 	}
 
 	public static Logger getLogger() {

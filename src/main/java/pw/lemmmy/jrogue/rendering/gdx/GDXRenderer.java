@@ -98,13 +98,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private float zoom = 1.0f;
 
-	public GDXRenderer(Dungeon dungeon) {
+	public GDXRenderer(Dungeon dungeon, int width, int height) {
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 640;
+		config.width = width;
+		config.height = height;
 		new LwjglApplication(this, config);
 	}
 
