@@ -34,7 +34,7 @@ public class TileRendererDoor extends TileRenderer {
 
 			case OPEN:
 				TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
-				boolean h = adjacentTiles[0].isWallType() || adjacentTiles[1].isWallType();
+				boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 
 				drawTile(batch, h ? openH : openV, x, y);
 				break;

@@ -15,7 +15,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int MAX_ROOM_WIDTH = 20;
 
 	private static final int MIN_ROOM_HEIGHT = 5;
-	private static final int MAX_ROOM_HEIGHT = 12;
+	private static final int MAX_ROOM_HEIGHT = 9;
 
 	private static final int MIN_ROOM_DISTANCE_X = 1;
 	private static final int MAX_ROOM_DISTANCE_X = 15;

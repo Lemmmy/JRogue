@@ -25,15 +25,15 @@ public class TileRendererWall extends TileRenderer {
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
 
-		boolean h = adjacentTiles[0].isWallType() || adjacentTiles[1].isWallType();
-		boolean v = adjacentTiles[2].isWallType() || adjacentTiles[3].isWallType();
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 
 		if (h && !v) {
 			drawTile(batch, wallH, x, y);
 		} else if (!h && v) {
 			drawTile(batch, wallV, x, y);
 		} else {
-			if (adjacentTiles[2].isWallType()) {
+			if (adjacentTiles[2].isWallTile()) {
 				drawTile(batch, wallCT, x, y);
 			} else {
 				drawTile(batch, wallCB, x, y);

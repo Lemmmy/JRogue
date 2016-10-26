@@ -60,7 +60,7 @@ public enum TileType {
 				this.light = Color.DARK_GRAY;
 				this.absorb = 40;
 			} else {
-				this.absorb = 15;
+				this.absorb = 10;
 			}
 		}
 	}
@@ -85,7 +85,19 @@ public enum TileType {
 		return absorb;
 	}
 
-	public boolean isWallType() {
-		return this == TILE_ROOM_WALL || this == TILE_ROOM_TORCH_FIRE || this == TILE_ROOM_TORCH_ICE || this == TILE_ROOM_DOOR_CLOSED;
+	public boolean isWallTile() {
+		return this == TILE_ROOM_WALL ||
+			this == TILE_ROOM_TORCH_FIRE ||
+			this == TILE_ROOM_TORCH_ICE ||
+			this == TILE_ROOM_DOOR_CLOSED ||
+			this == TILE_ROOM_DOOR_OPEN ||
+			this == TILE_ROOM_DOOR_BROKEN;
+	}
+
+	public boolean isInnerRoomTile() {
+		return this == TILE_ROOM_FLOOR ||
+			this == TILE_ROOM_PUDDLE ||
+			this == TILE_ROOM_STAIRS_UP ||
+			this == TILE_ROOM_STAIRS_DOWN;
 	}
 }

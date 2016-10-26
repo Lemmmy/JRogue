@@ -43,7 +43,7 @@ public abstract class DungeonGenerator {
 				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
 
 				if (wall) {
-					if (x > roomX && x < roomX + roomWidth - 1 && x % 5 == 0) {
+					if (x > roomX && x < roomX + roomWidth - 1 && x % 4 == 0) {
 						level.setTile(x, y, TileType.TILE_ROOM_TORCH_FIRE);
 					} else {
 						level.setTile(x, y, TileType.TILE_ROOM_WALL);
@@ -81,7 +81,7 @@ public abstract class DungeonGenerator {
 	}
 
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTile(x, y) == TileType.TILE_ROOM_WALL) {
+		if (level.getTile(x, y).isWallTile()) {
 			TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
 
 			for (TileType tile : adjacentTiles) {
@@ -101,8 +101,8 @@ public abstract class DungeonGenerator {
 	}
 
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
-		boolean h = adjacentTiles[0].isWallType() || adjacentTiles[1].isWallType();
-		boolean v = adjacentTiles[2].isWallType() || adjacentTiles[3].isWallType();
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 
 		if (h && !v) {
 			return Orientation.HORIZONTAL;

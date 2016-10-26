@@ -35,19 +35,19 @@ public class TileRendererTorch extends TileRenderer {
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
 
-		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
-		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 
 		if (h && !v) {
 			drawTile(batch, wallH, x, y);
 
-			if (adjacentTiles[2] == TileType.TILE_ROOM_FLOOR) {
+			if (adjacentTiles[2].isInnerRoomTile()) {
 				drawTile(batch, torch, x, y);
 			}
 		} else if (!h && v) {
 			drawTile(batch, wallV, x, y);
 		} else {
-			if (adjacentTiles[2] == TileType.TILE_ROOM_WALL) {
+			if (adjacentTiles[2].isWallTile()) {
 				drawTile(batch, wallCT, x, y);
 			} else {
 				drawTile(batch, wallCB, x, y);
@@ -64,11 +64,11 @@ public class TileRendererTorch extends TileRenderer {
 	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTiles(x, y);
 
-		boolean h = adjacentTiles[0] == TileType.TILE_ROOM_WALL || adjacentTiles[1] == TileType.TILE_ROOM_WALL;
-		boolean v = adjacentTiles[2] == TileType.TILE_ROOM_WALL || adjacentTiles[3] == TileType.TILE_ROOM_WALL;
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 
 		if (h && !v) {
-			if (adjacentTiles[2] == TileType.TILE_ROOM_FLOOR) {
+			if (adjacentTiles[2].isInnerRoomTile()) {
 				return true;
 			}
 		}
