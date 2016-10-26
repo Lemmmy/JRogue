@@ -47,10 +47,12 @@ public class ActionKick extends EntityAction {
 			if (Utils.roll(5) == 1) {
 				if (isPlayer) {
 					getDungeon().logRandom(
-						"Bad move! You strain your leg.",
-						"Bad idea! You strain your leg.",
-						"Ouch! You strain your leg.",
-						"Crap! You strain your leg."
+						"Bad move! You strain your leg!",
+						"Bad idea! You strain your leg!",
+						"Ouch! You strain your leg!",
+						"Crap! You strain your leg!",
+						"Bad move! A sharp jolt shoots up your leg!",
+						"Ouch! A sharp jolt shoots up your leg!"
 					);
 				}
 
@@ -88,7 +90,10 @@ public class ActionKick extends EntityAction {
 
 			if (Utils.roll(5) == 1) {
 				if (isPlayer) {
-					getDungeon().log("Ouch! That hurt a lot!");
+					getDungeon().logRandom(
+						"Ouch! That hurt a lot!",
+						"Ouch! That caused some bad damage to your foot!"
+					);
 				}
 
 				entity.damage(DamageSource.KICKING_A_WALL, 1);
