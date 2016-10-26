@@ -6,11 +6,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -153,6 +155,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudLog.left();
 		hudTable.setFillParent(true);
 		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
+		hudTable.row();
+
+		hudTable.add(new TextButton("Test button", hudSkin));
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
@@ -180,11 +185,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudSkin.add("large", largeLabelStyle);
 
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-		textButtonStyle.up = hudSkin.newDrawable("white", Colors.get("WHITE"));
-		textButtonStyle.down = hudSkin.newDrawable("white", Colors.get("P_GREY_4"));
-		textButtonStyle.checked = hudSkin.newDrawable("white", Colors.get("P_GREY_1"));
-		textButtonStyle.over = hudSkin.newDrawable("white", Colors.get("P_GREY_3"));
-		textButtonStyle.font = hudSkin.getFont("default");
+		textButtonStyle.up = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.over = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 10, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.down = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 20, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.checked = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 30, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.checkedOver = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 40, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.disabled = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 50, 0, 10, 10), 4, 4, 4, 4));
+		textButtonStyle.font = hudSkin.getFont("defaultNoShadow");
+		textButtonStyle.fontColor = Colors.get("P_GREY_0");
+		textButtonStyle.downFontColor = Colors.get("P_GREY_0");
+		textButtonStyle.overFontColor = Colors.get("P_GREY_0");
+		textButtonStyle.checkedFontColor = Colors.get("P_GREEN_2");
+		textButtonStyle.checkedOverFontColor = Colors.get("P_GREEN_1");
+		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
 		hudSkin.add("default", textButtonStyle);
 	}
 

@@ -28,6 +28,17 @@ public class ImageLoader {
 		}
 	}
 
+	public static TextureRegion getSubimage(String image, int x, int y, int width, int height) {
+		Texture sheet = ImageLoader.getImage(image);
+
+		if (sheet == null) {
+			JRogue.getLogger().fatal("Failed to load spritesheet {}.", image);
+			System.exit(1);
+		}
+
+		return new TextureRegion(sheet, x, y, width, height);
+	}
+
 	public static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
 		return getImageFromSheet(sheetName, sheetX, sheetY, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 	}
