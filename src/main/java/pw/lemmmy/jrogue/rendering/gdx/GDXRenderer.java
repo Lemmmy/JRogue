@@ -161,15 +161,26 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
+
+		Window window = new Window("Test window", hudSkin);
+		window.setMovable(true);
+		window.pad(18, 3, 3, 3);
+		hudStage.addActor(window);
+
+		Dialog dialog = new Dialog("Test dialog", hudSkin);
+		dialog.setMovable(true);
+		dialog.pad(18, 3, 3, 3);
+		dialog.text("This is a test.", hudSkin.get("windowStyle", Label.LabelStyle.class)).button(new TextButton("OK", hudSkin));
+		hudStage.addActor(dialog);
 	}
 
 	private void setupSkin() {
 		hudSkin = new Skin();
 
-		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.fill();
-		hudSkin.add("white", new Texture(pixmap));
+		Pixmap white = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		white.setColor(Color.WHITE);
+		white.fill();
+		hudSkin.add("white", new Texture(white));
 
 		hudSkin.add("default", FontLoader.getFont("PixelOperator.ttf", 16, true));
 		hudSkin.add("defaultNoShadow", FontLoader.getFont("PixelOperator.ttf", 16, false));
@@ -183,6 +194,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
 		largeLabelStyle.font = hudSkin.getFont("large");
 		hudSkin.add("large", largeLabelStyle);
+
+		Label.LabelStyle windowLabelStyle = new Label.LabelStyle();
+		windowLabelStyle.font = hudSkin.getFont("defaultNoShadow");
+		windowLabelStyle.fontColor = Colors.get("P_GREY_0");
+		hudSkin.add("windowStyle", windowLabelStyle);
 
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		textButtonStyle.up = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 0, 10, 10), 4, 4, 4, 4));
@@ -199,6 +215,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		textButtonStyle.checkedOverFontColor = Colors.get("P_GREEN_1");
 		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
 		hudSkin.add("default", textButtonStyle);
+
+		Window.WindowStyle windowStyle = new Window.WindowStyle();
+		windowStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 10, 5, 20), 2, 2, 18, 1));
+		windowStyle.titleFont = hudSkin.getFont("defaultNoShadow");
+		windowStyle.titleFontColor = Colors.get("P_GREY_0");
+		hudSkin.add("default", windowStyle);
 	}
 
 	@Override
