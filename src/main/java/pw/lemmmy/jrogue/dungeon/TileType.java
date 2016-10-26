@@ -21,7 +21,9 @@ public enum TileType {
 	TILE_ROOM_FLOOR(Solidity.WALK_ON),
 	TILE_ROOM_WATER(Solidity.WATER),
 	TILE_ROOM_PUDDLE(Solidity.WALK_ON),
-	TILE_ROOM_DOOR(Solidity.WALK_THROUGH),
+	TILE_ROOM_DOOR_CLOSED(Solidity.SOLID),
+	TILE_ROOM_DOOR_OPEN(Solidity.WALK_THROUGH),
+	TILE_ROOM_DOOR_BROKEN(Solidity.WALK_THROUGH),
 
 	TILE_ROOM_STAIRS_UP(Solidity.WALK_ON),
 	TILE_ROOM_STAIRS_DOWN(Solidity.WALK_ON),
@@ -84,6 +86,6 @@ public enum TileType {
 	}
 
 	public boolean isWallType() {
-		return this == TILE_ROOM_WALL || this == TILE_ROOM_TORCH_FIRE || this == TILE_ROOM_TORCH_ICE || this == TILE_ROOM_DOOR;
+		return this == TILE_ROOM_WALL || this == TILE_ROOM_TORCH_FIRE || this == TILE_ROOM_TORCH_ICE || this == TILE_ROOM_DOOR_CLOSED;
 	}
 }

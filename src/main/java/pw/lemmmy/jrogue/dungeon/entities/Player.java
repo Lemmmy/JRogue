@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.*;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 
 public class Player extends LivingEntity {
 	private String name;
@@ -28,6 +28,11 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	public int getMovementSpeed() {
+		return 12;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -38,12 +43,27 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void move() {
-
-	}
-
-	@Override
 	protected void onKick(Entity kicker) {
 		getDungeon().You("step on your own foot.");
+	}
+
+	public void walk(int dx, int dy) {
+		dx = Math.max(-1, Math.min(1, dx));
+		dy = Math.max(-1, Math.min(1, dy));
+
+		int newX = getX() + dx;
+		int newY = getY() + dy;
+
+		Tile tile = getLevel().getTileInfo(newX, newY);
+
+		if (tile.getType().getSolidity() != Solidity.SOLID) {
+			addAction(new ActionMove(this, newX, newY));
+		} else {
+			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+				getDungeon().The("door is locked.");
+			}
+		}
+
+		getDungeon().turn();
 	}
 }

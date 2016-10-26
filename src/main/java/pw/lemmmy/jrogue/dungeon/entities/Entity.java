@@ -2,6 +2,10 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Entity {
 	private int x;
@@ -10,7 +14,9 @@ public abstract class Entity {
 	private Dungeon dungeon;
 	private Level level;
 
-	private int movementPoints = 0;
+	private int actionPoints = 0;
+	private List<EntityAction> actionQueue = new ArrayList<>();
+	private List<EntityAction> actionExecuteQueue = new ArrayList<>();
 
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
 		this.dungeon = dungeon;
@@ -23,23 +29,38 @@ public abstract class Entity {
 
 	public abstract Appearance getAppearance();
 
-	public int getMovementPoints() {
-		return movementPoints;
+	public int getActionPoints() {
+		return actionPoints;
 	}
 
-	protected void addMovementPoints(int points) {
-		movementPoints += points;
+	protected void addActionPoints(int points) {
+		actionPoints += points;
 
-		if (movementPoints > 12) {
-			for (int i = 0; i < Math.floor(movementPoints / 12); i++) {
-				move();
+		if (actionPoints >= 12) {
+			for (int i = 0; i < Math.floor(actionPoints / 12); i++) {
+				actionExecuteQueue.add(actionQueue.remove(0));
 			}
 
-			movementPoints = movementPoints % 12;
+			actionPoints = actionPoints % 12;
 		}
 	}
 
-	protected abstract void move();
+	public void move() {
+		if (actionExecuteQueue.size() <= 0) {
+			return;
+		}
+
+		actionExecuteQueue.remove(0).execute();
+	}
+
+	public void addAction(EntityAction action) {
+		actionQueue.add(action);
+		addActionPoints(action.getSpeed());
+	}
+
+	public boolean hasQueuedAction() {
+		return actionQueue.size() > 0;
+	}
 
 	public int getX() {
 		return x;

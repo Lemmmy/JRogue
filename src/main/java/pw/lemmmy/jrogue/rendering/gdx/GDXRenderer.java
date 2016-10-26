@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -26,11 +25,24 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
+	private static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
+
+	static {
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[] {-1, 1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new Integer[] {0, 1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new Integer[] {1, 1});
+
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new Integer[] {-1, 0});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new Integer[] {1, 0});
+
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new Integer[] {-1, -1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new Integer[] {0, -1});
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[] {1, -1});
+	}
+
 	private static final String WINDOW_TITLE = "JRogue";
 
 	private LwjglApplication application;
@@ -43,7 +55,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private Dungeon dungeon;
 
-	private FrameBuffer lightBuffer;
+	private List<String> log = new ArrayList<>();
+
 	private boolean drawLights = true;
 
 	private List<ParticleEffectPool.PooledEffect> pooledEffects = new ArrayList<>();
@@ -131,6 +144,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudBatch = new SpriteBatch();
 
 		onLevelChange(dungeon.getLevel());
+		dungeon.start();
 	}
 
 	@Override
@@ -236,17 +250,29 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawHUDString(
 			String.format(
-				"[P_YELLOW]%s[WHITE] the [P_BLUE_2]%s[WHITE] - HP [%s]%d[WHITE]/%d",
+				"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 				StringUtils.capitalize(player.getName()),
 				"Wizard",
 				"P_GREEN_3",
-				10,
-				10
+				player.getHealth(),
+				player.getMaxHealth()
 			),
 			6, 7,
 			Color.WHITE,
 			32
 		);
+
+		int logSize = Math.min(5, log.size());
+
+		for (int i = 0; i < logSize; i++) {
+			String entry = log.get(log.size() - (logSize - i));
+
+			if (i < logSize - 1) {
+				entry = "[#CCCCCCEE]" + entry;
+			}
+
+			drawHUDString(entry, 6, 34 + (16 * i), Color.WHITE, 16);
+		}
 	}
 
 	private void drawHUDString(String text, int x, int y) {
@@ -262,6 +288,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void handleInput() {
+		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+			handleRendererCommands();
+		} else {
+			handleMovementCommands();
+		}
+	}
+
+	private void handleMovementCommands() {
+		for (Integer key : MOVEMENT_KEYS.keySet()) {
+			if (Gdx.input.isKeyJustPressed(key)) {
+				Integer[] d = MOVEMENT_KEYS.get(key);
+
+				dungeon.getPlayer().walk(d[0], d[1]);
+			}
+		}
+	}
+
+	private void handleRendererCommands() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			dungeon.generateLevel();
 		}
@@ -296,7 +340,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onLevelChange(Level level) {
 		findPooledParticles();
-		renderLightsToFB();
 	}
 
 	private void findPooledParticles() {
@@ -332,19 +375,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 	}
 
-	private void renderLightsToFB() {
-		if (lightBuffer != null) {
-			lightBuffer.dispose();
-		}
-	}
-
 	@Override
-	public void onTurn() {
+	public void onBeforeTurn(long turn) {
 
 	}
 
 	@Override
-	public void onLog(String log) {
+	public void onTurn(long turn) {
 
+	}
+
+	@Override
+	public void onLog(String entry) {
+		entry = entry.replace("[GREEN]", "[P_GREEN_3]");
+		entry = entry.replace("[CYAN]", "[P_CYAN_1]");
+		entry = entry.replace("[BLUE]", "[P_BLUE_1]");
+		entry = entry.replace("[YELLOW]", "[P_YELlOW]");
+		// TODO: Add more replacements
+
+		log.add(entry);
 	}
 }

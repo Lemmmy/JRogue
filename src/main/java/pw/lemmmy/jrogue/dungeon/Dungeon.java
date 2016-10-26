@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -23,6 +24,8 @@ public class Dungeon {
 
 	private Level level;
 	private Player player;
+
+	private long turn = 1;
 
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();
@@ -64,6 +67,7 @@ public class Dungeon {
 			player.setPosition(level.getSpawnX(), level.getSpawnY());
 		}
 
+		player.setLevel(level);
 		level.addEntity(player);
 
 		for (Listener listener : listeners) {
@@ -92,21 +96,52 @@ public class Dungeon {
 		return player;
 	}
 
-	public void You(String s) {
+	public void log(String s, Object... objects) {
 		for (Listener listener : listeners) {
-			listener.onLog("You " + s);
+			listener.onLog(String.format(s, objects));
 		}
 	}
 
-	public void Your(String s) {
+	public void You(String s, Object... objects) {
+		log("You " + s, objects);
+	}
+
+	public void Your(String s, Object... objects) {
+		log("Your " + s, objects);
+	}
+
+	public void The(String s, Object... objects) {
+		log("The " + s, objects);
+	}
+
+	public void start() {
+		You("descend the stairs into [CYAN]%s[].", this.name);
+	}
+
+	public void turn() {
 		for (Listener listener : listeners) {
-			listener.onLog("Your " + s);
+			listener.onBeforeTurn(turn + 1);
 		}
+
+		for (Entity entity : level.getEntities()) {
+			entity.move();
+		}
+
+		turn++;
+
+		for (Listener listener : listeners) {
+			listener.onTurn(turn);
+		}
+	}
+
+	public long getTurn() {
+		return turn;
 	}
 
 	public static interface Listener {
 		public void onLevelChange(Level level);
-		public void onTurn();
+		public void onBeforeTurn(long turn);
+		public void onTurn(long turn);
 		public void onLog(String log);
 	}
 }

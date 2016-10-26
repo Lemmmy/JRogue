@@ -45,4 +45,6 @@ public abstract class LivingEntity extends Entity {
 	public boolean isAlive() {
 		return health > 0;
 	}
+
+	public abstract int getMovementSpeed();
 }

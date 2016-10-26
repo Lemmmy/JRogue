@@ -7,16 +7,18 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.TileType;
 
 public class TileRendererWall extends TileRenderer {
-	private TextureRegion wallH;
-	private TextureRegion wallV;
-	private TextureRegion wallCT;
-	private TextureRegion wallCB;
+	private static TextureRegion wallH;
+	private static TextureRegion wallV;
+	private static TextureRegion wallCT;
+	private static TextureRegion wallCB;
 
 	public TileRendererWall() {
-		wallH = getImageFromSheet("tiles.png", 1, 0);
-		wallV = getImageFromSheet("tiles.png", 0, 0);
-		wallCT = getImageFromSheet("tiles.png", 2, 0);
-		wallCB = getImageFromSheet("tiles.png", 3, 0);
+		if (wallH == null || wallV == null || wallCT == null || wallCB == null) {
+			wallH = getImageFromSheet("tiles.png", 1, 0);
+			wallV = getImageFromSheet("tiles.png", 0, 0);
+			wallCT = getImageFromSheet("tiles.png", 2, 0);
+			wallCB = getImageFromSheet("tiles.png", 3, 0);
+		}
 	}
 
 	@Override

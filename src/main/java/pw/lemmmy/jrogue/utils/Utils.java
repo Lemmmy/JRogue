@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.utils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -15,6 +16,24 @@ public class Utils {
 
 	public static <T> T randomFrom(List<T> items) {
 		return items.get(rand.nextInt(items.size()));
+	}
+
+	public int roll(int x) {
+		return roll(1, x);
+	}
+
+	public int roll(int a, int x) {
+		return roll(a, x, 0);
+	}
+
+	public int roll(int a, int x, int b) {
+		int o = b;
+
+		for (int i = 0; i < a; i++) {
+			o += rand.nextInt(x);
+		}
+
+		return o;
 	}
 
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {

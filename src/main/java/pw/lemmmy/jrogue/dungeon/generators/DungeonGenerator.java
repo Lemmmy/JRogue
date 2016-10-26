@@ -44,7 +44,7 @@ public abstract class DungeonGenerator {
 
 				if (wall) {
 					if (x > roomX && x < roomX + roomWidth - 1 && x % 5 == 0) {
-						level.setTile(x, y, rand.nextFloat() < 0.25f ? TileType.TILE_ROOM_TORCH_ICE : TileType.TILE_ROOM_TORCH_FIRE);
+						level.setTile(x, y, TileType.TILE_ROOM_TORCH_FIRE);
 					} else {
 						level.setTile(x, y, TileType.TILE_ROOM_WALL);
 					}
@@ -85,7 +85,7 @@ public abstract class DungeonGenerator {
 			TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
 
 			for (TileType tile : adjacentTiles) {
-				if (tile == TileType.TILE_ROOM_DOOR) {
+				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
 					return false;
 				}
 			}
@@ -181,7 +181,7 @@ public abstract class DungeonGenerator {
 	}
 
 	protected void safePlaceDoor(int x, int y) {
-		level.setTile(x, y, TileType.TILE_ROOM_DOOR);
+		level.setTile(x, y, TileType.TILE_ROOM_DOOR_CLOSED);
 
 		for (int[] direction : Utils.DIRECTIONS) {
 			int nx = x + direction[0];
