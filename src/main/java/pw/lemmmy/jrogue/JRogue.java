@@ -44,4 +44,8 @@ public class JRogue {
 	public static Logger getLogger() {
 		return logger;
 	}
+
+	public static JRogue get() {
+		return INSTANCE;
+	}
 }
