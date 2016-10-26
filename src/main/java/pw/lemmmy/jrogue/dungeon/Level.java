@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class Level {
@@ -260,7 +261,10 @@ public class Level {
 		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {
 			List<Tile> lights = lightTiles.get(i);
 
-			for (Tile tile : lights) {
+			//noinspection ForLoopReplaceableByForEach
+			for (int j = 0; j < lights.size(); j++) {
+				Tile tile = lights.get(j);
+
 				if (tile.getLightIntensity() != i + 1) continue;
 
 				propagateLighting(tile);
