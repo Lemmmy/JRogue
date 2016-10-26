@@ -143,7 +143,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 					b.addConnectionPoint(point);
 
 					if (slope <= CORRIDOR_LINE_SLOPE) {
-						TileType tile = point.getDebugTile() != null ? point.getDebugTile() : TileType.TILE_CORRIDOR;
+						TileType tile = TileType.TILE_CORRIDOR;
 
 						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), tile, true, false);
 					} else {
@@ -171,7 +171,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 
-		TileType tile = point.getDebugTile() != null ? point.getDebugTile() : TileType.TILE_CORRIDOR;
+		TileType tile = TileType.TILE_CORRIDOR;
 
 		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
 			buildLine(ax, ay, bx, by, tile, true, true);
@@ -193,7 +193,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 
-		TileType tile = point.getDebugTile() != null ? point.getDebugTile() : TileType.TILE_CORRIDOR;
+		TileType tile = TileType.TILE_CORRIDOR;
 
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
 			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, tile, true, true);
