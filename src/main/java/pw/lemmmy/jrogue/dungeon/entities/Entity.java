@@ -54,7 +54,8 @@ public abstract class Entity {
 			return;
 		}
 
-		actionExecuteQueue.remove(0).execute();
+		actionExecuteQueue.get(0).execute();
+		actionExecuteQueue.clear();
 	}
 
 	public void addAction(EntityAction action) {
