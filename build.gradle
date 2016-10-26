@@ -37,3 +37,17 @@ dependencies {
 	compile "com.badlogicgames.gdx:gdx-platform:1.9.4:natives-desktop"
 	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.4:natives-desktop"
 }
+
+task fatJar(type: Jar) {
+	baseName = "JRogue"
+
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+
+	manifest {
+		attributes 'Main-Class': mainClassName
+	}
+
+	with jar
+}
