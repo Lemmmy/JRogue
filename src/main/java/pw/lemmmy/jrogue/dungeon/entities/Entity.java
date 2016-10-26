@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class Entity {
@@ -101,12 +102,14 @@ public abstract class Entity {
 	protected abstract void onKick(Entity kicker);
 
 	public void update() {
-		for (StatusEffect statusEffect : statusEffects) {
+		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
+			StatusEffect statusEffect = iterator.next();
+
 			statusEffect.turn();
 
 			if (statusEffect.getTurnsPassed() >= statusEffect.getDuration()) {
 				statusEffect.onEnd();
-				statusEffects.remove(statusEffect);
+				iterator.remove();
 			}
 		}
 	}
