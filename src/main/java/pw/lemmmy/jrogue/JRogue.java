@@ -21,7 +21,7 @@ public class JRogue {
 	public static void main(String[] args) {
 		LaunchSettings settings = new LaunchSettings();
 		Options opts = new Options();
-g
+
 		opts.addOption("h", "help", false, "Shows the help information");
 		opts.addOption(null, "width", true, "Sets the game window width");
 		opts.addOption(null, "height", true, "Sets the game window height");
