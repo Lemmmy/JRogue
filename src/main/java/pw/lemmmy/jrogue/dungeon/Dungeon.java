@@ -27,6 +27,8 @@ public class Dungeon {
 
 	private long turn = 0;
 
+	private Prompt prompt;
+
 	public Dungeon() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
@@ -140,6 +142,46 @@ public class Dungeon {
 		return turn;
 	}
 
+	public void prompt(Prompt prompt) {
+		this.prompt = prompt;
+
+		for (Listener listener : listeners) {
+			listener.onPrompt(prompt);
+		}
+	}
+
+	public void promptRespond(char response) {
+		if (prompt != null) {
+			Prompt prompt = this.prompt;
+			this.prompt = null;
+			prompt.respond(response);
+
+			for (Listener listener : listeners) {
+				listener.onPrompt(null);
+			}
+		}
+	}
+
+	public void escapePrompt() {
+		if (prompt != null) {
+			Prompt prompt = this.prompt;
+			this.prompt = null;
+			prompt.escape();
+
+			for (Listener listener : listeners) {
+				listener.onPrompt(null);
+			}
+		}
+	}
+
+	public boolean hasPrompt() {
+		return prompt != null;
+	}
+
+	public boolean isPromptEscapable() {
+		return prompt != null && prompt.isEscapable();
+	}
+
 	public interface Listener {
 		void onLevelChange(Level level);
 
@@ -148,5 +190,6 @@ public class Dungeon {
 		void onTurn(long turn);
 
 		void onLog(String log);
+		void onPrompt(Prompt prompt);
 	}
 }

@@ -34,6 +34,16 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (dungeon.hasPrompt()) {
+			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
+				dungeon.escapePrompt();
+
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		if (handleMovementCommands()) return true;
 		if (handleRendererCommands()) return true;
 
@@ -47,6 +57,10 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
+		if (dungeon.hasPrompt()) {
+			dungeon.promptRespond(character);
+		}
+
 		return false;
 	}
 

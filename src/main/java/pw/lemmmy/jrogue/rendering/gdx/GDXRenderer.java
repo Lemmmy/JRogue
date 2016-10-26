@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
@@ -44,6 +45,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Stage hudStage;
 	private Label hudPlayerLabel;
 	private Table hudLog;
+	private Label hudPromptLabel;
 
 	private Dungeon dungeon;
 
@@ -157,12 +159,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
 		hudTable.row();
 
-		hudTable.add(new TextButton("Test button", hudSkin));
+		hudPromptLabel = new Label("", hudSkin);
+		hudTable.add(hudPromptLabel).growX().left().pad(0, 1, 0, 1);
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
 
-		Window window = new Window("Test window", hudSkin);
+		// hudTable.add(new TextButton("Test button", hudSkin));
+
+		/*Window window = new Window("Test window", hudSkin);
 		window.setMovable(true);
 		window.pad(18, 3, 3, 3);
 		hudStage.addActor(window);
@@ -171,7 +176,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dialog.setMovable(true);
 		dialog.pad(18, 3, 3, 3);
 		dialog.text("This is a test.", hudSkin.get("windowStyle", Label.LabelStyle.class)).button(new TextButton("OK", hudSkin));
-		hudStage.addActor(dialog);
+		hudStage.addActor(dialog);*/
 	}
 
 	private void setupSkin() {
@@ -336,6 +341,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
+	private String replaceMarkupString(String s) {
+		s = s.replace("[GREEN]", "[P_GREEN_3]");
+		s = s.replace("[CYAN]", "[P_CYAN_1]");
+		s = s.replace("[BLUE]", "[P_BLUE_1]");
+		s = s.replace("[YELLOW]", "[P_YELlOW]");
+
+		return s;
+	}
+
 //	private void drawHUD() {
 //		Player player = dungeon.getPlayer();
 //
@@ -437,11 +451,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onLog(String entry) {
-		entry = entry.replace("[GREEN]", "[P_GREEN_3]");
-		entry = entry.replace("[CYAN]", "[P_CYAN_1]");
-		entry = entry.replace("[BLUE]", "[P_BLUE_1]");
-		entry = entry.replace("[YELLOW]", "[P_YELlOW]");
-		// TODO: Add more replacements
+		entry = replaceMarkupString(entry);
 
 		log.add(entry);
 
@@ -459,6 +469,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			Label newEntry = new Label(s, hudSkin, "default");
 			hudLog.add(newEntry).left().growX();
 			hudLog.row();
+		}
+	}
+
+	@Override
+	public void onPrompt(Prompt prompt) {
+		if (prompt == null) {
+			hudPromptLabel.setText("");
+		} else {
+			hudPromptLabel.setText(String.format(
+				"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
+				prompt.getMessage(),
+				new String(prompt.getOptions())
+			));
 		}
 	}
 
