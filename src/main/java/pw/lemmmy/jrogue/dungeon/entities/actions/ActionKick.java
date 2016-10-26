@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Solidity;
 import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
@@ -43,7 +42,7 @@ public class ActionKick extends EntityAction {
 
 		TileType tile = getEntity().getLevel().getTile(dx, dy);
 
-		if (tile == null || tile.getSolidity() != Solidity.SOLID) {
+		if (tile == null || tile.getSolidity() != TileType.Solidity.SOLID) {
 			if (Utils.roll(5) == 1) {
 				if (isPlayer) {
 					getDungeon().logRandom(

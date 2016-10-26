@@ -7,7 +7,6 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class Level {
@@ -322,7 +321,7 @@ public class Level {
 				discoverTile(dx, dy);
 				seeTile(dx, dy);
 
-				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTile(dx, dy).getSolidity() == Solidity.SOLID) {
+				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTile(dx, dy).getSolidity() == TileType.Solidity.SOLID) {
 					break;
 				}
 			}

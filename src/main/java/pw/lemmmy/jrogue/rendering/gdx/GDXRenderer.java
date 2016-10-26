@@ -37,41 +37,7 @@ import java.util.List;
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 
-	private SpriteBatch batch;
-	private ShapeRenderer lightBatch;
-	private SpriteBatch lightSpriteBatch;
-
-	private OrthographicCamera camera;
-
-	private Skin hudSkin;
-	private Stage hudStage;
-	private Label hudPlayerLabel;
-	private Label hudStatsLabel;
-	private Label hudEffectsLabel;
-	private Table hudLog;
-	private Label hudPromptLabel;
-
-	private Dungeon dungeon;
-
-	private List<String> log = new ArrayList<>();
-
-	private List<TilePooledEffect> pooledEffects = new ArrayList<>();
-
-	private float zoom = 1.0f;
-
-	public GDXRenderer(Dungeon dungeon) {
-		this.dungeon = dungeon;
-		this.dungeon.addListener(this);
-
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 640;
-		new LwjglApplication(this, config);
-
-		addColours();
-	}
-
-	private void addColours() {
+	static {
 		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
 		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
 		Colors.put("P_GREY_2", new Color(0x777777ff));
@@ -108,6 +74,38 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Colors.put("P_PINK_2", new Color(0xb81eabff));
 		Colors.put("P_PINK_3", new Color(0xe13ed4ff));
 		Colors.put("P_PINK_4", new Color(0xf356e6ff));
+	}
+
+	private SpriteBatch batch;
+	private ShapeRenderer lightBatch;
+	private SpriteBatch lightSpriteBatch;
+
+	private OrthographicCamera camera;
+
+	private Skin hudSkin;
+	private Stage hudStage;
+	private Label hudPlayerLabel;
+	private Label hudStatsLabel;
+	private Label hudEffectsLabel;
+	private Table hudLog;
+	private Label hudPromptLabel;
+
+	private Dungeon dungeon;
+
+	private List<String> log = new ArrayList<>();
+
+	private List<TilePooledEffect> pooledEffects = new ArrayList<>();
+
+	private float zoom = 1.0f;
+
+	public GDXRenderer(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		this.dungeon.addListener(this);
+
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 800;
+		config.height = 640;
+		new LwjglApplication(this, config);
 	}
 
 	private void updateWindowTitle() {

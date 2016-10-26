@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Solidity;
 import pw.lemmmy.jrogue.dungeon.Tile;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -75,7 +75,7 @@ public abstract class TileRenderer {
 		int height = TileMap.TILE_HEIGHT;
 
 		if (!dungeon.getLevel().isTileVisible(x, y)) {
-			if (dungeon.getLevel().getTile(x, y).getSolidity() == Solidity.SOLID) {
+			if (dungeon.getLevel().getTile(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {
 				batch.draw(dim, x * width, y * height, width, height);

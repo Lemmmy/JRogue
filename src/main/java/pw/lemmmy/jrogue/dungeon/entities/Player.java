@@ -84,7 +84,7 @@ public class Player extends LivingEntity {
 		//       a different tile type than the one they are standing on
 		//       unless it is a door
 
-		if (tile.getType().getSolidity() != Solidity.SOLID) {
+		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			addAction(new ActionMove(getDungeon(), this, newX, newY));
 
 			if (tile.getType().onWalk() != null) {
@@ -104,7 +104,7 @@ public class Player extends LivingEntity {
 	}
 
 	public int getCorridorVisibilityRange() {
-		return 3; // TODO: Make this vary based on light
+		return 4; // TODO: Make this vary based on light
 	}
 
 	public void kick() {
