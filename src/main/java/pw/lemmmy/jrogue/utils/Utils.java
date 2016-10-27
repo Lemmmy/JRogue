@@ -1,11 +1,11 @@
 package pw.lemmmy.jrogue.utils;
 
 import com.badlogic.gdx.Input;
+import org.apache.commons.math3.random.MersenneTwister;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class Utils {
 	public static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
@@ -40,7 +40,7 @@ public class Utils {
 
 	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-	private static final Random rand = new Random();
+	private static final MersenneTwister rand = new MersenneTwister();
 
 	@SafeVarargs
 	public static <T> T randomFrom(T... items) {

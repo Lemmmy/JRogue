@@ -1,17 +1,17 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import org.apache.commons.math3.random.MersenneTwister;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class DungeonGenerator {
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
-	protected Random rand = new Random();
+	protected MersenneTwister rand = new MersenneTwister();
 
 	public DungeonGenerator(Level level) {
 		this.level = level;

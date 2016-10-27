@@ -1,8 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
+import org.apache.commons.math3.random.MersenneTwister;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
-
-import java.util.Random;
 
 /**
  * Basic stateless "Ghoul" AI as described here:
@@ -11,7 +10,7 @@ import java.util.Random;
  * Melee only.
  */
 public class GhoulAI extends AI {
-	private Random random = new Random();
+	private MersenneTwister random = new MersenneTwister();
 
 	private float moveProbability = 0.25f;
 
