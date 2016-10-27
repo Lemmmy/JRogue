@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -10,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dungeon {
+	public static final int NORMAL_SPEED = 12;
+
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
+
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
 	 * Randomly generated name of this dungeon
@@ -126,21 +130,79 @@ public class Dungeon {
 		turn();
 	}
 
+	private boolean moveEntities() {
+		boolean somebodyCanMove = false;
+
+		for (Entity entity : level.getEntities()) {
+			if (entity instanceof Player) {
+				continue;
+			}
+
+			if (entity instanceof LivingEntity && !((LivingEntity) entity).isAlive()) {
+				continue;
+			}
+
+			if (entity.getMovementPoints() < NORMAL_SPEED) {
+				continue;
+			}
+
+			entity.setMovementPoints(entity.getMovementPoints() - NORMAL_SPEED);
+
+			if (entity.getMovementPoints() >= NORMAL_SPEED) {
+				somebodyCanMove = true;
+			}
+
+			entity.move();
+		}
+
+		return somebodyCanMove;
+	}
+
 	public void turn() {
 		for (Listener listener : listeners) {
 			listener.onBeforeTurn(turn + 1);
 		}
 
-		for (Entity entity : level.getEntities()) {
-			entity.move();
-			entity.update();
-		}
+		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 
-		turn++;
+		do {
+			boolean entitiesCanMove;
+
+			do {
+				entitiesCanMove = moveEntities();
+
+				if (player.getMovementPoints() > NORMAL_SPEED) {
+					break;
+				}
+			} while (entitiesCanMove);
+
+			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
+				for (Entity entity : level.getEntities()) {
+					entity.update();
+					entity.setMovementPoints(entity.getMovementSpeed());
+				}
+
+				if (player.getMovementPoints() < 0) {
+					player.setMovementPoints(0);
+				}
+
+				turn++;
+
+				update();
+			}
+		} while (player.getMovementPoints() < NORMAL_SPEED);
+
+		player.move();
+
+		getLevel().updateSight(getPlayer());
 
 		for (Listener listener : listeners) {
 			listener.onTurn(turn);
 		}
+	}
+
+	private void update() {
+		// random dungeon updates
 	}
 
 	public long getTurn() {

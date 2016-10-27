@@ -10,12 +10,14 @@ import pw.lemmmy.jrogue.utils.Utils;
 public class Player extends LivingEntity {
 	private String name;
 
-	private int baseSpeed = 12;
+	private int baseSpeed = Dungeon.NORMAL_SPEED;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name) {
 		super(dungeon, level, x, y);
 
 		this.name = name;
+
+		this.setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 
 	@Override
@@ -38,11 +40,11 @@ public class Player extends LivingEntity {
 		int speed = baseSpeed;
 
 		if (hasStatusEffect(InjuredFoot.class)) {
-			baseSpeed -= 1;
+			speed -= 1;
 		}
 
 		if (hasStatusEffect(StrainedLeg.class)) {
-			baseSpeed -= 1;
+			speed -= 1;
 		}
 
 		return speed;
@@ -63,13 +65,6 @@ public class Player extends LivingEntity {
 		getDungeon().You("step on your own foot.");
 	}
 
-	@Override
-	public void update() {
-		super.update();
-
-		getLevel().updateSight(this);
-	}
-
 	public void walk(int dx, int dy) {
 		dx = Math.max(-1, Math.min(1, dx));
 		dy = Math.max(-1, Math.min(1, dy));
@@ -85,11 +80,7 @@ public class Player extends LivingEntity {
 		//       unless it is a door
 
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			addAction(new ActionMove(getDungeon(), this, newX, newY));
-
-			if (tile.getType().onWalk() != null) {
-				getDungeon().log(tile.getType().onWalk());
-			}
+			setAction(new ActionMove(getDungeon(), this, newX, newY));
 		} else {
 			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 				getDungeon().The("door is locked.");
@@ -123,7 +114,7 @@ public class Player extends LivingEntity {
 					getDungeon().log(String.format("Invalid direction [YELLOW]'%s'[].", response));
 				} else {
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-					addAction(new ActionKick(getDungeon(), Player.this, d));
+					setAction(new ActionKick(getDungeon(), Player.this, d));
 					getDungeon().turn();
 				}
 			}

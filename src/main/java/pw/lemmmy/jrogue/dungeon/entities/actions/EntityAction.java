@@ -12,8 +12,6 @@ public abstract class EntityAction {
 		this.entity = entity;
 	}
 
-	public abstract int getTurnsRequired();
-
 	public abstract void execute();
 
 	public Dungeon getDungeon() {

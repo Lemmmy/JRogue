@@ -16,9 +16,8 @@ public abstract class Entity {
 	private Dungeon dungeon;
 	private Level level;
 
-	private int actionPoints = 0;
-	private List<EntityAction> actionQueue = new ArrayList<>();
-	private List<EntityAction> actionExecuteQueue = new ArrayList<>();
+	private int movementPoints = 0;
+	private EntityAction nextAction;
 
 	private List<StatusEffect> statusEffects = new ArrayList<>();
 
@@ -33,40 +32,27 @@ public abstract class Entity {
 
 	public abstract Appearance getAppearance();
 
-	public int getActionPoints() {
-		return actionPoints;
+	public void setAction(EntityAction action) {
+		nextAction = action;
 	}
 
-	protected void addActionPoints(int points) {
-		actionPoints += points;
-
-		if (actionPoints >= 12) {
-			for (int i = 0; i < Math.floor(actionPoints / 12); i++) {
-				actionExecuteQueue.add(actionQueue.remove(0));
-			}
-
-			actionPoints = actionPoints % 12;
-		}
+	public boolean hasAction() {
+		return nextAction != null;
 	}
 
 	public void move() {
-		if (actionExecuteQueue.size() <= 0) {
-			return;
+		if (hasAction()) {
+			nextAction.execute();
+			nextAction = null;
 		}
-
-		actionExecuteQueue.get(0).execute();
-		actionExecuteQueue.clear();
-
-		actionPoints = 0;
 	}
 
-	public void addAction(EntityAction action) {
-		actionQueue.add(action);
-		addActionPoints(action.getTurnsRequired());
+	public int getMovementPoints() {
+		return movementPoints;
 	}
 
-	public boolean hasQueuedAction() {
-		return actionQueue.size() > 0;
+	public void setMovementPoints(int movementPoints) {
+		this.movementPoints = movementPoints;
 	}
 
 	public int getX() {
@@ -128,4 +114,6 @@ public abstract class Entity {
 	public List<StatusEffect> getStatusEffects() {
 		return statusEffects;
 	}
+
+	public abstract int getMovementSpeed();
 }

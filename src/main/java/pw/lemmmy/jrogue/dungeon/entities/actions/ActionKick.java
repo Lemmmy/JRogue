@@ -20,11 +20,6 @@ public class ActionKick extends EntityAction {
 	}
 
 	@Override
-	public int getTurnsRequired() {
-		return 12;
-	}
-
-	@Override
 	public void execute() {
 		// TODO: Check for entities
 
