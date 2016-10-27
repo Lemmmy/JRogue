@@ -19,6 +19,10 @@ public class ActionMove extends EntityAction {
 
 	@Override
 	public void execute() {
+		if (getEntity().getLevel().getEntitiesAt(x, y).size() > 0) {
+			return;
+		}
+
 		getEntity().setPosition(x, y);
 
 		if (getEntity() instanceof Player) {
