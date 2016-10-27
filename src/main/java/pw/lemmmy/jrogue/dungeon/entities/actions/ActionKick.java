@@ -35,6 +35,16 @@ public class ActionKick extends EntityAction {
 		boolean isPlayer = getEntity() instanceof Player;
 		LivingEntity entity = (LivingEntity) getEntity();
 
+		if (isPlayer && entity.hasStatusEffect(InjuredFoot.class)) {
+			getDungeon().Your("foot is in no shape for kicking.");
+			return;
+		}
+
+		if (isPlayer && entity.hasStatusEffect(StrainedLeg.class)) {
+			getDungeon().Your("leg is in no shape for kicking.");
+			return;
+		}
+
 		TileType tile = getEntity().getLevel().getTile(dx, dy);
 
 		if (tile == null || tile.getSolidity() != TileType.Solidity.SOLID) {
@@ -63,12 +73,14 @@ public class ActionKick extends EntityAction {
 
 		if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
 			if (Utils.roll(6) == 1) {
-				getDungeon().logRandom(
-					"The door crashes open!",
-					"The door falls off its hinges!",
-					"You kick the door off its hinges!",
-					"You kick the door down!"
-				);
+				if (isPlayer) {
+					getDungeon().logRandom(
+						"The door crashes open!",
+						"The door falls off its hinges!",
+						"You kick the door off its hinges!",
+						"You kick the door down!"
+					);
+				}
 
 				entity.getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
 			} else {
