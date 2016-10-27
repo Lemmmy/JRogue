@@ -44,8 +44,7 @@ public abstract class AI {
 	protected boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 				y < 0 || y > monster.getLevel().getHeight()) &&
-			monster.getLevel().getTile(x, y).getSolidity() != TileType.Solidity.SOLID &&
-			monster.getLevel().getEntitiesAt(x, y).size() <= 0;
+				monster.getLevel().getTile(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 
 	protected boolean canMoveTowardsPlayer() {
