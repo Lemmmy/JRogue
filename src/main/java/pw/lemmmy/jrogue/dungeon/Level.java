@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Level {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
@@ -130,6 +131,24 @@ public class Level {
 
 	public boolean removeEntity(Entity entity) {
 		return entities.remove(entity);
+	}
+
+	public List<Entity> getEntitiesAt(int x, int y) {
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y).collect(Collectors.toList());
+	}
+
+	public List<Tile> getTilesInRadius(int x, int y, int r) {
+		List<Tile> found = new ArrayList<>();
+
+		for (int i = y - r; i < y + r; i++) {
+			for (int j = x - r; j < x + r; j++) {
+				if (Utils.distance(x, y, i, j) <= r) {
+					found.add(getTileInfo(i, j));
+				}
+			}
+		}
+
+		return found;
 	}
 
 	public Color getAmbientLight() {

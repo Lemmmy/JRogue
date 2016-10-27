@@ -74,4 +74,9 @@ public class Tile {
 	public void setAbsorb(int absorb) {
 		this.absorb = absorb;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof Tile && ((Tile) o).getX() == x && ((Tile) o).getY() == y;
+	}
 }

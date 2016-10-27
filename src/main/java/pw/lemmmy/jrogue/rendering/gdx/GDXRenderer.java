@@ -364,7 +364,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		s = s.replace("[GREEN]", "[P_GREEN_3]");
 		s = s.replace("[CYAN]", "[P_CYAN_1]");
 		s = s.replace("[BLUE]", "[P_BLUE_1]");
-		s = s.replace("[YELLOW]", "[P_YELlOW]");
+		s = s.replace("[YELLOW]", "[P_YELLOW]");
 
 		return s;
 	}

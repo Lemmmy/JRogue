@@ -77,4 +77,28 @@ public class Utils {
 
 		return o;
 	}
+
+	public static int distanceSq(int ax, int ay, int bx, int by) {
+		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
+	}
+
+	public static float distanceSq(float ax, float ay, float bx, float by) {
+		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
+	}
+
+	public static double distanceSq(double ax, double ay, double bx, double by) {
+		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
+	}
+
+	public static int distance(int ax, int ay, int bx, int by) {
+		return (int) Math.sqrt(distanceSq(ax, ay, bx, by));
+	}
+
+	public static float distance(float ax, float ay, float bx, float by) {
+		return (float) Math.sqrt(distanceSq(ax, ay, bx, by));
+	}
+
+	public static double distance(double ax, double ay, double bx, double by) {
+		return Math.sqrt(distanceSq(ax, ay, bx, by));
+	}
 }
