@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
@@ -134,7 +135,7 @@ public class Dungeon {
 		boolean somebodyCanMove = false;
 
 		for (Entity entity : level.getEntities()) {
-			if (entity instanceof Player) {
+			if (!(entity instanceof EntityTurnBased) || entity instanceof Player) {
 				continue;
 			}
 
@@ -142,17 +143,19 @@ public class Dungeon {
 				continue;
 			}
 
-			if (entity.getMovementPoints() < NORMAL_SPEED) {
+			EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
+
+			if (turnBasedEntity.getMovementPoints() < NORMAL_SPEED) {
 				continue;
 			}
 
-			entity.setMovementPoints(entity.getMovementPoints() - NORMAL_SPEED);
+			turnBasedEntity.setMovementPoints(turnBasedEntity.getMovementPoints() - NORMAL_SPEED);
 
-			if (entity.getMovementPoints() >= NORMAL_SPEED) {
+			if (turnBasedEntity.getMovementPoints() >= NORMAL_SPEED) {
 				somebodyCanMove = true;
 			}
 
-			entity.move();
+			turnBasedEntity.move();
 		}
 
 		return somebodyCanMove;
@@ -179,7 +182,12 @@ public class Dungeon {
 			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
 				for (Entity entity : level.getEntities()) {
 					entity.update();
-					entity.setMovementPoints(entity.getMovementSpeed());
+
+					if (entity instanceof EntityTurnBased) {
+						EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
+
+						turnBasedEntity.setMovementPoints(turnBasedEntity.getMovementSpeed());
+					}
 				}
 
 				if (player.getMovementPoints() < 0) {

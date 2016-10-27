@@ -16,9 +16,6 @@ public abstract class Entity {
 	private Dungeon dungeon;
 	private Level level;
 
-	private int movementPoints = 0;
-	private EntityAction nextAction;
-
 	private List<StatusEffect> statusEffects = new ArrayList<>();
 
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
@@ -31,29 +28,6 @@ public abstract class Entity {
 	public abstract String getName();
 
 	public abstract Appearance getAppearance();
-
-	public void setAction(EntityAction action) {
-		nextAction = action;
-	}
-
-	public boolean hasAction() {
-		return nextAction != null;
-	}
-
-	public void move() {
-		if (hasAction()) {
-			nextAction.execute();
-			nextAction = null;
-		}
-	}
-
-	public int getMovementPoints() {
-		return movementPoints;
-	}
-
-	public void setMovementPoints(int movementPoints) {
-		this.movementPoints = movementPoints;
-	}
 
 	public int getX() {
 		return x;
@@ -114,6 +88,4 @@ public abstract class Entity {
 	public List<StatusEffect> getStatusEffects() {
 		return statusEffects;
 	}
-
-	public abstract int getMovementSpeed();
 }

@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 
-public abstract class LivingEntity extends Entity {
+public abstract class LivingEntity extends EntityTurnBased {
 	public int health;
 
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) {
