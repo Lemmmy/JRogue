@@ -8,24 +8,36 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
 public abstract class Monster extends LivingEntity {
 	private AI ai;
 
-	public Monster(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
+		super(dungeon, level, x, y, experienceLevel);
+	}
+
+	public AI getAI() {
+		return ai;
+	}
+
+	public void setAI(AI ai) {
+		this.ai = ai;
 	}
 
 	@Override
 	public void update() {
 		super.update();
 
-		ai.update();
+		if (ai != null) {
+			ai.update();
+		}
 	}
 
 	public abstract int getVisibilityRange();
+
+	public abstract boolean canMoveDiagonally();
 
 	public abstract boolean canMeleeAttack();
 	public abstract boolean canRangedAttack();
 	public abstract boolean canMagicAttack();
 
-	public abstract void meleeAttackPlayer();
-	public abstract void rangedAttackPlayer();
-	public abstract void magicAttackPlayer();
+	public void meleeAttackPlayer() {};
+	public void rangedAttackPlayer() {};
+	public void magicAttackPlayer() {};
 }

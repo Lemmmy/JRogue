@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -261,6 +262,12 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		spawnRoom.setSpawn();
 		level.setSpawnPoint(stairX, stairY);
+
+		int testX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
+		int testY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
+
+		MonsterJackal testMonster = new MonsterJackal(level.getDungeon(), level, testX, testY);
+		level.addEntity(testMonster);
 
 		return true;
 	}

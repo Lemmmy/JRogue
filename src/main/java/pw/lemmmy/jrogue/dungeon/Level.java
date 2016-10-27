@@ -28,6 +28,8 @@ public class Level {
 
 	public List<List<Tile>> lightTiles;
 
+	private Dungeon dungeon;
+
 	private int width;
 	private int height;
 	/**
@@ -40,7 +42,9 @@ public class Level {
 
 	private List<Entity> entities;
 
-	public Level(int width, int height, int depth) {
+	public Level(Dungeon dungeon, int width, int height, int depth) {
+		this.dungeon = dungeon;
+
 		this.width = width;
 		this.height = height;
 
@@ -70,6 +74,10 @@ public class Level {
 
 	public int getDepth() {
 		return depth;
+	}
+
+	public Dungeon getDungeon() {
+		return dungeon;
 	}
 
 	public Tile getTileInfo(int x, int y) {

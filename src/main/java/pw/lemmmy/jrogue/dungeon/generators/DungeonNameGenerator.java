@@ -118,7 +118,7 @@ public class DungeonNameGenerator {
 			"Laughing Skulls",
 			"Living Dead",
 			"Lonely",
-			"Mesmerizing",
+			"Mesmerising",
 			"Mysterious",
 			"Mystic",
 			"Narrow",

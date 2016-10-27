@@ -462,7 +462,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudPlayerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
-			StringUtils.capitalize(player.getName()),
+			StringUtils.capitalize(player.getName(false)),
 			"Wizard",
 			"P_GREEN_3",
 			player.getHealth(),

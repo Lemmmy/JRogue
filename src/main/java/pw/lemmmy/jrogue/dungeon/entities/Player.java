@@ -13,7 +13,7 @@ public class Player extends LivingEntity {
 	private int baseSpeed = Dungeon.NORMAL_SPEED;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name) {
-		super(dungeon, level, x, y);
+		super(dungeon, level, x, y, 1);
 
 		this.name = name;
 
@@ -51,7 +51,7 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	public String getName() {
+	public String getName(boolean requiresCapitalisation) {
 		return name;
 	}
 
@@ -111,7 +111,7 @@ public class Player extends LivingEntity {
 			@Override
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					getDungeon().log(String.format("Invalid direction [YELLOW]'%s'[].", response));
+					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
 				} else {
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
 					setAction(new ActionKick(getDungeon(), Player.this, d));

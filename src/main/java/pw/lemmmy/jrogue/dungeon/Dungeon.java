@@ -58,7 +58,7 @@ public class Dungeon {
 		boolean gotLevel = false;
 
 		do {
-			level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 
 			if (!(new StandardDungeonGenerator(level).generate())) {
 				continue;

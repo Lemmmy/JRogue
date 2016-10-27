@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public abstract class Entity {
 		this.y = y;
 	}
 
-	public abstract String getName();
+	public abstract String getName(boolean requiresCapitalisation);
 
 	public abstract Appearance getAppearance();
 

@@ -3,7 +3,9 @@ package pw.lemmmy.jrogue.rendering.gdx.entities;
 import pw.lemmmy.jrogue.dungeon.entities.Appearance;
 
 public enum EntityMap {
-	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0));
+	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0)),
+
+	APPEARANCE_JACKAL(0, 2);
 
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;
@@ -15,7 +17,7 @@ public enum EntityMap {
 	}
 
 	EntityMap(int sheetX, int sheetY) {
-		this("tiles.png", sheetX, sheetY);
+		this("entities.png", sheetX, sheetY);
 	}
 
 	EntityMap(String sheetName, int sheetX, int sheetY) {

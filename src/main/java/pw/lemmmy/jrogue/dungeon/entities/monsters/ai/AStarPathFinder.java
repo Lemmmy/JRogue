@@ -44,8 +44,8 @@ public class AStarPathFinder {
 			open.remove(current);
 			closed.add(current);
 
-			for (int y = -1; y < 2; y++) {
-				for (int x = -1; x < 2; x++) {
+			for (int x = -1; x < 2; x++) {
+				for (int y = -1; y < 2; y++) {
 					if (x == 0 && y == 0) {
 						continue;
 					}
@@ -85,6 +85,8 @@ public class AStarPathFinder {
 		}
 
 		if (nodes[width * ty + tx].parent == null) {
+			System.out.println("Node is null");
+
 			return null;
 		}
 
@@ -104,8 +106,7 @@ public class AStarPathFinder {
 	private static boolean isValidLocation(Level level, int x, int y) {
 		return !(x < 0 || x > level.getWidth() ||
 				y < 0 || y > level.getHeight()) &&
-			level.getTile(x, y).getSolidity() != TileType.Solidity.SOLID &&
-			level.getEntitiesAt(x, y).size() <= 0;
+				level.getTile(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 
 	private static float getHeuristicCost(int x, int y, int tx, int ty) {
