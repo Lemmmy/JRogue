@@ -61,7 +61,7 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void onKick(Entity kicker) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().You("step on your own foot.");
 	}
 
@@ -114,7 +114,13 @@ public class Player extends LivingEntity {
 					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
 				} else {
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-					setAction(new ActionKick(getDungeon(), Player.this, d));
+
+					if (getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).size() > 0) {
+						setAction(new ActionKick(getDungeon(), Player.this, d, getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).get(0)));
+					} else {
+						setAction(new ActionKick(getDungeon(), Player.this, d));
+					}
+
 					getDungeon().turn();
 				}
 			}

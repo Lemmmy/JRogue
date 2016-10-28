@@ -61,7 +61,7 @@ public abstract class Entity {
 		this.level = level;
 	}
 
-	protected abstract void onKick(Entity kicker);
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
 
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
@@ -86,5 +86,9 @@ public abstract class Entity {
 
 	public List<StatusEffect> getStatusEffects() {
 		return statusEffects;
+	}
+
+	public void kick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		onKick(kicker, isPlayer, dx, dy);
 	}
 }

@@ -12,17 +12,21 @@ import pw.lemmmy.jrogue.utils.Utils;
 
 public class ActionKick extends EntityAction {
 	private Integer[] direction;
+	private Entity kickedEntity;
 
 	public ActionKick(Dungeon dungeon, Entity entity, Integer[] direction) {
+		this(dungeon, entity, direction, null);
+	}
+
+	public ActionKick(Dungeon dungeon, Entity entity, Integer[] direction, Entity kickedEntity) {
 		super(dungeon, entity);
 
 		this.direction = direction;
+		this.kickedEntity = kickedEntity;
 	}
 
 	@Override
 	public void execute() {
-		// TODO: Check for entities
-
 		int dx = getEntity().getX() + direction[0];
 		int dy = getEntity().getY() + direction[1];
 
@@ -35,6 +39,9 @@ public class ActionKick extends EntityAction {
 		boolean isPlayer = getEntity() instanceof Player;
 		LivingEntity entity = (LivingEntity) getEntity();
 
+		// TODO: If the player has low wisdom, bypass the foot/leg check.
+		// Damage their injured foot/leg further.
+
 		if (isPlayer && entity.hasStatusEffect(InjuredFoot.class)) {
 			getDungeon().Your("foot is in no shape for kicking.");
 			return;
@@ -45,6 +52,18 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 
+		if (kickedEntity != null) {
+			entityKick(entity, isPlayer, dx, dy);
+		} else {
+			tileKick(entity, isPlayer, dx, dy);
+		}
+	}
+
+	private void entityKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		kickedEntity.kick(kicker, isPlayer, dx, dy);
+	}
+
+	private void tileKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		TileType tile = getEntity().getLevel().getTile(dx, dy);
 
 		if (tile == null || tile.getSolidity() != TileType.Solidity.SOLID) {
@@ -60,8 +79,8 @@ public class ActionKick extends EntityAction {
 					);
 				}
 
-				entity.damage(DamageSource.KICKING_THIN_AIR, 1);
-				entity.addStatusEffect(new StrainedLeg(getDungeon(), entity, Utils.roll(3, 6)));
+				kicker.damage(DamageSource.KICKING_THIN_AIR, 1);
+				kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
 					getDungeon().You("kick thin air.");
@@ -82,7 +101,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 
-				entity.getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
+				kicker.getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
 			} else {
 				getDungeon().logRandom(
 					"WHAMM!!",
@@ -102,8 +121,8 @@ public class ActionKick extends EntityAction {
 					);
 				}
 
-				entity.damage(DamageSource.KICKING_A_WALL, 1);
-				entity.addStatusEffect(new InjuredFoot(getDungeon(), entity, Utils.roll(3, 6)));
+				kicker.damage(DamageSource.KICKING_A_WALL, 1);
+				kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
 					getDungeon().log("Ouch! That hurt!");

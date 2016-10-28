@@ -4,7 +4,9 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Appearance;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -78,11 +80,39 @@ public class MonsterJackal extends Monster {
 	}
 
 	@Override
-	protected void onKick(Entity kicker) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		if (Utils.roll(1, 3) == 1) { // TODO: If a player has a higher agility, the monster is less likely to dodge
+			getDungeon().The("%s dodges your kick!", getName(false));
+
+			return;
+		}
+
 		getDungeon().You("kick the %s!", getName(false));
 
 		if (Utils.roll(1, 3) == 1) { // TODO: Make this dependent on player strength?
 			damage(DamageSource.PLAYER_KICK, 1);
+		}
+
+		if (isAlive()) {
+			if (Utils.roll(1, 3) == 1) {
+				getDungeon().The("%s bites your foot!", getName(false));
+
+				if (Utils.roll(1, 2) == 1) {
+					getDungeon().log("The bite was pretty deep!");
+
+					kicker.damage(DamageSource.KICK_REVENGE, 1);
+					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
+				}
+			} else if (Utils.roll(1, 3) == 1) {
+				getDungeon().The("%s yanks your leg!", getName(false));
+
+				if (Utils.roll(1, 2) == 1) {
+					getDungeon().log("It strains your leg!");
+
+					kicker.damage(DamageSource.KICK_REVENGE, 1);
+					kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
+				}
+			}
 		}
 	}
 }
