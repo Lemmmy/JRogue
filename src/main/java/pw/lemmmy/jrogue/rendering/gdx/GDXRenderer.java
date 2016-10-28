@@ -466,6 +466,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			}
 
 			hudEffectsLabel.setText(StringUtils.join(effects, " "));
+		} else {
+			hudEffectsLabel.setText("");
 		}
 	}
 
