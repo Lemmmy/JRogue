@@ -1,11 +1,13 @@
 package pw.lemmmy.jrogue.rendering.gdx.entities;
 
-import pw.lemmmy.jrogue.dungeon.entities.Appearance;
+import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 
 public enum EntityMap {
 	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0)),
 
-	APPEARANCE_JACKAL(0, 2);
+	APPEARANCE_JACKAL(0, 2),
+
+	APPEARANCE_ITEM(new EntityRendererItem());
 
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;
@@ -24,8 +26,8 @@ public enum EntityMap {
 		this.renderer = new EntityRendererBasic(sheetName, sheetX, sheetY);
 	}
 
-	public Appearance getAppearance() {
-		return Appearance.valueOf(name());
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.valueOf(name());
 	}
 
 	public EntityRenderer getRenderer() {

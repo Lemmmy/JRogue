@@ -9,6 +9,7 @@ import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Dungeon {
@@ -166,6 +167,8 @@ public class Dungeon {
 			listener.onBeforeTurn(turn + 1);
 		}
 
+		level.processEntityQueues();
+
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 
 		do {
@@ -201,6 +204,8 @@ public class Dungeon {
 		} while (player.getMovementPoints() < NORMAL_SPEED);
 
 		player.move();
+
+		level.processEntityQueues();
 
 		getLevel().updateSight(getPlayer());
 

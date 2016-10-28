@@ -2,7 +2,10 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
+
+import java.util.List;
 
 public abstract class LivingEntity extends EntityTurnBased {
 	public int health;
@@ -70,4 +73,19 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 
 	public abstract int getMovementSpeed();
+
+	public void drop(ItemStack item) {
+		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
+
+		for (Entity entity : entities) {
+			if (entity instanceof EntityItem && ((EntityItem) entity).getItem() == item.getItem()) {
+				((EntityItem) entity).getItemStack().addCount(item.getCount());
+
+				return;
+			}
+		}
+
+		EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
+		getLevel().addEntity(entityItem);
+	}
 }

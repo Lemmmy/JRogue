@@ -317,11 +317,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private void drawEntities() {
 		for (Entity entity : dungeon.getLevel().getEntities()) {
+			if (entity instanceof Player) {
+				continue; // don't draw the player yet
+			}
+
 			EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 
 			if (em.getRenderer() != null) {
 				em.getRenderer().draw(batch, dungeon, entity);
 			}
+		}
+
+		if (dungeon.getPlayer() != null) {
+			EntityMap.APPEARANCE_PLAYER.getRenderer().draw(batch, dungeon, dungeon.getPlayer()); // draw the player on top
 		}
 	}
 

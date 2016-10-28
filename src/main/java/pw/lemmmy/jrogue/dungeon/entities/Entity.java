@@ -26,7 +26,7 @@ public abstract class Entity {
 
 	public abstract String getName(boolean requiresCapitalisation);
 
-	public abstract Appearance getAppearance();
+	public abstract EntityAppearance getAppearance();
 
 	public int getX() {
 		return x;
@@ -61,7 +61,9 @@ public abstract class Entity {
 		this.level = level;
 	}
 
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
+
+	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
 
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
@@ -88,7 +90,13 @@ public abstract class Entity {
 		return statusEffects;
 	}
 
-	public void kick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		onKick(kicker, isPlayer, dx, dy);
+	public void kick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		onKick(kicker, isPlayer, x, y);
 	}
+
+	public void walk(LivingEntity walker, boolean isPlayer) {
+		onWalk(walker, isPlayer);
+	}
+
+	public abstract boolean canBeWalkedOn();
 }

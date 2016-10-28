@@ -85,8 +85,6 @@ public class AStarPathFinder {
 		}
 
 		if (nodes[width * ty + tx].parent == null) {
-			System.out.println("Node is null");
-
 			return null;
 		}
 

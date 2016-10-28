@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,9 @@ public class Level {
 	private int spawnY;
 
 	private List<Entity> entities;
+
+	private List<Entity> entityAddQueue = new ArrayList<>();
+	private List<Entity> entityRemoveQueue = new ArrayList<>();
 
 	public Level(Dungeon dungeon, int width, int height, int depth) {
 		this.dungeon = dungeon;
@@ -134,15 +138,37 @@ public class Level {
 	}
 
 	public boolean addEntity(Entity entity) {
-		return entities.add(entity);
+		return entityAddQueue.add(entity);
 	}
 
 	public boolean removeEntity(Entity entity) {
-		return entities.remove(entity);
+		return entityRemoveQueue.add(entity);
+	}
+
+	public void processEntityQueues() {
+		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
+			Entity entity = iterator.next();
+			entities.add(entity);
+			iterator.remove();
+		}
+
+		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
+			Entity entity = iterator.next();
+			entities.remove(entity);
+			iterator.remove();
+		}
 	}
 
 	public List<Entity> getEntitiesAt(int x, int y) {
 		return entities.stream().filter(o -> o.getX() == x && o.getY() == y).collect(Collectors.toList());
+	}
+
+	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && !o.canBeWalkedOn()).collect(Collectors.toList());
+	}
+
+	public List<Entity> getWalkableEntitiesAt(int x, int y) {
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && o.canBeWalkedOn()).collect(Collectors.toList());
 	}
 
 	public List<Tile> getTilesInRadius(int x, int y, int r) {

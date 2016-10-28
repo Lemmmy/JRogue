@@ -56,14 +56,17 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	public Appearance getAppearance() {
-		return Appearance.APPEARANCE_PLAYER;
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_PLAYER;
 	}
 
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("step on your own foot.");
 	}
+
+	@Override
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 
 	public void walk(int dx, int dy) {
 		dx = Math.max(-1, Math.min(1, dx));
@@ -125,5 +128,10 @@ public class Player extends LivingEntity {
 				}
 			}
 		}, true));
+	}
+
+	@Override
+	public boolean canBeWalkedOn() {
+		return false;
 	}
 }

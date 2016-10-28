@@ -40,4 +40,12 @@ public abstract class Monster extends LivingEntity {
 	public void meleeAttackPlayer() {};
 	public void rangedAttackPlayer() {};
 	public void magicAttackPlayer() {};
+
+	@Override
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+
+	@Override
+	public boolean canBeWalkedOn() {
+		return false;
+	}
 }
