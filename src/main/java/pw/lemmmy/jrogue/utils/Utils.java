@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.utils;
 
 import com.badlogic.gdx.Input;
-import org.apache.commons.math3.random.MersenneTwister;
+import com.github.alexeyr.pcg.Pcg32;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ public class Utils {
 
 	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-	private static final MersenneTwister rand = new MersenneTwister();
+	private static final Pcg32 rand = new Pcg32();
 
 	@SafeVarargs
 	public static <T> T randomFrom(T... items) {

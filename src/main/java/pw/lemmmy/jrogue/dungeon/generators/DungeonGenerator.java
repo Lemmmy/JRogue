@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
-import org.apache.commons.math3.random.MersenneTwister;
+import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class DungeonGenerator {
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
-	protected MersenneTwister rand = new MersenneTwister();
+	protected Pcg32 rand = new Pcg32();
 
 	public DungeonGenerator(Level level) {
 		this.level = level;
