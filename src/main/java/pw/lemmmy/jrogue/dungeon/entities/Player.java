@@ -38,6 +38,8 @@ public class Player extends LivingEntity {
 		this.wisdom = role.getWisdom() + (int) ((float) role.getWisdom() * rand.nextFloat(role.getWisdomRemaining()));
 		this.charisma = role.getCharisma() + (int) ((float) role.getCharisma() * rand.nextFloat(role.getCharismaRemaining()));
 
+		setHealth(getMaxHealth());
+
 		this.setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 

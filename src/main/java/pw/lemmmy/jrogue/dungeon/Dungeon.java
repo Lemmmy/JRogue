@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -171,9 +172,13 @@ public class Dungeon {
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 
 		do {
-			boolean entitiesCanMove;
+			boolean entitiesCanMove = false;
 
 			do {
+				if (!player.isAlive()) {
+					break;
+				}
+
 				entitiesCanMove = moveEntities();
 
 				if (player.getMovementPoints() > NORMAL_SPEED) {
@@ -183,6 +188,14 @@ public class Dungeon {
 
 			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
 				for (Entity entity : level.getEntities()) {
+					if (!player.isAlive()) {
+						break;
+					}
+
+					if (entity instanceof LivingEntity && !((LivingEntity) entity).isAlive()) {
+						continue;
+					}
+
 					entity.update();
 
 					if (entity instanceof EntityTurnBased) {
@@ -200,9 +213,17 @@ public class Dungeon {
 
 				update();
 			}
-		} while (player.getMovementPoints() < NORMAL_SPEED);
+		} while (player.isAlive() && player.getMovementPoints() < NORMAL_SPEED);
 
-		player.move();
+		if (player.isAlive()) {
+			player.move();
+		} else {
+			for (Listener listener : listeners) {
+				listener.onPrompt(prompt);
+			}
+
+			return;
+		}
 
 		level.processEntityQueues();
 
