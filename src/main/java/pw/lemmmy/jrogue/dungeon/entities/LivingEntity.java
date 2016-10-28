@@ -55,6 +55,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	protected void die(DamageSource damageSource) {
 		onDie(damageSource);
+
+		getLevel().removeEntity(this);
 	}
 
 	protected abstract void onDie(DamageSource damageSource);

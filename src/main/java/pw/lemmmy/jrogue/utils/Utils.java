@@ -72,7 +72,7 @@ public class Utils {
 		int o = b;
 
 		for (int i = 0; i < a; i++) {
-			o += rand.nextInt(x);
+			o += rand.nextInt(x - 1) + 1;
 		}
 
 		return o;

@@ -369,35 +369,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		return s;
 	}
 
-//	private void drawHUD() {
-//		Player player = dungeon.getPlayer();
-//
-//		drawHUDString(
-//			String.format(
-//				"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
-//				StringUtils.capitalize(player.getName()),
-//				"Wizard",
-//				"P_GREEN_3",
-//				player.getHealth(),
-//				player.getMaxHealth()
-//			),
-//			6, 7,
-//			Color.WHITE,
-//			32
-//		);
-//
-//		int logSize = Math.min(5, log.size());
-//
-//		for (int i = 0; i < logSize; i++) {
-//			String entry = log.get(log.size() - (logSize - i));
-//
-//			if (i < logSize - 1) {
-//				entry = "[#CCCCCCEE]" + entry;
-//			}
-//
-//			drawHUDString(entry, 6, 34 + (16 * i), Color.WHITE, 16);
-//		}
-//	}
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
@@ -474,6 +445,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 			for (StatusEffect effect : player.getStatusEffects()) {
 				switch (effect.getSeverity()) {
+					case MINOR:
+						effects.add("[P_YELLOW]" + effect.getName() + "[]");
+						break;
 					case MAJOR:
 						effects.add("[P_ORANGE_2]" + effect.getName() + "[]");
 						break;

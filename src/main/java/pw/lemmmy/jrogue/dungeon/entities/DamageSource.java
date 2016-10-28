@@ -8,5 +8,7 @@ public enum DamageSource {
 
 	CANINE_BITE,
 
-	KICK_REVENGE, PLAYER_KICK
+	KICK_REVENGE,
+
+	PLAYER_KICK
 }
