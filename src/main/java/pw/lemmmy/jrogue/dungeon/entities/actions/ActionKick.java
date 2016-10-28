@@ -39,19 +39,6 @@ public class ActionKick extends EntityAction {
 		boolean isPlayer = getEntity() instanceof Player;
 		LivingEntity entity = (LivingEntity) getEntity();
 
-		// TODO: If the player has low wisdom, bypass the foot/leg check.
-		// Damage their injured foot/leg further.
-
-		if (isPlayer && entity.hasStatusEffect(InjuredFoot.class)) {
-			getDungeon().Your("foot is in no shape for kicking.");
-			return;
-		}
-
-		if (isPlayer && entity.hasStatusEffect(StrainedLeg.class)) {
-			getDungeon().Your("leg is in no shape for kicking.");
-			return;
-		}
-
 		if (kickedEntity != null) {
 			entityKick(entity, isPlayer, dx, dy);
 		} else {
@@ -79,7 +66,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 
-				kicker.damage(DamageSource.KICKING_THIN_AIR, 1);
+				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker, isPlayer);
 				kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
@@ -121,7 +108,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 
-				kicker.damage(DamageSource.KICKING_A_WALL, 1);
+				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker, isPlayer);
 				kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {

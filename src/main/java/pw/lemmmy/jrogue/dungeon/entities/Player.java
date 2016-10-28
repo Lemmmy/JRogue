@@ -26,7 +26,7 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage) {
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 
 	}
 
@@ -116,6 +116,19 @@ public class Player extends LivingEntity {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
 					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
 				} else {
+					// TODO: If the player has low wisdom, bypass the foot/leg check.
+					// Damage their injured foot/leg further.
+
+					if (hasStatusEffect(InjuredFoot.class)) {
+						getDungeon().Your("foot is in no shape for kicking.");
+						return;
+					}
+
+					if (hasStatusEffect(StrainedLeg.class)) {
+						getDungeon().Your("leg is in no shape for kicking.");
+						return;
+					}
+
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
 
 					if (getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).size() > 0) {

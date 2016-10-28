@@ -40,12 +40,12 @@ public abstract class LivingEntity extends EntityTurnBased {
 		experienceLevel = level;
 	}
 
-	public boolean damage(DamageSource damageSource, int damage) {
+	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 
 		health = Math.max(0, health - damageModifier);
 
-		onDamage(damageSource, damage);
+		onDamage(damageSource, damage, attacker, isPlayer);
 
 		if (health <= 0) {
 			die(damageSource);
@@ -54,7 +54,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return health <= 0;
 	}
 
-	protected abstract void onDamage(DamageSource damageSource, int damage);
+	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
 
 	protected void die(DamageSource damageSource) {
 		onDie(damageSource);
