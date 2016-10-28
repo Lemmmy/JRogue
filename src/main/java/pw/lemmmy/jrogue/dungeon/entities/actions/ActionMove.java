@@ -21,7 +21,13 @@ public class ActionMove extends EntityAction {
 
 	@Override
 	public void execute() {
-		if (getEntity().getLevel().getUnwalkableEntitiesAt(x, y).size() > 0) {
+		List<Entity> unwalkable = getEntity().getLevel().getUnwalkableEntitiesAt(x, y);
+
+		if (unwalkable.size() > 0) {
+			if (getEntity() instanceof Player) {
+				getDungeon().The("%s beats you to it!", unwalkable.get(0).getName(false));
+			}
+
 			return;
 		}
 
@@ -35,10 +41,10 @@ public class ActionMove extends EntityAction {
 			}
 		}
 
-		List<Entity> entities = getEntity().getLevel().getWalkableEntitiesAt(x, y);
+		List<Entity> walkable = getEntity().getLevel().getWalkableEntitiesAt(x, y);
 
-		if (entities.size() > 0) {
-			for (Entity entity : entities) {
+		if (walkable.size() > 0) {
+			for (Entity entity : walkable) {
 				entity.walk((LivingEntity) getEntity(), getEntity() instanceof Player);
 			}
 		}
