@@ -44,6 +44,10 @@ public class ImageLoader {
 	}
 
 	public static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY, int width, int height) {
+		return getImageFromSheet(sheetName, sheetX, sheetY, width, height, true);
+	}
+
+	public static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY, int width, int height, boolean flipped) {
 		Texture sheet = ImageLoader.getImage(sheetName);
 
 		if (sheet == null) {
@@ -52,7 +56,7 @@ public class ImageLoader {
 		}
 
 		TextureRegion region = new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
-		region.flip(false, true);
+		region.flip(false, flipped);
 
 		return region;
 	}

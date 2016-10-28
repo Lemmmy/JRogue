@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.*;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
@@ -8,21 +9,73 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class Player extends LivingEntity {
+	private Pcg32 rand = new Pcg32();
+
 	private String name;
+	private Role role;
 
 	private int baseSpeed = Dungeon.NORMAL_SPEED;
 
-	public Player(Dungeon dungeon, Level level, int x, int y, String name) {
+	private int strength;
+	private int agility;
+	private int dexterity;
+	private int constitution;
+	private int intelligence;
+	private int wisdom;
+	private int charisma;
+
+	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
 
 		this.name = name;
+		this.role = role;
+
+		this.strength = role.getStrength() + (int) ((float) role.getStrength() * rand.nextFloat(role.getStrengthRemaining()));
+		this.agility = role.getAgility() + (int) ((float) role.getAgility() * rand.nextFloat(role.getAgilityRemaining()));
+		this.dexterity = role.getDexterity() + (int) ((float) role.getDexterity() * rand.nextFloat(role.getDexterityRemaining()));
+		this.constitution = role.getConstitution() + (int) ((float) role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining()));
+		this.intelligence = role.getIntelligence() + (int) ((float) role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining()));
+		this.wisdom = role.getWisdom() + (int) ((float) role.getWisdom() * rand.nextFloat(role.getWisdomRemaining()));
+		this.charisma = role.getCharisma() + (int) ((float) role.getCharisma() * rand.nextFloat(role.getCharismaRemaining()));
 
 		this.setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 
+	public int getStrength() {
+		return strength;
+	}
+
+	public int getAgility() {
+		return agility;
+	}
+
+	public int getDexterity() {
+		return dexterity;
+	}
+
+	public int getConstitution() {
+		return constitution;
+	}
+
+	public int getIntelligence() {
+		return intelligence;
+	}
+
+	public int getWisdom() {
+		return wisdom;
+	}
+
+	public int getCharisma() {
+		return charisma;
+	}
+
+	public int getConstitutionBonus() {
+		return (int) Math.floor(0.25 * getConstitution() - 2);
+	}
+
 	@Override
 	public int getMaxHealth() {
-		return 10;
+		return 10 + getConstitutionBonus();
 	}
 
 	@Override
@@ -58,6 +111,15 @@ public class Player extends LivingEntity {
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_PLAYER;
+	}
+
+	@Override
+	public void update() {
+		super.update();
+
+		if (getHealth() > getMaxHealth()) {
+			setHealth(getMaxHealth());
+		}
 	}
 
 	@Override
@@ -146,5 +208,9 @@ public class Player extends LivingEntity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return false;
+	}
+
+	public Role getRole() {
+		return role;
 	}
 }

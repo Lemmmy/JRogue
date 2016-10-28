@@ -85,7 +85,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Skin hudSkin;
 	private Stage hudStage;
 	private Label hudPlayerLabel;
-	private Label hudStatsLabel;
+	private Table hudAttributes;
 	private Label hudEffectsLabel;
 	private Table hudLog;
 	private Label hudPromptLabel;
@@ -177,9 +177,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudTable.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
 		hudTable.row();
 
-		hudStatsLabel = new Label(null, hudSkin);
-		hudTable.add(hudStatsLabel).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
+		setupHUDAttributes(hudTable);
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
@@ -196,6 +194,48 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dialog.pad(18, 3, 3, 3);
 		dialog.text("This is a test.", hudSkin.get("windowStyle", Label.LabelStyle.class)).button(new TextButton("OK", hudSkin));
 		hudStage.addActor(dialog);*/
+	}
+
+	private void setupHUDAttributes(Table hudTable) {
+		hudAttributes = new Table();
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 0, 2, 16, 16, false)));
+		Label strengthLabel = new Label("STR: 0", hudSkin);
+		strengthLabel.setName("attributeStrength");
+		hudAttributes.add(strengthLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 1, 2, 16, 16, false)));
+		Label agilityLabel = new Label("AGI: 0", hudSkin);
+		agilityLabel.setName("attributeAgility");
+		hudAttributes.add(agilityLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 2, 2, 16, 16, false)));
+		Label dexterityLabel = new Label("DXT: 0", hudSkin);
+		dexterityLabel.setName("attributeDexterity");
+		hudAttributes.add(dexterityLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
+		Label constitutionLabel = new Label("CON: 0", hudSkin);
+		constitutionLabel.setName("attributeConstitution");
+		hudAttributes.add(constitutionLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 4, 2, 16, 16, false)));
+		Label intelligenceLabel = new Label("INT: 0", hudSkin);
+		intelligenceLabel.setName("attributeIntelligence");
+		hudAttributes.add(intelligenceLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 5, 2, 16, 16, false)));
+		Label wisdomLabel = new Label("WIS: 0", hudSkin);
+		wisdomLabel.setName("attributeWisdom");
+		hudAttributes.add(wisdomLabel).pad(0, 2, 0, 8);
+
+		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 6, 2, 16, 16, false)));
+		Label charismaLabel = new Label("CHA: 0", hudSkin);
+		charismaLabel.setName("attributeCharisma");
+		hudAttributes.add(charismaLabel).pad(0, 2, 0, 8);
+
+		hudTable.add(hudAttributes).left().pad(0, 1, 0, 1);
+		hudTable.row();
 	}
 
 	private void setupSkin() {
@@ -442,11 +482,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudPlayerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 			StringUtils.capitalize(player.getName(false)),
-			"Wizard",
+			player.getRole().getName(),
 			"P_GREEN_3",
 			player.getHealth(),
 			player.getMaxHealth()
 		));
+
+		((Label) hudAttributes.findActor("attributeStrength")).setText("STR: " + player.getStrength());
+		((Label) hudAttributes.findActor("attributeAgility")).setText("AGI: " + player.getAgility());
+		((Label) hudAttributes.findActor("attributeDexterity")).setText("DXT: " + player.getDexterity());
+		((Label) hudAttributes.findActor("attributeConstitution")).setText("CON: " + player.getConstitution());
+		((Label) hudAttributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
+		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
+		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
 
 		if (player.getStatusEffects().size() > 0) {
 			List<String> effects = new ArrayList<>();
@@ -479,7 +527,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudLog.clearChildren();
 
-		int logSize = Math.min(5, log.size());
+		int logSize = Math.min(7, log.size());
 
 		for (int i = 0; i < logSize; i++) {
 			String s = log.get(log.size() - (logSize - i));

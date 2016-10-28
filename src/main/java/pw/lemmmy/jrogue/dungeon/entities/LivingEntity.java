@@ -8,7 +8,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.util.List;
 
 public abstract class LivingEntity extends EntityTurnBased {
-	public int health;
+	private int health;
 	private int maxHealth;
 
 	private int experienceLevel = 1;
@@ -30,6 +30,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public int getDamageModifier(DamageSource damageSource, int damage) {
 		return damage;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 
 	public int getExperienceLevel() {
