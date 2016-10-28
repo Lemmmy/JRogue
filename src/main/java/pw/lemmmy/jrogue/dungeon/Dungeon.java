@@ -242,6 +242,10 @@ public class Dungeon {
 		return turn;
 	}
 
+	public void setTurn(long turn) {
+		this.turn = turn;
+	}
+
 	public void prompt(Prompt prompt) {
 		this.prompt = prompt;
 

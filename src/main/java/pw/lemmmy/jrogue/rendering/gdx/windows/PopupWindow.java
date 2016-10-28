@@ -1,9 +1,8 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 
@@ -21,8 +20,6 @@ public abstract class PopupWindow {
 		this.skin = skin;
 		this.dungeon = dungeon;
 		this.level = level;
-
-		initialiseWindow();
 	}
 
 	private void initialiseWindow() {
@@ -33,7 +30,33 @@ public abstract class PopupWindow {
 
 		populateWindow();
 
+		window.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+
 		stage.addActor(window);
+	}
+
+	public void show() {
+		initialiseWindow();
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public Skin getSkin() {
+		return skin;
+	}
+
+	public Dungeon getDungeon() {
+		return dungeon;
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public Window getWindow() {
+		return window;
 	}
 
 	public abstract String getTitle();

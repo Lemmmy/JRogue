@@ -3,10 +3,11 @@ package pw.lemmmy.jrogue.rendering.gdx.windows;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-public class Window extends com.badlogic.gdx.scenes.scene2d.ui.Dialog {
+public class Window extends Dialog {
 	private Button closeButton;
 
 	public Window(String title, Skin skin) {

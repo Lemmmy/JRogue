@@ -270,17 +270,21 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		textButtonStyle.up = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 0, 10, 10), 4, 4, 4, 4));
 		textButtonStyle.over = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 10, 0, 10, 10), 4, 4, 4, 4));
 		textButtonStyle.down = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 20, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.checked = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 30, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.checkedOver = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 40, 0, 10, 10), 4, 4, 4, 4));
 		textButtonStyle.disabled = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 50, 0, 10, 10), 4, 4, 4, 4));
 		textButtonStyle.font = hudSkin.getFont("defaultNoShadow");
 		textButtonStyle.fontColor = Colors.get("P_GREY_0");
 		textButtonStyle.downFontColor = Colors.get("P_GREY_0");
 		textButtonStyle.overFontColor = Colors.get("P_GREY_0");
-		textButtonStyle.checkedFontColor = Colors.get("P_GREEN_2");
-		textButtonStyle.checkedOverFontColor = Colors.get("P_GREEN_1");
 		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
 		hudSkin.add("default", textButtonStyle);
+
+		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+		textFieldStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 59, 10, 5, 18), 2, 2, 2, 2));
+		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 64, 10, 5, 18), 2, 2, 2, 2));
+		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 69, 10, 5, 18), 2, 2, 2, 2));
+		textFieldStyle.font = hudSkin.getFont("defaultNoShadow");
+		textFieldStyle.fontColor = Colors.get("P_GREY_0");
+		hudSkin.add("default", textFieldStyle);
 
 		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
 		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 5, 10, 18, 18));
@@ -426,7 +430,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		new DebugWindow(hudStage, hudSkin, dungeon, dungeon.getLevel());
+		new DebugWindow(hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
 	}
 
 	@Override
