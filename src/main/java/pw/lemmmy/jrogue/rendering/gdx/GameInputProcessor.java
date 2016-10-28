@@ -83,6 +83,12 @@ public class GameInputProcessor implements InputProcessor {
 
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+			if (keycode == Input.Keys.D) {
+				renderer.showDebugWindow();
+
+				return true;
+			}
+
 			if (keycode == Input.Keys.H) {
 				renderer.setupHUD();
 

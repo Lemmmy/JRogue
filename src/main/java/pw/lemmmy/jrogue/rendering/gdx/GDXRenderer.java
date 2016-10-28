@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
+import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -280,6 +282,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
 		hudSkin.add("default", textButtonStyle);
 
+		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
+		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 5, 10, 18, 18));
+		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 23, 10, 18, 18));
+		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 41, 10, 18, 18));
+		hudSkin.add("windowCloseButton", windowCloseButtonStyle);
+
 		Window.WindowStyle windowStyle = new Window.WindowStyle();
 		windowStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 10, 5, 20), 2, 2, 18, 1));
 		windowStyle.titleFont = hudSkin.getFont("defaultNoShadow");
@@ -415,6 +423,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		s = s.replace("[YELLOW]", "[P_YELLOW]");
 
 		return s;
+	}
+
+	public void showDebugWindow() {
+		new DebugWindow(hudStage, hudSkin, dungeon, dungeon.getLevel());
 	}
 
 	@Override
