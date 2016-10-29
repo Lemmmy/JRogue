@@ -183,19 +183,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
-
-		// hudTable.add(new TextButton("Test button", hudSkin));
-
-		/*Window window = new Window("Test window", hudSkin);
-		window.setMovable(true);
-		window.pad(18, 3, 3, 3);
-		hudStage.addActor(window);
-
-		Dialog dialog = new Dialog("Test dialog", hudSkin);
-		dialog.setMovable(true);
-		dialog.pad(18, 3, 3, 3);
-		dialog.text("This is a test.", hudSkin.get("windowStyle", Label.LabelStyle.class)).button(new TextButton("OK", hudSkin));
-		hudStage.addActor(dialog);*/
 	}
 
 	private void setupHUDAttributes(Table hudTable) {
@@ -285,6 +272,32 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		textFieldStyle.font = hudSkin.getFont("defaultNoShadow");
 		textFieldStyle.fontColor = Colors.get("P_GREY_0");
 		hudSkin.add("default", textFieldStyle);
+
+		com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle();
+		listStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 84, 10, 3, 3), 1, 1, 1, 1));
+		listStyle.selection = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 84, 22, 3, 3), 1, 1, 1, 1));
+		listStyle.font = hudSkin.getFont("defaultNoShadow");
+		listStyle.fontColorUnselected = Colors.get("P_GREY_0");
+		listStyle.fontColorSelected = Color.WHITE;
+		hudSkin.add("default", listStyle);
+
+		ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+		scrollPaneStyle.hScroll = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 21, 7, 4), 2, 1, 1, 1));
+		scrollPaneStyle.vScroll = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 17, 7, 4), 1, 1, 2, 1));
+		scrollPaneStyle.hScrollKnob = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 10, 7, 7), 2, 2, 2, 2));
+		scrollPaneStyle.vScrollKnob = scrollPaneStyle.hScrollKnob;
+		hudSkin.add("default", scrollPaneStyle);
+
+		SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
+		selectBoxStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 59, 10, 5, 18), 2, 2, 2, 2));
+		selectBoxStyle.backgroundDisabled = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 69, 10, 5, 18), 2, 2, 2, 2));
+		selectBoxStyle.backgroundOver = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 74, 10, 5, 18), 2, 2, 2, 2));
+		selectBoxStyle.backgroundOpen = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 79, 10, 5, 18), 2, 2, 2, 2));
+		selectBoxStyle.font = hudSkin.getFont("defaultNoShadow");
+		selectBoxStyle.fontColor = Colors.get("P_GREY_0");
+		selectBoxStyle.listStyle = listStyle;
+		selectBoxStyle.scrollStyle = scrollPaneStyle;
+		hudSkin.add("default", selectBoxStyle);
 
 		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
 		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 5, 10, 18, 18));
