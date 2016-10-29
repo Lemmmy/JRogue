@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class Entity {
+	private int lastX;
+	private int lastY;
+
 	private int x;
 	private int y;
 
@@ -22,6 +25,8 @@ public abstract class Entity {
 		this.level = level;
 		this.x = x;
 		this.y = y;
+		this.lastX = x;
+		this.lastY = y;
 	}
 
 	public abstract String getName(boolean requiresCapitalisation);
@@ -44,7 +49,25 @@ public abstract class Entity {
 		this.y = y;
 	}
 
+	public int getLastX() {
+		return lastX;
+	}
+
+	public void setLastX(int lastX) {
+		this.lastX = lastX;
+	}
+
+	public int getLastY() {
+		return lastY;
+	}
+
+	public void setLastY(int lastY) {
+		this.lastY = lastY;
+	}
+
 	public void setPosition(int x, int y) {
+		setLastX(getX());
+		setLastY(getY());
 		setX(x);
 		setY(y);
 	}

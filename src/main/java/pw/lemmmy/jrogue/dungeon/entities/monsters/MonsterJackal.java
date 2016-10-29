@@ -9,11 +9,14 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
 import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
+
+import java.util.List;
 
 public class MonsterJackal extends Monster {
 	public MonsterJackal(Dungeon dungeon, Level level, int x, int y) {
@@ -39,6 +42,21 @@ public class MonsterJackal extends Monster {
 	@Override
 	public int getMovementSpeed() {
 		return Dungeon.NORMAL_SPEED;
+	}
+
+	@Override
+	public int getWeight() {
+		return 300;
+	}
+
+	@Override
+	public int getNutrition() {
+		return 250;
+	}
+
+	@Override
+	public List<StatusEffect> getCorpseEffects() {
+		return null;
 	}
 
 	@Override

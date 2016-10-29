@@ -3,7 +3,10 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
+
+import java.util.List;
 
 public abstract class Monster extends LivingEntity {
 	private AI ai;
@@ -28,6 +31,11 @@ public abstract class Monster extends LivingEntity {
 			ai.update();
 		}
 	}
+
+	public abstract int getWeight();
+	public abstract int getNutrition();
+
+	public abstract List<StatusEffect> getCorpseEffects();
 
 	public abstract int getVisibilityRange();
 

@@ -1,8 +1,12 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 
-public class ItemCorpse extends Item {
+import java.util.List;
+
+public class ItemCorpse extends ItemComestible {
 	private LivingEntity entity;
 
 	public ItemCorpse(LivingEntity entity) {
@@ -11,11 +15,40 @@ public class ItemCorpse extends Item {
 
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return entity.getName(requiresCapitalisation) + " corpse" + (plural ? "s" : "");
+		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
+				entity.getName(requiresCapitalisation) +
+				" corpse" + (plural ? "s" : "");
+	}
+
+	@Override
+	public int getWeight() {
+		if (entity instanceof Monster) {
+			return ((Monster) entity).getWeight();
+		} else {
+			return 250;
+		}
 	}
 
 	@Override
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_CORPSE;
+	}
+
+	@Override
+	public int getNutrition() {
+		if (entity instanceof Monster) {
+			return ((Monster) entity).getNutrition();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public List<StatusEffect> getStatusEffects() {
+		if (entity instanceof Monster) {
+			return ((Monster) entity).getCorpseEffects();
+		} else {
+			return null;
+		}
 	}
 }

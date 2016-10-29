@@ -86,6 +86,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private Skin hudSkin;
 	private Stage hudStage;
+	private Table hudTable;
 	private Label hudPlayerLabel;
 	private Table hudAttributes;
 	private Label hudEffectsLabel;
@@ -141,11 +142,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		setupHUD();
 
-		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hudStage);
-		Gdx.input.setInputProcessor(inputMultiplexer);
-
 		onLevelChange(dungeon.getLevel());
 		dungeon.start();
 	}
@@ -154,7 +150,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudStage = new Stage(new ScreenViewport());
 		setupSkin();
 
-		Table hudTable = new Table();
+		hudTable = new Table();
 		hudTable.setFillParent(true);
 
 		hudPlayerLabel = new Label(null, hudSkin, "large");
@@ -181,8 +177,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		setupHUDAttributes(hudTable);
 
+		hudTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
+		Label nutritionLabel = new Label("HNG: Not hungry", hudSkin);
+		nutritionLabel.setName("attributeNutrition");
+		hudTable.add(nutritionLabel).pad(0, 2, 0, 2).right();
+
+		hudTable.row();
+
 		hudTable.top().pad(2);
 		hudStage.addActor(hudTable);
+
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
+		inputMultiplexer.addProcessor(hudStage);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
 	private void setupHUDAttributes(Table hudTable) {
@@ -224,7 +232,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudAttributes.add(charismaLabel).pad(0, 2, 0, 8);
 
 		hudTable.add(hudAttributes).left().pad(0, 1, 0, 1);
-		hudTable.row();
 	}
 
 	private void setupSkin() {
@@ -524,6 +531,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		((Label) hudAttributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
 		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
 		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
+
+		((Label) hudTable.findActor("attributeNutrition")).setText("HNG: " + player.getNutritionState().toString());
+
+		switch (player.getNutritionState().getImportance()) {
+			case 1:
+				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));
+				break;
+			case 2:
+				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_RED"));
+				break;
+			default:
+				hudTable.findActor("attributeNutrition").setColor(Color.WHITE);
+				break;
+		}
 
 		if (player.getStatusEffects().size() > 0) {
 			List<String> effects = new ArrayList<>();

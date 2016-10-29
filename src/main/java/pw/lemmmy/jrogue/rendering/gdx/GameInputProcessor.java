@@ -76,6 +76,13 @@ public class GameInputProcessor implements InputProcessor {
 				dontHandleNext = true;
 				return true;
 			}
+		} else {
+			if (keycode == Input.Keys.E) {
+				dungeon.getPlayer().eat();
+
+				dontHandleNext = true;
+				return true;
+			}
 		}
 
 		return false;

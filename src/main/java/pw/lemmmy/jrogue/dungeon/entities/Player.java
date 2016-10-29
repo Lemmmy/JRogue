@@ -2,11 +2,17 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.*;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
+import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
+import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 import pw.lemmmy.jrogue.utils.Utils;
+
+import java.util.List;
 
 public class Player extends LivingEntity {
 	private Pcg32 rand = new Pcg32();
@@ -15,6 +21,8 @@ public class Player extends LivingEntity {
 	private Role role;
 
 	private int baseSpeed = Dungeon.NORMAL_SPEED;
+
+	private int nutrition;
 
 	private int strength;
 	private int agility;
@@ -26,6 +34,8 @@ public class Player extends LivingEntity {
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
+
+		this.nutrition = 1000;
 
 		this.name = name;
 		this.role = role;
@@ -41,6 +51,26 @@ public class Player extends LivingEntity {
 		setHealth(getMaxHealth());
 
 		this.setMovementPoints(Dungeon.NORMAL_SPEED);
+	}
+
+	public int getNutrition() {
+		return nutrition;
+	}
+
+	public NutritionState getNutritionState() {
+		if (nutrition >= 1500) {
+			return NutritionState.CHOKING;
+		} else if (nutrition >= 1000) {
+			return NutritionState.STUFFED;
+		} else if (nutrition >= 600) {
+			return NutritionState.NOT_HUNGRY;
+		} else if (nutrition >= 300) {
+			return NutritionState.HUNGRY;
+		} else if (nutrition >= 0) {
+			return NutritionState.STARVING;
+		} else {
+			return NutritionState.FAINTING;
+		}
 	}
 
 	public int getStrength() {
@@ -122,6 +152,8 @@ public class Player extends LivingEntity {
 		if (getHealth() > getMaxHealth()) {
 			setHealth(getMaxHealth());
 		}
+
+		nutrition--;
 	}
 
 	@Override
@@ -214,5 +246,114 @@ public class Player extends LivingEntity {
 
 	public Role getRole() {
 		return role;
+	}
+
+	public void eat() {
+		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
+
+		if (floorEntities.size() > 0) {
+			for (Entity entity : floorEntities) {
+				if (entity instanceof EntityItem && ((EntityItem) entity).getItem() instanceof ItemComestible) {
+					Item item = ((EntityItem) entity).getItem();
+
+					String promptString = "";
+
+					if (item.beginsWithVowel()) {
+						promptString = String.format("There is an %s here. Eat it?", item.getName(false, false));
+					} else {
+						promptString = String.format("There is a %s here. Eat it?", item.getName(false, false));
+					}
+
+					getDungeon().prompt(new Prompt(promptString, new char[] {'y', 'n'}, new Prompt.PromptCallback() {
+						@Override
+						public void onNoResponse() {
+							getDungeon().log("Nevermind.");
+						}
+
+						@Override
+						public void onInvalidResponse(char response) {
+							getDungeon().log(String.format("Invalid response '[YELLOW]%s[]'.", response));
+						}
+
+						@Override
+						public void onResponse(char response) {
+							if (response == 'n') {
+								// TODO
+								return;
+							}
+
+							setAction(new ActionEat(getDungeon(), Player.this, (ItemComestible) item, (EntityItem) entity));
+							getDungeon().turn();
+						}
+					}, true));
+
+					break;
+				}
+			}
+		} else {
+			// TODO
+		}
+	}
+
+	public ItemComestible.EatenState consume(ItemComestible item) {
+		if (item.getEatenState() == ItemComestible.EatenState.UNEATEN) {
+			getDungeon().You("start eating the %s.", item.getName(false, false));
+
+			nutrition += Math.floor(item.getNutrition() / 2);
+
+			if (item.getStatusEffects() != null &&
+				getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
+				getWisdom() > 6) {
+
+				getDungeon().You("feel funny.");
+				getDungeon().You("think it might not be a good idea to continue eating.");
+			}
+
+			return ItemComestible.EatenState.PARTLY_EATEN;
+		} else if (item.getEatenState() == ItemComestible.EatenState.PARTLY_EATEN) {
+			getDungeon().You("finish eating the %s.", item.getName(false, false));
+
+			nutrition += Math.ceil(item.getNutrition() / 2);
+
+			if (item.getStatusEffects() != null) {
+				for (StatusEffect effect : item.getStatusEffects()) {
+					addStatusEffect(effect);
+				}
+			}
+
+			return ItemComestible.EatenState.EATEN;
+		}
+
+		return ItemComestible.EatenState.EATEN;
+	}
+
+	public enum NutritionState {
+		CHOKING("Choking", 2),
+		STUFFED("Stuffed", 1),
+		NOT_HUNGRY("Not hungry"),
+		HUNGRY("Hungry", 1),
+		STARVING("Starving", 2),
+		FAINTING("Fainting", 2);
+
+		private String string;
+		private int importance = 0;
+
+		NutritionState(String string) {
+			this(string, 0);
+		}
+
+		NutritionState(String string, int importance) {
+			this.string = string;
+			this.importance = importance;
+		}
+
+		@Override
+		public String toString() {
+			return string;
+		}
+
+		public int getImportance() {
+			return importance;
+		}
 	}
 }
