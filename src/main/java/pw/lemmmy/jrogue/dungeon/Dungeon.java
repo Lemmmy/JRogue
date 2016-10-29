@@ -7,7 +7,6 @@ import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Dungeon {
@@ -106,6 +105,8 @@ public class Dungeon {
 	}
 
 	public void log(String s, Object... objects) {
+		JRogue.getLogger().info(String.format(s, objects));
+
 		for (Listener listener : listeners) {
 			listener.onLog(String.format(s, objects));
 		}
@@ -184,6 +185,7 @@ public class Dungeon {
 				if (player.getMovementPoints() > NORMAL_SPEED) {
 					break;
 				}
+
 			} while (entitiesCanMove);
 
 			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
@@ -212,16 +214,14 @@ public class Dungeon {
 				turn++;
 
 				update();
+
+				break;
 			}
 		} while (player.isAlive() && player.getMovementPoints() < NORMAL_SPEED);
 
 		if (player.isAlive()) {
 			player.move();
 		} else {
-			for (Listener listener : listeners) {
-				listener.onPrompt(prompt);
-			}
-
 			return;
 		}
 

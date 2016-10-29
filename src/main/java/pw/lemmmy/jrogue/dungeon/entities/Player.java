@@ -30,13 +30,13 @@ public class Player extends LivingEntity {
 		this.name = name;
 		this.role = role;
 
-		this.strength = role.getStrength() + (int) ((float) role.getStrength() * rand.nextFloat(role.getStrengthRemaining()));
-		this.agility = role.getAgility() + (int) ((float) role.getAgility() * rand.nextFloat(role.getAgilityRemaining()));
-		this.dexterity = role.getDexterity() + (int) ((float) role.getDexterity() * rand.nextFloat(role.getDexterityRemaining()));
-		this.constitution = role.getConstitution() + (int) ((float) role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining()));
-		this.intelligence = role.getIntelligence() + (int) ((float) role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining()));
-		this.wisdom = role.getWisdom() + (int) ((float) role.getWisdom() * rand.nextFloat(role.getWisdomRemaining()));
-		this.charisma = role.getCharisma() + (int) ((float) role.getCharisma() * rand.nextFloat(role.getCharismaRemaining()));
+		this.strength = role.getStrength() + (int) ((float) Math.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
+		this.agility = role.getAgility() + (int) ((float) Math.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
+		this.dexterity = role.getDexterity() + (int) ((float) Math.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
+		this.constitution = role.getConstitution() + (int) ((float) Math.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
+		this.intelligence = role.getIntelligence() + (int) ((float) Math.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
+		this.wisdom = role.getWisdom() + (int) ((float) Math.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
+		this.charisma = role.getCharisma() + (int) ((float) Math.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
 
 		setHealth(getMaxHealth());
 

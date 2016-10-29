@@ -1,16 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
-import pw.lemmmy.jrogue.dungeon.Tile;
 import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class AI {
 	private Monster monster;

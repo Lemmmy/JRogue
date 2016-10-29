@@ -20,6 +20,10 @@ public abstract class EntityTurnBased extends Entity {
 		return nextAction != null;
 	}
 
+	public void removeAction() {
+		nextAction = null;
+	}
+
 	public void move() {
 		if (hasAction()) {
 			nextAction.execute();
