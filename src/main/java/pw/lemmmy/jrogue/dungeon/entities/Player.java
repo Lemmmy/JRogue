@@ -189,12 +189,16 @@ public class Player extends LivingEntity {
 		getDungeon().turn();
 	}
 
+	public int getLightLevel() {
+		return getLevel().getTileInfo(getX(), getY()).getLightIntensity();
+	}
+
 	public int getVisibilityRange() {
-		return 15; // TODO: Make this vary based on light
+		return 10 * ((getLightLevel() - 20) / 100) + 10;
 	}
 
 	public int getCorridorVisibilityRange() {
-		return 4; // TODO: Make this vary based on light
+		return 2 * ((getLightLevel() - 20) / 100) + 5;
 	}
 
 	public void kick() {

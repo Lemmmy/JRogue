@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
+import pw.lemmmy.jrogue.dungeon.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
@@ -90,6 +91,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Label hudPlayerLabel;
 	private Table hudAttributes;
 	private Label hudEffectsLabel;
+	private HorizontalGroup hudBrightness;
 	private Table hudLog;
 	private Label hudPromptLabel;
 
@@ -176,6 +178,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudTable.row();
 
 		setupHUDAttributes(hudTable);
+
+		hudBrightness = new HorizontalGroup();
+		hudTable.add(hudBrightness).pad(0, 2, -2, 8).right();
 
 		hudTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
 		Label nutritionLabel = new Label("HNG: Not hungry", hudSkin);
@@ -532,7 +537,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
 		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
 
-		((Label) hudTable.findActor("attributeNutrition")).setText("HNG: " + player.getNutritionState().toString());
+		hudBrightness.clearChildren();
+
+		if (player.getLevel().getTile(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
+			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
+		} else {
+			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));
+		}
+
+		hudBrightness.addActor(new Label("BRI: " + player.getLightLevel(), hudSkin));
 
 		switch (player.getNutritionState().getImportance()) {
 			case 1:
