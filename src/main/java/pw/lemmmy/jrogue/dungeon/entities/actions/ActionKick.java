@@ -78,7 +78,7 @@ public class ActionKick extends EntityAction {
 		}
 
 		if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
-			if (Utils.roll(6) == 1) {
+			if (Utils.roll(5) == 1) {
 				if (isPlayer) {
 					getDungeon().logRandom(
 						"The door crashes open!",
