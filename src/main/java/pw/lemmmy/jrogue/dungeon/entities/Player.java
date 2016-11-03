@@ -10,9 +10,11 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
+import java.util.Map;
 
 public class Player extends LivingEntity {
 	private Pcg32 rand = new Pcg32();
@@ -31,6 +33,8 @@ public class Player extends LivingEntity {
 	private int intelligence;
 	private int wisdom;
 	private int charisma;
+
+	private Map<Character, ItemStack> inventory;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
