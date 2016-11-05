@@ -1,11 +1,16 @@
 package pw.lemmmy.jrogue.dungeon.entities.roles;
 
+import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
+import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.ItemStaff;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Wizard extends Role {
+public class RoleWizard extends Role {
 	@Override
 	public String getName() {
 		return "Wizard";
@@ -18,7 +23,23 @@ public class Wizard extends Role {
 
 	@Override
 	public List<ItemStack> getStartingItems() {
-		return new ArrayList<ItemStack>();
+		List<ItemStack> itemList = new ArrayList<>();
+
+		itemList.add(new ItemStack(new ItemStaff()));
+
+		return itemList;
+	}
+
+	@Override
+	public Map<Skill, SkillLevel> getStartingSkills() {
+		Map<Skill, SkillLevel> skillMap = new HashMap<>();
+
+		skillMap.put(Skill.SKILL_STAFF, SkillLevel.BEGINNER);
+
+		skillMap.put(Skill.SKILL_SPELLS_ATTACK, SkillLevel.BEGINNER);
+		skillMap.put(Skill.SKILL_SPELLS_ENCHANTMENT, SkillLevel.BEGINNER);
+
+		return skillMap;
 	}
 
 	@Override

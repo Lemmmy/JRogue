@@ -8,15 +8,22 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
+import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
+import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
+import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Player extends LivingEntity {
+	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+
 	private Pcg32 rand = new Pcg32();
 
 	private String name;
@@ -35,26 +42,37 @@ public class Player extends LivingEntity {
 	private int charisma;
 
 	private Map<Character, ItemStack> inventory;
+	private Map<Skill, SkillLevel> skills;
+
+	private ItemStack leftHand;
+	private ItemStack rightHand;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
 
-		this.nutrition = 1000;
-
 		this.name = name;
 		this.role = role;
 
-		this.strength = role.getStrength() + (int) ((float) Math.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
-		this.agility = role.getAgility() + (int) ((float) Math.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
-		this.dexterity = role.getDexterity() + (int) ((float) Math.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
-		this.constitution = role.getConstitution() + (int) ((float) Math.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
-		this.intelligence = role.getIntelligence() + (int) ((float) Math.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
-		this.wisdom = role.getWisdom() + (int) ((float) Math.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
-		this.charisma = role.getCharisma() + (int) ((float) Math.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
+		nutrition = 1000;
+
+		strength = role.getStrength() + (int) ((float) Math.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
+		agility = role.getAgility() + (int) ((float) Math.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
+		dexterity = role.getDexterity() + (int) ((float) Math.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
+		constitution = role.getConstitution() + (int) ((float) Math.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
+		intelligence = role.getIntelligence() + (int) ((float) Math.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
+		wisdom = role.getWisdom() + (int) ((float) Math.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
+		charisma = role.getCharisma() + (int) ((float) Math.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
+
+		inventory = new LinkedHashMap<>();
+		skills = new HashMap<>(role.getStartingSkills());
+
+		for (ItemStack item : role.getStartingItems()) {
+			inventory.put(getAvailableInventoryLetter(), item);
+		}
 
 		setHealth(getMaxHealth());
 
-		this.setMovementPoints(Dungeon.NORMAL_SPEED);
+		setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 
 	public int getNutrition() {
@@ -137,6 +155,11 @@ public class Player extends LivingEntity {
 		}
 
 		return speed;
+	}
+
+	@Override
+	public Size getSize() {
+		return LivingEntity.Size.LARGE;
 	}
 
 	@Override
@@ -333,6 +356,16 @@ public class Player extends LivingEntity {
 		}
 
 		return ItemComestible.EatenState.EATEN;
+	}
+
+	public char getAvailableInventoryLetter() {
+		for (char letter : INVENTORY_CHARS) {
+			if (!inventory.containsKey(letter)) {
+				return letter;
+			}
+		}
+
+		return ' ';
 	}
 
 	public enum NutritionState {

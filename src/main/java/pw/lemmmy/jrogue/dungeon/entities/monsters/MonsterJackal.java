@@ -45,6 +45,11 @@ public class MonsterJackal extends Monster {
 	}
 
 	@Override
+	public Size getSize() {
+		return LivingEntity.Size.SMALL;
+	}
+
+	@Override
 	public int getWeight() {
 		return 300;
 	}

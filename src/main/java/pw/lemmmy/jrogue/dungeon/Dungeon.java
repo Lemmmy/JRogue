@@ -1,7 +1,11 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.entities.*;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -70,7 +74,7 @@ public class Dungeon {
 		} while (!gotLevel);
 
 		if (player == null) {
-			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), System.getProperty("user.name"), Role.ROLE_WIZARD);
+			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), System.getProperty("user.name"), new RoleWizard());
 		} else {
 			player.setPosition(level.getSpawnX(), level.getSpawnY());
 		}

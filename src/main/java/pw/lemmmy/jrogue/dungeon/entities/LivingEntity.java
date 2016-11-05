@@ -78,6 +78,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public abstract int getMovementSpeed();
 
+	public abstract Size getSize();
+
 	public void drop(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 
@@ -91,5 +93,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 		EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
 		getLevel().addEntity(entityItem);
+	}
+
+	public enum Size {
+		SMALL,
+		LARGE
 	}
 }
