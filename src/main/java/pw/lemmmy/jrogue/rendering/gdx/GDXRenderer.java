@@ -114,6 +114,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = width;
 		config.height = height;
+		config.forceExit = false;
 		new LwjglApplication(this, config);
 	}
 
