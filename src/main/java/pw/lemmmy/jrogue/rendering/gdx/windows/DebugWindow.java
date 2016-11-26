@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -20,7 +20,6 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.io.File;
 import java.nio.file.Paths;
 
 public class DebugWindow extends PopupWindow {
@@ -197,8 +196,7 @@ public class DebugWindow extends PopupWindow {
 			public void changed(ChangeEvent event, Actor actor) {
 				Pixmap snapshot = getRenderer().takeLevelSnapshot();
 				String path = Paths.get(System.getProperty("user.home")).resolve("jrogue_level_snap.png").toString();
-				File file = new File(path);
-				PixmapIO.writePNG(new FileHandle(file), snapshot);
+				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
 				snapshot.dispose();
 			}
 		});

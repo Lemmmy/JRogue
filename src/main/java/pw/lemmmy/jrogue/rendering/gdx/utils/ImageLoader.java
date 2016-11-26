@@ -62,11 +62,10 @@ public class ImageLoader {
 	}
 
 	public static void disposeAll() {
-		for (Texture texture : imageCache.values()) {
-			try {
-				texture.dispose();
-			} catch (GdxRuntimeException ignored) {
-			}
+		try {
+			imageCache.values().forEach(Texture::dispose);
+		} catch (GdxRuntimeException e) {
+			e.printStackTrace();
 		}
 	}
 }
