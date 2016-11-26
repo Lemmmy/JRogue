@@ -1,5 +1,8 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,11 +17,15 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
+import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 public class DebugWindow extends PopupWindow {
-	public DebugWindow(Stage stage, Skin skin, Dungeon dungeon, Level level) {
-		super(stage, skin, dungeon, level);
+	public DebugWindow(GDXRenderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+		super(renderer, stage, skin, dungeon, level);
 	}
 
 	@Override
@@ -51,7 +58,7 @@ public class DebugWindow extends PopupWindow {
 
 					getWindow().hide();
 				} catch (NumberFormatException e) {
-					new MessageWindow(getStage(), getSkin(), "Error", "Invalid turn number.").show();
+					new MessageWindow(getRenderer(), getStage(), getSkin(), "Error", "Invalid turn number.").show();
 				}
 			}
 		});
@@ -94,7 +101,7 @@ public class DebugWindow extends PopupWindow {
 
 					getWindow().hide();
 				} catch (NumberFormatException e) {
-					new MessageWindow(getStage(), getSkin(), "Error", "Invalid length.").show();
+					new MessageWindow(getRenderer(), getStage(), getSkin(), "Error", "Invalid length.").show();
 				}
 			}
 		});
@@ -167,7 +174,7 @@ public class DebugWindow extends PopupWindow {
 
 					getWindow().hide();
 				} catch (NumberFormatException e) {
-					new MessageWindow(getStage(), getSkin(), "Error", "Invalid amount.").show();
+					new MessageWindow(getRenderer(), getStage(), getSkin(), "Error", "Invalid amount.").show();
 				}
 			}
 		});
@@ -182,6 +189,20 @@ public class DebugWindow extends PopupWindow {
 			}
 		});
 		getWindow().getContentTable().add(seeAllButton).width(50f);
+		getWindow().getContentTable().row();
+
+		Button takeSnap = new TextButton("Take Level Snapshot", getSkin());
+		takeSnap.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Pixmap snapshot = getRenderer().takeLevelSnapshot();
+				String path = Paths.get(System.getProperty("user.home")).resolve("jrogue_level_snap.png").toString();
+				File file = new File(path);
+				PixmapIO.writePNG(new FileHandle(file), snapshot);
+				snapshot.dispose();
+			}
+		});
+		getWindow().getContentTable().add(takeSnap).width(125f);
 		getWindow().getContentTable().row();
 	}
 }
