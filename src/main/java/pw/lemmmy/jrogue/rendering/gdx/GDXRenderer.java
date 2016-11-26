@@ -387,7 +387,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		int levelWidth = dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH;
 		int levelHeight = dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
 
-		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, levelWidth, levelHeight, true, true);
+		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, levelWidth, levelHeight, false, false);
 		Camera fullCamera = new OrthographicCamera(levelWidth, levelHeight);
 		fullCamera.position.set(levelWidth / 2.0f, levelHeight / 2.0f, 0.0f);
 		fullCamera.update();
