@@ -231,6 +231,7 @@ public class Dungeon {
 
 		level.processEntityQueues();
 
+		getLevel().buildLight();
 		getLevel().updateSight(getPlayer());
 
 		for (Listener listener : listeners) {

@@ -3,6 +3,8 @@ package pw.lemmmy.jrogue.dungeon.tiles;
 import java.awt.*;
 
 public enum TileType {
+	TILE_DUMMY(Solidity.WALK_ON),
+
 	TILE_GROUND(Solidity.SOLID, true),
 	TILE_GROUND_WATER(Solidity.WATER, true, new Color(0x3072D6), 40, 5),
 

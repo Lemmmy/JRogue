@@ -1,6 +1,8 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -209,8 +211,8 @@ public class Level {
 			return;
 		}
 
-		if (intensity > tile.getLightIntensity() || canMixColours(tile.getLight(), colour)) {
-			tile.setLight(mixColours(tile.getLight(), colour));
+		if (intensity > tile.getLightIntensity() || canMixColours(tile.getLightColour(), colour)) {
+			tile.setLightColour(mixColours(tile.getLightColour(), colour));
 
 			if (intensity != tile.getLightIntensity()) {
 				tile.setLightIntensity(intensity);
@@ -268,7 +270,7 @@ public class Level {
 			return;
 		}
 
-		Color colour = reapplyIntensity(tile.getLight(), tile.getLightIntensity(), intensity);
+		Color colour = reapplyIntensity(tile.getLightColour(), tile.getLightIntensity(), intensity);
 
 		if (x > 0) setIntensity(getTile(x - 1, y), intensity, colour);
 		if (x < getWidth() - 1) setIntensity(getTile(x + 1, y), intensity, colour);
@@ -310,6 +312,22 @@ public class Level {
 			if (index >= LIGHT_MAX_LIGHT_LEVEL) continue;
 
 			lightTiles.get(index).add(tile);
+		}
+
+		for (Entity entity : entities) {
+			if (entity instanceof LightEmitter) {
+				LightEmitter lightEmitter = (LightEmitter) entity;
+				int index = lightEmitter.getLightIntensity() - 1;
+
+				if (index < 0) continue;
+				if (index >= LIGHT_MAX_LIGHT_LEVEL) continue;
+
+				Tile tile = new Tile(this, TileType.TILE_DUMMY, entity.getX(), entity.getY());
+				tile.setLightColour(lightEmitter.getLightColour());
+				tile.setLightIntensity(lightEmitter.getLightIntensity());
+
+				lightTiles.get(index).add(tile);
+			}
 		}
 
 		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {

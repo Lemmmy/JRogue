@@ -87,11 +87,11 @@ public class Tile {
 		return state != null;
 	}
 
-	public Color getLight() {
+	public Color getLightColour() {
 		return light;
 	}
 
-	public void setLight(Color light) {
+	public void setLightColour(Color light) {
 		this.light = light;
 	}
 
