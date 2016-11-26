@@ -208,12 +208,15 @@ public class Player extends LivingEntity {
 		//       a different tile type than the one they are standing on
 		//       unless it is a door
 
+		if (tile == null) {
+			getDungeon().log("It would be silly to walk there.");
+			return;
+		}
+
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			setAction(new ActionMove(getDungeon(), this, newX, newY));
-		} else {
-			if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-				getDungeon().The("door is locked.");
-			}
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+			getDungeon().The("door is locked.");
 		}
 
 		getDungeon().turn();
