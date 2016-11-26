@@ -34,7 +34,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
 	private static final double WATER_NOISE_SCALE = 0.2;
 
-	private static final float FISH_PROBABILITY = 0.2f;
+	private static final float FISH_PROBABILITY = 0.35f;
 
 	private OpenSimplexNoise simplexNoise;
 
