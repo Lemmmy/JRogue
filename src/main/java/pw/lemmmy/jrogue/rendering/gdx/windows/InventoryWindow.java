@@ -4,12 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemMap;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemRenderer;
 
 public class InventoryWindow extends PopupWindow {
-	public InventoryWindow(Stage stage, Skin skin, Dungeon dungeon, Level level) {
-		super(stage, skin, dungeon, level);
+	public InventoryWindow(GDXRenderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+		super(renderer, stage, skin, dungeon, level);
 	}
 
 	@Override

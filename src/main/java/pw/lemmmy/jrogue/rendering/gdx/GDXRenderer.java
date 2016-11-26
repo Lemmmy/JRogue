@@ -9,21 +9,24 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
@@ -360,9 +363,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawMap() {
+		drawMap(false);
+	}
+
+	private void drawMap(boolean allRevealed) {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!dungeon.getLevel().isTileDiscovered(x, y)) {
+				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
 					continue;
 				}
@@ -374,6 +381,34 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				}
 			}
 		}
+	}
+
+	public Pixmap takeLevelSnapshot() {
+		int levelWidth = dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH;
+		int levelHeight = dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
+
+		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGB888, levelWidth, levelHeight, false, false);
+		Camera fullCamera = new OrthographicCamera(levelWidth, levelHeight);
+		fullCamera.position.set(levelWidth / 2.0f, levelHeight / 2.0f, 0.0f);
+		fullCamera.update();
+
+		fbo.begin();
+		batch.setProjectionMatrix(fullCamera.combined);
+		batch.begin();
+		batch.enableBlending();
+
+		drawMap(true);
+		drawEntities();
+
+		batch.end();
+
+		byte[] pixels = ScreenUtils.getFrameBufferPixels(0, 0, levelWidth, levelHeight, false);
+		Pixmap pmap = new Pixmap(levelWidth, levelHeight, Pixmap.Format.RGBA8888);
+		BufferUtils.copy(pixels, 0, pmap.getPixels(), pixels.length);
+
+		fbo.end();
+		fbo.dispose();
+		return pmap;
 	}
 
 	private void drawParticles(float delta) {
@@ -456,11 +491,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		new DebugWindow(hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		new DebugWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
 	}
 
 	public void showInventoryWindow() {
-		new InventoryWindow(hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		new InventoryWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
 	}
 
 	@Override

@@ -5,17 +5,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 
 public abstract class PopupWindow {
-	private Stage stage;
-	private Skin skin;
+	private final Stage stage;
+	private final Skin skin;
 
-	private Dungeon dungeon;
-	private Level level;
+	private final Dungeon dungeon;
+	private final Level level;
+	private final GDXRenderer renderer;
 
 	private Window window;
 
-	public PopupWindow(Stage stage, Skin skin, Dungeon dungeon, Level level) {
+	public PopupWindow(GDXRenderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+		this.renderer = renderer;
 		this.stage = stage;
 		this.skin = skin;
 		this.dungeon = dungeon;
@@ -57,6 +60,10 @@ public abstract class PopupWindow {
 
 	public Window getWindow() {
 		return window;
+	}
+
+	public GDXRenderer getRenderer() {
+		return renderer;
 	}
 
 	public abstract String getTitle();
