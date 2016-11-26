@@ -12,7 +12,9 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public class DebugWindow extends PopupWindow {
 	public DebugWindow(Stage stage, Skin skin, Dungeon dungeon, Level level) {
@@ -104,7 +106,7 @@ public class DebugWindow extends PopupWindow {
 		getWindow().getContentTable().add(new Label("Entity: ", getSkin(), "windowStyle"));
 
 		final SelectBox entitySelectBox = new SelectBox(getSkin());
-		entitySelectBox.setItems("Jackal");
+		entitySelectBox.setItems("Jackal", "Fish");
 		entitySelectBox.setMaxListCount(4);
 		getWindow().getContentTable().add(entitySelectBox).left().width(100f);
 
@@ -114,12 +116,21 @@ public class DebugWindow extends PopupWindow {
 			public void changed(ChangeEvent event, Actor actor) {
 				switch (entitySelectBox.getSelectedIndex()) {
 					case 0:
-						MonsterJackal monster = new MonsterJackal(
+						MonsterJackal jackal = new MonsterJackal(
 							getLevel().getDungeon(), getLevel(),
 							getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY()
 						);
 
-						getLevel().addEntity(monster);
+						getLevel().addEntity(jackal);
+						break;
+					case 1:
+						MonsterFish fish = new MonsterFish(
+							getLevel().getDungeon(), getLevel(),
+							getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY(),
+							Utils.randomFrom(MonsterFish.FishColour.values())
+						);
+
+						getLevel().addEntity(fish);
 						break;
 				}
 

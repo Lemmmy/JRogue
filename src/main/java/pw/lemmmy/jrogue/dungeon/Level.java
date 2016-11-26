@@ -112,7 +112,20 @@ public class Level {
 		tiles[width * y + x].setType(tile);
 	}
 
-	public TileType[] getAdjacentTiles(int x, int y) {
+	public Tile[] getAdjacentTiles(int x, int y) {
+		Tile[] t = new Tile[Utils.DIRECTIONS.length];
+
+		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
+			int[] direction = Utils.DIRECTIONS[i];
+
+			t[i] = getTile(x + direction[0], y + direction[1]);
+		}
+
+		return t;
+	}
+
+
+	public TileType[] getAdjacentTileTypes(int x, int y) {
 		TileType[] t = new TileType[Utils.DIRECTIONS.length];
 
 		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {

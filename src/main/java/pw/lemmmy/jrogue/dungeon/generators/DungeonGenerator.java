@@ -82,7 +82,7 @@ public abstract class DungeonGenerator {
 
 	public boolean canPlaceDoor(int x, int y) {
 		if (level.getTileType(x, y).isWallTile()) {
-			TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
+			TileType[] adjacentTiles = level.getAdjacentTileTypes(x, y);
 
 			for (TileType tile : adjacentTiles) {
 				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
@@ -97,7 +97,7 @@ public abstract class DungeonGenerator {
 	}
 
 	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.getAdjacentTiles(x, y));
+		return getWallOrientation(level.getAdjacentTileTypes(x, y));
 	}
 
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {

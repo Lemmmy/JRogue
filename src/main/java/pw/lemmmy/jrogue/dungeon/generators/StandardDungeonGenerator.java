@@ -219,7 +219,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 					if (level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
 						level.setTileType(x, y, TileType.TILE_ROOM_PUDDLE);
 					} else {
-						TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
+						TileType[] adjacentTiles = level.getAdjacentTileTypes(x, y);
 
 						boolean skip = false;
 

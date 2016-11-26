@@ -67,6 +67,7 @@ public class TileRendererWater extends TileRendererBlob {
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 0.5f);
 		drawTile(batch, overlayImage, x, y);
+		batch.flush();
 
 		batch.setColor(colourOld);
 	}
