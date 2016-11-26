@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public abstract class DungeonGenerator {
 
 		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
 			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.getTile(x, y) == null || !level.getTile(x, y).isBuildable()) {
+				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
 					return false;
 				}
 			}
@@ -44,12 +44,12 @@ public abstract class DungeonGenerator {
 
 				if (wall) {
 					if (x > roomX && x < roomX + roomWidth - 1 && x % 4 == 0) {
-						level.setTile(x, y, TileType.TILE_ROOM_TORCH_FIRE);
+						level.setTileType(x, y, TileType.TILE_ROOM_TORCH_FIRE);
 					} else {
-						level.setTile(x, y, TileType.TILE_ROOM_WALL);
+						level.setTileType(x, y, TileType.TILE_ROOM_WALL);
 					}
 				} else {
-					level.setTile(x, y, TileType.TILE_ROOM_FLOOR);
+					level.setTileType(x, y, TileType.TILE_ROOM_FLOOR);
 				}
 			}
 		}
@@ -72,8 +72,8 @@ public abstract class DungeonGenerator {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 
-			if (level.getTile(x, y).isBuildable()) {
-				level.setTile(x, y, tile);
+			if (level.getTileType(x, y).isBuildable()) {
+				level.setTileType(x, y, tile);
 			} else if (buildDoors && canPlaceDoor(x, y)) {
 				safePlaceDoor(x, y);
 			}
@@ -81,7 +81,7 @@ public abstract class DungeonGenerator {
 	}
 
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTile(x, y).isWallTile()) {
+		if (level.getTileType(x, y).isWallTile()) {
 			TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
 
 			for (TileType tile : adjacentTiles) {
@@ -181,18 +181,18 @@ public abstract class DungeonGenerator {
 	}
 
 	protected void safePlaceDoor(int x, int y) {
-		level.setTile(x, y, TileType.TILE_ROOM_DOOR_CLOSED);
+		level.setTileType(x, y, TileType.TILE_ROOM_DOOR_CLOSED);
 
 		for (int[] direction : Utils.DIRECTIONS) {
 			int nx = x + direction[0];
 			int ny = y + direction[1];
 
-			TileType t = level.getTile(nx, ny);
+			TileType t = level.getTileType(nx, ny);
 
 			if (t == TileType.TILE_GROUND) {
-				level.setTile(nx, ny, TileType.TILE_CORRIDOR);
+				level.setTileType(nx, ny, TileType.TILE_CORRIDOR);
 			} else if (t == TileType.TILE_ROOM_WATER) {
-				level.setTile(nx, ny, TileType.TILE_ROOM_FLOOR);
+				level.setTileType(nx, ny, TileType.TILE_ROOM_FLOOR);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -215,9 +215,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			for (int x = 0; x < level.getWidth(); x++) {
 				double noise = simplexNoise.eval(x * WATER_NOISE_SCALE, y * WATER_NOISE_SCALE);
 
-				if (noise > WATER_NOISE_THRESHOLD && (level.getTile(x, y) == TileType.TILE_GROUND || level.getTile(x, y) == TileType.TILE_ROOM_FLOOR)) {
-					if (level.getTile(x, y) == TileType.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
-						level.setTile(x, y, TileType.TILE_ROOM_PUDDLE);
+				if (noise > WATER_NOISE_THRESHOLD && (level.getTileType(x, y) == TileType.TILE_GROUND || level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR)) {
+					if (level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
+						level.setTileType(x, y, TileType.TILE_ROOM_PUDDLE);
 					} else {
 						TileType[] adjacentTiles = level.getAdjacentTiles(x, y);
 
@@ -233,7 +233,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 							continue;
 						}
 
-						level.setTile(x, y, TileType.TILE_GROUND_WATER);
+						level.setTileType(x, y, TileType.TILE_GROUND_WATER);
 					}
 				}
 			}
@@ -257,7 +257,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
 		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
 
-		level.setTile(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
+		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
 
 		spawnRoom.setSpawn();
 		level.setSpawnPoint(stairX, stairY);
@@ -276,6 +276,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int stairX = nextInt(downstairsRoom.getRoomX() + 2, downstairsRoom.getRoomX() + downstairsRoom.getRoomWidth() - 2);
 		int stairY = nextInt(downstairsRoom.getRoomY() + 2, downstairsRoom.getRoomY() + downstairsRoom.getRoomHeight() - 2);
 
-		level.setTile(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
+		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
 	}
 }

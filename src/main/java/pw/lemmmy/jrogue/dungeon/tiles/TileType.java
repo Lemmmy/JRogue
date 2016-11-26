@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.dungeon;
+package pw.lemmmy.jrogue.dungeon.tiles;
 
 import java.awt.*;
 
@@ -21,9 +21,10 @@ public enum TileType {
 	TILE_ROOM_FLOOR(Solidity.WALK_ON),
 	TILE_ROOM_WATER(Solidity.WATER),
 	TILE_ROOM_PUDDLE(Solidity.WALK_ON),
-	TILE_ROOM_DOOR_CLOSED(Solidity.SOLID),
-	TILE_ROOM_DOOR_OPEN(Solidity.WALK_THROUGH),
-	TILE_ROOM_DOOR_BROKEN(Solidity.WALK_THROUGH),
+
+	TILE_ROOM_DOOR_CLOSED(Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_OPEN(Solidity.WALK_THROUGH, TileStateDoor.class),
+	TILE_ROOM_DOOR_BROKEN(Solidity.WALK_THROUGH, TileStateDoor.class),
 
 	TILE_ROOM_STAIRS_UP(Solidity.WALK_ON),
 	TILE_ROOM_STAIRS_DOWN(Solidity.WALK_ON),
@@ -34,6 +35,7 @@ public enum TileType {
 	TILE_CORRIDOR(Solidity.WALK_ON, true);
 
 	private Solidity solidity;
+	private Class stateClass;
 	private boolean buildable;
 
 	private Color light;
@@ -41,15 +43,28 @@ public enum TileType {
 	private int absorb;
 
 	TileType(Solidity solidity) {
-		this(solidity, false);
+		this(solidity, null, false);
+	}
+
+	TileType(Solidity solidity, Class stateClass) {
+		this(solidity, stateClass,false);
 	}
 
 	TileType(Solidity solidity, boolean buildable) {
-		this(solidity, buildable, null, 0, 0);
+		this(solidity, null, buildable, null, 0, 0);
+	}
+
+	TileType(Solidity solidity, Class stateClass, boolean buildable) {
+		this(solidity, stateClass, buildable, null, 0, 0);
 	}
 
 	TileType(Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
+		this(solidity, null, buildable, light, lightIntensity, absorb);
+	}
+
+	TileType(Solidity solidity, Class stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
 		this.solidity = solidity;
+		this.stateClass = stateClass;
 		this.buildable = buildable;
 		this.light = light;
 		this.lightIntensity = lightIntensity;
@@ -67,6 +82,10 @@ public enum TileType {
 
 	public Solidity getSolidity() {
 		return solidity;
+	}
+
+	public Class getStateClass() {
+		return stateClass;
 	}
 
 	public boolean isBuildable() {

@@ -2,6 +2,8 @@ package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
@@ -84,7 +86,7 @@ public class Level {
 		return dungeon;
 	}
 
-	public Tile getTileInfo(int x, int y) {
+	public Tile getTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return null;
 		}
@@ -92,15 +94,15 @@ public class Level {
 		return tiles[width * y + x];
 	}
 
-	public TileType getTile(int x, int y) {
+	public TileType getTileType(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return null;
 		}
 
-		return getTileInfo(x, y).getType();
+		return getTile(x, y).getType();
 	}
 
-	public void setTile(int x, int y, TileType tile) {
+	public void setTileType(int x, int y, TileType tile) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return;
 		}
@@ -114,7 +116,7 @@ public class Level {
 		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
 			int[] direction = Utils.DIRECTIONS[i];
 
-			t[i] = getTile(x + direction[0], y + direction[1]);
+			t[i] = getTileType(x + direction[0], y + direction[1]);
 		}
 
 		return t;
@@ -177,7 +179,7 @@ public class Level {
 		for (int i = y - r; i < y + r; i++) {
 			for (int j = x - r; j < x + r; j++) {
 				if (Utils.distance(x, y, i, j) <= r) {
-					found.add(getTileInfo(i, j));
+					found.add(getTile(i, j));
 				}
 			}
 		}
@@ -193,7 +195,7 @@ public class Level {
 		return 20;
 	}
 
-	protected Color mixColours(Color c1, Color c2) {
+	public Color mixColours(Color c1, Color c2) {
 		return new Color(
 			c1.getRed() > c2.getRed() ? c1.getRed() : c2.getRed(),
 			c1.getGreen() > c2.getGreen() ? c1.getGreen() : c2.getGreen(),
@@ -202,7 +204,7 @@ public class Level {
 		);
 	}
 
-	protected void setIntensity(Tile tile, int intensity, Color colour) {
+	public void setIntensity(Tile tile, int intensity, Color colour) {
 		if (tile == null) {
 			return;
 		}
@@ -223,7 +225,7 @@ public class Level {
 		}
 	}
 
-	protected Color applyIntensity(Color colour, int intensity) {
+	public Color applyIntensity(Color colour, int intensity) {
 		float k;
 
 		k = intensity >= LIGHT_ABSOLUTE ? 1 : (float) intensity / (float) LIGHT_ABSOLUTE;
@@ -236,7 +238,7 @@ public class Level {
 		);
 	}
 
-	protected Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {
+	public Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {
 		float k1, k2;
 
 		k1 = intensityNew >= LIGHT_ABSOLUTE ? 1 : (float) intensityNew / (float) LIGHT_ABSOLUTE;
@@ -250,13 +252,13 @@ public class Level {
 		);
 	}
 
-	protected boolean canMixColours(Color base, Color light) {
+	public boolean canMixColours(Color base, Color light) {
 		return light.getRed() > base.getRed() ||
 			light.getGreen() > base.getGreen() ||
 			light.getBlue() > base.getBlue();
 	}
 
-	protected void propagateLighting(Tile tile) {
+	public void propagateLighting(Tile tile) {
 		int x = tile.getX();
 		int y = tile.getY();
 
@@ -268,10 +270,10 @@ public class Level {
 
 		Color colour = reapplyIntensity(tile.getLight(), tile.getLightIntensity(), intensity);
 
-		if (x > 0) setIntensity(getTileInfo(x - 1, y), intensity, colour);
-		if (x < getWidth() - 1) setIntensity(getTileInfo(x + 1, y), intensity, colour);
-		if (y > 0) setIntensity(getTileInfo(x, y - 1), intensity, colour);
-		if (y < getHeight() - 1) setIntensity(getTileInfo(x, y + 1), intensity, colour);
+		if (x > 0) setIntensity(getTile(x - 1, y), intensity, colour);
+		if (x < getWidth() - 1) setIntensity(getTile(x + 1, y), intensity, colour);
+		if (y > 0) setIntensity(getTile(x, y - 1), intensity, colour);
+		if (y < getHeight() - 1) setIntensity(getTile(x, y + 1), intensity, colour);
 
 		colour = new Color(
 			(int) (colour.getRed() * 0.9f),
@@ -280,13 +282,13 @@ public class Level {
 			colour.getAlpha()
 		);
 
-		if (x > 0 && y < getWidth() - 1) setIntensity(getTileInfo(x - 1, y + 1), intensity, colour);
-		if (x < getWidth() - 1 && y > 0) setIntensity(getTileInfo(x + 1, y - 1), intensity, colour);
-		if (x > 0 && y < 0) setIntensity(getTileInfo(x - 1, y - 1), intensity, colour);
-		if (x < getWidth() - 1 && y < getHeight() - 1) setIntensity(getTileInfo(x + 1, y + 1), intensity, colour);
+		if (x > 0 && y < getWidth() - 1) setIntensity(getTile(x - 1, y + 1), intensity, colour);
+		if (x < getWidth() - 1 && y > 0) setIntensity(getTile(x + 1, y - 1), intensity, colour);
+		if (x > 0 && y < 0) setIntensity(getTile(x - 1, y - 1), intensity, colour);
+		if (x < getWidth() - 1 && y < getHeight() - 1) setIntensity(getTile(x + 1, y + 1), intensity, colour);
 	}
 
-	protected void resetLight() {
+	public void resetLight() {
 		lightTiles = new ArrayList<>();
 
 		for (int i = 0; i < LIGHT_MAX_LIGHT_LEVEL; i++) {
@@ -298,7 +300,7 @@ public class Level {
 		}
 	}
 
-	protected void buildLight() {
+	public void buildLight() {
 		resetLight();
 
 		for (Tile tile : tiles) {
@@ -363,7 +365,7 @@ public class Level {
 				int dx = x + (int) Math.floor(i * Math.cos(r));
 				int dy = y + (int) Math.floor(i * Math.sin(r));
 
-				if (getTile(dx, dy) == TileType.TILE_CORRIDOR) {
+				if (getTileType(dx, dy) == TileType.TILE_CORRIDOR) {
 					corridorVisibility += 1;
 				}
 
@@ -374,7 +376,7 @@ public class Level {
 				discoverTile(dx, dy);
 				seeTile(dx, dy);
 
-				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTile(dx, dy).getSolidity() == TileType.Solidity.SOLID) {
+				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTileType(dx, dy).getSolidity() == TileType.Solidity.SOLID) {
 					break;
 				}
 			}

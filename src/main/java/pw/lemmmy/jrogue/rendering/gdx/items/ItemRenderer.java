@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.rendering.gdx.items;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
@@ -18,4 +19,6 @@ public abstract class ItemRenderer {
 			batch.draw(image, x, y);
 		}
 	}
+
+	public abstract Drawable getDrawable();
 }

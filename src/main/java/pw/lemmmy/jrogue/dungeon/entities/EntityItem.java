@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 
@@ -35,7 +35,7 @@ public class EntityItem extends Entity {
 
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		TileType tile = getLevel().getTile(x, y);
+		TileType tile = getLevel().getTileType(x, y);
 
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			if (isPlayer) {

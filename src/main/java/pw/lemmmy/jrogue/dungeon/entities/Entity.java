@@ -106,7 +106,7 @@ public abstract class Entity {
 	}
 
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
-		return statusEffects.stream().filter(statusEffect::isInstance).findFirst().isPresent();
+		return statusEffects.stream().anyMatch(statusEffect::isInstance);
 	}
 
 	public List<StatusEffect> getStatusEffects() {

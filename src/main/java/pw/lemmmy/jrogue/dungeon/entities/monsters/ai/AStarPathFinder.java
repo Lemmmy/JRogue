@@ -1,15 +1,15 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Tile;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AStarPathFinder {
 	public static Path findPath(Level level, int sx, int sy, int tx, int ty, int maxSearchDistance, boolean allowDiagonalMovement) {
-		if (level.getTile(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
+		if (level.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}
 
@@ -92,11 +92,11 @@ public class AStarPathFinder {
 		Node target = nodes[width * ty + tx];
 
 		while (target != nodes[width * sy + sx]) {
-			path.prependStep(level.getTileInfo(target.x, target.y));
+			path.prependStep(level.getTile(target.x, target.y));
 			target = target.parent;
 		}
 
-		path.prependStep(level.getTileInfo(sx, sy));
+		path.prependStep(level.getTile(sx, sy));
 
 		return path;
 	}
@@ -104,7 +104,7 @@ public class AStarPathFinder {
 	private static boolean isValidLocation(Level level, int x, int y) {
 		return !(x < 0 || x > level.getWidth() ||
 				y < 0 || y > level.getHeight()) &&
-				level.getTile(x, y).getSolidity() != TileType.Solidity.SOLID;
+				level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 
 	private static float getHeuristicCost(int x, int y, int tx, int ty) {

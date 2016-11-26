@@ -83,6 +83,13 @@ public class GameInputProcessor implements InputProcessor {
 				dontHandleNext = true;
 				return true;
 			}
+
+			if (keycode == Input.Keys.I) {
+				renderer.showInventoryWindow();
+
+				dontHandleNext = true;
+				return true;
+			}
 		}
 
 		return false;

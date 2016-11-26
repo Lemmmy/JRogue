@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
@@ -38,7 +38,7 @@ public abstract class AI {
 	protected boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 				y < 0 || y > monster.getLevel().getHeight()) &&
-				monster.getLevel().getTile(x, y).getSolidity() != TileType.Solidity.SOLID;
+				monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 
 	protected boolean canMoveTowardsPlayer() {

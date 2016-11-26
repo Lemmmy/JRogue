@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
@@ -32,6 +32,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -366,7 +367,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 					continue;
 				}
 
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().draw(batch, dungeon, x, y);
@@ -418,7 +419,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
@@ -432,7 +433,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);
@@ -456,6 +457,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	public void showDebugWindow() {
 		new DebugWindow(hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+	}
+
+	public void showInventoryWindow() {
+		new InventoryWindow(hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
 	}
 
 	@Override
@@ -484,7 +489,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTile(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
 				if (tm.getRenderer() == null) {
 					continue;
@@ -539,7 +544,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		hudBrightness.clearChildren();
 
-		if (player.getLevel().getTile(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
+		if (player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
 			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
 		} else {
 			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));

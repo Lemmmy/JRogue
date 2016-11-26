@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Tile;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -51,10 +51,10 @@ public abstract class TileRenderer {
 		Color cbr = Color.BLACK;
 		Color cbl = Color.BLACK;
 
-		Tile tl = dungeon.getLevel().getTileInfo(x, y);
-		Tile tr = dungeon.getLevel().getTileInfo(x + 1, y);
-		Tile br = dungeon.getLevel().getTileInfo(x + 1, y + 1);
-		Tile bl = dungeon.getLevel().getTileInfo(x, y + 1);
+		Tile tl = dungeon.getLevel().getTile(x, y);
+		Tile tr = dungeon.getLevel().getTile(x + 1, y);
+		Tile br = dungeon.getLevel().getTile(x + 1, y + 1);
+		Tile bl = dungeon.getLevel().getTile(x, y + 1);
 
 		if (tl != null && dungeon.getLevel().isTileDiscovered(x, y)) ctl = tl.getLight();
 		if (tr != null && dungeon.getLevel().isTileDiscovered(x + 1, y)) ctr = tr.getLight();
@@ -75,7 +75,7 @@ public abstract class TileRenderer {
 		int height = TileMap.TILE_HEIGHT;
 
 		if (!dungeon.getLevel().isTileVisible(x, y)) {
-			if (dungeon.getLevel().getTile(x, y).getSolidity() == TileType.Solidity.SOLID) {
+			if (dungeon.getLevel().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {
 				batch.draw(dim, x * width, y * height, width, height);

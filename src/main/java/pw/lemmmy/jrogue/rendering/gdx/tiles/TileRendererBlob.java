@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.Arrays;
 
@@ -50,15 +50,15 @@ public abstract class TileRendererBlob extends TileRenderer {
 	abstract boolean isJoinedTile(TileType tile);
 
 	protected int getPositionMask(Level level, int x, int y) {
-		int n = (isJoinedTile(level.getTile(x, y - 1))) ? 1 : 0;
-		int s = (isJoinedTile(level.getTile(x, y + 1))) ? 1 : 0;
-		int w = (isJoinedTile(level.getTile(x - 1, y))) ? 1 : 0;
-		int e = (isJoinedTile(level.getTile(x + 1, y))) ? 1 : 0;
+		int n = (isJoinedTile(level.getTileType(x, y - 1))) ? 1 : 0;
+		int s = (isJoinedTile(level.getTileType(x, y + 1))) ? 1 : 0;
+		int w = (isJoinedTile(level.getTileType(x - 1, y))) ? 1 : 0;
+		int e = (isJoinedTile(level.getTileType(x + 1, y))) ? 1 : 0;
 
-		int nw = (isJoinedTile(level.getTile(x - 1, y - 1)) && w == 1 && n == 1) ? 1 : 0;
-		int ne = (isJoinedTile(level.getTile(x + 1, y - 1)) && e == 1 && n == 1) ? 1 : 0;
-		int sw = (isJoinedTile(level.getTile(x - 1, y + 1)) && w == 1 && s == 1) ? 1 : 0;
-		int se = (isJoinedTile(level.getTile(x + 1, y + 1)) && e == 1 && s == 1) ? 1 : 0;
+		int nw = (isJoinedTile(level.getTileType(x - 1, y - 1)) && w == 1 && n == 1) ? 1 : 0;
+		int ne = (isJoinedTile(level.getTileType(x + 1, y - 1)) && e == 1 && n == 1) ? 1 : 0;
+		int sw = (isJoinedTile(level.getTileType(x - 1, y + 1)) && w == 1 && s == 1) ? 1 : 0;
+		int se = (isJoinedTile(level.getTileType(x + 1, y + 1)) && e == 1 && s == 1) ? 1 : 0;
 
 		return nw + 2 * n + 4 * ne + 8 * w + 16 * e + 32 * sw + 64 * s + 128 * se;
 	}

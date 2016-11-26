@@ -1,7 +1,9 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileStateDoor;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
@@ -51,9 +53,10 @@ public class ActionKick extends EntityAction {
 	}
 
 	private void tileKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		TileType tile = getEntity().getLevel().getTile(dx, dy);
+		Tile tile = getEntity().getLevel().getTile(dx, dy);
+		TileType tileType = getEntity().getLevel().getTileType(dx, dy);
 
-		if (tile == null || tile.getSolidity() != TileType.Solidity.SOLID) {
+		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (Utils.roll(5) == 1) {
 				if (isPlayer) {
 					getDungeon().logRandom(
@@ -77,8 +80,13 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 
-		if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
-			if (Utils.roll(5) == 1) {
+		if (tileType == TileType.TILE_ROOM_DOOR_CLOSED && tile.hasState() && tile.getState() instanceof TileStateDoor) {
+			if (((TileStateDoor) tile.getState()).damage(1) > 0) { // TODO: Make this based on strength
+				getDungeon().logRandom(
+					"WHAMM!!",
+					"CRASH!!"
+				);
+			} else {
 				if (isPlayer) {
 					getDungeon().logRandom(
 						"The door crashes open!",
@@ -87,15 +95,8 @@ public class ActionKick extends EntityAction {
 						"You kick the door down!"
 					);
 				}
-
-				kicker.getLevel().setTile(dx, dy, TileType.TILE_ROOM_DOOR_BROKEN);
-			} else {
-				getDungeon().logRandom(
-					"WHAMM!!",
-					"CRASH!!"
-				);
 			}
-		} else if (tile.isWallTile()) {
+		} else if (tileType.isWallTile()) {
 			if (isPlayer) {
 				getDungeon().You("kick the wall!");
 			}

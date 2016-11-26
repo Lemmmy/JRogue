@@ -1,11 +1,18 @@
-package pw.lemmmy.jrogue.dungeon;
+package pw.lemmmy.jrogue.dungeon.tiles;
+
+import pw.lemmmy.jrogue.dungeon.Level;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class Tile {
 	public int x;
 	public int y;
+
 	private TileType type;
+	private TileState state;
+
 	private Color light;
 	private int lightIntensity;
 	private int absorb;
@@ -20,9 +27,24 @@ public class Tile {
 		this.y = y;
 
 		resetLight();
+
+		initialiseState();
 	}
 
-	protected void resetLight() {
+	private void initialiseState() {
+		if (type.getStateClass() != null) {
+			try {
+				Class<TileState> stateClass = type.getStateClass();
+				Constructor<TileState> stateConstructor = stateClass.getConstructor(Tile.class);
+
+				state = stateConstructor.newInstance(this);
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void resetLight() {
 		light = type.getLight();
 		lightIntensity = type.getLightIntensity();
 		absorb = type.getAbsorb();
@@ -48,7 +70,21 @@ public class Tile {
 	}
 
 	public void setType(TileType type) {
-		this.type = type;
+		if (type.getStateClass() != this.type.getStateClass()) {
+			this.type = type;
+
+			initialiseState();
+		} else {
+			this.type = type;
+		}
+	}
+
+	public TileState getState() {
+		return state;
+	}
+
+	public boolean hasState() {
+		return state != null;
 	}
 
 	public Color getLight() {

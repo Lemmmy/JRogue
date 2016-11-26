@@ -14,6 +14,8 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.HashMap;
@@ -198,7 +200,7 @@ public class Player extends LivingEntity {
 		int newX = getX() + dx;
 		int newY = getY() + dy;
 
-		Tile tile = getLevel().getTileInfo(newX, newY);
+		Tile tile = getLevel().getTile(newX, newY);
 
 		// TODO: More in-depth movement verification
 		// 		 e.g. a player shouldn't be able to travel diagonally to
@@ -217,7 +219,7 @@ public class Player extends LivingEntity {
 	}
 
 	public int getLightLevel() {
-		return getLevel().getTileInfo(getX(), getY()).getLightIntensity();
+		return getLevel().getTile(getX(), getY()).getLightIntensity();
 	}
 
 	public int getVisibilityRange() {
@@ -366,6 +368,10 @@ public class Player extends LivingEntity {
 		}
 
 		return ' ';
+	}
+
+	public Map<Character, ItemStack> getInventory() {
+		return inventory;
 	}
 
 	public enum NutritionState {
