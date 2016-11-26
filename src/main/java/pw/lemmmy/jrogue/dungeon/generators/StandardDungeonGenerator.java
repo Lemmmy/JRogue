@@ -249,7 +249,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		if (waterTiles.length < 5) return;
 
-		int swarmCount = Utils.roll(4, 4);
+		int swarmCount = rand.nextInt(15) + 15;
 		int colourCount = MonsterFish.FishColour.values().length;
 
 		for (int i = 0; i < swarmCount; i++) {
