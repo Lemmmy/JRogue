@@ -194,7 +194,11 @@ public class Level {
 		for (int i = y - r; i < y + r; i++) {
 			for (int j = x - r; j < x + r; j++) {
 				if (Utils.distance(x, y, i, j) <= r) {
-					found.add(getTile(i, j));
+					Tile t = getTile(i, j);
+
+					if (t != null) {
+						found.add(t);
+					}
 				}
 			}
 		}
@@ -412,5 +416,14 @@ public class Level {
 				}
 			}
 		}
+	}
+
+	public void seeAll() {
+		Arrays.fill(visibleTiles, true);
+		Arrays.fill(discoveredTiles, true);
+	}
+
+	public Tile[] getTiles() {
+		return tiles;
 	}
 }

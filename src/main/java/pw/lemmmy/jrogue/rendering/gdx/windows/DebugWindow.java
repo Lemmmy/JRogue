@@ -29,6 +29,7 @@ public class DebugWindow extends PopupWindow {
 	@Override
 	public void populateWindow() {
 		getWindow().setWidth(350f);
+		getWindow().setHeight(250f);
 
 		getWindow().getContentTable().add(new Label(String.format("Nutrition: %,d", getDungeon().getPlayer().getNutrition()), getSkin(), "windowStyle"));
 		getWindow().getContentTable().row();
@@ -171,6 +172,16 @@ public class DebugWindow extends PopupWindow {
 			}
 		});
 		getWindow().getContentTable().add(damageButton).width(50f);
+		getWindow().getContentTable().row();
+
+		Button seeAllButton = new TextButton("See all", getSkin());
+		seeAllButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				getLevel().seeAll();
+			}
+		});
+		getWindow().getContentTable().add(seeAllButton).width(50f);
 		getWindow().getContentTable().row();
 	}
 }

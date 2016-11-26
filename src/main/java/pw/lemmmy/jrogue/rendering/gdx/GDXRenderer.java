@@ -553,6 +553,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudBrightness.addActor(new Label("BRI: " + player.getLightLevel(), hudSkin));
 
 		((Label) hudTable.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
+
 		switch (player.getNutritionState().getImportance()) {
 			case 1:
 				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));

@@ -30,7 +30,7 @@ public abstract class PopupWindow {
 
 		populateWindow();
 
-		window.setPosition(stage.getWidth() / 2, stage.getHeight() / 2, Align.center);
+		window.setPosition((int) (stage.getWidth() / 2), (int) (stage.getHeight() / 2), Align.center);
 
 		stage.addActor(window);
 	}

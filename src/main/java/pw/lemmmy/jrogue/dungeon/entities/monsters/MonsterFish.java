@@ -34,7 +34,7 @@ public class MonsterFish extends Monster {
 	protected void onDie(DamageSource damageSource) {
 		getDungeon().You("kill the %s!", getName(false));
 
-		if (Utils.roll(1, 3) == 1) {
+		if (Utils.roll(1, 5) == 1) {
 			drop(new ItemStack(new ItemCorpse(this)));
 		}
 	}

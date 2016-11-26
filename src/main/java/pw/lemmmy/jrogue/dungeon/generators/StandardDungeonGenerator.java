@@ -1,13 +1,14 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
@@ -32,6 +33,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double WATER_NOISE_THRESHOLD = 0.2;
 	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
 	private static final double WATER_NOISE_SCALE = 0.2;
+
+	private static final float FISH_PROBABILITY = 0.2f;
 
 	private OpenSimplexNoise simplexNoise;
 
@@ -59,6 +62,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		buildCorridors();
 		removeStrayRooms();
 		addWaterBodies();
+		spawnFish();
 		if (!chooseSpawnRoom()) return false;
 		chooseDownstairsRoom();
 
@@ -240,9 +244,39 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		}
 	}
 
+	private void spawnFish() {
+		Tile[] waterTiles = Arrays.stream(level.getTiles()).filter(t -> t.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
+
+		if (waterTiles.length < 5) return;
+
+		int swarmCount = Utils.roll(4, 4);
+		int colourCount = MonsterFish.FishColour.values().length;
+
+		for (int i = 0; i < swarmCount; i++) {
+			Tile startTile = Utils.randomFrom(waterTiles);
+
+			List<Tile> surroundingTiles = level.getTilesInRadius(startTile.getX(), startTile.getY(), Utils.roll(2, 3));
+
+			int f1 = rand.nextInt(colourCount);
+			int f2 = (f1 + 1) % 6;
+
+			MonsterFish.FishColour fishColour1 = MonsterFish.FishColour.values()[f1];
+			MonsterFish.FishColour fishColour2 = MonsterFish.FishColour.values()[f2];
+
+			for (Tile tile : surroundingTiles) {
+				if (tile.getType() == TileType.TILE_GROUND_WATER && rand.nextFloat() < FISH_PROBABILITY) {
+					MonsterFish.FishColour colour = rand.nextFloat() < 0.5 ? fishColour1 : fishColour2;
+
+					MonsterFish fish = new MonsterFish(level.getDungeon(), level, tile.getX(), tile.getY(), colour);
+					level.addEntity(fish);
+				}
+			}
+		}
+	}
+
 	private boolean chooseSpawnRoom() {
 		List<Room> temp = new ArrayList<>(rooms);
-		temp.sort((a, b) -> a.getConnectionPoints().size() - b.getConnectionPoints().size());
+		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
 			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
@@ -261,9 +295,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		spawnRoom.setSpawn();
 		level.setSpawnPoint(stairX, stairY);
-
-		int testX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
-		int testY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
 
 		return true;
 	}
