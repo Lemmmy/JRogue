@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
@@ -394,17 +393,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		fbo.begin();
 		batch.setProjectionMatrix(fullCamera.combined);
-		batch.begin();
 		batch.enableBlending();
+		batch.begin();
 
 		drawMap(true);
 		drawEntities();
 
 		batch.end();
 
-		byte[] pixels = ScreenUtils.getFrameBufferPixels(0, 0, levelWidth, levelHeight, false);
-		Pixmap pmap = new Pixmap(levelWidth, levelHeight, Pixmap.Format.RGBA8888);
-		BufferUtils.copy(pixels, 0, pmap.getPixels(), pixels.length);
+		Pixmap pmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
 
 		fbo.end();
 		fbo.dispose();
