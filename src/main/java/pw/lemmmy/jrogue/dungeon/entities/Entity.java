@@ -124,6 +124,6 @@ public abstract class Entity {
 	public abstract boolean canBeWalkedOn();
 
 	public int getDepth() {
-		return 0;
+		return 1;
 	}
 }
