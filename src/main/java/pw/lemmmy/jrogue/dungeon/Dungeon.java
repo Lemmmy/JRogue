@@ -34,7 +34,6 @@ public class Dungeon {
 	private Player player;
 
 	private long turn = 0;
-
 	private long nextExerciseCounter = 500;
 
 	private Prompt prompt;
