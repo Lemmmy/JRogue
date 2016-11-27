@@ -387,15 +387,16 @@ public class Level {
 	public void updateSight(Player player) {
 		Arrays.fill(visibleTiles, false);
 
-		int x = player.getX();
-		int y = player.getY();
+		float x = player.getX() + 0.5f;
+		float y = player.getY() + 0.5f;
 
 		for (int r = 0; r < 360; r++) {
 			int corridorVisibility = 0;
 
 			for (int i = 0; i < player.getVisibilityRange(); i++) {
-				int dx = x + (int) Math.floor(i * Math.cos(r));
-				int dy = y + (int) Math.floor(i * Math.sin(r));
+				double a = Math.toRadians(r);
+				int dx = (int)Math.floor(x + i * Math.cos(a));
+				int dy = (int)Math.floor(y + i * Math.sin(a));
 
 				if (getTileType(dx, dy) == TileType.TILE_CORRIDOR) {
 					corridorVisibility += 1;
