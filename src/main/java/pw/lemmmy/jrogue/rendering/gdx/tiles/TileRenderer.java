@@ -61,8 +61,11 @@ public abstract class TileRenderer {
 		if (br != null && dungeon.getLevel().isTileDiscovered(x + 1, y + 1)) cbr = br.getLightColour();
 		if (bl != null && dungeon.getLevel().isTileDiscovered(x, y + 1)) cbl = bl.getLightColour();
 
+		float lx = (x + 0.5f) * width;
+		float ly = (y + 0.5f) * height;
+
 		batch.rect(
-			x * width, y * height, width, height,
+			lx, ly, width, height,
 			Utils.awtColourToGdx(ctl),
 			Utils.awtColourToGdx(ctr),
 			Utils.awtColourToGdx(cbr),
