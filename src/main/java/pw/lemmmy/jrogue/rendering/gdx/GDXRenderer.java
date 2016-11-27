@@ -676,9 +676,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudStage.dispose();
 		hudSkin.dispose();
 
-		for (TilePooledEffect effect : pooledEffects) {
-			effect.getPooledEffect().free();
-		}
+		pooledEffects.forEach(e -> e.getPooledEffect().free());
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
