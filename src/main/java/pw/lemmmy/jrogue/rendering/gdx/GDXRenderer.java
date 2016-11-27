@@ -545,12 +545,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	}
 
-	@Override
-	public void onTurn(long turn) {
-		updateWindowTitle();
-
-		Player player = dungeon.getPlayer();
-
+	private void updateHUDPlayerLabel(Player player) {
 		hudPlayerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 			player.getName(true),
@@ -559,7 +554,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			player.getHealth(),
 			player.getMaxHealth()
 		));
+	}
 
+	private void updateHUDAttributes(Player player) {
 		((Label) hudAttributes.findActor("attributeStrength")).setText("STR: " + player.getStrength());
 		((Label) hudAttributes.findActor("attributeAgility")).setText("AGI: " + player.getAgility());
 		((Label) hudAttributes.findActor("attributeDexterity")).setText("DXT: " + player.getDexterity());
@@ -567,7 +564,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		((Label) hudAttributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
 		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
 		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
+	}
 
+	private void updateHUDBrightness(Player player) {
 		hudBrightness.clearChildren();
 
 		if (player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
@@ -577,7 +576,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 
 		hudBrightness.addActor(new Label("BRI: " + player.getLightLevel(), hudSkin));
+	}
 
+	private void updateHUDNutrition(Player player) {
 		((Label) hudTable.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
 
 		switch (player.getNutritionState().getImportance()) {
@@ -591,7 +592,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				hudTable.findActor("attributeNutrition").setColor(Color.WHITE);
 				break;
 		}
+	}
 
+	private void updateHUDStatusEffects(Player player) {
 		if (player.getStatusEffects().size() > 0) {
 			List<String> effects = player.getStatusEffects().stream()
 				.map(e -> {
@@ -612,6 +615,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		} else {
 			hudEffectsLabel.setText("");
 		}
+	}
+
+	@Override
+	public void onTurn(long turn) {
+		updateWindowTitle();
+
+		Player player = dungeon.getPlayer();
+		updateHUDPlayerLabel(player);
+		updateHUDAttributes(player);
+		updateHUDBrightness(player);
+		updateHUDNutrition(player);
+		updateHUDStatusEffects(player);
 	}
 
 	private String getHealthColour(int health, int maxHealth) {
