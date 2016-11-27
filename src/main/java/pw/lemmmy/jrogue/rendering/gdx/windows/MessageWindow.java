@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,7 +24,13 @@ public class MessageWindow extends PopupWindow {
 
 	@Override
 	public void populateWindow() {
-		getWindow().text(message, getSkin().get("windowStyle", Label.LabelStyle.class));
+		Label label = new Label("[P_GREY_0]" + message + "[]", getSkin(), "windowStyleMarkup");
+		label.setWrap(true);
+		getWindow().getContentTable().add(label).pad(16).prefWidth(350);
 		getWindow().button("OK");
+		getWindow().key(Input.Keys.ENTER, true);
+		getWindow().key(Input.Keys.ESCAPE, true);
+		getWindow().setModal(false);
+		getWindow().pack();
 	}
 }

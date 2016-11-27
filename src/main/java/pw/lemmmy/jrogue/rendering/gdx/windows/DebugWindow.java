@@ -189,16 +189,16 @@ public class DebugWindow extends PopupWindow {
 			}
 		});
 		getWindow().getContentTable().add(seeAllButton).width(50f);
-		getWindow().getContentTable().row();
 
 		Button takeSnap = new TextButton("Take Level Snapshot", getSkin());
 		takeSnap.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				Pixmap snapshot = getRenderer().takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("user.home")).resolve("jrogue_level_snap.png").toString();
+				String path = Paths.get(System.getProperty("java.io.tmpdir")).resolve("jrogue_level_snap.png").toString();
 				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
 				snapshot.dispose();
+				new MessageWindow(getRenderer(), getStage(), getSkin(), "Screenshot", "Saved to [BLUE]" + path + "[]").show();
 			}
 		});
 		getWindow().getContentTable().add(takeSnap).width(125f);
