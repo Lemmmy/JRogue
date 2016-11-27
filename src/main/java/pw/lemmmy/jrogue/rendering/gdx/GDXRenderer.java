@@ -39,6 +39,7 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
@@ -591,21 +592,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 
 		if (player.getStatusEffects().size() > 0) {
-			List<String> effects = new ArrayList<>();
-
-			for (StatusEffect effect : player.getStatusEffects()) {
-				switch (effect.getSeverity()) {
-					case MINOR:
-						effects.add("[P_YELLOW]" + effect.getName() + "[]");
-						break;
-					case MAJOR:
-						effects.add("[P_ORANGE_2]" + effect.getName() + "[]");
-						break;
-					case CRITICAL:
-						effects.add("[P_RED]" + effect.getName() + "[]");
-						break;
-				}
-			}
+			List<String> effects = player.getStatusEffects().stream()
+				.map(e -> {
+					switch (e.getSeverity()) {
+						case MINOR:
+							return "[P_YELLOW]" + e.getName() + "[]";
+						case MAJOR:
+							return "[P_ORANGE_2]" + e.getName() + "[]";
+						case CRITICAL:
+							return "[P_RED]" + e.getName() + "[]";
+						default:
+							return "";
+					}
+				})
+				.collect(Collectors.toList());
 
 			hudEffectsLabel.setText(StringUtils.join(effects, " "));
 		} else {

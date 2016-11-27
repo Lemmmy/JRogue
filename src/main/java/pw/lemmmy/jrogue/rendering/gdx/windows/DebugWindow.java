@@ -163,14 +163,15 @@ public class DebugWindow extends PopupWindow {
 				try {
 					int amount = Integer.parseInt(damageAmountField.getText());
 
-					for (Entity entity : getLevel().getEntitiesAt(getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY())) {
-						if (entity instanceof LivingEntity && !(entity instanceof Player)) {
-							((LivingEntity) entity).damage(DamageSource.UNKNOWN, amount, getDungeon().getPlayer(), true);
-						}
-					}
+					Player player = getDungeon().getPlayer();
+
+					java.util.List<Entity> ents = getLevel().getEntitiesAt(player.getX(), player.getY());
+
+					ents.stream()
+						.filter(e -> e instanceof LivingEntity && !(e instanceof Player))
+						.forEach(e -> ((LivingEntity) e).damage(DamageSource.UNKNOWN, amount, player, true));
 
 					getDungeon().turn();
-
 					getWindow().hide();
 				} catch (NumberFormatException e) {
 					new MessageWindow(getRenderer(), getStage(), getSkin(), "Error", "Invalid amount.").show();

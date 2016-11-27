@@ -45,11 +45,12 @@ public class FontLoader {
 	}
 
 	public static void disposeAll() {
-		for (BitmapFont font : fontCache.values()) {
+		fontCache.forEach((s, f) -> {
 			try {
-				font.dispose();
-			} catch (GdxRuntimeException ignored) {
+				f.dispose();
+			} catch (GdxRuntimeException e) {
+				JRogue.getLogger().warn("Font \"{}\" has already been disposed!", s);
 			}
-		}
+		});
 	}
 }
