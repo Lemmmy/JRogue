@@ -555,7 +555,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 			player.getName(true),
 			player.getRole().getName(),
-			"P_GREEN_3",
+			getHealthColour(player.getHealth(), player.getMaxHealth()),
 			player.getHealth(),
 			player.getMaxHealth()
 		));
@@ -611,6 +611,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			hudEffectsLabel.setText(StringUtils.join(effects, " "));
 		} else {
 			hudEffectsLabel.setText("");
+		}
+	}
+
+	private String getHealthColour(int health, int maxHealth) {
+		if (health <= maxHealth / 5) {
+			return "P_RED";
+		} else if (health <= maxHealth / 3) {
+			return "P_ORANGE_3";
+		} else if (health <= maxHealth / 2) {
+			return "P_YELLOW";
+		} else {
+			return "P_GREEN_3";
 		}
 	}
 
