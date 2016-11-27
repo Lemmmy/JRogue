@@ -24,7 +24,6 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
-import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
@@ -140,7 +139,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() /  Gdx.graphics.getWidth());
+		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
 
 		camera.update();
 
@@ -156,7 +155,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	protected void setupHUD() {
 		hudStage = new Stage(new ScreenViewport());
-		setupSkin();
+		hudSkin = new HUDSkin();
 
 		hudTable = new Table();
 		hudTable.setFillParent(true);
@@ -243,91 +242,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudAttributes.add(charismaLabel).pad(0, 2, 0, 8);
 
 		hudTable.add(hudAttributes).left().pad(0, 1, 0, 1);
-	}
-
-	private void setupSkin() {
-		hudSkin = new Skin();
-
-		Pixmap white = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		white.setColor(Color.WHITE);
-		white.fill();
-		hudSkin.add("white", new Texture(white));
-
-		hudSkin.add("default", FontLoader.getFont("PixelOperator.ttf", 16, true));
-		hudSkin.add("defaultNoShadow", FontLoader.getFont("PixelOperator.ttf", 16, false));
-		hudSkin.add("large", FontLoader.getFont("PixelOperator.ttf", 32, true));
-		hudSkin.add("largeNoShadow", FontLoader.getFont("PixelOperator.ttf", 32, false));
-
-		Label.LabelStyle labelStyle = new Label.LabelStyle();
-		labelStyle.font = hudSkin.getFont("default");
-		hudSkin.add("default", labelStyle);
-
-		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
-		largeLabelStyle.font = hudSkin.getFont("large");
-		hudSkin.add("large", largeLabelStyle);
-
-		Label.LabelStyle windowLabelStyle = new Label.LabelStyle();
-		windowLabelStyle.font = hudSkin.getFont("defaultNoShadow");
-		windowLabelStyle.fontColor = Colors.get("P_GREY_0");
-		hudSkin.add("windowStyle", windowLabelStyle);
-
-		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-		textButtonStyle.up = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.over = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 10, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.down = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 20, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.disabled = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 50, 0, 10, 10), 4, 4, 4, 4));
-		textButtonStyle.font = hudSkin.getFont("defaultNoShadow");
-		textButtonStyle.fontColor = Colors.get("P_GREY_0");
-		textButtonStyle.downFontColor = Colors.get("P_GREY_0");
-		textButtonStyle.overFontColor = Colors.get("P_GREY_0");
-		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
-		hudSkin.add("default", textButtonStyle);
-
-		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-		textFieldStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 59, 10, 5, 18), 2, 2, 2, 2));
-		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 64, 10, 5, 18), 2, 2, 2, 2));
-		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 69, 10, 5, 18), 2, 2, 2, 2));
-		textFieldStyle.font = hudSkin.getFont("defaultNoShadow");
-		textFieldStyle.fontColor = Colors.get("P_GREY_0");
-		hudSkin.add("default", textFieldStyle);
-
-		com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle();
-		listStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 84, 10, 3, 3), 1, 1, 1, 1));
-		listStyle.selection = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 84, 22, 3, 3), 1, 1, 1, 1));
-		listStyle.font = hudSkin.getFont("defaultNoShadow");
-		listStyle.fontColorUnselected = Colors.get("P_GREY_0");
-		listStyle.fontColorSelected = Color.WHITE;
-		hudSkin.add("default", listStyle);
-
-		ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-		scrollPaneStyle.hScroll = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 21, 7, 4), 2, 1, 1, 1));
-		scrollPaneStyle.vScroll = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 17, 7, 4), 1, 1, 2, 1));
-		scrollPaneStyle.hScrollKnob = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 87, 10, 7, 7), 2, 2, 2, 2));
-		scrollPaneStyle.vScrollKnob = scrollPaneStyle.hScrollKnob;
-		hudSkin.add("default", scrollPaneStyle);
-
-		SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
-		selectBoxStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 59, 10, 5, 18), 2, 2, 2, 2));
-		selectBoxStyle.backgroundDisabled = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 69, 10, 5, 18), 2, 2, 2, 2));
-		selectBoxStyle.backgroundOver = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 74, 10, 5, 18), 2, 2, 2, 2));
-		selectBoxStyle.backgroundOpen = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 79, 10, 5, 18), 2, 2, 2, 2));
-		selectBoxStyle.font = hudSkin.getFont("defaultNoShadow");
-		selectBoxStyle.fontColor = Colors.get("P_GREY_0");
-		selectBoxStyle.listStyle = listStyle;
-		selectBoxStyle.scrollStyle = scrollPaneStyle;
-		hudSkin.add("default", selectBoxStyle);
-
-		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
-		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 5, 10, 18, 18));
-		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 23, 10, 18, 18));
-		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 41, 10, 18, 18));
-		hudSkin.add("windowCloseButton", windowCloseButtonStyle);
-
-		Window.WindowStyle windowStyle = new Window.WindowStyle();
-		windowStyle.background = new NinePatchDrawable(new NinePatch(ImageLoader.getSubimage("hud.png", 0, 10, 5, 20), 2, 2, 18, 1));
-		windowStyle.titleFont = hudSkin.getFont("defaultNoShadow");
-		windowStyle.titleFontColor = Colors.get("P_GREY_0");
-		hudSkin.add("default", windowStyle);
 	}
 
 	@Override
