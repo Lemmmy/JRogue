@@ -134,7 +134,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		updateWindowTitle();
 
-		zoom = 72 * TileMap.TILE_WIDTH;
+		zoom = 24 * TileMap.TILE_WIDTH;
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
