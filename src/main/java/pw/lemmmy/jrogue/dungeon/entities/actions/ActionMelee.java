@@ -20,6 +20,8 @@ public class ActionMelee extends EntityAction {
 
 	@Override
 	public void execute() {
+		runBeforeRunCallback();
+
 		if (!(getEntity() instanceof LivingEntity)) {
 			return;
 		}
@@ -29,6 +31,6 @@ public class ActionMelee extends EntityAction {
 
 		victim.damage(damageSource, damage, attacker, isAttackerPlayer);
 
-		runCallback();
+		runOnCompleteCallback();
 	}
 }

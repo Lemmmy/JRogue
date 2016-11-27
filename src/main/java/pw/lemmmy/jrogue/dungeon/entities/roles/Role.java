@@ -12,6 +12,8 @@ public abstract class Role {
 
 	public abstract int getStartingHealth();
 	public abstract List<ItemStack> getStartingItems();
+	public abstract ItemStack getStartingLeftHand();
+	public abstract ItemStack getStartingRightHand();
 	public abstract Map<Skill, SkillLevel> getStartingSkills();
 
 	public abstract int getStrength();

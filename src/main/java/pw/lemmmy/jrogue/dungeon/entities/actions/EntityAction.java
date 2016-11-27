@@ -30,13 +30,20 @@ public abstract class EntityAction {
 		return entity;
 	}
 
-	public void runCallback() {
+	public void runBeforeRunCallback() {
+		if (callback != null) {
+			callback.beforeRun();
+		}
+	}
+
+	public void runOnCompleteCallback() {
 		if (callback != null) {
 			callback.onComplete();
 		}
 	}
 
 	public abstract static class ActionCallback {
-		public abstract void onComplete();
+		public void beforeRun() {}
+		public void onComplete() {}
 	}
 }

@@ -23,6 +23,8 @@ public class ActionEat extends EntityAction {
 
 	@Override
 	public void execute() {
+		runBeforeRunCallback();
+
 		if (getEntity() instanceof Player) {
 			Player player = (Player) getEntity();
 
@@ -32,6 +34,8 @@ public class ActionEat extends EntityAction {
 			if (entityItem != null && state == ItemComestible.EatenState.EATEN) {
 				entityItem.getLevel().removeEntity(entityItem);
 			}
+
+			runOnCompleteCallback();
 		}
 	}
 }

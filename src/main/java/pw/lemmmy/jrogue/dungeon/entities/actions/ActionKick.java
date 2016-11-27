@@ -29,6 +29,8 @@ public class ActionKick extends EntityAction {
 
 	@Override
 	public void execute() {
+		runBeforeRunCallback();
+
 		int dx = getEntity().getX() + direction[0];
 		int dy = getEntity().getY() + direction[1];
 
@@ -46,6 +48,8 @@ public class ActionKick extends EntityAction {
 		} else {
 			tileKick(entity, isPlayer, dx, dy);
 		}
+
+		runOnCompleteCallback();
 	}
 
 	private void entityKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {

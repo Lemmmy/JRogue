@@ -7,7 +7,6 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
-import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
@@ -15,11 +14,11 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -46,9 +45,6 @@ public class Player extends LivingEntity {
 	private Map<Character, ItemStack> inventory;
 	private Map<Skill, SkillLevel> skills;
 
-	private ItemStack leftHand;
-	private ItemStack rightHand;
-
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
 
@@ -69,6 +65,8 @@ public class Player extends LivingEntity {
 		skills = new HashMap<>(role.getStartingSkills());
 
 		role.getStartingItems().forEach(i -> inventory.put(getAvailableInventoryLetter(), i));
+		setLeftHand(role.getStartingLeftHand());
+		setRightHand(role.getStartingRightHand());
 
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
@@ -190,6 +188,14 @@ public class Player extends LivingEntity {
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 
+	private void walkAction(Tile tile, int newX, int newY) {
+		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
+			setAction(new ActionMove(getDungeon(), this, newX, newY));
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+			getDungeon().The("door is locked.");
+		}
+	}
+
 	public void walk(int dx, int dy) {
 		dx = Math.max(-1, Math.min(1, dx));
 		dy = Math.max(-1, Math.min(1, dy));
@@ -209,11 +215,27 @@ public class Player extends LivingEntity {
 			return;
 		}
 
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(getDungeon(), this, newX, newY));
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-			getDungeon().The("door is locked.");
-		}
+		List<Entity> destEntities = getLevel().getEntitiesAt(newX, newY);
+
+		if (destEntities.size() > 0) {
+			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
+
+			Optional<Entity> ent = destEntities.stream()
+				.filter(e -> e instanceof LivingEntity)
+				.findFirst();
+
+			if (ent.isPresent()) {
+				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getRightHand().getItem()).hit(this, (LivingEntity) ent.get());
+				} else {
+					walkAction(tile, newX, newY);
+				}
+			} else {
+				walkAction(tile, newX, newY);
+			}
+		} else {
+			walkAction(tile, newX, newY);
+		} // TODO: Restructure this mess
 
 		getDungeon().turn();
 	}
@@ -375,6 +397,14 @@ public class Player extends LivingEntity {
 
 	public Map<Character, ItemStack> getInventory() {
 		return inventory;
+	}
+
+	public SkillLevel getSkillLevel(Skill skill) {
+		if (!skills.containsKey(skill)) {
+			return SkillLevel.UNSKILLED;
+		} else {
+			return skills.get(skill);
+		}
 	}
 
 	public enum NutritionState {

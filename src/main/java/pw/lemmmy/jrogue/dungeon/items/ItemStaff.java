@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -31,7 +32,7 @@ public class ItemStaff extends ItemWeaponMelee {
 
 	@Override
 	public void fire(LivingEntity attacker, LivingEntity victim) {
-		// TODO: Make weapons throwable (why not)
+
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class ItemStaff extends ItemWeaponMelee {
 
 	@Override
 	public boolean isMagic() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -67,5 +68,10 @@ public class ItemStaff extends ItemWeaponMelee {
 	@Override
 	public int getLargeDamage() {
 		return Utils.roll(6);
+	}
+
+	@Override
+	protected DamageSource getMeleeDamageSource() {
+		return DamageSource.STAFF_BASH;
 	}
 }

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RoleWizard extends Role {
+	private ItemStack staff;
+
 	@Override
 	public String getName() {
 		return "Wizard";
@@ -25,9 +27,20 @@ public class RoleWizard extends Role {
 	public List<ItemStack> getStartingItems() {
 		List<ItemStack> itemList = new ArrayList<>();
 
-		itemList.add(new ItemStack(new ItemStaff()));
+		staff = new ItemStack(new ItemStaff());
+		itemList.add(staff);
 
 		return itemList;
+	}
+
+	@Override
+	public ItemStack getStartingLeftHand() {
+		return null;
+	}
+
+	@Override
+	public ItemStack getStartingRightHand() {
+		return staff;
 	}
 
 	@Override

@@ -21,6 +21,8 @@ public class ActionMove extends EntityAction {
 
 	@Override
 	public void execute() {
+		runBeforeRunCallback();
+
 		List<Entity> unwalkable = getEntity().getLevel().getUnwalkableEntitiesAt(x, y);
 
 		if (unwalkable.size() > 0) {
@@ -47,5 +49,7 @@ public class ActionMove extends EntityAction {
 
 		List<Entity> walkable = getEntity().getLevel().getWalkableEntitiesAt(x, y);
 		walkable.forEach(e -> e.walk((LivingEntity) getEntity(), getEntity() instanceof Player));
+
+		runOnCompleteCallback();
 	}
 }

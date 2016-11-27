@@ -14,6 +14,9 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	private int experienceLevel = 1;
 
+	private ItemStack leftHand;
+	private ItemStack rightHand;
+
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
 
@@ -109,6 +112,22 @@ public abstract class LivingEntity extends EntityTurnBased {
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
 			getLevel().addEntity(entityItem);
 		}
+	}
+
+	public ItemStack getLeftHand() {
+		return leftHand;
+	}
+
+	public ItemStack getRightHand() {
+		return rightHand;
+	}
+
+	public void setLeftHand(ItemStack leftHand) {
+		this.leftHand = leftHand;
+	}
+
+	public void setRightHand(ItemStack rightHand) {
+		this.rightHand = rightHand;
 	}
 
 	public enum Size {

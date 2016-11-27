@@ -10,5 +10,7 @@ public enum DamageSource {
 
 	KICK_REVENGE,
 
-	PLAYER_KICK
+	PLAYER_KICK,
+
+	STAFF_BASH
 }
