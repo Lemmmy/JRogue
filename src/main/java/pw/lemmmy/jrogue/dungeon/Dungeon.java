@@ -12,6 +12,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dungeon {
 	public static final int NORMAL_SPEED = 12;
@@ -81,9 +82,7 @@ public class Dungeon {
 		player.setLevel(level);
 		level.addEntity(player);
 
-		for (Listener listener : listeners) {
-			listener.onLevelChange(level);
-		}
+		listeners.forEach(l -> l.onLevelChange(level));
 	}
 
 	public String getOriginalName() {
@@ -110,9 +109,7 @@ public class Dungeon {
 	public void log(String s, Object... objects) {
 		JRogue.getLogger().info(String.format(s, objects));
 
-		for (Listener listener : listeners) {
-			listener.onLog(String.format(s, objects));
-		}
+		listeners.forEach(l -> l.onLog(String.format(s, objects)));
 	}
 
 	public void You(String s, Object... objects) {
@@ -137,40 +134,28 @@ public class Dungeon {
 	}
 
 	private boolean moveEntities() {
-		boolean somebodyCanMove = false;
+		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 
-		for (Entity entity : level.getEntities()) {
-			if (!(entity instanceof EntityTurnBased) || entity instanceof Player) {
-				continue;
-			}
+		level.getEntities().stream()
+			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
+						(e instanceof LivingEntity && ((LivingEntity)e).isAlive()) &&
+						!(((EntityTurnBased)e).getMovementPoints() < NORMAL_SPEED))
+			.forEach(e -> {
+				EntityTurnBased tbe = (EntityTurnBased)e;
+				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
 
-			if (entity instanceof LivingEntity && !((LivingEntity) entity).isAlive()) {
-				continue;
-			}
+				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
+					somebodyCanMove.set(true);
+				}
 
-			EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
+				tbe.move();
+			});
 
-			if (turnBasedEntity.getMovementPoints() < NORMAL_SPEED) {
-				continue;
-			}
-
-			turnBasedEntity.setMovementPoints(turnBasedEntity.getMovementPoints() - NORMAL_SPEED);
-
-			if (turnBasedEntity.getMovementPoints() >= NORMAL_SPEED) {
-				somebodyCanMove = true;
-			}
-
-			turnBasedEntity.move();
-		}
-
-		return somebodyCanMove;
+		return somebodyCanMove.get();
 	}
 
 	public void turn() {
-		for (Listener listener : listeners) {
-			listener.onBeforeTurn(turn + 1);
-		}
-
+		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
 
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
@@ -233,9 +218,7 @@ public class Dungeon {
 		getLevel().buildLight();
 		getLevel().updateSight(getPlayer());
 
-		for (Listener listener : listeners) {
-			listener.onTurn(turn);
-		}
+		listeners.forEach(l -> l.onTurn(turn));
 	}
 
 	private void update() {
@@ -252,10 +235,7 @@ public class Dungeon {
 
 	public void prompt(Prompt prompt) {
 		this.prompt = prompt;
-
-		for (Listener listener : listeners) {
-			listener.onPrompt(prompt);
-		}
+		listeners.forEach(l -> l.onPrompt(prompt));
 	}
 
 	public void promptRespond(char response) {
@@ -264,9 +244,7 @@ public class Dungeon {
 			this.prompt = null;
 			prompt.respond(response);
 
-			for (Listener listener : listeners) {
-				listener.onPrompt(null);
-			}
+			listeners.forEach(l -> l.onPrompt(null));
 		}
 	}
 
@@ -276,9 +254,7 @@ public class Dungeon {
 			this.prompt = null;
 			prompt.escape();
 
-			for (Listener listener : listeners) {
-				listener.onPrompt(null);
-			}
+			listeners.forEach(l -> l.onPrompt(null));
 		}
 	}
 

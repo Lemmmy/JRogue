@@ -37,8 +37,10 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
@@ -427,21 +429,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawEntities() {
-		for (Entity entity : dungeon.getLevel().getEntities()) {
-			if (entity instanceof Player) {
-				continue; // don't draw the player yet
-			}
+		dungeon.getLevel().getEntities().stream()
+			.sorted(Comparator.comparingInt(Entity::getDepth))
+			.forEach(e -> {
+				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 
-			EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-
-			if (em.getRenderer() != null) {
-				em.getRenderer().draw(batch, dungeon, entity);
-			}
-		}
-
-		if (dungeon.getPlayer() != null) {
-			EntityMap.APPEARANCE_PLAYER.getRenderer().draw(batch, dungeon, dungeon.getPlayer()); // draw the player on top
-		}
+				if (em.getRenderer() != null) {
+					em.getRenderer().draw(batch, dungeon, e);
+				}
+			});
 	}
 
 	private void drawLights() {
@@ -514,10 +510,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void findPooledParticles() {
-		for (TilePooledEffect effect : pooledEffects) {
-			effect.getPooledEffect().free();
-		}
-
+		pooledEffects.forEach(e -> e.getPooledEffect().free());
 		pooledEffects.clear();
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
@@ -600,21 +593,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 
 		if (player.getStatusEffects().size() > 0) {
-			List<String> effects = new ArrayList<>();
-
-			for (StatusEffect effect : player.getStatusEffects()) {
-				switch (effect.getSeverity()) {
-					case MINOR:
-						effects.add("[P_YELLOW]" + effect.getName() + "[]");
-						break;
-					case MAJOR:
-						effects.add("[P_ORANGE_2]" + effect.getName() + "[]");
-						break;
-					case CRITICAL:
-						effects.add("[P_RED]" + effect.getName() + "[]");
-						break;
-				}
-			}
+			List<String> effects = player.getStatusEffects().stream()
+				.map(e -> {
+					switch (e.getSeverity()) {
+						case MINOR:
+							return "[P_YELLOW]" + e.getName() + "[]";
+						case MAJOR:
+							return "[P_ORANGE_2]" + e.getName() + "[]";
+						case CRITICAL:
+							return "[P_RED]" + e.getName() + "[]";
+						default:
+							return "";
+					}
+				})
+				.collect(Collectors.toList());
 
 			hudEffectsLabel.setText(StringUtils.join(effects, " "));
 		} else {
@@ -676,9 +668,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudStage.dispose();
 		hudSkin.dispose();
 
-		for (TilePooledEffect effect : pooledEffects) {
-			effect.getPooledEffect().free();
-		}
+		pooledEffects.forEach(e -> e.getPooledEffect().free());
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();

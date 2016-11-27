@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class LivingEntity extends EntityTurnBased {
 	private int health;
@@ -80,19 +81,34 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public abstract Size getSize();
 
+	@Override
+	public int getDepth() {
+		switch (getSize()) {
+			case SMALL:
+				return 1;
+
+			case LARGE:
+				return 2;
+
+			default:
+				return 0;
+		}
+	}
+
 	public void drop(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 
-		for (Entity entity : entities) {
-			if (entity instanceof EntityItem && ((EntityItem) entity).getItem() == item.getItem()) {
-				((EntityItem) entity).getItemStack().addCount(item.getCount());
+		Optional<Entity> ent = entities.stream()
+			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
+			.findFirst();
 
-				return;
-			}
+		if (ent.isPresent()) {
+			EntityItem entItem = (EntityItem)ent.get();
+			entItem.getItemStack().addCount(item.getCount());
+		} else {
+			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
+			getLevel().addEntity(entityItem);
 		}
-
-		EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
-		getLevel().addEntity(entityItem);
 	}
 
 	public enum Size {
