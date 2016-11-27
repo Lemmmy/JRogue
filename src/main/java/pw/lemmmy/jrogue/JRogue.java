@@ -11,7 +11,6 @@ import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class JRogue {
@@ -23,7 +22,7 @@ public class JRogue {
 	public Renderer renderer;
 
 	public JRogue(Settings settings) {
-		dungeon = new Dungeon();
+		dungeon = new Dungeon(settings);
 		renderer = new GDXRenderer(dungeon, settings.getScreenWidth(), settings.getScreenHeight()); // TODO: Make this configurable
 	}
 
@@ -42,7 +41,13 @@ public class JRogue {
 	}
 
 	public static void parseConfig(Ini ini, Settings settings) {
+		if (ini.get("Player") != null) {
+			Ini.Section playerSection = ini.get("Player");
 
+			if (playerSection.get("name") != null) {
+				settings.setPlayerName(playerSection.get("name"));
+			}
+		}
 	}
 
 	public static void main(String[] args) {
@@ -51,6 +56,7 @@ public class JRogue {
 
 		opts.addOption("h", "help", false, "Shows the help information");
 		opts.addOption("c", "config", true, "Specify the path of a config file to load");
+		opts.addOption(null, "name", true, "Specify the name of the player");
 		opts.addOption(null, "width", true, "Sets the game window width");
 		opts.addOption(null, "height", true, "Sets the game window height");
 
@@ -77,6 +83,10 @@ public class JRogue {
 
 		if (cmd.hasOption("config")) {
 			loadConfig(new File(cmd.getOptionValue("config")), settings);
+		}
+
+		if (cmd.hasOption("name")) {
+			settings.setPlayerName(cmd.getOptionValue("name"));
 		}
 
 		if (cmd.hasOption("width")) {

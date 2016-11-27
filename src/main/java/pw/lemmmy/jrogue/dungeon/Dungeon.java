@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
@@ -39,9 +40,12 @@ public class Dungeon {
 
 	private Prompt prompt;
 
-	public Dungeon() {
+	private Settings settings;
+
+	public Dungeon(Settings settings) {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
+		this.settings = settings;
 
 		generateLevel();
 	}
@@ -74,7 +78,7 @@ public class Dungeon {
 		} while (!gotLevel);
 
 		if (player == null) {
-			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), System.getProperty("user.name"), new RoleWizard());
+			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), settings.getPlayerName(), new RoleWizard());
 		} else {
 			player.setPosition(level.getSpawnX(), level.getSpawnY());
 		}

@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import com.github.alexeyr.pcg.Pcg32;
+import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.*;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
@@ -162,7 +163,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return name;
+		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
 	}
 
 	@Override
