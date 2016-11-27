@@ -81,6 +81,20 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public abstract Size getSize();
 
+	@Override
+	public int getDepth() {
+		switch (getSize()) {
+			case SMALL:
+				return 1;
+
+			case LARGE:
+				return 2;
+
+			default:
+				return 0;
+		}
+	}
+
 	public void drop(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 

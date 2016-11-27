@@ -37,6 +37,7 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -429,7 +430,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private void drawEntities() {
 		dungeon.getLevel().getEntities().stream()
-			.sorted((a, b) -> a instanceof Player ? 1 : 0) // TODO: We could sort by depth here.
+			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 

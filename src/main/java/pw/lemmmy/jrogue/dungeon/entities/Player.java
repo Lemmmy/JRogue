@@ -367,6 +367,11 @@ public class Player extends LivingEntity {
 		return ' ';
 	}
 
+	@Override
+	public int getDepth() {
+		return 3;
+	}
+
 	public Map<Character, ItemStack> getInventory() {
 		return inventory;
 	}
