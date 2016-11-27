@@ -46,11 +46,6 @@ public class ActionMove extends EntityAction {
 		}
 
 		List<Entity> walkable = getEntity().getLevel().getWalkableEntitiesAt(x, y);
-
-		if (walkable.size() > 0) {
-			for (Entity entity : walkable) {
-				entity.walk((LivingEntity) getEntity(), getEntity() instanceof Player);
-			}
-		}
+		walkable.forEach(e -> e.walk((LivingEntity) getEntity(), getEntity() instanceof Player));
 	}
 }

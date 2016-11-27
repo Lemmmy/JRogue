@@ -427,21 +427,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawEntities() {
-		for (Entity entity : dungeon.getLevel().getEntities()) {
-			if (entity instanceof Player) {
-				continue; // don't draw the player yet
-			}
+		dungeon.getLevel().getEntities().stream()
+			.sorted((a, b) -> a instanceof Player ? 1 : 0) // TODO: We could sort by depth here.
+			.forEach(e -> {
+				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 
-			EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-
-			if (em.getRenderer() != null) {
-				em.getRenderer().draw(batch, dungeon, entity);
-			}
-		}
-
-		if (dungeon.getPlayer() != null) {
-			EntityMap.APPEARANCE_PLAYER.getRenderer().draw(batch, dungeon, dungeon.getPlayer()); // draw the player on top
-		}
+				if (em.getRenderer() != null) {
+					em.getRenderer().draw(batch, dungeon, e);
+				}
+			});
 	}
 
 	private void drawLights() {
@@ -514,10 +508,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void findPooledParticles() {
-		for (TilePooledEffect effect : pooledEffects) {
-			effect.getPooledEffect().free();
-		}
-
+		pooledEffects.forEach(e -> e.getPooledEffect().free());
 		pooledEffects.clear();
 
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
