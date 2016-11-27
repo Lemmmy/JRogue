@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon;
 
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
@@ -331,21 +330,20 @@ public class Level {
 			lightTiles.get(index).add(tile);
 		}
 
-		for (Entity entity : entities) {
-			if (entity instanceof LightEmitter) {
-				LightEmitter lightEmitter = (LightEmitter) entity;
+		entities.stream()
+			.filter(e -> e instanceof LightEmitter)
+			.forEach(e -> {
+				LightEmitter lightEmitter = (LightEmitter) e;
 				int index = lightEmitter.getLightIntensity() - 1;
 
-				if (index < 0) continue;
-				if (index >= LIGHT_MAX_LIGHT_LEVEL) continue;
+				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) return;
 
-				Tile tile = new Tile(this, TileType.TILE_DUMMY, entity.getX(), entity.getY());
+				Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
 				tile.setLightColour(lightEmitter.getLightColour());
 				tile.setLightIntensity(lightEmitter.getLightIntensity());
 
 				lightTiles.get(index).add(tile);
-			}
-		}
+			});
 
 		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {
 			List<Tile> lights = lightTiles.get(i);
@@ -362,8 +360,7 @@ public class Level {
 	}
 
 	public boolean isTileDiscovered(int x, int y) {
-		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[width * y + x];
-
+		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[y * width + x];
 	}
 
 	public void discoverTile(int x, int y) {
@@ -384,7 +381,7 @@ public class Level {
 			return;
 		}
 
-		visibleTiles[width * y + x] = true;
+		visibleTiles[y * width + x] = true;
 	}
 
 	public void updateSight(Player player) {

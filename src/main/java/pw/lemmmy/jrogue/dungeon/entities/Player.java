@@ -19,10 +19,8 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class Player extends LivingEntity {
 	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
@@ -69,12 +67,9 @@ public class Player extends LivingEntity {
 		inventory = new LinkedHashMap<>();
 		skills = new HashMap<>(role.getStartingSkills());
 
-		for (ItemStack item : role.getStartingItems()) {
-			inventory.put(getAvailableInventoryLetter(), item);
-		}
+		role.getStartingItems().forEach(i -> inventory.put(getAvailableInventoryLetter(), i));
 
 		setHealth(getMaxHealth());
-
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 
@@ -353,9 +348,7 @@ public class Player extends LivingEntity {
 			nutrition += Math.ceil(item.getNutrition() / 2);
 
 			if (item.getStatusEffects() != null) {
-				for (StatusEffect effect : item.getStatusEffects()) {
-					addStatusEffect(effect);
-				}
+				item.getStatusEffects().forEach(this::addStatusEffect);
 			}
 
 			return ItemComestible.EatenState.EATEN;
