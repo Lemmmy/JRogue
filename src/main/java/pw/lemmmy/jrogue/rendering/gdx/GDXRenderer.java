@@ -399,7 +399,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		new DebugWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		if (dungeon.getPlayer().getName(false).equalsIgnoreCase("debugger")) {
+			new DebugWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		}
 	}
 
 	public void showInventoryWindow() {
