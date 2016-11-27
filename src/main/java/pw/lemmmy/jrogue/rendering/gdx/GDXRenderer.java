@@ -331,6 +331,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			}
 		}
 
+		// Due to the light being drawn offset, we need additional tiles on the level borders.
+
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, y);
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, dungeon.getLevel().getWidth() + 1, y);
+		}
+
+		for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, -1);
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, dungeon.getLevel().getHeight() + 1);
+		}
+
 		lightBatch.end();
 
 		lightSpriteBatch.begin();
