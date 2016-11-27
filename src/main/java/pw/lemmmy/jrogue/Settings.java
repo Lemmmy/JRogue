@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue;
 
-public class LaunchSettings {
+public class Settings {
 	private int screenWidth = 800;
 	private int screenHeight = 640;
 
