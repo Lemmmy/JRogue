@@ -122,13 +122,13 @@ public class MonsterJackal extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 
-		if (Utils.roll(1, 5) == 1) { // TODO: If a player has a higher agility, the monster is less likely to dodge
+		if (Utils.roll(1, 5) == 1) { // TODO: If a player has a higher agility or speed, the monster is less likely to dodge
 			getDungeon().The("%s dodges your kick!", getName(false));
 
 			return;
 		}
 
-		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength?
+		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 
