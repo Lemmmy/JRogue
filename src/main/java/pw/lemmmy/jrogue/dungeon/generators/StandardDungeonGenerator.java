@@ -35,6 +35,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double WATER_NOISE_SCALE = 0.2;
 
 	private static final double FISH_PROBABILITY = 0.35;
+	private static final double PUFFERFISH_PROBABILITY = 0.15;
 	private static final int FISH_SWARMS_MIN = 10;
 	private static final int FISH_SWARMS_MAX = 25;
 
@@ -264,7 +265,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			if (Utils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == TileType.TILE_GROUND_WATER &&
-						jrand.nextDouble() <= FISH_PROBABILITY &&
+						jrand.nextDouble() <= PUFFERFISH_PROBABILITY &&
 						level.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 
 						level.addEntity(new MonsterPufferfish(level.getDungeon(), level, tile.getX(), tile.getY()));
