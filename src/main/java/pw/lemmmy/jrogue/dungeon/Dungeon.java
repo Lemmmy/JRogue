@@ -142,10 +142,10 @@ public class Dungeon {
 
 		level.getEntities().stream()
 			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-						(e instanceof LivingEntity && ((LivingEntity)e).isAlive()) &&
+						(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
 						!(((EntityTurnBased)e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
-				EntityTurnBased tbe = (EntityTurnBased)e;
+				EntityTurnBased tbe = (EntityTurnBased) e;
 				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
 
 				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
