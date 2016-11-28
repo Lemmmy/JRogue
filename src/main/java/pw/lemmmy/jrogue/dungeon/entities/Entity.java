@@ -94,7 +94,7 @@ public abstract class Entity {
 
 			statusEffect.turn();
 
-			if (statusEffect.getTurnsPassed() >= statusEffect.getDuration()) {
+			if (statusEffect.getDuration() >= 0 && statusEffect.getTurnsPassed() >= statusEffect.getDuration()) {
 				statusEffect.onEnd();
 				iterator.remove();
 			}

@@ -1,11 +1,13 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 public class Poison extends StatusEffect {
-	public Poison(Dungeon dungeon, Entity entity, int duration) {
-		super(dungeon, entity, duration);
+	public Poison(Dungeon dungeon, Entity entity) {
+		super(dungeon, entity, -1);
 	}
 
 	@Override
@@ -19,7 +21,22 @@ public class Poison extends StatusEffect {
 	}
 
 	@Override
+	public void turn() {
+		super.turn();
+
+		if (getEntity() instanceof LivingEntity) {
+			LivingEntity livingEntity = (LivingEntity) getEntity();
+
+			livingEntity.damage(DamageSource.POISON, 1, null, false);
+
+			if (getTurnsPassed() >= 15) {
+				livingEntity.kill(DamageSource.POISON);
+			}
+		}
+	}
+
+	@Override
 	public void onEnd() {
-		getDungeon().Your("foot feels a lot better.");
+		getDungeon().You("managed to absorb the deadly poison.");
 	}
 }

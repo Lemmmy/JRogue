@@ -17,14 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MonsterPufferfish extends Monster {
-	private int poisonDuration;
-
 	public MonsterPufferfish(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 
 		setAI(new FishAI(this));
-
-		poisonDuration = Utils.roll(3, 6, 6);
 	}
 
 	@Override
@@ -65,7 +61,7 @@ public class MonsterPufferfish extends Monster {
 	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
 		List<StatusEffect> effects = new ArrayList<>();
 
-		effects.add(new Poison(victim.getDungeon(), victim, poisonDuration));
+		effects.add(new Poison(victim.getDungeon(), victim));
 
 		return effects;
 	}

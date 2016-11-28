@@ -1,16 +1,22 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 public enum DamageSource {
-	UNKNOWN,
+	UNKNOWN(null),
+	KICKING_A_WALL(null),
+	KICKING_THIN_AIR(null),
+	CANINE_BITE(null),
+	KICK_REVENGE(null),
+	PLAYER_KICK(null),
+	STAFF_BASH(null),
+	POISON("The poison kills you.");
 
-	KICKING_A_WALL,
-	KICKING_THIN_AIR,
+	String deathString;
 
-	CANINE_BITE,
+	DamageSource(String deathString) {
+		this.deathString = deathString;
+	}
 
-	KICK_REVENGE,
-
-	PLAYER_KICK,
-
-	STAFF_BASH
+	public String getDeathString() {
+		return deathString;
+	}
 }

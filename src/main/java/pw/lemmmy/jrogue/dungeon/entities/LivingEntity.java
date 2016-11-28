@@ -56,7 +56,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		onDamage(damageSource, damage, attacker, isPlayer);
 
 		if (health <= 0) {
-			die(damageSource);
+			kill(damageSource);
 		}
 
 		return health <= 0;
@@ -64,7 +64,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
 
-	protected void die(DamageSource damageSource) {
+	public void kill(DamageSource damageSource) {
 		onDie(damageSource);
 
 		getLevel().removeEntity(this);

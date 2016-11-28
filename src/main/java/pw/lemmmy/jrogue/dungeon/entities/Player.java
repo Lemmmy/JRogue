@@ -136,7 +136,11 @@ public class Player extends LivingEntity {
 
 	@Override
 	protected void onDie(DamageSource damageSource) {
-		getDungeon().You("die.");
+		if (damageSource.getDeathString() != null) {
+			getDungeon().log(damageSource.getDeathString());
+		} else {
+			getDungeon().You("die.");
+		}
 	}
 
 	@Override
