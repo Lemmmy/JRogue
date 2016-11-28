@@ -28,8 +28,8 @@ public enum TileMap {
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
 	TILE_ROOM_STAIRS_DOWN(new TileRendererStairs(TileRendererStairs.StairDirection.DOWN, 10, 0)),
 
-	TILE_ROOM_LADDER_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 11, 0)),
-	TILE_ROOM_LADDER_DOWN(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 12, 0)),
+	TILE_ROOM_LADDER_UP(11, 0),
+	TILE_ROOM_LADDER_DOWN(12, 0),
 
 	TILE_CORRIDOR(new TileRendererCorridor());
 
