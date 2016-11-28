@@ -11,6 +11,8 @@ import java.util.Arrays;
 public class FishAI extends AI {
 	private Pcg32 random = new Pcg32();
 
+	private static final int SLEEP_DISTANCE = 20;
+
 	private float moveProbability = 0.1f;
 
 	public FishAI(Monster monster) {
@@ -23,6 +25,8 @@ public class FishAI extends AI {
 
 	@Override
 	public void update() {
+		if (distanceFromPlayer() >= SLEEP_DISTANCE) return; // no need to move if we're far away from the player
+
 		if (random.nextFloat() < moveProbability) {
 			Tile[] tiles = getMonster().getLevel().getAdjacentTiles(getMonster().getX(), getMonster().getY());
 			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
