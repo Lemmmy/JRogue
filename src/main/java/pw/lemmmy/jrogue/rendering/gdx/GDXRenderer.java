@@ -237,10 +237,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawMap() {
-		drawMap(false);
+		drawMap(false, false);
+		drawMap(false, true);
 	}
 
-	private void drawMap(boolean allRevealed) {
+	private void drawMap(boolean allRevealed, boolean extra) {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
 				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
@@ -251,7 +252,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
 				if (tm.getRenderer() != null) {
-					tm.getRenderer().draw(batch, dungeon, x, y);
+					if (extra) {
+						tm.getRenderer().drawExtra(batch, dungeon, x, y);
+					} else {
+						tm.getRenderer().draw(batch, dungeon, x, y);
+					}
 				}
 			}
 		}
@@ -271,7 +276,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		batch.enableBlending();
 		batch.begin();
 
-		drawMap(true);
+		drawMap(true, false);
+		drawMap(true, true);
 		drawEntities();
 
 		batch.end();
