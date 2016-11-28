@@ -17,6 +17,7 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -113,7 +114,7 @@ public class DebugWindow extends PopupWindow {
 		getWindow().getContentTable().add(new Label("Entity: ", getSkin(), "windowStyle"));
 
 		final SelectBox entitySelectBox = new SelectBox(getSkin());
-		entitySelectBox.setItems("Jackal", "Fish");
+		entitySelectBox.setItems("Jackal", "Fish", "Pufferfish");
 		entitySelectBox.setMaxListCount(4);
 		getWindow().getContentTable().add(entitySelectBox).left().width(100f);
 
@@ -138,6 +139,14 @@ public class DebugWindow extends PopupWindow {
 						);
 
 						getLevel().addEntity(fish);
+						break;
+					case 2:
+						MonsterPufferfish pufferfish = new MonsterPufferfish(
+							getLevel().getDungeon(), getLevel(),
+							getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY()
+						);
+
+						getLevel().addEntity(pufferfish);
 						break;
 				}
 

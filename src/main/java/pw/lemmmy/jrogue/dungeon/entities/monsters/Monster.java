@@ -35,7 +35,7 @@ public abstract class Monster extends LivingEntity {
 	public abstract int getWeight();
 	public abstract int getNutrition();
 
-	public abstract List<StatusEffect> getCorpseEffects();
+	public abstract List<StatusEffect> getCorpseEffects(LivingEntity victim);
 
 	public abstract int getVisibilityRange();
 

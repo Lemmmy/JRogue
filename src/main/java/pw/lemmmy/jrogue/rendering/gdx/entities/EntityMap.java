@@ -12,6 +12,7 @@ public enum EntityMap {
 	APPEARANCE_FISH_GREEN(new EntityRendererFish(4, 3)),
 	APPEARANCE_FISH_BLUE(new EntityRendererFish(5, 3)),
 	APPEARANCE_FISH_PURPLE(new EntityRendererFish(6, 3)),
+	APPEARANCE_PUFFERFISH(new EntityRendererFish(7, 3)),
 
 	APPEARANCE_ITEM(new EntityRendererItem());
 

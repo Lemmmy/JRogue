@@ -6,23 +6,25 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.Poison;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.FishAI;
 import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MonsterFish extends Monster {
-	private FishColour colour;
+public class MonsterPufferfish extends Monster {
+	private int poisonDuration;
 
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
+	public MonsterPufferfish(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 
-		this.colour = colour;
-
 		setAI(new FishAI(this));
+
+		poisonDuration = Utils.roll(3, 6, 6);
 	}
 
 	@Override
@@ -33,6 +35,10 @@ public class MonsterFish extends Monster {
 	@Override
 	protected void onDie(DamageSource damageSource) {
 		getDungeon().You("kill the %s!", getName(false));
+
+		if (Utils.roll(1, 2) == 1) {
+			drop(new ItemStack(new ItemCorpse(this)));
+		}
 	}
 
 	@Override
@@ -57,7 +63,11 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
-		return null;
+		List<StatusEffect> effects = new ArrayList<>();
+
+		effects.add(new Poison(victim.getDungeon(), victim, poisonDuration));
+
+		return effects;
 	}
 
 	@Override
@@ -87,35 +97,16 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fish": "fish";
+		return requiresCapitalisation ? "Pufferfish": "pufferfish";
 	}
 
 	@Override
 	public EntityAppearance getAppearance() {
-		switch (colour) {
-			case RED:
-				return EntityAppearance.APPEARANCE_FISH_RED;
-			case ORANGE:
-				return EntityAppearance.APPEARANCE_FISH_ORANGE;
-			case YELLOW:
-				return EntityAppearance.APPEARANCE_FISH_YELLOW;
-			case GREEN:
-				return EntityAppearance.APPEARANCE_FISH_GREEN;
-			case BLUE:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-			case PURPLE:
-				return EntityAppearance.APPEARANCE_FISH_PURPLE;
-			default:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-		}
+		return EntityAppearance.APPEARANCE_PUFFERFISH;
 	}
 
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
-	}
-
-	public enum FishColour {
-		RED, YELLOW, ORANGE, GREEN, BLUE, PURPLE
 	}
 }

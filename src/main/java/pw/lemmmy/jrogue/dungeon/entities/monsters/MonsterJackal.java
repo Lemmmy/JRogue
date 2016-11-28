@@ -60,7 +60,7 @@ public class MonsterJackal extends Monster {
 	}
 
 	@Override
-	public List<StatusEffect> getCorpseEffects() {
+	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
 		return null;
 	}
 

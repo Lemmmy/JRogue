@@ -44,9 +44,9 @@ public class ItemCorpse extends ItemComestible {
 	}
 
 	@Override
-	public List<StatusEffect> getStatusEffects() {
+	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
 		if (entity instanceof Monster) {
-			return ((Monster) entity).getCorpseEffects();
+			return ((Monster) entity).getCorpseEffects(victim);
 		} else {
 			return null;
 		}

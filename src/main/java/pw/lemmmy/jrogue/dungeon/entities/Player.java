@@ -356,7 +356,7 @@ public class Player extends LivingEntity {
 
 			nutrition += Math.floor(item.getNutrition() / 2);
 
-			if (item.getStatusEffects() != null &&
+			if (item.getStatusEffects(this) != null &&
 				getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
 				getWisdom() > 6) {
 
@@ -370,8 +370,8 @@ public class Player extends LivingEntity {
 
 			nutrition += Math.ceil(item.getNutrition() / 2);
 
-			if (item.getStatusEffects() != null) {
-				item.getStatusEffects().forEach(this::addStatusEffect);
+			if (item.getStatusEffects(this) != null) {
+				item.getStatusEffects(this).forEach(this::addStatusEffect);
 			}
 
 			return ItemComestible.EatenState.EATEN;
