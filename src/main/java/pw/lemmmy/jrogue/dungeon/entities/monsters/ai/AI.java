@@ -1,9 +1,9 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class AI {

@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;

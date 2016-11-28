@@ -2,9 +2,9 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 public class EntityItem extends Entity {
 	private ItemStack itemStack;

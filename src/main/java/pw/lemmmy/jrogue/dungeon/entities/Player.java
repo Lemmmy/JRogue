@@ -2,7 +2,9 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.StringUtils;
-import pw.lemmmy.jrogue.dungeon.*;
+import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
@@ -20,7 +22,6 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.*;
-import java.util.List;
 
 public class Player extends LivingEntity {
 	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();

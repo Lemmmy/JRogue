@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class TileStateDoor extends TileState {
