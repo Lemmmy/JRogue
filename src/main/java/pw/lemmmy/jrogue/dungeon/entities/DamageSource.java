@@ -1,10 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 public enum DamageSource {
-	UNKNOWN(null),
+	UNKNOWN("You die of an unknown cause."),
 	KICKING_A_WALL(null),
 	KICKING_THIN_AIR(null),
-	CANINE_BITE(null),
+	CANINE_BITE("The bite pierces an artery. You bleed to death."),
 	KICK_REVENGE(null),
 	PLAYER_KICK(null),
 	STAFF_BASH(null),
