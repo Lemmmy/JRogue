@@ -7,11 +7,13 @@ import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class DungeonGenerator {
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
 	protected Pcg32 rand = new Pcg32();
+	protected Random jrand = new Random();
 
 	public DungeonGenerator(Level level) {
 		this.level = level;

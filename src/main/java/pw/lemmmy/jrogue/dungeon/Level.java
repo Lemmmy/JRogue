@@ -190,8 +190,8 @@ public class Level {
 	public List<Tile> getTilesInRadius(int x, int y, int r) {
 		List<Tile> found = new ArrayList<>();
 
-		for (int i = y - r; i < y + r; i++) {
-			for (int j = x - r; j < x + r; j++) {
+		for (int j = y - r; j < y + r; j++) {
+			for (int i = x - r; i < x + r; i++) {
 				if (Utils.distance(x, y, i, j) <= r) {
 					Tile t = getTile(i, j);
 

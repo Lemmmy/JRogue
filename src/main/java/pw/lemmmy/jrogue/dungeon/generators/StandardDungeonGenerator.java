@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.generators;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
@@ -34,7 +35,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
 	private static final double WATER_NOISE_SCALE = 0.2;
 
-	private static final float FISH_PROBABILITY = 0.35f;
+	private static final double FISH_PROBABILITY = 0.35;
+	private static final int FISH_SWARMS_MIN = 10;
+	private static final int FISH_SWARMS_MAX = 25;
 
 	private OpenSimplexNoise simplexNoise;
 
@@ -245,30 +248,44 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	private void spawnFish() {
-		Tile[] waterTiles = Arrays.stream(level.getTiles()).filter(t -> t.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
+		Tile[] waterTiles = Arrays.stream(level.getTiles())
+			.filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
+			.toArray(Tile[]::new);
 
 		if (waterTiles.length < 5) return;
 
-		int swarmCount = rand.nextInt(15) + 15;
+		int swarmCount = jrand.nextInt(FISH_SWARMS_MAX - FISH_SWARMS_MIN) + FISH_SWARMS_MIN;
 		int colourCount = MonsterFish.FishColour.values().length;
 
 		for (int i = 0; i < swarmCount; i++) {
-			Tile startTile = Utils.randomFrom(waterTiles);
+			Tile swarmTile = Utils.jrandomFrom(waterTiles);
 
-			List<Tile> surroundingTiles = level.getTilesInRadius(startTile.getX(), startTile.getY(), Utils.roll(2, 3));
+			List<Tile> surroundingTiles = level.getTilesInRadius(swarmTile.getX(), swarmTile.getY(), jrand.nextInt(2) + 2);
 
-			int f1 = rand.nextInt(colourCount);
-			int f2 = (f1 + 1) % 6;
+			if (Utils.roll(4) == 1) { // spawn a swarm of pufferfish
+				for (Tile tile : surroundingTiles) {
+					if (tile.getType() == TileType.TILE_GROUND_WATER &&
+						jrand.nextDouble() <= FISH_PROBABILITY &&
+						level.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 
-			MonsterFish.FishColour fishColour1 = MonsterFish.FishColour.values()[f1];
-			MonsterFish.FishColour fishColour2 = MonsterFish.FishColour.values()[f2];
+						level.addEntity(new MonsterPufferfish(level.getDungeon(), level, tile.getX(), tile.getY()));
+					}
+				}
+			} else { // regular swarm of two fish colours
+				int f1 = rand.nextInt(colourCount);
+				int f2 = (f1 + 1) % 6;
 
-			for (Tile tile : surroundingTiles) {
-				if (tile.getType() == TileType.TILE_GROUND_WATER && rand.nextFloat() < FISH_PROBABILITY) {
-					MonsterFish.FishColour colour = rand.nextFloat() < 0.5 ? fishColour1 : fishColour2;
+				MonsterFish.FishColour fishColour1 = MonsterFish.FishColour.values()[f1];
+				MonsterFish.FishColour fishColour2 = MonsterFish.FishColour.values()[f2];
 
-					MonsterFish fish = new MonsterFish(level.getDungeon(), level, tile.getX(), tile.getY(), colour);
-					level.addEntity(fish);
+				for (Tile tile : surroundingTiles) {
+					if (tile.getType() == TileType.TILE_GROUND_WATER &&
+						jrand.nextDouble() < FISH_PROBABILITY &&
+						level.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
+
+						MonsterFish.FishColour colour = rand.nextFloat() < 0.5f ? fishColour1 : fishColour2;
+						level.addEntity(new MonsterFish(level.getDungeon(), level, tile.getX(), tile.getY(), colour));
+					}
 				}
 			}
 		}
