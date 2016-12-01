@@ -8,7 +8,8 @@ public enum DamageSource {
 	KICK_REVENGE(null),
 	PLAYER_KICK(null),
 	STAFF_BASH(null),
-	POISON("The poison kills you.");
+	POISON("The poison kills you."),
+	WISH_FOR_DEATH("You wish for death, and your god grants it.");
 
 	String deathString;
 

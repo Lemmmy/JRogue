@@ -2,10 +2,7 @@ package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -13,6 +10,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dungeon {
@@ -275,7 +273,11 @@ public class Dungeon {
 			JRogue.getLogger().debug("Player wished for '{}'", wish);
 		}
 
-		// TODO
+		wish = wish.toLowerCase();
+
+		if (wish.equalsIgnoreCase("death")) {
+			player.kill(DamageSource.WISH_FOR_DEATH);
+		}
 	}
 
 	public interface Listener {
