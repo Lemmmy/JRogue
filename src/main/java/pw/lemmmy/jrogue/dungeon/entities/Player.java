@@ -8,6 +8,7 @@ import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionTeleport;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
@@ -193,9 +194,14 @@ public class Player extends LivingEntity {
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 
-	private void walkAction(Tile tile, int newX, int newY) {
+	public void teleport(int x, int y) {
+		setAction(new ActionTeleport(getDungeon(), this, x, y));
+		getDungeon().turn();
+	}
+
+	private void walkAction(Tile tile, int x, int y) {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(getDungeon(), this, newX, newY));
+			setAction(new ActionMove(getDungeon(), this, x, y));
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 			getDungeon().The("door is locked.");
 		}
@@ -410,6 +416,10 @@ public class Player extends LivingEntity {
 		} else {
 			return skills.get(skill);
 		}
+	}
+
+	public boolean isDebugger() {
+		return name.equalsIgnoreCase("debugger");
 	}
 
 	public enum NutritionState {
