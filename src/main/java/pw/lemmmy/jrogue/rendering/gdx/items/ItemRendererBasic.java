@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 
 public class ItemRendererBasic extends ItemRenderer {
@@ -18,12 +19,12 @@ public class ItemRendererBasic extends ItemRenderer {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Item item, int x, int y) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
 		drawItem(batch, image, x, y);
 	}
 
 	@Override
-	public Drawable getDrawable() {
+	public Drawable getDrawable(ItemStack itemStack, Item item) {
 		return new TextureRegionDrawable(imageDrawable);
 	}
 }

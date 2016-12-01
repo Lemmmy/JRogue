@@ -22,6 +22,10 @@ public abstract class Item {
 		this.bucStatus = bucStatus;
 	}
 
+	public boolean isis() {
+		return false;
+	}
+
 	public boolean beginsWithVowel() {
 		return StringUtils.startsWithAny(getName(false, false), "a", "e", "i", "o", "u", "8");
 	}

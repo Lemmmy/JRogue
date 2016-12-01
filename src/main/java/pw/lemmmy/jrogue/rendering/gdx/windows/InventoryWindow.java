@@ -35,7 +35,7 @@ public class InventoryWindow extends PopupWindow {
 
 			ItemRenderer renderer = ItemMap.valueOf(itemStack.getItem().getAppearance().name()).getRenderer();
 
-			itemTable.add(new Image(renderer.getDrawable())).left().padRight(6);
+			itemTable.add(new Image(renderer.getDrawable(itemStack, itemStack.getItem()))).left().padRight(6);
 			itemTable.add(new Label(itemStack.getName(true), getSkin(), "windowStyle")).left().growX().row();
 
 			mainTable.add(itemTable).left().width(294f).row();

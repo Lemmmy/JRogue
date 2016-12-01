@@ -6,6 +6,8 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.items.ItemGold;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class Dungeon {
 	private static final int LEVEL_HEIGHT = 30;
 
 	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
+	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
@@ -282,11 +285,27 @@ public class Dungeon {
 		if (wish.equalsIgnoreCase("death")) {
 			player.kill(DamageSource.WISH_FOR_DEATH);
 		} else {
+			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
+
+			if (wishGoldDroppedMatcher.find()) {
+				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
+
+				getLevel().addEntity(new EntityItem(this, getLevel(), new ItemStack(
+					new ItemGold(),
+					gold
+				), player.getX(), player.getY()));
+
+				turn();
+				return;
+			}
+
 			Matcher wishGoldMatcher = wishGold.matcher(wish);
 
 			if (wishGoldMatcher.find()) {
 				int gold = Integer.parseInt(wishGoldMatcher.group(1));
+
 				player.giveGold(gold);
+
 				turn();
 				return;
 			}
