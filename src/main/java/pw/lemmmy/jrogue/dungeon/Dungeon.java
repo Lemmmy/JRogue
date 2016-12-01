@@ -270,6 +270,14 @@ public class Dungeon {
 		return prompt != null && prompt.isEscapable();
 	}
 
+	public void wish(String wish) {
+		if (player.isDebugger()) {
+			JRogue.getLogger().debug("Player wished for '{}'", wish);
+		}
+
+		// TODO
+	}
+
 	public interface Listener {
 		void onLevelChange(Level level);
 

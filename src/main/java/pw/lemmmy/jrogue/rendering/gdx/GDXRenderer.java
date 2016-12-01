@@ -31,6 +31,7 @@ import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -396,6 +397,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	public void showInventoryWindow() {
 		new InventoryWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+	}
+
+	public void showWishWindow() {
+		new WishWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
 	}
 
 	@Override

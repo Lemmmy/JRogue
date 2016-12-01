@@ -7,8 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Window extends Dialog {
 	private Button closeButton;
+
+	private List<ResultListener> resultListeners = new ArrayList<>();
 
 	public Window(String title, Skin skin) {
 		super(title, skin);
@@ -45,5 +50,20 @@ public class Window extends Dialog {
 		setClip(true);
 		super.draw(batch, parentAlpha);
 		setClip(false);
+	}
+
+	@Override
+	protected void result(Object result) {
+		super.result(result);
+
+		resultListeners.forEach(l -> l.onResult(result));
+	}
+
+	public void addResultListener(ResultListener listener) {
+		resultListeners.add(listener);
+	}
+
+	public interface ResultListener {
+		void onResult(Object result);
 	}
 }

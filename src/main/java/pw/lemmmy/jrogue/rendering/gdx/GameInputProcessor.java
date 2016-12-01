@@ -166,6 +166,12 @@ public class GameInputProcessor implements InputProcessor {
 
 				return true;
 			}
+
+			if (keycode == Input.Keys.W) {
+				renderer.showWishWindow();
+
+				return true;
+			}
 		}
 
 		return false;

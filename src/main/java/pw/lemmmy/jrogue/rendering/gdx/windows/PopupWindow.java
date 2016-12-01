@@ -7,7 +7,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 
-public abstract class PopupWindow {
+public abstract class PopupWindow implements Window.ResultListener {
 	private final Stage stage;
 	private final Skin skin;
 
@@ -27,6 +27,8 @@ public abstract class PopupWindow {
 
 	private void initialiseWindow() {
 		window = new Window(getTitle(), skin);
+
+		window.addResultListener(this);
 
 		window.setMovable(true);
 		window.pad(18, 3, 3, 3);
@@ -69,4 +71,6 @@ public abstract class PopupWindow {
 	public abstract String getTitle();
 
 	public abstract void populateWindow();
+
+	public void onResult(Object result) {}
 }
