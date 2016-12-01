@@ -44,6 +44,8 @@ public class Player extends LivingEntity {
 	private int wisdom;
 	private int charisma;
 
+	private int gold = 0;
+
 	private Map<Character, ItemStack> inventory;
 	private Map<Skill, SkillLevel> skills;
 
@@ -420,6 +422,22 @@ public class Player extends LivingEntity {
 
 	public boolean isDebugger() {
 		return name.equalsIgnoreCase("debugger");
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public boolean canTakeGold(int amount) {
+		return gold > amount;
+	}
+
+	public void takeGold(int amount) {
+		gold = Math.max(0, gold - amount);
+	}
+
+	public void giveGold(int amount) {
+		gold += amount;
 	}
 
 	public enum NutritionState {
