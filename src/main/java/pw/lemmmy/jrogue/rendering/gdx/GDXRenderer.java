@@ -538,6 +538,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		Player player = dungeon.getPlayer();
 		updateHUDPlayerLabel(player);
+		updateHUDInfoLine(player);
 		updateHUDAttributes(player);
 		updateHUDBrightness(player);
 		updateHUDNutrition(player);

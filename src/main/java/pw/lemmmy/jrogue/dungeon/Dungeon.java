@@ -12,12 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Dungeon {
 	public static final int NORMAL_SPEED = 12;
 
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
+
+	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
 
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
@@ -277,6 +281,15 @@ public class Dungeon {
 
 		if (wish.equalsIgnoreCase("death")) {
 			player.kill(DamageSource.WISH_FOR_DEATH);
+		} else {
+			Matcher wishGoldMatcher = wishGold.matcher(wish);
+
+			if (wishGoldMatcher.find()) {
+				int gold = Integer.parseInt(wishGoldMatcher.group(1));
+				player.giveGold(gold);
+				turn();
+				return;
+			}
 		}
 	}
 
