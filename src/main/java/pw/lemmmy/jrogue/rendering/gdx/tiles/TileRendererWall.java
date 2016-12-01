@@ -30,7 +30,7 @@ public class TileRendererWall extends TileRenderer {
 
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		boolean top = adjacentTiles[2].getSolidity() == TileType.Solidity.WALK_ON;
+		boolean top = adjacentTiles[2].isInnerRoomTile();
 
 		if (h && !v) {
 			if (top && x % 2 == 0) {
@@ -56,7 +56,7 @@ public class TileRendererWall extends TileRenderer {
 		TileType[] adjacentTiles = dungeon.getLevel().getAdjacentTileTypes(x, y);
 
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean top = adjacentTiles[2].getSolidity() == TileType.Solidity.WALK_ON;
+		boolean top = adjacentTiles[2].isInnerRoomTile();
 
 		if (h && top && x % 2 == 0) {
 			drawTile(batch, wallHPillarExtra, x, y + 1);
