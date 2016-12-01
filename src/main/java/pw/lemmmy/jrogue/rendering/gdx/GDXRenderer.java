@@ -51,6 +51,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private Stage hudStage;
 	private Table hudTable;
 	private Label hudPlayerLabel;
+	private Table hudInfoLine;
 	private Table hudAttributes;
 	private Label hudEffectsLabel;
 	private HorizontalGroup hudBrightness;
@@ -140,6 +141,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudTable.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
 		hudTable.row();
 
+		setupHUDInfoLine(hudTable);
 		setupHUDAttributes(hudTable);
 
 		hudBrightness = new HorizontalGroup();
@@ -159,6 +161,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
 		inputMultiplexer.addProcessor(hudStage);
 		Gdx.input.setInputProcessor(inputMultiplexer);
+	}
+
+	private void setupHUDInfoLine(Table hudTable) {
+		hudInfoLine = new Table();
+
+		hudInfoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
+		Label goldLabel = new Label("Gold: 0", hudSkin);
+		goldLabel.setName("gold");
+		hudInfoLine.add(goldLabel).pad(0, 2, 0, 8);
+
+		hudTable.add(hudInfoLine).left().pad(0, 1, 0, 1);
+		hudTable.row();
 	}
 
 	private void setupHUDAttributes(Table hudTable) {
@@ -444,6 +458,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			player.getHealth(),
 			player.getMaxHealth()
 		));
+	}
+
+	private void updateHUDInfoLine(Player player) {
+		((Label) hudInfoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
 	}
 
 	private void updateHUDAttributes(Player player) {

@@ -23,11 +23,17 @@ public class ActionTeleport extends EntityAction {
 	public void execute() {
 		runBeforeRunCallback();
 
+		Tile tile = getEntity().getLevel().getTile(x, y);
+
+		if (tile == null) {
+			runOnCompleteCallback();
+
+			return;
+		}
+
 		getEntity().setPosition(x, y);
 
 		if (getEntity() instanceof Player) {
-			Tile tile = getEntity().getLevel().getTile(x, y);
-
 			if (tile.getType().onWalk() != null) {
 				getDungeon().log(tile.getType().onWalk());
 			}
