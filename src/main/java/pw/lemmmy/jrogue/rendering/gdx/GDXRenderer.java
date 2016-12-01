@@ -360,6 +360,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, dungeon.getLevel().getHeight() + 1);
 		}
 
+		TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, -1);
+
 		lightBatch.end();
 
 		lightSpriteBatch.begin();

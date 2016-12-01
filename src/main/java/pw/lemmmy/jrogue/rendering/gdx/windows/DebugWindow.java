@@ -41,6 +41,15 @@ public class DebugWindow extends PopupWindow {
 		getWindow().getContentTable().add(new Label(String.format("Nutrition: %,d", getDungeon().getPlayer().getNutrition()), getSkin(), "windowStyle"));
 		getWindow().getContentTable().row();
 
+		getWindow().getContentTable().add(
+			new Label(
+				String.format("Pos: %d, %d", getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY()),
+				getSkin(),
+				"windowStyle"
+			)
+		);
+		getWindow().getContentTable().row();
+
 		getWindow().getContentTable().add(new Label("Turn: ", getSkin(), "windowStyle"));
 
 		final TextField turnField = new TextField("", getSkin());
