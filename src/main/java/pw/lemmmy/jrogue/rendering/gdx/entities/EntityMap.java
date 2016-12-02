@@ -7,6 +7,7 @@ public enum EntityMap {
 
 	APPEARANCE_JACKAL(0, 2),
 	APPEARANCE_FOX(1, 2),
+	APPEARANCE_HOUND(2, 2),
 	APPEARANCE_FISH_RED(new EntityRendererFish(1, 3)),
 	APPEARANCE_FISH_ORANGE(new EntityRendererFish(2, 3)),
 	APPEARANCE_FISH_YELLOW(new EntityRendererFish(3, 3)),

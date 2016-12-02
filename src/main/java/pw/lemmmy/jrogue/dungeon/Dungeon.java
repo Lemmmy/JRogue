@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFox;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterHound;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
@@ -325,6 +326,9 @@ public class Dungeon {
 			return true;
 		} else if (wish.equalsIgnoreCase("fox")) {
 			getLevel().addEntity(new MonsterFox(this, getLevel(), player.getX(), player.getY()));
+			return true;
+		} else if (wish.equalsIgnoreCase("hound")) {
+			getLevel().addEntity(new MonsterHound(this, getLevel(), player.getX(), player.getY()));
 			return true;
 		}
 
