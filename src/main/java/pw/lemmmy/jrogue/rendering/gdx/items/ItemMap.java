@@ -6,9 +6,9 @@ public enum ItemMap {
 	APPEARANCE_CORPSE(0, 0),
 
 	APPEARANCE_STAFF(0, 1),
-	APPEARANCE_DAGGER(new ItemRendererSword(18, 3)),
-	APPEARANCE_SHORTSWORD(new ItemRendererSword(0, 3)),
-	APPEARANCE_LONGSWORD(new ItemRendererSword(9, 3)),
+	APPEARANCE_DAGGER(new ItemRendererSword(18, 2)),
+	APPEARANCE_SHORTSWORD(new ItemRendererSword(0, 2)),
+	APPEARANCE_LONGSWORD(new ItemRendererSword(9, 2)),
 
 	APPEARANCE_GOLD(new ItemRendererGold());
 
