@@ -14,7 +14,7 @@ public class FontLoader {
 	private static final Map<String, BitmapFont> fontCache = new HashMap<>();
 
 	public static BitmapFont getFont(String file, int size, boolean shadow) {
-		String cacheString = file + "_" + size + (shadow ? " _shadow" : "");
+		String cacheString = file + "_" + size + (shadow ? "_shadow" : "");
 
 		if (fontCache.containsKey(cacheString)) {
 			return fontCache.get(cacheString);
