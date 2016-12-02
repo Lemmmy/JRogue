@@ -34,7 +34,7 @@ public class Tile {
 	private void initialiseState() {
 		if (type.getStateClass() != null) {
 			try {
-				Class<TileState> stateClass = type.getStateClass();
+				@SuppressWarnings("unchecked") Class<TileState> stateClass = type.getStateClass();
 				Constructor<TileState> stateConstructor = stateClass.getConstructor(Tile.class);
 
 				state = stateConstructor.newInstance(this);

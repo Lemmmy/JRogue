@@ -13,6 +13,7 @@ public class GhoulAI extends AI {
 	private Pcg32 random = new Pcg32();
 
 	private float moveProbability = 0.25f;
+	private float attackProbability = 0.85f;
 
 	public GhoulAI(Monster monster) {
 		super(monster);
@@ -22,11 +23,15 @@ public class GhoulAI extends AI {
 		this.moveProbability = moveProbability;
 	}
 
+	public void setAttackProbability(float attackProbability) {
+		this.attackProbability = attackProbability;
+	}
+
 	@Override
 	public void update() {
 		if (canMoveTowardsPlayer() && (random.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
 			moveTowardsPlayer();
-		} else if (canMeleeAttackPlayer()) {
+		} else if (canMeleeAttackPlayer() && (random.nextFloat() < attackProbability)) {
 			meleeAttackPlayer();
 		}
 	}

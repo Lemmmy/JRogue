@@ -5,12 +5,17 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
 
 import java.util.List;
 
 public class MonsterFox extends MonsterCanine {
 	public MonsterFox(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+
+		if (getAI() instanceof GhoulAI) {
+			((GhoulAI) getAI()).setAttackProbability(0.65f);
+		}
 	}
 
 	@Override
