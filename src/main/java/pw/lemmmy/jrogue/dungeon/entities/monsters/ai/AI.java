@@ -6,8 +6,13 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AI {
 	private Monster monster;
+
+	private List<TileType> avoidTiles = new ArrayList<TileType>();
 
 	public AI(Monster monster) {
 		this.monster = monster;
@@ -15,6 +20,10 @@ public abstract class AI {
 
 	public Monster getMonster() {
 		return monster;
+	}
+
+	public void addAvoidTile(TileType tileType) {
+		avoidTiles.add(tileType);
 	}
 
 	protected boolean isAdjacentToPlayer() {
@@ -69,7 +78,8 @@ public abstract class AI {
 			destX,
 			destY,
 			getMonster().getVisibilityRange(),
-			getMonster().canMoveDiagonally()
+			getMonster().canMoveDiagonally(),
+			avoidTiles
 		);
 
 		if (path != null) {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AStarPathFinder {
-	public static Path findPath(Level level, int sx, int sy, int tx, int ty, int maxSearchDistance, boolean allowDiagonalMovement) {
+	public static Path findPath(Level level, int sx, int sy, int tx, int ty, int maxSearchDistance, boolean allowDiagonalMovement, List<TileType> avoidTiles) {
 		if (level.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}
@@ -59,7 +59,7 @@ public class AStarPathFinder {
 					int xp = x + current.x;
 					int yp = y + current.y;
 
-					if (isValidLocation(level, xp, yp)) {
+					if (isValidLocation(level, xp, yp, avoidTiles)) {
 						float nextStepCost = current.cost + 1;
 						Node neighbour = nodes[width * yp + xp];
 
@@ -101,11 +101,12 @@ public class AStarPathFinder {
 		return path;
 	}
 
-	private static boolean isValidLocation(Level level, int x, int y) {
+	private static boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
 		return !(x < 0 || x >= level.getWidth() ||
 				y < 0 || y >= level.getHeight()) &&
 				level.getTile(x, y) != null &&
-				level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+				level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
+				!avoidTiles.contains(level.getTileType(x, y));
 	}
 
 	private static float getHeuristicCost(int x, int y, int tx, int ty) {

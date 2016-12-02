@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.awt.*;
 import java.util.List;
@@ -14,6 +15,9 @@ import java.util.List;
 public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	public MonsterHellhound(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+
+		getAI().addAvoidTile(TileType.TILE_GROUND_WATER);
+		getAI().addAvoidTile(TileType.TILE_ROOM_PUDDLE);
 	}
 
 	@Override
