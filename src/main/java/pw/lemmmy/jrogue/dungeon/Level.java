@@ -165,12 +165,14 @@ public class Level {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
 			entities.add(entity);
+			dungeon.entityAdded(entity);
 			iterator.remove();
 		}
 
 		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
 			entities.remove(entity);
+			dungeon.entityRemoved(entity);
 			iterator.remove();
 		}
 	}

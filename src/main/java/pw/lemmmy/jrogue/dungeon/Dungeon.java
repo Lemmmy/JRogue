@@ -3,9 +3,7 @@ package pw.lemmmy.jrogue.dungeon;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFox;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterHound;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -330,9 +328,27 @@ public class Dungeon {
 		} else if (wish.equalsIgnoreCase("hound")) {
 			getLevel().addEntity(new MonsterHound(this, getLevel(), player.getX(), player.getY()));
 			return true;
+		} else if (wish.equalsIgnoreCase("hellhound")) {
+			getLevel().addEntity(new MonsterHellhound(this, getLevel(), player.getX(), player.getY()));
+			return true;
+		} else if (wish.equalsIgnoreCase("icehound")) {
+			getLevel().addEntity(new MonsterIcehound(this, getLevel(), player.getX(), player.getY()));
+			return true;
 		}
 
 		return false;
+	}
+
+	public void entityAdded(Entity entity) {
+		listeners.forEach(l -> l.onEntityAdded(entity));
+	}
+
+	public void entityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
+		listeners.forEach(l -> l.onEntityMoved(entity, lastX, lastY, newX, newY));
+	}
+
+	public void entityRemoved(Entity entity) {
+		listeners.forEach(l -> l.onEntityRemoved(entity));
 	}
 
 	public interface Listener {
@@ -344,5 +360,9 @@ public class Dungeon {
 
 		void onLog(String log);
 		void onPrompt(Prompt prompt);
+
+		void onEntityAdded(Entity entity);
+		void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY);
+		void onEntityRemoved(Entity entity);
 	}
 }

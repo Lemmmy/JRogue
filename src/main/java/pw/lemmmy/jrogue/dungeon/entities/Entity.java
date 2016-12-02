@@ -37,7 +37,7 @@ public abstract class Entity {
 		return x;
 	}
 
-	public void setX(int x) {
+	private void setX(int x) {
 		this.x = x;
 	}
 
@@ -45,7 +45,7 @@ public abstract class Entity {
 		return y;
 	}
 
-	public void setY(int y) {
+	private void setY(int y) {
 		this.y = y;
 	}
 
@@ -70,6 +70,8 @@ public abstract class Entity {
 		setLastY(getY());
 		setX(x);
 		setY(y);
+
+		dungeon.entityMoved(this, getLastX(), getLastY(), x, y);
 	}
 
 	public Dungeon getDungeon() {

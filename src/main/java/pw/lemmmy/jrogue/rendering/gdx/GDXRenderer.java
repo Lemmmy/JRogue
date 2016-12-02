@@ -24,6 +24,8 @@ import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
+import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
+import pw.lemmmy.jrogue.rendering.gdx.entities.EntityRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
@@ -33,9 +35,7 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +63,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private List<String> log = new ArrayList<>();
 
-	private List<TilePooledEffect> pooledEffects = new ArrayList<>();
+	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
+	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>(); // TODO: Below and above
 
 	private float zoom = 1.0f;
 
@@ -305,8 +306,23 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	private void drawParticles(float delta) {
-		for (Iterator<TilePooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
+		for (Iterator<TilePooledEffect> iterator = tilePooledEffects.iterator(); iterator.hasNext(); ) {
 			TilePooledEffect effect = iterator.next();
+
+			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
+				continue;
+			}
+
+			effect.getPooledEffect().draw(batch, delta * 0.25f);
+
+			if (effect.getPooledEffect().isComplete()) {
+				effect.getPooledEffect().free();
+				iterator.remove();
+			}
+		}
+
+		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
+			EntityPooledEffect effect = iterator.next();
 
 			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
@@ -325,6 +341,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dungeon.getLevel().getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
+				if (!dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
+					return;
+				}
+
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 
 				if (em.getRenderer() != null) {
@@ -382,6 +402,36 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
+	private void findTilePooledParticles() {
+		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
+		tilePooledEffects.clear();
+
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
+
+				if (tm.getRenderer() == null) {
+					continue;
+				}
+
+				TileRenderer renderer = tm.getRenderer();
+
+				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
+					continue;
+				}
+
+				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
+
+				effect.setPosition(
+					(x * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(),
+					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
+				);
+
+				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
+				tilePooledEffects.add(tilePooledEffect);
+			}
+		}
+	}
 	private String replaceMarkupString(String s) {
 		s = s.replace("[GREEN]", "[P_GREEN_3]");
 		s = s.replace("[CYAN]", "[P_CYAN_1]");
@@ -417,38 +467,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onLevelChange(Level level) {
-		findPooledParticles();
-	}
-
-	private void findPooledParticles() {
-		pooledEffects.forEach(e -> e.getPooledEffect().free());
-		pooledEffects.clear();
-
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-
-				if (tm.getRenderer() == null) {
-					continue;
-				}
-
-				TileRenderer renderer = tm.getRenderer();
-
-				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
-					continue;
-				}
-
-				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
-
-				effect.setPosition(
-					(x * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(),
-					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
-				);
-
-				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
-				pooledEffects.add(tilePooledEffect);
-			}
-		}
+		findTilePooledParticles();
 	}
 
 	@Override
@@ -601,6 +620,60 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	@Override
+	public void onEntityAdded(Entity entity) {
+		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+
+		if (em.getRenderer() == null) {
+			return;
+		}
+
+		EntityRenderer renderer = em.getRenderer();
+
+		if (renderer.getParticleEffectPool(entity) == null) {
+			return;
+		}
+
+		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
+
+		effect.setPosition(
+			(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
+			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+		);
+
+		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, entity.getX(), entity.getY(), effect);
+		entityPooledEffects.add(entityPooledEffect);
+	}
+
+	@Override
+	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
+		for (EntityPooledEffect e : entityPooledEffects) {
+			if (e.getEntity() == entity) {
+				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+
+				if (em.getRenderer() == null) {
+					return;
+				}
+
+				EntityRenderer renderer = em.getRenderer();
+
+				if (renderer.getParticleEffectPool(entity) == null) {
+					return;
+				}
+
+				e.getPooledEffect().setPosition(
+					(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
+					(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+				);
+			}
+		}
+	}
+
+	@Override
+	public void onEntityRemoved(Entity entity) {
+		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+	}
+
+	@Override
 	public void dispose() {
 		super.dispose();
 
@@ -611,7 +684,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hudStage.dispose();
 		hudSkin.dispose();
 
-		pooledEffects.forEach(e -> e.getPooledEffect().free());
+		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
