@@ -3,6 +3,8 @@ package pw.lemmmy.jrogue.dungeon;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFox;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -309,7 +311,24 @@ public class Dungeon {
 				turn();
 				return;
 			}
+
+			if (wishMonsters(wish)) {
+				turn();
+				return;
+			}
 		}
+	}
+
+	private boolean wishMonsters(String wish) {
+		if (wish.equalsIgnoreCase("jackal")) {
+			getLevel().addEntity(new MonsterJackal(this, getLevel(), player.getX(), player.getY()));
+			return true;
+		} else if (wish.equalsIgnoreCase("fox")) {
+			getLevel().addEntity(new MonsterFox(this, getLevel(), player.getX(), player.getY()));
+			return true;
+		}
+
+		return false;
 	}
 
 	public interface Listener {
