@@ -2,8 +2,10 @@ package pw.lemmmy.jrogue.dungeon.entities.roles;
 
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
+import pw.lemmmy.jrogue.dungeon.items.ItemShortsword;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.ItemStaff;
+import pw.lemmmy.jrogue.dungeon.items.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class RoleWizard extends Role {
 	public List<ItemStack> getStartingItems() {
 		List<ItemStack> itemList = new ArrayList<>();
 
-		staff = new ItemStack(new ItemStaff());
+		staff = new ItemStack(new ItemShortsword(Material.ADAMANTITE));
 		itemList.add(staff);
 
 		return itemList;
