@@ -311,6 +311,10 @@ public class Dungeon {
 				return;
 			}
 
+			if (wish.equalsIgnoreCase("godmode")) {
+				player.setGodmode(true);
+			}
+
 			if (wishMonsters(wish)) {
 				turn();
 				return;

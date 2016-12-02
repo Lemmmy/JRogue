@@ -3,12 +3,14 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
+import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
+import java.awt.*;
 import java.util.List;
 
-public class MonsterIcehound extends MonsterHound {
+public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	public MonsterIcehound(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
@@ -25,5 +27,15 @@ public class MonsterIcehound extends MonsterHound {
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_ICEHOUND;
+	}
+
+	@Override
+	public Color getLightColour() {
+		return new Color(0x8BD1EC);
+	}
+
+	@Override
+	public int getLightIntensity() {
+		return 60;
 	}
 }

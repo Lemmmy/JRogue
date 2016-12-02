@@ -43,6 +43,8 @@ public class Player extends LivingEntity {
 
 	private int gold = 0;
 
+	private boolean godmode = false;
+
 	private Map<Character, ItemStack> inventory;
 	private Map<Skill, SkillLevel> skills;
 
@@ -179,6 +181,9 @@ public class Player extends LivingEntity {
 		super.update();
 
 		if (getHealth() > getMaxHealth()) {
+			setHealth(getMaxHealth());
+		}
+		if (godmode) {
 			setHealth(getMaxHealth());
 		}
 
@@ -435,6 +440,10 @@ public class Player extends LivingEntity {
 
 	public void giveGold(int amount) {
 		gold += amount;
+	}
+
+	public void setGodmode(boolean godmode) {
+		this.godmode = godmode;
 	}
 
 	public enum NutritionState {
