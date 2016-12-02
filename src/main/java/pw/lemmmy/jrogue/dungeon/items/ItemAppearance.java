@@ -3,5 +3,8 @@ package pw.lemmmy.jrogue.dungeon.items;
 public enum ItemAppearance {
 	APPEARANCE_CORPSE,
 	APPEARANCE_STAFF,
+	APPEARANCE_DAGGER,
+	APPEARANCE_SHORTSWORD,
+	APPEARANCE_LONGSWORD,
 	APPEARANCE_GOLD
 }
