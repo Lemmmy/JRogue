@@ -62,12 +62,12 @@ public class ItemStaff extends ItemWeaponMelee {
 
 	@Override
 	public int getSmallDamage() {
-		return Utils.roll(6);
+		return 6;
 	}
 
 	@Override
 	public int getLargeDamage() {
-		return Utils.roll(6);
+		return 6;
 	}
 
 	@Override

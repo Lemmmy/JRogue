@@ -53,12 +53,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 
 	@Override
 	public int getSmallDamage() {
-		return Utils.roll(getMaterial().getBaseDamage());
+		return getMaterial().getBaseDamage();
 	}
 
 	@Override
 	public int getLargeDamage() {
-		return Utils.roll(getMaterial().getBaseDamage());
+		return getMaterial().getBaseDamage();
 	}
 
 	@Override
