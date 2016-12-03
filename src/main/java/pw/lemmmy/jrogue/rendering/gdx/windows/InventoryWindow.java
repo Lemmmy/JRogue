@@ -30,12 +30,13 @@ public class InventoryWindow extends PopupWindow {
 
 		scrollPane.setFillParent(true);
 
-		getDungeon().getPlayer().getInventory().forEach((character, itemStack) -> {
+		getDungeon().getPlayer().getInventory().forEach((character, itemStack) -> { // TODO: categorical item grouping
 			Table itemTable = new Table();
 
 			ItemRenderer renderer = ItemMap.valueOf(itemStack.getItem().getAppearance().name()).getRenderer();
 
 			itemTable.add(new Image(renderer.getDrawable(itemStack, itemStack.getItem()))).left().padRight(6);
+			itemTable.add(new Label("[P_GREY_3]" + character.toString(), getSkin(), "windowStyleMarkup")).left().padRight(6);
 			itemTable.add(new Label(itemStack.getName(true), getSkin(), "windowStyle")).left().growX().row();
 
 			mainTable.add(itemTable).left().width(294f).row();
