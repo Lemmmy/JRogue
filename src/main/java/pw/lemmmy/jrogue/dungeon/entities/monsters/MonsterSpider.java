@@ -16,8 +16,12 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.util.List;
 
 public class MonsterSpider extends Monster {
+	private int speed;
+
 	public MonsterSpider(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
+
+		speed = Dungeon.NORMAL_SPEED - Utils.random(4);
 
 		setAI(new GhoulAI(this));
 		getAI().addAvoidTile(TileType.TILE_GROUND_WATER);
@@ -43,7 +47,7 @@ public class MonsterSpider extends Monster {
 
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return speed;
 	}
 
 	@Override
