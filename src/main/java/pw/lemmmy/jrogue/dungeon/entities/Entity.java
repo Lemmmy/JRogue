@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,6 +15,8 @@ public abstract class Entity {
 
 	private int x;
 	private int y;
+
+	private int visualID;
 
 	private Dungeon dungeon;
 	private Level level;
@@ -27,6 +30,12 @@ public abstract class Entity {
 		this.y = y;
 		this.lastX = x;
 		this.lastY = y;
+
+		this.visualID = Utils.random(1000);
+	}
+
+	public int getVisualID() {
+		return visualID;
 	}
 
 	public abstract String getName(boolean requiresCapitalisation);

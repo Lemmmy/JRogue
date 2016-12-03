@@ -1,10 +1,21 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class Item {
+	private int visualID;
+
 	private boolean identified = false;
 	private BUCStatus bucStatus = BUCStatus.UNCUSRED;
+
+	public Item() {
+		this.visualID = Utils.random(1000);
+	}
+
+	public int getVisualID() {
+		return visualID;
+	}
 
 	public boolean isIdentified() {
 		return identified;

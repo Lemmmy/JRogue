@@ -10,6 +10,8 @@ public class ItemCorpse extends ItemComestible {
 	private LivingEntity entity;
 
 	public ItemCorpse(LivingEntity entity) {
+		super();
+
 		this.entity = entity;
 	}
 

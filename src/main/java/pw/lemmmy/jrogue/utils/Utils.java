@@ -121,4 +121,8 @@ public class Utils {
 	public static double distance(double ax, double ay, double bx, double by) {
 		return Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
+
+	public static int random(int i) {
+		return rand.nextInt(i);
+	}
 }

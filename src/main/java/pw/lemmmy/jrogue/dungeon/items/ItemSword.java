@@ -7,6 +7,8 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	private Material material;
 
 	public ItemSword(Material material) {
+		super();
+
 		this.material = material;
 	}
 
