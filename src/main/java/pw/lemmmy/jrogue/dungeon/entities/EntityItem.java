@@ -15,6 +15,11 @@ public class EntityItem extends Entity {
 		this.itemStack = itemStack;
 	}
 
+	@Override
+	public int getDepth() {
+		return 0;
+	}
+
 	public ItemStack getItemStack() {
 		return itemStack;
 	}
