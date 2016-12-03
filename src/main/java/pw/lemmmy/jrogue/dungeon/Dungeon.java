@@ -213,7 +213,7 @@ public class Dungeon {
 
 				update();
 
-				break;
+				break; // FIXME: this was a lazy infinite loop prevention, but now there is no fun
 			}
 		} while (player.isAlive() && player.getMovementPoints() < NORMAL_SPEED);
 

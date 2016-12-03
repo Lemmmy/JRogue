@@ -26,11 +26,11 @@ public class WishWindow extends PopupWindow {
 
 		wishField = new TextField("", getSkin());
 		getWindow().getContentTable().add(wishField).pad(8).width(300);
+		getStage().setKeyboardFocus(wishField);
 
 		getWindow().button("Wish", true);
-		getWindow().key(Input.Keys.ENTER, false);
+		getWindow().key(Input.Keys.ENTER, true);
 		getWindow().key(Input.Keys.ESCAPE, false);
-		getWindow().setModal(false);
 		getWindow().pack();
 	}
 

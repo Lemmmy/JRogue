@@ -31,11 +31,15 @@ public abstract class PopupWindow implements Window.ResultListener {
 		window.addResultListener(this);
 
 		window.setMovable(true);
+		window.setModal(true);
 		window.pad(18, 3, 3, 3);
 
 		populateWindow();
 
-		window.setPosition((int) (stage.getWidth() / 2), (int) (stage.getHeight() / 2), Align.center);
+		window.setPosition(
+			(int) Math.floor(stage.getWidth() / 2) - (int) Math.floor(window.getWidth() / 2),
+			(int) Math.floor(stage.getHeight() / 2) - (int) Math.floor(window.getHeight() / 2)
+		);
 
 		stage.addActor(window);
 	}

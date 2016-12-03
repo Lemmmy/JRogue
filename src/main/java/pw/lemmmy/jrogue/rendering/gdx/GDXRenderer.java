@@ -63,6 +63,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private List<String> log = new ArrayList<>();
 
+	private List<Runnable> nextFrameDeferred = new ArrayList<>();
+
 	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>(); // TODO: Below and above
 
@@ -221,6 +223,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void render() {
 		super.render();
+
+		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
+			Runnable r = iterator.next();
+			r.run();
+			iterator.remove();
+		}
 
 		float delta = Gdx.graphics.getDeltaTime();
 
@@ -442,15 +450,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		new DebugWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showInventoryWindow() {
-		new InventoryWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showWishWindow() {
-		new WishWindow(this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show();
+		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
 	}
 
 	@Override
