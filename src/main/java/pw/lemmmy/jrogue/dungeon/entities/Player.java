@@ -334,10 +334,14 @@ public class Player extends LivingEntity {
 
 					String promptString = "";
 
-					if (item.beginsWithVowel()) {
-						promptString = String.format("There is an %s here. Eat it?", item.getName(false, false));
+					if (item.isis()) {
+						getDungeon().log("There is %s here. Eat it?", item.getName(false, false));
 					} else {
-						promptString = String.format("There is a %s here. Eat it?", item.getName(false, false));
+						if (item.beginsWithVowel()) {
+							getDungeon().log("There is an %s here. Eat it?", item.getName(false, false));
+						} else {
+							getDungeon().log("There is a %s here. Eat it?", item.getName(false, false));
+						}
 					}
 
 					getDungeon().prompt(new Prompt(promptString, new char[] {'y', 'n'}, new Prompt.PromptCallback() {
@@ -432,7 +436,16 @@ public class Player extends LivingEntity {
 				char letter = entry.getKey();
 
 				invStack.addCount(stack.getCount());
-				getDungeon().You("pick up %s (%s)", invStack.getName(false), letter);
+
+				if (item.isis() || stack.getCount() > 1) {
+					getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+				} else {
+					if (stack.beginsWithVowel()) {
+						getDungeon().You("pick up an %s (%s)", stack.getName(false), letter);
+					} else {
+						getDungeon().You("pick up a %s (%s)", stack.getName(false), letter);
+					}
+				}
 
 				return true;
 			}
@@ -440,7 +453,16 @@ public class Player extends LivingEntity {
 
 		char letter = getAvailableInventoryLetter();
 		inventory.put(letter, stack);
-		getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+
+		if (item.isis() || stack.getCount() > 1) {
+			getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+		} else {
+			if (stack.beginsWithVowel()) {
+				getDungeon().You("pick up an %s (%s)", stack.getName(false), letter);
+			} else {
+				getDungeon().You("pick up a %s (%s)", stack.getName(false), letter);
+			}
+		}
 
 		return true;
 	}

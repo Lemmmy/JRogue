@@ -7,8 +7,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
-import pw.lemmmy.jrogue.dungeon.items.ItemGold;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
@@ -22,9 +21,6 @@ public class Dungeon {
 
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
-
-	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
-	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
@@ -275,6 +271,9 @@ public class Dungeon {
 		return prompt != null && prompt.isEscapable();
 	}
 
+	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
+	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
+
 	public void wish(String wish) {
 		if (player.isDebugger()) {
 			JRogue.getLogger().debug("Player wished for '{}'", wish);
@@ -318,6 +317,10 @@ public class Dungeon {
 				turn();
 				return;
 			}
+
+			if (wishItems(wish)) {
+				return;
+			}
 		}
 	}
 
@@ -337,6 +340,33 @@ public class Dungeon {
 		} else if (wish.equalsIgnoreCase("icehound")) {
 			getLevel().addEntity(new MonsterIcehound(this, getLevel(), player.getX(), player.getY()));
 			return true;
+		}
+
+		return false;
+	}
+
+	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword)$");
+
+	private boolean wishItems(String wish) {
+		Matcher wishSwordMatcher = wishSword.matcher(wish);
+
+		if (wishSwordMatcher.find()) {
+			Material material = Material.valueOf(wishSwordMatcher.group(1).toUpperCase());
+			String type = wishSwordMatcher.group(2);
+
+			Item item = null;
+
+			if (type.equalsIgnoreCase("shortsword")) {
+				item = new ItemShortsword(material);
+			} else if (type.equalsIgnoreCase("longsword")) {
+				item = new ItemLongsword(material);
+			}
+
+			if (item != null) {
+				player.addToInventory(new ItemStack(item));
+
+				return true;
+			}
 		}
 
 		return false;
