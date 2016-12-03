@@ -394,13 +394,15 @@ public class Level {
 
 		for (int r = 0; r < 360; r++) {
 			int corridorVisibility = 0;
+			boolean breakNext = false;
 
 			for (int i = 0; i < player.getVisibilityRange(); i++) {
 				double a = Math.toRadians(r);
 				int dx = (int)Math.floor(x + i * Math.cos(a));
 				int dy = (int)Math.floor(y + i * Math.sin(a));
+				TileType type = getTileType(dx, dy);
 
-				if (getTileType(dx, dy) == TileType.TILE_CORRIDOR) {
+				if (type == TileType.TILE_CORRIDOR) {
 					corridorVisibility += 1;
 				}
 
@@ -411,8 +413,15 @@ public class Level {
 				discoverTile(dx, dy);
 				seeTile(dx, dy);
 
-				if (dx < 0 || dy < 0 || dx >= width || dy >= height || getTileType(dx, dy).getSolidity() == TileType.Solidity.SOLID) {
+				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
+					type.getSolidity() == TileType.Solidity.SOLID ||
+					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransarent()) ||
+					breakNext) {
 					break;
+				}
+
+				if (dx == player.getX() && dy == player.getY() && type.isSemiTransarent()) {
+					breakNext = true;
 				}
 			}
 		}
