@@ -46,6 +46,10 @@ public abstract class Item {
 
 	public abstract ItemAppearance getAppearance();
 
+	public boolean equals(Item other) {
+		return other.getClass() == getClass() && other.getAppearance() == getAppearance();
+	}
+
 	public enum BUCStatus {
 		BLESSED,
 		UNCUSRED,

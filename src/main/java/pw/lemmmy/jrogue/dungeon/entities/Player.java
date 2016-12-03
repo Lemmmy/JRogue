@@ -411,6 +411,16 @@ public class Player extends LivingEntity {
 		return ' ';
 	}
 
+	public boolean canPickUpItem(ItemStack itemStack) {
+		for (ItemStack invStack : inventory.values()) {
+			if (itemStack.getItem().equals(invStack.getItem())) {
+				return true;
+			}
+		}
+
+		return getAvailableInventoryLetter() != ' ';
+	}
+
 	@Override
 	public int getDepth() {
 		return 3;
