@@ -250,7 +250,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawMap();
 		drawParticles(delta);
-		drawEntities();
+		drawEntities(false);
 
 		batch.end();
 
@@ -302,7 +302,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawMap(true, false);
 		drawMap(true, true);
-		drawEntities();
+		drawEntities(true);
 
 		batch.end();
 
@@ -345,11 +345,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 	}
 
-	private void drawEntities() {
+	private void drawEntities(boolean allRevealed) {
 		dungeon.getLevel().getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
+				if (!allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
 					return;
 				}
 
