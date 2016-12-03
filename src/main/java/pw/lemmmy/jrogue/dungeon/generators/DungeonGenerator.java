@@ -4,12 +4,18 @@ import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.WeightedCollection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public abstract class DungeonGenerator {
+	private static final WeightedCollection<TileType> DOOR_TYPES = new WeightedCollection<>();
+
+	static {
+		DOOR_TYPES.add(3, TileType.TILE_ROOM_DOOR_CLOSED);
+		DOOR_TYPES.add(7, TileType.TILE_ROOM_DOOR_OPEN);
+	}
+
 	protected List<Room> rooms = new ArrayList<>();
 	protected Level level;
 	protected Pcg32 rand = new Pcg32();
@@ -183,7 +189,7 @@ public abstract class DungeonGenerator {
 	}
 
 	protected void safePlaceDoor(int x, int y) {
-		level.setTileType(x, y, TileType.TILE_ROOM_DOOR_CLOSED);
+		level.setTileType(x, y, DOOR_TYPES.next());
 
 		for (int[] direction : Utils.DIRECTIONS) {
 			int nx = x + direction[0];
