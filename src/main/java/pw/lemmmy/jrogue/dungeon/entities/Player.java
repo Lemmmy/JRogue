@@ -414,6 +414,7 @@ public class Player extends LivingEntity {
 
 				if (addToInventory(stack)) {
 					getLevel().removeEntity(entity);
+					getDungeon().turn();
 					break;
 				}
 			}
