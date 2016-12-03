@@ -134,7 +134,7 @@ public enum TileType {
 	}
 
 	public boolean isSemiTransarent() {
-		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_CLOSED;
+		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_BROKEN;
 	}
 
 	public enum Solidity {
