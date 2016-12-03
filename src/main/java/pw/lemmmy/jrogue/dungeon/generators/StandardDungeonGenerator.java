@@ -1,13 +1,21 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import org.apache.commons.lang3.Range;
+import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +47,15 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int FISH_SWARMS_MIN = 10;
 	private static final int FISH_SWARMS_MAX = 25;
 
+	private static final Map<Integer, Map<Class, Range<Integer>>> monstersPerFloor = new HashMap<>();
+
 	private OpenSimplexNoise simplexNoise;
+
+	static {
+		Map<Class, Range<Integer>> floor1 = new HashMap<>();
+		floor1.put(MonsterJackal.class, Range.between(3, 12));
+		monstersPerFloor.put(-1, floor1);
+	}
 
 	public StandardDungeonGenerator(Level level) {
 		super(level);
@@ -65,9 +81,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		buildCorridors();
 		removeStrayRooms();
 		addWaterBodies();
-		spawnFish();
 		if (!chooseSpawnRoom()) return false;
 		chooseDownstairsRoom();
+		spawnFish();
+		spawnMonsters();
 
 		return true;
 	}
@@ -289,6 +306,43 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void spawnMonsters() {
+		int floor = level.getDepth();
+
+		for (int i = floor; i != 0; i = floor < 0 ? i + 1 : i - 1) {
+			if (!monstersPerFloor.containsKey(i)) {
+				continue;
+			}
+
+			Map<Class, Range<Integer>> floorMonsters = monstersPerFloor.get(i);
+
+			floorMonsters.forEach((monster, range) -> {
+				try {
+					Constructor constructor = monster.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+
+					int count = Utils.jrandom(range);
+
+					for (int j = 0; j < count; j++) {
+						Point point = getMonsterSpawnPoint();
+						level.addEntity((Entity) constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY()));
+					}
+				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
+	private Point getMonsterSpawnPoint() {
+		Room room = Utils.randomFrom(rooms.stream().filter(r -> !r.isSpawn()).collect(Collectors.toList()));
+
+		int x = nextInt(room.getRoomX() + 1, room.getRoomX() + room.getRoomWidth() - 1);
+		int y = nextInt(room.getRoomY() + 1, room.getRoomY() + room.getRoomHeight() - 1);
+
+		return new Point(x, y);
 	}
 
 	private boolean chooseSpawnRoom() {

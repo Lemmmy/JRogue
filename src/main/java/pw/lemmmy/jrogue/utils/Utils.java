@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.utils;
 
 import com.badlogic.gdx.Input;
 import com.github.alexeyr.pcg.Pcg32;
+import org.apache.commons.lang3.Range;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,14 @@ public class Utils {
 
 	public static <T> T jrandomFrom(List<T> items) {
 		return items.get(jrand.nextInt(items.size()));
+	}
+
+	public static int random(Range<Integer> range) {
+		return rand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
+	}
+
+	public static int jrandom(Range<Integer> range) {
+		return jrand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
 	}
 
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {
