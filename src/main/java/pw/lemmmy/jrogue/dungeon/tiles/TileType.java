@@ -24,6 +24,7 @@ public enum TileType {
 	TILE_ROOM_WATER(Solidity.WATER),
 	TILE_ROOM_PUDDLE(Solidity.WALK_ON),
 
+	TILE_ROOM_DOOR_LOCKED(Solidity.SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_CLOSED(Solidity.SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_OPEN(Solidity.WALK_THROUGH, TileStateDoor.class),
 	TILE_ROOM_DOOR_BROKEN(Solidity.WALK_THROUGH, TileStateDoor.class),
@@ -110,6 +111,7 @@ public enum TileType {
 		return this == TILE_ROOM_WALL ||
 			this == TILE_ROOM_TORCH_FIRE ||
 			this == TILE_ROOM_TORCH_ICE ||
+			this == TILE_ROOM_DOOR_LOCKED ||
 			this == TILE_ROOM_DOOR_CLOSED ||
 			this == TILE_ROOM_DOOR_OPEN ||
 			this == TILE_ROOM_DOOR_BROKEN;

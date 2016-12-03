@@ -206,8 +206,11 @@ public class Player extends LivingEntity {
 	private void walkAction(Tile tile, int x, int y) {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			setAction(new ActionMove(getDungeon(), this, x, y));
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
 			getDungeon().The("door is locked.");
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
+			getDungeon().You("open the door.");
 		}
 	}
 

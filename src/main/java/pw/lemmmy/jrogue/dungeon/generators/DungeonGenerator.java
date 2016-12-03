@@ -12,8 +12,9 @@ public abstract class DungeonGenerator {
 	private static final WeightedCollection<TileType> DOOR_TYPES = new WeightedCollection<>();
 
 	static {
-		DOOR_TYPES.add(3, TileType.TILE_ROOM_DOOR_CLOSED);
-		DOOR_TYPES.add(7, TileType.TILE_ROOM_DOOR_OPEN);
+		DOOR_TYPES.add(3, TileType.TILE_ROOM_DOOR_LOCKED);
+		DOOR_TYPES.add(4, TileType.TILE_ROOM_DOOR_CLOSED);
+		DOOR_TYPES.add(6, TileType.TILE_ROOM_DOOR_OPEN);
 	}
 
 	protected List<Room> rooms = new ArrayList<>();

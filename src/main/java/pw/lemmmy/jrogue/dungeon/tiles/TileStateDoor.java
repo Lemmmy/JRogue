@@ -8,7 +8,7 @@ public class TileStateDoor extends TileState {
 	public TileStateDoor(Tile tile) {
 		super(tile);
 
-		if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED || tile.getType() == TileType.TILE_ROOM_DOOR_OPEN) {
+		if (tile.getType() != TileType.TILE_ROOM_DOOR_BROKEN) {
 			health = Utils.roll(2, 3);
 		}
 	}

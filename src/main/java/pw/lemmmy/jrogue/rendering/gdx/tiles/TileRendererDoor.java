@@ -26,6 +26,7 @@ public class TileRendererDoor extends TileRenderer {
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		switch (state) {
+			case LOCKED:
 			case CLOSED:
 				drawTile(batch, closed, x, y);
 				break;
@@ -45,6 +46,7 @@ public class TileRendererDoor extends TileRenderer {
 
 	protected enum DoorState {
 		CLOSED,
+		LOCKED,
 		OPEN,
 		BROKEN
 	}
