@@ -401,6 +401,50 @@ public class Player extends LivingEntity {
 		return ItemComestible.EatenState.EATEN;
 	}
 
+	public void pickup() {
+		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
+
+		for (Entity entity : floorEntities) {
+			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
+				ItemStack stack = ((EntityItem) entity).getItemStack();
+
+				if (addToInventory(stack)) {
+					getLevel().removeEntity(entity);
+					break;
+				}
+			}
+		}
+	}
+
+	public boolean addToInventory(ItemStack stack) {
+		Item item = stack.getItem();
+
+		if (!canPickUpItem(item)) {
+			getDungeon().You("can't hold any more items.");
+
+			return false;
+		}
+
+		for (Map.Entry<Character, ItemStack> entry : inventory.entrySet()) {
+			ItemStack invStack = entry.getValue();
+
+			if (item.equals(invStack.getItem())) {
+				char letter = entry.getKey();
+
+				invStack.addCount(stack.getCount());
+				getDungeon().You("pick up %s (%s)", invStack.getName(false), letter);
+
+				return true;
+			}
+		}
+
+		char letter = getAvailableInventoryLetter();
+		inventory.put(letter, stack);
+		getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+
+		return true;
+	}
+
 	public char getAvailableInventoryLetter() {
 		for (char letter : INVENTORY_CHARS) {
 			if (!inventory.containsKey(letter)) {
@@ -411,9 +455,9 @@ public class Player extends LivingEntity {
 		return ' ';
 	}
 
-	public boolean canPickUpItem(ItemStack itemStack) {
+	public boolean canPickUpItem(Item item) {
 		for (ItemStack invStack : inventory.values()) {
-			if (itemStack.getItem().equals(invStack.getItem())) {
+			if (item.equals(invStack.getItem())) {
 				return true;
 			}
 		}

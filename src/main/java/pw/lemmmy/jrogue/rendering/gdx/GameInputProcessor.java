@@ -139,9 +139,12 @@ public class GameInputProcessor implements InputProcessor {
 
 				dontHandleNext = true;
 				return true;
-			}
+			} else if (keycode == Input.Keys.COMMA) {
+				dungeon.getPlayer().pickup();
 
-			if (keycode == Input.Keys.I) {
+				dontHandleNext = true;
+				return true;
+			} else if (keycode == Input.Keys.I) {
 				renderer.showInventoryWindow();
 
 				dontHandleNext = true;
@@ -159,16 +162,12 @@ public class GameInputProcessor implements InputProcessor {
 
 				dontHandleNext = true;
 				return true;
-			}
-
-			if (keycode == Input.Keys.H) {
+			} else if (keycode == Input.Keys.H) {
 				renderer.setupHUD();
 
 				dontHandleNext = true;
 				return true;
-			}
-
-			if (keycode == Input.Keys.W) {
+			} else if (keycode == Input.Keys.W) {
 				renderer.showWishWindow();
 
 				dontHandleNext = true;
