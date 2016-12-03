@@ -2,7 +2,8 @@ package pw.lemmmy.jrogue.dungeon.entities.roles;
 
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.ItemStaff;
 
 import java.util.ArrayList;
 import java.util.HashMap;

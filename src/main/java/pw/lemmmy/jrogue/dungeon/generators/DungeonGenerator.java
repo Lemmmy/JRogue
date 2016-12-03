@@ -6,7 +6,9 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public abstract class DungeonGenerator {
 	private static final WeightedCollection<TileType> DOOR_TYPES = new WeightedCollection<>();

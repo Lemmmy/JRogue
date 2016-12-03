@@ -35,7 +35,9 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 

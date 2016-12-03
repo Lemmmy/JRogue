@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	private Material material;

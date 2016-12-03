@@ -3,7 +3,6 @@ package pw.lemmmy.jrogue.dungeon.items;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
-import pw.lemmmy.jrogue.utils.Utils;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override

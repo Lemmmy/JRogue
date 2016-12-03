@@ -9,17 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.entities.Player;
-import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
-import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.nio.file.Paths;
 

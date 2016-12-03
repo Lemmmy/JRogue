@@ -2,19 +2,9 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
-import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
-import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
-import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
 

@@ -6,7 +6,6 @@ import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.awt.*;
