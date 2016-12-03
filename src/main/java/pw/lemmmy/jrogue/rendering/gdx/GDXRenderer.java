@@ -334,7 +334,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 
-			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY()) ||
+				!effect.getRenderer().shouldDrawParticles(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 
@@ -650,7 +651,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
 		);
 
-		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, entity.getX(), entity.getY(), effect);
+		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), effect);
 		entityPooledEffects.add(entityPooledEffect);
 	}
 

@@ -119,9 +119,18 @@ public enum TileType {
 
 	public boolean isInnerRoomTile() {
 		return this == TILE_ROOM_FLOOR ||
+			this == TILE_ROOM_WATER ||
 			this == TILE_ROOM_PUDDLE ||
 			this == TILE_ROOM_STAIRS_UP ||
 			this == TILE_ROOM_STAIRS_DOWN;
+	}
+
+	public boolean isSemiTransarent() {
+		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_BROKEN;
+	}
+
+	public boolean isWater() {
+		return this == TILE_GROUND_WATER || this == TILE_ROOM_WATER || this == TILE_ROOM_PUDDLE;
 	}
 
 	public String onWalk() {
@@ -133,10 +142,6 @@ public enum TileType {
 		}
 
 		return null;
-	}
-
-	public boolean isSemiTransarent() {
-		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_BROKEN;
 	}
 
 	public enum Solidity {

@@ -5,14 +5,16 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public class EntityPooledEffect {
 	private Entity entity;
+	private EntityRenderer renderer;
 
 	private int x;
 	private int y;
 
 	private ParticleEffectPool.PooledEffect pooledEffect;
 
-	public EntityPooledEffect(Entity entity, int x, int y, ParticleEffectPool.PooledEffect pooledEffect) {
+	public EntityPooledEffect(Entity entity, EntityRenderer renderer, int x, int y, ParticleEffectPool.PooledEffect pooledEffect) {
 		this.entity = entity;
+		this.renderer = renderer;
 		this.x = x;
 		this.y = y;
 
@@ -21,6 +23,10 @@ public class EntityPooledEffect {
 
 	public Entity getEntity() {
 		return entity;
+	}
+
+	public EntityRenderer getRenderer() {
+		return renderer;
 	}
 
 	public int getX() {
