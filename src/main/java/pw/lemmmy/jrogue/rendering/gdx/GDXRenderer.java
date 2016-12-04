@@ -319,11 +319,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<TilePooledEffect> iterator = tilePooledEffects.iterator(); iterator.hasNext(); ) {
 			TilePooledEffect effect = iterator.next();
 
+			effect.getPooledEffect().update(delta * 0.25f);
+
 			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
 			}
 
-			effect.getPooledEffect().draw(batch, delta * 0.25f);
+			effect.getPooledEffect().draw(batch);
 
 			if (effect.getPooledEffect().isComplete()) {
 				effect.getPooledEffect().free();
@@ -334,12 +336,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 
+			effect.getPooledEffect().update(delta * 0.25f);
+
 			if (!dungeon.getLevel().isTileVisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
 				!effect.getRenderer().shouldDrawParticles(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 
-			effect.getPooledEffect().draw(batch, delta * 0.25f);
+			effect.getPooledEffect().draw(batch);
 
 			if (effect.getPooledEffect().isComplete()) {
 				effect.getPooledEffect().free();
