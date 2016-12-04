@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -32,6 +33,8 @@ public abstract class PopupWindow implements Window.ResultListener {
 		window.setMovable(true);
 		window.setModal(true);
 		window.pad(18, 3, 3, 3);
+
+		window.key(Input.Keys.ESCAPE, false);
 
 		populateWindow();
 

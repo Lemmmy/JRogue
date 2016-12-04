@@ -29,7 +29,6 @@ public class MessageWindow extends PopupWindow {
 		getWindow().getContentTable().add(label).pad(16).prefWidth(350);
 		getWindow().button("OK");
 		getWindow().key(Input.Keys.ENTER, true);
-		getWindow().key(Input.Keys.ESCAPE, true);
 		getWindow().setModal(false);
 		getWindow().pack();
 	}

@@ -31,7 +31,6 @@ public class WishWindow extends PopupWindow {
 
 		getWindow().button("Wish", true);
 		getWindow().key(Input.Keys.ENTER, true);
-		getWindow().key(Input.Keys.ESCAPE, false);
 		getWindow().pack();
 	}
 

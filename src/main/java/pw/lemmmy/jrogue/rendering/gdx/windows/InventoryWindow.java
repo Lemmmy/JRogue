@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
