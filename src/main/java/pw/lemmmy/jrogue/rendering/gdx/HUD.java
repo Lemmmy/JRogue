@@ -295,7 +295,7 @@ public class HUD implements Dungeon.Listener {
 				hudPromptLabel.setText(String.format(
 					"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
 					prompt.getMessage(),
-					new String(prompt.getOptions())
+					prompt.getOptionsString()
 				));
 			}
 		}

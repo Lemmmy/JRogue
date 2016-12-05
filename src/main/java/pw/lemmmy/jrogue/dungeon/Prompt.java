@@ -2,6 +2,8 @@ package pw.lemmmy.jrogue.dungeon;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
+
 public class Prompt {
 	private String message;
 	private char[] options;
@@ -21,6 +23,38 @@ public class Prompt {
 
 	public char[] getOptions() {
 		return options;
+	}
+
+	public String getOptionsString() {
+		String result = "";
+
+		char[] chars = options.clone();
+		Arrays.sort(chars);
+
+		int start, end;
+		start = end = chars[0];
+
+		for (int i = 1; i < chars.length; i++) {
+			if (chars[i] == (chars[i - 1] + 1)) {
+				end = chars[i];
+			} else {
+				if (start == end) {
+					result += start + " ";
+				} else {
+					result += start + "-" + end + " ";
+				}
+
+				start = end = chars[i];
+			}
+		}
+
+		if (start == end) {
+			result += start;
+		} else {
+			result += start + "-" + end;
+		}
+
+		return result;
 	}
 
 	public boolean isEscapable() {
