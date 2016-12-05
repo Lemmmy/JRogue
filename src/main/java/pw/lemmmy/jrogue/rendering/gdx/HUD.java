@@ -1,7 +1,5 @@
 package pw.lemmmy.jrogue.rendering.gdx;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,7 +16,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
