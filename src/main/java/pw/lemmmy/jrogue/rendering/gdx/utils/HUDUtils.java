@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.utils;
 
 public class HUDUtils {
-	public String getHealthColour(int health, int maxHealth) {
+	public static String getHealthColour(int health, int maxHealth) {
 		if (health <= maxHealth / 5) {
 			return "P_RED";
 		} else if (health <= maxHealth / 3) {
@@ -13,7 +13,7 @@ public class HUDUtils {
 		}
 	}
     
-	public String replaceMarkupString(String s) {
+	public static String replaceMarkupString(String s) {
 		s = s.replace("[GREEN]", "[P_GREEN_3]");
 		s = s.replace("[CYAN]", "[P_CYAN_1]");
 		s = s.replace("[BLUE]", "[P_BLUE_1]");
