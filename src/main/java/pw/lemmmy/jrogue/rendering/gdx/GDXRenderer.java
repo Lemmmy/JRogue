@@ -31,6 +31,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
+import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
@@ -447,14 +448,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			}
 		}
 	}
-	private String replaceMarkupString(String s) {
-		s = s.replace("[GREEN]", "[P_GREEN_3]");
-		s = s.replace("[CYAN]", "[P_CYAN_1]");
-		s = s.replace("[BLUE]", "[P_BLUE_1]");
-		s = s.replace("[YELLOW]", "[P_YELLOW]");
-
-		return s;
-	}
 
 	public void showDebugWindow() {
 		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
@@ -495,7 +488,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 			player.getName(true),
 			player.getRole().getName(),
-			getHealthColour(player.getHealth(), player.getMaxHealth()),
+			HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
 			player.getHealth(),
 			player.getMaxHealth()
 		));
@@ -578,22 +571,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		updateHUDNutrition(player);
 		updateHUDStatusEffects(player);
 	}
-
-	private String getHealthColour(int health, int maxHealth) {
-		if (health <= maxHealth / 5) {
-			return "P_RED";
-		} else if (health <= maxHealth / 3) {
-			return "P_ORANGE_3";
-		} else if (health <= maxHealth / 2) {
-			return "P_YELLOW";
-		} else {
-			return "P_GREEN_3";
-		}
-	}
-
+	
 	@Override
 	public void onLog(String entry) {
-		entry = replaceMarkupString(entry);
+		entry = HUDUtils.replaceMarkupString(entry);
 
 		log.add(entry);
 
