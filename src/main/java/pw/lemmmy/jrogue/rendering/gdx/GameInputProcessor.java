@@ -162,11 +162,6 @@ public class GameInputProcessor implements InputProcessor {
 
 				dontHandleNext = true;
 				return true;
-			} else if (keycode == Input.Keys.H) {
-				renderer.setupHUD();
-
-				dontHandleNext = true;
-				return true;
 			} else if (keycode == Input.Keys.W) {
 				renderer.showWishWindow();
 

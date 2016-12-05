@@ -45,26 +45,15 @@ import java.util.stream.Collectors;
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 
+	private HUD hud;
+
 	private SpriteBatch batch;
 	private ShapeRenderer lightBatch;
 	private SpriteBatch lightSpriteBatch;
 
 	private OrthographicCamera camera;
 
-	private Skin hudSkin;
-	private Stage hudStage;
-	private Table hudTable;
-	private Label hudPlayerLabel;
-	private Table hudInfoLine;
-	private Table hudAttributes;
-	private Label hudEffectsLabel;
-	private HorizontalGroup hudBrightness;
-	private Table hudLog;
-	private Label hudPromptLabel;
-
 	private Dungeon dungeon;
-
-	private List<String> log = new ArrayList<>();
 
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 
@@ -113,114 +102,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightBatch = new ShapeRenderer();
 		lightSpriteBatch = new SpriteBatch();
 
-		setupHUD();
-
-		onLevelChange(dungeon.getLevel());
-		dungeon.start();
-	}
-
-	protected void setupHUD() {
-		hudStage = new Stage(new ScreenViewport());
-		hudSkin = new HUDSkin();
-
-		hudTable = new Table();
-		hudTable.setFillParent(true);
-
-		hudPlayerLabel = new Label(null, hudSkin, "large");
-		hudPlayerLabel.setAlignment(Align.left);
-		hudTable.add(hudPlayerLabel).top().growX().pad(0, 2, 0, 2);
-		hudTable.row();
-
-		hudLog = new Table();
-		hudLog.left();
-		hudTable.setFillParent(true);
-		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
-
-		hudPromptLabel = new Label(null, hudSkin);
-		hudTable.add(hudPromptLabel).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
-
-		hudTable.add(new Container()).expand();
-		hudTable.row();
-
-		hudEffectsLabel = new Label(null, hudSkin);
-		hudTable.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
-
-		setupHUDInfoLine(hudTable);
-		setupHUDAttributes(hudTable);
-
-		hudBrightness = new HorizontalGroup();
-		hudTable.add(hudBrightness).pad(0, 2, -2, 8).right();
-
-		hudTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
-		Label nutritionLabel = new Label("HNG: Not hungry", hudSkin);
-		nutritionLabel.setName("attributeNutrition");
-		hudTable.add(nutritionLabel).pad(0, 2, 0, 2).right();
-
-		hudTable.row();
-
-		hudTable.top().pad(2);
-		hudStage.addActor(hudTable);
+		hud = new HUD(dungeon);
+		hud.setupHUD();
+		dungeon.addListener(hud);
 
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hudStage);
+		inputMultiplexer.addProcessor(hud.getHUDStage());
 		Gdx.input.setInputProcessor(inputMultiplexer);
-	}
 
-	private void setupHUDInfoLine(Table hudTable) {
-		hudInfoLine = new Table();
-
-		hudInfoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
-		Label goldLabel = new Label("Gold: 0", hudSkin);
-		goldLabel.setName("gold");
-		hudInfoLine.add(goldLabel).pad(0, 2, 0, 8);
-
-		hudTable.add(hudInfoLine).left().pad(0, 1, 0, 1);
-		hudTable.row();
-	}
-
-	private void setupHUDAttributes(Table hudTable) {
-		hudAttributes = new Table();
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 0, 2, 16, 16, false)));
-		Label strengthLabel = new Label("STR: 0", hudSkin);
-		strengthLabel.setName("attributeStrength");
-		hudAttributes.add(strengthLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 1, 2, 16, 16, false)));
-		Label agilityLabel = new Label("AGI: 0", hudSkin);
-		agilityLabel.setName("attributeAgility");
-		hudAttributes.add(agilityLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 2, 2, 16, 16, false)));
-		Label dexterityLabel = new Label("DXT: 0", hudSkin);
-		dexterityLabel.setName("attributeDexterity");
-		hudAttributes.add(dexterityLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
-		Label constitutionLabel = new Label("CON: 0", hudSkin);
-		constitutionLabel.setName("attributeConstitution");
-		hudAttributes.add(constitutionLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 4, 2, 16, 16, false)));
-		Label intelligenceLabel = new Label("INT: 0", hudSkin);
-		intelligenceLabel.setName("attributeIntelligence");
-		hudAttributes.add(intelligenceLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 5, 2, 16, 16, false)));
-		Label wisdomLabel = new Label("WIS: 0", hudSkin);
-		wisdomLabel.setName("attributeWisdom");
-		hudAttributes.add(wisdomLabel).pad(0, 2, 0, 8);
-
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 6, 2, 16, 16, false)));
-		Label charismaLabel = new Label("CHA: 0", hudSkin);
-		charismaLabel.setName("attributeCharisma");
-		hudAttributes.add(charismaLabel).pad(0, 2, 0, 8);
-
-		hudTable.add(hudAttributes).left().pad(0, 1, 0, 1);
+		onLevelChange(dungeon.getLevel());
+		dungeon.start();
 	}
 
 	@Override
@@ -259,8 +151,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawLights();
 
-		hudStage.act(delta);
-		hudStage.draw();
+		hud.updateAndDraw(delta);
 	}
 
 	private void drawMap() {
@@ -450,15 +341,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showInventoryWindow() {
-		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showWishWindow() {
-		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hudStage, hudSkin, dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	@Override
@@ -470,7 +361,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera.viewportWidth = Math.round(zoom);
 		camera.viewportHeight = Math.round(zoom * height / width);
 
-		hudStage.getViewport().update(width, height, true);
+		hud.updateViewport(width, height);
 	}
 
 	@Override
@@ -479,141 +370,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	@Override
-	public void onBeforeTurn(long turn) {
-
-	}
-
-	private void updateHUDPlayerLabel(Player player) {
-		hudPlayerLabel.setText(String.format(
-			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
-			player.getName(true),
-			player.getRole().getName(),
-			HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
-			player.getHealth(),
-			player.getMaxHealth()
-		));
-	}
-
-	private void updateHUDInfoLine(Player player) {
-		((Label) hudInfoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
-	}
-
-	private void updateHUDAttributes(Player player) {
-		((Label) hudAttributes.findActor("attributeStrength")).setText("STR: " + player.getStrength());
-		((Label) hudAttributes.findActor("attributeAgility")).setText("AGI: " + player.getAgility());
-		((Label) hudAttributes.findActor("attributeDexterity")).setText("DXT: " + player.getDexterity());
-		((Label) hudAttributes.findActor("attributeConstitution")).setText("CON: " + player.getConstitution());
-		((Label) hudAttributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
-		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
-		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
-	}
-
-	private void updateHUDBrightness(Player player) {
-		hudBrightness.clearChildren();
-
-		if (player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
-			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
-		} else {
-			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));
-		}
-
-		hudBrightness.addActor(new Label("BRI: " + player.getLightLevel(), hudSkin));
-	}
-
-	private void updateHUDNutrition(Player player) {
-		((Label) hudTable.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
-
-		switch (player.getNutritionState().getImportance()) {
-			case 1:
-				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));
-				break;
-			case 2:
-				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_RED"));
-				break;
-			default:
-				hudTable.findActor("attributeNutrition").setColor(Color.WHITE);
-				break;
-		}
-	}
-
-	private void updateHUDStatusEffects(Player player) {
-		if (player.getStatusEffects().size() > 0) {
-			List<String> effects = player.getStatusEffects().stream()
-				.map(e -> {
-					switch (e.getSeverity()) {
-						case MINOR:
-							return "[P_YELLOW]" + e.getName() + "[]";
-						case MAJOR:
-							return "[P_ORANGE_2]" + e.getName() + "[]";
-						case CRITICAL:
-							return "[P_RED]" + e.getName() + "[]";
-						default:
-							return "";
-					}
-				})
-				.collect(Collectors.toList());
-
-			hudEffectsLabel.setText(StringUtils.join(effects, " "));
-		} else {
-			hudEffectsLabel.setText("");
-		}
-	}
+	public void onBeforeTurn(long turn) {}
 
 	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
-
-		Player player = dungeon.getPlayer();
-		updateHUDPlayerLabel(player);
-		updateHUDInfoLine(player);
-		updateHUDAttributes(player);
-		updateHUDBrightness(player);
-		updateHUDNutrition(player);
-		updateHUDStatusEffects(player);
 	}
 	
 	@Override
-	public void onLog(String entry) {
-		entry = HUDUtils.replaceMarkupString(entry);
-
-		log.add(entry);
-
-		hudLog.clearChildren();
-
-		int logSize = Math.min(7, log.size());
-
-		for (int i = 0; i < logSize; i++) {
-			String s = log.get(log.size() - (logSize - i));
-
-			if (i < logSize - 1) {
-				s = "[#CCCCCCEE]" + s;
-			}
-
-			Label newEntry = new Label(s, hudSkin, "default");
-			hudLog.add(newEntry).left().growX();
-			hudLog.row();
-		}
-	}
+	public void onLog(String entry) {}
 
 	@Override
-	public void onPrompt(Prompt prompt) {
-		if (prompt == null) {
-			hudPromptLabel.setText("");
-		} else {
-			if (prompt.getOptions() == null) {
-				hudPromptLabel.setText(String.format(
-					"[P_BLUE_1]%s[]",
-					prompt.getMessage()
-				));
-			} else {
-				hudPromptLabel.setText(String.format(
-					"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
-					prompt.getMessage(),
-					new String(prompt.getOptions())
-				));
-			}
-		}
-	}
+	public void onPrompt(Prompt prompt) {}
 
 	@Override
 	public void onEntityAdded(Entity entity) {
@@ -677,8 +445,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightBatch.dispose();
 		lightSpriteBatch.dispose();
 
-		hudStage.dispose();
-		hudSkin.dispose();
+		hud.dispose();
 
 		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
 
