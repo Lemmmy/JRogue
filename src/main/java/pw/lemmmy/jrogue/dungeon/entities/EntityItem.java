@@ -21,12 +21,12 @@ public class EntityItem extends Entity {
 
 	public Item getItem() {
 		return itemStack.getItem();
-	}	@Override
+	}
+
+	@Override
 	public int getDepth() {
 		return 0;
 	}
-
-
 
 
 	@Override

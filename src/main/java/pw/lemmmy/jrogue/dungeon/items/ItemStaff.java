@@ -50,13 +50,13 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 
 	@Override
-	public void onHit(LivingEntity attacker, LivingEntity victim) {
-		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
+	protected DamageSource getMeleeDamageSource() {
+		return DamageSource.STAFF_BASH;
 	}
 
 	@Override
-	public Skill getSkill() {
-		return Skill.SKILL_STAFF;
+	public void onHit(LivingEntity attacker, LivingEntity victim) {
+		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 
 	@Override
-	protected DamageSource getMeleeDamageSource() {
-		return DamageSource.STAFF_BASH;
+	public Skill getSkill() {
+		return Skill.SKILL_STAFF;
 	}
 
 	@Override

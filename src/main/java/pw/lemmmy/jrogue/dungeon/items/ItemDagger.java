@@ -19,13 +19,13 @@ public class ItemDagger extends ItemSword {
 	}
 
 	@Override
-	public Skill getSkill() {
-		return Skill.SKILL_DAGGER;
+	protected DamageSource getMeleeDamageSource() {
+		return DamageSource.DAGGER;
 	}
 
 	@Override
-	protected DamageSource getMeleeDamageSource() {
-		return DamageSource.DAGGER;
+	public Skill getSkill() {
+		return Skill.SKILL_DAGGER;
 	}
 
 	@Override

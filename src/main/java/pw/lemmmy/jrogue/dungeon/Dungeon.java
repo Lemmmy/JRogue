@@ -305,6 +305,13 @@ public class Dungeon {
 
 			if (wish.equalsIgnoreCase("godmode")) {
 				player.godmode();
+				return;
+			}
+
+			if (wish.equalsIgnoreCase("chest")) {
+				getLevel().addEntity(new EntityChest(this, getLevel(), player.getX(), player.getY()));
+				turn();
+				return;
 			}
 
 			if (wishMonsters(wish)) {

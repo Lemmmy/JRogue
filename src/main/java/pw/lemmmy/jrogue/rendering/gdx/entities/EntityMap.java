@@ -19,6 +19,8 @@ public enum EntityMap {
 	APPEARANCE_FISH_PURPLE(new EntityRendererFish(6, 3)),
 	APPEARANCE_PUFFERFISH(new EntityRendererFish(7, 3)),
 
+	APPEARANCE_CHEST(new EntityRendererRandom(1, 1, 12)),
+
 	APPEARANCE_ITEM(new EntityRendererItem());
 
 	public static final int ENTITY_WIDTH = 16;

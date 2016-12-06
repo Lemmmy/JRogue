@@ -19,13 +19,13 @@ public class ItemLongsword extends ItemSword {
 	}
 
 	@Override
-	public Skill getSkill() {
-		return Skill.SKILL_LONGSWORD;
+	protected DamageSource getMeleeDamageSource() {
+		return DamageSource.LONGSWORD;
 	}
 
 	@Override
-	protected DamageSource getMeleeDamageSource() {
-		return DamageSource.LONGSWORD;
+	public Skill getSkill() {
+		return Skill.SKILL_LONGSWORD;
 	}
 
 	@Override
