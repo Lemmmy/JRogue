@@ -314,6 +314,12 @@ public class Dungeon {
 				return;
 			}
 
+			if (wish.equalsIgnoreCase("fountain")) {
+				getLevel().addEntity(new EntityFountain(this, getLevel(), player.getX(), player.getY()));
+				turn();
+				return;
+			}
+
 			if (wishMonsters(wish)) {
 				turn();
 				return;

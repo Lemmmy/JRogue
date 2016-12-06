@@ -186,7 +186,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
 		);
 
-		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), effect);
+		boolean over = renderer.shouldDrawParticlesOver(dungeon, entity, entity.getX(), entity.getY());
+
+		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), over, effect);
 		entityPooledEffects.add(entityPooledEffect);
 	}
 
@@ -260,8 +262,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		batch.enableBlending();
 
 		drawMap();
-		drawParticles(delta);
+		drawTileParticles(delta);
+		drawEntityParticles(delta, false);
 		drawEntities(false);
+		drawEntityParticles(delta, true);
 
 		batch.end();
 
@@ -275,7 +279,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		drawMap(false, true);
 	}
 
-	private void drawParticles(float delta) {
+	private void drawTileParticles(float delta) {
 		for (Iterator<TilePooledEffect> iterator = tilePooledEffects.iterator(); iterator.hasNext(); ) {
 			TilePooledEffect effect = iterator.next();
 
@@ -292,11 +296,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				iterator.remove();
 			}
 		}
+	}
 
+	private void drawEntityParticles(float delta, boolean over) {
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 
-			effect.getPooledEffect().update(delta * 0.25f);
+			if (effect.shouldDrawOver() != over) continue;
+
+			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY());
+
+			effect.getPooledEffect().update(delta * deltaMultiplier);
 
 			if (!dungeon.getLevel().isTileVisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
 				!effect.getRenderer().shouldDrawParticles(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY())) {

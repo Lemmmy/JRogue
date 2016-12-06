@@ -10,13 +10,16 @@ public class EntityPooledEffect {
 	private int x;
 	private int y;
 
+	private boolean over;
+
 	private ParticleEffectPool.PooledEffect pooledEffect;
 
-	public EntityPooledEffect(Entity entity, EntityRenderer renderer, int x, int y, ParticleEffectPool.PooledEffect pooledEffect) {
+	public EntityPooledEffect(Entity entity, EntityRenderer renderer, int x, int y, boolean over, ParticleEffectPool.PooledEffect pooledEffect) {
 		this.entity = entity;
 		this.renderer = renderer;
 		this.x = x;
 		this.y = y;
+		this.over = over;
 
 		this.pooledEffect = pooledEffect;
 	}
@@ -35,6 +38,10 @@ public class EntityPooledEffect {
 
 	public int getY() {
 		return y;
+	}
+
+	public boolean shouldDrawOver() {
+		return over;
 	}
 
 	public ParticleEffectPool.PooledEffect getPooledEffect() {

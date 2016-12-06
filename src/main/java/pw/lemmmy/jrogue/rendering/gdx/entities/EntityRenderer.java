@@ -40,4 +40,12 @@ public abstract class EntityRenderer {
 	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
 		return true;
 	}
+
+	public boolean shouldDrawParticlesOver(Dungeon dungeon, Entity entity, int x, int y) {
+		return false;
+	}
+
+	public float getParticleDeltaMultiplier(Dungeon dungeon, Entity entity, int x, int y) {
+		return 0.25f;
+	}
 }

@@ -20,6 +20,7 @@ public enum EntityMap {
 	APPEARANCE_PUFFERFISH(new EntityRendererFish(7, 3)),
 
 	APPEARANCE_CHEST(new EntityRendererRandom(1, 1, 12)),
+	APPEARANCE_FOUNTAIN(new EntityRendererFountain(13, 1, 2)),
 
 	APPEARANCE_ITEM(new EntityRendererItem());
 
