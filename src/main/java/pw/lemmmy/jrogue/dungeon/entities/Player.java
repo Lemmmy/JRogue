@@ -502,7 +502,7 @@ public class Player extends LivingEntity {
 				ItemStack stack = inventory.get(letter);
 				Item item = stack.getItem();
 
-				if (getRightHand() != null && ((Wieldable) getRightHand()).isTwoHanded()) {
+				if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
 					setLeftHand(null);
 				}
 
