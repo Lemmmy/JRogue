@@ -348,7 +348,7 @@ public class Dungeon {
 		return false;
 	}
 
-	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword)$");
+	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
 
 	private boolean wishItems(String wish) {
 		Matcher wishSwordMatcher = wishSword.matcher(wish);
