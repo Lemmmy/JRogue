@@ -54,25 +54,7 @@ public class EntityItem extends Entity {
 	}
 
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
-		if (itemStack.getItem().isis()) {
-			getDungeon().log("There is %s here.", getName(false));
-		} else {
-			if (itemStack.getCount() > 1) {
-				getDungeon().log("There are %s here.", getName(false));
-			} else {
-				if (beginsWithVowel()) {
-					getDungeon().log("There is an %s here.", getName(false));
-				} else {
-					getDungeon().log("There is a %s here.", getName(false));
-				}
-			}
-		}
-	}
-
-	private boolean beginsWithVowel() {
-		return itemStack.beginsWithVowel();
-	}
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 
 	@Override
 	public boolean canBeWalkedOn() {

@@ -2,11 +2,14 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ActionMove extends EntityAction {
 	private int x;
@@ -49,6 +52,28 @@ public class ActionMove extends EntityAction {
 
 		List<Entity> walkable = getEntity().getLevel().getWalkableEntitiesAt(x, y);
 		walkable.forEach(e -> e.walk((LivingEntity) getEntity(), getEntity() instanceof Player));
+
+		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e).collect(Collectors.toList());
+
+		if (items.size() == 1) {
+			ItemStack stack = items.get(0).getItemStack();
+
+			if (stack.getItem().isis()) {
+				getDungeon().log("There is [YELLOW]%s[] here.", stack.getName(false));
+			} else {
+				if (stack.getCount() > 1) {
+					getDungeon().log("There are [YELLOW]%s[] here.", stack.getName(false));
+				} else {
+					if (stack.beginsWithVowel()) {
+						getDungeon().log("There is an [YELLOW]%s[] here.", stack.getName(false));
+					} else {
+						getDungeon().log("There is a [YELLOW]%s[] here.", stack.getName(false));
+					}
+				}
+			}
+		} else if (items.size() > 1) {
+			getDungeon().log("There are [YELLOW]%d[] items here.", items.size());
+		}
 
 		runOnCompleteCallback();
 	}
