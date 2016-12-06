@@ -27,4 +27,9 @@ public class ItemShortsword extends ItemSword {
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.SHORTSWORD;
 	}
+
+	@Override
+	public boolean isTwoHanded() {
+		return false;
+	}
 }

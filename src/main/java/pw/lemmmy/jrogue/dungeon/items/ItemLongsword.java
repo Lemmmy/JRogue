@@ -27,4 +27,9 @@ public class ItemLongsword extends ItemSword {
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.LONGSWORD;
 	}
+
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
 }

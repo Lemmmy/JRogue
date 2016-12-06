@@ -35,7 +35,7 @@ public class RoleWizard extends Role {
 
 	@Override
 	public ItemStack getStartingLeftHand() {
-		return null;
+		return staff;
 	}
 
 	@Override

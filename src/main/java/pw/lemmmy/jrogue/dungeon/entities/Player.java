@@ -15,15 +15,13 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.ItemWeaponMelee;
+import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
 	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
@@ -464,6 +462,69 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
+	public void wield() {
+		Map<Character, ItemStack> wieldables = getWieldablesInInventory();
+
+		if (wieldables.size() == 0) {
+			getDungeon().You("have nothing to wield.");
+			return;
+		}
+
+		char[] options = ArrayUtils.toPrimitive(wieldables.keySet().toArray(new Character[0]));
+		options = Arrays.copyOf(options, options.length + 1);
+		options[options.length - 1] = '-';
+
+		getDungeon().prompt(new Prompt("Wield what?", options, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+			}
+
+			@Override
+			public void onResponse(char letter) {
+				if (letter == '-') {
+					setLeftHand(null);
+					setRightHand(null);
+					getDungeon().You("unwield everything.");
+					return;
+				}
+
+				if (!inventory.containsKey(letter)) {
+					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
+					return;
+				}
+
+				ItemStack stack = inventory.get(letter);
+				Item item = stack.getItem();
+
+				if (getRightHand() != null && ((Wieldable) getRightHand()).isTwoHanded()) {
+					setLeftHand(null);
+				}
+
+				setRightHand(stack);
+
+				if (((Wieldable) item).isTwoHanded()) {
+					setLeftHand(stack);
+				}
+
+				if (item.isis() || stack.getCount() > 1) {
+					getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+				} else {
+					if (stack.beginsWithVowel()) {
+						getDungeon().You("wield an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					} else {
+						getDungeon().You("wield a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					}
+				}
+			}
+		}, true));
+	}
+
 	public boolean addToInventory(ItemStack stack) {
 		Item item = stack.getItem();
 
@@ -533,6 +594,12 @@ public class Player extends LivingEntity {
 		}
 
 		return ' ';
+	}
+
+	public Map<Character, ItemStack> getWieldablesInInventory() {
+		return inventory.entrySet().stream()
+			.filter(e -> e.getValue().getItem() instanceof Wieldable)
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public boolean canPickUpItem(Item item) {

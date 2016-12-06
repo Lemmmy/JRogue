@@ -27,4 +27,9 @@ public class ItemDagger extends ItemSword {
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.DAGGER;
 	}
+
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
 }

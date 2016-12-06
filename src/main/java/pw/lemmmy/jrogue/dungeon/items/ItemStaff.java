@@ -73,4 +73,9 @@ public class ItemStaff extends ItemWeaponMelee {
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.STAFF_BASH;
 	}
+
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
 }
