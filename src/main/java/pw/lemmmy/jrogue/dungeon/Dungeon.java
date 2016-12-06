@@ -340,6 +340,9 @@ public class Dungeon {
 		} else if (wish.equalsIgnoreCase("icehound")) {
 			getLevel().addEntity(new MonsterIcehound(this, getLevel(), player.getX(), player.getY()));
 			return true;
+		} else if (wish.equalsIgnoreCase("spider")) {
+			getLevel().addEntity(new MonsterSpider(this, getLevel(), player.getX(), player.getY()));
+			return true;
 		}
 
 		return false;
