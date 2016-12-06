@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -11,26 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Window extends Dialog {
+	private PopupWindow owner;
+
 	private Button closeButton;
 
 	private List<ResultListener> resultListeners = new ArrayList<>();
 
-	public Window(String title, Skin skin) {
+	public Window(String title, Skin skin, PopupWindow owner) {
 		super(title, skin);
 
 		init();
+		this.owner = owner;
 	}
 
-	public Window(String title, Skin skin, String styleName) {
+	public Window(String title, Skin skin, String styleName, PopupWindow owner) {
 		super(title, skin, styleName);
 
 		init();
+		this.owner = owner;
 	}
 
-	public Window(String title, WindowStyle style) {
+	public Window(String title, WindowStyle style, PopupWindow owner) {
 		super(title, style);
 
 		init();
+		this.owner = owner;
 	}
 
 	private void init() {
@@ -50,6 +56,13 @@ public class Window extends Dialog {
 		setClip(true);
 		super.draw(batch, parentAlpha);
 		setClip(false);
+	}
+
+	@Override
+	public void hide(Action action) {
+		super.hide(action);
+
+		owner.remove();
 	}
 
 	@Override

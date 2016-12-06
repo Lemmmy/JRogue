@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import com.github.alexeyr.pcg.Pcg32;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -421,6 +422,48 @@ public class Player extends LivingEntity {
 		}
 	}
 
+	public void drop() {
+		char[] options = ArrayUtils.toPrimitive(inventory.keySet().toArray(new Character[0]));
+
+		getDungeon().prompt(new Prompt("Drop what?", options, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+			}
+
+			@Override
+			public void onResponse(char letter) {
+				if (!inventory.containsKey(letter)) {
+					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
+					return;
+				}
+
+				ItemStack stack = inventory.get(letter);
+				Item item = stack.getItem();
+
+				removeFromInventory(letter);
+
+				EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), stack, getX(), getY());
+				getLevel().addEntity(entityItem);
+
+				if (item.isis() || stack.getCount() > 1) {
+					getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+				} else {
+					if (stack.beginsWithVowel()) {
+						getDungeon().You("drop an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					} else {
+						getDungeon().You("drop a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					}
+				}
+			}
+		}, true));
+	}
+
 	public boolean addToInventory(ItemStack stack) {
 		Item item = stack.getItem();
 
@@ -439,12 +482,12 @@ public class Player extends LivingEntity {
 				invStack.addCount(stack.getCount());
 
 				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+					getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 				} else {
 					if (stack.beginsWithVowel()) {
-						getDungeon().You("pick up an %s (%s)", stack.getName(false), letter);
+						getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 					} else {
-						getDungeon().You("pick up a %s (%s)", stack.getName(false), letter);
+						getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 					}
 				}
 
@@ -456,16 +499,30 @@ public class Player extends LivingEntity {
 		inventory.put(letter, stack);
 
 		if (item.isis() || stack.getCount() > 1) {
-			getDungeon().You("pick up %s (%s)", stack.getName(false), letter);
+			getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 		} else {
 			if (stack.beginsWithVowel()) {
-				getDungeon().You("pick up an %s (%s)", stack.getName(false), letter);
+				getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 			} else {
-				getDungeon().You("pick up a %s (%s)", stack.getName(false), letter);
+				getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
 			}
 		}
 
 		return true;
+	}
+
+	public void removeFromInventory(Character letter) {
+		ItemStack stack = inventory.get(letter);
+
+		if (stack == getLeftHand()) {
+			setLeftHand(null);
+		}
+
+		if (stack == getRightHand()) {
+			setRightHand(null);
+		}
+
+		inventory.remove(letter);
 	}
 
 	public char getAvailableInventoryLetter() {

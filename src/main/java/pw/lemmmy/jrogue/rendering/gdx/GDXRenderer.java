@@ -27,9 +27,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
-import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
-import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,6 +51,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>(); // TODO: Below and above
+
+	private List<PopupWindow> windows = new ArrayList<>();
 
 	private float zoom = 1.0f;
 
@@ -431,6 +431,22 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
 	}
 
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
+	public void addWindow(PopupWindow window) {
+		windows.add(window);
+	}
+
+	public void removeWindow(PopupWindow window) {
+		windows.remove(window);
+	}
+
+	public List<PopupWindow> getWindows() {
+		return windows;
+	}
+
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -445,9 +461,5 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
-	}
-
-	public OrthographicCamera getCamera() {
-		return camera;
 	}
 }

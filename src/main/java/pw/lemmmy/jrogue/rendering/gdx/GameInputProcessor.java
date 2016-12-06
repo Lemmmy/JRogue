@@ -25,6 +25,8 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (renderer.getWindows().size() > 0) return false;
+
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
 				dungeon.escapePrompt();
@@ -49,6 +51,8 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
+		if (renderer.getWindows().size() > 0) return false;
+
 		if (dontHandleNext) {
 			dontHandleNext = false;
 			return false;
@@ -134,7 +138,12 @@ public class GameInputProcessor implements InputProcessor {
 				return true;
 			}
 		} else {
-			if (keycode == Input.Keys.E) {
+			if (keycode == Input.Keys.D) {
+				dungeon.getPlayer().drop();
+
+				dontHandleNext = true;
+				return true;
+			} else if (keycode == Input.Keys.E) {
 				dungeon.getPlayer().eat();
 
 				dontHandleNext = true;

@@ -39,9 +39,9 @@ public class Prompt {
 				end = chars[i];
 			} else {
 				if (start == end) {
-					result += start + " ";
+					result += (char) start + " ";
 				} else {
-					result += start + "-" + end + " ";
+					result += (char) start + "-" + (char) end + " ";
 				}
 
 				start = end = chars[i];
@@ -49,9 +49,9 @@ public class Prompt {
 		}
 
 		if (start == end) {
-			result += start;
+			result += (char) start;
 		} else {
-			result += start + "-" + end;
+			result += (char) start + "-" + (char) end;
 		}
 
 		return result;
