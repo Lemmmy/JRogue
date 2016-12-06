@@ -30,6 +30,6 @@ public class ItemDagger extends ItemSword {
 
 	@Override
 	public boolean isTwoHanded() {
-		return true;
+		return false;
 	}
 }
