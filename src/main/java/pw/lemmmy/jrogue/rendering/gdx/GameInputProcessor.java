@@ -163,6 +163,11 @@ public class GameInputProcessor implements InputProcessor {
 
 				dontHandleNext = true;
 				return true;
+			} else if (keycode == Input.Keys.X) {
+				dungeon.getPlayer().swapHands();
+
+				dontHandleNext = true;
+				return true;
 			}
 		}
 

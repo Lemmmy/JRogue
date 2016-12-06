@@ -525,6 +525,16 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
+	public void swapHands() {
+		ItemStack left = getLeftHand();
+		ItemStack right = getRightHand();
+
+		setLeftHand(right);
+		setRightHand(left);
+
+		getDungeon().You("swap your weapons.");
+	}
+
 	public boolean addToInventory(ItemStack stack) {
 		Item item = stack.getItem();
 
