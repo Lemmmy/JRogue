@@ -48,6 +48,21 @@ public class MonsterPufferfish extends Monster {
 	}
 
 	@Override
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Pufferfish" : "pufferfish";
+	}
+
+	@Override
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_PUFFERFISH;
+	}
+
+	@Override
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		getDungeon().You("kick the %s!", getName(false));
+	}
+
+	@Override
 	public int getWeight() {
 		return 50;
 	}
@@ -89,20 +104,5 @@ public class MonsterPufferfish extends Monster {
 	@Override
 	public boolean canMagicAttack() {
 		return false;
-	}
-
-	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Pufferfish": "pufferfish";
-	}
-
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_PUFFERFISH;
-	}
-
-	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		getDungeon().You("kick the %s!", getName(false));
 	}
 }

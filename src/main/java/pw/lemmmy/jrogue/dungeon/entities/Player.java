@@ -77,61 +77,27 @@ public class Player extends LivingEntity {
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 	}
 
-	public int getNutrition() {
-		return nutrition;
-	}
-
-	public NutritionState getNutritionState() {
-		if (nutrition >= 1500) {
-			return NutritionState.CHOKING;
-		} else if (nutrition >= 1000) {
-			return NutritionState.STUFFED;
-		} else if (nutrition >= 600) {
-			return NutritionState.NOT_HUNGRY;
-		} else if (nutrition >= 300) {
-			return NutritionState.HUNGRY;
-		} else if (nutrition >= 0) {
-			return NutritionState.STARVING;
-		} else {
-			return NutritionState.FAINTING;
+	public char getAvailableInventoryLetter() {
+		for (char letter : INVENTORY_CHARS) {
+			if (!inventory.containsKey(letter)) {
+				return letter;
+			}
 		}
+
+		return ' ';
 	}
 
-	public int getStrength() {
-		return strength;
-	}
-
-	public int getAgility() {
-		return agility;
-	}
-
-	public int getDexterity() {
-		return dexterity;
-	}
-
-	public int getConstitution() {
-		return constitution;
-	}
-
-	public int getIntelligence() {
-		return intelligence;
-	}
-
-	public int getWisdom() {
-		return wisdom;
-	}
-
-	public int getCharisma() {
-		return charisma;
+	@Override
+	public int getMaxHealth() {
+		return 10 + getConstitutionBonus();
 	}
 
 	public int getConstitutionBonus() {
 		return (int) Math.floor(0.25 * getConstitution() - 2);
 	}
 
-	@Override
-	public int getMaxHealth() {
-		return 10 + getConstitutionBonus();
+	public int getConstitution() {
+		return constitution;
 	}
 
 	@Override
@@ -164,8 +130,37 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	public int getDepth() {
+		return 3;
+	}
+
+	@Override
 	public Size getSize() {
 		return LivingEntity.Size.LARGE;
+	}
+
+	public int getNutrition() {
+		return nutrition;
+	}
+
+	public int getStrength() {
+		return strength;
+	}
+
+	public int getAgility() {
+		return agility;
+	}
+
+	public int getDexterity() {
+		return dexterity;
+	}
+
+	public int getIntelligence() {
+		return intelligence;
+	}
+
+	public int getCharisma() {
+		return charisma;
 	}
 
 	@Override
@@ -198,22 +193,17 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	}
+
+	@Override
+	public boolean canBeWalkedOn() {
+		return false;
+	}
 
 	public void teleport(int x, int y) {
 		setAction(new ActionTeleport(getDungeon(), this, x, y));
 		getDungeon().turn();
-	}
-
-	private void walkAction(Tile tile, int x, int y) {
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(getDungeon(), this, x, y));
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			getDungeon().The("door is locked.");
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
-			getDungeon().You("open the door.");
-		}
 	}
 
 	public void walk(int dx, int dy) {
@@ -260,12 +250,23 @@ public class Player extends LivingEntity {
 		getDungeon().turn();
 	}
 
-	public int getLightLevel() {
-		return getLevel().getTile(getX(), getY()).getLightIntensity();
+	private void walkAction(Tile tile, int x, int y) {
+		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
+			setAction(new ActionMove(getDungeon(), this, x, y));
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
+			getDungeon().The("door is locked.");
+		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
+			getDungeon().You("open the door.");
+		}
 	}
 
 	public int getVisibilityRange() {
 		return 10 * ((getLightLevel() - 20) / 100) + 10;
+	}
+
+	public int getLightLevel() {
+		return getLevel().getTile(getX(), getY()).getLightIntensity();
 	}
 
 	public int getCorridorVisibilityRange() {
@@ -280,7 +281,8 @@ public class Player extends LivingEntity {
 			}
 
 			@Override
-			public void onInvalidResponse(char response) {}
+			public void onInvalidResponse(char response) {
+			}
 
 			@Override
 			public void onResponse(char response) {
@@ -314,11 +316,6 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
-	@Override
-	public boolean canBeWalkedOn() {
-		return false;
-	}
-
 	public Role getRole() {
 		return role;
 	}
@@ -343,7 +340,7 @@ public class Player extends LivingEntity {
 						}
 					}
 
-					getDungeon().prompt(new Prompt(promptString, new char[] {'y', 'n'}, new Prompt.PromptCallback() {
+					getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, new Prompt.PromptCallback() {
 						@Override
 						public void onNoResponse() {
 							getDungeon().log("Nevermind.");
@@ -404,6 +401,26 @@ public class Player extends LivingEntity {
 		return ItemComestible.EatenState.EATEN;
 	}
 
+	public NutritionState getNutritionState() {
+		if (nutrition >= 1500) {
+			return NutritionState.CHOKING;
+		} else if (nutrition >= 1000) {
+			return NutritionState.STUFFED;
+		} else if (nutrition >= 600) {
+			return NutritionState.NOT_HUNGRY;
+		} else if (nutrition >= 300) {
+			return NutritionState.HUNGRY;
+		} else if (nutrition >= 0) {
+			return NutritionState.STARVING;
+		} else {
+			return NutritionState.FAINTING;
+		}
+	}
+
+	public int getWisdom() {
+		return wisdom;
+	}
+
 	public void pickup() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 
@@ -418,6 +435,63 @@ public class Player extends LivingEntity {
 				}
 			}
 		}
+	}
+
+	public boolean addToInventory(ItemStack stack) {
+		Item item = stack.getItem();
+
+		if (!canPickUpItem(item)) {
+			getDungeon().You("can't hold any more items.");
+
+			return false;
+		}
+
+		for (Map.Entry<Character, ItemStack> entry : inventory.entrySet()) {
+			ItemStack invStack = entry.getValue();
+
+			if (item.equals(invStack.getItem())) {
+				char letter = entry.getKey();
+
+				invStack.addCount(stack.getCount());
+
+				if (item.isis() || stack.getCount() > 1) {
+					getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+				} else {
+					if (stack.beginsWithVowel()) {
+						getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					} else {
+						getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					}
+				}
+
+				return true;
+			}
+		}
+
+		char letter = getAvailableInventoryLetter();
+		inventory.put(letter, stack);
+
+		if (item.isis() || stack.getCount() > 1) {
+			getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+		} else {
+			if (stack.beginsWithVowel()) {
+				getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+			} else {
+				getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+			}
+		}
+
+		return true;
+	}
+
+	public boolean canPickUpItem(Item item) {
+		for (ItemStack invStack : inventory.values()) {
+			if (item.equals(invStack.getItem())) {
+				return true;
+			}
+		}
+
+		return getAvailableInventoryLetter() != ' ';
 	}
 
 	public void drop() {
@@ -460,6 +534,20 @@ public class Player extends LivingEntity {
 				}
 			}
 		}, true));
+	}
+
+	public void removeFromInventory(Character letter) {
+		ItemStack stack = inventory.get(letter);
+
+		if (stack == getLeftHand()) {
+			setLeftHand(null);
+		}
+
+		if (stack == getRightHand()) {
+			setRightHand(null);
+		}
+
+		inventory.remove(letter);
 	}
 
 	public void wield() {
@@ -525,6 +613,12 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
+	public Map<Character, ItemStack> getWieldablesInInventory() {
+		return inventory.entrySet().stream()
+			.filter(e -> e.getValue().getItem() instanceof Wieldable)
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+
 	public void swapHands() {
 		ItemStack left = getLeftHand();
 		ItemStack right = getRightHand();
@@ -533,98 +627,6 @@ public class Player extends LivingEntity {
 		setRightHand(left);
 
 		getDungeon().You("swap your weapons.");
-	}
-
-	public boolean addToInventory(ItemStack stack) {
-		Item item = stack.getItem();
-
-		if (!canPickUpItem(item)) {
-			getDungeon().You("can't hold any more items.");
-
-			return false;
-		}
-
-		for (Map.Entry<Character, ItemStack> entry : inventory.entrySet()) {
-			ItemStack invStack = entry.getValue();
-
-			if (item.equals(invStack.getItem())) {
-				char letter = entry.getKey();
-
-				invStack.addCount(stack.getCount());
-
-				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-				} else {
-					if (stack.beginsWithVowel()) {
-						getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-					} else {
-						getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-					}
-				}
-
-				return true;
-			}
-		}
-
-		char letter = getAvailableInventoryLetter();
-		inventory.put(letter, stack);
-
-		if (item.isis() || stack.getCount() > 1) {
-			getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-		} else {
-			if (stack.beginsWithVowel()) {
-				getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-			} else {
-				getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-			}
-		}
-
-		return true;
-	}
-
-	public void removeFromInventory(Character letter) {
-		ItemStack stack = inventory.get(letter);
-
-		if (stack == getLeftHand()) {
-			setLeftHand(null);
-		}
-
-		if (stack == getRightHand()) {
-			setRightHand(null);
-		}
-
-		inventory.remove(letter);
-	}
-
-	public char getAvailableInventoryLetter() {
-		for (char letter : INVENTORY_CHARS) {
-			if (!inventory.containsKey(letter)) {
-				return letter;
-			}
-		}
-
-		return ' ';
-	}
-
-	public Map<Character, ItemStack> getWieldablesInInventory() {
-		return inventory.entrySet().stream()
-			.filter(e -> e.getValue().getItem() instanceof Wieldable)
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-	}
-
-	public boolean canPickUpItem(Item item) {
-		for (ItemStack invStack : inventory.values()) {
-			if (item.equals(invStack.getItem())) {
-				return true;
-			}
-		}
-
-		return getAvailableInventoryLetter() != ' ';
-	}
-
-	@Override
-	public int getDepth() {
-		return 3;
 	}
 
 	public Map<Character, ItemStack> getInventory() {
@@ -659,8 +661,8 @@ public class Player extends LivingEntity {
 		gold += amount;
 	}
 
-	public void setGodmode(boolean godmode) {
-		this.godmode = godmode;
+	public void godmode() {
+		this.godmode = true;
 	}
 
 	public enum NutritionState {

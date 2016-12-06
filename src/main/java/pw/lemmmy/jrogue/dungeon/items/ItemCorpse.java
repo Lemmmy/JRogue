@@ -18,8 +18,8 @@ public class ItemCorpse extends ItemComestible {
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
-				entity.getName(requiresCapitalisation) +
-				" corpse" + (plural ? "s" : "");
+			entity.getName(requiresCapitalisation) +
+			" corpse" + (plural ? "s" : "");
 	}
 
 	@Override

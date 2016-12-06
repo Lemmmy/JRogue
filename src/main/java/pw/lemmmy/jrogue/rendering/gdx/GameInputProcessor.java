@@ -100,6 +100,19 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 
+	private boolean handleWorldClicks(Vector2 pos, int button) {
+		if (button == Input.Buttons.LEFT) {
+			if (dungeon.getPlayer().isDebugger() && teleporting) {
+				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
+				teleporting = false;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private Vector2 screenToWorldPos(int screenX, int screenY) {
 		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
 
@@ -185,19 +198,6 @@ public class GameInputProcessor implements InputProcessor {
 				renderer.showWishWindow();
 
 				dontHandleNext = true;
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean handleWorldClicks(Vector2 pos, int button) {
-		if (button == Input.Buttons.LEFT) {
-			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
-				teleporting = false;
-
 				return true;
 			}
 		}

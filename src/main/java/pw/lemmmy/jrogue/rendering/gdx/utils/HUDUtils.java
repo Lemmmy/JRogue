@@ -12,7 +12,7 @@ public class HUDUtils {
 			return "P_GREEN_3";
 		}
 	}
-    
+
 	public static String replaceMarkupString(String s) {
 		s = s.replace("[GREEN]", "[P_GREEN_3]");
 		s = s.replace("[CYAN]", "[P_CYAN_1]");

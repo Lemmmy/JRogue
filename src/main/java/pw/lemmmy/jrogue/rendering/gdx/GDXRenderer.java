@@ -70,15 +70,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		new LwjglApplication(this, config);
 	}
 
-	private void updateWindowTitle() {
-		Gdx.graphics.setTitle(String.format(
-			"%s - %s - Turn %,d",
-			WINDOW_TITLE,
-			dungeon.getName(),
-			dungeon.getTurn()
-		));
-	}
-
 	@Override
 	public void create() {
 		super.create();
@@ -110,6 +101,134 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		onLevelChange(dungeon.getLevel());
 		dungeon.start();
+	}
+
+	private void updateWindowTitle() {
+		Gdx.graphics.setTitle(String.format(
+			"%s - %s - Turn %,d",
+			WINDOW_TITLE,
+			dungeon.getName(),
+			dungeon.getTurn()
+		));
+	}
+
+	@Override
+	public void onLevelChange(Level level) {
+		findTilePooledParticles();
+	}
+
+	private void findTilePooledParticles() {
+		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
+		tilePooledEffects.clear();
+
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
+
+				if (tm.getRenderer() == null) {
+					continue;
+				}
+
+				TileRenderer renderer = tm.getRenderer();
+
+				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
+					continue;
+				}
+
+				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
+
+				effect.setPosition(
+					(x * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(),
+					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
+				);
+
+				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
+				tilePooledEffects.add(tilePooledEffect);
+			}
+		}
+	}
+
+	@Override
+	public void onBeforeTurn(long turn) {
+	}
+
+	@Override
+	public void onTurn(long turn) {
+		updateWindowTitle();
+	}
+
+	@Override
+	public void onLog(String entry) {
+	}
+
+	@Override
+	public void onPrompt(Prompt prompt) {
+	}
+
+	@Override
+	public void onEntityAdded(Entity entity) {
+		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+
+		if (em.getRenderer() == null) {
+			return;
+		}
+
+		EntityRenderer renderer = em.getRenderer();
+
+		if (renderer.getParticleEffectPool(entity) == null) {
+			return;
+		}
+
+		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
+
+		effect.setPosition(
+			(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
+			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+		);
+
+		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), effect);
+		entityPooledEffects.add(entityPooledEffect);
+	}
+
+	@Override
+	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
+		for (EntityPooledEffect e : entityPooledEffects) {
+			if (e.getEntity() == entity) {
+				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+
+				if (em.getRenderer() == null) {
+					return;
+				}
+
+				EntityRenderer renderer = em.getRenderer();
+
+				if (renderer.getParticleEffectPool(entity) == null) {
+					return;
+				}
+
+				e.getPooledEffect().setPosition(
+					(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
+					(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+				);
+			}
+		}
+	}
+
+	@Override
+	public void onEntityRemoved(Entity entity) {
+		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * height / width);
+
+		hud.updateViewport(width, height);
 	}
 
 	@Override
@@ -154,54 +273,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void drawMap() {
 		drawMap(false, false);
 		drawMap(false, true);
-	}
-
-	private void drawMap(boolean allRevealed, boolean extra) {
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
-					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
-					continue;
-				}
-
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-
-				if (tm.getRenderer() != null) {
-					if (extra) {
-						tm.getRenderer().drawExtra(batch, dungeon, x, y);
-					} else {
-						tm.getRenderer().draw(batch, dungeon, x, y);
-					}
-				}
-			}
-		}
-	}
-
-	public Pixmap takeLevelSnapshot() {
-		int levelWidth = dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH;
-		int levelHeight = dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
-
-		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, levelWidth, levelHeight, false, false);
-		Camera fullCamera = new OrthographicCamera(levelWidth, levelHeight);
-		fullCamera.position.set(levelWidth / 2.0f, levelHeight / 2.0f, 0.0f);
-		fullCamera.update();
-
-		fbo.begin();
-		batch.setProjectionMatrix(fullCamera.combined);
-		batch.enableBlending();
-		batch.begin();
-
-		drawMap(true, false);
-		drawMap(true, true);
-		drawEntities(true);
-
-		batch.end();
-
-		Pixmap pmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
-
-		fbo.end();
-		fbo.dispose();
-		return pmap;
 	}
 
 	private void drawParticles(float delta) {
@@ -306,148 +377,25 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
-	private void findTilePooledParticles() {
-		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
-		tilePooledEffects.clear();
-
+	private void drawMap(boolean allRevealed, boolean extra) {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
+					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
+					continue;
+				}
+
 				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
 
-				if (tm.getRenderer() == null) {
-					continue;
+				if (tm.getRenderer() != null) {
+					if (extra) {
+						tm.getRenderer().drawExtra(batch, dungeon, x, y);
+					} else {
+						tm.getRenderer().draw(batch, dungeon, x, y);
+					}
 				}
-
-				TileRenderer renderer = tm.getRenderer();
-
-				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
-					continue;
-				}
-
-				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
-
-				effect.setPosition(
-					(x * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(),
-					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
-				);
-
-				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
-				tilePooledEffects.add(tilePooledEffect);
 			}
 		}
-	}
-
-	public void showDebugWindow() {
-		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
-	}
-
-	public void showInventoryWindow() {
-		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
-	}
-
-	public void showWishWindow() {
-		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * height / width);
-
-		hud.updateViewport(width, height);
-	}
-
-	@Override
-	public void onLevelChange(Level level) {
-		findTilePooledParticles();
-	}
-
-	@Override
-	public void onBeforeTurn(long turn) {}
-
-	@Override
-	public void onTurn(long turn) {
-		updateWindowTitle();
-	}
-	
-	@Override
-	public void onLog(String entry) {}
-
-	@Override
-	public void onPrompt(Prompt prompt) {}
-
-	@Override
-	public void onEntityAdded(Entity entity) {
-		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-
-		if (em.getRenderer() == null) {
-			return;
-		}
-
-		EntityRenderer renderer = em.getRenderer();
-
-		if (renderer.getParticleEffectPool(entity) == null) {
-			return;
-		}
-
-		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
-
-		effect.setPosition(
-			(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
-			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
-		);
-
-		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), effect);
-		entityPooledEffects.add(entityPooledEffect);
-	}
-
-	@Override
-	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
-		for (EntityPooledEffect e : entityPooledEffects) {
-			if (e.getEntity() == entity) {
-				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-
-				if (em.getRenderer() == null) {
-					return;
-				}
-
-				EntityRenderer renderer = em.getRenderer();
-
-				if (renderer.getParticleEffectPool(entity) == null) {
-					return;
-				}
-
-				e.getPooledEffect().setPosition(
-					(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
-					(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
-				);
-			}
-		}
-	}
-
-	@Override
-	public void onEntityRemoved(Entity entity) {
-		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
-	}
-
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-
-	public void addWindow(PopupWindow window) {
-		windows.add(window);
-	}
-
-	public void removeWindow(PopupWindow window) {
-		windows.remove(window);
-	}
-
-	public List<PopupWindow> getWindows() {
-		return windows;
 	}
 
 	@Override
@@ -464,5 +412,60 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
+	}
+
+	public Pixmap takeLevelSnapshot() {
+		int levelWidth = dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH;
+		int levelHeight = dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
+
+		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, levelWidth, levelHeight, false, false);
+		Camera fullCamera = new OrthographicCamera(levelWidth, levelHeight);
+		fullCamera.position.set(levelWidth / 2.0f, levelHeight / 2.0f, 0.0f);
+		fullCamera.update();
+
+		fbo.begin();
+		batch.setProjectionMatrix(fullCamera.combined);
+		batch.enableBlending();
+		batch.begin();
+
+		drawMap(true, false);
+		drawMap(true, true);
+		drawEntities(true);
+
+		batch.end();
+
+		Pixmap pmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
+
+		fbo.end();
+		fbo.dispose();
+		return pmap;
+	}
+
+	public void showDebugWindow() {
+		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+	}
+
+	public void showInventoryWindow() {
+		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+	}
+
+	public void showWishWindow() {
+		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+	}
+
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
+	public void addWindow(PopupWindow window) {
+		windows.add(window);
+	}
+
+	public void removeWindow(PopupWindow window) {
+		windows.remove(window);
+	}
+
+	public List<PopupWindow> getWindows() {
+		return windows;
 	}
 }

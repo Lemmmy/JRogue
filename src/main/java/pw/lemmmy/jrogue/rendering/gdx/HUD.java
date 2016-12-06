@@ -159,6 +159,27 @@ public class HUD implements Dungeon.Listener {
 		return hudSkin;
 	}
 
+	@Override
+	public void onLevelChange(Level level) {
+
+	}
+
+	@Override
+	public void onBeforeTurn(long turn) {
+
+	}
+
+	@Override
+	public void onTurn(long turn) {
+		Player player = dungeon.getPlayer();
+		updateHUDPlayerLabel(player);
+		updateHUDInfoLine(player);
+		updateHUDAttributes(player);
+		updateHUDBrightness(player);
+		updateHUDNutrition(player);
+		updateHUDStatusEffects(player);
+	}
+
 	private void updateHUDPlayerLabel(Player player) {
 		hudPlayerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
@@ -233,27 +254,6 @@ public class HUD implements Dungeon.Listener {
 		} else {
 			hudEffectsLabel.setText("");
 		}
-	}
-
-	@Override
-	public void onLevelChange(Level level) {
-
-	}
-
-	@Override
-	public void onBeforeTurn(long turn) {
-
-	}
-
-	@Override
-	public void onTurn(long turn) {
-		Player player = dungeon.getPlayer();
-		updateHUDPlayerLabel(player);
-		updateHUDInfoLine(player);
-		updateHUDAttributes(player);
-		updateHUDBrightness(player);
-		updateHUDNutrition(player);
-		updateHUDStatusEffects(player);
 	}
 
 	@Override

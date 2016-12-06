@@ -11,8 +11,6 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 		this.material = material;
 	}
 
-	public abstract String getSwordName();
-
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		String s = plural ? "s" : "";
@@ -21,16 +19,33 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 		return material + " " + getSwordName() + s;
 	}
 
+	public abstract String getSwordName();
+
 	@Override
 	public int getWeight() {
 		return 40 + getMaterial().getValue();
 	}
 
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim) {}
+	public Material getMaterial() {
+		return material;
+	}
+
+	public boolean equals(Item other) {
+		if (other instanceof ItemSword) {
+			return super.equals(other) && ((ItemSword) other).getMaterial() == getMaterial();
+		} else {
+			return super.equals(other);
+		}
+	}
 
 	@Override
-	public void fire(LivingEntity attacker, LivingEntity victim) {}
+	public void zap(LivingEntity attacker, LivingEntity victim) {
+	}
+
+	@Override
+	public void fire(LivingEntity attacker, LivingEntity victim) {
+	}
 
 	@Override
 	public boolean isMelee() {
@@ -60,18 +75,5 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	@Override
 	public int getLargeDamage() {
 		return getMaterial().getBaseDamage();
-	}
-
-	@Override
-	public Material getMaterial() {
-		return material;
-	}
-
-	public boolean equals(Item other) {
-		if (other instanceof ItemSword) {
-			return super.equals(other) && ((ItemSword) other).getMaterial() == getMaterial();
-		} else {
-			return super.equals(other);
-		}
 	}
 }

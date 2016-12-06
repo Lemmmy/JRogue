@@ -28,6 +28,15 @@ public class MonsterSpider extends Monster {
 	}
 
 	@Override
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource) {
+		getDungeon().You("kill the %s!", getName(false));
+	}
+
+	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Spider" : "spider";
 	}
@@ -38,11 +47,12 @@ public class MonsterSpider extends Monster {
 	}
 
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {}
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		getDungeon().You("step on the %s!", getName(false));
 
-	@Override
-	protected void onDie(DamageSource damageSource) {
-		getDungeon().You("kill the %s!", getName(false));
+		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
+			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
+		}
 	}
 
 	@Override
@@ -111,15 +121,6 @@ public class MonsterSpider extends Monster {
 					}
 				}
 			));
-		}
-	}
-
-	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		getDungeon().You("step on the %s!", getName(false));
-
-		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
-			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 	}
 }

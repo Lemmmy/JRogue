@@ -11,16 +11,6 @@ public class Poison extends StatusEffect {
 	}
 
 	@Override
-	public String getName() {
-		return "Poison";
-	}
-
-	@Override
-	public Severity getSeverity() {
-		return Severity.CRITICAL;
-	}
-
-	@Override
 	public void turn() {
 		super.turn();
 
@@ -33,6 +23,16 @@ public class Poison extends StatusEffect {
 				livingEntity.kill(DamageSource.POISON);
 			}
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "Poison";
+	}
+
+	@Override
+	public Severity getSeverity() {
+		return Severity.CRITICAL;
 	}
 
 	@Override

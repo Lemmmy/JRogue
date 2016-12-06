@@ -32,7 +32,17 @@ public abstract class Monster extends LivingEntity {
 		}
 	}
 
+	@Override
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	}
+
+	@Override
+	public boolean canBeWalkedOn() {
+		return false;
+	}
+
 	public abstract int getWeight();
+
 	public abstract int getNutrition();
 
 	public abstract List<StatusEffect> getCorpseEffects(LivingEntity victim);
@@ -42,18 +52,23 @@ public abstract class Monster extends LivingEntity {
 	public abstract boolean canMoveDiagonally();
 
 	public abstract boolean canMeleeAttack();
+
 	public abstract boolean canRangedAttack();
+
+	;
+
 	public abstract boolean canMagicAttack();
 
-	public void meleeAttackPlayer() {};
-	public void rangedAttackPlayer() {};
-	public void magicAttackPlayer() {};
+	;
 
-	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	public void meleeAttackPlayer() {
+	}
 
-	@Override
-	public boolean canBeWalkedOn() {
-		return false;
+	;
+
+	public void rangedAttackPlayer() {
+	}
+
+	public void magicAttackPlayer() {
 	}
 }

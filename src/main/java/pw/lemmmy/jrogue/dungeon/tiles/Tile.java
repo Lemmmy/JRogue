@@ -31,19 +31,6 @@ public class Tile {
 		initialiseState();
 	}
 
-	private void initialiseState() {
-		if (type.getStateClass() != null) {
-			try {
-				@SuppressWarnings("unchecked") Class<TileState> stateClass = type.getStateClass();
-				Constructor<TileState> stateConstructor = stateClass.getConstructor(Tile.class);
-
-				state = stateConstructor.newInstance(this);
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public void resetLight() {
 		light = type.getLight();
 		lightIntensity = type.getLightIntensity();
@@ -57,12 +44,17 @@ public class Tile {
 		light = level.applyIntensity(light, lightIntensity);
 	}
 
-	public int getX() {
-		return x;
-	}
+	private void initialiseState() {
+		if (type.getStateClass() != null) {
+			try {
+				@SuppressWarnings("unchecked") Class<TileState> stateClass = type.getStateClass();
+				Constructor<TileState> stateConstructor = stateClass.getConstructor(Tile.class);
 
-	public int getY() {
-		return y;
+				state = stateConstructor.newInstance(this);
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public TileType getType() {
@@ -114,5 +106,13 @@ public class Tile {
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Tile && ((Tile) o).getX() == x && ((Tile) o).getY() == y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 }

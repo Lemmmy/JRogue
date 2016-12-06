@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 /**
  * Basic stateless "Ghoul" AI as described here:
  * http://www.roguebasin.com/index.php?title=Roguelike_Intelligence_-_Stateless_AIs
- *
+ * <p>
  * Melee only.
  */
 public class GhoulAI extends AI {

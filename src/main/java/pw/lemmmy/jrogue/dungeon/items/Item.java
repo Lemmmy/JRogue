@@ -25,14 +25,6 @@ public abstract class Item {
 		this.identified = identified;
 	}
 
-	public BUCStatus getBUCStatus() {
-		return bucStatus;
-	}
-
-	public void setBUCStatus(BUCStatus bucStatus) {
-		this.bucStatus = bucStatus;
-	}
-
 	public boolean isis() {
 		return false;
 	}
@@ -42,14 +34,23 @@ public abstract class Item {
 	}
 
 	public abstract String getName(boolean requiresCapitalisation, boolean plural);
-	public abstract int getWeight();
 
-	public abstract ItemAppearance getAppearance();
+	public abstract int getWeight();
 
 	public boolean equals(Item other) {
 		return other.getClass() == getClass() &&
 			other.getAppearance() == getAppearance() &&
 			other.getBUCStatus() == getBUCStatus();
+	}
+
+	public abstract ItemAppearance getAppearance();
+
+	public BUCStatus getBUCStatus() {
+		return bucStatus;
+	}
+
+	public void setBUCStatus(BUCStatus bucStatus) {
+		this.bucStatus = bucStatus;
 	}
 
 	public enum BUCStatus {

@@ -14,40 +14,14 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class JRogue {
-	private static final Logger logger = LogManager.getLogger("JRogue");
-
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
-
+	private static final Logger logger = LogManager.getLogger("JRogue");
 	public Dungeon dungeon;
 	public Renderer renderer;
 
 	public JRogue(Settings settings) {
 		dungeon = new Dungeon(settings);
 		renderer = new GDXRenderer(dungeon, settings.getScreenWidth(), settings.getScreenHeight()); // TODO: Make this configurable
-	}
-
-	public static void loadConfig(File file, Settings settings) {
-		JRogue.getLogger().debug("Loading config file {}", file.getAbsolutePath());
-
-		try {
-			Ini ini = new Ini();
-			ini.load(new FileReader(file));
-
-			parseConfig(ini, settings);
-		} catch (IOException e) {
-			JRogue.getLogger().error("Error loading config file {}:", file.getAbsolutePath());
-			JRogue.getLogger().error(e);
-		}
-	}
-
-	public static void parseConfig(Ini ini, Settings settings) {
-		if (ini.get("Player") != null) {
-			Ini.Section playerSection = ini.get("Player");
-
-			if (playerSection.get("name") != null) {
-				settings.setPlayerName(playerSection.get("name"));
-			}
-		}
 	}
 
 	public static void main(String[] args) {
@@ -100,7 +74,31 @@ public class JRogue {
 		new JRogue(settings);
 	}
 
+	public static void loadConfig(File file, Settings settings) {
+		JRogue.getLogger().debug("Loading config file {}", file.getAbsolutePath());
+
+		try {
+			Ini ini = new Ini();
+			ini.load(new FileReader(file));
+
+			parseConfig(ini, settings);
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error loading config file {}:", file.getAbsolutePath());
+			JRogue.getLogger().error(e);
+		}
+	}
+
 	public static Logger getLogger() {
 		return logger;
+	}
+
+	public static void parseConfig(Ini ini, Settings settings) {
+		if (ini.get("Player") != null) {
+			Ini.Section playerSection = ini.get("Player");
+
+			if (playerSection.get("name") != null) {
+				settings.setPlayerName(playerSection.get("name"));
+			}
+		}
 	}
 }

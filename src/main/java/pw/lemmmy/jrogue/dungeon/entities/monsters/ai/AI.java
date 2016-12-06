@@ -18,23 +18,18 @@ public abstract class AI {
 		this.monster = monster;
 	}
 
-	public Monster getMonster() {
-		return monster;
-	}
-
 	public void addAvoidTile(TileType tileType) {
 		avoidTiles.add(tileType);
 	}
 
-	protected boolean isAdjacentToPlayer() {
-		Player player = monster.getDungeon().getPlayer();
+	protected boolean canMoveTo(int x, int y) {
+		return !(x < 0 || x > monster.getLevel().getWidth() ||
+			y < 0 || y > monster.getLevel().getHeight()) &&
+			monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+	}
 
-		return ((player.getX() == monster.getX() ||
-				 player.getX() == monster.getX() - 1 ||
-				 player.getX() == monster.getX() + 1) &&
-				(player.getY() == monster.getY() ||
-				 player.getY() == monster.getY() - 1 ||
-				 player.getY() == monster.getY() + 1));
+	protected boolean canMoveTowardsPlayer() {
+		return distanceFromPlayer() < monster.getVisibilityRange();
 	}
 
 	protected float distanceFromPlayer() {
@@ -44,18 +39,19 @@ public abstract class AI {
 		);
 	}
 
-	protected boolean canMoveTo(int x, int y) {
-		return !(x < 0 || x > monster.getLevel().getWidth() ||
-				y < 0 || y > monster.getLevel().getHeight()) &&
-				monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
-	}
-
-	protected boolean canMoveTowardsPlayer() {
-		return distanceFromPlayer() < monster.getVisibilityRange();
-	}
-
 	protected boolean canMeleeAttackPlayer() {
 		return monster.canMeleeAttack() && isAdjacentToPlayer();
+	}
+
+	protected boolean isAdjacentToPlayer() {
+		Player player = monster.getDungeon().getPlayer();
+
+		return ((player.getX() == monster.getX() ||
+			player.getX() == monster.getX() - 1 ||
+			player.getX() == monster.getX() + 1) &&
+			(player.getY() == monster.getY() ||
+				player.getY() == monster.getY() - 1 ||
+				player.getY() == monster.getY() + 1));
 	}
 
 	protected void meleeAttackPlayer() {
@@ -68,6 +64,12 @@ public abstract class AI {
 
 	protected void magicAttackPlayer() {
 		monster.meleeAttackPlayer();
+	}
+
+	protected void moveTowardsPlayer() {
+		Player player = monster.getDungeon().getPlayer();
+
+		moveTowards(player.getX(), player.getY());
 	}
 
 	protected void moveTowards(int destX, int destY) {
@@ -90,10 +92,8 @@ public abstract class AI {
 		}
 	}
 
-	protected void moveTowardsPlayer() {
-		Player player = monster.getDungeon().getPlayer();
-
-		moveTowards(player.getX(), player.getY());
+	public Monster getMonster() {
+		return monster;
 	}
 
 	public abstract void update();

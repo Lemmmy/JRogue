@@ -13,6 +13,17 @@ import java.util.Map;
 public class ImageLoader {
 	private static final Map<String, Texture> imageCache = new HashMap<>();
 
+	public static TextureRegion getSubimage(String image, int x, int y, int width, int height) {
+		Texture sheet = ImageLoader.getImage(image);
+
+		if (sheet == null) {
+			JRogue.getLogger().fatal("Failed to load spritesheet {}.", image);
+			System.exit(1);
+		}
+
+		return new TextureRegion(sheet, x, y, width, height);
+	}
+
 	public static Texture getImage(String file) {
 		if (imageCache.containsKey(file)) {
 			return imageCache.get(file);
@@ -26,17 +37,6 @@ public class ImageLoader {
 
 			return texture;
 		}
-	}
-
-	public static TextureRegion getSubimage(String image, int x, int y, int width, int height) {
-		Texture sheet = ImageLoader.getImage(image);
-
-		if (sheet == null) {
-			JRogue.getLogger().fatal("Failed to load spritesheet {}.", image);
-			System.exit(1);
-		}
-
-		return new TextureRegion(sheet, x, y, width, height);
 	}
 
 	public static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {

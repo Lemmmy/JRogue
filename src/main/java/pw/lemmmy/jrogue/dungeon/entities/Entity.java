@@ -42,6 +42,15 @@ public abstract class Entity {
 
 	public abstract EntityAppearance getAppearance();
 
+	public void setPosition(int x, int y) {
+		setLastX(getX());
+		setLastY(getY());
+		setX(x);
+		setY(y);
+
+		dungeon.entityMoved(this, getLastX(), getLastY(), x, y);
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -74,15 +83,6 @@ public abstract class Entity {
 		this.lastY = lastY;
 	}
 
-	public void setPosition(int x, int y) {
-		setLastX(getX());
-		setLastY(getY());
-		setX(x);
-		setY(y);
-
-		dungeon.entityMoved(this, getLastX(), getLastY(), x, y);
-	}
-
 	public Dungeon getDungeon() {
 		return dungeon;
 	}
@@ -94,10 +94,6 @@ public abstract class Entity {
 	public void setLevel(Level level) {
 		this.level = level;
 	}
-
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
-
-	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
 
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
@@ -128,9 +124,13 @@ public abstract class Entity {
 		onKick(kicker, isPlayer, x, y);
 	}
 
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
+
 	public void walk(LivingEntity walker, boolean isPlayer) {
 		onWalk(walker, isPlayer);
 	}
+
+	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
 
 	public abstract boolean canBeWalkedOn();
 

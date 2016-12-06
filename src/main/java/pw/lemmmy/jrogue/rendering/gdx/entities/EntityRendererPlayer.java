@@ -27,18 +27,18 @@ public class EntityRendererPlayer extends EntityRenderer {
 		effectPool = new ParticleEffectPool(waterStepEffect, 0, 250);
 	}
 
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
+		drawTile(batch, playerHighlight, entity.getX(), entity.getY());
+		drawTile(batch, getTextureFromPlayer((Player) entity), entity.getX(), entity.getY());
+	}
+
 	private TextureRegion getTextureFromPlayer(Player player) {
 		if (player.getName(false).equalsIgnoreCase("justyn")) {
 			return playerJustyn;
 		}
 
 		return playerWizard; // TODO
-	}
-
-	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, playerHighlight, entity.getX(), entity.getY());
-		drawTile(batch, getTextureFromPlayer((Player) entity), entity.getX(), entity.getY());
 	}
 
 	@Override

@@ -32,14 +32,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return maxHealth;
 	}
 
-	public int getDamageModifier(DamageSource damageSource, int damage) {
-		return damage;
-	}
-
-	public void setHealth(int health) {
-		this.health = health;
-	}
-
 	public int getExperienceLevel() {
 		return experienceLevel;
 	}
@@ -62,6 +54,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return health <= 0;
 	}
 
+	public int getDamageModifier(DamageSource damageSource, int damage) {
+		return damage;
+	}
+
 	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
 
 	public void kill(DamageSource damageSource) {
@@ -76,13 +72,15 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return health;
 	}
 
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
 	public boolean isAlive() {
 		return health > 0;
 	}
 
 	public abstract int getMovementSpeed();
-
-	public abstract Size getSize();
 
 	@Override
 	public int getDepth() {
@@ -98,6 +96,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 		}
 	}
 
+	public abstract Size getSize();
+
 	public void drop(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 
@@ -106,7 +106,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 			.findFirst();
 
 		if (ent.isPresent()) {
-			EntityItem entItem = (EntityItem)ent.get();
+			EntityItem entItem = (EntityItem) ent.get();
 			entItem.getItemStack().addCount(item.getCount());
 		} else {
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
@@ -118,12 +118,12 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return leftHand;
 	}
 
-	public ItemStack getRightHand() {
-		return rightHand;
-	}
-
 	public void setLeftHand(ItemStack leftHand) {
 		this.leftHand = leftHand;
+	}
+
+	public ItemStack getRightHand() {
+		return rightHand;
 	}
 
 	public void setRightHand(ItemStack rightHand) {

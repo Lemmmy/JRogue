@@ -8,6 +8,10 @@ import java.util.*;
 
 public class Utils {
 	public static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
+	public static final Map<Character, Integer[]> MOVEMENT_CHARS = new HashMap<>();
+	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	private static final Pcg32 rand = new Pcg32();
+	private static final Random jrand = new Random();
 
 	static {
 		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[]{-1, 1});
@@ -22,8 +26,6 @@ public class Utils {
 		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new Integer[]{1, -1});
 	}
 
-	public static final Map<Character, Integer[]> MOVEMENT_CHARS = new HashMap<>();
-
 	static {
 		MOVEMENT_CHARS.put('1', new Integer[]{-1, 1});
 		MOVEMENT_CHARS.put('2', new Integer[]{0, 1});
@@ -36,11 +38,6 @@ public class Utils {
 		MOVEMENT_CHARS.put('8', new Integer[]{0, -1});
 		MOVEMENT_CHARS.put('9', new Integer[]{1, -1});
 	}
-
-	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
-	private static final Pcg32 rand = new Pcg32();
-	private static final Random jrand = new Random();
 
 	@SafeVarargs
 	public static <T> T randomFrom(T... items) {
@@ -102,16 +99,12 @@ public class Utils {
 		return o;
 	}
 
-	public static float distanceSq(float ax, float ay, float bx, float by) {
-		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
-	}
-
-	public static double distanceSq(double ax, double ay, double bx, double by) {
-		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
-	}
-
 	public static int distance(int ax, int ay, int bx, int by) {
 		return (int) Math.sqrt(distanceSq(ax, ay, bx, by));
+	}
+
+	public static float distanceSq(float ax, float ay, float bx, float by) {
+		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 
 	public static float distance(float ax, float ay, float bx, float by) {
@@ -120,6 +113,10 @@ public class Utils {
 
 	public static double distance(double ax, double ay, double bx, double by) {
 		return Math.sqrt(distanceSq(ax, ay, bx, by));
+	}
+
+	public static double distanceSq(double ax, double ay, double bx, double by) {
+		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 
 	public static int random(int i) {

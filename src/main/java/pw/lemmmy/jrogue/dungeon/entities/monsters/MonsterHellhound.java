@@ -23,9 +23,10 @@ public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
 		return null; // TODO: Fire
 	}
+
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Hellhound": "hellhound";
+		return requiresCapitalisation ? "Hellhound" : "hellhound";
 	}
 
 	@Override

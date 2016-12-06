@@ -9,10 +9,8 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.util.Arrays;
 
 public class FishAI extends AI {
-	private Pcg32 random = new Pcg32();
-
 	private static final int SLEEP_DISTANCE = 20;
-
+	private Pcg32 random = new Pcg32();
 	private float moveProbability = 0.1f;
 
 	public FishAI(Monster monster) {

@@ -30,18 +30,6 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 		));
 	}
 
-	public void hitLog(String attackerString, String victimString, String neitherString, LivingEntity attacker, LivingEntity victim) {
-		if (victim.getHealth() <= 0) return;
-
-		if (attacker instanceof Player) {
-			attacker.getDungeon().log(attackerString, victim.getName(false));
-		} else if (victim instanceof Player) {
-			victim.getDungeon().log(victimString, attacker.getName(false));
-		} else {
-			attacker.getDungeon().log(neitherString, attacker.getName(false), victim.getName(false));
-		}
-	}
-
 	protected int calculateDamage(LivingEntity attacker, LivingEntity victim) {
 		int damage = victim.getSize() == LivingEntity.Size.SMALL ? getSmallDamage() : getLargeDamage();
 
@@ -57,12 +45,25 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 		return Math.max(0, damage);
 	}
 
+	protected abstract DamageSource getMeleeDamageSource();
+
 	public abstract void onHit(LivingEntity attacker, LivingEntity victim);
+
+	public abstract int getSmallDamage();
+
+	public abstract int getLargeDamage();
 
 	public abstract Skill getSkill();
 
-	public abstract int getSmallDamage();
-	public abstract int getLargeDamage();
+	public void hitLog(String attackerString, String victimString, String neitherString, LivingEntity attacker, LivingEntity victim) {
+		if (victim.getHealth() <= 0) return;
 
-	protected abstract DamageSource getMeleeDamageSource();
+		if (attacker instanceof Player) {
+			attacker.getDungeon().log(attackerString, victim.getName(false));
+		} else if (victim instanceof Player) {
+			victim.getDungeon().log(victimString, attacker.getName(false));
+		} else {
+			attacker.getDungeon().log(neitherString, attacker.getName(false), victim.getName(false));
+		}
+	}
 }

@@ -16,10 +16,6 @@ public abstract class EntityTurnBased extends Entity {
 		nextAction = action;
 	}
 
-	public boolean hasAction() {
-		return nextAction != null;
-	}
-
 	public void removeAction() {
 		nextAction = null;
 	}
@@ -29,6 +25,10 @@ public abstract class EntityTurnBased extends Entity {
 			nextAction.execute();
 			nextAction = null;
 		}
+	}
+
+	public boolean hasAction() {
+		return nextAction != null;
 	}
 
 	public int getMovementPoints() {

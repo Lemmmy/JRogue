@@ -38,7 +38,9 @@ public abstract class StatusEffect {
 	}
 
 	public abstract String getName();
+
 	public abstract Severity getSeverity();
+
 	public abstract void onEnd();
 
 	public enum Severity {

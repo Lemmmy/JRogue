@@ -15,18 +15,19 @@ public class EntityItem extends Entity {
 		this.itemStack = itemStack;
 	}
 
-	@Override
-	public int getDepth() {
-		return 0;
-	}
-
 	public ItemStack getItemStack() {
 		return itemStack;
 	}
 
 	public Item getItem() {
 		return itemStack.getItem();
+	}	@Override
+	public int getDepth() {
+		return 0;
 	}
+
+
+
 
 	@Override
 	public String getName(boolean requiresCapitalisation) {
@@ -54,7 +55,8 @@ public class EntityItem extends Entity {
 	}
 
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	}
 
 	@Override
 	public boolean canBeWalkedOn() {

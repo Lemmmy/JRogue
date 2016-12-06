@@ -49,20 +49,8 @@ public enum TileType {
 		this(solidity, null, false);
 	}
 
-	TileType(Solidity solidity, Class stateClass) {
-		this(solidity, stateClass,false);
-	}
-
-	TileType(Solidity solidity, boolean buildable) {
-		this(solidity, null, buildable, null, 0, 0);
-	}
-
 	TileType(Solidity solidity, Class stateClass, boolean buildable) {
 		this(solidity, stateClass, buildable, null, 0, 0);
-	}
-
-	TileType(Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
-		this(solidity, null, buildable, light, lightIntensity, absorb);
 	}
 
 	TileType(Solidity solidity, Class stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
@@ -81,6 +69,18 @@ public enum TileType {
 				this.absorb = 10;
 			}
 		}
+	}
+
+	TileType(Solidity solidity, Class stateClass) {
+		this(solidity, stateClass, false);
+	}
+
+	TileType(Solidity solidity, boolean buildable) {
+		this(solidity, null, buildable, null, 0, 0);
+	}
+
+	TileType(Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
+		this(solidity, null, buildable, light, lightIntensity, absorb);
 	}
 
 	public Solidity getSolidity() {

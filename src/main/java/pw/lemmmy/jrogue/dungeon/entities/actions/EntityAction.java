@@ -43,7 +43,10 @@ public abstract class EntityAction {
 	}
 
 	public abstract static class ActionCallback {
-		public void beforeRun() {}
-		public void onComplete() {}
+		public void beforeRun() {
+		}
+
+		public void onComplete() {
+		}
 	}
 }

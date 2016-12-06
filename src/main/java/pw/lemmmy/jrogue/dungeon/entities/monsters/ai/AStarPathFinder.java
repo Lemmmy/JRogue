@@ -103,10 +103,10 @@ public class AStarPathFinder {
 
 	private static boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
 		return !(x < 0 || x >= level.getWidth() ||
-				y < 0 || y >= level.getHeight()) &&
-				level.getTile(x, y) != null &&
-				level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
-				!avoidTiles.contains(level.getTileType(x, y));
+			y < 0 || y >= level.getHeight()) &&
+			level.getTile(x, y) != null &&
+			level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
+			!avoidTiles.contains(level.getTileType(x, y));
 	}
 
 	private static float getHeuristicCost(int x, int y, int tx, int ty) {

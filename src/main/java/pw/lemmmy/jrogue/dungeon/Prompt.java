@@ -83,7 +83,9 @@ public class Prompt {
 
 	public interface PromptCallback {
 		void onNoResponse();
+
 		void onInvalidResponse(char response);
+
 		void onResponse(char response);
 	}
 }

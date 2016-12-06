@@ -42,9 +42,10 @@ public class MonsterJackal extends MonsterCanine {
 	public int getVisibilityRange() {
 		return 15;
 	}
+
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Jackal": "jackal";
+		return requiresCapitalisation ? "Jackal" : "jackal";
 	}
 
 	@Override

@@ -28,7 +28,11 @@ public abstract class TileRenderer {
 	}
 
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, int x, int y);
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {};
+
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	}
+
+	;
 
 	public ParticleEffectPool getParticleEffectPool() {
 		return effectPool;

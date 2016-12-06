@@ -43,6 +43,36 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Fish" : "fish";
+	}
+
+	@Override
+	public EntityAppearance getAppearance() {
+		switch (colour) {
+			case RED:
+				return EntityAppearance.APPEARANCE_FISH_RED;
+			case ORANGE:
+				return EntityAppearance.APPEARANCE_FISH_ORANGE;
+			case YELLOW:
+				return EntityAppearance.APPEARANCE_FISH_YELLOW;
+			case GREEN:
+				return EntityAppearance.APPEARANCE_FISH_GREEN;
+			case BLUE:
+				return EntityAppearance.APPEARANCE_FISH_BLUE;
+			case PURPLE:
+				return EntityAppearance.APPEARANCE_FISH_PURPLE;
+			default:
+				return EntityAppearance.APPEARANCE_FISH_BLUE;
+		}
+	}
+
+	@Override
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		getDungeon().You("kick the %s!", getName(false));
+	}
+
+	@Override
 	public int getWeight() {
 		return 50;
 	}
@@ -80,36 +110,6 @@ public class MonsterFish extends Monster {
 	@Override
 	public boolean canMagicAttack() {
 		return false;
-	}
-
-	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fish": "fish";
-	}
-
-	@Override
-	public EntityAppearance getAppearance() {
-		switch (colour) {
-			case RED:
-				return EntityAppearance.APPEARANCE_FISH_RED;
-			case ORANGE:
-				return EntityAppearance.APPEARANCE_FISH_ORANGE;
-			case YELLOW:
-				return EntityAppearance.APPEARANCE_FISH_YELLOW;
-			case GREEN:
-				return EntityAppearance.APPEARANCE_FISH_GREEN;
-			case BLUE:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-			case PURPLE:
-				return EntityAppearance.APPEARANCE_FISH_PURPLE;
-			default:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-		}
-	}
-
-	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		getDungeon().You("kick the %s!", getName(false));
 	}
 
 	public enum FishColour {

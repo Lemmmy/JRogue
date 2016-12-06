@@ -48,14 +48,14 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private static final Map<Integer, Map<Class, Range<Integer>>> monstersPerFloor = new HashMap<>();
 
-	private OpenSimplexNoise simplexNoise;
-
 	static {
 		Map<Class, Range<Integer>> floor1 = new HashMap<>();
 		floor1.put(MonsterJackal.class, Range.between(2, 5));
 		floor1.put(MonsterSpider.class, Range.between(4, 8));
 		monstersPerFloor.put(-1, floor1);
 	}
+
+	private OpenSimplexNoise simplexNoise;
 
 	public StandardDungeonGenerator(Level level) {
 		super(level);

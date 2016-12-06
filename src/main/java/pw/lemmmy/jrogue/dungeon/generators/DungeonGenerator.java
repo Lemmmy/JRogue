@@ -107,8 +107,21 @@ public abstract class DungeonGenerator {
 		return false;
 	}
 
-	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.getAdjacentTileTypes(x, y));
+	protected void safePlaceDoor(int x, int y) {
+		level.setTileType(x, y, DOOR_TYPES.next());
+
+		for (int[] direction : Utils.DIRECTIONS) {
+			int nx = x + direction[0];
+			int ny = y + direction[1];
+
+			TileType t = level.getTileType(nx, ny);
+
+			if (t == TileType.TILE_GROUND) {
+				level.setTileType(nx, ny, TileType.TILE_CORRIDOR);
+			} else if (t == TileType.TILE_ROOM_WATER) {
+				level.setTileType(nx, ny, TileType.TILE_ROOM_FLOOR);
+			}
+		}
 	}
 
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
@@ -122,6 +135,10 @@ public abstract class DungeonGenerator {
 		} else {
 			return Orientation.CORNER;
 		}
+	}
+
+	protected Orientation getWallOrientation(int x, int y) {
+		return getWallOrientation(level.getAdjacentTileTypes(x, y));
 	}
 
 	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
@@ -187,23 +204,6 @@ public abstract class DungeonGenerator {
 						Orientation.VERTICAL
 					);
 				}
-			}
-		}
-	}
-
-	protected void safePlaceDoor(int x, int y) {
-		level.setTileType(x, y, DOOR_TYPES.next());
-
-		for (int[] direction : Utils.DIRECTIONS) {
-			int nx = x + direction[0];
-			int ny = y + direction[1];
-
-			TileType t = level.getTileType(nx, ny);
-
-			if (t == TileType.TILE_GROUND) {
-				level.setTileType(nx, ny, TileType.TILE_CORRIDOR);
-			} else if (t == TileType.TILE_ROOM_WATER) {
-				level.setTileType(nx, ny, TileType.TILE_ROOM_FLOOR);
 			}
 		}
 	}
@@ -312,40 +312,32 @@ public abstract class DungeonGenerator {
 			this.roomHeight = roomHeight;
 		}
 
-		public int getRoomX() {
-			return roomX;
-		}
-
-		public int getRoomY() {
-			return roomY;
-		}
-
 		public int getCenterX() {
 			return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
 		}
 
-		public int getCenterY() {
-			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
+		public int getRoomX() {
+			return roomX;
 		}
 
 		public int getRoomWidth() {
 			return roomWidth;
 		}
 
+		public int getCenterY() {
+			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
+		}
+
+		public int getRoomY() {
+			return roomY;
+		}
+
 		public int getRoomHeight() {
 			return roomHeight;
 		}
 
-		public List<Room> getTouching() {
-			return touching;
-		}
-
 		public boolean addTouching(Room room) {
 			return touching.add(room);
-		}
-
-		public List<ConnectionPoint> getConnectionPoints() {
-			return connectionPoints;
 		}
 
 		public boolean addConnectionPoint(ConnectionPoint point) {
@@ -363,6 +355,14 @@ public abstract class DungeonGenerator {
 				getTouching().size(),
 				getConnectionPoints().size()
 			);
+		}
+
+		public List<Room> getTouching() {
+			return touching;
+		}
+
+		public List<ConnectionPoint> getConnectionPoints() {
+			return connectionPoints;
 		}
 
 		public boolean isSpawn() {

@@ -1,6 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 public class ItemGold extends Item {
+	public boolean isis() {
+		return true;
+	}
+
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		return requiresCapitalisation ? "Gold" : "gold";
@@ -14,9 +18,5 @@ public class ItemGold extends Item {
 	@Override
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_GOLD;
-	}
-
-	public boolean isis() {
-		return true;
 	}
 }

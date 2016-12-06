@@ -21,26 +21,23 @@ public class Dungeon {
 
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
-
+	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
+	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
+	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
 	 * Randomly generated name of this dungeon
 	 */
 	private String originalName;
-
 	/**
 	 * User-chosen name of this dungeon
 	 */
 	private String name;
-
 	private Level level;
 	private Player player;
-
 	private long turn = 0;
 	private long nextExerciseCounter = 500;
-
 	private Prompt prompt;
-
 	private Settings settings;
 
 	public Dungeon(Settings settings) {
@@ -49,14 +46,6 @@ public class Dungeon {
 		this.settings = settings;
 
 		generateLevel();
-	}
-
-	public void addListener(Listener listener) {
-		listeners.add(listener);
-	}
-
-	public void removeListener(Listener listener) {
-		listeners.remove(listener);
 	}
 
 	public void generateLevel() {
@@ -90,6 +79,14 @@ public class Dungeon {
 		listeners.forEach(l -> l.onLevelChange(level));
 	}
 
+	public void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(Listener listener) {
+		listeners.remove(listener);
+	}
+
 	public String getOriginalName() {
 		return originalName;
 	}
@@ -98,31 +95,19 @@ public class Dungeon {
 		return name;
 	}
 
-	public Level getLevel() {
-		return level;
-	}
-
 	public void rerollName() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public void Your(String s, Object... objects) {
+		log("Your " + s, objects);
 	}
 
 	public void log(String s, Object... objects) {
 		JRogue.getLogger().info(String.format(s, objects));
 
 		listeners.forEach(l -> l.onLog(String.format(s, objects)));
-	}
-
-	public void You(String s, Object... objects) {
-		log("You " + s, objects);
-	}
-
-	public void Your(String s, Object... objects) {
-		log("Your " + s, objects);
 	}
 
 	public void The(String s, Object... objects) {
@@ -138,25 +123,8 @@ public class Dungeon {
 		turn();
 	}
 
-	private boolean moveEntities() {
-		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
-
-		level.getEntities().stream()
-			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-						(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
-						!(((EntityTurnBased)e).getMovementPoints() < NORMAL_SPEED))
-			.forEach(e -> {
-				EntityTurnBased tbe = (EntityTurnBased) e;
-				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
-
-				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
-					somebodyCanMove.set(true);
-				}
-
-				tbe.move();
-			});
-
-		return somebodyCanMove.get();
+	public void You(String s, Object... objects) {
+		log("You " + s, objects);
 	}
 
 	public void turn() {
@@ -226,8 +194,37 @@ public class Dungeon {
 		listeners.forEach(l -> l.onTurn(turn));
 	}
 
+	private boolean moveEntities() {
+		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
+
+		level.getEntities().stream()
+			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
+				(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
+				!(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
+			.forEach(e -> {
+				EntityTurnBased tbe = (EntityTurnBased) e;
+				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
+
+				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
+					somebodyCanMove.set(true);
+				}
+
+				tbe.move();
+			});
+
+		return somebodyCanMove.get();
+	}
+
 	private void update() {
 		// random dungeon updates
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	public long getTurn() {
@@ -271,9 +268,6 @@ public class Dungeon {
 		return prompt != null && prompt.isEscapable();
 	}
 
-	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
-	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
-
 	public void wish(String wish) {
 		if (player.isDebugger()) {
 			JRogue.getLogger().debug("Player wished for '{}'", wish);
@@ -310,7 +304,7 @@ public class Dungeon {
 			}
 
 			if (wish.equalsIgnoreCase("godmode")) {
-				player.setGodmode(true);
+				player.godmode();
 			}
 
 			if (wishMonsters(wish)) {
@@ -347,8 +341,6 @@ public class Dungeon {
 
 		return false;
 	}
-
-	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
 
 	private boolean wishItems(String wish) {
 		Matcher wishSwordMatcher = wishSword.matcher(wish);
@@ -397,10 +389,13 @@ public class Dungeon {
 		void onTurn(long turn);
 
 		void onLog(String log);
+
 		void onPrompt(Prompt prompt);
 
 		void onEntityAdded(Entity entity);
+
 		void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY);
+
 		void onEntityRemoved(Entity entity);
 	}
 }

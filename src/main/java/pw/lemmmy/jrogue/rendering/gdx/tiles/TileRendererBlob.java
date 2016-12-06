@@ -47,8 +47,6 @@ public abstract class TileRendererBlob extends TileRenderer {
 		}
 	}
 
-	abstract boolean isJoinedTile(TileType tile);
-
 	protected int getPositionMask(Level level, int x, int y) {
 		int n = (isJoinedTile(level.getTileType(x, y - 1))) ? 1 : 0;
 		int s = (isJoinedTile(level.getTileType(x, y + 1))) ? 1 : 0;
@@ -62,6 +60,8 @@ public abstract class TileRendererBlob extends TileRenderer {
 
 		return nw + 2 * n + 4 * ne + 8 * w + 16 * e + 32 * sw + 64 * s + 128 * se;
 	}
+
+	abstract boolean isJoinedTile(TileType tile);
 
 	protected TextureRegion getImageFromMask(int mask) {
 		return getImageFromMask(images, mask);

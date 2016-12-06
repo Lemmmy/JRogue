@@ -82,16 +82,6 @@ public class OpenSimplexNoise {
 		this(DEFAULT_SEED);
 	}
 
-	public OpenSimplexNoise(short[] perm) {
-		this.perm = perm;
-		permGradIndex3D = new short[256];
-
-		for (int i = 0; i < 256; i++) {
-			//Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
-			permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
-		}
-	}
-
 	//Initializes the class using a permutation array generated from a 64-bit seed.
 	//Generates a proper permutation (i.e. doesn't merely perform N successive pair swaps on a base array)
 	//Uses a simple 64-bit LCG.
@@ -115,9 +105,14 @@ public class OpenSimplexNoise {
 		}
 	}
 
-	private static int fastFloor(double x) {
-		int xi = (int) x;
-		return x < xi ? xi - 1 : xi;
+	public OpenSimplexNoise(short[] perm) {
+		this.perm = perm;
+		permGradIndex3D = new short[256];
+
+		for (int i = 0; i < 256; i++) {
+			//Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
+			permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
+		}
 	}
 
 	//2D OpenSimplex Noise.
@@ -233,6 +228,17 @@ public class OpenSimplexNoise {
 		}
 
 		return value / NORM_CONSTANT_2D;
+	}
+
+	private static int fastFloor(double x) {
+		int xi = (int) x;
+		return x < xi ? xi - 1 : xi;
+	}
+
+	private double extrapolate(int xsb, int ysb, double dx, double dy) {
+		int index = perm[(perm[xsb & 0xFF] + ysb) & 0xFF] & 0x0E;
+		return gradients2D[index] * dx
+			+ gradients2D[index + 1] * dy;
 	}
 
 	//3D OpenSimplex Noise.
@@ -792,6 +798,13 @@ public class OpenSimplexNoise {
 		}
 
 		return value / NORM_CONSTANT_3D;
+	}
+
+	private double extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz) {
+		int index = permGradIndex3D[(perm[(perm[xsb & 0xFF] + ysb) & 0xFF] + zsb) & 0xFF];
+		return gradients3D[index] * dx
+			+ gradients3D[index + 1] * dy
+			+ gradients3D[index + 2] * dz;
 	}
 
 	//4D OpenSimplex Noise.
@@ -2097,19 +2110,6 @@ public class OpenSimplexNoise {
 		}
 
 		return value / NORM_CONSTANT_4D;
-	}
-
-	private double extrapolate(int xsb, int ysb, double dx, double dy) {
-		int index = perm[(perm[xsb & 0xFF] + ysb) & 0xFF] & 0x0E;
-		return gradients2D[index] * dx
-			+ gradients2D[index + 1] * dy;
-	}
-
-	private double extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz) {
-		int index = permGradIndex3D[(perm[(perm[xsb & 0xFF] + ysb) & 0xFF] + zsb) & 0xFF];
-		return gradients3D[index] * dx
-			+ gradients3D[index + 1] * dy
-			+ gradients3D[index + 2] * dz;
 	}
 
 	private double extrapolate(int xsb, int ysb, int zsb, int wsb, double dx, double dy, double dz, double dw) {

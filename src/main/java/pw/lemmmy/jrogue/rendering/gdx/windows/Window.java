@@ -25,6 +25,18 @@ public class Window extends Dialog {
 		this.owner = owner;
 	}
 
+	private void init() {
+		closeButton = new Button(getSkin(), "windowCloseButton");
+		closeButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Window.this.hide();
+			}
+		});
+
+		getTitleTable().add(closeButton).size(18, 18).padRight(-3).padTop(0);
+	}
+
 	public Window(String title, Skin skin, String styleName, PopupWindow owner) {
 		super(title, skin, styleName);
 
@@ -37,18 +49,6 @@ public class Window extends Dialog {
 
 		init();
 		this.owner = owner;
-	}
-
-	private void init() {
-		closeButton = new Button(getSkin(), "windowCloseButton");
-		closeButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Window.this.hide();
-			}
-		});
-
-		getTitleTable().add(closeButton).size(18, 18).padRight(-3).padTop(0);
 	}
 
 	@Override

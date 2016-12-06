@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRendererGold extends ItemRenderer {
-	private int[] values = new int[] {1, 2, 5, 10, 20, 30, 50, 100, 200, 300};
+	private int[] values = new int[]{1, 2, 5, 10, 20, 30, 50, 100, 200, 300};
 
 	private List<TextureRegion> images = new ArrayList<>();
 	private List<TextureRegion> imagesDrawable = new ArrayList<>();

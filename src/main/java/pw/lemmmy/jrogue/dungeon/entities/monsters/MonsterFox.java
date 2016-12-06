@@ -47,9 +47,10 @@ public class MonsterFox extends MonsterCanine {
 	public int getVisibilityRange() {
 		return 15;
 	}
+
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fox": "fox";
+		return requiresCapitalisation ? "Fox" : "fox";
 	}
 
 	@Override
