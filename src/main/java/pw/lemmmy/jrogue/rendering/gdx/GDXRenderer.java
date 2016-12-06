@@ -27,7 +27,10 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.rendering.gdx.windows.*;
+import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
