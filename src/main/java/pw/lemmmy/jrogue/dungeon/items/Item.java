@@ -47,7 +47,9 @@ public abstract class Item {
 	public abstract ItemAppearance getAppearance();
 
 	public boolean equals(Item other) {
-		return other.getClass() == getClass() && other.getAppearance() == getAppearance();
+		return other.getClass() == getClass() &&
+			other.getAppearance() == getAppearance() &&
+			other.getBUCStatus() == getBUCStatus();
 	}
 
 	public enum BUCStatus {

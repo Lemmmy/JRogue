@@ -66,4 +66,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	public Material getMaterial() {
 		return material;
 	}
+
+	public boolean equals(Item other) {
+		if (other instanceof ItemSword) {
+			return super.equals(other) && ((ItemSword) other).getMaterial() == getMaterial();
+		} else {
+			return super.equals(other);
+		}
+	}
 }
