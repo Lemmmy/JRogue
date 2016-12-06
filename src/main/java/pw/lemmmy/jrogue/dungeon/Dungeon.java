@@ -360,6 +360,8 @@ public class Dungeon {
 				item = new ItemShortsword(material);
 			} else if (type.equalsIgnoreCase("longsword")) {
 				item = new ItemLongsword(material);
+			} else if (type.equalsIgnoreCase("dagger")) {
+				item = new ItemDagger(material);
 			}
 
 			if (item != null) {
