@@ -51,8 +51,10 @@ public class InventoryWindow extends PopupWindow {
 			}
 
 			itemTable.add(new Image(renderer.getDrawable(itemStack, item))).left().padRight(6);
-			itemTable.add(new Label("[P_GREY_3]" + character.toString(), getSkin(), "windowStyleMarkup")).left().padRight(6);
-			itemTable.add(new Label("[BLACK]" + itemStack.getName(true) + suffix, getSkin(), "windowStyleMarkup")).growX().left().row();
+			itemTable.add(new Label("[P_GREY_3]" + character.toString(), getSkin(), "windowStyleMarkup")).left()
+					 .padRight(6);
+			itemTable.add(new Label("[BLACK]" + itemStack.getName(true) + suffix, getSkin(), "windowStyleMarkup"))
+					 .growX().left().row();
 
 			mainTable.add(itemTable).left().width(294f).row();
 		});

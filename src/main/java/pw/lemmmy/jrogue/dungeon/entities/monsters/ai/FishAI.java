@@ -23,11 +23,14 @@ public class FishAI extends AI {
 
 	@Override
 	public void update() {
-		if (distanceFromPlayer() >= SLEEP_DISTANCE) return; // no need to move if we're far away from the player
+		if (distanceFromPlayer() >= SLEEP_DISTANCE) {
+			return; // no need to move if we're far away from the player
+		}
 
 		if (random.nextFloat() < moveProbability) {
 			Tile[] tiles = getMonster().getLevel().getAdjacentTiles(getMonster().getX(), getMonster().getY());
-			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
+			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t
+				.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
 
 			if (waterTiles.length > 0) {
 				Tile destination = Utils.randomFrom(waterTiles);

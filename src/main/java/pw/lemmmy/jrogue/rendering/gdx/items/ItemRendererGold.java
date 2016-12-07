@@ -21,18 +21,14 @@ public class ItemRendererGold extends ItemRenderer {
 	public ItemRendererGold() {
 		for (int i = 0; i < values.length; i++) {
 			images.add(getImageFromSheet("items.png", i, 7));
-			imagesDrawable.add(ImageLoader.getImageFromSheet("items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+			imagesDrawable
+				.add(ImageLoader.getImageFromSheet("items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
 		}
 	}
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
 		drawItem(batch, getImageFromAmount(itemStack.getCount(), true), x, y);
-	}
-
-	@Override
-	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(getImageFromAmount(itemStack.getCount(), false));
 	}
 
 	private TextureRegion getImageFromAmount(int count, boolean flipped) {
@@ -51,5 +47,10 @@ public class ItemRendererGold extends ItemRenderer {
 		} else {
 			return imagesDrawable.get(value);
 		}
+	}
+
+	@Override
+	public Drawable getDrawable(ItemStack itemStack, Item item) {
+		return new TextureRegionDrawable(getImageFromAmount(itemStack.getCount(), false));
 	}
 }

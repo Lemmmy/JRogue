@@ -15,7 +15,8 @@ public class ItemRendererBasic extends ItemRenderer {
 
 	public ItemRendererBasic(String sheetName, int sheetX, int sheetY) {
 		image = getImageFromSheet(sheetName, sheetX, sheetY);
-		imageDrawable = ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
+		imageDrawable = ImageLoader
+			.getImageFromSheet(sheetName, sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
 	}
 
 	@Override

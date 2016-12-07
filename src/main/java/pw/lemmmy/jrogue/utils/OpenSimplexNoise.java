@@ -89,16 +89,14 @@ public class OpenSimplexNoise {
 		perm = new short[256];
 		permGradIndex3D = new short[256];
 		short[] source = new short[256];
-		for (short i = 0; i < 256; i++)
-			source[i] = i;
+		for (short i = 0; i < 256; i++) { source[i] = i; }
 		seed = seed * 6364136223846793005l + 1442695040888963407l;
 		seed = seed * 6364136223846793005l + 1442695040888963407l;
 		seed = seed * 6364136223846793005l + 1442695040888963407l;
 		for (int i = 255; i >= 0; i--) {
 			seed = seed * 6364136223846793005l + 1442695040888963407l;
 			int r = (int) ((seed + 31) % (i + 1));
-			if (r < 0)
-				r += (i + 1);
+			if (r < 0) { r += (i + 1); }
 			perm[i] = source[r];
 			permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
 			source[r] = source[i];
@@ -2092,21 +2090,48 @@ public class OpenSimplexNoise {
 		double attn_ext0 = 2 - dx_ext0 * dx_ext0 - dy_ext0 * dy_ext0 - dz_ext0 * dz_ext0 - dw_ext0 * dw_ext0;
 		if (attn_ext0 > 0) {
 			attn_ext0 *= attn_ext0;
-			value += attn_ext0 * attn_ext0 * extrapolate(xsv_ext0, ysv_ext0, zsv_ext0, wsv_ext0, dx_ext0, dy_ext0, dz_ext0, dw_ext0);
+			value += attn_ext0 * attn_ext0 * extrapolate(
+				xsv_ext0,
+				ysv_ext0,
+				zsv_ext0,
+				wsv_ext0,
+				dx_ext0,
+				dy_ext0,
+				dz_ext0,
+				dw_ext0
+			);
 		}
 
 		//Second extra vertex
 		double attn_ext1 = 2 - dx_ext1 * dx_ext1 - dy_ext1 * dy_ext1 - dz_ext1 * dz_ext1 - dw_ext1 * dw_ext1;
 		if (attn_ext1 > 0) {
 			attn_ext1 *= attn_ext1;
-			value += attn_ext1 * attn_ext1 * extrapolate(xsv_ext1, ysv_ext1, zsv_ext1, wsv_ext1, dx_ext1, dy_ext1, dz_ext1, dw_ext1);
+			value += attn_ext1 * attn_ext1 * extrapolate(
+				xsv_ext1,
+				ysv_ext1,
+				zsv_ext1,
+				wsv_ext1,
+				dx_ext1,
+				dy_ext1,
+				dz_ext1,
+				dw_ext1
+			);
 		}
 
 		//Third extra vertex
 		double attn_ext2 = 2 - dx_ext2 * dx_ext2 - dy_ext2 * dy_ext2 - dz_ext2 * dz_ext2 - dw_ext2 * dw_ext2;
 		if (attn_ext2 > 0) {
 			attn_ext2 *= attn_ext2;
-			value += attn_ext2 * attn_ext2 * extrapolate(xsv_ext2, ysv_ext2, zsv_ext2, wsv_ext2, dx_ext2, dy_ext2, dz_ext2, dw_ext2);
+			value += attn_ext2 * attn_ext2 * extrapolate(
+				xsv_ext2,
+				ysv_ext2,
+				zsv_ext2,
+				wsv_ext2,
+				dx_ext2,
+				dy_ext2,
+				dz_ext2,
+				dw_ext2
+			);
 		}
 
 		return value / NORM_CONSTANT_4D;

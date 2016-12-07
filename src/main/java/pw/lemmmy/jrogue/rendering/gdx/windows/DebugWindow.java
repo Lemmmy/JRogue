@@ -28,7 +28,12 @@ public class DebugWindow extends PopupWindow {
 		getWindow().setWidth(350f);
 		getWindow().setHeight(250f);
 
-		getWindow().getContentTable().add(new Label(String.format("Nutrition: %,d", getDungeon().getPlayer().getNutrition()), getSkin(), "windowStyle"));
+		getWindow().getContentTable()
+				   .add(new Label(
+					   String.format("Nutrition: %,d", getDungeon().getPlayer().getNutrition()),
+					   getSkin(),
+					   "windowStyle"
+				   ));
 		getWindow().getContentTable().row();
 
 		getWindow().getContentTable().add(
@@ -78,10 +83,12 @@ public class DebugWindow extends PopupWindow {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				Pixmap snapshot = getRenderer().takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("java.io.tmpdir")).resolve("jrogue_level_snap.png").toString();
+				String path = Paths.get(System.getProperty("java.io.tmpdir")).resolve("jrogue_level_snap.png")
+								   .toString();
 				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
 				snapshot.dispose();
-				new MessageWindow(getRenderer(), getStage(), getSkin(), "Screenshot", "Saved to [BLUE]" + path + "[]").show();
+				new MessageWindow(getRenderer(), getStage(), getSkin(), "Screenshot", "Saved to [BLUE]" + path + "[]")
+					.show();
 			}
 		});
 		getWindow().getContentTable().add(takeSnap).width(125f);

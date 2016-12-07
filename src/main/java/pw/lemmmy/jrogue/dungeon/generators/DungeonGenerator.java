@@ -70,7 +70,13 @@ public abstract class DungeonGenerator {
 		return room;
 	}
 
-	protected void buildLine(int startX, int startY, int endX, int endY, TileType tile, boolean buildableCheck, boolean buildDoors) {
+	protected void buildLine(int startX,
+							 int startY,
+							 int endX,
+							 int endY,
+							 TileType tile,
+							 boolean buildableCheck,
+							 boolean buildDoors) {
 		float diffX = endX - startX;
 		float diffY = endY - startY;
 
@@ -146,7 +152,8 @@ public abstract class DungeonGenerator {
 		int dy = Math.abs(b.getCenterY() - a.getCenterY());
 
 		if (dx > dy) {
-			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getRoomX() + a.getRoomWidth() >= b.getRoomX() || b.getRoomX() + b.getRoomWidth() <= a.getRoomX()) {
+			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getRoomX() + a.getRoomWidth() >= b.getRoomX() || b
+				.getRoomX() + b.getRoomWidth() <= a.getRoomX()) {
 				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
 					return new ConnectionPoint(
 						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
@@ -176,7 +183,8 @@ public abstract class DungeonGenerator {
 				}
 			}
 		} else {
-			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getRoomHeight() == b.getRoomY() || b.getRoomY() + b.getRoomHeight() == a.getRoomY()) {
+			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getRoomHeight() == b
+				.getRoomY() || b.getRoomY() + b.getRoomHeight() == a.getRoomY()) {
 				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
 					return new ConnectionPoint(
 						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,

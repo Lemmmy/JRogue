@@ -59,10 +59,10 @@ public abstract class TileRenderer {
 		Tile br = dungeon.getLevel().getTile(x + 1, y + 1);
 		Tile bl = dungeon.getLevel().getTile(x, y + 1);
 
-		if (tl != null && dungeon.getLevel().isTileDiscovered(x, y)) ctl = tl.getLightColour();
-		if (tr != null && dungeon.getLevel().isTileDiscovered(x + 1, y)) ctr = tr.getLightColour();
-		if (br != null && dungeon.getLevel().isTileDiscovered(x + 1, y + 1)) cbr = br.getLightColour();
-		if (bl != null && dungeon.getLevel().isTileDiscovered(x, y + 1)) cbl = bl.getLightColour();
+		if (tl != null && dungeon.getLevel().isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
+		if (tr != null && dungeon.getLevel().isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
+		if (br != null && dungeon.getLevel().isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
+		if (bl != null && dungeon.getLevel().isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
 
 		float lx = (x + 0.5f) * width;
 		float ly = (y + 0.5f) * height;

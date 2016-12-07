@@ -14,7 +14,12 @@ public class EntityPooledEffect {
 
 	private ParticleEffectPool.PooledEffect pooledEffect;
 
-	public EntityPooledEffect(Entity entity, EntityRenderer renderer, int x, int y, boolean over, ParticleEffectPool.PooledEffect pooledEffect) {
+	public EntityPooledEffect(Entity entity,
+							  EntityRenderer renderer,
+							  int x,
+							  int y,
+							  boolean over,
+							  ParticleEffectPool.PooledEffect pooledEffect) {
 		this.entity = entity;
 		this.renderer = renderer;
 		this.x = x;

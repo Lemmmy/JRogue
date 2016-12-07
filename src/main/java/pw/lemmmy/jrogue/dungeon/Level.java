@@ -173,11 +173,13 @@ public class Level {
 	}
 
 	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && !o.canBeWalkedOn()).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && !o.canBeWalkedOn())
+					   .collect(Collectors.toList());
 	}
 
 	public List<Entity> getWalkableEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && o.canBeWalkedOn()).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && o.canBeWalkedOn())
+					   .collect(Collectors.toList());
 	}
 
 	public List<Tile> getTilesInRadius(int x, int y, int r) {
@@ -225,26 +227,26 @@ public class Level {
 		for (Tile tile : tiles) {
 			int index = tile.getLightIntensity() - 1;
 
-			if (index < 0) continue;
-			if (index >= LIGHT_MAX_LIGHT_LEVEL) continue;
+			if (index < 0) { continue; }
+			if (index >= LIGHT_MAX_LIGHT_LEVEL) { continue; }
 
 			lightTiles.get(index).add(tile);
 		}
 
 		entities.stream()
-			.filter(e -> e instanceof LightEmitter)
-			.forEach(e -> {
-				LightEmitter lightEmitter = (LightEmitter) e;
-				int index = lightEmitter.getLightIntensity() - 1;
+				.filter(e -> e instanceof LightEmitter)
+				.forEach(e -> {
+					LightEmitter lightEmitter = (LightEmitter) e;
+					int index = lightEmitter.getLightIntensity() - 1;
 
-				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) return;
+					if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 
-				Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
-				tile.setLightColour(lightEmitter.getLightColour());
-				tile.setLightIntensity(lightEmitter.getLightIntensity());
+					Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
+					tile.setLightColour(lightEmitter.getLightColour());
+					tile.setLightIntensity(lightEmitter.getLightIntensity());
 
-				lightTiles.get(index).add(tile);
-			});
+					lightTiles.get(index).add(tile);
+				});
 
 		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {
 			List<Tile> lights = lightTiles.get(i);
@@ -253,7 +255,7 @@ public class Level {
 			for (int j = 0; j < lights.size(); j++) {
 				Tile tile = lights.get(j);
 
-				if (tile.getLightIntensity() != i + 1) continue;
+				if (tile.getLightIntensity() != i + 1) { continue; }
 
 				propagateLighting(tile);
 			}
@@ -284,10 +286,10 @@ public class Level {
 
 		Color colour = reapplyIntensity(tile.getLightColour(), tile.getLightIntensity(), intensity);
 
-		if (x > 0) setIntensity(getTile(x - 1, y), intensity, colour);
-		if (x < getWidth() - 1) setIntensity(getTile(x + 1, y), intensity, colour);
-		if (y > 0) setIntensity(getTile(x, y - 1), intensity, colour);
-		if (y < getHeight() - 1) setIntensity(getTile(x, y + 1), intensity, colour);
+		if (x > 0) { setIntensity(getTile(x - 1, y), intensity, colour); }
+		if (x < getWidth() - 1) { setIntensity(getTile(x + 1, y), intensity, colour); }
+		if (y > 0) { setIntensity(getTile(x, y - 1), intensity, colour); }
+		if (y < getHeight() - 1) { setIntensity(getTile(x, y + 1), intensity, colour); }
 
 		colour = new Color(
 			(int) (colour.getRed() * 0.9f),
@@ -296,10 +298,10 @@ public class Level {
 			colour.getAlpha()
 		);
 
-		if (x > 0 && y < getWidth() - 1) setIntensity(getTile(x - 1, y + 1), intensity, colour);
-		if (x < getWidth() - 1 && y > 0) setIntensity(getTile(x + 1, y - 1), intensity, colour);
-		if (x > 0 && y < 0) setIntensity(getTile(x - 1, y - 1), intensity, colour);
-		if (x < getWidth() - 1 && y < getHeight() - 1) setIntensity(getTile(x + 1, y + 1), intensity, colour);
+		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour); }
+		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour); }
+		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour); }
+		if (x < getWidth() - 1 && y < getHeight() - 1) { setIntensity(getTile(x + 1, y + 1), intensity, colour); }
 	}
 
 	public Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {
@@ -330,8 +332,8 @@ public class Level {
 
 			int index = tile.getLightIntensity() - 1;
 
-			if (index < 0) return;
-			if (index >= LIGHT_MAX_LIGHT_LEVEL) return;
+			if (index < 0) { return; }
+			if (index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 
 			lightTiles.get(index).add(tile);
 		}

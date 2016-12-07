@@ -21,18 +21,20 @@ public class ItemRendererSword extends ItemRenderer {
 	public ItemRendererSword(int sheetX, int sheetY) {
 		for (int i = 0; i < 9; i++) {
 			images.add(getImageFromSheet("items.png", sheetX + i, sheetY));
-			imagesDrawable.add(ImageLoader.getImageFromSheet("items.png", sheetX + i, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+			imagesDrawable.add(ImageLoader.getImageFromSheet(
+				"items.png",
+				sheetX + i,
+				sheetY,
+				ItemMap.ITEM_WIDTH,
+				ItemMap.ITEM_HEIGHT,
+				false
+			));
 		}
 	}
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
 		drawItem(batch, getImageFromMaterial(((HasMaterial) item).getMaterial(), true), x, y);
-	}
-
-	@Override
-	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(getImageFromMaterial(((HasMaterial) item).getMaterial(), false));
 	}
 
 	private TextureRegion getImageFromMaterial(Material material, boolean flipped) {
@@ -43,5 +45,10 @@ public class ItemRendererSword extends ItemRenderer {
 		} else {
 			return imagesDrawable.get(i);
 		}
+	}
+
+	@Override
+	public Drawable getDrawable(ItemStack itemStack, Item item) {
+		return new TextureRegionDrawable(getImageFromMaterial(((HasMaterial) item).getMaterial(), false));
 	}
 }

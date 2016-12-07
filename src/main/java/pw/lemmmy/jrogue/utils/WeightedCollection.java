@@ -12,7 +12,7 @@ public class WeightedCollection<E> {
 	private int total;
 
 	public void add(int weight, E object) {
-		if (weight <= 0) return;
+		if (weight <= 0) { return; }
 		total += weight;
 		map.put(total, object);
 	}

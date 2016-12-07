@@ -188,7 +188,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		boolean over = renderer.shouldDrawParticlesOver(dungeon, entity, entity.getX(), entity.getY());
 
-		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(entity, renderer, entity.getX(), entity.getY(), over, effect);
+		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(
+			entity,
+			renderer,
+			entity.getX(),
+			entity.getY(),
+			over,
+			effect
+		);
 		entityPooledEffects.add(entityPooledEffect);
 	}
 
@@ -302,14 +309,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 
-			if (effect.shouldDrawOver() != over) continue;
+			if (effect.shouldDrawOver() != over) { continue; }
 
-			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY());
+			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(
+				dungeon,
+				effect.getEntity(),
+				effect.getEntity().getX(),
+				effect.getEntity().getY()
+			);
 
 			effect.getPooledEffect().update(delta * deltaMultiplier);
 
 			if (!dungeon.getLevel().isTileVisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
-				!effect.getRenderer().shouldDrawParticles(dungeon, effect.getEntity(), effect.getEntity().getX(), effect.getEntity().getY())) {
+				!effect.getRenderer().shouldDrawParticles(
+					dungeon,
+					effect.getEntity(),
+					effect.getEntity().getX(),
+					effect.getEntity().getY()
+				)) {
 				continue;
 			}
 
@@ -324,18 +341,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private void drawEntities(boolean allRevealed) {
 		dungeon.getLevel().getEntities().stream()
-			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> {
-				if (!allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
-					return;
-				}
+			   .sorted(Comparator.comparingInt(Entity::getDepth))
+			   .forEach(e -> {
+				   if (!allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
+					   return;
+				   }
 
-				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
+				   EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 
-				if (em.getRenderer() != null) {
-					em.getRenderer().draw(batch, dungeon, e);
-				}
-			});
+				   if (em.getRenderer() != null) {
+					   em.getRenderer().draw(batch, dungeon, e);
+				   }
+			   });
 	}
 
 	private void drawLights() {
@@ -452,15 +469,21 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred
+			.add(() -> new DebugWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
+				.show());
 	}
 
 	public void showInventoryWindow() {
-		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred
+			.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
+				.show());
 	}
 
 	public void showWishWindow() {
-		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred
+			.add(() -> new WishWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
+				.show());
 	}
 
 	public OrthographicCamera getCamera() {

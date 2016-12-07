@@ -61,7 +61,8 @@ public class ActionKick extends EntityAction {
 		TileType tileType = getEntity().getLevel().getTileType(dx, dy);
 
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
-			if (Utils.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not strain their legs
+			if (Utils.roll(5) == 1) {
+				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not strain their legs
 				if (isPlayer) {
 					getDungeon().logRandom(
 						"Bad move! You strain your leg!",
@@ -107,7 +108,8 @@ public class ActionKick extends EntityAction {
 				getDungeon().You("kick the wall!");
 			}
 
-			if (Utils.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
+			if (Utils
+				.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
 					getDungeon().logRandom(
 						"Ouch! That hurt a lot!",

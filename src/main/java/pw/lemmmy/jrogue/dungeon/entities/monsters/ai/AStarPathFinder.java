@@ -8,7 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AStarPathFinder {
-	public static Path findPath(Level level, int sx, int sy, int tx, int ty, int maxSearchDistance, boolean allowDiagonalMovement, List<TileType> avoidTiles) {
+	public static Path findPath(Level level,
+								int sx,
+								int sy,
+								int tx,
+								int ty,
+								int maxSearchDistance,
+								boolean allowDiagonalMovement,
+								List<TileType> avoidTiles) {
 		if (level.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}

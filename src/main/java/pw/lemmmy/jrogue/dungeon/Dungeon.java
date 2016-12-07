@@ -23,7 +23,8 @@ public class Dungeon {
 	private static final int LEVEL_HEIGHT = 30;
 	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
 	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
-	private static final Pattern wishSword = Pattern.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
+	private static final Pattern wishSword = Pattern
+		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
 	private final List<Listener> listeners = new ArrayList<>();
 	/**
 	 * Randomly generated name of this dungeon
@@ -68,7 +69,14 @@ public class Dungeon {
 		} while (!gotLevel);
 
 		if (player == null) {
-			player = new Player(this, level, level.getSpawnX(), level.getSpawnY(), settings.getPlayerName(), new RoleWizard());
+			player = new Player(
+				this,
+				level,
+				level.getSpawnX(),
+				level.getSpawnY(),
+				settings.getPlayerName(),
+				new RoleWizard()
+			);
 		} else {
 			player.setPosition(level.getSpawnX(), level.getSpawnY());
 		}
@@ -198,19 +206,19 @@ public class Dungeon {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 
 		level.getEntities().stream()
-			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-				(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
-				!(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
-			.forEach(e -> {
-				EntityTurnBased tbe = (EntityTurnBased) e;
-				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
+			 .filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
+				 (e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
+				 !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
+			 .forEach(e -> {
+				 EntityTurnBased tbe = (EntityTurnBased) e;
+				 tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
 
-				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
-					somebodyCanMove.set(true);
-				}
+				 if (tbe.getMovementPoints() >= NORMAL_SPEED) {
+					 somebodyCanMove.set(true);
+				 }
 
-				tbe.move();
-			});
+				 tbe.move();
+			 });
 
 		return somebodyCanMove.get();
 	}

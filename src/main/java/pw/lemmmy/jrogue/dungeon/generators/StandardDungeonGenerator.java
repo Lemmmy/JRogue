@@ -81,7 +81,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		buildCorridors();
 		removeStrayRooms();
 		addWaterBodies();
-		if (!chooseSpawnRoom()) return false;
+		if (!chooseSpawnRoom()) { return false; }
 		chooseDownstairsRoom();
 		spawnFish();
 		spawnMonsters();
@@ -122,15 +122,18 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			for (Room b : rooms) {
 				boolean skip = false;
 
-				double abDist = Math.pow(a.getCenterX() - b.getCenterX(), 2) + Math.pow(a.getCenterY() - b.getCenterY(), 2);
+				double abDist = Math.pow(a.getCenterX() - b.getCenterX(), 2) + Math
+					.pow(a.getCenterY() - b.getCenterY(), 2);
 
 				for (Room c : rooms) {
 					if (c.equals(a) || c.equals(b)) {
 						continue;
 					}
 
-					double acDist = Math.pow(a.getCenterX() - c.getCenterX(), 2) + Math.pow(a.getCenterY() - c.getCenterY(), 2);
-					double bcDist = Math.pow(b.getCenterX() - c.getCenterX(), 2) + Math.pow(b.getCenterY() - c.getCenterY(), 2);
+					double acDist = Math.pow(a.getCenterX() - c.getCenterX(), 2) + Math
+						.pow(a.getCenterY() - c.getCenterY(), 2);
+					double bcDist = Math.pow(b.getCenterX() - c.getCenterX(), 2) + Math
+						.pow(b.getCenterY() - c.getCenterY(), 2);
 
 					if (acDist < abDist && bcDist < abDist) {
 						skip = true;
@@ -239,7 +242,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			for (int x = 0; x < level.getWidth(); x++) {
 				double noise = simplexNoise.eval(x * WATER_NOISE_SCALE, y * WATER_NOISE_SCALE);
 
-				if (noise > WATER_NOISE_THRESHOLD && (level.getTileType(x, y) == TileType.TILE_GROUND || level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR)) {
+				if (noise > WATER_NOISE_THRESHOLD && (level.getTileType(x, y) == TileType.TILE_GROUND || level
+					.getTileType(x, y) == TileType.TILE_ROOM_FLOOR)) {
 					if (level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
 						level.setTileType(x, y, TileType.TILE_ROOM_PUDDLE);
 					} else {
@@ -266,10 +270,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void spawnFish() {
 		Tile[] waterTiles = Arrays.stream(level.getTiles())
-			.filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
-			.toArray(Tile[]::new);
+								  .filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
+								  .toArray(Tile[]::new);
 
-		if (waterTiles.length < 5) return;
+		if (waterTiles.length < 5) { return; }
 
 		int swarmCount = jrand.nextInt(FISH_SWARMS_MAX - FISH_SWARMS_MIN) + FISH_SWARMS_MIN;
 		int colourCount = MonsterFish.FishColour.values().length;
@@ -277,7 +281,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		for (int i = 0; i < swarmCount; i++) {
 			Tile swarmTile = Utils.jrandomFrom(waterTiles);
 
-			List<Tile> surroundingTiles = level.getTilesInRadius(swarmTile.getX(), swarmTile.getY(), jrand.nextInt(2) + 2);
+			List<Tile> surroundingTiles = level
+				.getTilesInRadius(swarmTile.getX(), swarmTile.getY(), jrand.nextInt(2) + 2);
 
 			if (Utils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
@@ -327,7 +332,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 					for (int j = 0; j < count; j++) {
 						Point point = getMonsterSpawnPoint();
-						level.addEntity((Entity) constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY()));
+						level.addEntity((Entity) constructor
+							.newInstance(level.getDungeon(), level, point.getX(), point.getY()));
 					}
 				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 					e.printStackTrace();
@@ -350,8 +356,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
-			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
-			.collect(Collectors.toList());
+							   .filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
+																						.getConnectionPoints().size())
+							   .collect(Collectors.toList());
 
 		if (temp2.isEmpty()) {
 			return false;
@@ -375,8 +382,14 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		Room downstairsRoom = Utils.randomFrom(temp);
 
-		int stairX = nextInt(downstairsRoom.getRoomX() + 2, downstairsRoom.getRoomX() + downstairsRoom.getRoomWidth() - 2);
-		int stairY = nextInt(downstairsRoom.getRoomY() + 2, downstairsRoom.getRoomY() + downstairsRoom.getRoomHeight() - 2);
+		int stairX = nextInt(
+			downstairsRoom.getRoomX() + 2,
+			downstairsRoom.getRoomX() + downstairsRoom.getRoomWidth() - 2
+		);
+		int stairY = nextInt(
+			downstairsRoom.getRoomY() + 2,
+			downstairsRoom.getRoomY() + downstairsRoom.getRoomHeight() - 2
+		);
 
 		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
 	}

@@ -55,8 +55,12 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 
 	public abstract Skill getSkill();
 
-	public void hitLog(String attackerString, String victimString, String neitherString, LivingEntity attacker, LivingEntity victim) {
-		if (victim.getHealth() <= 0) return;
+	public void hitLog(String attackerString,
+					   String victimString,
+					   String neitherString,
+					   LivingEntity attacker,
+					   LivingEntity victim) {
+		if (victim.getHealth() <= 0) { return; }
 
 		if (attacker instanceof Player) {
 			attacker.getDungeon().log(attackerString, victim.getName(false));

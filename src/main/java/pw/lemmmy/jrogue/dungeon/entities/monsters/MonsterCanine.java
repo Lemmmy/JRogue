@@ -78,7 +78,8 @@ public abstract class MonsterCanine extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 
-		if (Utils.roll(1, 5) == 1) { // TODO: If a player has a higher agility or speed, the monster is less likely to dodge
+		if (Utils
+			.roll(1, 5) == 1) { // TODO: If a player has a higher agility or speed, the monster is less likely to dodge
 			getDungeon().The("%s dodges your kick!", getName(false));
 
 			return;

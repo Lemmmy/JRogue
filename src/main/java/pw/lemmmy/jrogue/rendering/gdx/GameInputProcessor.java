@@ -25,7 +25,7 @@ public class GameInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (renderer.getWindows().size() > 0) return false;
+		if (renderer.getWindows().size() > 0) { return false; }
 
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -37,87 +37,7 @@ public class GameInputProcessor implements InputProcessor {
 			}
 		}
 
-		if (handleMovementCommands(keycode)) return true;
-		if (handlePlayerCommands(keycode)) return true;
-		return handleRendererCommands(keycode);
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		if (renderer.getWindows().size() > 0) return false;
-
-		if (dontHandleNext) {
-			dontHandleNext = false;
-			return false;
-		}
-
-		if (dungeon.hasPrompt()) {
-			dungeon.promptRespond(character);
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		mouseMoved = false;
-
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (!mouseMoved) {
-			handleWorldClicks(screenToWorldPos(screenX, screenY), button);
-		}
-
-		mouseMoved = false;
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		mouseMoved = true;
-
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-
-	private boolean handleWorldClicks(Vector2 pos, int button) {
-		if (button == Input.Buttons.LEFT) {
-			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
-				teleporting = false;
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private Vector2 screenToWorldPos(int screenX, int screenY) {
-		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
-
-		return new Vector2(
-			(float) Math.floor(unprojected.x / TileMap.TILE_WIDTH),
-			(float) Math.floor(unprojected.y / TileMap.TILE_HEIGHT)
-		);
+		return handleMovementCommands(keycode) || handlePlayerCommands(keycode) || handleRendererCommands(keycode);
 	}
 
 	private boolean handleMovementCommands(int keycode) {
@@ -200,6 +120,84 @@ public class GameInputProcessor implements InputProcessor {
 			}
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		if (renderer.getWindows().size() > 0) { return false; }
+
+		if (dontHandleNext) {
+			dontHandleNext = false;
+			return false;
+		}
+
+		if (dungeon.hasPrompt()) {
+			dungeon.promptRespond(character);
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		mouseMoved = false;
+
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if (!mouseMoved) {
+			handleWorldClicks(screenToWorldPos(screenX, screenY), button);
+		}
+
+		mouseMoved = false;
+
+		return false;
+	}
+
+	private boolean handleWorldClicks(Vector2 pos, int button) {
+		if (button == Input.Buttons.LEFT) {
+			if (dungeon.getPlayer().isDebugger() && teleporting) {
+				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
+				teleporting = false;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Vector2 screenToWorldPos(int screenX, int screenY) {
+		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
+
+		return new Vector2(
+			(float) Math.floor(unprojected.x / TileMap.TILE_WIDTH),
+			(float) Math.floor(unprojected.y / TileMap.TILE_HEIGHT)
+		);
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		mouseMoved = true;
+
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
 		return false;
 	}
 }

@@ -10,7 +10,12 @@ public class ActionMelee extends EntityAction {
 	private DamageSource damageSource;
 	private int damage;
 
-	public ActionMelee(Dungeon dungeon, LivingEntity attacker, LivingEntity victim, DamageSource damageSource, int damage, ActionCallback actionCallback) {
+	public ActionMelee(Dungeon dungeon,
+					   LivingEntity attacker,
+					   LivingEntity victim,
+					   DamageSource damageSource,
+					   int damage,
+					   ActionCallback actionCallback) {
 		super(dungeon, attacker, actionCallback);
 
 		this.victim = victim;

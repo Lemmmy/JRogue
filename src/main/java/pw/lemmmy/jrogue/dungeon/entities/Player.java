@@ -24,7 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
-	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		.toCharArray();
 
 	private Pcg32 rand = new Pcg32();
 
@@ -58,13 +59,20 @@ public class Player extends LivingEntity {
 
 		nutrition = 1000;
 
-		strength = role.getStrength() + (int) ((float) Math.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
-		agility = role.getAgility() + (int) ((float) Math.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
-		dexterity = role.getDexterity() + (int) ((float) Math.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
-		constitution = role.getConstitution() + (int) ((float) Math.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
-		intelligence = role.getIntelligence() + (int) ((float) Math.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
-		wisdom = role.getWisdom() + (int) ((float) Math.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
-		charisma = role.getCharisma() + (int) ((float) Math.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
+		strength = role.getStrength() + (int) ((float) Math
+			.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
+		agility = role.getAgility() + (int) ((float) Math
+			.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
+		dexterity = role.getDexterity() + (int) ((float) Math
+			.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
+		constitution = role.getConstitution() + (int) ((float) Math
+			.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
+		intelligence = role.getIntelligence() + (int) ((float) Math
+			.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
+		wisdom = role.getWisdom() + (int) ((float) Math
+			.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
+		charisma = role.getCharisma() + (int) ((float) Math
+			.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
 
 		inventory = new LinkedHashMap<>();
 		skills = new HashMap<>(role.getStartingSkills());
@@ -252,8 +260,8 @@ public class Player extends LivingEntity {
 			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
 
 			Optional<Entity> ent = destEntities.stream()
-				.filter(e -> e instanceof LivingEntity)
-				.findFirst();
+											   .filter(e -> e instanceof LivingEntity)
+											   .findFirst();
 
 			if (ent.isPresent()) {
 				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
@@ -314,7 +322,12 @@ public class Player extends LivingEntity {
 					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
 
 					if (getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).size() > 0) {
-						setAction(new ActionKick(getDungeon(), Player.this, d, getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).get(0)));
+						setAction(new ActionKick(
+							getDungeon(),
+							Player.this,
+							d,
+							getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).get(0)
+						));
 					} else {
 						setAction(new ActionKick(getDungeon(), Player.this, d));
 					}
@@ -367,7 +380,12 @@ public class Player extends LivingEntity {
 								return;
 							}
 
-							setAction(new ActionEat(getDungeon(), Player.this, (ItemComestible) item, (EntityItem) entity));
+							setAction(new ActionEat(
+								getDungeon(),
+								Player.this,
+								(ItemComestible) item,
+								(EntityItem) entity
+							));
 							getDungeon().turn();
 						}
 					}, true));
@@ -624,8 +642,8 @@ public class Player extends LivingEntity {
 
 	public Map<Character, ItemStack> getWieldablesInInventory() {
 		return inventory.entrySet().stream()
-			.filter(e -> e.getValue().getItem() instanceof Wieldable)
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+						.filter(e -> e.getValue().getItem() instanceof Wieldable)
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public void swapHands() {

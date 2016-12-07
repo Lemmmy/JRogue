@@ -21,7 +21,12 @@ public class TileRendererWater extends TileRendererBlob {
 		this(sheetX, sheetY, floorSheetX, floorSheetY, true, null);
 	}
 
-	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, boolean connectToOthers, TileType self) {
+	public TileRendererWater(int sheetX,
+							 int sheetY,
+							 int floorSheetX,
+							 int floorSheetY,
+							 boolean connectToOthers,
+							 TileType self) {
 		super(1, 0);
 
 		this.connectToOthers = connectToOthers;

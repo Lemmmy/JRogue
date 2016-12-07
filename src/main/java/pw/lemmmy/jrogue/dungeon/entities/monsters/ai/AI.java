@@ -86,8 +86,9 @@ public abstract class AI {
 
 		if (path != null) {
 			getMonster().setAction(new ActionMove(
-				getMonster().getDungeon(), getMonster(),
-				path.getStep(1).getX(), path.getStep(1).getY())
+									   getMonster().getDungeon(), getMonster(),
+									   path.getStep(1).getX(), path.getStep(1).getY()
+								   )
 			);
 		}
 	}

@@ -28,12 +28,6 @@ public class EntityItem extends Entity {
 		return 0;
 	}
 
-
-	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return itemStack.getName(requiresCapitalisation);
-	}
-
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_ITEM;
@@ -52,6 +46,11 @@ public class EntityItem extends Entity {
 		}
 
 		setPosition(x, y);
+	}
+
+	@Override
+	public String getName(boolean requiresCapitalisation) {
+		return itemStack.getName(requiresCapitalisation);
 	}
 
 	@Override

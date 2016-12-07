@@ -242,19 +242,19 @@ public class HUD implements Dungeon.Listener {
 	private void updateStatusEffects(Player player) {
 		if (player.getStatusEffects().size() > 0) {
 			java.util.List<String> effects = player.getStatusEffects().stream()
-				.map(e -> {
-					switch (e.getSeverity()) {
-						case MINOR:
-							return "[P_YELLOW]" + e.getName() + "[]";
-						case MAJOR:
-							return "[P_ORANGE_2]" + e.getName() + "[]";
-						case CRITICAL:
-							return "[P_RED]" + e.getName() + "[]";
-						default:
-							return "";
-					}
-				})
-				.collect(Collectors.toList());
+												   .map(e -> {
+													   switch (e.getSeverity()) {
+														   case MINOR:
+															   return "[P_YELLOW]" + e.getName() + "[]";
+														   case MAJOR:
+															   return "[P_ORANGE_2]" + e.getName() + "[]";
+														   case CRITICAL:
+															   return "[P_RED]" + e.getName() + "[]";
+														   default:
+															   return "";
+													   }
+												   })
+												   .collect(Collectors.toList());
 
 			effectsLabel.setText(StringUtils.join(effects, " "));
 		} else {

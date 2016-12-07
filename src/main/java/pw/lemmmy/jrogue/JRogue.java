@@ -21,7 +21,11 @@ public class JRogue {
 
 	public JRogue(Settings settings) {
 		dungeon = new Dungeon(settings);
-		renderer = new GDXRenderer(dungeon, settings.getScreenWidth(), settings.getScreenHeight()); // TODO: Make this configurable
+		renderer = new GDXRenderer(
+			dungeon,
+			settings.getScreenWidth(),
+			settings.getScreenHeight()
+		); // TODO: Make this configurable
 	}
 
 	public static void main(String[] args) {

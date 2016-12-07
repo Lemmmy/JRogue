@@ -20,7 +20,14 @@ public class EntityRendererItem extends EntityRenderer {
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 
 			if (renderer != null) {
-				renderer.draw(batch, dungeon, item.getItemStack(), item.getItem(), entity.getX() * width, entity.getY() * height);
+				renderer.draw(
+					batch,
+					dungeon,
+					item.getItemStack(),
+					item.getItem(),
+					entity.getX() * width,
+					entity.getY() * height
+				);
 			}
 		}
 	}
