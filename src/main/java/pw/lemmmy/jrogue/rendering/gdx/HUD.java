@@ -1,7 +1,5 @@
 package pw.lemmmy.jrogue.rendering.gdx;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
@@ -225,35 +223,15 @@ public class HUD implements Dungeon.Listener {
 
 	private void updateNutrition(Player player) {
 		((Label) root.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
-
-		switch (player.getNutritionState().getImportance()) {
-			case 1:
-				root.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));
-				break;
-			case 2:
-				root.findActor("attributeNutrition").setColor(Colors.get("P_RED"));
-				break;
-			default:
-				root.findActor("attributeNutrition").setColor(Color.WHITE);
-				break;
-		}
+		root.findActor("attributeNutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
 	}
 
 	private void updateStatusEffects(Player player) {
 		if (player.getStatusEffects().size() > 0) {
 			java.util.List<String> effects = player.getStatusEffects().stream()
-												   .map(e -> {
-													   switch (e.getSeverity()) {
-														   case MINOR:
-															   return "[P_YELLOW]" + e.getName() + "[]";
-														   case MAJOR:
-															   return "[P_ORANGE_2]" + e.getName() + "[]";
-														   case CRITICAL:
-															   return "[P_RED]" + e.getName() + "[]";
-														   default:
-															   return "";
-													   }
-												   })
+												   .map(e -> String.format("[%s]%s[]", HUDUtils.getStatusEffectColour
+													   (e.getSeverity()), e.getName())
+												   )
 												   .collect(Collectors.toList());
 
 			effectsLabel.setText(StringUtils.join(effects, " "));
