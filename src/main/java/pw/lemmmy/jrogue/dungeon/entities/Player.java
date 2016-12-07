@@ -201,6 +201,15 @@ public class Player extends LivingEntity {
 		return false;
 	}
 
+	@Override
+	public int getDamageModifier(DamageSource damageSource, int damage) {
+		if (godmode) {
+			return 0;
+		}
+
+		return super.getDamageModifier(damageSource, damage);
+	}
+
 	public void teleport(int x, int y) {
 		setAction(new ActionTeleport(getDungeon(), this, x, y));
 		getDungeon().turn();
