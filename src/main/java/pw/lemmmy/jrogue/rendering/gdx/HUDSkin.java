@@ -55,7 +55,7 @@ public class HUDSkin extends Skin {
 	private ScrollPane.ScrollPaneStyle scrollPaneStyle;
 
 	public HUDSkin() {
-		addWhite();
+		addColours();
 		addFonts();
 		addLabelStyles();
 		addTextButtonStyle();
@@ -66,11 +66,16 @@ public class HUDSkin extends Skin {
 		addWindowStyle();
 	}
 
-	private void addWhite() {
+	private void addColours() {
 		Pixmap white = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		white.setColor(Color.WHITE);
 		white.fill();
 		add("white", new Texture(white));
+
+		Pixmap blackTransaprent = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		blackTransaprent.setColor(new Color(0f, 0f, 0f, 0.5f));
+		blackTransaprent.fill();
+		add("blackTransparent", new Texture(blackTransaprent));
 	}
 
 	private void addFonts() {

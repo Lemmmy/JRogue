@@ -46,39 +46,40 @@ public class HUD implements Dungeon.Listener {
 		hudTable = new Table();
 		hudTable.setFillParent(true);
 
-		setupHUDPlayerLine(hudTable);
+		Table hudTopContainer = new Table();
+		hudTopContainer.setBackground(hudSkin.getDrawable("blackTransparent"));
+		setupHUDPlayerLine(hudTopContainer);
+		hudTable.add(hudTopContainer).left().fillX().row();
 
-		hudTable.add(new Container()).expand();
-		hudTable.row();
+		hudTable.add(new Container()).expand().row();
 
 		setupHUDInfoLine(hudTable);
 		setupHUDAttributes(hudTable);
 
-		hudTable.top().pad(2);
+		hudTable.top();
 		hudStage.addActor(hudTable);
 	}
 
-	private void setupHUDPlayerLine(Table hudTable) {
+	private void setupHUDPlayerLine(Table container) {
 		hudPlayerLabel = new Label(null, hudSkin, "large");
 		hudPlayerLabel.setAlignment(Align.left);
-		hudTable.add(hudPlayerLabel).top().growX().pad(0, 2, 0, 2);
-		hudTable.row();
+		container.add(hudPlayerLabel).top().growX().pad(2, 4, 0, 4);
+		container.row();
 
 		hudLog = new Table();
 		hudLog.left();
-		hudTable.setFillParent(true);
-		hudTable.add(hudLog).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
+		container.add(hudLog).growX().left().pad(0, 3, 0, 3);
+		container.row();
 
 		hudPromptLabel = new Label(null, hudSkin);
-		hudTable.add(hudPromptLabel).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
+		container.add(hudPromptLabel).growX().left().pad(0, 3, 2, 3);
+		container.row();
 	}
 
-	private void setupHUDInfoLine(Table hudTable) {
+	private void setupHUDInfoLine(Table container) {
 		hudEffectsLabel = new Label(null, hudSkin);
-		hudTable.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
-		hudTable.row();
+		container.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
+		container.row();
 
 		hudInfoLine = new Table();
 
@@ -87,11 +88,11 @@ public class HUD implements Dungeon.Listener {
 		goldLabel.setName("gold");
 		hudInfoLine.add(goldLabel).pad(0, 2, 0, 8);
 
-		hudTable.add(hudInfoLine).left().pad(0, 1, 0, 1);
-		hudTable.row();
+		container.add(hudInfoLine).left().pad(0, 1, 0, 1);
+		container.row();
 	}
 
-	private void setupHUDAttributes(Table hudTable) {
+	private void setupHUDAttributes(Table container) {
 		hudAttributes = new Table();
 
 		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 0, 2, 16, 16, false)));
@@ -139,7 +140,7 @@ public class HUD implements Dungeon.Listener {
 		nutritionLabel.setName("attributeNutrition");
 		hudAttributes.add(nutritionLabel).pad(0, 2, 0, 2).right();
 
-		hudTable.add(hudAttributes).left().fillX().pad(0, 1, 0, 1);
+		container.add(hudAttributes).left().fillX().pad(0, 1, 0, 1);
 	}
 
 	public void updateAndDraw(float delta) {
@@ -286,12 +287,12 @@ public class HUD implements Dungeon.Listener {
 		} else {
 			if (prompt.getOptions() == null) {
 				hudPromptLabel.setText(String.format(
-					"[P_BLUE_1]%s[]",
+					"[P_CYAN_1]%s[]",
 					prompt.getMessage()
 				));
 			} else {
 				hudPromptLabel.setText(String.format(
-					"[P_BLUE_1]%s[] [[[P_YELLOW]%s[]]",
+					"[P_CYAN_1]%s[] [[[P_YELLOW]%s[]]",
 					prompt.getMessage(),
 					prompt.getOptionsString()
 				));
