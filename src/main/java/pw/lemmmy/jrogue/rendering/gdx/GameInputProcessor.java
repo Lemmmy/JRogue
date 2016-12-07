@@ -39,9 +39,7 @@ public class GameInputProcessor implements InputProcessor {
 
 		if (handleMovementCommands(keycode)) return true;
 		if (handlePlayerCommands(keycode)) return true;
-		if (handleRendererCommands(keycode)) return true;
-
-		return false;
+		return handleRendererCommands(keycode);
 	}
 
 	@Override

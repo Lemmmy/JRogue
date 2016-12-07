@@ -24,7 +24,8 @@ public class EntityFountain extends Entity {
 	}
 
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	}
 
 	@Override
 	public boolean canBeWalkedOn() {

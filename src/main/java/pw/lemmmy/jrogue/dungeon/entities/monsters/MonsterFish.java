@@ -23,16 +23,6 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
-	}
-
-	@Override
-	protected void onDie(DamageSource damageSource) {
-		getDungeon().You("kill the %s!", getName(false));
-	}
-
-	@Override
 	public int getMovementSpeed() {
 		return Dungeon.NORMAL_SPEED;
 	}
@@ -40,6 +30,16 @@ public class MonsterFish extends Monster {
 	@Override
 	public Size getSize() {
 		return Size.SMALL;
+	}
+
+	@Override
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource) {
+		getDungeon().You("kill the %s!", getName(false));
 	}
 
 	@Override

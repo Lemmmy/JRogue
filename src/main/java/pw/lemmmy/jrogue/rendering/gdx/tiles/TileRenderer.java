@@ -32,8 +32,6 @@ public abstract class TileRenderer {
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 	}
 
-	;
-
 	public ParticleEffectPool getParticleEffectPool() {
 		return effectPool;
 	}

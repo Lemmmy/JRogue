@@ -7,7 +7,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public class EntityRendererFountain extends EntityRendererRandom {
-	private static final int[] PARTICLE_Y_OFFSETS = new int[] {6, 3};
+	private static final int[] PARTICLE_Y_OFFSETS = new int[]{6, 3};
 
 	public EntityRendererFountain(int sheetX, int sheetY, int count) {
 		super(sheetX, sheetY, count);

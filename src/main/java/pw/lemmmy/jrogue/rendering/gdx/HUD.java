@@ -143,6 +143,14 @@ public class HUD implements Dungeon.Listener {
 		container.add(attributes).left().fillX().pad(0, 1, 0, 1);
 	}
 
+	public Stage getStage() {
+		return stage;
+	}
+
+	public Skin getSkin() {
+		return skin;
+	}
+
 	public void updateAndDraw(float delta) {
 		stage.act(delta);
 		stage.draw();
@@ -152,12 +160,9 @@ public class HUD implements Dungeon.Listener {
 		stage.getViewport().update(width, height, true);
 	}
 
-	public Stage getStage() {
-		return stage;
-	}
-
-	public Skin getSkin() {
-		return skin;
+	public void dispose() {
+		stage.dispose();
+		skin.dispose();
 	}
 
 	@Override
@@ -313,10 +318,5 @@ public class HUD implements Dungeon.Listener {
 	@Override
 	public void onEntityRemoved(Entity entity) {
 
-	}
-
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();
 	}
 }

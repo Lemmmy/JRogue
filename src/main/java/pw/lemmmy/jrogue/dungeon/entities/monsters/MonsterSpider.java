@@ -28,6 +28,16 @@ public class MonsterSpider extends Monster {
 	}
 
 	@Override
+	public int getMovementSpeed() {
+		return speed;
+	}
+
+	@Override
+	public Size getSize() {
+		return Size.SMALL;
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 	}
 
@@ -53,16 +63,6 @@ public class MonsterSpider extends Monster {
 		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
-	}
-
-	@Override
-	public int getMovementSpeed() {
-		return speed;
-	}
-
-	@Override
-	public Size getSize() {
-		return Size.SMALL;
 	}
 
 	@Override

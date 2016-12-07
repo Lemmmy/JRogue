@@ -101,20 +101,6 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-
-	}
-
-	@Override
-	protected void onDie(DamageSource damageSource) {
-		if (damageSource.getDeathString() != null) {
-			getDungeon().log(damageSource.getDeathString());
-		} else {
-			getDungeon().You("die.");
-		}
-	}
-
-	@Override
 	public int getMovementSpeed() {
 		int speed = baseSpeed;
 
@@ -130,6 +116,15 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	public int getDamageModifier(DamageSource damageSource, int damage) {
+		if (godmode) {
+			return 0;
+		}
+
+		return super.getDamageModifier(damageSource, damage);
+	}
+
+	@Override
 	public int getDepth() {
 		return 3;
 	}
@@ -137,6 +132,20 @@ public class Player extends LivingEntity {
 	@Override
 	public Size getSize() {
 		return LivingEntity.Size.LARGE;
+	}
+
+	@Override
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource) {
+		if (damageSource.getDeathString() != null) {
+			getDungeon().log(damageSource.getDeathString());
+		} else {
+			getDungeon().You("die.");
+		}
 	}
 
 	public int getNutrition() {
@@ -201,13 +210,16 @@ public class Player extends LivingEntity {
 		return false;
 	}
 
-	@Override
-	public int getDamageModifier(DamageSource damageSource, int damage) {
-		if (godmode) {
-			return 0;
-		}
+	public int getVisibilityRange() {
+		return 10 * ((getLightLevel() - 20) / 100) + 10;
+	}
 
-		return super.getDamageModifier(damageSource, damage);
+	public int getLightLevel() {
+		return getLevel().getTile(getX(), getY()).getLightIntensity();
+	}
+
+	public int getCorridorVisibilityRange() {
+		return 2 * ((getLightLevel() - 20) / 100) + 5;
 	}
 
 	public void teleport(int x, int y) {
@@ -268,18 +280,6 @@ public class Player extends LivingEntity {
 			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
 			getDungeon().You("open the door.");
 		}
-	}
-
-	public int getVisibilityRange() {
-		return 10 * ((getLightLevel() - 20) / 100) + 10;
-	}
-
-	public int getLightLevel() {
-		return getLevel().getTile(getX(), getY()).getLightIntensity();
-	}
-
-	public int getCorridorVisibilityRange() {
-		return 2 * ((getLightLevel() - 20) / 100) + 5;
 	}
 
 	public void kick() {

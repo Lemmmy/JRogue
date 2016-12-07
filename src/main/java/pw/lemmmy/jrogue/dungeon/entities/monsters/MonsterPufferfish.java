@@ -24,6 +24,16 @@ public class MonsterPufferfish extends Monster {
 	}
 
 	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED;
+	}
+
+	@Override
+	public Size getSize() {
+		return Size.SMALL;
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
@@ -35,16 +45,6 @@ public class MonsterPufferfish extends Monster {
 		if (Utils.roll(1, 2) == 1) {
 			drop(new ItemStack(new ItemCorpse(this)));
 		}
-	}
-
-	@Override
-	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
-	}
-
-	@Override
-	public Size getSize() {
-		return Size.SMALL;
 	}
 
 	@Override

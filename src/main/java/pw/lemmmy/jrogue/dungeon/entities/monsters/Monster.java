@@ -55,16 +55,10 @@ public abstract class Monster extends LivingEntity {
 
 	public abstract boolean canRangedAttack();
 
-	;
-
 	public abstract boolean canMagicAttack();
-
-	;
 
 	public void meleeAttackPlayer() {
 	}
-
-	;
 
 	public void rangedAttackPlayer() {
 	}

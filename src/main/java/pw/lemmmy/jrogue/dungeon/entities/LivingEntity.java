@@ -40,34 +40,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 		experienceLevel = level;
 	}
 
-	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		int damageModifier = getDamageModifier(damageSource, damage);
-
-		health = Math.max(0, health - damageModifier);
-
-		onDamage(damageSource, damage, attacker, isPlayer);
-
-		if (health <= 0) {
-			kill(damageSource);
-		}
-
-		return health <= 0;
-	}
-
-	public int getDamageModifier(DamageSource damageSource, int damage) {
-		return damage;
-	}
-
-	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
-
-	public void kill(DamageSource damageSource) {
-		onDie(damageSource);
-
-		getLevel().removeEntity(this);
-	}
-
-	protected abstract void onDie(DamageSource damageSource);
-
 	public int getHealth() {
 		return health;
 	}
@@ -98,22 +70,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public abstract Size getSize();
 
-	public void drop(ItemStack item) {
-		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
-
-		Optional<Entity> ent = entities.stream()
-			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
-			.findFirst();
-
-		if (ent.isPresent()) {
-			EntityItem entItem = (EntityItem) ent.get();
-			entItem.getItemStack().addCount(item.getCount());
-		} else {
-			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
-			getLevel().addEntity(entityItem);
-		}
-	}
-
 	public ItemStack getLeftHand() {
 		return leftHand;
 	}
@@ -128,6 +84,50 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public void setRightHand(ItemStack rightHand) {
 		this.rightHand = rightHand;
+	}
+
+	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		int damageModifier = getDamageModifier(damageSource, damage);
+
+		health = Math.max(0, health - damageModifier);
+
+		onDamage(damageSource, damage, attacker, isPlayer);
+
+		if (health <= 0) {
+			kill(damageSource);
+		}
+
+		return health <= 0;
+	}
+
+	public int getDamageModifier(DamageSource damageSource, int damage) {
+		return damage;
+	}
+
+	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
+
+	public void kill(DamageSource damageSource) {
+		onDie(damageSource);
+
+		getLevel().removeEntity(this);
+	}
+
+	protected abstract void onDie(DamageSource damageSource);
+
+	public void drop(ItemStack item) {
+		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
+
+		Optional<Entity> ent = entities.stream()
+			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
+			.findFirst();
+
+		if (ent.isPresent()) {
+			EntityItem entItem = (EntityItem) ent.get();
+			entItem.getItemStack().addCount(item.getCount());
+		} else {
+			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
+			getLevel().addEntity(entityItem);
+		}
 	}
 
 	public enum Size {
