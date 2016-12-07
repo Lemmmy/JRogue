@@ -21,16 +21,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HUD implements Dungeon.Listener {
-	private Skin hudSkin;
-	private Stage hudStage;
-	private Table hudTable;
-	private Label hudPlayerLabel;
-	private Table hudInfoLine;
-	private Table hudAttributes;
-	private Label hudEffectsLabel;
-	private HorizontalGroup hudBrightness;
-	private Table hudLog;
-	private Label hudPromptLabel;
+	private Skin skin;
+	private Stage stage;
+	private Table root;
+	private Label playerLabel;
+	private Table gameLog;
+	private Label promptLabel;
+	private Table infoLine;
+	private Table attributes;
+	private Label effectsLabel;
+	private HorizontalGroup brightness;
 
 	private Dungeon dungeon;
 	private List<String> log = new ArrayList<>();
@@ -39,125 +39,125 @@ public class HUD implements Dungeon.Listener {
 		this.dungeon = dungeon;
 	}
 
-	public void setupHUD() {
-		hudStage = new Stage(new ScreenViewport());
-		hudSkin = new HUDSkin();
+	public void init() {
+		stage = new Stage(new ScreenViewport());
+		skin = new HUDSkin();
 
-		hudTable = new Table();
-		hudTable.setFillParent(true);
+		root = new Table();
+		root.setFillParent(true);
 
 		Table hudTopContainer = new Table();
-		hudTopContainer.setBackground(hudSkin.getDrawable("blackTransparent"));
-		setupHUDPlayerLine(hudTopContainer);
-		hudTable.add(hudTopContainer).left().fillX().row();
+		hudTopContainer.setBackground(skin.getDrawable("blackTransparent"));
+		initPlayerLine(hudTopContainer);
+		root.add(hudTopContainer).left().fillX().row();
 
-		hudTable.add(new Container()).expand().row();
+		root.add(new Container()).expand().row();
 
-		setupHUDInfoLine(hudTable);
-		setupHUDAttributes(hudTable);
+		initInfoLine(root);
+		initAttributes(root);
 
-		hudTable.top();
-		hudStage.addActor(hudTable);
+		root.top();
+		stage.addActor(root);
 	}
 
-	private void setupHUDPlayerLine(Table container) {
-		hudPlayerLabel = new Label(null, hudSkin, "large");
-		hudPlayerLabel.setAlignment(Align.left);
-		container.add(hudPlayerLabel).top().growX().pad(2, 4, 0, 4);
+	private void initPlayerLine(Table container) {
+		playerLabel = new Label(null, skin, "large");
+		playerLabel.setAlignment(Align.left);
+		container.add(playerLabel).top().growX().pad(2, 4, 0, 4);
 		container.row();
 
-		hudLog = new Table();
-		hudLog.left();
-		container.add(hudLog).growX().left().pad(0, 3, 0, 3);
+		gameLog = new Table();
+		gameLog.left();
+		container.add(gameLog).growX().left().pad(0, 3, 0, 3);
 		container.row();
 
-		hudPromptLabel = new Label(null, hudSkin);
-		container.add(hudPromptLabel).growX().left().pad(0, 3, 2, 3);
+		promptLabel = new Label(null, skin);
+		container.add(promptLabel).growX().left().pad(0, 3, 2, 3);
 		container.row();
 	}
 
-	private void setupHUDInfoLine(Table container) {
-		hudEffectsLabel = new Label(null, hudSkin);
-		container.add(hudEffectsLabel).growX().left().pad(0, 1, 0, 1);
+	private void initInfoLine(Table container) {
+		effectsLabel = new Label(null, skin);
+		container.add(effectsLabel).growX().left().pad(0, 1, 0, 1);
 		container.row();
 
-		hudInfoLine = new Table();
+		infoLine = new Table();
 
-		hudInfoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
-		Label goldLabel = new Label("Gold: 0", hudSkin);
+		infoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
+		Label goldLabel = new Label("Gold: 0", skin);
 		goldLabel.setName("gold");
-		hudInfoLine.add(goldLabel).pad(0, 2, 0, 8);
+		infoLine.add(goldLabel).pad(0, 2, 0, 8);
 
-		container.add(hudInfoLine).left().pad(0, 1, 0, 1);
+		container.add(infoLine).left().pad(0, 1, 0, 1);
 		container.row();
 	}
 
-	private void setupHUDAttributes(Table container) {
-		hudAttributes = new Table();
+	private void initAttributes(Table container) {
+		attributes = new Table();
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 0, 2, 16, 16, false)));
-		Label strengthLabel = new Label("STR: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 0, 2, 16, 16, false)));
+		Label strengthLabel = new Label("STR: 0", skin);
 		strengthLabel.setName("attributeStrength");
-		hudAttributes.add(strengthLabel).pad(0, 2, 0, 8);
+		attributes.add(strengthLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 1, 2, 16, 16, false)));
-		Label agilityLabel = new Label("AGI: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 1, 2, 16, 16, false)));
+		Label agilityLabel = new Label("AGI: 0", skin);
 		agilityLabel.setName("attributeAgility");
-		hudAttributes.add(agilityLabel).pad(0, 2, 0, 8);
+		attributes.add(agilityLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 2, 2, 16, 16, false)));
-		Label dexterityLabel = new Label("DXT: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 2, 2, 16, 16, false)));
+		Label dexterityLabel = new Label("DXT: 0", skin);
 		dexterityLabel.setName("attributeDexterity");
-		hudAttributes.add(dexterityLabel).pad(0, 2, 0, 8);
+		attributes.add(dexterityLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
-		Label constitutionLabel = new Label("CON: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
+		Label constitutionLabel = new Label("CON: 0", skin);
 		constitutionLabel.setName("attributeConstitution");
-		hudAttributes.add(constitutionLabel).pad(0, 2, 0, 8);
+		attributes.add(constitutionLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 4, 2, 16, 16, false)));
-		Label intelligenceLabel = new Label("INT: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 4, 2, 16, 16, false)));
+		Label intelligenceLabel = new Label("INT: 0", skin);
 		intelligenceLabel.setName("attributeIntelligence");
-		hudAttributes.add(intelligenceLabel).pad(0, 2, 0, 8);
+		attributes.add(intelligenceLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 5, 2, 16, 16, false)));
-		Label wisdomLabel = new Label("WIS: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 5, 2, 16, 16, false)));
+		Label wisdomLabel = new Label("WIS: 0", skin);
 		wisdomLabel.setName("attributeWisdom");
-		hudAttributes.add(wisdomLabel).pad(0, 2, 0, 8);
+		attributes.add(wisdomLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 6, 2, 16, 16, false)));
-		Label charismaLabel = new Label("CHA: 0", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 6, 2, 16, 16, false)));
+		Label charismaLabel = new Label("CHA: 0", skin);
 		charismaLabel.setName("attributeCharisma");
-		hudAttributes.add(charismaLabel).pad(0, 2, 0, 8);
+		attributes.add(charismaLabel).pad(0, 2, 0, 8);
 
-		hudAttributes.add(new Container()).expand();
+		attributes.add(new Container()).expand();
 
-		hudBrightness = new HorizontalGroup();
-		hudAttributes.add(hudBrightness).pad(0, 2, -2, 8).right();
+		brightness = new HorizontalGroup();
+		attributes.add(brightness).pad(0, 2, -2, 8).right();
 
-		hudAttributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
-		Label nutritionLabel = new Label("HNG: Not hungry", hudSkin);
+		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
+		Label nutritionLabel = new Label("HNG: Not hungry", skin);
 		nutritionLabel.setName("attributeNutrition");
-		hudAttributes.add(nutritionLabel).pad(0, 2, 0, 2).right();
+		attributes.add(nutritionLabel).pad(0, 2, 0, 2).right();
 
-		container.add(hudAttributes).left().fillX().pad(0, 1, 0, 1);
+		container.add(attributes).left().fillX().pad(0, 1, 0, 1);
 	}
 
 	public void updateAndDraw(float delta) {
-		hudStage.act(delta);
-		hudStage.draw();
+		stage.act(delta);
+		stage.draw();
 	}
 
 	public void updateViewport(int width, int height) {
-		hudStage.getViewport().update(width, height, true);
+		stage.getViewport().update(width, height, true);
 	}
 
-	public Stage getHUDStage() {
-		return hudStage;
+	public Stage getStage() {
+		return stage;
 	}
 
-	public Skin getHUDSkin() {
-		return hudSkin;
+	public Skin getSkin() {
+		return skin;
 	}
 
 	@Override
@@ -173,16 +173,16 @@ public class HUD implements Dungeon.Listener {
 	@Override
 	public void onTurn(long turn) {
 		Player player = dungeon.getPlayer();
-		updateHUDPlayerLabel(player);
-		updateHUDInfoLine(player);
-		updateHUDAttributes(player);
-		updateHUDBrightness(player);
-		updateHUDNutrition(player);
-		updateHUDStatusEffects(player);
+		updatePlayerLabel(player);
+		updateInfoLine(player);
+		updateAttributes(player);
+		updateBrightness(player);
+		updateNutrition(player);
+		updateStatusEffects(player);
 	}
 
-	private void updateHUDPlayerLabel(Player player) {
-		hudPlayerLabel.setText(String.format(
+	private void updatePlayerLabel(Player player) {
+		playerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
 			player.getName(true),
 			player.getRole().getName(),
@@ -192,49 +192,49 @@ public class HUD implements Dungeon.Listener {
 		));
 	}
 
-	private void updateHUDInfoLine(Player player) {
-		((Label) hudInfoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
+	private void updateInfoLine(Player player) {
+		((Label) infoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
 	}
 
-	private void updateHUDAttributes(Player player) {
-		((Label) hudAttributes.findActor("attributeStrength")).setText("STR: " + player.getStrength());
-		((Label) hudAttributes.findActor("attributeAgility")).setText("AGI: " + player.getAgility());
-		((Label) hudAttributes.findActor("attributeDexterity")).setText("DXT: " + player.getDexterity());
-		((Label) hudAttributes.findActor("attributeConstitution")).setText("CON: " + player.getConstitution());
-		((Label) hudAttributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
-		((Label) hudAttributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
-		((Label) hudAttributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
+	private void updateAttributes(Player player) {
+		((Label) attributes.findActor("attributeStrength")).setText("STR: " + player.getStrength());
+		((Label) attributes.findActor("attributeAgility")).setText("AGI: " + player.getAgility());
+		((Label) attributes.findActor("attributeDexterity")).setText("DXT: " + player.getDexterity());
+		((Label) attributes.findActor("attributeConstitution")).setText("CON: " + player.getConstitution());
+		((Label) attributes.findActor("attributeIntelligence")).setText("INT: " + player.getIntelligence());
+		((Label) attributes.findActor("attributeWisdom")).setText("WIS: " + player.getWisdom());
+		((Label) attributes.findActor("attributeCharisma")).setText("CHA: " + player.getCharisma());
 	}
 
-	private void updateHUDBrightness(Player player) {
-		hudBrightness.clearChildren();
+	private void updateBrightness(Player player) {
+		brightness.clearChildren();
 
 		if (player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
-			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
+			brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
 		} else {
-			hudBrightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));
+			brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));
 		}
 
-		hudBrightness.addActor(new Label("BRI: " + player.getLightLevel(), hudSkin));
+		brightness.addActor(new Label("BRI: " + player.getLightLevel(), skin));
 	}
 
-	private void updateHUDNutrition(Player player) {
-		((Label) hudTable.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
+	private void updateNutrition(Player player) {
+		((Label) root.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
 
 		switch (player.getNutritionState().getImportance()) {
 			case 1:
-				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));
+				root.findActor("attributeNutrition").setColor(Colors.get("P_YELLOW"));
 				break;
 			case 2:
-				hudTable.findActor("attributeNutrition").setColor(Colors.get("P_RED"));
+				root.findActor("attributeNutrition").setColor(Colors.get("P_RED"));
 				break;
 			default:
-				hudTable.findActor("attributeNutrition").setColor(Color.WHITE);
+				root.findActor("attributeNutrition").setColor(Color.WHITE);
 				break;
 		}
 	}
 
-	private void updateHUDStatusEffects(Player player) {
+	private void updateStatusEffects(Player player) {
 		if (player.getStatusEffects().size() > 0) {
 			java.util.List<String> effects = player.getStatusEffects().stream()
 				.map(e -> {
@@ -251,9 +251,9 @@ public class HUD implements Dungeon.Listener {
 				})
 				.collect(Collectors.toList());
 
-			hudEffectsLabel.setText(StringUtils.join(effects, " "));
+			effectsLabel.setText(StringUtils.join(effects, " "));
 		} else {
-			hudEffectsLabel.setText("");
+			effectsLabel.setText("");
 		}
 	}
 
@@ -263,7 +263,7 @@ public class HUD implements Dungeon.Listener {
 
 		log.add(entry);
 
-		hudLog.clearChildren();
+		gameLog.clearChildren();
 
 		int logSize = Math.min(7, log.size());
 
@@ -274,24 +274,24 @@ public class HUD implements Dungeon.Listener {
 				s = "[#CCCCCCEE]" + s;
 			}
 
-			Label newEntry = new Label(s, hudSkin, "default");
-			hudLog.add(newEntry).left().growX();
-			hudLog.row();
+			Label newEntry = new Label(s, skin, "default");
+			gameLog.add(newEntry).left().growX();
+			gameLog.row();
 		}
 	}
 
 	@Override
 	public void onPrompt(Prompt prompt) {
 		if (prompt == null) {
-			hudPromptLabel.setText("");
+			promptLabel.setText("");
 		} else {
 			if (prompt.getOptions() == null) {
-				hudPromptLabel.setText(String.format(
+				promptLabel.setText(String.format(
 					"[P_CYAN_1]%s[]",
 					prompt.getMessage()
 				));
 			} else {
-				hudPromptLabel.setText(String.format(
+				promptLabel.setText(String.format(
 					"[P_CYAN_1]%s[] [[[P_YELLOW]%s[]]",
 					prompt.getMessage(),
 					prompt.getOptionsString()
@@ -316,7 +316,7 @@ public class HUD implements Dungeon.Listener {
 	}
 
 	public void dispose() {
-		hudStage.dispose();
-		hudSkin.dispose();
+		stage.dispose();
+		skin.dispose();
 	}
 }

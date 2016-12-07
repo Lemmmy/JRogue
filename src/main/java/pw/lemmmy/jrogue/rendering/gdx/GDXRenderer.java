@@ -91,12 +91,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightSpriteBatch = new SpriteBatch();
 
 		hud = new HUD(dungeon);
-		hud.setupHUD();
+		hud.init();
 		dungeon.addListener(hud);
 
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hud.getHUDStage());
+		inputMultiplexer.addProcessor(hud.getStage());
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		onLevelChange(dungeon.getLevel());
@@ -452,15 +452,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	public void showDebugWindow() {
-		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new DebugWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showInventoryWindow() {
-		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	public void showWishWindow() {
-		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getHUDStage(), hud.getHUDSkin(), dungeon, dungeon.getLevel()).show());
+		nextFrameDeferred.add(() -> new WishWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel()).show());
 	}
 
 	public OrthographicCamera getCamera() {
