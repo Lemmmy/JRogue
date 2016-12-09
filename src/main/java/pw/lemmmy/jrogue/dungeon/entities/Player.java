@@ -454,11 +454,17 @@ public class Player extends LivingEntity {
 		for (Entity entity : floorEntities) {
 			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
 				ItemStack stack = ((EntityItem) entity).getItemStack();
+				Item item = stack.getItem();
 
-				if (addToInventory(stack)) {
+				if (item instanceof ItemGold) {
+					giveGold(stack.getCount());
 					getLevel().removeEntity(entity);
-					getDungeon().turn();
-					break;
+				} else {
+					if (addToInventory(stack)) {
+						getLevel().removeEntity(entity);
+						getDungeon().turn();
+						break;
+					}
 				}
 			}
 		}
