@@ -459,6 +459,7 @@ public class Player extends LivingEntity {
 				if (item instanceof ItemGold) {
 					giveGold(stack.getCount());
 					getLevel().removeEntity(entity);
+					getDungeon().turn();
 				} else {
 					if (addToInventory(stack)) {
 						getLevel().removeEntity(entity);
