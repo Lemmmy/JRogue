@@ -4,12 +4,19 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Container {
 	private Map<Character, ItemStack> items = new LinkedHashMap<>();
+	private List<ContainerListener> listeners = new ArrayList<>();
+
+	public void addListener(ContainerListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(ContainerListener listener) {
+		listeners.remove(listener);
+	}
 
 	public char getAvailableInventoryLetter() {
 		for (char letter : Utils.INVENTORY_CHARS) {
@@ -33,15 +40,17 @@ public class Container {
 
 			if (item.equals(storedStack.getItem())) {
 				storedStack.addCount(stack.getCount());
-
-				return Optional.of(new ContainerEntry(entry));
+				ContainerEntry newEntry = new ContainerEntry(entry);
+				listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
+				return Optional.of(newEntry);
 			}
 		}
 
 		char letter = getAvailableInventoryLetter();
 		items.put(letter, stack);
-
-		return Optional.of(new ContainerEntry(letter, stack));
+		ContainerEntry newEntry = new ContainerEntry(letter, stack);
+		listeners.forEach(l -> l.onItemAdd(newEntry));
+		return Optional.of(newEntry);
 	}
 
 	public boolean canAdd(ItemStack stack) {
@@ -59,6 +68,14 @@ public class Container {
 			return Optional.of(new ContainerEntry(letter, items.get(letter)));
 		} else {
 			return Optional.empty();
+		}
+	}
+
+	public void remove(Character letter) {
+		if (items.containsKey(letter)) {
+			ContainerEntry entry = new ContainerEntry(letter, items.get(letter));
+			items.remove(letter);
+			listeners.forEach(l -> l.onItemRemove(entry));
 		}
 	}
 
@@ -90,5 +107,11 @@ public class Container {
 			items.put(letter, value);
 			return oldValue;
 		}
+	}
+
+	public interface ContainerListener {
+		void onItemAdd(ContainerEntry entry);
+		void onItemIncrement(ContainerEntry entry, int amount);
+		void onItemRemove(ContainerEntry entry);
 	}
 }
