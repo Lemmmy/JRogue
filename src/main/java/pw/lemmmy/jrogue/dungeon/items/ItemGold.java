@@ -19,4 +19,9 @@ public class ItemGold extends Item {
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_GOLD;
 	}
+
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.MISCELLANEOUS;
+	}
 }
