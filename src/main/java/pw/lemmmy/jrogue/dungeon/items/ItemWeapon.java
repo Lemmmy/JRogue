@@ -14,4 +14,9 @@ public abstract class ItemWeapon extends Item {
 	public abstract boolean isRanged();
 
 	public abstract boolean isMagic();
+
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.WEAPON;
+	}
 }

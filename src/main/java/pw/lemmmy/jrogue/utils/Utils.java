@@ -7,6 +7,9 @@ import org.apache.commons.lang3.Range;
 import java.util.*;
 
 public class Utils {
+	public static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		.toCharArray();
+
 	public static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
 	public static final Map<Character, Integer[]> MOVEMENT_CHARS = new HashMap<>();
 	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};

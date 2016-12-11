@@ -37,6 +37,11 @@ public class ItemCorpse extends ItemComestible {
 	}
 
 	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.COMESTIBLE;
+	}
+
+	@Override
 	public int getNutrition() {
 		if (entity instanceof Monster) {
 			return ((Monster) entity).getNutrition();

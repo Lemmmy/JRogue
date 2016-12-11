@@ -29,6 +29,10 @@ public class ItemStack {
 		return item.getAppearance();
 	}
 
+	public ItemCategory getCategory() {
+		return item.getCategory();
+	}
+
 	public int getCount() {
 		return count;
 	}

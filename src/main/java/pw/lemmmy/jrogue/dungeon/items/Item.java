@@ -44,6 +44,7 @@ public abstract class Item {
 	}
 
 	public abstract ItemAppearance getAppearance();
+	public abstract ItemCategory getCategory();
 
 	public BUCStatus getBUCStatus() {
 		return bucStatus;

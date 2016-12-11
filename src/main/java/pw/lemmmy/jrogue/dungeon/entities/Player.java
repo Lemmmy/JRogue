@@ -24,9 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
-	private static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-		.toCharArray();
-
 	private Pcg32 rand = new Pcg32();
 
 	private String name;
@@ -86,7 +83,7 @@ public class Player extends LivingEntity {
 	}
 
 	public char getAvailableInventoryLetter() {
-		for (char letter : INVENTORY_CHARS) {
+		for (char letter : Utils.INVENTORY_CHARS) {
 			if (!inventory.containsKey(letter)) {
 				return letter;
 			}
