@@ -238,6 +238,7 @@ public class Player extends LivingEntity {
 		if (getHealth() > getMaxHealth()) {
 			setHealth(getMaxHealth());
 		}
+
 		if (godmode) {
 			setHealth(getMaxHealth());
 		}
