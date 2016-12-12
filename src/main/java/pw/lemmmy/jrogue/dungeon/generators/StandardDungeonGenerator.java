@@ -12,6 +12,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.WeightedCollection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class StandardDungeonGenerator extends DungeonGenerator {
+	private static final WeightedCollection<Class> ROOM_TYPES = new WeightedCollection<>();
+
+	static {
+		ROOM_TYPES.add(8, RoomBasic.class);
+		ROOM_TYPES.add(2, RoomFountain.class);
+	}
+
 	private static final int MIN_ROOM_WIDTH = 5;
 	private static final int MAX_ROOM_WIDTH = 20;
 
@@ -83,6 +91,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		addWaterBodies();
 		if (!chooseSpawnRoom()) { return false; }
 		chooseDownstairsRoom();
+		addRoomFeatures();
 		spawnFish();
 		spawnMonsters();
 
@@ -90,7 +99,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
-		buildRoom(roomX, roomY, roomWidth, roomHeight);
+		buildRoom(ROOM_TYPES.next(), roomX, roomY, roomWidth, roomHeight);
 
 		for (int[] direction : Utils.DIRECTIONS) {
 			int attempts = 0;
@@ -266,6 +275,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				}
 			}
 		}
+	}
+
+	private void addRoomFeatures() {
+		rooms.forEach(Room::addFeatures);
 	}
 
 	private void spawnFish() {

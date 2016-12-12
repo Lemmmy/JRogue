@@ -1,12 +1,11 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room {
+public abstract class Room {
 	private Level level;
 
 	private int roomX;
@@ -83,21 +82,6 @@ public class Room {
 		this.isSpawn = true;
 	}
 
-	public void build() {
-		for (int y = roomY; y < roomY + roomHeight; y++) {
-			for (int x = roomX; x < roomX + roomWidth; x++) {
-				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
-
-				if (wall) {
-					if (x > roomX && x < roomX + roomWidth - 1 && x % 4 == 0) {
-						level.setTileType(x, y, TileType.TILE_ROOM_TORCH_FIRE);
-					} else {
-						level.setTileType(x, y, TileType.TILE_ROOM_WALL);
-					}
-				} else {
-					level.setTileType(x, y, TileType.TILE_ROOM_FLOOR);
-				}
-			}
-		}
-	}
+	public abstract void build();
+	public abstract void addFeatures();
 }

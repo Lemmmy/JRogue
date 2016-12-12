@@ -6,6 +6,8 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,11 +50,25 @@ public abstract class DungeonGenerator {
 		return true;
 	}
 
-	protected Room buildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
-		Room room = new Room(level, roomX, roomY, roomWidth, roomHeight);
-		rooms.add(room);
-		room.build();
-		return room;
+	@SuppressWarnings("unchecked")
+	protected Room buildRoom(Class roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
+		try {
+			Constructor roomConstructor = roomType.getConstructor(
+				Level.class, int.class, int.class, int.class, int.class
+			);
+
+			Room room = (Room) roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
+			room.build();
+
+			rooms.add(room);
+			return room;
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			e.printStackTrace();
+
+			System.exit(50000000);
+		}
+
+		return null;
 	}
 
 	protected void buildLine(int startX,
