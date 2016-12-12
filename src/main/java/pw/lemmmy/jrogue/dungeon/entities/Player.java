@@ -460,15 +460,24 @@ public class Player extends LivingEntity {
 					getDungeon().turn();
 
 					if (item.isis() || stack.getCount() > 1) {
-						getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result.get()
-																											 .getLetter());
+						getDungeon().You(
+							"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
+							stack.getName(false),
+							result.get().getLetter()
+						);
 					} else {
 						if (stack.beginsWithVowel()) {
-							getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result
-								.get().getLetter());
+							getDungeon().You(
+								"pick up an [YELLOW]%s[] ([YELLOW]%s[]).",
+								stack.getName(false),
+								result.get().getLetter()
+							);
 						} else {
-							getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result
-								.get().getLetter());
+							getDungeon().You(
+								"pick up a [YELLOW]%s[] ([YELLOW]%s[]).",
+								stack.getName(false),
+								result.get().getLetter()
+							);
 						}
 					}
 
@@ -478,6 +487,10 @@ public class Player extends LivingEntity {
 				}
 			}
 		}
+	}
+
+	public void giveGold(int amount) {
+		gold += amount;
 	}
 
 	public void drop() {
@@ -606,8 +619,8 @@ public class Player extends LivingEntity {
 	public Map<Character, ItemStack> getWieldablesInInventory() {
 		if (getContainer().isPresent()) {
 			return getContainer().get().getItems().entrySet().stream()
-				 .filter(e -> e.getValue().getItem() instanceof Wieldable)
-				 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+								 .filter(e -> e.getValue().getItem() instanceof Wieldable)
+								 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
 			return Collections.emptyMap();
 		}
@@ -637,10 +650,6 @@ public class Player extends LivingEntity {
 
 	public int getGold() {
 		return gold;
-	}
-
-	public void giveGold(int amount) {
-		gold += amount;
 	}
 
 	public boolean canTakeGold(int amount) {
