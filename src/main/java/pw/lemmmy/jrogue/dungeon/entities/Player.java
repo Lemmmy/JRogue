@@ -447,7 +447,7 @@ public class Player extends LivingEntity {
 					giveGold(stack.getCount());
 					getLevel().removeEntity(entity);
 					getDungeon().turn();
-					getDungeon().You("pick up [YELLOW]%s[]", stack.getName(false));
+					getDungeon().You("pick up [YELLOW]%s[].", stack.getName(false));
 				} else if (getContainer().isPresent()) {
 					Optional<Container.ContainerEntry> result = getContainer().get().add(stack);
 
@@ -460,12 +460,15 @@ public class Player extends LivingEntity {
 					getDungeon().turn();
 
 					if (item.isis() || stack.getCount() > 1) {
-						getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
+						getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result.get()
+																											 .getLetter());
 					} else {
 						if (stack.beginsWithVowel()) {
-							getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
+							getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result
+								.get().getLetter());
 						} else {
-							getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
+							getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), result
+								.get().getLetter());
 						}
 					}
 
@@ -516,12 +519,12 @@ public class Player extends LivingEntity {
 				getLevel().addEntity(entityItem);
 
 				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 				} else {
 					if (stack.beginsWithVowel()) {
-						getDungeon().You("drop an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+						getDungeon().You("drop an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 					} else {
-						getDungeon().You("drop a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+						getDungeon().You("drop a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 					}
 				}
 			}
@@ -588,12 +591,12 @@ public class Player extends LivingEntity {
 				}
 
 				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 				} else {
 					if (stack.beginsWithVowel()) {
-						getDungeon().You("wield an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+						getDungeon().You("wield an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 					} else {
-						getDungeon().You("wield a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+						getDungeon().You("wield a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 					}
 				}
 			}
