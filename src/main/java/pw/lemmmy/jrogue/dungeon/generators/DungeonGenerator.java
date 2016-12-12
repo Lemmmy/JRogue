@@ -64,8 +64,6 @@ public abstract class DungeonGenerator {
 			return room;
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			e.printStackTrace();
-
-			System.exit(50000000);
 		}
 
 		return null;
