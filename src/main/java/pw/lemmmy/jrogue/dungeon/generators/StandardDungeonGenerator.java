@@ -152,8 +152,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	private void buildCorridors() {
-		for (DungeonGenerator.Room a : rooms) {
-			for (DungeonGenerator.Room b : a.getTouching()) {
+		for (Room a : rooms) {
+			for (Room b : a.getTouching()) {
 				float dx = b.getCenterX() - a.getCenterX();
 				float dy = b.getCenterY() - a.getCenterY();
 

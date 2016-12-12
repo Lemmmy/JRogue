@@ -49,24 +49,9 @@ public abstract class DungeonGenerator {
 	}
 
 	protected Room buildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
-		for (int y = roomY; y < roomY + roomHeight; y++) {
-			for (int x = roomX; x < roomX + roomWidth; x++) {
-				boolean wall = x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1;
-
-				if (wall) {
-					if (x > roomX && x < roomX + roomWidth - 1 && x % 4 == 0) {
-						level.setTileType(x, y, TileType.TILE_ROOM_TORCH_FIRE);
-					} else {
-						level.setTileType(x, y, TileType.TILE_ROOM_WALL);
-					}
-				} else {
-					level.setTileType(x, y, TileType.TILE_ROOM_FLOOR);
-				}
-			}
-		}
-
-		Room room = new Room(roomX, roomY, roomWidth, roomHeight);
+		Room room = new Room(level, roomX, roomY, roomWidth, roomHeight);
 		rooms.add(room);
+		room.build();
 		return room;
 	}
 
@@ -293,92 +278,6 @@ public abstract class DungeonGenerator {
 
 		public Orientation getOrientationB() {
 			return orientationB;
-		}
-	}
-
-	/***
-	 * Temporary room positions used during generation
-	 */
-	public class Room {
-		private int roomX;
-		private int roomY;
-		private int roomWidth;
-		private int roomHeight;
-
-		/***
-		 * List of rooms this room should be connected to
-		 */
-		private List<Room> touching = new ArrayList<>();
-
-		private List<ConnectionPoint> connectionPoints = new ArrayList<>();
-		private boolean isSpawn = false;
-
-		public Room(int roomX, int roomY, int roomWidth, int roomHeight) {
-			this.roomX = roomX;
-			this.roomY = roomY;
-			this.roomWidth = roomWidth;
-			this.roomHeight = roomHeight;
-		}
-
-		public int getCenterX() {
-			return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
-		}
-
-		public int getRoomX() {
-			return roomX;
-		}
-
-		public int getRoomWidth() {
-			return roomWidth;
-		}
-
-		public int getCenterY() {
-			return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
-		}
-
-		public int getRoomY() {
-			return roomY;
-		}
-
-		public int getRoomHeight() {
-			return roomHeight;
-		}
-
-		public boolean addTouching(Room room) {
-			return touching.add(room);
-		}
-
-		public boolean addConnectionPoint(ConnectionPoint point) {
-			return connectionPoints.add(point);
-		}
-
-		@Override
-		public String toString() {
-			return String.format(
-				"x: %d y: %d %dx%d %d touching %d connection point(s)",
-				getRoomX(),
-				getRoomY(),
-				getRoomWidth(),
-				getRoomHeight(),
-				getTouching().size(),
-				getConnectionPoints().size()
-			);
-		}
-
-		public List<Room> getTouching() {
-			return touching;
-		}
-
-		public List<ConnectionPoint> getConnectionPoints() {
-			return connectionPoints;
-		}
-
-		public boolean isSpawn() {
-			return isSpawn;
-		}
-
-		public void setSpawn() {
-			this.isSpawn = true;
 		}
 	}
 }
