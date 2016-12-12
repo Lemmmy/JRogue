@@ -8,6 +8,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Entity {
 	private int lastX;
@@ -83,6 +84,18 @@ public abstract class Entity {
 		this.lastY = lastY;
 	}
 
+	public int getDepth() {
+		return 1;
+	}
+
+	public Optional<Container> getContainer() {
+		return Optional.empty();
+	}
+
+	public boolean canContainerBeOpened() {
+		return false;
+	}
+
 	public Dungeon getDungeon() {
 		return dungeon;
 	}
@@ -133,8 +146,4 @@ public abstract class Entity {
 	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
 
 	public abstract boolean canBeWalkedOn();
-
-	public int getDepth() {
-		return 1;
-	}
 }

@@ -380,8 +380,8 @@ public class Dungeon {
 				item = new ItemDagger(material);
 			}
 
-			if (item != null) {
-				player.addToInventory(new ItemStack(item));
+			if (item != null && player.getContainer().isPresent()) {
+				player.getContainer().get().add(new ItemStack(item));
 
 				return true;
 			}

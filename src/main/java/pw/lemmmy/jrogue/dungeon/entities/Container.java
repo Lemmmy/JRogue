@@ -7,25 +7,25 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.util.*;
 
 public class Container {
+	private String name;
+
 	private Map<Character, ItemStack> items = new LinkedHashMap<>();
 	private List<ContainerListener> listeners = new ArrayList<>();
 
-	public void addListener(ContainerListener listener) {
-		listeners.add(listener);
+	public Container(String name) {
+		this.name = name;
 	}
 
-	public void removeListener(ContainerListener listener) {
-		listeners.remove(listener);
+	public String getName() {
+		return name;
 	}
 
-	public char getAvailableInventoryLetter() {
-		for (char letter : Utils.INVENTORY_CHARS) {
-			if (!items.containsKey(letter)) {
-				return letter;
-			}
-		}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-		return ' ';
+	public Map<Character, ItemStack> getItems() {
+		return items;
 	}
 
 	public Optional<ContainerEntry> add(ItemStack stack) {
@@ -63,6 +63,16 @@ public class Container {
 		return getAvailableInventoryLetter() != ' ';
 	}
 
+	public char getAvailableInventoryLetter() {
+		for (char letter : Utils.INVENTORY_CHARS) {
+			if (!items.containsKey(letter)) {
+				return letter;
+			}
+		}
+
+		return ' ';
+	}
+
 	public Optional<ContainerEntry> get(Character letter) {
 		if (items.containsKey(letter)) {
 			return Optional.of(new ContainerEntry(letter, items.get(letter)));
@@ -71,12 +81,32 @@ public class Container {
 		}
 	}
 
+	public boolean has(Character letter) {
+		return items.containsKey(letter);
+	}
+
 	public void remove(Character letter) {
 		if (items.containsKey(letter)) {
 			ContainerEntry entry = new ContainerEntry(letter, items.get(letter));
 			items.remove(letter);
 			listeners.forEach(l -> l.onItemRemove(entry));
 		}
+	}
+
+	public void addListener(ContainerListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(ContainerListener listener) {
+		listeners.remove(listener);
+	}
+
+	public interface ContainerListener {
+		void onItemAdd(ContainerEntry entry);
+
+		void onItemIncrement(ContainerEntry entry, int amount);
+
+		void onItemRemove(ContainerEntry entry);
 	}
 
 	public class ContainerEntry {
@@ -107,11 +137,5 @@ public class Container {
 			items.put(letter, value);
 			return oldValue;
 		}
-	}
-
-	public interface ContainerListener {
-		void onItemAdd(ContainerEntry entry);
-		void onItemIncrement(ContainerEntry entry, int amount);
-		void onItemRemove(ContainerEntry entry);
 	}
 }

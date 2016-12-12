@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemMap;
@@ -22,19 +22,27 @@ public class InventoryWindow extends PopupWindow {
 
 	@Override
 	public void populateWindow() {
+		Player player = getDungeon().getPlayer();
+
+		if (!player.getContainer().isPresent()) {
+			Label label = new Label("You can't hold anything.", getSkin(), "windowStyle");
+			label.setWrap(true);
+			getWindow().getContentTable().add(label).pad(16).prefWidth(350);
+			getWindow().pack();
+			return;
+		}
+
+		pw.lemmmy.jrogue.dungeon.entities.Container inventory = player.getContainer().get();
+
 		getWindow().setWidth(300f);
 		getWindow().setHeight(400f);
-
-		// getWindow().setDebug(true);
 
 		Table mainTable = new Table(getSkin());
 		ScrollPane scrollPane = new ScrollPane(mainTable, getSkin());
 
 		scrollPane.setFillParent(true);
 
-		Player player = getDungeon().getPlayer();
-
-		player.getInventory().forEach((character, itemStack) -> { // TODO: categorical item grouping
+		inventory.getItems().forEach((character, itemStack) -> { // TODO: categorical item grouping
 			Item item = itemStack.getItem();
 			Table itemTable = new Table();
 

@@ -44,8 +44,6 @@ public class Player extends LivingEntity {
 	private int gold = 0;
 
 	private boolean godmode = false;
-
-	private Map<Character, ItemStack> inventory;
 	private Map<Skill, SkillLevel> skills;
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
@@ -71,25 +69,17 @@ public class Player extends LivingEntity {
 		charisma = role.getCharisma() + (int) ((float) Math
 			.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
 
-		inventory = new LinkedHashMap<>();
+		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
 
-		role.getStartingItems().forEach(i -> inventory.put(getAvailableInventoryLetter(), i));
-		setLeftHand(role.getStartingLeftHand());
-		setRightHand(role.getStartingRightHand());
+		if (getContainer().isPresent()) {
+			role.getStartingItems().forEach(getContainer().get()::add);
+			setLeftHand(role.getStartingLeftHand());
+			setRightHand(role.getStartingRightHand());
+		}
 
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
-	}
-
-	public char getAvailableInventoryLetter() {
-		for (char letter : Utils.INVENTORY_CHARS) {
-			if (!inventory.containsKey(letter)) {
-				return letter;
-			}
-		}
-
-		return ' ';
 	}
 
 	@Override
@@ -457,76 +447,45 @@ public class Player extends LivingEntity {
 					giveGold(stack.getCount());
 					getLevel().removeEntity(entity);
 					getDungeon().turn();
-				} else {
-					if (addToInventory(stack)) {
-						getLevel().removeEntity(entity);
-						getDungeon().turn();
-						break;
+					getDungeon().You("pick up [YELLOW]%s[]", stack.getName(false));
+				} else if (getContainer().isPresent()) {
+					Optional<Container.ContainerEntry> result = getContainer().get().add(stack);
+
+					if (!result.isPresent()) {
+						getDungeon().You("can't hold any more items.");
+						return;
 					}
-				}
-			}
-		}
-	}
 
-	public boolean addToInventory(ItemStack stack) {
-		Item item = stack.getItem();
+					getLevel().removeEntity(entity);
+					getDungeon().turn();
 
-		if (!canPickUpItem(item)) {
-			getDungeon().You("can't hold any more items.");
-
-			return false;
-		}
-
-		for (Map.Entry<Character, ItemStack> entry : inventory.entrySet()) {
-			ItemStack invStack = entry.getValue();
-
-			if (item.equals(invStack.getItem())) {
-				char letter = entry.getKey();
-
-				invStack.addCount(stack.getCount());
-
-				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-				} else {
-					if (stack.beginsWithVowel()) {
-						getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+					if (item.isis() || stack.getCount() > 1) {
+						getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
 					} else {
-						getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
+						if (stack.beginsWithVowel()) {
+							getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
+						} else {
+							getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), result.get().getLetter());
+						}
 					}
+
+					break;
+				} else {
+					getDungeon().You("can't hold anything!");
 				}
-
-				return true;
 			}
 		}
-
-		char letter = getAvailableInventoryLetter();
-		inventory.put(letter, stack);
-
-		if (item.isis() || stack.getCount() > 1) {
-			getDungeon().You("pick up [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-		} else {
-			if (stack.beginsWithVowel()) {
-				getDungeon().You("pick up an [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-			} else {
-				getDungeon().You("pick up a [YELLOW]%s[] ([YELLOW]%s[])", stack.getName(false), letter);
-			}
-		}
-
-		return true;
-	}
-
-	public boolean canPickUpItem(Item item) {
-		for (ItemStack invStack : inventory.values()) {
-			if (item.equals(invStack.getItem())) {
-				return true;
-			}
-		}
-
-		return getAvailableInventoryLetter() != ' ';
 	}
 
 	public void drop() {
-		char[] options = ArrayUtils.toPrimitive(inventory.keySet().toArray(new Character[0]));
+		if (!getContainer().isPresent()) {
+			getDungeon().You("can't hold anything!");
+			return;
+		}
+
+		Container inventory = getContainer().get();
+
+		char[] options = ArrayUtils.toPrimitive(inventory.getItems().keySet().toArray(new Character[0]));
 
 		getDungeon().prompt(new Prompt("Drop what?", options, new Prompt.PromptCallback() {
 			@Override
@@ -541,15 +500,17 @@ public class Player extends LivingEntity {
 
 			@Override
 			public void onResponse(char letter) {
-				if (!inventory.containsKey(letter)) {
+				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
+
+				if (!containerEntry.isPresent()) {
 					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
 					return;
 				}
 
-				ItemStack stack = inventory.get(letter);
+				ItemStack stack = containerEntry.get().getStack();
 				Item item = stack.getItem();
 
-				removeFromInventory(letter);
+				inventory.remove(letter);
 
 				EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), stack, getX(), getY());
 				getLevel().addEntity(entityItem);
@@ -567,21 +528,14 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
-	public void removeFromInventory(Character letter) {
-		ItemStack stack = inventory.get(letter);
-
-		if (stack == getLeftHand()) {
-			setLeftHand(null);
-		}
-
-		if (stack == getRightHand()) {
-			setRightHand(null);
-		}
-
-		inventory.remove(letter);
-	}
-
 	public void wield() {
+		if (!getContainer().isPresent()) {
+			getDungeon().You("can't wield anything!");
+			return;
+		}
+
+		Container inventory = getContainer().get();
+
 		Map<Character, ItemStack> wieldables = getWieldablesInInventory();
 
 		if (wieldables.size() == 0) {
@@ -613,12 +567,14 @@ public class Player extends LivingEntity {
 					return;
 				}
 
-				if (!inventory.containsKey(letter)) {
+				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
+
+				if (!containerEntry.isPresent()) {
 					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
 					return;
 				}
 
-				ItemStack stack = inventory.get(letter);
+				ItemStack stack = containerEntry.get().getStack();
 				Item item = stack.getItem();
 
 				if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
@@ -645,9 +601,13 @@ public class Player extends LivingEntity {
 	}
 
 	public Map<Character, ItemStack> getWieldablesInInventory() {
-		return inventory.entrySet().stream()
-						.filter(e -> e.getValue().getItem() instanceof Wieldable)
-						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		if (getContainer().isPresent()) {
+			return getContainer().get().getItems().entrySet().stream()
+				 .filter(e -> e.getValue().getItem() instanceof Wieldable)
+				 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else {
+			return Collections.emptyMap();
+		}
 	}
 
 	public void swapHands() {
@@ -658,10 +618,6 @@ public class Player extends LivingEntity {
 		setRightHand(left);
 
 		getDungeon().You("swap your weapons.");
-	}
-
-	public Map<Character, ItemStack> getInventory() {
-		return inventory;
 	}
 
 	public SkillLevel getSkillLevel(Skill skill) {
@@ -680,16 +636,16 @@ public class Player extends LivingEntity {
 		return gold;
 	}
 
+	public void giveGold(int amount) {
+		gold += amount;
+	}
+
 	public boolean canTakeGold(int amount) {
 		return gold > amount;
 	}
 
 	public void takeGold(int amount) {
 		gold = Math.max(0, gold - amount);
-	}
-
-	public void giveGold(int amount) {
-		gold += amount;
 	}
 
 	public void godmode() {

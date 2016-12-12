@@ -14,6 +14,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	private int experienceLevel = 1;
 
+	private Container inventory;
+
 	private ItemStack leftHand;
 	private ItemStack rightHand;
 
@@ -69,6 +71,15 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 
 	public abstract Size getSize();
+
+	@Override
+	public Optional<Container> getContainer() {
+		return Optional.of(inventory);
+	}
+
+	protected void setInventoryContainer(Container container) {
+		this.inventory = container;
+	}
 
 	public ItemStack getLeftHand() {
 		return leftHand;

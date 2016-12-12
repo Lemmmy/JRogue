@@ -44,7 +44,6 @@ public abstract class Item {
 	}
 
 	public abstract ItemAppearance getAppearance();
-	public abstract ItemCategory getCategory();
 
 	public BUCStatus getBUCStatus() {
 		return bucStatus;
@@ -53,6 +52,8 @@ public abstract class Item {
 	public void setBUCStatus(BUCStatus bucStatus) {
 		this.bucStatus = bucStatus;
 	}
+
+	public abstract ItemCategory getCategory();
 
 	public enum BUCStatus {
 		BLESSED,
