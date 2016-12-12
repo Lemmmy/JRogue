@@ -129,22 +129,28 @@ public class Player extends LivingEntity {
 		return LivingEntity.Size.LARGE;
 	}
 
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-
-	}
-
-	@Override
-	protected void onDie(DamageSource damageSource) {
-		if (damageSource.getDeathString() != null) {
-			getDungeon().log(damageSource.getDeathString());
-		} else {
-			getDungeon().You("die.");
-		}
+	public Role getRole() {
+		return role;
 	}
 
 	public int getNutrition() {
 		return nutrition;
+	}
+
+	public NutritionState getNutritionState() {
+		if (nutrition >= 1500) {
+			return NutritionState.CHOKING;
+		} else if (nutrition >= 1000) {
+			return NutritionState.STUFFED;
+		} else if (nutrition >= 600) {
+			return NutritionState.NOT_HUNGRY;
+		} else if (nutrition >= 300) {
+			return NutritionState.HUNGRY;
+		} else if (nutrition >= 0) {
+			return NutritionState.STARVING;
+		} else {
+			return NutritionState.FAINTING;
+		}
 	}
 
 	public int getStrength() {
@@ -163,6 +169,10 @@ public class Player extends LivingEntity {
 		return intelligence;
 	}
 
+	public int getWisdom() {
+		return wisdom;
+	}
+
 	public int getCharisma() {
 		return charisma;
 	}
@@ -175,6 +185,50 @@ public class Player extends LivingEntity {
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_PLAYER;
+	}
+
+	public void giveGold(int amount) {
+		gold += amount;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public boolean canTakeGold(int amount) {
+		return gold > amount;
+	}
+
+	public void takeGold(int amount) {
+		gold = Math.max(0, gold - amount);
+	}
+
+	public int getVisibilityRange() {
+		return 10 * ((getLightLevel() - 20) / 100) + 10;
+	}
+
+	public int getLightLevel() {
+		return getLevel().getTile(getX(), getY()).getLightIntensity();
+	}
+
+	public int getCorridorVisibilityRange() {
+		return 2 * ((getLightLevel() - 20) / 100) + 5;
+	}
+
+	public SkillLevel getSkillLevel(Skill skill) {
+		if (!skills.containsKey(skill)) {
+			return SkillLevel.UNSKILLED;
+		} else {
+			return skills.get(skill);
+		}
+	}
+
+	public boolean isDebugger() {
+		return name.equalsIgnoreCase("debugger");
+	}
+
+	public void godmode() {
+		this.godmode = true;
 	}
 
 	@Override
@@ -192,6 +246,20 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource) {
+		if (damageSource.getDeathString() != null) {
+			getDungeon().log(damageSource.getDeathString());
+		} else {
+			getDungeon().You("die.");
+		}
+	}
+
+	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("step on your own foot.");
 	}
@@ -203,18 +271,6 @@ public class Player extends LivingEntity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return false;
-	}
-
-	public int getVisibilityRange() {
-		return 10 * ((getLightLevel() - 20) / 100) + 10;
-	}
-
-	public int getLightLevel() {
-		return getLevel().getTile(getX(), getY()).getLightIntensity();
-	}
-
-	public int getCorridorVisibilityRange() {
-		return 2 * ((getLightLevel() - 20) / 100) + 5;
 	}
 
 	public void teleport(int x, int y) {
@@ -325,10 +381,6 @@ public class Player extends LivingEntity {
 		}, true));
 	}
 
-	public Role getRole() {
-		return role;
-	}
-
 	public void eat() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 
@@ -415,26 +467,6 @@ public class Player extends LivingEntity {
 		return ItemComestible.EatenState.EATEN;
 	}
 
-	public NutritionState getNutritionState() {
-		if (nutrition >= 1500) {
-			return NutritionState.CHOKING;
-		} else if (nutrition >= 1000) {
-			return NutritionState.STUFFED;
-		} else if (nutrition >= 600) {
-			return NutritionState.NOT_HUNGRY;
-		} else if (nutrition >= 300) {
-			return NutritionState.HUNGRY;
-		} else if (nutrition >= 0) {
-			return NutritionState.STARVING;
-		} else {
-			return NutritionState.FAINTING;
-		}
-	}
-
-	public int getWisdom() {
-		return wisdom;
-	}
-
 	public void pickup() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 
@@ -487,10 +519,6 @@ public class Player extends LivingEntity {
 				}
 			}
 		}
-	}
-
-	public void giveGold(int amount) {
-		gold += amount;
 	}
 
 	public void drop() {
@@ -634,34 +662,6 @@ public class Player extends LivingEntity {
 		setRightHand(left);
 
 		getDungeon().You("swap your weapons.");
-	}
-
-	public SkillLevel getSkillLevel(Skill skill) {
-		if (!skills.containsKey(skill)) {
-			return SkillLevel.UNSKILLED;
-		} else {
-			return skills.get(skill);
-		}
-	}
-
-	public boolean isDebugger() {
-		return name.equalsIgnoreCase("debugger");
-	}
-
-	public int getGold() {
-		return gold;
-	}
-
-	public boolean canTakeGold(int amount) {
-		return gold > amount;
-	}
-
-	public void takeGold(int amount) {
-		gold = Math.max(0, gold - amount);
-	}
-
-	public void godmode() {
-		this.godmode = true;
 	}
 
 	public enum NutritionState {
