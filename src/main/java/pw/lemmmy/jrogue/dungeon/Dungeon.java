@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
@@ -11,33 +12,45 @@ import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Dungeon {
 	public static final int NORMAL_SPEED = 12;
 
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
+
 	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
 	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 	private static final Pattern wishSword = Pattern
 		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
+
 	private final List<Listener> listeners = new ArrayList<>();
+
+	private Pcg32 rand = new Pcg32();
+
 	/**
 	 * Randomly generated name of this dungeon
 	 */
 	private String originalName;
+
 	/**
 	 * User-chosen name of this dungeon
 	 */
 	private String name;
+
 	private Level level;
 	private Player player;
+
 	private long turn = 0;
 	private long nextExerciseCounter = 500;
+	private long passiveSoundCounter = 0;
+
 	private Prompt prompt;
 	private Settings settings;
 
@@ -224,7 +237,30 @@ public class Dungeon {
 	}
 
 	private void update() {
-		// random dungeon updates
+		if (--passiveSoundCounter <= 0) {
+			emitPassiveSounds();
+
+			passiveSoundCounter = Utils.roll(3, 4);
+		}
+	}
+
+	private void emitPassiveSounds() {
+		List<Entity> emitters = level.getEntities().stream()
+												  .filter(e -> e instanceof PassiveSoundEmitter)
+												  .collect(Collectors.toList());
+
+		if (emitters.isEmpty()) {
+			return;
+		}
+
+		Collections.shuffle(emitters);
+		PassiveSoundEmitter soundEmitter = (PassiveSoundEmitter) emitters.get(0);
+
+		if (rand.nextFloat() <= soundEmitter.getSoundProbability()) {
+			String sound = Utils.randomFrom(soundEmitter.getSounds());
+
+			log(sound);
+		}
 	}
 
 	public Level getLevel() {
