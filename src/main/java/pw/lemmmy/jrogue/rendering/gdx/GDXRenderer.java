@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
@@ -40,6 +41,8 @@ import java.util.List;
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 
+	private Settings settings;
+
 	private HUD hud;
 
 	private SpriteBatch batch;
@@ -59,13 +62,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private float zoom = 1.0f;
 
-	public GDXRenderer(Dungeon dungeon, int width, int height) {
+	public GDXRenderer(Settings settings, Dungeon dungeon) {
+		this.settings = settings;
+
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = width;
-		config.height = height;
+		config.width = settings.getScreenWidth();
+		config.height = settings.getScreenHeight();
 		config.forceExit = false;
 		new LwjglApplication(this, config);
 	}
@@ -90,7 +95,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightBatch = new ShapeRenderer();
 		lightSpriteBatch = new SpriteBatch();
 
-		hud = new HUD(dungeon);
+		hud = new HUD(settings, dungeon);
 		hud.init();
 		dungeon.addListener(hud);
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
+import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HUD implements Dungeon.Listener {
+	private Settings settings;
+
 	private Skin skin;
 	private Stage stage;
 	private Table root;
@@ -33,7 +36,9 @@ public class HUD implements Dungeon.Listener {
 	private Dungeon dungeon;
 	private List<LogEntry> log = new ArrayList<>();
 
-	public HUD(Dungeon dungeon) {
+	public HUD(Settings settings, Dungeon dungeon) {
+		this.settings = settings;
+
 		this.dungeon = dungeon;
 	}
 
@@ -248,7 +253,7 @@ public class HUD implements Dungeon.Listener {
 
 		gameLog.clearChildren();
 
-		int logSize = Math.min(7, log.size());
+		int logSize = Math.min(settings.getLogSize(), log.size());
 
 		for (int i = 0; i < logSize; i++) {
 			LogEntry e = log.get(log.size() - (logSize - i));

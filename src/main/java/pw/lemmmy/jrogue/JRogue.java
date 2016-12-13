@@ -16,16 +16,13 @@ import java.nio.file.Paths;
 public class JRogue {
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
 	private static final Logger logger = LogManager.getLogger("JRogue");
+
 	public Dungeon dungeon;
 	public Renderer renderer;
 
 	public JRogue(Settings settings) {
 		dungeon = new Dungeon(settings);
-		renderer = new GDXRenderer(
-			dungeon,
-			settings.getScreenWidth(),
-			settings.getScreenHeight()
-		); // TODO: Make this configurable
+		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
 	}
 
 	public static void main(String[] args) {
@@ -102,6 +99,22 @@ public class JRogue {
 
 			if (playerSection.get("name") != null) {
 				settings.setPlayerName(playerSection.get("name"));
+			}
+		}
+
+		if (ini.get("Display") != null) {
+			Ini.Section displaySection = ini.get("Display");
+
+			if (displaySection.get("screenWidth") != null) {
+				settings.setScreenWidth(Integer.parseInt(displaySection.get("screenWidth")));
+			}
+
+			if (displaySection.get("screenHeight") != null) {
+				settings.setScreenHeight(Integer.parseInt(displaySection.get("screenHeight")));
+			}
+
+			if (displaySection.get("logSize") != null) {
+				settings.setLogSize(Integer.parseInt(displaySection.get("logSize")));
 			}
 		}
 	}
