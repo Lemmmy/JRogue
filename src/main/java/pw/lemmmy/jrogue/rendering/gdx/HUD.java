@@ -31,7 +31,7 @@ public class HUD implements Dungeon.Listener {
 	private HorizontalGroup brightness;
 
 	private Dungeon dungeon;
-	private List<String> log = new ArrayList<>();
+	private List<LogEntry> log = new ArrayList<>();
 
 	public HUD(Dungeon dungeon) {
 		this.dungeon = dungeon;
@@ -244,20 +244,17 @@ public class HUD implements Dungeon.Listener {
 	public void onLog(String entry) {
 		entry = HUDUtils.replaceMarkupString(entry);
 
-		log.add(entry);
+		log.add(new LogEntry(dungeon.getTurn(), entry));
 
 		gameLog.clearChildren();
 
 		int logSize = Math.min(7, log.size());
 
 		for (int i = 0; i < logSize; i++) {
-			String s = log.get(log.size() - (logSize - i));
+			LogEntry e = log.get(log.size() - (logSize - i));
+			String text = e.getTurn() != dungeon.getTurn() ? "[#CCCCCCEE]" + e.getText() : e.getText();
 
-			if (i < logSize - 1) {
-				s = "[#CCCCCCEE]" + s;
-			}
-
-			Label newEntry = new Label(s, skin, "default");
+			Label newEntry = new Label(text, skin, "default");
 			gameLog.add(newEntry).left().growX();
 			gameLog.row();
 		}
@@ -296,5 +293,23 @@ public class HUD implements Dungeon.Listener {
 	@Override
 	public void onEntityRemoved(Entity entity) {
 
+	}
+
+	private class LogEntry {
+		private long turn;
+		private String text;
+
+		public LogEntry(long turn, String text) {
+			this.turn = turn;
+			this.text = text;
+		}
+
+		public long getTurn() {
+			return turn;
+		}
+
+		public String getText() {
+			return text;
+		}
 	}
 }
