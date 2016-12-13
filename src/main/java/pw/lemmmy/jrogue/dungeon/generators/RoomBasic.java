@@ -19,10 +19,10 @@ public class RoomBasic extends Room {
 					if (x > getRoomX() && x < getRoomX() + getRoomWidth() - 1 && x % 4 == 0) {
 						getLevel().setTileType(x, y, TileType.TILE_ROOM_TORCH_FIRE);
 					} else {
-						getLevel().setTileType(x, y, TileType.TILE_ROOM_WALL);
+						getLevel().setTileType(x, y, getWallType());
 					}
 				} else {
-					getLevel().setTileType(x, y, TileType.TILE_ROOM_FLOOR);
+					getLevel().setTileType(x, y, getFloorType());
 				}
 			}
 		}
@@ -31,5 +31,13 @@ public class RoomBasic extends Room {
 	@Override
 	public void addFeatures() {
 
+	}
+
+	protected TileType getWallType() {
+		return TileType.TILE_ROOM_WALL;
+	}
+
+	protected TileType getFloorType() {
+		return TileType.TILE_ROOM_FLOOR;
 	}
 }
