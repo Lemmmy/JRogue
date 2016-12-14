@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class EntityTurnBased extends Entity {
 	private int movementPoints = 0;
@@ -40,4 +41,8 @@ public abstract class EntityTurnBased extends Entity {
 	}
 
 	public abstract int getMovementSpeed();
+
+	public void calculateMovement() {
+		movementPoints += Math.max(1, Utils.random(2, 4));
+	}
 }

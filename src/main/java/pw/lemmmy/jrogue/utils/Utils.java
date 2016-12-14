@@ -60,6 +60,14 @@ public class Utils {
 		return items.get(jrand.nextInt(items.size()));
 	}
 
+	public static int random(int i) {
+		return rand.nextInt(i);
+	}
+
+	public static int random(int min, int max) {
+		return rand.nextInt(max - min) + min;
+	}
+
 	public static int random(Range<Integer> range) {
 		return rand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
 	}
@@ -120,9 +128,5 @@ public class Utils {
 
 	public static double distanceSq(double ax, double ay, double bx, double by) {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
-	}
-
-	public static int random(int i) {
-		return rand.nextInt(i);
 	}
 }

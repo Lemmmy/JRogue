@@ -149,25 +149,31 @@ public class Dungeon {
 	}
 
 	public void turn() {
+		JRogue.getLogger().trace("Starting turn");
+
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
 
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 
 		do {
+			JRogue.getLogger().trace("Subturn");
+
 			boolean entitiesCanMove = false;
 
 			do {
+				JRogue.getLogger().trace("Subsubturn");
+
 				if (!player.isAlive()) {
 					break;
 				}
 
 				entitiesCanMove = moveEntities();
+				JRogue.getLogger().trace("Can entities move: {}", entitiesCanMove);
 
 				if (player.getMovementPoints() > NORMAL_SPEED) {
 					break;
 				}
-
 			} while (entitiesCanMove);
 
 			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
@@ -185,7 +191,7 @@ public class Dungeon {
 					if (entity instanceof EntityTurnBased) {
 						EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
 
-						turnBasedEntity.setMovementPoints(turnBasedEntity.getMovementSpeed());
+						turnBasedEntity.calculateMovement();
 					}
 				}
 
@@ -196,8 +202,6 @@ public class Dungeon {
 				turn++;
 
 				update();
-
-				break; // FIXME: this was a lazy infinite loop prevention, but now there is no fun
 			}
 		} while (player.isAlive() && player.getMovementPoints() < NORMAL_SPEED);
 
@@ -321,6 +325,14 @@ public class Dungeon {
 
 		if (wish.equalsIgnoreCase("death")) {
 			player.kill(DamageSource.WISH_FOR_DEATH);
+		} else if (wish.equalsIgnoreCase("kill all")) {
+			level.getEntities().stream()
+				 .filter(e -> e instanceof LivingEntity && !(e instanceof Player))
+				 .forEach(e -> {
+					 ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH);
+				 });
+
+			turn();
 		} else {
 			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
 
