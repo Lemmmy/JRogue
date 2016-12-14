@@ -45,6 +45,10 @@ public class ItemStack {
 		this.count += count;
 	}
 
+	public float getWeight() {
+		return item.getWeight() * count;
+	}
+
 	public boolean beginsWithVowel() {
 		return item.beginsWithVowel();
 	}

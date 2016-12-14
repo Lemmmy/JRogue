@@ -41,7 +41,7 @@ public class ItemGem extends Item {
 	}
 
 	@Override
-	public int getWeight() {
+	public float getWeight() {
 		return 1;
 	}
 

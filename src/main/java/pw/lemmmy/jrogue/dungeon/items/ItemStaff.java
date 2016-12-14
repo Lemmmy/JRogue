@@ -15,7 +15,7 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 
 	@Override
-	public int getWeight() {
+	public float getWeight() {
 		return 50;
 	}
 

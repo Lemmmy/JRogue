@@ -22,7 +22,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	public abstract String getSwordName();
 
 	@Override
-	public int getWeight() {
+	public float getWeight() {
 		return 40 + getMaterial().getValue();
 	}
 

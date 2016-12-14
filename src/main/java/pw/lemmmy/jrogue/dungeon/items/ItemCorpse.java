@@ -23,7 +23,7 @@ public class ItemCorpse extends ItemComestible {
 	}
 
 	@Override
-	public int getWeight() {
+	public float getWeight() {
 		if (entity instanceof Monster) {
 			return ((Monster) entity).getWeight();
 		} else {

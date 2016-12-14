@@ -11,8 +11,8 @@ public class ItemGold extends Item {
 	}
 
 	@Override
-	public int getWeight() {
-		return 1;
+	public float getWeight() {
+		return 0.01f;
 	}
 
 	@Override

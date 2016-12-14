@@ -35,7 +35,7 @@ public abstract class Item {
 
 	public abstract String getName(boolean requiresCapitalisation, boolean plural);
 
-	public abstract int getWeight();
+	public abstract float getWeight();
 
 	public boolean equals(Item other) {
 		return other.getClass() == getClass() &&
