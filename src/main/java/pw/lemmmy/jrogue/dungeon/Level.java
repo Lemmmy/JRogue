@@ -96,6 +96,10 @@ public class Level {
 		return entities;
 	}
 
+	public List<Entity> getEntitiesAt(int x, int y) {
+		return entities.stream().filter(o -> o.getX() == x && o.getY() == y).collect(Collectors.toList());
+	}
+
 	public boolean addEntity(Entity entity) {
 		return entityAddQueue.add(entity);
 	}
@@ -118,10 +122,6 @@ public class Level {
 			dungeon.entityRemoved(entity);
 			iterator.remove();
 		}
-	}
-
-	public List<Entity> getEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y).collect(Collectors.toList());
 	}
 
 	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
