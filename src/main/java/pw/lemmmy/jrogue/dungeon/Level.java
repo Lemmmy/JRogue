@@ -79,54 +79,6 @@ public class Level {
 		return dungeon;
 	}
 
-	public void setTileType(int x, int y, TileType tile) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-
-		tiles[width * y + x].setType(tile);
-	}
-
-	public Tile[] getAdjacentTiles(int x, int y) {
-		Tile[] t = new Tile[Utils.DIRECTIONS.length];
-
-		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			int[] direction = Utils.DIRECTIONS[i];
-
-			t[i] = getTile(x + direction[0], y + direction[1]);
-		}
-
-		return t;
-	}
-
-	public Tile getTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return null;
-		}
-
-		return tiles[width * y + x];
-	}
-
-	public TileType[] getAdjacentTileTypes(int x, int y) {
-		TileType[] t = new TileType[Utils.DIRECTIONS.length];
-
-		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			int[] direction = Utils.DIRECTIONS[i];
-
-			t[i] = getTileType(x + direction[0], y + direction[1]);
-		}
-
-		return t;
-	}
-
-	public TileType getTileType(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return null;
-		}
-
-		return getTile(x, y).getType();
-	}
-
 	public int getSpawnX() {
 		return spawnX;
 	}
@@ -182,6 +134,66 @@ public class Level {
 					   .collect(Collectors.toList());
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public Tile[] getTiles() {
+		return tiles;
+	}
+
+	public Tile getTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return null;
+		}
+
+		return tiles[width * y + x];
+	}
+
+	public TileType getTileType(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return null;
+		}
+
+		return getTile(x, y).getType();
+	}
+
+	public void setTileType(int x, int y, TileType tile) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		tiles[width * y + x].setType(tile);
+	}
+
+	public Tile[] getAdjacentTiles(int x, int y) {
+		Tile[] t = new Tile[Utils.DIRECTIONS.length];
+
+		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
+			int[] direction = Utils.DIRECTIONS[i];
+
+			t[i] = getTile(x + direction[0], y + direction[1]);
+		}
+
+		return t;
+	}
+
+	public TileType[] getAdjacentTileTypes(int x, int y) {
+		TileType[] t = new TileType[Utils.DIRECTIONS.length];
+
+		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
+			int[] direction = Utils.DIRECTIONS[i];
+
+			t[i] = getTileType(x + direction[0], y + direction[1]);
+		}
+
+		return t;
+	}
+
 	public List<Tile> getTilesInRadius(int x, int y, int r) {
 		List<Tile> found = new ArrayList<>();
 
@@ -198,6 +210,76 @@ public class Level {
 		}
 
 		return found;
+	}
+
+	public boolean isTileDiscovered(int x, int y) {
+		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[y * width + x];
+	}
+
+	public void discoverTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		discoveredTiles[width * y + x] = true;
+	}
+
+	public boolean isTileVisible(int x, int y) {
+		return !(x < 0 || y < 0 || x >= width || y >= height) && visibleTiles[width * y + x];
+	}
+
+	public void seeTile(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return;
+		}
+
+		visibleTiles[y * width + x] = true;
+	}
+
+	public void updateSight(Player player) {
+		Arrays.fill(visibleTiles, false);
+
+		float x = player.getX() + 0.5f;
+		float y = player.getY() + 0.5f;
+
+		for (int r = 0; r < 360; r++) {
+			int corridorVisibility = 0;
+			boolean breakNext = false;
+
+			for (int i = 0; i < player.getVisibilityRange(); i++) {
+				double a = Math.toRadians(r);
+				int dx = (int) Math.floor(x + i * Math.cos(a));
+				int dy = (int) Math.floor(y + i * Math.sin(a));
+				TileType type = getTileType(dx, dy);
+
+				if (type == TileType.TILE_CORRIDOR) {
+					corridorVisibility += 1;
+				}
+
+				if (corridorVisibility >= player.getCorridorVisibilityRange()) {
+					break;
+				}
+
+				discoverTile(dx, dy);
+				seeTile(dx, dy);
+
+				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
+					type.getSolidity() == TileType.Solidity.SOLID ||
+					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransarent()) ||
+					breakNext) {
+					break;
+				}
+
+				if (dx == player.getX() && dy == player.getY() && type.isSemiTransarent()) {
+					breakNext = true;
+				}
+			}
+		}
+	}
+
+	public void seeAll() {
+		Arrays.fill(visibleTiles, true);
+		Arrays.fill(discoveredTiles, true);
 	}
 
 	public Color getAmbientLight() {
@@ -339,14 +421,6 @@ public class Level {
 		}
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
 	public boolean canMixColours(Color base, Color light) {
 		return light.getRed() > base.getRed() ||
 			light.getGreen() > base.getGreen() ||
@@ -360,80 +434,5 @@ public class Level {
 			c1.getBlue() > c2.getBlue() ? c1.getBlue() : c2.getBlue(),
 			255
 		);
-	}
-
-	public boolean isTileDiscovered(int x, int y) {
-		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[y * width + x];
-	}
-
-	public boolean isTileVisible(int x, int y) {
-		return !(x < 0 || y < 0 || x >= width || y >= height) && visibleTiles[width * y + x];
-
-	}
-
-	public void updateSight(Player player) {
-		Arrays.fill(visibleTiles, false);
-
-		float x = player.getX() + 0.5f;
-		float y = player.getY() + 0.5f;
-
-		for (int r = 0; r < 360; r++) {
-			int corridorVisibility = 0;
-			boolean breakNext = false;
-
-			for (int i = 0; i < player.getVisibilityRange(); i++) {
-				double a = Math.toRadians(r);
-				int dx = (int) Math.floor(x + i * Math.cos(a));
-				int dy = (int) Math.floor(y + i * Math.sin(a));
-				TileType type = getTileType(dx, dy);
-
-				if (type == TileType.TILE_CORRIDOR) {
-					corridorVisibility += 1;
-				}
-
-				if (corridorVisibility >= player.getCorridorVisibilityRange()) {
-					break;
-				}
-
-				discoverTile(dx, dy);
-				seeTile(dx, dy);
-
-				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
-					type.getSolidity() == TileType.Solidity.SOLID ||
-					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransarent()) ||
-					breakNext) {
-					break;
-				}
-
-				if (dx == player.getX() && dy == player.getY() && type.isSemiTransarent()) {
-					breakNext = true;
-				}
-			}
-		}
-	}
-
-	public void discoverTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-
-		discoveredTiles[width * y + x] = true;
-	}
-
-	public void seeTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-
-		visibleTiles[y * width + x] = true;
-	}
-
-	public void seeAll() {
-		Arrays.fill(visibleTiles, true);
-		Arrays.fill(discoveredTiles, true);
-	}
-
-	public Tile[] getTiles() {
-		return tiles;
 	}
 }
