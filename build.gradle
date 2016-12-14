@@ -34,6 +34,8 @@ dependencies {
 	compile group: "com.github.alexeyr.pcg", name: "pcg", version: "0.9.1"
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.1"
 
+	compile group: "com.google.protobuf", name: "protobuf-java", version: "3.1.0"
+
 	compile "com.badlogicgames.gdx:gdx:1.9.4"
 	compile "com.badlogicgames.gdx:gdx-freetype:1.9.4"
 	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.4"
