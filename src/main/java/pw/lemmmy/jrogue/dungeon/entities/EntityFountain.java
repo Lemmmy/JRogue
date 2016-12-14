@@ -10,7 +10,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return "Fountain";
+		return requiresCapitalisation ? "Fountain" : "fountain";
 	}
 
 	@Override
@@ -25,6 +25,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+		getDungeon().log("There is a %s here.", getName(false));
 	}
 
 	@Override
