@@ -3,39 +3,41 @@ package pw.lemmmy.jrogue.dungeon.tiles;
 import java.awt.*;
 
 public enum TileType {
-	TILE_DUMMY(Solidity.WALK_ON),
+	TILE_DUMMY(0, Solidity.WALK_ON),
 
-	TILE_GROUND(Solidity.SOLID, true),
-	TILE_GROUND_WATER(Solidity.WATER, true, new Color(0x3072D6), 40, 5),
+	TILE_DEBUG_A(1, Solidity.WALK_ON),
+	TILE_DEBUG_B(2, Solidity.WALK_ON),
+	TILE_DEBUG_C(3, Solidity.WALK_ON),
+	TILE_DEBUG_D(4, Solidity.WALK_ON),
+	TILE_DEBUG_E(5, Solidity.WALK_ON),
+	TILE_DEBUG_F(6, Solidity.WALK_ON),
+	TILE_DEBUG_G(7, Solidity.WALK_ON),
+	TILE_DEBUG_H(8, Solidity.WALK_ON),
 
-	TILE_DEBUG_A(Solidity.WALK_ON),
-	TILE_DEBUG_B(Solidity.WALK_ON),
-	TILE_DEBUG_C(Solidity.WALK_ON),
-	TILE_DEBUG_D(Solidity.WALK_ON),
-	TILE_DEBUG_E(Solidity.WALK_ON),
-	TILE_DEBUG_F(Solidity.WALK_ON),
-	TILE_DEBUG_G(Solidity.WALK_ON),
-	TILE_DEBUG_H(Solidity.WALK_ON),
+	TILE_GROUND(9, Solidity.SOLID, true),
+	TILE_GROUND_WATER(10, Solidity.WATER, true, new Color(0x3072D6), 40, 5),
 
-	TILE_ROOM_WALL(Solidity.SOLID),
-	TILE_ROOM_TORCH_FIRE(Solidity.SOLID, false, new Color(0xFF9B26), 100, 0),
-	TILE_ROOM_TORCH_ICE(Solidity.SOLID, false, new Color(0x8BD1EC), 100, 0),
-	TILE_ROOM_FLOOR(Solidity.WALK_ON),
-	TILE_ROOM_WATER(Solidity.WATER),
-	TILE_ROOM_PUDDLE(Solidity.WALK_ON),
+	TILE_ROOM_WALL(11, Solidity.SOLID),
+	TILE_ROOM_TORCH_FIRE(12, Solidity.SOLID, false, new Color(0xFF9B26), 100, 0),
+	TILE_ROOM_TORCH_ICE(13, Solidity.SOLID, false, new Color(0x8BD1EC), 100, 0),
+	TILE_ROOM_FLOOR(14, Solidity.WALK_ON),
+	TILE_ROOM_WATER(15, Solidity.WATER),
+	TILE_ROOM_PUDDLE(16, Solidity.WALK_ON),
 
-	TILE_ROOM_DOOR_LOCKED(Solidity.SOLID, TileStateDoor.class),
-	TILE_ROOM_DOOR_CLOSED(Solidity.SOLID, TileStateDoor.class),
-	TILE_ROOM_DOOR_OPEN(Solidity.WALK_THROUGH, TileStateDoor.class),
-	TILE_ROOM_DOOR_BROKEN(Solidity.WALK_THROUGH, TileStateDoor.class),
+	TILE_ROOM_DOOR_LOCKED(17, Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_CLOSED(18, Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_OPEN(19, Solidity.WALK_THROUGH, TileStateDoor.class),
+	TILE_ROOM_DOOR_BROKEN(20, Solidity.WALK_THROUGH, TileStateDoor.class),
 
-	TILE_ROOM_STAIRS_UP(Solidity.WALK_ON),
-	TILE_ROOM_STAIRS_DOWN(Solidity.WALK_ON),
+	TILE_ROOM_STAIRS_UP(21, Solidity.WALK_ON),
+	TILE_ROOM_STAIRS_DOWN(22, Solidity.WALK_ON),
 
-	TILE_ROOM_LADDER_UP(Solidity.WALK_ON),
-	TILE_ROOM_LADDER_DOWN(Solidity.WALK_ON),
+	TILE_ROOM_LADDER_UP(23, Solidity.WALK_ON),
+	TILE_ROOM_LADDER_DOWN(24, Solidity.WALK_ON),
 
-	TILE_CORRIDOR(Solidity.WALK_ON, true);
+	TILE_CORRIDOR(25, Solidity.WALK_ON, true);
+
+	private short id;
 
 	private Solidity solidity;
 	private Class stateClass;
@@ -45,18 +47,33 @@ public enum TileType {
 	private int lightIntensity = 0;
 	private int absorb;
 
-	TileType(Solidity solidity) {
-		this(solidity, null, false);
+	TileType(int id, Solidity solidity) {
+		this(id, solidity, null, false);
 	}
 
-	TileType(Solidity solidity, Class stateClass, boolean buildable) {
-		this(solidity, stateClass, buildable, null, 0, 0);
+	TileType(int id, Solidity solidity, Class stateClass, boolean buildable) {
+		this(id, solidity, stateClass, buildable, null, 0, 0);
 	}
 
-	TileType(Solidity solidity, Class stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
+	TileType(int id, Solidity solidity, Class stateClass) {
+		this(id, solidity, stateClass, false);
+	}
+
+	TileType(int id, Solidity solidity, boolean buildable) {
+		this(id, solidity, null, buildable, null, 0, 0);
+	}
+
+	TileType(int id, Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
+		this(id, solidity, null, buildable, light, lightIntensity, absorb);
+	}
+
+	TileType(int id, Solidity solidity, Class stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
+		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
+
 		this.solidity = solidity;
 		this.stateClass = stateClass;
 		this.buildable = buildable;
+
 		this.light = light;
 		this.lightIntensity = lightIntensity;
 		this.absorb = absorb;
@@ -69,18 +86,6 @@ public enum TileType {
 				this.absorb = 10;
 			}
 		}
-	}
-
-	TileType(Solidity solidity, Class stateClass) {
-		this(solidity, stateClass, false);
-	}
-
-	TileType(Solidity solidity, boolean buildable) {
-		this(solidity, null, buildable, null, 0, 0);
-	}
-
-	TileType(Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
-		this(solidity, null, buildable, light, lightIntensity, absorb);
 	}
 
 	public Solidity getSolidity() {
@@ -105,6 +110,10 @@ public enum TileType {
 
 	public int getAbsorb() {
 		return absorb;
+	}
+
+	public short getID() {
+		return id;
 	}
 
 	public boolean isWallTile() {
