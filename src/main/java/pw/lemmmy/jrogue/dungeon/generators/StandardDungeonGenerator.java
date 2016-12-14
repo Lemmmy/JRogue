@@ -4,6 +4,7 @@ import org.apache.commons.lang3.Range;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
@@ -50,6 +51,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
 	private static final double WATER_NOISE_SCALE = 0.2;
 
+	private static final double GOLD_DROP_PROBABILITY = 0.08;
+
 	private static final double FISH_PROBABILITY = 0.35;
 	private static final double PUFFERFISH_PROBABILITY = 0.15;
 	private static final int FISH_SWARMS_MIN = 10;
@@ -93,6 +96,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		if (!chooseSpawnRoom()) { return false; }
 		chooseDownstairsRoom();
 		addRoomFeatures();
+		addRandomDrops();
 		spawnFish();
 		spawnMonsters();
 
@@ -280,6 +284,17 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void addRoomFeatures() {
 		rooms.forEach(Room::addFeatures);
+	}
+
+	private void addRandomDrops() {
+		rooms.forEach(r -> {
+			if (rand.nextDouble() < GOLD_DROP_PROBABILITY) {
+				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
+				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
+
+				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 2, 8));
+			}
+		});
 	}
 
 	private void spawnFish() {
