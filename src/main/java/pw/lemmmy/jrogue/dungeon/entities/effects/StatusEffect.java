@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
@@ -19,6 +20,11 @@ public abstract class StatusEffect {
 
 	public void turn() {
 		turnsPassed++;
+	}
+
+	public void serialise(JSONObject obj) {
+		obj.put("duration", getDuration());
+		obj.put("turnsPassed", getTurnsPassed());
 	}
 
 	public Dungeon getDungeon() {

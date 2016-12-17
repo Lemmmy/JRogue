@@ -50,11 +50,11 @@ public class InventoryWindow extends PopupWindow {
 
 			String suffix = "";
 
-			if (player.getRightHand() == itemStack && player.getLeftHand() == itemStack) {
+			if (player.getRightHand().getLetter() == character && player.getLeftHand().getLetter() == character) {
 				suffix = " [P_GREY_3](in both hands)[]";
-			} else if (player.getRightHand() == itemStack) {
+			} else if (player.getRightHand().getLetter() == character) {
 				suffix = " [P_GREY_3](in right hand)[]";
-			} else if (player.getLeftHand() == itemStack) {
+			} else if (player.getLeftHand().getLetter() == character) {
 				suffix = " [P_GREY_3](in left hand)[]";
 			}
 

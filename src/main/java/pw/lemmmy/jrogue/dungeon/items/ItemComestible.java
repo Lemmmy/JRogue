@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
@@ -19,6 +20,13 @@ public abstract class ItemComestible extends Item {
 	public abstract int getNutrition();
 
 	public abstract List<StatusEffect> getStatusEffects(LivingEntity victim);
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("eatenState", getEatenState().name());
+	}
 
 	public enum EatenState {
 		UNEATEN,

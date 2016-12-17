@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
@@ -122,5 +123,12 @@ public class MonsterSpider extends Monster {
 				}
 			));
 		}
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("speed", speed);
 	}
 }

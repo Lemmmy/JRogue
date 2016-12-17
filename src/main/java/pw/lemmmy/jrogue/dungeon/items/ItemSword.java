@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
@@ -75,5 +76,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	@Override
 	public int getLargeDamage() {
 		return getMaterial().getBaseDamage();
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("material", getMaterial().name());
 	}
 }

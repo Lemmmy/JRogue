@@ -35,7 +35,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 
 	@Override
 	public float getSoundProbability() {
-		return 0.25f;
+		return 0.15f;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 public class ItemGem extends Item {
 	private Gem gem;
@@ -61,6 +62,14 @@ public class ItemGem extends Item {
 
 	public boolean isWorthless() {
 		return worthless;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("gem", gem.name());
+		obj.put("worthless", worthless);
 	}
 
 	public enum Gem {

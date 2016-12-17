@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
@@ -110,6 +111,13 @@ public class MonsterFish extends Monster {
 	@Override
 	public boolean canMagicAttack() {
 		return false;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("colour", colour.name());
 	}
 
 	public enum FishColour {

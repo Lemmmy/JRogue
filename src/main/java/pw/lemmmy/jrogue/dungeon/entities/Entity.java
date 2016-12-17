@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
@@ -119,6 +121,21 @@ public abstract class Entity {
 				iterator.remove();
 			}
 		}
+	}
+
+	public void serialise(JSONObject obj) {
+		obj.put("class", getClass().getName());
+		obj.put("x", getX());
+		obj.put("y", getY());
+		obj.put("lastX", getLastX());
+		obj.put("lastY", getLastY());
+		obj.put("visualID", getVisualID());
+
+		statusEffects.forEach(e -> {
+			JSONObject serialisedStatusEffect = new JSONObject();
+			e.serialise(serialisedStatusEffect);
+			obj.append("statusEffects", serialisedStatusEffect);
+		});
 	}
 
 	public void addStatusEffect(StatusEffect effect) {

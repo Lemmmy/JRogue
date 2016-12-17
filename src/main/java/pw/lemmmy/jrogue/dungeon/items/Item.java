@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class Item {
@@ -54,6 +55,13 @@ public abstract class Item {
 	}
 
 	public abstract ItemCategory getCategory();
+
+	public void serialise(JSONObject obj) {
+		obj.put("class", getClass().getName());
+		obj.put("visualID", getVisualID());
+		obj.put("identified", isIdentified());
+		obj.put("buc", getBUCStatus().name());
+	}
 
 	public enum BUCStatus {
 		BLESSED,

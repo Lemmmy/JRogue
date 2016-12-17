@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
+import org.json.JSONObject;
+
 public abstract class TileState {
 	private Tile tile;
 
@@ -10,4 +12,6 @@ public abstract class TileState {
 	public Tile getTile() {
 		return tile;
 	}
+
+	public void serialise (JSONObject obj) {}
 }

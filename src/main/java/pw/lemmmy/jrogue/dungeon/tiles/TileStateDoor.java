@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class TileStateDoor extends TileState {
@@ -25,5 +26,12 @@ public class TileStateDoor extends TileState {
 		}
 
 		return health;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("health", getHealth());
 	}
 }

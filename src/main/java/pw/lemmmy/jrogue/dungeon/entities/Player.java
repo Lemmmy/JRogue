@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
@@ -73,9 +74,17 @@ public class Player extends LivingEntity {
 		skills = new HashMap<>(role.getStartingSkills());
 
 		if (getContainer().isPresent()) {
-			role.getStartingItems().forEach(getContainer().get()::add);
-			setLeftHand(role.getStartingLeftHand());
-			setRightHand(role.getStartingRightHand());
+			role.getStartingItems().forEach(i -> {
+				Optional<Container.ContainerEntry> entry = getContainer().get().add(i);
+
+				if (entry.isPresent() && role.getStartingLeftHand() == entry.get().getStack()) {
+					setLeftHand(entry.get());
+				}
+
+				if (entry.isPresent() && role.getStartingRightHand() == entry.get().getStack()) {
+					setRightHand(entry.get());
+				}
+			});
 		}
 
 		setHealth(getMaxHealth());
@@ -252,6 +261,28 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("name", name);
+		obj.put("role", role.getClass().getName());
+		obj.put("strength", getStrength());
+		obj.put("agility", getAgility());
+		obj.put("dexterity", getDexterity());
+		obj.put("constitution", getConstitution());
+		obj.put("intelligence", getIntelligence());
+		obj.put("wisdom", getWisdom());
+		obj.put("charisma", getCharisma());
+		obj.put("nutrition", getNutrition());
+		obj.put("gold", getGold());
+		obj.put("godmode", godmode);
+
+		JSONObject serialisedSkills = new JSONObject();
+		skills.entrySet().forEach(e -> serialisedSkills.put(e.getKey().name(), e.getValue().name()));
+		obj.put("skills", serialisedSkills);
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 
 	}
@@ -313,8 +344,8 @@ public class Player extends LivingEntity {
 											   .findFirst();
 
 			if (ent.isPresent()) {
-				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getRightHand().getItem()).hit(this, (LivingEntity) ent.get());
+				if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getRightHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
 				} else {
 					walkAction(tile, newX, newY);
 				}
@@ -627,14 +658,14 @@ public class Player extends LivingEntity {
 				ItemStack stack = containerEntry.get().getStack();
 				Item item = stack.getItem();
 
-				if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
+				if (getRightHand() != null && ((Wieldable) getRightHand().getStack().getItem()).isTwoHanded()) {
 					setLeftHand(null);
 				}
 
-				setRightHand(stack);
+				setRightHand(containerEntry.get());
 
 				if (((Wieldable) item).isTwoHanded()) {
-					setLeftHand(stack);
+					setLeftHand(containerEntry.get());
 				}
 
 				if (item.isis() || stack.getCount() > 1) {
@@ -661,8 +692,8 @@ public class Player extends LivingEntity {
 	}
 
 	public void swapHands() {
-		ItemStack left = getLeftHand();
-		ItemStack right = getRightHand();
+		Container.ContainerEntry left = getLeftHand();
+		Container.ContainerEntry right = getRightHand();
 
 		setLeftHand(right);
 		setRightHand(left);

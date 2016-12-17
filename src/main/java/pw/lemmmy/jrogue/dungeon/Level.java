@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
@@ -8,9 +10,10 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -434,5 +437,57 @@ public class Level {
 			c1.getBlue() > c2.getBlue() ? c1.getBlue() : c2.getBlue(),
 			255
 		);
+	}
+
+	public JSONObject serialise() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("width", getWidth());
+		obj.put("height", getHeight());
+		obj.put("depth", getDepth());
+		obj.put("spawnX", getSpawnX());
+		obj.put("spawnY", getSpawnY());
+
+		Optional<byte[]> serialisedTiles = serialiseTiles();
+		serialisedTiles.ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
+
+		Arrays.stream(tiles).forEach(t -> {
+			if (t.hasState()) {
+				JSONObject serialisedTileState = new JSONObject();
+				serialisedTileState.put("x", t.getX());
+				serialisedTileState.put("y", t.getY());
+				serialisedTileState.put("class", t.getState().getClass().getName());
+				t.getState().serialise(serialisedTileState);
+				obj.append("tileStates", serialisedTileState);
+			}
+		});
+
+		entities.forEach(e -> {
+			JSONObject serialisedEntity = new JSONObject();
+			e.serialise(serialisedEntity);
+			obj.append("entities", serialisedEntity);
+		});
+
+		return obj;
+	}
+
+	private Optional<byte[]> serialiseTiles() {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(bos)){
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					dos.writeShort(t.getType().getID());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			dos.flush();
+
+			return Optional.of(bos.toByteArray());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return Optional.empty();
 	}
 }

@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -16,8 +17,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	private Container inventory;
 
-	private ItemStack leftHand;
-	private ItemStack rightHand;
+	private Container.ContainerEntry leftHand;
+	private Container.ContainerEntry rightHand;
 
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
@@ -74,27 +75,46 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	@Override
 	public Optional<Container> getContainer() {
-		return Optional.of(inventory);
+		return Optional.ofNullable(inventory);
 	}
 
 	protected void setInventoryContainer(Container container) {
 		this.inventory = container;
 	}
 
-	public ItemStack getLeftHand() {
+	public Container.ContainerEntry getLeftHand() {
 		return leftHand;
 	}
 
-	public void setLeftHand(ItemStack leftHand) {
+	public void setLeftHand(Container.ContainerEntry leftHand) {
 		this.leftHand = leftHand;
 	}
 
-	public ItemStack getRightHand() {
+	public Container.ContainerEntry getRightHand() {
 		return rightHand;
 	}
 
-	public void setRightHand(ItemStack rightHand) {
+	public void setRightHand(Container.ContainerEntry rightHand) {
 		this.rightHand = rightHand;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("health", getHealth());
+		obj.put("maxHealth", getMaxHealth());
+		obj.put("experienceLevel", getExperienceLevel());
+
+		if (getContainer().isPresent()) {
+			JSONObject serialisedInventory = new JSONObject();
+			getContainer().get().serialise(serialisedInventory);
+
+			obj.put("inventory", serialisedInventory);
+
+			obj.put("leftHand", leftHand.getLetter());
+			obj.put("rightHand", rightHand.getLetter());
+		}
 	}
 
 	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {

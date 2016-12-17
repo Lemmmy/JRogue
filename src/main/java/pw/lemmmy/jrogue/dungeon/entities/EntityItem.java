@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -60,5 +61,14 @@ public class EntityItem extends Entity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		JSONObject serialisedItem = new JSONObject();
+		itemStack.serialise(serialisedItem);
+		obj.put("itemStack", serialisedItem);
 	}
 }

@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -99,6 +100,14 @@ public class Container {
 
 	public void removeListener(ContainerListener listener) {
 		listeners.remove(listener);
+	}
+
+	public void serialise(JSONObject obj) {
+		items.entrySet().forEach(e -> {
+			JSONObject serialisedItemStack = new JSONObject();
+			e.getValue().serialise(serialisedItemStack);
+			obj.put(e.getKey().toString(), serialisedItemStack);
+		});
 	}
 
 	public interface ContainerListener {

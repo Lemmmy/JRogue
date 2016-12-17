@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import org.json.JSONObject;
+
 public class ItemStack {
 	private Item item;
 	private int count;
@@ -51,5 +53,13 @@ public class ItemStack {
 
 	public boolean beginsWithVowel() {
 		return item.beginsWithVowel();
+	}
+
+	public void serialise(JSONObject obj) {
+		obj.put("count", getCount());
+
+		JSONObject serialisedItem = new JSONObject();
+		item.serialise(serialisedItem);
+		obj.put("item", serialisedItem);
 	}
 }

@@ -1,6 +1,8 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
+import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
@@ -9,8 +11,12 @@ import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
 
 public class Dungeon {
 	public static final int NORMAL_SPEED = 12;
@@ -54,10 +61,15 @@ public class Dungeon {
 	private Prompt prompt;
 	private Settings settings;
 
+	private Path dataDir;
+
 	public Dungeon(Settings settings) {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
 		this.settings = settings;
+
+		dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
+		dataDir.toFile().mkdirs();
 
 		generateLevel();
 	}
@@ -98,6 +110,34 @@ public class Dungeon {
 		level.addEntity(player);
 
 		listeners.forEach(l -> l.onLevelChange(level));
+	}
+
+	public void save() {
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+
+		try (
+			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
+		) {
+			JSONObject serialisedDungeon = serialise();
+			writer.append(serialisedDungeon.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private JSONObject serialise() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("name", getName());
+		obj.put("originalName", getOriginalName());
+		obj.put("turn", getTurn());
+		obj.put("nextExerciseCounter", nextExerciseCounter);
+		obj.put("passiveSoundCounter", passiveSoundCounter);
+
+		obj.append("levels", getLevel().serialise()); // TODO: multi level support
+
+		return obj;
 	}
 
 	public void addListener(Listener listener) {
@@ -149,27 +189,20 @@ public class Dungeon {
 	}
 
 	public void turn() {
-		JRogue.getLogger().trace("Starting turn");
-
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
 
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 
 		do {
-			JRogue.getLogger().trace("Subturn");
-
 			boolean entitiesCanMove = false;
 
 			do {
-				JRogue.getLogger().trace("Subsubturn");
-
 				if (!player.isAlive()) {
 					break;
 				}
 
 				entitiesCanMove = moveEntities();
-				JRogue.getLogger().trace("Can entities move: {}", entitiesCanMove);
 
 				if (player.getMovementPoints() > NORMAL_SPEED) {
 					break;
@@ -215,6 +248,8 @@ public class Dungeon {
 
 		getLevel().buildLight();
 		getLevel().updateSight(getPlayer());
+
+		save();
 
 		listeners.forEach(l -> l.onTurn(turn));
 	}
