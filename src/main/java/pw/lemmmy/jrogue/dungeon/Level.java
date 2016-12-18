@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -276,7 +277,37 @@ public class Level {
 	}
 
 	public List<Entity> getEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y).collect(Collectors.toList());
+		return entities.stream()
+					   .filter(e -> e.getX() == x && e.getY() == y)
+					   .collect(Collectors.toList());
+	}
+
+	public List<Entity> getAdjacentEntities(int x, int y) {
+		List<Entity> entities = new ArrayList<>();
+
+		Arrays.stream(Utils.DIRECTIONS).forEach(d -> {
+			entities.addAll(getEntitiesAt(x + d[0], y + d[1]));
+		});
+
+		return entities;
+	}
+
+	public List<Entity> getAdjacentMonsters(int x, int y) {
+		return entities.stream()
+					   .filter(e -> e instanceof Monster)
+					   .collect(Collectors.toList());
+	}
+
+	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
+		return entities.stream()
+					   .filter(e -> e.getX() == x && e.getY() == y && !e.canBeWalkedOn())
+					   .collect(Collectors.toList());
+	}
+
+	public List<Entity> getWalkableEntitiesAt(int x, int y) {
+		return entities.stream()
+					   .filter(e -> e.getX() == x && e.getY() == y && e.canBeWalkedOn())
+					   .collect(Collectors.toList());
 	}
 
 	public boolean addEntity(Entity entity) {
@@ -301,16 +332,6 @@ public class Level {
 			dungeon.entityRemoved(entity);
 			iterator.remove();
 		}
-	}
-
-	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && !o.canBeWalkedOn())
-					   .collect(Collectors.toList());
-	}
-
-	public List<Entity> getWalkableEntitiesAt(int x, int y) {
-		return entities.stream().filter(o -> o.getX() == x && o.getY() == y && o.canBeWalkedOn())
-					   .collect(Collectors.toList());
 	}
 
 	public int getWidth() {

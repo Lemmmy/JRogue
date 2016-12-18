@@ -459,6 +459,10 @@ public class Player extends LivingEntity {
 					if (oldX == getX() && oldY == getY()) { // we didn't go anywhere, so stop
 						break;
 					}
+
+					if (getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+						break;
+					}
 				}
 			}
 		}));
