@@ -36,6 +36,11 @@ public class EntityItem extends Entity {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_ITEM;
 	}

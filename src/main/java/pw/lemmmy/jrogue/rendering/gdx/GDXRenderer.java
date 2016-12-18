@@ -354,7 +354,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dungeon.getLevel().getEntities().stream()
 			   .sorted(Comparator.comparingInt(Entity::getDepth))
 			   .forEach(e -> {
-				   if (!allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
+				   if (!e.isStatic() && !allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
 					   return;
 				   }
 

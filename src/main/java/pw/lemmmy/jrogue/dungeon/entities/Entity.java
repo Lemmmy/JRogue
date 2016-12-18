@@ -93,6 +93,10 @@ public abstract class Entity {
 		return 1;
 	}
 
+	public boolean isStatic() {
+		return false;
+	}
+
 	public Optional<Container> getContainer() {
 		return Optional.empty();
 	}
