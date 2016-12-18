@@ -20,6 +20,6 @@ public class EntityRendererRandom extends EntityRenderer {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, images[entity.getVisualID() % count], entity.getX(), entity.getY());
+		drawTile(batch, images[entity.getVisualID() % count], entity.getLastSeenX(), entity.getLastSeenY());
 	}
 }

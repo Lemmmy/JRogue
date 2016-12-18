@@ -22,6 +22,9 @@ public abstract class Entity {
 	private int x;
 	private int y;
 
+	private int lastSeenX;
+	private int lastSeenY;
+
 	private int visualID;
 
 	private Dungeon dungeon;
@@ -89,6 +92,22 @@ public abstract class Entity {
 		this.lastY = lastY;
 	}
 
+	public int getLastSeenX() {
+		return lastSeenX;
+	}
+
+	public void setLastSeenX(int lastSeenX) {
+		this.lastSeenX = lastSeenX;
+	}
+
+	public int getLastSeenY() {
+		return lastSeenY;
+	}
+
+	public void setLastSeenY(int lastSeenY) {
+		this.lastSeenY = lastSeenY;
+	}
+
 	public int getDepth() {
 		return 1;
 	}
@@ -136,6 +155,8 @@ public abstract class Entity {
 		obj.put("y", getY());
 		obj.put("lastX", getLastX());
 		obj.put("lastY", getLastY());
+		obj.put("lastSeenX", getLastSeenX());
+		obj.put("lastSeenY", getLastSeenY());
 		obj.put("visualID", getVisualID());
 
 		statusEffects.forEach(e -> {
@@ -148,6 +169,8 @@ public abstract class Entity {
 	public void unserialise(JSONObject obj) {
 		lastX = obj.getInt("lastX");
 		lastY = obj.getInt("lastY");
+		lastSeenX = obj.getInt("lastSeenX");
+		lastSeenY = obj.getInt("lastSeenY");
 		visualID = obj.getInt("visualID");
 
 		if (obj.has("statusEffects")) {

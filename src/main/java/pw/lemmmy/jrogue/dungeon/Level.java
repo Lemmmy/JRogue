@@ -413,6 +413,11 @@ public class Level {
 		}
 
 		visibleTiles[y * width + x] = true;
+
+		entities.stream().filter(e -> e.getX() == x && e.getY() == y).forEach(e -> {
+			e.setLastSeenX(x);
+			e.setLastSeenY(y);
+		});
 	}
 
 	public void updateSight(Player player) {

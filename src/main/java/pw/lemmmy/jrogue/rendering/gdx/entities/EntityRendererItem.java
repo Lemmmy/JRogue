@@ -25,8 +25,8 @@ public class EntityRendererItem extends EntityRenderer {
 					dungeon,
 					item.getItemStack(),
 					item.getItem(),
-					entity.getX() * width,
-					entity.getY() * height
+					entity.getLastSeenX() * width,
+					entity.getLastSeenY() * height
 				);
 			}
 		}

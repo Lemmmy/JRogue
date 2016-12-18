@@ -14,6 +14,6 @@ public class EntityRendererBasic extends EntityRenderer {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, image, entity.getX(), entity.getY());
+		drawTile(batch, image, entity.getLastSeenX(), entity.getLastSeenY());
 	}
 }
