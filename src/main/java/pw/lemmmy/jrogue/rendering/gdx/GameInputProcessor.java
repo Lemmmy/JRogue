@@ -99,6 +99,11 @@ public class GameInputProcessor implements InputProcessor {
 
 				dontHandleNext = true;
 				return true;
+			} else if (keycode == Input.Keys.Q) {
+				dungeon.quit();
+
+				dontHandleNext = true;
+				return true;
 			}
 		}
 

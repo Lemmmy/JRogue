@@ -300,6 +300,11 @@ public class HUD implements Dungeon.Listener {
 
 	}
 
+	@Override
+	public void onQuit() {
+
+	}
+
 	private class LogEntry {
 		private long turn;
 		private String text;

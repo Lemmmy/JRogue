@@ -189,6 +189,29 @@ public class Dungeon {
 		}
 	}
 
+	public void quit() {
+		prompt(new Prompt("Really quit?", new char[] {'y', 'n'}, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {}
+
+			@Override
+			public void onInvalidResponse(char response) {}
+
+			@Override
+			public void onResponse(char response) {
+				if (response == 'y') {
+					File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+
+					if (file.exists()) {
+						file.delete();
+					}
+
+					listeners.forEach(l -> l.onQuit());
+				}
+			}
+		}, true));
+	}
+
 	public void addListener(Listener listener) {
 		listeners.add(listener);
 	}
@@ -563,5 +586,7 @@ public class Dungeon {
 		void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY);
 
 		void onEntityRemoved(Entity entity);
+
+		void onQuit();
 	}
 }

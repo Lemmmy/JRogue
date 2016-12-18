@@ -41,7 +41,7 @@ import java.util.List;
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 
-	private Settings settings;
+	private LwjglApplication application;
 
 	private HUD hud;
 
@@ -52,6 +52,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private OrthographicCamera camera;
 
 	private Dungeon dungeon;
+	private Settings settings;
 
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 
@@ -72,7 +73,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		config.width = settings.getScreenWidth();
 		config.height = settings.getScreenHeight();
 		config.forceExit = false;
-		new LwjglApplication(this, config);
+		application = new LwjglApplication(this, config);
 	}
 
 	@Override
@@ -231,6 +232,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onEntityRemoved(Entity entity) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+	}
+
+	@Override
+	public void onQuit() {
+		application.exit();
 	}
 
 	@Override
