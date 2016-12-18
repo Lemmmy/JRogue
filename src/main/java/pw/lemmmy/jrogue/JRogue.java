@@ -117,5 +117,13 @@ public class JRogue {
 				settings.setLogSize(Integer.parseInt(displaySection.get("logSize")));
 			}
 		}
+
+		if (ini.get("Game") != null) {
+			Ini.Section gameSection = ini.get("Game");
+
+			if (gameSection.get("autosave") != null) {
+				settings.setAutosave(Boolean.parseBoolean(gameSection.get("autosave")));
+			}
+		}
 	}
 }

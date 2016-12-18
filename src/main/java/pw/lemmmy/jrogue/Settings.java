@@ -8,6 +8,8 @@ public class Settings {
 
 	private int logSize = 7;
 
+	private boolean autosave = true;
+
 	public String getPlayerName() {
 		if (playerName == null) {
 			setPlayerName(System.getProperty("user.name"));
@@ -48,5 +50,13 @@ public class Settings {
 
 	public void setLogSize(int logSize) {
 		this.logSize = logSize;
+	}
+
+	public boolean autosave() {
+		return autosave;
+	}
+
+	public void setAutosave(boolean autosave) {
+		this.autosave = autosave;
 	}
 }
