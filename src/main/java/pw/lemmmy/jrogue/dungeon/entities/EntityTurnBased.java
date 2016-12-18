@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
@@ -11,6 +12,20 @@ public abstract class EntityTurnBased extends Entity {
 
 	public EntityTurnBased(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("movementPoints", movementPoints);
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		movementPoints = obj.getInt("movementPoints");
 	}
 
 	public void setAction(EntityAction action) {

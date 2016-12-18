@@ -2,6 +2,8 @@ package pw.lemmmy.jrogue.dungeon.items;
 
 import org.json.JSONObject;
 
+import java.util.Optional;
+
 public class ItemStack {
 	private Item item;
 	private int count;
@@ -53,6 +55,19 @@ public class ItemStack {
 
 	public boolean beginsWithVowel() {
 		return item.beginsWithVowel();
+	}
+
+	public static Optional<ItemStack> createFromJSON(JSONObject serialisedItemStack) {
+		Optional<Item> item = Item.createFromJSON(serialisedItemStack.getJSONObject("item"));
+
+		if (item.isPresent()) {
+			int count = serialisedItemStack.getInt("count");
+
+			ItemStack itemStack = new ItemStack(item.get(), count);
+			return Optional.of(itemStack);
+		}
+
+		return Optional.empty();
 	}
 
 	public void serialise(JSONObject obj) {

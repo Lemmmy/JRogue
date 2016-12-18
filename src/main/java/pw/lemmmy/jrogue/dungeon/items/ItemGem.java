@@ -7,6 +7,10 @@ public class ItemGem extends Item {
 	private Gem gem;
 	private boolean worthless = false;
 
+	public ItemGem() { // unserialisation constructor
+		super();
+	}
+
 	public ItemGem(Gem gem, boolean worthless) {
 		this.gem = gem;
 		this.worthless = worthless;

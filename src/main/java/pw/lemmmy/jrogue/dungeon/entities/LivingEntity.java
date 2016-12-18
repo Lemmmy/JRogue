@@ -20,6 +20,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 	private Container.ContainerEntry leftHand;
 	private Container.ContainerEntry rightHand;
 
+	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+		super(dungeon, level, x, y);
+	}
+
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
 
@@ -112,8 +116,39 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 			obj.put("inventory", serialisedInventory);
 
-			obj.put("leftHand", leftHand.getLetter());
-			obj.put("rightHand", rightHand.getLetter());
+			if (leftHand != null) {
+				obj.put("leftHand", leftHand.getLetter());
+			}
+
+			if (rightHand != null) {
+				obj.put("rightHand", rightHand.getLetter());
+			}
+		}
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		health = obj.getInt("health");
+		maxHealth = obj.getInt("maxHealth");
+		experienceLevel = obj.getInt("experienceLevel");
+
+		if (obj.has("inventory")) {
+			JSONObject serialisedInventory = obj.getJSONObject("inventory");
+			setInventoryContainer(Container.createFromJSON(serialisedInventory));
+
+			if (obj.has("leftHand")) {
+				Character letter = obj.getString("leftHand").charAt(0);
+				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
+				entryOptional.ifPresent(this::setLeftHand);
+			}
+
+			if (obj.has("rightHand")) {
+				Character letter = obj.getString("rightHand").charAt(0);
+				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
+				entryOptional.ifPresent(this::setRightHand);
+			}
 		}
 	}
 

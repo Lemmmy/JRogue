@@ -23,8 +23,13 @@ public abstract class StatusEffect {
 	}
 
 	public void serialise(JSONObject obj) {
+		obj.put("class", getClass().getName());
 		obj.put("duration", getDuration());
 		obj.put("turnsPassed", getTurnsPassed());
+	}
+
+	public void unserialise(JSONObject obj) {
+		turnsPassed = obj.getInt("turnsPassed");
 	}
 
 	public Dungeon getDungeon() {

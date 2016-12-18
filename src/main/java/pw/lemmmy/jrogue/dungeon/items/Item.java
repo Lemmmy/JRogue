@@ -2,7 +2,12 @@ package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.utils.Utils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public abstract class Item {
 	private int visualID;
@@ -56,11 +61,40 @@ public abstract class Item {
 
 	public abstract ItemCategory getCategory();
 
+	@SuppressWarnings("unchecked")
+	public static Optional<Item> createFromJSON(JSONObject serialisedItem) {
+		String itemClassName = serialisedItem.getString("class");
+
+		try {
+			Class itemClass = Class.forName(itemClassName);
+			Constructor itemConstructor = itemClass.getConstructor();
+
+			Item item = (Item) itemConstructor.newInstance();
+			item.unserialise(serialisedItem);
+			return Optional.of(item);
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown item class {}", itemClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("Item class {} has no unserialisation constructor", itemClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading item class {}", itemClassName);
+			JRogue.getLogger().error(e);
+		}
+
+		return Optional.empty();
+	}
+
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("visualID", getVisualID());
 		obj.put("identified", isIdentified());
 		obj.put("buc", getBUCStatus().name());
+	}
+
+	public void unserialise(JSONObject obj) {
+		visualID = obj.getInt("visualID");
+		identified = obj.getBoolean("identified");
+		bucStatus = BUCStatus.valueOf(obj.getString("buc"));
 	}
 
 	public enum BUCStatus {

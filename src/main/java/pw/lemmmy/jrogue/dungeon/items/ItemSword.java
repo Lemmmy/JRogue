@@ -6,6 +6,10 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	private Material material;
 
+	public ItemSword() { // unserialisation constructor
+		super();
+	}
+
 	public ItemSword(Material material) {
 		super();
 
@@ -83,5 +87,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 		super.serialise(obj);
 
 		obj.put("material", getMaterial().name());
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		material = Material.valueOf(obj.getString("material"));
 	}
 }

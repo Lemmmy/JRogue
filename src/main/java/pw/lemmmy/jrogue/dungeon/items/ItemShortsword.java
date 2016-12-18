@@ -4,6 +4,10 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 
 public class ItemShortsword extends ItemSword {
+	public ItemShortsword() { // unserialisation constructor
+		super();
+	}
+
 	public ItemShortsword(Material material) {
 		super(material);
 	}

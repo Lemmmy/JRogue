@@ -1,8 +1,10 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
-import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
@@ -24,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Dungeon {
@@ -61,20 +64,16 @@ public class Dungeon {
 	private Prompt prompt;
 	private Settings settings;
 
-	private Path dataDir;
+	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
 
 	public Dungeon(Settings settings) {
-		this.originalName = DungeonNameGenerator.generate();
-		this.name = this.originalName;
 		this.settings = settings;
-
-		dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
-		dataDir.toFile().mkdirs();
-
-		generateLevel();
 	}
 
 	public void generateLevel() {
+		this.originalName = DungeonNameGenerator.generate();
+		this.name = this.originalName;
+
 		if (level != null) {
 			level.removeEntity(player);
 		}
@@ -113,6 +112,7 @@ public class Dungeon {
 	}
 
 	public void save() {
+		dataDir.toFile().mkdirs();
 		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 
 		try (
@@ -122,8 +122,34 @@ public class Dungeon {
 			JSONObject serialisedDungeon = serialise();
 			writer.append(serialisedDungeon.toString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			JRogue.getLogger().error("Error saving dungeon:");
+			JRogue.getLogger().error(e);
 		}
+	}
+
+	public static Dungeon load(Settings settings) {
+		Dungeon dungeon = new Dungeon(settings);
+
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+
+		if (file.exists()) {
+			try (
+				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))
+			) {
+				JSONTokener tokener = new JSONTokener(reader);
+				JSONObject serialisedDungeon = new JSONObject(tokener);
+
+				dungeon.unserialise(serialisedDungeon);
+				return dungeon;
+			} catch (IOException e) {
+				JRogue.getLogger().error("Error loading dungeon:");
+				JRogue.getLogger().error(e);
+			}
+		}
+
+		dungeon.generateLevel();
+		return dungeon;
 	}
 
 	private JSONObject serialise() {
@@ -138,6 +164,29 @@ public class Dungeon {
 		obj.append("levels", getLevel().serialise()); // TODO: multi level support
 
 		return obj;
+	}
+
+	private void unserialise(JSONObject obj) {
+		try {
+			name = obj.getString("name");
+			originalName = obj.getString("originalName");
+			turn = obj.getInt("turn");
+			nextExerciseCounter = obj.getInt("nextExerciseCounter");
+			passiveSoundCounter = obj.getInt("passiveSoundCounter");
+
+			JSONArray levels = obj.getJSONArray("levels");
+			levels.forEach(serialisedLevel -> {
+				 Level.createFromJSON((JSONObject) serialisedLevel, this).ifPresent(l -> level = l);
+			});
+
+			listeners.forEach(l -> l.onLevelChange(level));
+
+			level.buildLight();
+			level.updateSight(player);
+		} catch (JSONException e) {
+			JRogue.getLogger().error("Error loading dungeon:");
+			JRogue.getLogger().error(e);
+		}
 	}
 
 	public void addListener(Listener listener) {
@@ -180,8 +229,15 @@ public class Dungeon {
 	}
 
 	public void start() {
-		You("descend the stairs into [CYAN]%s[].", this.name);
-		turn();
+		if (turn <= 0) {
+			You("descend the stairs into [CYAN]%s[].", this.name);
+			turn();
+		} else {
+			listeners.forEach(l -> l.onBeforeTurn(turn));
+			log("Welcome back to [CYAN]%s[].", this.name);
+			level.processEntityQueues();
+			listeners.forEach(l -> l.onTurn(turn));
+		}
 	}
 
 	public void You(String s, Object... objects) {
@@ -246,8 +302,8 @@ public class Dungeon {
 
 		level.processEntityQueues();
 
-		getLevel().buildLight();
-		getLevel().updateSight(getPlayer());
+		level.buildLight();
+		level.updateSight(player);
 
 		save();
 
@@ -308,6 +364,10 @@ public class Dungeon {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public long getTurn() {

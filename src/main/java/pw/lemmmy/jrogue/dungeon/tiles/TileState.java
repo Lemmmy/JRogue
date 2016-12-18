@@ -14,4 +14,6 @@ public abstract class TileState {
 	}
 
 	public void serialise (JSONObject obj) {}
+
+	public void unserialise (JSONObject obj) {}
 }

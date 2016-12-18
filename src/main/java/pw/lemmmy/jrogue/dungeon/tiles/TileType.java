@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public enum TileType {
 	TILE_DUMMY(0, Solidity.WALK_ON),
@@ -151,6 +152,13 @@ public enum TileType {
 		}
 
 		return null;
+	}
+
+	public static TileType fromID(short id) {
+		return Arrays.stream(values())
+					 .filter(t -> t.getID() == id)
+					 .findFirst()
+					 .orElse(TileType.TILE_GROUND);
 	}
 
 	public enum Solidity {

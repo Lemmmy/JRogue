@@ -21,7 +21,7 @@ public class JRogue {
 	public Renderer renderer;
 
 	public JRogue(Settings settings) {
-		dungeon = new Dungeon(settings);
+		dungeon = Dungeon.load(settings);
 		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
 	}
 

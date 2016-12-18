@@ -34,4 +34,11 @@ public class TileStateDoor extends TileState {
 
 		obj.put("health", getHealth());
 	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		health = obj.getInt("health");
+	}
 }

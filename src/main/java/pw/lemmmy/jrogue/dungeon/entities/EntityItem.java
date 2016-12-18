@@ -7,8 +7,14 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
+import java.util.Optional;
+
 public class EntityItem extends Entity {
 	private ItemStack itemStack;
+
+	public EntityItem(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+		super(dungeon, level, x, y);
+	}
 
 	public EntityItem(Dungeon dungeon, Level level, ItemStack itemStack, int x, int y) {
 		super(dungeon, level, x, y);
@@ -70,5 +76,13 @@ public class EntityItem extends Entity {
 		JSONObject serialisedItem = new JSONObject();
 		itemStack.serialise(serialisedItem);
 		obj.put("itemStack", serialisedItem);
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(obj.getJSONObject("itemStack"));
+		itemStackOptional.ifPresent(i -> itemStack = i);
 	}
 }

@@ -15,6 +15,10 @@ import java.util.List;
 public class MonsterFish extends Monster {
 	private FishColour colour;
 
+	public MonsterFish(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+		super(dungeon, level, x, y);
+	}
+
 	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
 		super(dungeon, level, x, y, 1);
 
@@ -118,6 +122,13 @@ public class MonsterFish extends Monster {
 		super.serialise(obj);
 
 		obj.put("colour", colour.name());
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		colour = FishColour.valueOf(obj.getString("colour"));
 	}
 
 	public enum FishColour {

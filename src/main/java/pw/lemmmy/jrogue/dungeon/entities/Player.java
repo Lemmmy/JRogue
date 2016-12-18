@@ -4,6 +4,7 @@ import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
@@ -21,6 +22,8 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +49,10 @@ public class Player extends LivingEntity {
 
 	private boolean godmode = false;
 	private Map<Skill, SkillLevel> skills;
+
+	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+		super(dungeon, level, x, y);
+	}
 
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
@@ -280,6 +287,47 @@ public class Player extends LivingEntity {
 		JSONObject serialisedSkills = new JSONObject();
 		skills.entrySet().forEach(e -> serialisedSkills.put(e.getKey().name(), e.getValue().name()));
 		obj.put("skills", serialisedSkills);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void unserialise(JSONObject obj) {
+		setInventoryContainer(new Container("Inventory"));
+		skills = new HashMap<>();
+
+		super.unserialise(obj);
+
+		name = obj.getString("name");
+		strength = obj.getInt("strength");
+		agility = obj.getInt("agility");
+		dexterity = obj.getInt("dexterity");
+		constitution = obj.getInt("constitution");
+		intelligence = obj.getInt("intelligence");
+		wisdom = obj.getInt("wisdom");
+		charisma = obj.getInt("charisma");
+		nutrition = obj.getInt("nutrition");
+		gold = obj.getInt("gold");
+		godmode = obj.getBoolean("godmode");
+
+		String roleClassName = obj.getString("role");
+		try {
+			Class roleClass = Class.forName(roleClassName);
+			Constructor roleConstructor = roleClass.getConstructor();
+			role = (Role) roleConstructor.newInstance();
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown role class {}", roleClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("Role class {} has no unserialisation constructor", roleClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading role class {}", roleClassName);
+			JRogue.getLogger().error(e);
+		}
+
+		JSONObject serialisedSkills = obj.getJSONObject("skills");
+		serialisedSkills.keySet().forEach(k -> {
+			String v = serialisedSkills.getString(k);
+			skills.put(Skill.valueOf(k), SkillLevel.valueOf(v));
+		});
 	}
 
 	@Override

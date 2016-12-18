@@ -4,6 +4,10 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 
 public class ItemLongsword extends ItemSword {
+	public ItemLongsword() { // unserialisation constructor
+		super();
+	}
+
 	public ItemLongsword(Material material) {
 		super(material);
 	}

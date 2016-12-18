@@ -11,6 +11,10 @@ import java.util.List;
 public abstract class Monster extends LivingEntity {
 	private AI ai;
 
+	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+		super(dungeon, level, x, y);
+	}
+
 	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y, experienceLevel);
 	}

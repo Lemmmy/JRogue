@@ -79,6 +79,10 @@ public class Tile {
 		return state != null;
 	}
 
+	public void setState(TileState state) {
+		this.state = state;
+	}
+
 	public Color getLightColour() {
 		return light;
 	}

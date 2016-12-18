@@ -102,11 +102,32 @@ public class Container {
 		listeners.remove(listener);
 	}
 
+	public static Container createFromJSON(JSONObject obj) {
+		Container container = new Container(obj.getString("name"));
+		container.unserialise(obj);
+		return container;
+	}
+
 	public void serialise(JSONObject obj) {
+		obj.put("name", name);
+
+		JSONObject serialisedItems = new JSONObject();
 		items.entrySet().forEach(e -> {
 			JSONObject serialisedItemStack = new JSONObject();
 			e.getValue().serialise(serialisedItemStack);
-			obj.put(e.getKey().toString(), serialisedItemStack);
+			serialisedItems.put(e.getKey().toString(), serialisedItemStack);
+		});
+		obj.put("items", serialisedItems);
+	}
+
+	public void unserialise(JSONObject obj) {
+		JSONObject serialisedItems = obj.getJSONObject("items");
+		serialisedItems.keySet().forEach(k -> {
+			JSONObject v = serialisedItems.getJSONObject(k);
+			Character letter = k.charAt(0);
+
+			Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(v);
+			itemStackOptional.ifPresent(itemStack -> items.put(letter, itemStack));
 		});
 	}
 

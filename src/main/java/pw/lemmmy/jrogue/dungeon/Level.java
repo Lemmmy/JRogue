@@ -1,18 +1,21 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,6 +75,179 @@ public class Level {
 		Arrays.fill(visibleTiles, false);
 
 		entities = new ArrayList<>();
+	}
+
+	public static Optional<Level> createFromJSON(JSONObject obj, Dungeon dungeon) {
+		try {
+			int width = obj.getInt("width");
+			int height = obj.getInt("height");
+			int depth = obj.getInt("depth");
+
+			Level level = new Level(dungeon, width, height, depth);
+			level.unserialise(obj);
+			return Optional.of(level);
+		} catch (JSONException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+
+		return Optional.empty();
+	}
+
+	public JSONObject serialise() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("width", getWidth());
+		obj.put("height", getHeight());
+		obj.put("depth", getDepth());
+		obj.put("spawnX", getSpawnX());
+		obj.put("spawnY", getSpawnY());
+
+		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
+
+		Arrays.stream(tiles).forEach(t -> {
+			if (t.hasState()) {
+				JSONObject serialisedTileState = new JSONObject();
+				serialisedTileState.put("x", t.getX());
+				serialisedTileState.put("y", t.getY());
+				serialisedTileState.put("class", t.getState().getClass().getName());
+				t.getState().serialise(serialisedTileState);
+				obj.append("tileStates", serialisedTileState);
+			}
+		});
+
+		entities.forEach(e -> {
+			JSONObject serialisedEntity = new JSONObject();
+			e.serialise(serialisedEntity);
+			obj.append("entities", serialisedEntity);
+		});
+
+		return obj;
+	}
+
+	private Optional<byte[]> serialiseTiles() {
+		try (
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(bos)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					dos.writeShort(t.getType().getID());
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error saving level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+
+			dos.flush();
+
+			return Optional.of(bos.toByteArray());
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error saving level:");
+			JRogue.getLogger().error(e);
+		}
+
+		return Optional.empty();
+	}
+
+	public void unserialise(JSONObject obj) {
+		try {
+			spawnX = obj.getInt("spawnX");
+			spawnY = obj.getInt("spawnY");
+
+			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
+
+			JSONArray entities = obj.getJSONArray("entities");
+			entities.forEach(serialisedEntity -> {
+				unserialiseEntity((JSONObject) serialisedEntity);
+			});
+
+			JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
+			serialisedTileStates.forEach(serialisedTileState -> {
+				unserialiseTileState((JSONObject) serialisedTileState);
+			});
+		} catch (JSONException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+	}
+
+	private void unserialiseTiles(byte[] bytes) {
+		try (
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			DataInputStream dis = new DataInputStream(bis)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					short id = dis.readShort();
+					TileType type = TileType.fromID(id);
+					t.setType(type);
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error loading level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void unserialiseEntity(JSONObject serialisedEntity) {
+		String entityClassName = serialisedEntity.getString("class");
+		int x = serialisedEntity.getInt("x");
+		int y = serialisedEntity.getInt("y");
+
+		try {
+			Class entityClass = Class.forName(entityClassName);
+			Constructor entityConstructor = entityClass.getConstructor(
+				Dungeon.class,
+				Level.class,
+				int.class,
+				int.class
+			);
+
+			Entity entity = (Entity) entityConstructor.newInstance(dungeon, this, x, y);
+			entity.unserialise(serialisedEntity);
+			addEntity(entity);
+
+			if (entity instanceof Player) {
+				getDungeon().setPlayer((Player) entity);
+			}
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown entity class {}", entityClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("Entity class {} has no unserialisation constructor", entityClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading entity class {}", entityClassName);
+			JRogue.getLogger().error(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void unserialiseTileState(JSONObject serialisedTileState) {
+		String tileStateClassName = serialisedTileState.getString("class");
+		int x = serialisedTileState.getInt("x");
+		int y = serialisedTileState.getInt("y");
+
+		Tile tile = getTile(x, y);
+
+		try {
+			Class tileStateClass = Class.forName(tileStateClassName);
+			Constructor tileStateConstructor = tileStateClass.getConstructor(Tile.class);
+
+			TileState tileState = (TileState) tileStateConstructor.newInstance(tile);
+			tileState.unserialise(serialisedTileState);
+			tile.setState(tileState);
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown tile state class {}", tileStateClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("Tile state class {} has no unserialisation constructor", tileStateClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading tile state class {}", tileStateClassName);
+			JRogue.getLogger().error(e);
+		}
 	}
 
 	public int getDepth() {
@@ -437,57 +613,5 @@ public class Level {
 			c1.getBlue() > c2.getBlue() ? c1.getBlue() : c2.getBlue(),
 			255
 		);
-	}
-
-	public JSONObject serialise() {
-		JSONObject obj = new JSONObject();
-
-		obj.put("width", getWidth());
-		obj.put("height", getHeight());
-		obj.put("depth", getDepth());
-		obj.put("spawnX", getSpawnX());
-		obj.put("spawnY", getSpawnY());
-
-		Optional<byte[]> serialisedTiles = serialiseTiles();
-		serialisedTiles.ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
-
-		Arrays.stream(tiles).forEach(t -> {
-			if (t.hasState()) {
-				JSONObject serialisedTileState = new JSONObject();
-				serialisedTileState.put("x", t.getX());
-				serialisedTileState.put("y", t.getY());
-				serialisedTileState.put("class", t.getState().getClass().getName());
-				t.getState().serialise(serialisedTileState);
-				obj.append("tileStates", serialisedTileState);
-			}
-		});
-
-		entities.forEach(e -> {
-			JSONObject serialisedEntity = new JSONObject();
-			e.serialise(serialisedEntity);
-			obj.append("entities", serialisedEntity);
-		});
-
-		return obj;
-	}
-
-	private Optional<byte[]> serialiseTiles() {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(bos)){
-			Arrays.stream(tiles).forEach(t -> {
-				try {
-					dos.writeShort(t.getType().getID());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-
-			dos.flush();
-
-			return Optional.of(bos.toByteArray());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return Optional.empty();
 	}
 }

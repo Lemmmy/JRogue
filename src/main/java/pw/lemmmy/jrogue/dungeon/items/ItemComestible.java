@@ -28,6 +28,13 @@ public abstract class ItemComestible extends Item {
 		obj.put("eatenState", getEatenState().name());
 	}
 
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		eatenState = EatenState.valueOf(obj.getString("eatenState"));
+	}
+
 	public enum EatenState {
 		UNEATEN,
 		PARTLY_EATEN,
