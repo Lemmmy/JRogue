@@ -418,8 +418,54 @@ public class Player extends LivingEntity {
 		}
 	}
 
+	public void travelDirectional() {
+		getDungeon().prompt(new Prompt("Travel in what direction?", null, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+			}
+
+			public void onResponse(char response) {
+				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
+					return;
+				}
+
+				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+				int dx = d[0];
+				int dy = d[1];
+
+				for (int i = 0; i < 50; i++) { // max 50 steps in one move
+					Tile destTile = getLevel().getTile(getX() + dx, getY() + dy);
+
+					if (
+						destTile == null ||
+						i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
+						destTile.getType().getSolidity() == TileType.Solidity.SOLID
+					) {
+						break;
+					}
+
+					int oldX = getX();
+					int oldY = getY();
+
+					setAction(new ActionMove(getDungeon(), Player.this, getX() + dx, getY() + dy));
+					getDungeon().turn();
+
+					if (oldX == getX() && oldY == getY()) { // we didn't go anywhere, so stop
+						break;
+					}
+				}
+			}
+		}));
+	}
+
 	public void kick() {
-		getDungeon().prompt(new Prompt("Kick in what direction?", null, new Prompt.PromptCallback() {
+		getDungeon().prompt(new Prompt("Kick in what direction?", null, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {
 				getDungeon().log("Nevermind.");
@@ -433,37 +479,37 @@ public class Player extends LivingEntity {
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
 					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-				} else {
-					// TODO: If the player has low wisdom, bypass the foot/leg check.
-					// Damage their injured foot/leg further.
-
-					if (hasStatusEffect(InjuredFoot.class)) {
-						getDungeon().Your("foot is in no shape for kicking.");
-						return;
-					}
-
-					if (hasStatusEffect(StrainedLeg.class)) {
-						getDungeon().Your("leg is in no shape for kicking.");
-						return;
-					}
-
-					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-
-					if (getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).size() > 0) {
-						setAction(new ActionKick(
-							getDungeon(),
-							Player.this,
-							d,
-							getLevel().getEntitiesAt(getX() + d[0], getY() + d[1]).get(0)
-						));
-					} else {
-						setAction(new ActionKick(getDungeon(), Player.this, d));
-					}
-
-					getDungeon().turn();
+					return;
 				}
+
+				if (wisdom > 5 && hasStatusEffect(InjuredFoot.class)) {
+					getDungeon().Your("foot is in no shape for kicking.");
+					return;
+				}
+
+				if (wisdom > 5 && hasStatusEffect(StrainedLeg.class)) {
+					getDungeon().Your("leg is in no shape for kicking.");
+					return;
+				}
+
+				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+				int dx = d[0];
+				int dy = d[1];
+
+				if (getLevel().getEntitiesAt(getX() + dx, getY() + dy).size() > 0) {
+					setAction(new ActionKick(
+						getDungeon(),
+						Player.this,
+						d,
+						getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0)
+					));
+				} else {
+					setAction(new ActionKick(getDungeon(), Player.this, d));
+				}
+
+				getDungeon().turn();
 			}
-		}, true));
+		}));
 	}
 
 	public void eat() {
@@ -486,7 +532,7 @@ public class Player extends LivingEntity {
 						}
 					}
 
-					getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, new Prompt.PromptCallback() {
+					getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 						@Override
 						public void onNoResponse() {
 							getDungeon().log("Nevermind.");
@@ -512,7 +558,7 @@ public class Player extends LivingEntity {
 							));
 							getDungeon().turn();
 						}
-					}, true));
+					}));
 
 					break;
 				}
@@ -532,8 +578,7 @@ public class Player extends LivingEntity {
 				getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
 				getWisdom() > 6) {
 
-				getDungeon().You("feel funny.");
-				getDungeon().You("think it might not be a good idea to continue eating.");
+				getDungeon().You("feel funny - it might not be a good idea to continue eating.");
 			}
 
 			return ItemComestible.EatenState.PARTLY_EATEN;
@@ -616,7 +661,7 @@ public class Player extends LivingEntity {
 
 		char[] options = ArrayUtils.toPrimitive(inventory.getItems().keySet().toArray(new Character[0]));
 
-		getDungeon().prompt(new Prompt("Drop what?", options, new Prompt.PromptCallback() {
+		getDungeon().prompt(new Prompt("Drop what?", options, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {
 				getDungeon().log("Nevermind.");
@@ -654,7 +699,7 @@ public class Player extends LivingEntity {
 					}
 				}
 			}
-		}, true));
+		}));
 	}
 
 	public void wield() {
@@ -676,7 +721,7 @@ public class Player extends LivingEntity {
 		options = Arrays.copyOf(options, options.length + 1);
 		options[options.length - 1] = '-';
 
-		getDungeon().prompt(new Prompt("Wield what?", options, new Prompt.PromptCallback() {
+		getDungeon().prompt(new Prompt("Wield what?", options, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {
 				getDungeon().log("Nevermind.");
@@ -726,7 +771,7 @@ public class Player extends LivingEntity {
 					}
 				}
 			}
-		}, true));
+		}));
 	}
 
 	public Map<Character, ItemStack> getWieldablesInInventory() {

@@ -10,7 +10,7 @@ public class Prompt {
 	private PromptCallback callback;
 	private boolean escapable;
 
-	public Prompt(String message, char[] options, PromptCallback callback, boolean escapable) {
+	public Prompt(String message, char[] options, boolean escapable, PromptCallback callback) {
 		this.message = message;
 		this.options = options;
 		this.callback = callback;

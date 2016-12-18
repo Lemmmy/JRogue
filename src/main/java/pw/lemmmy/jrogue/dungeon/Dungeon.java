@@ -190,7 +190,7 @@ public class Dungeon {
 	}
 
 	public void quit() {
-		prompt(new Prompt("Really quit?", new char[] {'y', 'n'}, new Prompt.PromptCallback() {
+		prompt(new Prompt("Really quit?", new char[] {'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {}
 
@@ -209,7 +209,7 @@ public class Dungeon {
 					listeners.forEach(l -> l.onQuit());
 				}
 			}
-		}, true));
+		}));
 	}
 
 	public void addListener(Listener listener) {

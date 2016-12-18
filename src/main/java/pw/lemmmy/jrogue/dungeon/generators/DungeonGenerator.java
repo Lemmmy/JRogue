@@ -123,8 +123,6 @@ public abstract class DungeonGenerator {
 
 			if (t == TileType.TILE_GROUND) {
 				level.setTileType(nx, ny, TileType.TILE_CORRIDOR);
-			} else if (t == TileType.TILE_ROOM_WATER) {
-				level.setTileType(nx, ny, TileType.TILE_ROOM_FLOOR);
 			}
 		}
 	}

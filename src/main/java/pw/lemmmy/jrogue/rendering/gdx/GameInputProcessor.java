@@ -30,79 +30,64 @@ public class GameInputProcessor implements InputProcessor {
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
 				dungeon.escapePrompt();
-
 				return true;
 			} else {
 				return false;
 			}
 		}
 
-		return handleMovementCommands(keycode) || handlePlayerCommands(keycode) || handleRendererCommands(keycode);
+		dontHandleNext = handleMovementCommands(keycode) ||
+						 handlePlayerCommands(keycode) ||
+						 handleRendererCommands(keycode);
+
+		return dontHandleNext;
 	}
 
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
 			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
-
 			dungeon.getPlayer().walk(d[0], d[1]);
-
-			dontHandleNext = true;
 			return true;
 		}
 
 		return false;
 	}
 
-	private boolean handlePlayerCommands(int keycode) {
+	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
 				dungeon.getPlayer().kick();
-
-				dontHandleNext = true;
 				return true;
 			}
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.T) {
 				teleporting = true;
-
-				dontHandleNext = true;
 				return true;
 			}
 		} else {
 			if (keycode == Input.Keys.D) {
 				dungeon.getPlayer().drop();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.E) {
 				dungeon.getPlayer().eat();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.COMMA) {
 				dungeon.getPlayer().pickup();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.I) {
 				renderer.showInventoryWindow();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.W) {
 				dungeon.getPlayer().wield();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.X) {
 				dungeon.getPlayer().swapHands();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.Q) {
 				dungeon.quit();
-
-				dontHandleNext = true;
+				return true;
+			} else if (keycode == Input.Keys.G || keycode == Input.Keys.NUM_5 || keycode == Input.Keys.NUMPAD_5) {
+				dungeon.getPlayer().travelDirectional();
 				return true;
 			}
 		}
