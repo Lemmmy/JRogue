@@ -27,15 +27,9 @@ public class Level {
 
 	public Tile[] tiles;
 
-	/***
-	 * TileType the player thinks exist
-	 */
-	public boolean[] discoveredTiles;
+	public Boolean[] discoveredTiles;
 
-	/***
-	 * TileType visible this turn
-	 */
-	public boolean[] visibleTiles;
+	public Boolean[] visibleTiles;
 
 	public List<List<Tile>> lightTiles;
 
@@ -65,8 +59,8 @@ public class Level {
 		this.depth = depth;
 
 		tiles = new Tile[width * height];
-		discoveredTiles = new boolean[width * height];
-		visibleTiles = new boolean[width * height];
+		discoveredTiles = new Boolean[width * height];
+		visibleTiles = new Boolean[width * height];
 
 		for (int i = 0; i < width * height; i++) {
 			tiles[i] = new Tile(this, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
@@ -105,6 +99,12 @@ public class Level {
 		obj.put("spawnY", getSpawnY());
 
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
+
+		serialiseBooleanArray(visibleTiles)
+			.ifPresent(bytes -> obj.put("visibleTiles", new String(Base64.getEncoder().encode(bytes))));
+
+		serialiseBooleanArray(discoveredTiles)
+			.ifPresent(bytes -> obj.put("discoveredTiles", new String(Base64.getEncoder().encode(bytes))));
 
 		Arrays.stream(tiles).forEach(t -> {
 			if (t.hasState()) {
@@ -151,12 +151,47 @@ public class Level {
 		return Optional.empty();
 	}
 
+	private Optional<byte[]> serialiseBooleanArray(Boolean[] arr) {
+		try (
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(bos)
+		) {
+			Arrays.stream(arr).forEach(t -> {
+				try {
+					dos.writeBoolean(t);
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error saving level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+
+			dos.flush();
+
+			return Optional.of(bos.toByteArray());
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error saving level:");
+			JRogue.getLogger().error(e);
+		}
+
+		return Optional.empty();
+	}
+
 	public void unserialise(JSONObject obj) {
 		try {
 			spawnX = obj.getInt("spawnX");
 			spawnY = obj.getInt("spawnY");
 
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
+
+			visibleTiles = unserialiseBooleanArray(
+				Base64.getDecoder().decode(obj.getString("visibleTiles")),
+				width * height
+			);
+
+			discoveredTiles = unserialiseBooleanArray(
+				Base64.getDecoder().decode(obj.getString("discoveredTiles")),
+				width * height
+			);
 
 			JSONArray entities = obj.getJSONArray("entities");
 			entities.forEach(serialisedEntity -> {
@@ -192,6 +227,24 @@ public class Level {
 			JRogue.getLogger().error("Error loading level:");
 			JRogue.getLogger().error(e);
 		}
+	}
+
+	private Boolean[] unserialiseBooleanArray(byte[] bytes, int count) {
+		Boolean[] out = new Boolean[count];
+
+		try (
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			DataInputStream dis = new DataInputStream(bis)
+		) {
+			for (int i = 0; i < count; i++) {
+				out[i] = dis.readBoolean();
+			}
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+
+		return out;
 	}
 
 	@SuppressWarnings("unchecked")
