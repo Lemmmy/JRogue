@@ -466,7 +466,7 @@ public class Player extends LivingEntity {
 						break;
 					}
 
-					if (i > 1 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+					if (i > 2 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
 						break;
 					}
 				}
@@ -521,7 +521,7 @@ public class Player extends LivingEntity {
 				return;
 			}
 
-			if (i.get() > 1 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+			if (i.get() > 2 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
 				stop.set(true);
 			}
 		});
