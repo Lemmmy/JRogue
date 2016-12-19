@@ -27,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
@@ -465,7 +466,7 @@ public class Player extends LivingEntity {
 						break;
 					}
 
-					if (getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+					if (i > 1 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
 						break;
 					}
 				}
@@ -495,8 +496,11 @@ public class Player extends LivingEntity {
 		}
 
 		AtomicBoolean stop = new AtomicBoolean(false);
+		AtomicInteger i = new AtomicInteger(0);
 
 		path.forEach(step -> {
+			i.incrementAndGet();
+
 			if (stop.get()) return;
 			if (getX() == step.getX() && getY() == step.getY()) return;
 
@@ -517,7 +521,7 @@ public class Player extends LivingEntity {
 				return;
 			}
 
-			if (getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+			if (i.get() > 1 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
 				stop.set(true);
 			}
 		});
