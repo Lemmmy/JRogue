@@ -120,7 +120,7 @@ public abstract class Entity {
 		return Optional.empty();
 	}
 
-	public boolean canContainerBeOpened() {
+	public boolean lootable() {
 		return false;
 	}
 

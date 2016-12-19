@@ -30,6 +30,11 @@ public class EntityChest extends Entity {
 	}
 
 	@Override
+	public boolean lootable() {
+		return true;
+	}
+
+	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 
 	}
