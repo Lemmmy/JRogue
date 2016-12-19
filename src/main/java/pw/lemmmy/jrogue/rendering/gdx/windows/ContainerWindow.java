@@ -51,9 +51,11 @@ public class ContainerWindow extends PopupWindow {
 			String suffix = "";
 
 			if (isLivingEntity) {
-				if (livingEntity.getRightHand() != null && livingEntity.getLeftHand() != null &&
+				if (
+					livingEntity.getRightHand() != null && livingEntity.getLeftHand() != null &&
 					livingEntity.getRightHand().getLetter() == character &&
-					livingEntity.getLeftHand().getLetter() == character) {
+					livingEntity.getLeftHand().getLetter() == character
+				) {
 					suffix = " [P_GREY_3](in both hands)[]";
 				} else if (livingEntity.getRightHand() != null && livingEntity.getRightHand().getLetter() == character) {
 					suffix = " [P_GREY_3](in right hand)[]";
