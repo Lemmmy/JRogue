@@ -5,10 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,7 +18,6 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Path;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
@@ -35,12 +31,18 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.ContainerWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.Gradient;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
+
+	private static final Gradient PATH_GRADIENT = new Gradient(
+		Color.GREEN,
+		Color.RED
+	);
 
 	private LwjglApplication application;
 
@@ -377,9 +379,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			return;
 		}
 
+		Color oldColour = batch.getColor();
+
 		Path path = lastPath.get();
+		AtomicInteger i = new AtomicInteger(0);
 
 		path.forEach(step -> {
+			i.incrementAndGet();
+
 			TextureRegion image;
 
 			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
@@ -414,8 +421,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				image = pathSpot;
 			}
 
+			float point = (float) (i.get() - 1) / (float) (path.getLength() - 1);
+
+			batch.setColor(PATH_GRADIENT.getColourAtPoint(point));
 			batch.draw(image, step.getX() * TileMap.TILE_WIDTH + 0.01f, step.getY() * TileMap.TILE_HEIGHT + 0.01f);
 		});
+
+		batch.setColor(oldColour);
 	}
 
 	private void drawEntityParticles(float delta, boolean over) {
