@@ -156,6 +156,10 @@ public class Player extends LivingEntity {
 		return nutrition;
 	}
 
+	public void setNutrition(int nutrition) {
+		this.nutrition = nutrition;
+	}
+
 	public NutritionState getNutritionState() {
 		if (nutrition >= 1500) {
 			return NutritionState.CHOKING;

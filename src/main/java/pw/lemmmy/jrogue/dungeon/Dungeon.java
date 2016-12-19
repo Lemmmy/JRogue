@@ -461,6 +461,8 @@ public class Dungeon {
 				 });
 
 			turn();
+		} else if (wish.equalsIgnoreCase("nutrition")) {
+			player.setNutrition(1000);
 		} else {
 			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
 
