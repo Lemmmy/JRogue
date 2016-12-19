@@ -55,7 +55,7 @@ public class EntityChest extends Entity {
 			getDungeon().You("kick the %s!", getName(false));
 
 			if (locked && Utils.roll(4) == 1) {
-				getDungeon().The("%s breaks open!");
+				getDungeon().The("%s breaks open!", getName(false));
 				locked = false;
 			}
 
