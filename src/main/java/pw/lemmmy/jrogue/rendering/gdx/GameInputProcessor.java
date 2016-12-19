@@ -151,7 +151,6 @@ public class GameInputProcessor implements InputProcessor {
 		}
 
 		mouseMoved = false;
-
 		return false;
 	}
 
@@ -160,7 +159,9 @@ public class GameInputProcessor implements InputProcessor {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
 				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
 				teleporting = false;
-
+				return true;
+			} else {
+				dungeon.getPlayer().travelPathfind((int) pos.x, (int) pos.y);
 				return true;
 			}
 		}

@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.ArrayList;
@@ -153,35 +153,4 @@ public class AStarPathFinder {
 		}
 	}
 
-	public static class Path {
-		private List<Tile> steps = new ArrayList<>();
-
-		public int getLength() {
-			return steps.size();
-		}
-
-		public Tile getStep(int index) {
-			return steps.get(index);
-		}
-
-		public int getX(int index) {
-			return steps.get(index).getX();
-		}
-
-		public int getY(int index) {
-			return steps.get(index).getY();
-		}
-
-		public void addStep(Tile step) {
-			steps.add(step);
-		}
-
-		public void prependStep(Tile step) {
-			steps.add(0, step);
-		}
-
-		public boolean contains(Tile step) {
-			return steps.contains(step);
-		}
-	}
 }

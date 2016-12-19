@@ -304,6 +304,10 @@ public class Dungeon {
 		listeners.forEach(l -> l.onContainerShow(containerEntity));
 	}
 
+	public void showPath(pw.lemmmy.jrogue.dungeon.entities.Path path) {
+		listeners.forEach(l -> l.onPathShow(path));
+	}
+
 	public void turn() {
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
@@ -584,6 +588,8 @@ public class Dungeon {
 		void onPrompt(Prompt prompt);
 
 		void onContainerShow(Entity containerEntity);
+
+		void onPathShow(pw.lemmmy.jrogue.dungeon.entities.Path path);
 
 		void onEntityAdded(Entity entity);
 

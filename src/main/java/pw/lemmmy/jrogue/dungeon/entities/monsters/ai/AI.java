@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
+import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
@@ -73,7 +74,7 @@ public abstract class AI {
 	}
 
 	protected void moveTowards(int destX, int destY) {
-		AStarPathFinder.Path path = AStarPathFinder.findPath(
+		Path path = AStarPathFinder.findPath(
 			getMonster().getLevel(),
 			getMonster().getX(),
 			getMonster().getY(),

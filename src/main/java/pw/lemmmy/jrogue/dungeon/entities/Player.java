@@ -14,6 +14,7 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionTeleport;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathFinder;
 import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
@@ -25,6 +26,7 @@ import pw.lemmmy.jrogue.utils.Utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
@@ -435,6 +437,8 @@ public class Player extends LivingEntity {
 					return;
 				}
 
+				Path pathTaken = new Path();
+
 				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
 				int dx = d[0];
 				int dy = d[1];
@@ -453,6 +457,7 @@ public class Player extends LivingEntity {
 					int oldX = getX();
 					int oldY = getY();
 
+					pathTaken.addStep(destTile);
 					setAction(new ActionMove(getDungeon(), Player.this, getX() + dx, getY() + dy));
 					getDungeon().turn();
 
@@ -464,8 +469,60 @@ public class Player extends LivingEntity {
 						break;
 					}
 				}
+
+				getDungeon().showPath(pathTaken);
 			}
 		}));
+	}
+
+	public void travelPathfind(int tx, int ty) {
+		Path path = AStarPathFinder.findPath(
+			getLevel(),
+			getX(),
+			getY(),
+			tx,
+			ty,
+			50,
+			true,
+			new ArrayList<>()
+		);
+
+		Path pathTaken = new Path();
+
+		if (path == null || path.getLength() == 0) {
+			getDungeon().You("can't travel there.");
+			return;
+		}
+
+		AtomicBoolean stop = new AtomicBoolean(false);
+
+		path.forEach(step -> {
+			if (stop.get()) return;
+			if (getX() == step.getX() && getY() == step.getY()) return;
+
+			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
+				stop.set(true);
+				return;
+			}
+
+			int oldX = getX();
+			int oldY = getY();
+
+			pathTaken.addStep(step);
+			setAction(new ActionMove(getDungeon(), Player.this, step.getX(), step.getY()));
+			getDungeon().turn();
+
+			if (oldX == getX() && oldY == getY()) {
+				stop.set(true);
+				return;
+			}
+
+			if (getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+				stop.set(true);
+			}
+		});
+
+		getDungeon().showPath(pathTaken);
 	}
 
 	public void kick() {

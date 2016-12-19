@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -19,6 +20,8 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.Path;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
@@ -32,11 +35,9 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.ContainerWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
+import pw.lemmmy.jrogue.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
@@ -60,6 +61,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>(); // TODO: Below and above
 
 	private List<PopupWindow> windows = new ArrayList<>();
+
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	private Optional<Path> lastPath = Optional.empty();
+	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
 
 	private float zoom = 1.0f;
 
@@ -96,6 +101,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightBatch = new ShapeRenderer();
 		lightSpriteBatch = new SpriteBatch();
 
+		loadPathSprites();
+
 		hud = new HUD(settings, dungeon);
 		hud.init();
 		dungeon.addListener(hud);
@@ -107,6 +114,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		onLevelChange(dungeon.getLevel());
 		dungeon.start();
+	}
+
+	private void loadPathSprites() {
+		pathSpot = ImageLoader.getImageFromSheet("hud.png", 6, 0);
+		pathH = ImageLoader.getImageFromSheet("hud.png", 7, 0);
+		pathV = ImageLoader.getImageFromSheet("hud.png", 8, 0);
+		pathUR = ImageLoader.getImageFromSheet("hud.png", 9, 0);
+		pathUL = ImageLoader.getImageFromSheet("hud.png", 10, 0);
+		pathBR = ImageLoader.getImageFromSheet("hud.png", 11, 0);
+		pathBL = ImageLoader.getImageFromSheet("hud.png", 12, 0);
+		pathR = ImageLoader.getImageFromSheet("hud.png", 13, 0);
+		pathL = ImageLoader.getImageFromSheet("hud.png", 14, 0);
+		pathU = ImageLoader.getImageFromSheet("hud.png", 15, 0);
+		pathB = ImageLoader.getImageFromSheet("hud.png", 16, 0);
 	}
 
 	private void updateWindowTitle() {
@@ -161,6 +182,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
+		lastPath = Optional.empty();
 	}
 
 	@Override
@@ -176,6 +198,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		nextFrameDeferred
 			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
 				.show());
+	}
+
+	@Override
+	public void onPathShow(Path path) {
+		lastPath = Optional.of(path);
 	}
 
 	@Override
@@ -288,6 +315,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		drawMap();
 		drawTileParticles(delta);
+		drawLastPath();
 		drawEntityParticles(delta, false);
 		drawEntities(false);
 		drawEntityParticles(delta, true);
@@ -302,6 +330,27 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void drawMap() {
 		drawMap(false, false);
 		drawMap(false, true);
+	}
+
+	private void drawMap(boolean allRevealed, boolean extra) {
+		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
+					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
+					continue;
+				}
+
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
+
+				if (tm.getRenderer() != null) {
+					if (extra) {
+						tm.getRenderer().drawExtra(batch, dungeon, x, y);
+					} else {
+						tm.getRenderer().draw(batch, dungeon, x, y);
+					}
+				}
+			}
+		}
 	}
 
 	private void drawTileParticles(float delta) {
@@ -321,6 +370,52 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				iterator.remove();
 			}
 		}
+	}
+
+	private void drawLastPath() {
+		if (!lastPath.isPresent()) {
+			return;
+		}
+
+		Path path = lastPath.get();
+
+		path.forEach(step -> {
+			TextureRegion image;
+
+			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
+
+			/*
+				 3
+				1 0
+				 2
+			 */
+
+			if (a[0] && !a[1] && !a[2] && !a[3]) {
+				image = pathR;
+			} else if (!a[0] && a[1] && !a[2] && !a[3]) {
+				image = pathL;
+			} else if (!a[0] && !a[1] && !a[2] && a[3]) {
+				image = pathU;
+			} else if (!a[0] && !a[1] && a[2] && !a[3]) {
+				image = pathB;
+			} else if (a[0] && a[1] && !a[2] && !a[3]) {
+				image = pathH;
+			} else if (!a[0] && !a[1] && a[2] && a[3]) {
+				image = pathV;
+			} else if (!a[0] && a[1] && !a[2] && a[3]) {
+				image = pathUL;
+			} else if (a[0] && !a[1] && !a[2] && a[3]) {
+				image = pathUR;
+			} else if (!a[0] && a[1] && a[2] && !a[3]) {
+				image = pathBL;
+			} else if (a[0] && !a[1] && a[2] && !a[3]) {
+				image = pathBR;
+			} else {
+				image = pathSpot;
+			}
+
+			batch.draw(image, step.getX() * TileMap.TILE_WIDTH + 0.01f, step.getY() * TileMap.TILE_HEIGHT + 0.01f);
+		});
 	}
 
 	private void drawEntityParticles(float delta, boolean over) {
@@ -420,27 +515,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		lightSpriteBatch.end();
 
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-	}
-
-	private void drawMap(boolean allRevealed, boolean extra) {
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
-					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
-					continue;
-				}
-
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-
-				if (tm.getRenderer() != null) {
-					if (extra) {
-						tm.getRenderer().drawExtra(batch, dungeon, x, y);
-					} else {
-						tm.getRenderer().draw(batch, dungeon, x, y);
-					}
-				}
-			}
-		}
 	}
 
 	@Override

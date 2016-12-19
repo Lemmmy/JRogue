@@ -10,6 +10,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
@@ -287,6 +288,11 @@ public class HUD implements Dungeon.Listener {
 
 	@Override
 	public void onContainerShow(Entity containerEntity) {
+
+	}
+
+	@Override
+	public void onPathShow(Path path) {
 
 	}
 
