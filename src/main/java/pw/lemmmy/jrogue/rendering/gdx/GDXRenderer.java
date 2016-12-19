@@ -29,7 +29,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
-import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.ContainerWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 
@@ -487,7 +487,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	public void showInventoryWindow() {
 		nextFrameDeferred
-			.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
+			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
 				.show());
 	}
 
