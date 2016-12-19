@@ -60,7 +60,8 @@ public class EntityChest extends Entity {
 			}
 
 			if (Utils.roll(4) == 1) { // TODO: Based on luck
-				getDungeon().You("completely destroy the contents inside!");
+				getDungeon().You("break the lock. In fact, you completely destroyed the contents inside!");
+				locked = false;
 				// TODO: Damage items
 			}
 		}
