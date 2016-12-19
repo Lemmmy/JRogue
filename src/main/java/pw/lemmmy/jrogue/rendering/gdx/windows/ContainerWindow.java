@@ -34,8 +34,8 @@ public class ContainerWindow extends PopupWindow {
 		boolean isLivingEntity = entity instanceof LivingEntity;
 		LivingEntity livingEntity = isLivingEntity ? (LivingEntity) entity : null;
 
-		getWindow().setWidth(300f);
-		getWindow().setHeight(400f);
+		getWindow().setWidth(300);
+		getWindow().setHeight(400);
 
 		Table mainTable = new Table(getSkin());
 		ScrollPane scrollPane = new ScrollPane(mainTable, getSkin());
@@ -44,6 +44,7 @@ public class ContainerWindow extends PopupWindow {
 
 		container.getItems().forEach((character, itemStack) -> { // TODO: categorical item grouping
 			Item item = itemStack.getItem();
+			Button itemButton = new Button(getSkin(), "inventory");
 			Table itemTable = new Table();
 
 			ItemRenderer renderer = ItemMap.valueOf(item.getAppearance().name()).getRenderer();
@@ -71,8 +72,11 @@ public class ContainerWindow extends PopupWindow {
 			itemTable.add(new Label("[BLACK]" + itemStack.getName(true) + suffix, getSkin(), "windowStyleMarkup"))
 					 .growX().left().row();
 
-			mainTable.add(itemTable)
-					 .left().width(294f).row();
+			itemButton.add(itemTable)
+					  .left().width(291);
+
+			mainTable.add(itemButton)
+					 .left().width(294).padTop(1).row();
 		});
 
 		getWindow().getContentTable().add(scrollPane);

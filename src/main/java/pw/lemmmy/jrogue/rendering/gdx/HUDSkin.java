@@ -58,6 +58,8 @@ public class HUDSkin extends Skin {
 		addColours();
 		addFonts();
 		addLabelStyles();
+		addButtonStyle();
+		addInventoryButtonStyle();
 		addTextButtonStyle();
 		addTextFieldStyle();
 		addListStyle();
@@ -76,6 +78,16 @@ public class HUDSkin extends Skin {
 		blackTransaprent.setColor(new Color(0f, 0f, 0f, 0.5f));
 		blackTransaprent.fill();
 		add("blackTransparent", new Texture(blackTransaprent));
+
+		Pixmap grey4 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		grey4.setColor(Colors.get("P_GREY_4"));
+		grey4.fill();
+		add("grey4", new Texture(grey4));
+
+		Pixmap blue = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		blue.setColor(Colors.get("P_BLUE_2"));
+		blue.fill();
+		add("blue", new Texture(blue));
 	}
 
 	private void addFonts() {
@@ -104,8 +116,73 @@ public class HUDSkin extends Skin {
 		add("windowStyleMarkup", windowLabelStyleMarkup);
 	}
 
+	private void addButtonStyle() {
+		Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
+
+		buttonStyle.up = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 0, 0, 10, 10),
+			4,
+			4,
+			4,
+			4
+		));
+		buttonStyle.over = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 10, 0, 10, 10),
+			4,
+			4,
+			4,
+			4
+		));
+		buttonStyle.down = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 20, 0, 10, 10),
+			4,
+			4,
+			4,
+			4
+		));
+		buttonStyle.disabled = new NinePatchDrawable(new NinePatch(
+			ImageLoader
+				.getSubimage("hud.png", 50, 0, 10, 10),
+			4,
+			4,
+			4,
+			4
+		));
+
+		add("default", buttonStyle);
+	}
+
+	private void  addInventoryButtonStyle() {
+		Button.ButtonStyle inventoryButtonStyle = new Button.ButtonStyle();
+
+		inventoryButtonStyle.disabled = inventoryButtonStyle.up = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 94, 25, 5, 5),
+			2,
+			2,
+			2,
+			2
+		));
+		inventoryButtonStyle.over = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 84, 25, 5, 5),
+			2,
+			2,
+			2,
+			2
+		));
+		inventoryButtonStyle.down = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("hud.png", 89, 25, 5, 5),
+			2,
+			2,
+			2,
+			2
+		));
+
+		add("inventory", inventoryButtonStyle);
+	}
+
 	private void addTextButtonStyle() {
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+
 		textButtonStyle.up = new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("hud.png", 0, 0, 10, 10),
 			4,
@@ -135,16 +212,19 @@ public class HUDSkin extends Skin {
 			4,
 			4
 		));
+
 		textButtonStyle.font = getFont("defaultNoShadow");
 		textButtonStyle.fontColor = Colors.get("P_GREY_0");
 		textButtonStyle.downFontColor = Colors.get("P_GREY_0");
 		textButtonStyle.overFontColor = Colors.get("P_GREY_0");
 		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
+
 		add("default", textButtonStyle);
 	}
 
 	private void addTextFieldStyle() {
 		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+
 		textFieldStyle.background = new NinePatchDrawable(new NinePatch(
 			ImageLoader
 				.getSubimage("hud.png", 59, 10, 5, 18),
@@ -179,8 +259,10 @@ public class HUDSkin extends Skin {
 			2,
 			2
 		));
+
 		textFieldStyle.font = getFont("defaultNoShadow");
 		textFieldStyle.fontColor = Colors.get("P_GREY_0");
+
 		add("default", textFieldStyle);
 	}
 

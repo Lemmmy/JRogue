@@ -155,6 +155,10 @@ public class GameInputProcessor implements InputProcessor {
 	}
 
 	private boolean handleWorldClicks(Vector2 pos, int button) {
+		if (renderer.getWindows().size() > 0) {
+			return false;
+		}
+
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
 				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
