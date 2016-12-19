@@ -124,6 +124,14 @@ public abstract class Entity {
 		return false;
 	}
 
+	public Optional<String> lootSuccessString() {
+		return Optional.empty();
+	}
+
+	public Optional<String> lootFailedString() {
+		return Optional.empty();
+	}
+
 	public Dungeon getDungeon() {
 		return dungeon;
 	}

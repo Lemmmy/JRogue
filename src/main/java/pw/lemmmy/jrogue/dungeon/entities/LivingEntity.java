@@ -184,9 +184,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 
 		Optional<Entity> ent = entities.stream()
-									   .filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item
-										   .getItem())
-									   .findFirst();
+		   .filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
+		   .findFirst();
 
 		if (ent.isPresent()) {
 			EntityItem entItem = (EntityItem) ent.get();

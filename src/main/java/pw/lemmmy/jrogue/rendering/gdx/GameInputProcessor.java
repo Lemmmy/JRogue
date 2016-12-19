@@ -74,6 +74,9 @@ public class GameInputProcessor implements InputProcessor {
 			} else if (keycode == Input.Keys.COMMA) {
 				dungeon.getPlayer().pickup();
 				return true;
+			} else if (keycode == Input.Keys.L) {
+				dungeon.getPlayer().loot();
+				return true;
 			} else if (keycode == Input.Keys.I) {
 				renderer.showInventoryWindow();
 				return true;

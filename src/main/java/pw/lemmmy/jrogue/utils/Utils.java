@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.utils;
 import com.badlogic.gdx.Input;
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.Range;
+import pw.lemmmy.jrogue.JRogue;
 
 import java.util.*;
 
@@ -76,11 +77,9 @@ public class Utils {
 		return jrand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
 	}
 
-	public static <T> T weightedRandomFrom(NavigableMap<Integer, T> items) {
-		Integer total = items.keySet().stream().reduce(0, (a, b) -> a + b);
-		Integer value = jrand.nextInt(total);
-		NavigableMap.Entry<Integer, T> entry = items.ceilingEntry(value);
-		return entry.getValue();
+	public static boolean rollD2() {
+		boolean result = jrand.nextBoolean();
+		return result;
 	}
 
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {

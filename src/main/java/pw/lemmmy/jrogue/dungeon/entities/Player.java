@@ -706,6 +706,29 @@ public class Player extends LivingEntity {
 		}));
 	}
 
+	public void loot() {
+		List<Entity> containerEntities = getLevel().getEntitiesAt(getX(), getY()).stream()
+			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
+			.collect(Collectors.toList());
+
+		if (containerEntities.size() == 0) {
+			getDungeon().log("There is nothing to loot here.");
+			return;
+		}
+
+		getDungeon().turn();
+
+		Entity containerEntity = containerEntities.get(0);
+
+		if (!containerEntity.lootable()) {
+			containerEntity.lootFailedString().ifPresent(s -> getDungeon().log(s));
+			return;
+		}
+
+		containerEntity.lootSuccessString().ifPresent(s -> getDungeon().log(s));
+		getDungeon().showContainer(containerEntity);
+	}
+
 	public void wield() {
 		if (!getContainer().isPresent()) {
 			getDungeon().You("can't wield anything!");

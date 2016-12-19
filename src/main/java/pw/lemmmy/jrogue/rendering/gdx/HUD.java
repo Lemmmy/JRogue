@@ -286,6 +286,11 @@ public class HUD implements Dungeon.Listener {
 	}
 
 	@Override
+	public void onContainerShow(Entity containerEntity) {
+
+	}
+
+	@Override
 	public void onEntityAdded(Entity entity) {
 
 	}

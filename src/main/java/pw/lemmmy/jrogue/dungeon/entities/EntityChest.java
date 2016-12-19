@@ -1,17 +1,22 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Optional;
 
 public class EntityChest extends Entity {
 	private Container container;
+	private boolean locked;
 
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 
-		this.container = new Container(getName(true));
+		container = new Container(getName(true));
+		locked = Utils.rollD2();
 	}
 
 	@Override
@@ -31,12 +36,34 @@ public class EntityChest extends Entity {
 
 	@Override
 	public boolean lootable() {
-		return true;
+		return !locked;
+	}
+
+	@Override
+	public Optional<String> lootSuccessString() {
+		return Optional.of(String.format("You open the %s...", getName(false)));
+	}
+
+	@Override
+	public Optional<String> lootFailedString() {
+		return Optional.of(String.format("The %s is locked.", getName(false)));
 	}
 
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		if (isPlayer) {
+			getDungeon().You("kick the %s!", getName(false));
 
+			if (locked && Utils.roll(4) == 1) {
+				getDungeon().The("%s breaks open!");
+				locked = false;
+			}
+
+			if (Utils.roll(4) == 1) { // TODO: Based on luck
+				getDungeon().You("completely destroy the contents inside!");
+				// TODO: Damage items
+			}
+		}
 	}
 
 	@Override
@@ -47,5 +74,31 @@ public class EntityChest extends Entity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
+	}
+
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+
+		obj.put("locked", locked);
+
+		if (getContainer().isPresent()) {
+			JSONObject serialisedInventory = new JSONObject();
+			getContainer().get().serialise(serialisedInventory);
+
+			obj.put("inventory", serialisedInventory);
+		}
+	}
+
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		locked = obj.getBoolean("locked");
+
+		if (obj.has("inventory")) {
+			JSONObject serialisedInventory = obj.getJSONObject("inventory");
+			container = Container.createFromJSON(serialisedInventory);
+		}
 	}
 }

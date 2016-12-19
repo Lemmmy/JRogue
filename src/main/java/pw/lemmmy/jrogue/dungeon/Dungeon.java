@@ -267,6 +267,43 @@ public class Dungeon {
 		log("You " + s, objects);
 	}
 
+	public void prompt(Prompt prompt) {
+		this.prompt = prompt;
+		listeners.forEach(l -> l.onPrompt(prompt));
+	}
+
+	public void promptRespond(char response) {
+		if (prompt != null) {
+			Prompt prompt = this.prompt;
+			this.prompt = null;
+			prompt.respond(response);
+
+			listeners.forEach(l -> l.onPrompt(null));
+		}
+	}
+
+	public void escapePrompt() {
+		if (prompt != null) {
+			Prompt prompt = this.prompt;
+			this.prompt = null;
+			prompt.escape();
+
+			listeners.forEach(l -> l.onPrompt(null));
+		}
+	}
+
+	public boolean hasPrompt() {
+		return prompt != null;
+	}
+
+	public boolean isPromptEscapable() {
+		return prompt != null && prompt.isEscapable();
+	}
+
+	public void showContainer(Entity containerEntity) {
+		listeners.forEach(l -> l.onContainerShow(containerEntity));
+	}
+
 	public void turn() {
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
@@ -403,39 +440,6 @@ public class Dungeon {
 		this.turn = turn;
 	}
 
-	public void prompt(Prompt prompt) {
-		this.prompt = prompt;
-		listeners.forEach(l -> l.onPrompt(prompt));
-	}
-
-	public void promptRespond(char response) {
-		if (prompt != null) {
-			Prompt prompt = this.prompt;
-			this.prompt = null;
-			prompt.respond(response);
-
-			listeners.forEach(l -> l.onPrompt(null));
-		}
-	}
-
-	public void escapePrompt() {
-		if (prompt != null) {
-			Prompt prompt = this.prompt;
-			this.prompt = null;
-			prompt.escape();
-
-			listeners.forEach(l -> l.onPrompt(null));
-		}
-	}
-
-	public boolean hasPrompt() {
-		return prompt != null;
-	}
-
-	public boolean isPromptEscapable() {
-		return prompt != null && prompt.isEscapable();
-	}
-
 	public void wish(String wish) {
 		if (player.isDebugger()) {
 			JRogue.getLogger().debug("Player wished for '{}'", wish);
@@ -501,9 +505,7 @@ public class Dungeon {
 				return;
 			}
 
-			if (wishItems(wish)) {
-				return;
-			}
+			wishItems(wish);
 		}
 	}
 
@@ -580,6 +582,8 @@ public class Dungeon {
 		void onLog(String log);
 
 		void onPrompt(Prompt prompt);
+
+		void onContainerShow(Entity containerEntity);
 
 		void onEntityAdded(Entity entity);
 

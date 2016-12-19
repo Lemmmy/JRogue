@@ -172,6 +172,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 
 	@Override
+	public void onContainerShow(Entity containerEntity) {
+		nextFrameDeferred
+			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
+				.show());
+	}
+
+	@Override
 	public void onEntityAdded(Entity entity) {
 		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 
