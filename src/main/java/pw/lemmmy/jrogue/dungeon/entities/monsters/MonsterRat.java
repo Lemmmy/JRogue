@@ -121,7 +121,7 @@ public class MonsterRat extends Monster {
 				new EntityAction.ActionCallback() {
 					@Override
 					public void onComplete() {
-						getDungeon().The("%s bites you!", getName(false));
+						getDungeon().orangeThe("%s bites you!", getName(false));
 					}
 				}
 			));

@@ -31,6 +31,7 @@ public class Player extends LivingEntity {
 	private Role role;
 
 	private int nutrition;
+	private NutritionState lastNutritionState;
 
 	private int strength;
 	private int agility;
@@ -274,6 +275,20 @@ public class Player extends LivingEntity {
 			setHealth(getMaxHealth());
 		}
 
+		if (getNutritionState() != lastNutritionState) {
+			lastNutritionState = getNutritionState();
+
+			switch (getNutritionState()) {
+				case CHOKING:
+					getDungeon().redYou("are choking!");
+					break;
+				case FAINTING:
+				case STARVING:
+					getDungeon().redYou("are starving!");
+					break;
+			}
+		}
+
 		if (getNutritionState() == NutritionState.CHOKING) {
 			damage(DamageSource.CHOKING, 1, this, true);
 		}
@@ -352,9 +367,9 @@ public class Player extends LivingEntity {
 	@Override
 	protected void onDie(DamageSource damageSource) {
 		if (damageSource.getDeathString() != null) {
-			getDungeon().log(damageSource.getDeathString());
+			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
 		} else {
-			getDungeon().You("die.");
+			getDungeon().redYou("die");
 		}
 	}
 

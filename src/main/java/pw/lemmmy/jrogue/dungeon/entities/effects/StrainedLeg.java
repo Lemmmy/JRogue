@@ -20,6 +20,6 @@ public class StrainedLeg extends StatusEffect {
 
 	@Override
 	public void onEnd() {
-		getDungeon().Your("leg feels a lot better.");
+		getDungeon().greenYour("leg feels a lot better.");
 	}
 }

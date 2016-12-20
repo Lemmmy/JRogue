@@ -20,6 +20,6 @@ public class InjuredFoot extends StatusEffect {
 
 	@Override
 	public void onEnd() {
-		getDungeon().Your("foot feels a lot better.");
+		getDungeon().greenYour("foot feels a lot better.");
 	}
 }

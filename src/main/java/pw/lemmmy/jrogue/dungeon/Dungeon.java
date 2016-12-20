@@ -222,24 +222,6 @@ public class Dungeon {
 		this.name = this.originalName;
 	}
 
-	public void Your(String s, Object... objects) {
-		log("Your " + s, objects);
-	}
-
-	public void log(String s, Object... objects) {
-		JRogue.getLogger().info(String.format(s, objects));
-
-		listeners.forEach(l -> l.onLog(String.format(s, objects)));
-	}
-
-	public void The(String s, Object... objects) {
-		log("The " + s, objects);
-	}
-
-	public void logRandom(String... strings) {
-		log(Utils.randomFrom(strings));
-	}
-
 	public void start() {
 		if (turn <= 0) {
 			You("descend the stairs into [CYAN]%s[].", this.name);
@@ -252,8 +234,74 @@ public class Dungeon {
 		}
 	}
 
+	public void log(String s, Object... objects) {
+		JRogue.getLogger().info(String.format(s, objects));
+
+		listeners.forEach(l -> l.onLog(String.format(s, objects)));
+	}
+
+	public void logRandom(String... strings) {
+		log(Utils.randomFrom(strings));
+	}
+
+	public void The(String s, Object... objects) {
+		log("The " + s, objects);
+	}
+
+	public void redThe(String s, Object... objects) {
+		log("[RED]The " + s, objects);
+	}
+
+	public void orangeThe(String s, Object... objects) {
+		log("[ORANGE]The " + s, objects);
+	}
+
+	public void yellowThe(String s, Object... objects) {
+		log("[YELLOW]The " + s, objects);
+	}
+
+	public void greenThe(String s, Object... objects) {
+		log("[GREEN]The " + s, objects);
+	}
+
 	public void You(String s, Object... objects) {
 		log("You " + s, objects);
+	}
+
+	public void redYou(String s, Object... objects) {
+		log("[RED]You " + s, objects);
+	}
+
+	public void orangeYou(String s, Object... objects) {
+		log("[ORANGE]You " + s, objects);
+	}
+
+	public void yellowYou(String s, Object... objects) {
+		log("[YELLOW]You " + s, objects);
+	}
+
+	public void greenYou(String s, Object... objects) {
+		log("[GREEN]You " + s, objects);
+	}
+
+	public void Your(String s, Object... objects) {
+		log("Your " + s, objects);
+	}
+
+	public void redYour(String s, Object... objects) {
+		log("[RED]Your " + s, objects);
+	}
+
+	public void orangeYour(String s, Object... objects) {
+		log("[ORANGE]Your " + s, objects);
+	}
+
+	public void yellowYour(String s, Object... objects) {
+		log("[YELLOW]Your " + s, objects);
+	}
+
+	public void greenYour(String s, Object... objects) {
+		log("[GREEN]Your " + s, objects);
 	}
 
 	public void prompt(Prompt prompt) {

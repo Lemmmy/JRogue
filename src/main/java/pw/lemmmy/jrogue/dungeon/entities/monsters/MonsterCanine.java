@@ -72,7 +72,7 @@ public abstract class MonsterCanine extends Monster {
 				new EntityAction.ActionCallback() {
 					@Override
 					public void onComplete() {
-						getDungeon().The("%s bites you!", getName(false));
+						getDungeon().orangeThe("%s bites you!", getName(false));
 					}
 				}
 			));
@@ -85,7 +85,7 @@ public abstract class MonsterCanine extends Monster {
 
 		if (Utils
 			.roll(1, 5) == 1) { // TODO: If a player has a higher agility or speed, the monster is less likely to dodge
-			getDungeon().The("%s dodges your kick!", getName(false));
+			getDungeon().orangeThe("%s dodges your kick!", getName(false));
 
 			return;
 		}
@@ -96,19 +96,19 @@ public abstract class MonsterCanine extends Monster {
 
 		if (isAlive()) {
 			if (Utils.roll(1, 5) == 1) {
-				getDungeon().The("%s bites your foot!", getName(false));
+				getDungeon().orangeThe("%s bites your foot!", getName(false));
 
 				if (Utils.roll(1, 4) == 1) {
-					getDungeon().log("The bite was pretty deep!");
+					getDungeon().redThe("The bite was pretty deep!");
 
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
 					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
 				}
 			} else if (Utils.roll(1, 5) == 1) {
-				getDungeon().The("%s yanks your leg!", getName(false));
+				getDungeon().orangeThe("%s yanks your leg!", getName(false));
 
 				if (Utils.roll(1, 4) == 1) {
-					getDungeon().log("It strains your leg!");
+					getDungeon().log("[RED]It strains your leg!");
 
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
 					kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
