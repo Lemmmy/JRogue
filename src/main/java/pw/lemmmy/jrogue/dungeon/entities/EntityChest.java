@@ -59,12 +59,12 @@ public class EntityChest extends Entity {
 			getDungeon().You("kick the %s!", getName(false));
 
 			if (locked && Utils.roll(4) == 1) {
-				getDungeon().The("%s breaks open!", getName(false));
+				getDungeon().greenThe("%s breaks open!", getName(false));
 				locked = false;
 			}
 
 			if (Utils.roll(4) == 1) { // TODO: Based on luck
-				getDungeon().You("break the lock. In fact, you completely destroyed the contents inside!");
+				getDungeon().orangeYou("break the lock. In fact, you completely destroyed the contents inside!");
 				locked = false;
 				// TODO: Damage items
 			}
