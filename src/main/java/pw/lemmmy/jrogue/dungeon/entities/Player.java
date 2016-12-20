@@ -375,7 +375,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		getDungeon().You("step on your own foot.");
+		getDungeon().orangeYou("step on your own foot.");
 	}
 
 	@Override
@@ -763,7 +763,7 @@ public class Player extends LivingEntity {
 
 	public void consume(ItemComestible item) {
 		if (item.getTurnsRequiredToEat() == 1) {
-			getDungeon().You("eat the %s.", item.getName(false, false));
+			getDungeon().greenYou("eat the %s.", item.getName(false, false));
 			nutrition += item.getNutrition();
 
 			item.eatPart();
@@ -772,7 +772,7 @@ public class Player extends LivingEntity {
 
 		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
 			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
-				getDungeon().You("finish eating the %s.", item.getName(false, false));
+				getDungeon().greenYou("finish eating the %s.", item.getName(false, false));
 
 				nutrition += Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat());
 

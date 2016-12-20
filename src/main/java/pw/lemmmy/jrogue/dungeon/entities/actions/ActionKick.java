@@ -65,12 +65,12 @@ public class ActionKick extends EntityAction {
 				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not strain their legs
 				if (isPlayer) {
 					getDungeon().logRandom(
-						"Bad move! You strain your leg!",
-						"Bad idea! You strain your leg!",
-						"Ouch! You strain your leg!",
-						"Crap! You strain your leg!",
-						"Bad move! A sharp jolt shoots up your leg!",
-						"Ouch! A sharp jolt shoots up your leg!"
+						"[RED]Bad move! You strain your leg!",
+						"[RED]Bad idea! You strain your leg!",
+						"[RED]Ouch! You strain your leg!",
+						"[RED]Crap! You strain your leg!",
+						"[RED]Bad move! A sharp jolt shoots up your leg!",
+						"[RED]Ouch! A sharp jolt shoots up your leg!"
 					);
 				}
 
@@ -112,8 +112,8 @@ public class ActionKick extends EntityAction {
 				.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
 					getDungeon().logRandom(
-						"Ouch! That hurt a lot!",
-						"Ouch! That caused some bad damage to your foot!"
+						"[RED]Ouch! That hurt a lot!",
+						"[RED]Ouch! That caused some bad damage to your foot!"
 					);
 				}
 
@@ -121,7 +121,7 @@ public class ActionKick extends EntityAction {
 				kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
-					getDungeon().log("Ouch! That hurt!");
+					getDungeon().log("[ORANGE]Ouch! That hurt!");
 				}
 			}
 		} else {

@@ -37,6 +37,6 @@ public class Poison extends StatusEffect {
 
 	@Override
 	public void onEnd() {
-		getDungeon().You("managed to absorb the deadly poison.");
+		getDungeon().greenYou("managed to absorb the deadly poison.");
 	}
 }
