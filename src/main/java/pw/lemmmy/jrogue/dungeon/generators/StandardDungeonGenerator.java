@@ -6,10 +6,7 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpider;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
@@ -67,6 +64,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		Map<Class, Range<Integer>> floor1 = new HashMap<>();
 		floor1.put(MonsterJackal.class, Range.between(2, 5));
 		floor1.put(MonsterSpider.class, Range.between(4, 8));
+		floor1.put(MonsterRat.class, Range.between(2, 6));
 		monstersPerFloor.put(-1, floor1);
 	}
 
