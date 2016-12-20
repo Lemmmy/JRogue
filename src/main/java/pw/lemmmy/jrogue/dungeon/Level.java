@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon;
 
+import org.apache.commons.lang3.Range;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,8 +9,11 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
-import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
-import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterRat;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpider;
+import pw.lemmmy.jrogue.dungeon.generators.*;
+import pw.lemmmy.jrogue.utils.Point;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -27,6 +31,18 @@ public class Level {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 
+	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
+
+	private static final Map<Integer, Map<Class, Range<Integer>>> MONSTERS_PER_FLOOR = new HashMap<>();
+
+	static {
+		Map<Class, Range<Integer>> floor1 = new HashMap<>();
+		floor1.put(MonsterJackal.class, Range.between(2, 5));
+		floor1.put(MonsterSpider.class, Range.between(4, 8));
+		floor1.put(MonsterRat.class, Range.between(2, 6));
+		MONSTERS_PER_FLOOR.put(-1, floor1);
+	}
+
 	private Tile[] tiles;
 
 	private Boolean[] discoveredTiles;
@@ -34,8 +50,6 @@ public class Level {
 	private List<List<Tile>> lightTiles;
 
 	private Dungeon dungeon;
-
-	private DungeonGenerator generator;
 
 	private int width;
 	private int height;
@@ -79,7 +93,7 @@ public class Level {
 		do {
 			initialise();
 
-			generator = new StandardDungeonGenerator(this);
+			DungeonGenerator generator = new StandardDungeonGenerator(this);
 
 			if (!generator.generate()) {
 				continue;
@@ -89,6 +103,8 @@ public class Level {
 
 			gotLevel = true;
 		} while (!gotLevel);
+
+		spawnMonsters();
 	}
 
 	public static Optional<Level> createFromJSON(JSONObject obj, Dungeon dungeon) {
@@ -415,8 +431,98 @@ public class Level {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private void spawnMonsters() {
+		int floor = depth;
+
+		for (int i = floor; i != 0; i = floor < 0 ? i + 1 : i - 1) {
+			if (!MONSTERS_PER_FLOOR.containsKey(i)) {
+				continue;
+			}
+
+			Map<Class, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(i);
+
+			floorMonsters.forEach((monsterClass, range) -> {
+				try {
+					Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+
+					int count = Utils.jrandom(range);
+
+					for (int j = 0; j < count; j++) {
+						Point point = getMonsterSpawnPoint();
+
+						Entity monster = (Entity) constructor.newInstance(
+							getDungeon(),
+							this,
+							point.getX(),
+							point.getY()
+						);
+
+						addEntity(monster);
+					}
+				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
+	@SuppressWarnings("unchecked")
 	public void spawnNewMonsters() {
-		generator.spawnNewMonsters();
+		Point point = getMonsterSpawnPointAwayFromPlayer();
+
+		if (point != null) {
+			int floor = depth;
+
+			if (!MONSTERS_PER_FLOOR.containsKey(floor)) {
+				return;
+			}
+
+			Map<Class, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(floor);
+			Class monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
+
+			try {
+				Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+				Entity monster = (Entity) constructor.newInstance(
+					dungeon,
+					this,
+					point.getX(),
+					point.getY()
+				);
+
+				addEntity(monster);
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private Point getMonsterSpawnPoint() {
+		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
+			.filter(t -> (
+			   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+			   t.getType() == TileType.TILE_CORRIDOR
+			)
+			.collect(Collectors.toList())
+		);
+
+		return new Point(tile.getX(), tile.getY());
+	}
+
+	private Point getMonsterSpawnPointAwayFromPlayer() {
+		Player player = dungeon.getPlayer();
+
+		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
+			.filter(t -> (
+			   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+			   t.getType() == TileType.TILE_CORRIDOR
+			)
+			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
+			.filter(t -> Utils.distance(t.getX(), t.getY(), player.getX(), player.getY()) > MIN_MONSTER_SPAWN_DISTANCE)
+			.collect(Collectors.toList())
+		);
+
+		return new Point(tile.getX(), tile.getY());
 	}
 
 	public int getWidth() {

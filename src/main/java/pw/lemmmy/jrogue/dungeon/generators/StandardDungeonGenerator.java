@@ -56,18 +56,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int MIN_FISH_SWARMS = 10;
 	private static final int MAX_FISH_SWARMS = 25;
 
-	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
-
-	private static final Map<Integer, Map<Class, Range<Integer>>> monstersPerFloor = new HashMap<>();
-
-	static {
-		Map<Class, Range<Integer>> floor1 = new HashMap<>();
-		floor1.put(MonsterJackal.class, Range.between(2, 5));
-		floor1.put(MonsterSpider.class, Range.between(4, 8));
-		floor1.put(MonsterRat.class, Range.between(2, 6));
-		monstersPerFloor.put(-1, floor1);
-	}
-
 	private OpenSimplexNoise simplexNoise;
 
 	public StandardDungeonGenerator(Level level) {
@@ -99,7 +87,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		addRoomFeatures();
 		addRandomDrops();
 		spawnFish();
-		spawnMonsters();
 
 		return true;
 	}
@@ -341,101 +328,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				}
 			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void spawnMonsters() {
-		int floor = level.getDepth();
-
-		for (int i = floor; i != 0; i = floor < 0 ? i + 1 : i - 1) {
-			if (!monstersPerFloor.containsKey(i)) {
-				continue;
-			}
-
-			Map<Class, Range<Integer>> floorMonsters = monstersPerFloor.get(i);
-
-			floorMonsters.forEach((monsterClass, range) -> {
-				try {
-					Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-
-					int count = Utils.jrandom(range);
-
-					for (int j = 0; j < count; j++) {
-						Point point = getMonsterSpawnPoint();
-
-						Entity monster = (Entity) constructor.newInstance(
-							level.getDungeon(),
-							level,
-							point.getX(),
-							point.getY()
-						);
-
-						level.addEntity(monster);
-					}
-				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-					e.printStackTrace();
-				}
-			});
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void spawnNewMonsters() {
-		Point point = getMonsterSpawnPointAwayFromPlayer();
-
-		if (point != null) {
-			int floor = level.getDepth();
-
-			if (!monstersPerFloor.containsKey(floor)) {
-				return;
-			}
-
-			Map<Class, Range<Integer>> floorMonsters = monstersPerFloor.get(floor);
-			Class monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
-
-			try {
-				Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-				Entity monster = (Entity) constructor.newInstance(
-					level.getDungeon(),
-					level,
-					point.getX(),
-					point.getY()
-				);
-
-				level.addEntity(monster);
-			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private Point getMonsterSpawnPoint() {
-		Room room = Utils.randomFrom(
-			rooms.stream()
-				 .filter(r -> !r.isSpawn())
-				 .collect(Collectors.toList())
-		);
-
-		int x = nextInt(room.getRoomX() + 1, room.getRoomX() + room.getRoomWidth() - 1);
-		int y = nextInt(room.getRoomY() + 1, room.getRoomY() + room.getRoomHeight() - 1);
-
-		return new Point(x, y);
-	}
-
-	private Point getMonsterSpawnPointAwayFromPlayer() {
-		Player player = level.getDungeon().getPlayer();
-
-		Tile tile = Utils.randomFrom(Arrays.stream(level.getTiles())
-			.filter(t -> (
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
-				t.getType() == TileType.TILE_CORRIDOR
-			)
-			.filter(t -> !level.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
-			.filter(t -> Utils.distance(t.getX(), t.getY(), player.getX(), player.getY()) > MIN_MONSTER_SPAWN_DISTANCE)
-			.collect(Collectors.toList()));
-
-		return new Point(tile.getX(), tile.getY());
 	}
 
 	private boolean chooseSpawnRoom() {
