@@ -111,8 +111,12 @@ public class Dungeon {
 		listeners.forEach(l -> l.onLevelChange(level));
 	}
 
-	public void save() {
-		dataDir.toFile().mkdirs();
+	private void save() {
+		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
+			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
+			return;
+		}
+
 		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 
 		try (
@@ -175,9 +179,8 @@ public class Dungeon {
 			passiveSoundCounter = obj.getInt("passiveSoundCounter");
 
 			JSONArray levels = obj.getJSONArray("levels");
-			levels.forEach(serialisedLevel -> {
-				 Level.createFromJSON((JSONObject) serialisedLevel, this).ifPresent(l -> level = l);
-			});
+			levels.forEach(serialisedLevel ->
+				   Level.createFromJSON((JSONObject) serialisedLevel, this).ifPresent(l -> level = l));
 
 			listeners.forEach(l -> l.onLevelChange(level));
 
@@ -202,11 +205,11 @@ public class Dungeon {
 				if (response == 'y') {
 					File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 
-					if (file.exists()) {
-						file.delete();
+					if (file.exists() && !file.delete()) {
+						JRogue.getLogger().error("Failed to delete save file. Panic!"); // fuck you
 					}
 
-					listeners.forEach(l -> l.onQuit());
+					listeners.forEach(Listener::onQuit);
 				}
 			}
 		}));
@@ -456,9 +459,7 @@ public class Dungeon {
 		} else if (wish.equalsIgnoreCase("kill all")) {
 			level.getEntities().stream()
 				 .filter(e -> e instanceof LivingEntity && !(e instanceof Player))
-				 .forEach(e -> {
-					 ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH);
-				 });
+				 .forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH));
 
 			turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {

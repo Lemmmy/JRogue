@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class AI {
 	private Monster monster;
 
-	private List<TileType> avoidTiles = new ArrayList<TileType>();
+	private List<TileType> avoidTiles = new ArrayList<>();
 
 	public AI(Monster monster) {
 		this.monster = monster;

@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
-import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -31,12 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
-	private Pcg32 rand = new Pcg32();
-
 	private String name;
 	private Role role;
-
-	private int baseSpeed = Dungeon.NORMAL_SPEED;
 
 	private int nutrition;
 
@@ -65,20 +60,20 @@ public class Player extends LivingEntity {
 
 		nutrition = 1000;
 
-		strength = role.getStrength() + (int) ((float) Math
-			.ceil(role.getStrength() * rand.nextFloat(role.getStrengthRemaining())));
-		agility = role.getAgility() + (int) ((float) Math
-			.ceil(role.getAgility() * rand.nextFloat(role.getAgilityRemaining())));
-		dexterity = role.getDexterity() + (int) ((float) Math
-			.ceil(role.getDexterity() * rand.nextFloat(role.getDexterityRemaining())));
-		constitution = role.getConstitution() + (int) ((float) Math
-			.ceil(role.getConstitution() * rand.nextFloat(role.getConstitutionRemaining())));
-		intelligence = role.getIntelligence() + (int) ((float) Math
-			.ceil(role.getIntelligence() * rand.nextFloat(role.getIntelligenceRemaining())));
-		wisdom = role.getWisdom() + (int) ((float) Math
-			.ceil(role.getWisdom() * rand.nextFloat(role.getWisdomRemaining())));
-		charisma = role.getCharisma() + (int) ((float) Math
-			.ceil(role.getCharisma() * rand.nextFloat(role.getCharismaRemaining())));
+		strength = role.getStrength() +
+			(int) ((float) Math	.ceil(role.getStrength() * Utils.randomFloat(role.getStrengthRemaining())));
+		agility = role.getAgility() +
+			(int) ((float) Math.ceil(role.getAgility() * Utils.randomFloat(role.getAgilityRemaining())));
+		dexterity = role.getDexterity() +
+			(int) ((float) Math.ceil(role.getDexterity() * Utils.randomFloat(role.getDexterityRemaining())));
+		constitution = role.getConstitution() +
+			(int) ((float) Math.ceil(role.getConstitution() * Utils.randomFloat(role.getConstitutionRemaining())));
+		intelligence = role.getIntelligence() +
+			(int) ((float) Math.ceil(role.getIntelligence() * Utils.randomFloat(role.getIntelligenceRemaining())));
+		wisdom = role.getWisdom() +
+			(int) ((float) Math.ceil(role.getWisdom() * Utils.randomFloat(role.getWisdomRemaining())));
+		charisma = role.getCharisma() +
+			(int) ((float) Math.ceil(role.getCharisma() * Utils.randomFloat(role.getCharismaRemaining())));
 
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
@@ -116,7 +111,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	public int getMovementSpeed() {
-		int speed = baseSpeed;
+		int speed = Dungeon.NORMAL_SPEED;
 
 		if (hasStatusEffect(InjuredFoot.class)) {
 			speed -= 1;
@@ -470,7 +465,7 @@ public class Player extends LivingEntity {
 						break;
 					}
 
-					if (i > 2 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+					if (i > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
 						break;
 					}
 				}
@@ -525,7 +520,7 @@ public class Player extends LivingEntity {
 				return;
 			}
 
-			if (i.get() > 2 && getLevel().getAdjacentEntities(getX(), getY()).size() > 0) {
+			if (i.get() > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
 				stop.set(true);
 			}
 		});

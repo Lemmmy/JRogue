@@ -14,8 +14,6 @@ import java.util.List;
 public class Window extends Dialog {
 	private PopupWindow owner;
 
-	private Button closeButton;
-
 	private List<ResultListener> resultListeners = new ArrayList<>();
 
 	public Window(String title, Skin skin, PopupWindow owner) {
@@ -26,7 +24,8 @@ public class Window extends Dialog {
 	}
 
 	private void init() {
-		closeButton = new Button(getSkin(), "windowCloseButton");
+		Button closeButton = new Button(getSkin(), "windowCloseButton");
+
 		closeButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

@@ -74,10 +74,10 @@ public class HUDSkin extends Skin {
 		white.fill();
 		add("white", new Texture(white));
 
-		Pixmap blackTransaprent = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		blackTransaprent.setColor(new Color(0f, 0f, 0f, 0.5f));
-		blackTransaprent.fill();
-		add("blackTransparent", new Texture(blackTransaprent));
+		Pixmap blackTransparent = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		blackTransparent.setColor(new Color(0f, 0f, 0f, 0.5f));
+		blackTransparent.fill();
+		add("blackTransparent", new Texture(blackTransparent));
 
 		Pixmap grey4 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		grey4.setColor(Colors.get("P_GREY_4"));

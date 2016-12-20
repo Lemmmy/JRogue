@@ -194,14 +194,10 @@ public class Level {
 			);
 
 			JSONArray entities = obj.getJSONArray("entities");
-			entities.forEach(serialisedEntity -> {
-				unserialiseEntity((JSONObject) serialisedEntity);
-			});
+			entities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
 
 			JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
-			serialisedTileStates.forEach(serialisedTileState -> {
-				unserialiseTileState((JSONObject) serialisedTileState);
-			});
+			serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
 		} catch (JSONException e) {
 			JRogue.getLogger().error("Error loading level:");
 			JRogue.getLogger().error(e);
@@ -338,9 +334,7 @@ public class Level {
 	public List<Entity> getAdjacentEntities(int x, int y) {
 		List<Entity> entities = new ArrayList<>();
 
-		Arrays.stream(Utils.DIRECTIONS).forEach(d -> {
-			entities.addAll(getEntitiesAt(x + d[0], y + d[1]));
-		});
+		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d[0], y + d[1])));
 
 		return entities;
 	}
@@ -477,8 +471,8 @@ public class Level {
 		discoveredTiles[width * y + x] = true;
 	}
 
-	public boolean isTileVisible(int x, int y) {
-		return !(x < 0 || y < 0 || x >= width || y >= height) && visibleTiles[width * y + x];
+	public boolean isTileInvisible(int x, int y) {
+		return (x < 0 || y < 0 || x >= width || y >= height) || !visibleTiles[width * y + x];
 	}
 
 	public void seeTile(int x, int y) {
@@ -523,12 +517,12 @@ public class Level {
 
 				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
 					type.getSolidity() == TileType.Solidity.SOLID ||
-					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransarent()) ||
+					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransparent()) ||
 					breakNext) {
 					break;
 				}
 
-				if (dx == player.getX() && dy == player.getY() && type.isSemiTransarent()) {
+				if (dx == player.getX() && dy == player.getY() && type.isSemiTransparent()) {
 					breakNext = true;
 				}
 			}

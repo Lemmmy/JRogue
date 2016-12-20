@@ -3,7 +3,6 @@ package pw.lemmmy.jrogue.utils;
 import com.badlogic.gdx.Input;
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.Range;
-import pw.lemmmy.jrogue.JRogue;
 
 import java.util.*;
 
@@ -77,18 +76,12 @@ public class Utils {
 		return jrand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
 	}
 
-	public static boolean rollD2() {
-		boolean result = jrand.nextBoolean();
-		return result;
+	public static float randomFloat(float f) {
+		return rand.nextFloat(f);
 	}
 
-	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {
-		return new com.badlogic.gdx.graphics.Color(
-			(float) colour.getRed() / 255.0f,
-			(float) colour.getGreen() / 255.0f,
-			(float) colour.getBlue() / 255.0f,
-			(float) colour.getAlpha() / 255.0f
-		);
+	public static boolean rollD2() {
+		return jrand.nextBoolean();
 	}
 
 	public static int roll(int x) {
@@ -113,7 +106,7 @@ public class Utils {
 		return (int) Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
 
-	public static float distanceSq(float ax, float ay, float bx, float by) {
+	private static float distanceSq(float ax, float ay, float bx, float by) {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 
@@ -125,7 +118,16 @@ public class Utils {
 		return Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
 
-	public static double distanceSq(double ax, double ay, double bx, double by) {
+	private static double distanceSq(double ax, double ay, double bx, double by) {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
+	}
+
+	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {
+		return new com.badlogic.gdx.graphics.Color(
+			(float) colour.getRed() / 255.0f,
+			(float) colour.getGreen() / 255.0f,
+			(float) colour.getBlue() / 255.0f,
+			(float) colour.getAlpha() / 255.0f
+		);
 	}
 }

@@ -374,6 +374,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private void drawLastPath() {
 		if (!lastPath.isPresent()) {
 			return;
@@ -445,7 +446,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 			effect.getPooledEffect().update(delta * deltaMultiplier);
 
-			if (!dungeon.getLevel().isTileVisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
+			if (dungeon.getLevel().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
 				!effect.getRenderer().shouldDrawParticles(
 					dungeon,
 					effect.getEntity(),
@@ -468,7 +469,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		dungeon.getLevel().getEntities().stream()
 			   .sorted(Comparator.comparingInt(Entity::getDepth))
 			   .forEach(e -> {
-				   if (!e.isStatic() && !allRevealed && !dungeon.getLevel().isTileVisible(e.getX(), e.getY())) {
+				   if (!e.isStatic() && !allRevealed && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
 					   return;
 				   }
 
@@ -565,11 +566,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		batch.end();
 
-		Pixmap pmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
+		Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
 
 		fbo.end();
 		fbo.dispose();
-		return pmap;
+		return pixmap;
 	}
 
 	public void showDebugWindow() {

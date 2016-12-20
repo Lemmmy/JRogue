@@ -13,7 +13,7 @@ public abstract class Item {
 	private int visualID;
 
 	private boolean identified = false;
-	private BUCStatus bucStatus = BUCStatus.UNCUSRED;
+	private BUCStatus bucStatus = BUCStatus.UNCURSED;
 
 	public Item() {
 		this.visualID = Utils.random(1000);
@@ -99,7 +99,7 @@ public abstract class Item {
 
 	public enum BUCStatus {
 		BLESSED,
-		UNCUSRED,
+		UNCURSED,
 		CURSED
 	}
 }

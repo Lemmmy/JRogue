@@ -8,7 +8,7 @@ import java.util.TreeMap;
 public class WeightedCollection<E> {
 	private static final Pcg32 rand = new Pcg32();
 
-	private NavigableMap<Integer, E> map = new TreeMap<Integer, E>();
+	private NavigableMap<Integer, E> map = new TreeMap<>();
 	private int total;
 
 	public void add(int weight, E object) {

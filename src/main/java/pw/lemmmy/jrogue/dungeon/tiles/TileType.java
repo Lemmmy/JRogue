@@ -135,7 +135,7 @@ public enum TileType {
 			this == TILE_ROOM_STAIRS_DOWN;
 	}
 
-	public boolean isSemiTransarent() {
+	public boolean isSemiTransparent() {
 		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_BROKEN;
 	}
 

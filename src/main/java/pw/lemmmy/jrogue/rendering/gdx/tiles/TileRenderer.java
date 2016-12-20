@@ -80,7 +80,7 @@ public abstract class TileRenderer {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 
-		if (!dungeon.getLevel().isTileVisible(x, y)) {
+		if (dungeon.getLevel().isTileInvisible(x, y)) {
 			if (dungeon.getLevel().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {

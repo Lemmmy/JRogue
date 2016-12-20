@@ -183,9 +183,8 @@ public abstract class Entity {
 
 		if (obj.has("statusEffects")) {
 			JSONArray serialisedStatusEffects = obj.getJSONArray("statusEffects");
-			serialisedStatusEffects.forEach(serialisedStatusEffect -> {
-				unserialiseStatusEffect((JSONObject) serialisedStatusEffect);
-			});
+			serialisedStatusEffects.forEach(serialisedStatusEffect ->
+												unserialiseStatusEffect((JSONObject) serialisedStatusEffect));
 		}
 	}
 
