@@ -29,6 +29,11 @@ public class EntityChest extends Entity {
 	}
 
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+
+	@Override
 	public Optional<Container> getContainer() {
 		return Optional.of(container);
 	}
