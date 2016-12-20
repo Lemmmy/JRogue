@@ -56,7 +56,7 @@ public class ItemCorpse extends ItemComestible {
 	}
 
 	@Override
-	public int turnsRequiredToEat() {
+	public int getTurnsRequiredToEat() {
 		return entity.getSize() == LivingEntity.Size.LARGE ? 3 : 2;
 	}
 

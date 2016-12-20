@@ -576,7 +576,6 @@ public class Player extends LivingEntity {
 	public void eat() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 
-
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
 			.filter(e -> e instanceof EntityItem)
@@ -726,7 +725,7 @@ public class Player extends LivingEntity {
 	}
 
 	public void consume(ItemComestible item) {
-		if (item.turnsRequiredToEat() == 1) {
+		if (item.getTurnsRequiredToEat() == 1) {
 			getDungeon().You("eat the %s.", item.getName(false, false));
 			nutrition += item.getNutrition();
 
@@ -735,27 +734,29 @@ public class Player extends LivingEntity {
 		}
 
 		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
-			getDungeon().You("eat a part of the %s.", item.getName(false, false));
+			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
+				getDungeon().You("finish eating the %s.", item.getName(false, false));
 
-			nutrition += Math.floor(item.getNutrition() / item.turnsRequiredToEat());
+				nutrition += Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat());
 
-			if (item.getStatusEffects(this) != null &&
-				getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
-				getWisdom() > 6) {
+				if (item.getStatusEffects(this) != null) {
+					item.getStatusEffects(this).forEach(this::addStatusEffect);
+				}
+			} else {
+				getDungeon().You("eat a part of the %s.", item.getName(false, false));
 
-				getDungeon().You("feel funny - it might not be a good idea to continue eating.");
+				nutrition += Math.floor(item.getNutrition() / item.getTurnsRequiredToEat());
+
+				if (item.getStatusEffects(this) != null &&
+					getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
+					getWisdom() > 6) {
+
+					getDungeon().You("feel funny - it might not be a good idea to continue eating.");
+				}
 			}
 		}
 
 		item.eatPart();
-
-		if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
-			getDungeon().You("finish eating the %s.", item.getName(false, false));
-
-			if (item.getStatusEffects(this) != null) {
-				item.getStatusEffects(this).forEach(this::addStatusEffect);
-			}
-		}
 	}
 
 	public void pickup() {

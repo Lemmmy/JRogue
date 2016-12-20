@@ -12,7 +12,7 @@ public abstract class ItemComestible extends Item {
 	public EatenState getEatenState() {
 		if (turnsEaten == 0) {
 			return EatenState.UNEATEN;
-		} else if (turnsEaten >= turnsRequiredToEat()) {
+		} else if (turnsEaten >= getTurnsRequiredToEat()) {
 			return EatenState.EATEN;
 		} else {
 			return EatenState.PARTLY_EATEN;
@@ -23,7 +23,7 @@ public abstract class ItemComestible extends Item {
 		return turnsEaten;
 	}
 
-	public int turnsRequiredToEat() {
+	public int getTurnsRequiredToEat() {
 		return 1;
 	}
 

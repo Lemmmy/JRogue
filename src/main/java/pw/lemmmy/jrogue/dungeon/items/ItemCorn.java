@@ -17,7 +17,7 @@ public class ItemCorn extends ItemComestible {
 	}
 
 	@Override
-	public int turnsRequiredToEat() {
+	public int getTurnsRequiredToEat() {
 		return 2;
 	}
 
