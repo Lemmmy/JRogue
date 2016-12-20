@@ -110,6 +110,9 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("spider")) {
 			dungeon.getLevel().addEntity(new MonsterSpider(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
+		} else if (wish.equalsIgnoreCase("rat")) {
+			dungeon.getLevel().addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			return true;
 		}
 
 		return false;
