@@ -32,6 +32,8 @@ public abstract class DungeonGenerator {
 
 	public abstract boolean generate();
 
+	public abstract void spawnNewMonsters();
+
 	protected int nextInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}

@@ -45,6 +45,8 @@ public abstract class Monster extends LivingEntity {
 		return false;
 	}
 
+	public abstract boolean isHostile();
+
 	public abstract int getWeight();
 
 	public abstract int getNutrition();

@@ -4,10 +4,7 @@ import com.badlogic.gdx.Input;
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.Range;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
 	public static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

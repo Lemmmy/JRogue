@@ -8,6 +8,8 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -25,21 +27,18 @@ public class Level {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 
-	public Tile[] tiles;
+	private Tile[] tiles;
 
-	public Boolean[] discoveredTiles;
-
-	public Boolean[] visibleTiles;
-
-	public List<List<Tile>> lightTiles;
+	private Boolean[] discoveredTiles;
+	private Boolean[] visibleTiles;
+	private List<List<Tile>> lightTiles;
 
 	private Dungeon dungeon;
 
+	private DungeonGenerator generator;
+
 	private int width;
 	private int height;
-	/**
-	 * The "level" of this floor - how deep it is in the dungeon and ground
-	 */
 	private int depth;
 
 	private int spawnX;
@@ -57,7 +56,9 @@ public class Level {
 		this.height = height;
 
 		this.depth = depth;
+	}
 
+	private void initialise() {
 		tiles = new Tile[width * height];
 		discoveredTiles = new Boolean[width * height];
 		visibleTiles = new Boolean[width * height];
@@ -70,6 +71,24 @@ public class Level {
 		Arrays.fill(visibleTiles, false);
 
 		entities = new ArrayList<>();
+	}
+
+	protected void generate() {
+		boolean gotLevel = false;
+
+		do {
+			initialise();
+
+			generator = new StandardDungeonGenerator(this);
+
+			if (!generator.generate()) {
+				continue;
+			}
+
+			buildLight();
+
+			gotLevel = true;
+		} while (!gotLevel);
 	}
 
 	public static Optional<Level> createFromJSON(JSONObject obj, Dungeon dungeon) {
@@ -177,6 +196,8 @@ public class Level {
 	}
 
 	public void unserialise(JSONObject obj) {
+		initialise();
+
 		try {
 			spawnX = obj.getInt("spawnX");
 			spawnY = obj.getInt("spawnY");
@@ -327,7 +348,20 @@ public class Level {
 
 	public List<Entity> getEntitiesAt(int x, int y) {
 		return entities.stream()
-					   .filter(e -> e.getX() == x && e.getY() == y)
+			.filter(e -> e.getX() == x && e.getY() == y)
+			.collect(Collectors.toList());
+	}
+
+	public List<Entity> getMonsters() {
+		return entities.stream()
+			.filter(Monster.class::isInstance)
+			.collect(Collectors.toList());
+	}
+
+	public List<Entity> getHostileMonsters() {
+		return entities.stream()
+					   .filter(Monster.class::isInstance)
+					   .filter(e -> ((Monster) e).isHostile())
 					   .collect(Collectors.toList());
 	}
 
@@ -381,6 +415,10 @@ public class Level {
 		}
 	}
 
+	public void spawnNewMonsters() {
+		generator.spawnNewMonsters();
+	}
+
 	public int getWidth() {
 		return width;
 	}
@@ -391,6 +429,14 @@ public class Level {
 
 	public Tile[] getTiles() {
 		return tiles;
+	}
+
+	public Boolean[] getDiscoveredTiles() {
+		return discoveredTiles;
+	}
+
+	public Boolean[] getVisibleTiles() {
+		return visibleTiles;
 	}
 
 	public Tile getTile(int x, int y) {

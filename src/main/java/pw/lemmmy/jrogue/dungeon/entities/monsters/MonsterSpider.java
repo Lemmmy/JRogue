@@ -39,6 +39,11 @@ public class MonsterSpider extends Monster {
 	}
 
 	@Override
+	public boolean isHostile() {
+		return true;
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 	}
 

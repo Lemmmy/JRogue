@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
+import org.apache.commons.lang3.Range;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +11,6 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
-import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -31,6 +31,8 @@ public class Dungeon {
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
 
+	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
+
 	private final List<Listener> listeners = new ArrayList<>();
 
 	private Pcg32 rand = new Pcg32();
@@ -49,8 +51,9 @@ public class Dungeon {
 	private Player player;
 
 	private long turn = 0;
-	private long nextExerciseCounter = 500;
+	private long exerciseCounter = 500;
 	private long passiveSoundCounter = 0;
+	private long monsterSpawnCounter = 50;
 
 	private Prompt prompt;
 	private Settings settings;
@@ -67,21 +70,11 @@ public class Dungeon {
 
 		if (level != null) {
 			level.removeEntity(player);
+		} else {
+			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 		}
 
-		boolean gotLevel = false;
-
-		do {
-			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-
-			if (!(new StandardDungeonGenerator(level).generate())) {
-				continue;
-			}
-
-			level.buildLight();
-
-			gotLevel = true;
-		} while (!gotLevel);
+		level.generate();
 
 		if (player == null) {
 			player = new Player(
@@ -153,8 +146,9 @@ public class Dungeon {
 		obj.put("name", getName());
 		obj.put("originalName", getOriginalName());
 		obj.put("turn", getTurn());
-		obj.put("nextExerciseCounter", nextExerciseCounter);
+		obj.put("exerciseCounter", exerciseCounter);
 		obj.put("passiveSoundCounter", passiveSoundCounter);
+		obj.put("monsterSpawnCounter", monsterSpawnCounter);
 
 		obj.append("levels", getLevel().serialise()); // TODO: multi level support
 
@@ -166,8 +160,9 @@ public class Dungeon {
 			name = obj.getString("name");
 			originalName = obj.getString("originalName");
 			turn = obj.getInt("turn");
-			nextExerciseCounter = obj.getInt("nextExerciseCounter");
+			exerciseCounter = obj.getInt("exerciseCounter");
 			passiveSoundCounter = obj.getInt("passiveSoundCounter");
+			monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
 
 			JSONArray levels = obj.getJSONArray("levels");
 			levels.forEach(serialisedLevel ->
@@ -396,6 +391,15 @@ public class Dungeon {
 			emitPassiveSounds();
 
 			passiveSoundCounter = Utils.roll(3, 4);
+		}
+
+		if (
+			level.getHostileMonsters().size() < Math.abs((level.getDepth() * 2) + 10) &&
+			--monsterSpawnCounter <= 0
+		) {
+			level.spawnNewMonsters();
+
+			monsterSpawnCounter = Utils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
 	}
 

@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class Entity {
-	private int lastX;
-	private int lastY;
-
 	private int x;
 	private int y;
+
+	private int lastX;
+	private int lastY;
 
 	private int lastSeenX;
 	private int lastSeenY;
@@ -39,6 +39,8 @@ public abstract class Entity {
 		this.y = y;
 		this.lastX = x;
 		this.lastY = y;
+		this.lastSeenX = x;
+		this.lastSeenY = y;
 
 		this.visualID = Utils.random(1000);
 	}
@@ -175,6 +177,8 @@ public abstract class Entity {
 	}
 
 	public void unserialise(JSONObject obj) {
+		x = obj.getInt("x");
+		y = obj.getInt("y");
 		lastX = obj.getInt("lastX");
 		lastY = obj.getInt("lastY");
 		lastSeenX = obj.getInt("lastSeenX");

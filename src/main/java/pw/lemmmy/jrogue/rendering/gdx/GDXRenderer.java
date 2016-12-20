@@ -33,6 +33,7 @@ import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
 import pw.lemmmy.jrogue.utils.Gradient;
 
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -185,6 +186,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onTurn(long turn) {
 		updateWindowTitle();
 		lastPath = Optional.empty();
+
+		if (dungeon.getPlayer().isDebugger()) {
+			Pixmap snapshot = takeLevelSnapshot();
+			String path = Paths.get(System.getProperty("java.io.tmpdir"))
+							   .resolve("jrogue_level_snap.png")
+							   .toString();
+			PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
+			snapshot.dispose();
+		}
 	}
 
 	@Override
@@ -467,18 +477,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private void drawEntities(boolean allRevealed) {
 		dungeon.getLevel().getEntities().stream()
-			   .sorted(Comparator.comparingInt(Entity::getDepth))
-			   .forEach(e -> {
-				   if (!e.isStatic() && !allRevealed && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
-					   return;
-				   }
+			.sorted(Comparator.comparingInt(Entity::getDepth))
+			.forEach(e -> {
+				if (!allRevealed && !e.isStatic() && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
+					return;
+				}
 
-				   EntityMap em = EntityMap.valueOf(e.getAppearance().name());
+				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 
-				   if (em.getRenderer() != null) {
-					   em.getRenderer().draw(batch, dungeon, e);
-				   }
-			   });
+				if (em.getRenderer() != null) {
+					em.getRenderer().draw(batch, dungeon, e);
+				}
+			});
 	}
 
 	private void drawLights() {

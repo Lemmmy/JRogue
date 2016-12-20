@@ -34,6 +34,11 @@ public class MonsterPufferfish extends Monster {
 	}
 
 	@Override
+	public boolean isHostile() {
+		return false;
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}

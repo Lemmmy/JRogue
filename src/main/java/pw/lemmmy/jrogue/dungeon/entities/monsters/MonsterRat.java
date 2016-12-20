@@ -7,29 +7,29 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
+import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.FishAI;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
 
-public class MonsterFish extends Monster {
-	private FishColour colour;
+public class MonsterRat extends Monster {
+	private int speed;
 
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-	}
-
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
+	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 
-		this.colour = colour;
+		speed = (Dungeon.NORMAL_SPEED + 4) - Utils.random(8);
 
-		setAI(new FishAI(this));
+		setAI(new GhoulAI(this));
 	}
 
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return speed;
 	}
 
 	@Override
@@ -39,12 +39,11 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public boolean isHostile() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 
 	@Override
@@ -54,42 +53,31 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fish" : "fish";
+		return requiresCapitalisation ? "Rat" : "rat";
 	}
 
 	@Override
 	public EntityAppearance getAppearance() {
-		switch (colour) {
-			case RED:
-				return EntityAppearance.APPEARANCE_FISH_RED;
-			case ORANGE:
-				return EntityAppearance.APPEARANCE_FISH_ORANGE;
-			case YELLOW:
-				return EntityAppearance.APPEARANCE_FISH_YELLOW;
-			case GREEN:
-				return EntityAppearance.APPEARANCE_FISH_GREEN;
-			case BLUE:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-			case PURPLE:
-				return EntityAppearance.APPEARANCE_FISH_PURPLE;
-			default:
-				return EntityAppearance.APPEARANCE_FISH_BLUE;
-		}
+		return EntityAppearance.APPEARANCE_RAT;
 	}
 
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
+
+		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
+			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
+		}
 	}
 
 	@Override
 	public int getWeight() {
-		return 50;
+		return 75;
 	}
 
 	@Override
 	public int getNutrition() {
-		return 50;
+		return 100;
 	}
 
 	@Override
@@ -99,7 +87,7 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public int getVisibilityRange() {
-		return 2;
+		return 10;
 	}
 
 	@Override
@@ -109,7 +97,7 @@ public class MonsterFish extends Monster {
 
 	@Override
 	public boolean canMeleeAttack() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -123,20 +111,28 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-
-		obj.put("colour", colour.name());
+	public void meleeAttackPlayer() {
+		if (Utils.roll(1, 2) == 1) {
+			setAction(new ActionMelee(
+				getDungeon(),
+				this,
+				getDungeon().getPlayer(),
+				DamageSource.RAT_BITE,
+				1,
+				new EntityAction.ActionCallback() {
+					@Override
+					public void onComplete() {
+						getDungeon().The("%s bites you!", getName(false));
+					}
+				}
+			));
+		}
 	}
 
 	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
 
-		colour = FishColour.valueOf(obj.getString("colour"));
-	}
-
-	public enum FishColour {
-		RED, YELLOW, ORANGE, GREEN, BLUE, PURPLE
+		obj.put("speed", speed);
 	}
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.Range;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
@@ -47,16 +48,18 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private static final float CORRIDOR_LINE_SLOPE = 0.2f;
 
-	private static final double WATER_NOISE_THRESHOLD = 0.2;
-	private static final double WATER_NOISE_PUDDLE_THRESHOLD = 0.5;
-	private static final double WATER_NOISE_SCALE = 0.2;
+	private static final double THRESHOLD_WATER_NOISE = 0.2;
+	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
+	private static final double SCALE_WATER_NOISE = 0.2;
 
-	private static final double GOLD_DROP_PROBABILITY = 0.08;
+	private static final double PROBABILITY_GOLD_DROP = 0.08;
 
-	private static final double FISH_PROBABILITY = 0.35;
-	private static final double PUFFERFISH_PROBABILITY = 0.15;
-	private static final int FISH_SWARMS_MIN = 10;
-	private static final int FISH_SWARMS_MAX = 25;
+	private static final double PROBABILITY_FISH = 0.35;
+	private static final double PROBABILITY_PUFFERFISH = 0.15;
+	private static final int MIN_FISH_SWARMS = 10;
+	private static final int MAX_FISH_SWARMS = 25;
+
+	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 
 	private static final Map<Integer, Map<Class, Range<Integer>>> monstersPerFloor = new HashMap<>();
 
@@ -254,11 +257,11 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private void addWaterBodies() {
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
-				double noise = simplexNoise.eval(x * WATER_NOISE_SCALE, y * WATER_NOISE_SCALE);
+				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
 
-				if (noise > WATER_NOISE_THRESHOLD && (level.getTileType(x, y) == TileType.TILE_GROUND || level
+				if (noise > THRESHOLD_WATER_NOISE && (level.getTileType(x, y) == TileType.TILE_GROUND || level
 					.getTileType(x, y) == TileType.TILE_ROOM_FLOOR)) {
-					if (level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > WATER_NOISE_PUDDLE_THRESHOLD) {
+					if (level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > THRESHOLD_WATER_NOISE_PUDDLE) {
 						level.setTileType(x, y, TileType.TILE_ROOM_PUDDLE);
 					} else {
 						TileType[] adjacentTiles = level.getAdjacentTileTypes(x, y);
@@ -288,7 +291,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void addRandomDrops() {
 		rooms.forEach(r -> {
-			if (rand.nextDouble() < GOLD_DROP_PROBABILITY) {
+			if (rand.nextDouble() < PROBABILITY_GOLD_DROP) {
 				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
 				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
 
@@ -304,7 +307,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 		if (waterTiles.length < 5) { return; }
 
-		int swarmCount = jrand.nextInt(FISH_SWARMS_MAX - FISH_SWARMS_MIN) + FISH_SWARMS_MIN;
+		int swarmCount = jrand.nextInt(MAX_FISH_SWARMS - MIN_FISH_SWARMS) + MIN_FISH_SWARMS;
 		int colourCount = MonsterFish.FishColour.values().length;
 
 		for (int i = 0; i < swarmCount; i++) {
@@ -316,7 +319,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			if (Utils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == TileType.TILE_GROUND_WATER &&
-						jrand.nextDouble() <= PUFFERFISH_PROBABILITY &&
+						jrand.nextDouble() <= PROBABILITY_PUFFERFISH &&
 						level.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 
 						level.addEntity(new MonsterPufferfish(level.getDungeon(), level, tile.getX(), tile.getY()));
@@ -331,7 +334,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == TileType.TILE_GROUND_WATER &&
-						jrand.nextDouble() < FISH_PROBABILITY &&
+						jrand.nextDouble() < PROBABILITY_FISH &&
 						level.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 
 						MonsterFish.FishColour colour = rand.nextFloat() < 0.5f ? fishColour1 : fishColour2;
@@ -353,16 +356,23 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 			Map<Class, Range<Integer>> floorMonsters = monstersPerFloor.get(i);
 
-			floorMonsters.forEach((monster, range) -> {
+			floorMonsters.forEach((monsterClass, range) -> {
 				try {
-					Constructor constructor = monster.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+					Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 
 					int count = Utils.jrandom(range);
 
 					for (int j = 0; j < count; j++) {
 						Point point = getMonsterSpawnPoint();
-						level.addEntity((Entity) constructor
-							.newInstance(level.getDungeon(), level, point.getX(), point.getY()));
+
+						Entity monster = (Entity) constructor.newInstance(
+							level.getDungeon(),
+							level,
+							point.getX(),
+							point.getY()
+						);
+
+						level.addEntity(monster);
 					}
 				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 					e.printStackTrace();
@@ -371,8 +381,43 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void spawnNewMonsters() {
+		Point point = getMonsterSpawnPointAwayFromPlayer();
+
+		if (point != null) {
+			int floor = level.getDepth();
+
+			if (!monstersPerFloor.containsKey(floor)) {
+				return;
+			}
+
+			Map<Class, Range<Integer>> floorMonsters = monstersPerFloor.get(floor);
+			Class monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
+
+			try {
+				Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+				Entity monster = (Entity) constructor.newInstance(
+					level.getDungeon(),
+					level,
+					point.getX(),
+					point.getY()
+				);
+
+				level.addEntity(monster);
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private Point getMonsterSpawnPoint() {
-		Room room = Utils.randomFrom(rooms.stream().filter(r -> !r.isSpawn()).collect(Collectors.toList()));
+		Room room = Utils.randomFrom(
+			rooms.stream()
+				 .filter(r -> !r.isSpawn())
+				 .collect(Collectors.toList())
+		);
 
 		int x = nextInt(room.getRoomX() + 1, room.getRoomX() + room.getRoomWidth() - 1);
 		int y = nextInt(room.getRoomY() + 1, room.getRoomY() + room.getRoomHeight() - 1);
@@ -380,14 +425,28 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		return new Point(x, y);
 	}
 
+	private Point getMonsterSpawnPointAwayFromPlayer() {
+		Player player = level.getDungeon().getPlayer();
+
+		Tile tile = Utils.randomFrom(Arrays.stream(level.getTiles())
+			.filter(t -> (
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+				t.getType() == TileType.TILE_CORRIDOR
+			)
+			.filter(t -> !level.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
+			.filter(t -> Utils.distance(t.getX(), t.getY(), player.getX(), player.getY()) > MIN_MONSTER_SPAWN_DISTANCE)
+			.collect(Collectors.toList()));
+
+		return new Point(tile.getX(), tile.getY());
+	}
+
 	private boolean chooseSpawnRoom() {
 		List<Room> temp = new ArrayList<>(rooms);
 		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
-							   .filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
-																						.getConnectionPoints().size())
-							   .collect(Collectors.toList());
+			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
+			.collect(Collectors.toList());
 
 		if (temp2.isEmpty()) {
 			return false;
