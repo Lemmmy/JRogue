@@ -15,6 +15,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	private int experienceLevel = 1;
 
+	private int healingTurns = 0;
+
 	private Container inventory;
 
 	private Container.ContainerEntry leftHand;
@@ -39,6 +41,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return maxHealth;
 	}
 
+	public int getHealingRate() {
+		return 40;
+	}
+
 	public int getExperienceLevel() {
 		return experienceLevel;
 	}
@@ -53,6 +59,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	public void setHealth(int health) {
 		this.health = health;
+	}
+
+	public void heal(int amount) {
+		health = Math.min(maxHealth, health + amount);
 	}
 
 	public boolean isAlive() {
@@ -152,10 +162,25 @@ public abstract class LivingEntity extends EntityTurnBased {
 		}
 	}
 
+	@Override
+	public void update() {
+		super.update();
+
+		if (health < maxHealth) {
+			healingTurns++;
+		}
+
+		if (healingTurns >= getHealingRate()) {
+			heal(1);
+			healingTurns = 0;
+		}
+	}
+
 	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 
 		health = Math.max(0, health - damageModifier);
+		healingTurns = 0;
 
 		onDamage(damageSource, damage, attacker, isPlayer);
 

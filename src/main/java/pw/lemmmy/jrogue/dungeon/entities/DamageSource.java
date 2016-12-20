@@ -13,6 +13,7 @@ public enum DamageSource {
 	PLAYER_KICK(null),
 	STAFF_BASH(null),
 	POISON("The poison kills you."),
+	CHOKING("You choke to death."),
 	WISH_FOR_DEATH("You wish for death, and your god grants it.");
 
 	String deathString;

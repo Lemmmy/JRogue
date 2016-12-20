@@ -58,7 +58,7 @@ public class Player extends LivingEntity {
 		nutrition = 1000;
 
 		strength = role.getStrength() +
-			(int) ((float) Math	.ceil(role.getStrength() * Utils.randomFloat(role.getStrengthRemaining())));
+			(int) ((float) Math.ceil(role.getStrength() * Utils.randomFloat(role.getStrengthRemaining())));
 		agility = role.getAgility() +
 			(int) ((float) Math.ceil(role.getAgility() * Utils.randomFloat(role.getAgilityRemaining())));
 		dexterity = role.getDexterity() +
@@ -104,6 +104,17 @@ public class Player extends LivingEntity {
 
 	public int getConstitution() {
 		return constitution;
+	}
+
+	@Override
+	public int getHealingRate() {
+		if (getNutritionState() == NutritionState.FAINTING) {
+			return 100 - constitution;
+		} else if (getNutritionState() == NutritionState.STARVING) {
+			return 40 - (constitution / 3);
+		} else {
+			return 20 - (constitution / 2);
+		}
 	}
 
 	@Override
@@ -261,6 +272,10 @@ public class Player extends LivingEntity {
 
 		if (godmode) {
 			setHealth(getMaxHealth());
+		}
+
+		if (getNutritionState() == NutritionState.CHOKING) {
+			damage(DamageSource.CHOKING, 1, this, true);
 		}
 
 		nutrition--;
