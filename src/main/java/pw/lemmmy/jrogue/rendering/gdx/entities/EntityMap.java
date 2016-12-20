@@ -11,6 +11,7 @@ public enum EntityMap {
 	APPEARANCE_HELLHOUND(new EntityRendererParticleHound(3, 2, "hellhound")),
 	APPEARANCE_ICEHOUND(new EntityRendererParticleHound(4, 2, "icehound")),
 	APPEARANCE_SPIDER(new EntityRendererRandom(5, 2, 2)),
+	APPEARANCE_RAT(new EntityRendererRandom(7, 2, 2)),
 	APPEARANCE_FISH_RED(new EntityRendererFish(1, 3)),
 	APPEARANCE_FISH_ORANGE(new EntityRendererFish(2, 3)),
 	APPEARANCE_FISH_YELLOW(new EntityRendererFish(3, 3)),
