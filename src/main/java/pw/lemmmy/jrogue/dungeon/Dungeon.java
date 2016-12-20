@@ -8,11 +8,9 @@ import org.json.JSONTokener;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
-import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -23,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -34,11 +30,6 @@ public class Dungeon {
 
 	private static final int LEVEL_WIDTH = 80;
 	private static final int LEVEL_HEIGHT = 30;
-
-	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
-	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
-	private static final Pattern wishSword = Pattern
-		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
 
 	private final List<Listener> listeners = new ArrayList<>();
 
@@ -111,7 +102,7 @@ public class Dungeon {
 		listeners.forEach(l -> l.onLevelChange(level));
 	}
 
-	private void save() {
+	public void save() {
 		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
 			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
 			return;
@@ -427,6 +418,10 @@ public class Dungeon {
 		}
 	}
 
+	public void wish(String wish) {
+		Wish.wish(this, wish);
+	}
+
 	public Level getLevel() {
 		return level;
 	}
@@ -445,126 +440,6 @@ public class Dungeon {
 
 	public void setTurn(long turn) {
 		this.turn = turn;
-	}
-
-	public void wish(String wish) {
-		if (player.isDebugger()) {
-			JRogue.getLogger().debug("Player wished for '{}'", wish);
-		}
-
-		wish = wish.toLowerCase();
-
-		if (wish.equalsIgnoreCase("death")) {
-			player.kill(DamageSource.WISH_FOR_DEATH);
-		} else if (wish.equalsIgnoreCase("kill all")) {
-			level.getEntities().stream()
-				 .filter(e -> e instanceof LivingEntity && !(e instanceof Player))
-				 .forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH));
-
-			turn();
-		} else if (wish.equalsIgnoreCase("nutrition")) {
-			player.setNutrition(1000);
-		} else {
-			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
-
-			if (wishGoldDroppedMatcher.find()) {
-				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
-
-				getLevel().addEntity(new EntityItem(this, getLevel(), new ItemStack(
-					new ItemGold(),
-					gold
-				), player.getX(), player.getY()));
-
-				turn();
-				return;
-			}
-
-			Matcher wishGoldMatcher = wishGold.matcher(wish);
-
-			if (wishGoldMatcher.find()) {
-				int gold = Integer.parseInt(wishGoldMatcher.group(1));
-
-				player.giveGold(gold);
-
-				turn();
-				return;
-			}
-
-			if (wish.equalsIgnoreCase("godmode")) {
-				player.godmode();
-				return;
-			}
-
-			if (wish.equalsIgnoreCase("chest")) {
-				getLevel().addEntity(new EntityChest(this, getLevel(), player.getX(), player.getY()));
-				turn();
-				return;
-			}
-
-			if (wish.equalsIgnoreCase("fountain")) {
-				getLevel().addEntity(new EntityFountain(this, getLevel(), player.getX(), player.getY()));
-				turn();
-				return;
-			}
-
-			if (wishMonsters(wish)) {
-				turn();
-				return;
-			}
-
-			wishItems(wish);
-		}
-	}
-
-	private boolean wishMonsters(String wish) {
-		if (wish.equalsIgnoreCase("jackal")) {
-			getLevel().addEntity(new MonsterJackal(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("fox")) {
-			getLevel().addEntity(new MonsterFox(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("hound")) {
-			getLevel().addEntity(new MonsterHound(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("hellhound")) {
-			getLevel().addEntity(new MonsterHellhound(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("icehound")) {
-			getLevel().addEntity(new MonsterIcehound(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("spider")) {
-			getLevel().addEntity(new MonsterSpider(this, getLevel(), player.getX(), player.getY()));
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean wishItems(String wish) {
-		Matcher wishSwordMatcher = wishSword.matcher(wish);
-
-		if (wishSwordMatcher.find()) {
-			Material material = Material.valueOf(wishSwordMatcher.group(1).toUpperCase());
-			String type = wishSwordMatcher.group(2);
-
-			Item item = null;
-
-			if (type.equalsIgnoreCase("shortsword")) {
-				item = new ItemShortsword(material);
-			} else if (type.equalsIgnoreCase("longsword")) {
-				item = new ItemLongsword(material);
-			} else if (type.equalsIgnoreCase("dagger")) {
-				item = new ItemDagger(material);
-			}
-
-			if (item != null && player.getContainer().isPresent()) {
-				player.getContainer().get().add(new ItemStack(item));
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public void entityAdded(Entity entity) {

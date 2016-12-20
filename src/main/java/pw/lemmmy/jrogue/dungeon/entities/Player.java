@@ -7,10 +7,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionKick;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionTeleport;
+import pw.lemmmy.jrogue.dungeon.entities.actions.*;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathFinder;
@@ -579,64 +576,168 @@ public class Player extends LivingEntity {
 	public void eat() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 
-		if (floorEntities.size() > 0) {
-			for (Entity entity : floorEntities) {
-				if (entity instanceof EntityItem && ((EntityItem) entity).getItem() instanceof ItemComestible) {
-					Item item = ((EntityItem) entity).getItem();
 
-					String promptString = "";
+		Optional<Entity> floorFood = floorEntities.stream()
+			/* health and safety note: floor food is dangerous */
+			.filter(e -> e instanceof EntityItem)
+			.filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
+			.findFirst();
 
-					if (item.isis()) {
-						getDungeon().log("There is %s here. Eat it?", item.getName(false, false));
-					} else {
-						if (item.beginsWithVowel()) {
-							getDungeon().log("There is an %s here. Eat it?", item.getName(false, false));
-						} else {
-							getDungeon().log("There is a %s here. Eat it?", item.getName(false, false));
-						}
-					}
-
-					getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-						@Override
-						public void onNoResponse() {
-							getDungeon().log("Nevermind.");
-						}
-
-						@Override
-						public void onInvalidResponse(char response) {
-							getDungeon().log(String.format("Invalid response '[YELLOW]%s[]'.", response));
-						}
-
-						@Override
-						public void onResponse(char response) {
-							if (response == 'n') {
-								// TODO
-								return;
-							}
-
-							setAction(new ActionEat(
-								getDungeon(),
-								Player.this,
-								(ItemComestible) item,
-								(EntityItem) entity
-							));
-							getDungeon().turn();
-						}
-					}));
-
-					break;
-				}
-			}
+		if (floorFood.isPresent()) {
+			eatFromFloor((EntityItem) floorFood.get());
 		} else {
-			// TODO
+			eatFromInventory();
 		}
 	}
 
-	public ItemComestible.EatenState consume(ItemComestible item) {
-		if (item.getEatenState() == ItemComestible.EatenState.UNEATEN) {
-			getDungeon().You("start eating the %s.", item.getName(false, false));
+	private void eatFromFloor(EntityItem entity) {
+		ItemStack stack = entity.getItemStack();
+		ItemComestible item = (ItemComestible) entity.getItem();
 
-			nutrition += Math.floor(item.getNutrition() / 2);
+		String promptString;
+
+		if (item.isis()) {
+			promptString = String.format(
+				"There is [YELLOW]%s[] here. Eat it?",
+				item.getName(false, false)
+			);
+		} else {
+			if (item.beginsWithVowel()) {
+				promptString = String.format(
+					"There is an [YELLOW]%s[] here. Eat it?",
+					item.getName(false, false)
+				);
+			} else {
+				promptString = String.format(
+					"There is a [YELLOW]%s[] here. Eat it?",
+					item.getName(false, false)
+				);
+			}
+		}
+
+		getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid response '[YELLOW]%s[]'.", response));
+			}
+
+			@Override
+			public void onResponse(char response) {
+				if (response == 'n') {
+					eatFromInventory();
+					return;
+				}
+
+				setAction(new ActionEat(
+					getDungeon(),
+					Player.this,
+					item,
+					new EntityAction.ActionCallback() {
+						@Override
+						public void onComplete() {
+							super.onComplete();
+
+							if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
+								if (stack.getCount() == 1) {
+									entity.getLevel().removeEntity(entity);
+								} else {
+									stack.subtractCount(1);
+								}
+							}
+						}
+					}
+				));
+
+				getDungeon().turn();
+			}
+		}));
+	}
+
+	private void eatFromInventory() {
+		if (!getContainer().isPresent()) {
+			getDungeon().You("have nothing to eat.");
+			return;
+		}
+
+		Container inventory = getContainer().get();
+
+		Map<Character, ItemStack> comestibles = getComestiblesInInventory();
+
+		if (comestibles.size() == 0) {
+			getDungeon().You("have nothing to eat.");
+			return;
+		}
+
+		char[] options = ArrayUtils.toPrimitive(comestibles.keySet().toArray(new Character[0]));
+		options = Arrays.copyOf(options, options.length + 1);
+		options[options.length - 1] = '-';
+
+		getDungeon().prompt(new Prompt("Eat what?", options, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+			}
+
+			@Override
+			public void onResponse(char letter) {
+				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
+
+				if (!containerEntry.isPresent()) {
+					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
+					return;
+				}
+
+				ItemStack stack = containerEntry.get().getStack();
+				ItemComestible item = (ItemComestible) stack.getItem();
+
+				setAction(new ActionEat(
+					getDungeon(),
+					Player.this,
+					item,
+					new EntityAction.ActionCallback() {
+						@Override
+						public void onComplete() {
+							super.onComplete();
+
+							if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
+								if (stack.getCount() == 1) {
+									inventory.remove(containerEntry.get().getLetter());
+								} else {
+									stack.subtractCount(1);
+								}
+							}
+						}
+					}
+				));
+
+				getDungeon().turn();
+			}
+		}));
+	}
+
+	public void consume(ItemComestible item) {
+		if (item.turnsRequiredToEat() == 1) {
+			getDungeon().You("eat the %s.", item.getName(false, false));
+			nutrition += item.getNutrition();
+
+			item.eatPart();
+			return;
+		}
+
+		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
+			getDungeon().You("eat a part of the %s.", item.getName(false, false));
+
+			nutrition += Math.floor(item.getNutrition() / item.turnsRequiredToEat());
 
 			if (item.getStatusEffects(this) != null &&
 				getNutritionState() != NutritionState.STARVING && getNutritionState() != NutritionState.FAINTING &&
@@ -644,21 +745,17 @@ public class Player extends LivingEntity {
 
 				getDungeon().You("feel funny - it might not be a good idea to continue eating.");
 			}
+		}
 
-			return ItemComestible.EatenState.PARTLY_EATEN;
-		} else if (item.getEatenState() == ItemComestible.EatenState.PARTLY_EATEN) {
+		item.eatPart();
+
+		if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
 			getDungeon().You("finish eating the %s.", item.getName(false, false));
-
-			nutrition += Math.ceil(item.getNutrition() / 2);
 
 			if (item.getStatusEffects(this) != null) {
 				item.getStatusEffects(this).forEach(this::addStatusEffect);
 			}
-
-			return ItemComestible.EatenState.EATEN;
 		}
-
-		return ItemComestible.EatenState.EATEN;
 	}
 
 	public void pickup() {
@@ -762,6 +859,8 @@ public class Player extends LivingEntity {
 						getDungeon().You("drop a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 					}
 				}
+
+				getDungeon().turn();
 			}
 		}));
 	}
@@ -861,10 +960,20 @@ public class Player extends LivingEntity {
 		}));
 	}
 
-	public Map<Character, ItemStack> getWieldablesInInventory() {
+	private Map<Character, ItemStack> getWieldablesInInventory() {
 		if (getContainer().isPresent()) {
 			return getContainer().get().getItems().entrySet().stream()
 								 .filter(e -> e.getValue().getItem() instanceof Wieldable)
+								 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else {
+			return Collections.emptyMap();
+		}
+	}
+
+	private Map<Character, ItemStack> getComestiblesInInventory() {
+		if (getContainer().isPresent()) {
+			return getContainer().get().getItems().entrySet().stream()
+								 .filter(e -> e.getValue().getItem() instanceof ItemComestible)
 								 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
 			return Collections.emptyMap();

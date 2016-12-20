@@ -8,17 +8,15 @@ import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 
 public class ActionEat extends EntityAction {
 	private ItemComestible item;
-	private EntityItem entityItem;
 
 	public ActionEat(Dungeon dungeon, Entity entity, ItemComestible item) {
 		this(dungeon, entity, item, null);
 	}
 
-	public ActionEat(Dungeon dungeon, Entity entity, ItemComestible item, EntityItem entityItem) {
-		super(dungeon, entity);
+	public ActionEat(Dungeon dungeon, Entity entity, ItemComestible item, ActionCallback callback) {
+		super(dungeon, entity, callback);
 
 		this.item = item;
-		this.entityItem = entityItem;
 	}
 
 	@Override
@@ -28,12 +26,7 @@ public class ActionEat extends EntityAction {
 		if (getEntity() instanceof Player) {
 			Player player = (Player) getEntity();
 
-			ItemComestible.EatenState state = player.consume(item);
-			item.setEatenState(state);
-
-			if (entityItem != null && state == ItemComestible.EatenState.EATEN) {
-				entityItem.getLevel().removeEntity(entityItem);
-			}
+			player.consume(item);
 
 			runOnCompleteCallback();
 		}

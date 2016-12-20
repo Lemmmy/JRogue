@@ -340,7 +340,7 @@ public class Level {
 	}
 
 	public List<Entity> getAdjacentMonsters(int x, int y) {
-		return entities.stream()
+		return getAdjacentEntities(x, y).stream()
 					   .filter(e -> e instanceof Monster)
 					   .collect(Collectors.toList());
 	}

@@ -47,17 +47,17 @@ public class ItemCorpse extends ItemComestible {
 	}
 
 	@Override
-	public ItemCategory getCategory() {
-		return ItemCategory.COMESTIBLE;
-	}
-
-	@Override
 	public int getNutrition() {
 		if (entity instanceof Monster) {
 			return ((Monster) entity).getNutrition();
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public int turnsRequiredToEat() {
+		return entity.getSize() == LivingEntity.Size.LARGE ? 3 : 2;
 	}
 
 	@Override

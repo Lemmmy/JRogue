@@ -7,32 +7,53 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import java.util.List;
 
 public abstract class ItemComestible extends Item {
-	private EatenState eatenState = EatenState.UNEATEN;
+	private int turnsEaten = 0;
 
 	public EatenState getEatenState() {
-		return eatenState;
+		if (turnsEaten == 0) {
+			return EatenState.UNEATEN;
+		} else if (turnsEaten >= turnsRequiredToEat()) {
+			return EatenState.EATEN;
+		} else {
+			return EatenState.PARTLY_EATEN;
+		}
 	}
 
-	public void setEatenState(EatenState eatenState) {
-		this.eatenState = eatenState;
+	public int getTurnsEaten() {
+		return turnsEaten;
+	}
+
+	public int turnsRequiredToEat() {
+		return 1;
+	}
+
+	public void eatPart() {
+		turnsEaten++;
+	}
+
+	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
+		return null;
 	}
 
 	public abstract int getNutrition();
 
-	public abstract List<StatusEffect> getStatusEffects(LivingEntity victim);
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.COMESTIBLE;
+	}
 
 	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 
-		obj.put("eatenState", getEatenState().name());
+		obj.put("turnsEaten", turnsEaten);
 	}
 
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 
-		eatenState = EatenState.valueOf(obj.getString("eatenState"));
+		turnsEaten = obj.getInt("turnsEaten");
 	}
 
 	public enum EatenState {

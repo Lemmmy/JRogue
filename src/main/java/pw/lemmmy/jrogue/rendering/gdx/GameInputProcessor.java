@@ -159,6 +159,10 @@ public class GameInputProcessor implements InputProcessor {
 			return false;
 		}
 
+		if (pos.x < 0 || pos.y < 0 || pos.x > dungeon.getLevel().getWidth() || pos.y > dungeon.getLevel().getHeight()) {
+			return false;
+		}
+
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
 				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);

@@ -49,6 +49,10 @@ public class ItemStack {
 		this.count += count;
 	}
 
+	public void subtractCount(int i) {
+		count = Math.max(0, count - i);
+	}
+
 	public float getWeight() {
 		return item.getWeight() * count;
 	}
