@@ -12,11 +12,12 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpider;
-import pw.lemmmy.jrogue.dungeon.generators.*;
-import pw.lemmmy.jrogue.utils.Point;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.utils.Point;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;

@@ -11,7 +11,6 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;

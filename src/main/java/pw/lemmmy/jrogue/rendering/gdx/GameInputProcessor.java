@@ -3,10 +3,10 @@ package pw.lemmmy.jrogue.rendering.gdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
+import pw.lemmmy.jrogue.utils.Point;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class GameInputProcessor implements InputProcessor {
@@ -154,22 +154,27 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 
-	private boolean handleWorldClicks(Vector2 pos, int button) {
+	private boolean handleWorldClicks(Point pos, int button) {
 		if (renderer.getWindows().size() > 0) {
 			return false;
 		}
 
-		if (pos.x < 0 || pos.y < 0 || pos.x > dungeon.getLevel().getWidth() || pos.y > dungeon.getLevel().getHeight()) {
+		if (
+			pos.getX() < 0 ||
+			pos.getY() < 0 ||
+			pos.getX() > dungeon.getLevel().getWidth() ||
+			pos.getY() > dungeon.getLevel().getHeight()
+		) {
 			return false;
 		}
 
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().teleport((int) pos.x, (int) pos.y);
+				dungeon.getPlayer().teleport(pos.getX(), pos.getY());
 				teleporting = false;
 				return true;
 			} else {
-				dungeon.getPlayer().travelPathfind((int) pos.x, (int) pos.y);
+				dungeon.getPlayer().travelPathfind(pos.getX(), pos.getY());
 				return true;
 			}
 		}
@@ -177,12 +182,12 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 
-	private Vector2 screenToWorldPos(int screenX, int screenY) {
+	private Point screenToWorldPos(int screenX, int screenY) {
 		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
 
-		return new Vector2(
-			(float) Math.floor(unprojected.x / TileMap.TILE_WIDTH),
-			(float) Math.floor(unprojected.y / TileMap.TILE_HEIGHT)
+		return new Point(
+			(int) unprojected.x / TileMap.TILE_WIDTH,
+			(int) unprojected.y / TileMap.TILE_HEIGHT
 		);
 	}
 

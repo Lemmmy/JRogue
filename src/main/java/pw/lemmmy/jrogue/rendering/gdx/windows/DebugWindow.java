@@ -1,8 +1,5 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -10,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
-
-import java.nio.file.Paths;
 
 public class DebugWindow extends PopupWindow {
 	public DebugWindow(GDXRenderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {

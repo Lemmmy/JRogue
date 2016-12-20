@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
 

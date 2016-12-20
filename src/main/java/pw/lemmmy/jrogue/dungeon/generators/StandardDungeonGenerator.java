@@ -1,20 +1,15 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
-import org.apache.commons.lang3.Range;
-import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
