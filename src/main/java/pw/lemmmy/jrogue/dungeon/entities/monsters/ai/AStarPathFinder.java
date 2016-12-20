@@ -117,10 +117,10 @@ public class AStarPathFinder {
 	}
 
 	private static float getHeuristicCost(int x, int y, int tx, int ty) {
-		float dx = tx - x;
-		float dy = ty - y;
+		float dx = Math.abs(tx - x);
+		float dy = Math.abs(ty - y);
 
-		return (float) (Math.sqrt((dx * dx) + (dy * dy)));
+		return (dx + dy) + Math.min(dx, dy);
 	}
 
 	private static class Node implements Comparable {
