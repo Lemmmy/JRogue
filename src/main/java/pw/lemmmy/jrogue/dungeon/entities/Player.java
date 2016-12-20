@@ -488,6 +488,13 @@ public class Player extends LivingEntity {
 	}
 
 	public void travelPathfind(int tx, int ty) {
+		Tile destTile = getLevel().getTile(tx, ty);
+
+		if (destTile == null || !getLevel().isTileDiscovered(tx, ty)) {
+			getDungeon().You("can't travel there.");
+			return;
+		}
+
 		Path path = AStarPathFinder.findPath(
 			getLevel(),
 			getX(),
