@@ -17,7 +17,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final WeightedCollection<Class> ROOM_TYPES = new WeightedCollection<>();
 
 	static {
-		ROOM_TYPES.add(16, RoomBasic.class);
+		ROOM_TYPES.add(40, RoomBasic.class);
 		ROOM_TYPES.add(4, RoomFountain.class);
 		ROOM_TYPES.add(1, RoomWater.class);
 	}
