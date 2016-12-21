@@ -1,25 +1,45 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.Container;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemMap;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemRenderer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContainerComponent extends Table {
 	private Entity entity;
+	private Entity transferTo;
 	private boolean showHandedness;
 
-	public ContainerComponent(Skin skin, Entity entity) {
-		this(skin, entity, false);
+	private List<ContainerComponent> relatedComponents = new ArrayList<>();
+
+	public ContainerComponent(Skin skin, Entity entity, Entity transferTo) {
+		this(skin, entity, transferTo, false);
 	}
 
-	public ContainerComponent(Skin skin, Entity entity, boolean showHandedness) {
+	public ContainerComponent(Skin skin, Entity entity, Entity transferTo, boolean showHandedness) {
 		super(skin);
 
 		this.entity = entity;
+		this.transferTo = transferTo;
 		this.showHandedness = showHandedness;
+
+		update();
+	}
+
+	public void addRelatedComponent(ContainerComponent component) {
+		relatedComponents.add(component);
+	}
+
+	private void update() {
+		clearChildren();
 
 		if (entity.getContainer().isPresent()) {
 			showContainer();
@@ -28,10 +48,20 @@ public class ContainerComponent extends Table {
 		}
 	}
 
+	private void updateRelated() {
+		relatedComponents.forEach(ContainerComponent::update);
+	}
+
 	private void showNoContainer() {
 		Label label = new Label("No container.", getSkin(), "windowStyle");
 		label.setWrap(true);
-		add(label);
+		add(label).left().width(262).pad(4).row();
+	}
+
+	private void showNoItems() {
+		Label label = new Label("No items.", getSkin(), "windowStyle");
+		label.setWrap(true);
+		add(label).left().width(262).pad(4).row();
 	}
 
 	private void showContainer() {
@@ -41,6 +71,10 @@ public class ContainerComponent extends Table {
 
 		Container container = entity.getContainer().get();
 		boolean isPlayer = entity instanceof Player;
+
+		if (container.getItems().size() == 0) {
+			showNoItems();
+		}
 
 		container.getItems().forEach((character, itemStack) -> { // TODO: categorical item grouping
 			Item item = itemStack.getItem();
@@ -80,9 +114,33 @@ public class ContainerComponent extends Table {
 			)).growX().left();
 			itemTable.row();
 
-			itemButton.add(itemTable).left().width(291);
+			if (transferTo != null) {
+				itemButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						if (!transferTo.getContainer().isPresent()) {
+							return;
+						}
 
-			add(itemButton).left().width(294).padTop(1).row();
+						int amount = event.getButton() == Input.Buttons.LEFT ? itemStack.getCount() : 1;
+
+						Container destContainer = transferTo.getContainer().get();
+						container.transfer(
+							destContainer,
+							character,
+							amount,
+							isPlayer ? entity.getDungeon().getPlayer() : null
+						);
+
+						update();
+						updateRelated();
+					}
+				});
+			}
+
+			itemButton.add(itemTable).left().width(267);
+
+			add(itemButton).left().width(270).padTop(1).row();
 		});
 	}
 }

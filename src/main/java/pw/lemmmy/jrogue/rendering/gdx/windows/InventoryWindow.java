@@ -16,15 +16,15 @@ public class InventoryWindow extends PopupWindow {
 
 	@Override
 	public String getTitle() {
-		return entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Container";
+		return entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Inventory";
 	}
 
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(300);
+		getWindow().setWidth(276);
 		getWindow().setHeight(400);
 
-		ContainerComponent inventoryContainerComponent = new ContainerComponent(getSkin(), entity, true);
+		ContainerComponent inventoryContainerComponent = new ContainerComponent(getSkin(), entity, null, true);
 		ScrollPane scrollPane = new ScrollPane(inventoryContainerComponent, getSkin());
 		scrollPane.setFillParent(true);
 		getWindow().getContentTable().add(scrollPane);

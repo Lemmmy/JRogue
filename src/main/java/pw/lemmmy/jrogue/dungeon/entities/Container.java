@@ -94,6 +94,27 @@ public class Container {
 		}
 	}
 
+	public void transfer(Container destContainer, Character character, int amount, Player player) {
+		ItemStack itemStack = items.get(character);
+
+		if (!destContainer.canAdd(itemStack)) {
+			return;
+		}
+
+		if (player != null) {
+			if (player.getLeftHand().getStack() == itemStack) {
+				player.setLeftHand(null);
+			}
+
+			if (player.getRightHand().getStack() == itemStack) {
+				player.setRightHand(null);
+			}
+		}
+
+		destContainer.add(itemStack);
+		items.remove(character);
+	}
+
 	public void addListener(ContainerListener listener) {
 		listeners.add(listener);
 	}
