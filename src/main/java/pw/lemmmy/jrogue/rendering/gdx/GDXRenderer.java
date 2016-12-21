@@ -27,7 +27,7 @@ import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.rendering.gdx.windows.ContainerWindow;
+import pw.lemmmy.jrogue.rendering.gdx.windows.InventoryWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.DebugWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.PopupWindow;
 import pw.lemmmy.jrogue.rendering.gdx.windows.WishWindow;
@@ -208,7 +208,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onContainerShow(Entity containerEntity) {
 		nextFrameDeferred
-			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
+			.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
 				.show());
 	}
 
@@ -591,7 +591,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	public void showInventoryWindow() {
 		nextFrameDeferred
-			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
+			.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
 				.show());
 	}
 
