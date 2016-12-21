@@ -61,9 +61,7 @@ public class EntityChest extends Entity {
 			if (locked && Utils.roll(4) == 1) {
 				getDungeon().greenThe("%s breaks open!", getName(false));
 				locked = false;
-			}
-
-			if (Utils.roll(4) == 1) { // TODO: Based on luck
+			} else if (Utils.roll(4) == 1) { // TODO: Based on luck
 				getDungeon().orangeYou("break the lock. In fact, you completely destroyed the contents inside!");
 				locked = false;
 				// TODO: Damage items
