@@ -10,8 +10,6 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public abstract class MonsterCanine extends Monster {
@@ -37,7 +35,7 @@ public abstract class MonsterCanine extends Monster {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource) {
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 

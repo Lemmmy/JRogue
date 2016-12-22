@@ -3,7 +3,9 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
 import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
@@ -45,7 +47,11 @@ public abstract class Monster extends LivingEntity {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource) {
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		if (attacker != null && attacker instanceof LivingEntity) {
+			((LivingEntity) attacker).addExperience(getExperienceRewarded());
+		}
+
 		if (getCorpseChance() != 0f && Utils.randomFloat() <= getCorpseChance()) {
 			drop(new ItemStack(new ItemCorpse(this)));
 		}
@@ -86,5 +92,9 @@ public abstract class Monster extends LivingEntity {
 
 	public void magicAttackPlayer() {
 
+	}
+
+	public int getExperienceRewarded() {
+		return getSize() == Size.SMALL ? Utils.roll(1, 2) : Utils.roll(2, 2);
 	}
 }

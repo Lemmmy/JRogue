@@ -20,7 +20,7 @@ public class Poison extends StatusEffect {
 			livingEntity.damage(DamageSource.POISON, 1, null, false);
 
 			if (getTurnsPassed() >= 15) {
-				livingEntity.kill(DamageSource.POISON);
+				livingEntity.kill(DamageSource.POISON, 1, null, false);
 			}
 		}
 	}

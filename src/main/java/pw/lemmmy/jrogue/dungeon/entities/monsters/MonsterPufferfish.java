@@ -9,9 +9,6 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.Poison;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.FishAI;
-import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +66,7 @@ public class MonsterPufferfish extends Monster {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource) {
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 
@@ -110,5 +107,10 @@ public class MonsterPufferfish extends Monster {
 	@Override
 	public boolean canMagicAttack() {
 		return false;
+	}
+
+	@Override
+	public int getExperienceRewarded() {
+		return 0;
 	}
 }

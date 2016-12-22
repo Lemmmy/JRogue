@@ -365,7 +365,7 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource) {
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		if (damageSource.getDeathString() != null) {
 			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
 		} else {

@@ -93,7 +93,7 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource) {
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 
@@ -125,6 +125,11 @@ public class MonsterFish extends Monster {
 	@Override
 	public boolean canMagicAttack() {
 		return false;
+	}
+
+	@Override
+	public int getExperienceRewarded() {
+		return 0;
 	}
 
 	@Override

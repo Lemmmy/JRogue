@@ -14,6 +14,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	private int maxHealth;
 
 	private int experienceLevel = 1;
+	private int experience = 0;
 
 	private int healingTurns = 0;
 
@@ -51,6 +52,31 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	protected void setExperienceLevel(int level) {
 		experienceLevel = level;
+	}
+
+	public int getExperience() {
+		return experience;
+	}
+
+	public void setExperience(int experience) {
+		this.experience = experience;
+	}
+
+	public int getXPForLevel(int level) {
+		return (int) Math.pow(((float) level / 1.75f), 2) * 2 + 15;
+	}
+
+	public void addExperience(int experience) {
+		int xpForLevel = getXPForLevel(experienceLevel);
+
+		for (int i = 0; i < experience; i++) {
+			if (++experience > xpForLevel) {
+				experienceLevel++;
+				this.experience = 0;
+
+				xpForLevel = getXPForLevel(experienceLevel);
+			}
+		}
 	}
 
 	public int getHealth() {
@@ -185,7 +211,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		onDamage(damageSource, damage, attacker, isPlayer);
 
 		if (health <= 0) {
-			kill(damageSource);
+			kill(damageSource, damage, attacker, isPlayer);
 		}
 
 		return health <= 0;
@@ -197,13 +223,13 @@ public abstract class LivingEntity extends EntityTurnBased {
 
 	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
 
-	public void kill(DamageSource damageSource) {
-		onDie(damageSource);
+	public void kill(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		onDie(damageSource, damage, attacker, isPlayer);
 
 		getLevel().removeEntity(this);
 	}
 
-	protected abstract void onDie(DamageSource damageSource);
+	protected abstract void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
 
 	public void drop(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
