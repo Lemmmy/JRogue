@@ -201,6 +201,24 @@ public class Dungeon {
 		}));
 	}
 
+	public void saveAndQuit() {
+		prompt(new Prompt("Really save and quit?", new char[] {'y', 'n'}, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {}
+
+			@Override
+			public void onInvalidResponse(char response) {}
+
+			@Override
+			public void onResponse(char response) {
+				if (response == 'y') {
+					save();
+					listeners.forEach(Listener::onQuit);
+				}
+			}
+		}));
+	}
+
 	public void addListener(Listener listener) {
 		listeners.add(listener);
 	}

@@ -93,6 +93,9 @@ public class GameInputProcessor implements InputProcessor {
 			} else if (keycode == Input.Keys.Q) {
 				dungeon.quit();
 				return true;
+			} else if (keycode == Input.Keys.S) {
+				dungeon.saveAndQuit();
+				return true;
 			} else if (keycode == Input.Keys.G || keycode == Input.Keys.NUM_5 || keycode == Input.Keys.NUMPAD_5) {
 				dungeon.getPlayer().travelDirectional();
 				return true;
