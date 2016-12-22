@@ -2,6 +2,8 @@ package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.utils.Utils;
 
 public class ItemGem extends Item {
 	private Gem gem;
@@ -9,6 +11,11 @@ public class ItemGem extends Item {
 
 	public ItemGem() { // unserialisation constructor
 		super();
+	}
+
+	public ItemGem(Level level) { // chest spawning constructor
+		this.gem = Utils.randomFrom(Gem.values());
+		this.worthless = Utils.rollD2();
 	}
 
 	public ItemGem(Gem gem, boolean worthless) {

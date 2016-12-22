@@ -42,7 +42,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 			damage += skillModifier;
 		}
 
-		return Math.max(0, damage);
+		return Math.max(1, damage);
 	}
 
 	protected abstract DamageSource getMeleeDamageSource();

@@ -18,16 +18,16 @@ public enum Material {
 	private int levelRequiredToSpawn;
 	private boolean flammable = false;
 
-	Material(int value, int baseDamage, int levelRequiredToFind) {
+	Material(int value, int baseDamage, int levelRequiredToSpawn) {
 		this.value = value;
 		this.baseDamage = baseDamage;
-		this.levelRequiredToSpawn = levelRequiredToFind;
+		this.levelRequiredToSpawn = levelRequiredToSpawn;
 	}
 
-	Material(int value, int baseDamage, int levelRequiredToFind, boolean flammable) {
+	Material(int value, int baseDamage, int levelRequiredToSpawn, boolean flammable) {
 		this.value = value;
 		this.baseDamage = baseDamage;
-		this.levelRequiredToSpawn = levelRequiredToFind;
+		this.levelRequiredToSpawn = levelRequiredToSpawn;
 		this.flammable = flammable;
 	}
 

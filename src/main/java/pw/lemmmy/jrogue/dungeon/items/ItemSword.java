@@ -1,13 +1,33 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.utils.Utils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	private Material material;
 
 	public ItemSword() { // unserialisation constructor
 		super();
+	}
+
+	public ItemSword(Level level) { // chest spawning constructor
+		super();
+
+		List<Material> validMaterials = Arrays.stream(Material.values())
+			.filter(m -> m.getLevelRequiredToSpawn() <= Math.abs(level.getDepth()))
+			.collect(Collectors.toList());
+
+		List<Material> bestMaterials = validMaterials.stream()
+			.skip(Math.max(0, validMaterials.size() - 3))
+			.collect(Collectors.toList());
+
+		this.material = Utils.randomFrom(bestMaterials);
 	}
 
 	public ItemSword(Material material) {
