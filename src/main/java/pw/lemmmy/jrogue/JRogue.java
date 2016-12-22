@@ -21,8 +21,16 @@ public class JRogue {
 	public Renderer renderer;
 
 	public JRogue(Settings settings) {
-		dungeon = Dungeon.load(settings);
-		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
+		try {
+			dungeon = Dungeon.load(settings);
+			renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
+		} catch (Exception e) {
+			ErrorHandler.error(null, e);
+
+			if (renderer != null) {
+				renderer.panic();
+			}
+		}
 	}
 
 	public static void main(String[] args) {
