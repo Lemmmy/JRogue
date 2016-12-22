@@ -14,13 +14,23 @@ public class MonsterJackal extends MonsterCanine {
 	}
 
 	@Override
-	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Jackal" : "jackal";
+	}
+
+	@Override
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_JACKAL;
 	}
 
 	@Override
 	public Size getSize() {
 		return LivingEntity.Size.SMALL;
+	}
+
+	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED;
 	}
 
 	@Override
@@ -41,15 +51,5 @@ public class MonsterJackal extends MonsterCanine {
 	@Override
 	public int getVisibilityRange() {
 		return 15;
-	}
-
-	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Jackal" : "jackal";
-	}
-
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_JACKAL;
 	}
 }

@@ -19,13 +19,23 @@ public class MonsterHound extends MonsterCanine {
 	}
 
 	@Override
-	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Hound" : "hound";
+	}
+
+	@Override
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_HOUND;
 	}
 
 	@Override
 	public Size getSize() {
 		return Size.SMALL;
+	}
+
+	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED;
 	}
 
 	@Override
@@ -46,15 +56,5 @@ public class MonsterHound extends MonsterCanine {
 	@Override
 	public int getVisibilityRange() {
 		return 15;
-	}
-
-	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Hound" : "hound";
-	}
-
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_HOUND;
 	}
 }

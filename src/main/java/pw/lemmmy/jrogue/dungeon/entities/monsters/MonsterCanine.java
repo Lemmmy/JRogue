@@ -27,6 +27,11 @@ public abstract class MonsterCanine extends Monster {
 	}
 
 	@Override
+	public float getCorpseChance() {
+		return 0.5f;
+	}
+
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().logRandom("It whimpers.", "It whines.", "It cries.", "It yelps.");
 	}
@@ -34,10 +39,6 @@ public abstract class MonsterCanine extends Monster {
 	@Override
 	protected void onDie(DamageSource damageSource) {
 		getDungeon().You("kill the %s!", getName(false));
-
-		if (Utils.roll(1, 2) == 1) {
-			drop(new ItemStack(new ItemCorpse(this)));
-		}
 	}
 
 	@Override

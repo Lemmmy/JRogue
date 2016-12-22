@@ -16,11 +16,6 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	}
 
 	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
-		return null; // TODO: Ice
-	}
-
-	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Icehound" : "icehound";
 	}
@@ -28,6 +23,11 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_ICEHOUND;
+	}
+
+	@Override
+	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+		return null; // TODO: Ice
 	}
 
 	@Override

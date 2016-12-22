@@ -79,6 +79,10 @@ public class Utils {
 		return jrand.nextInt(range.getMaximum() - range.getMinimum()) + range.getMinimum();
 	}
 
+	public static float randomFloat() {
+		return rand.nextFloat();
+	}
+
 	public static float randomFloat(float f) {
 		return rand.nextFloat(f);
 	}

@@ -28,31 +28,6 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
-	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
-	}
-
-	@Override
-	public Size getSize() {
-		return Size.SMALL;
-	}
-
-	@Override
-	public boolean isHostile() {
-		return false;
-	}
-
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
-	}
-
-	@Override
-	protected void onDie(DamageSource damageSource) {
-		getDungeon().You("kill the %s!", getName(false));
-	}
-
-	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Fish" : "fish";
 	}
@@ -78,8 +53,18 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		getDungeon().You("kick the %s!", getName(false));
+	public Size getSize() {
+		return Size.SMALL;
+	}
+
+	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED;
+	}
+
+	@Override
+	public boolean isHostile() {
+		return false;
 	}
 
 	@Override
@@ -93,8 +78,28 @@ public class MonsterFish extends Monster {
 	}
 
 	@Override
+	public float getCorpseChance() {
+		return 0.0f;
+	}
+
+	@Override
 	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
 		return null;
+	}
+
+	@Override
+	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource) {
+		getDungeon().You("kill the %s!", getName(false));
+	}
+
+	@Override
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		getDungeon().You("kick the %s!", getName(false));
 	}
 
 	@Override

@@ -2,9 +2,13 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
+import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
 
@@ -41,6 +45,13 @@ public abstract class Monster extends LivingEntity {
 	}
 
 	@Override
+	protected void onDie(DamageSource damageSource) {
+		if (getCorpseChance() != 0f && Utils.randomFloat() <= getCorpseChance()) {
+			drop(new ItemStack(new ItemCorpse(this)));
+		}
+	}
+
+	@Override
 	public boolean canBeWalkedOn() {
 		return false;
 	}
@@ -50,6 +61,8 @@ public abstract class Monster extends LivingEntity {
 	public abstract int getWeight();
 
 	public abstract int getNutrition();
+
+	public abstract float getCorpseChance();
 
 	public abstract List<StatusEffect> getCorpseEffects(LivingEntity victim);
 
@@ -64,11 +77,14 @@ public abstract class Monster extends LivingEntity {
 	public abstract boolean canMagicAttack();
 
 	public void meleeAttackPlayer() {
+
 	}
 
 	public void rangedAttackPlayer() {
+
 	}
 
 	public void magicAttackPlayer() {
+
 	}
 }
