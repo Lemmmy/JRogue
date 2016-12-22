@@ -97,7 +97,9 @@ public class RoomBasic extends Room {
 
 		Container container = chest.getContainer().get();
 
-		for (int i = 0; i < 3; i++) {
+		int itemAmount = Utils.roll(3);
+
+		for (int i = 0; i < itemAmount; i++) {
 			ItemGroup group = ITEM_GROUPS.next();
 			Class itemClass = group.getRandomItem();
 
