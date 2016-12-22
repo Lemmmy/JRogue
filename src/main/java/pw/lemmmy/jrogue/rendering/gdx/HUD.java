@@ -92,6 +92,11 @@ public class HUD implements Dungeon.Listener {
 		goldLabel.setName("gold");
 		infoLine.add(goldLabel).pad(0, 2, 0, 8);
 
+		infoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 12, 2, 16, 16, false)));
+		Label expLabel = new Label("Level: 1", skin);
+		expLabel.setName("exp");
+		infoLine.add(expLabel).pad(0, 2, 0, 8);
+
 		container.add(infoLine).left().pad(0, 1, 0, 1);
 		container.row();
 	}
@@ -203,6 +208,7 @@ public class HUD implements Dungeon.Listener {
 
 	private void updateInfoLine(Player player) {
 		((Label) infoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
+		((Label) infoLine.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
 	}
 
 	private void updateAttributes(Player player) {

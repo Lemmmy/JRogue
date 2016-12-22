@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -35,7 +36,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 
 	private int getBaseMaxHealth() {
-		return experienceLevel = Utils.roll(experienceLevel, 6);
+		return Utils.roll(experienceLevel, 6);
 	}
 
 	public int getMaxHealth() {
@@ -145,6 +146,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		obj.put("health", getHealth());
 		obj.put("maxHealth", getMaxHealth());
 		obj.put("experienceLevel", getExperienceLevel());
+		obj.put("experience", getExperience());
 
 		if (getContainer().isPresent()) {
 			JSONObject serialisedInventory = new JSONObject();
@@ -169,6 +171,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		health = obj.getInt("health");
 		maxHealth = obj.getInt("maxHealth");
 		experienceLevel = obj.getInt("experienceLevel");
+		experience = obj.getInt("experienceLevel");
 
 		if (obj.has("inventory")) {
 			JSONObject serialisedInventory = obj.getJSONObject("inventory");
