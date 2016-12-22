@@ -83,6 +83,14 @@ public class ItemGem extends Item {
 		obj.put("worthless", worthless);
 	}
 
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		worthless = obj.getBoolean("worthless");
+		gem = Gem.valueOf(obj.getString("gem"));
+	}
+
 	public enum Gem {
 		// TODO: Gem values
 
