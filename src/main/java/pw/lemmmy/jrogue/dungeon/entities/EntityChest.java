@@ -3,9 +3,11 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EntityChest extends Entity {
 	private Container container;
@@ -58,13 +60,25 @@ public class EntityChest extends Entity {
 		if (isPlayer) {
 			getDungeon().You("kick the %s!", getName(false));
 
+			AtomicBoolean somethingShattered = new AtomicBoolean(false);
+
+			container.getItems().entrySet().stream()
+					 .filter(i -> i.getValue().getItem() instanceof Shatterable)
+					 .forEach(i -> {
+						 if (Utils.roll(3) == 1) {
+						 	 // kicking chests has a high chance of damaging items regardless of skill.
+							 container.remove(i.getKey());
+							 somethingShattered.set(true);
+						 }
+					 });
+
+			if (somethingShattered.get()) {
+				getDungeon().orangeYou("hear something shatter.");
+			}
+
 			if (locked && Utils.roll(4) == 1) {
 				getDungeon().greenThe("%s breaks open!", getName(false));
 				locked = false;
-			} else if (Utils.roll(4) == 1) { // TODO: Based on luck
-				getDungeon().orangeYou("break the lock. In fact, you completely destroyed the contents inside!");
-				locked = false;
-				// TODO: Damage items
 			}
 		}
 	}

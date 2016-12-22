@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.utils.Utils;
 
-public class ItemGem extends Item {
+public class ItemGem extends Item implements Shatterable {
 	private Gem gem;
 	private boolean worthless = false;
 
