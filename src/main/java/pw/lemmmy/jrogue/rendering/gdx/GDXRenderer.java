@@ -191,15 +191,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onTurn(long turn) {
 		updateWindowTitle();
 		lastPath = Optional.empty();
-
-		if (dungeon.getPlayer().isDebugger()) {
-			Pixmap snapshot = takeLevelSnapshot();
-			String path = Paths.get(System.getProperty("java.io.tmpdir"))
-							   .resolve("jrogue_level_snap.png")
-							   .toString();
-			PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
-			snapshot.dispose();
-		}
 	}
 
 	@Override
@@ -548,6 +539,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void dispose() {
 		super.dispose();
+
+		if (settings.autosave()) {
+			dungeon.save();
+		}
 
 		batch.dispose();
 		lightBatch.dispose();

@@ -406,10 +406,6 @@ public class Dungeon {
 		level.buildLight();
 		level.updateSight(player);
 
-		if (settings.autosave()) {
-			save();
-		}
-
 		listeners.forEach(l -> l.onTurn(turn));
 	}
 

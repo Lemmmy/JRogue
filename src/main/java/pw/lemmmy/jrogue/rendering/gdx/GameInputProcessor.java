@@ -3,11 +3,15 @@ package pw.lemmmy.jrogue.rendering.gdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.Vector3;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.utils.Point;
 import pw.lemmmy.jrogue.utils.Utils;
+
+import java.nio.file.Paths;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
@@ -102,13 +106,18 @@ public class GameInputProcessor implements InputProcessor {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.D) {
 				renderer.showDebugWindow();
-
-				dontHandleNext = true;
 				return true;
 			} else if (keycode == Input.Keys.W) {
 				renderer.showWishWindow();
+				return true;
+			} else if (keycode == Input.Keys.S) {
+				Pixmap snapshot = renderer.takeLevelSnapshot();
+				String path = Paths.get(System.getProperty("java.io.tmpdir"))
+								   .resolve("jrogue_level_snap.png")
+								   .toString();
+				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
+				snapshot.dispose();
 
-				dontHandleNext = true;
 				return true;
 			}
 		}
