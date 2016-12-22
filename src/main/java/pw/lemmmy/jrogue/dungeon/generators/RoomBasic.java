@@ -97,7 +97,7 @@ public class RoomBasic extends Room {
 
 		Container container = chest.getContainer().get();
 
-		int itemAmount = Utils.roll(3);
+		int itemAmount = Utils.roll(4) - 1; // possibility that chests can be empty
 
 		for (int i = 0; i < itemAmount; i++) {
 			ItemGroup group = ITEM_GROUPS.next();
