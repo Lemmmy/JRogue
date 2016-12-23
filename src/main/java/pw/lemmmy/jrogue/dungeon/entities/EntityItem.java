@@ -16,7 +16,7 @@ public class EntityItem extends Entity {
 		super(dungeon, level, x, y);
 	}
 
-	public EntityItem(Dungeon dungeon, Level level, ItemStack itemStack, int x, int y) {
+	public EntityItem(Dungeon dungeon, Level level, int x, int y, ItemStack itemStack) {
 		super(dungeon, level, x, y);
 
 		this.itemStack = itemStack;

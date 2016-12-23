@@ -250,7 +250,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 			EntityItem entItem = (EntityItem) ent.get();
 			entItem.getItemStack().addCount(item.getCount());
 		} else {
-			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), item, getX(), getY());
+			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
 			getLevel().addEntity(entityItem);
 		}
 	}

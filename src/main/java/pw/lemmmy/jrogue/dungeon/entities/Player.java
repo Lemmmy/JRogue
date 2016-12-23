@@ -679,21 +679,33 @@ public class Player extends LivingEntity {
 					return;
 				}
 
+				ItemComestible itemCopy = (ItemComestible) item.copy();
+
 				setAction(new ActionEat(
 					getDungeon(),
 					Player.this,
-					item,
+					itemCopy,
 					new EntityAction.ActionCallback() {
 						@Override
 						public void onComplete() {
 							super.onComplete();
 
-							if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
-								if (stack.getCount() == 1) {
-									entity.getLevel().removeEntity(entity);
-								} else {
-									stack.subtractCount(1);
-								}
+							if (stack.getCount() == 1) {
+								entity.getLevel().removeEntity(entity);
+							} else {
+								stack.subtractCount(1);
+							}
+
+							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+								EntityItem newStack = new EntityItem(
+									getDungeon(),
+									getLevel(),
+									getX(),
+									getY(),
+									new ItemStack(itemCopy, 1)
+								);
+
+								getLevel().addEntity(newStack);
 							}
 						}
 					}
@@ -746,20 +758,26 @@ public class Player extends LivingEntity {
 				ItemStack stack = containerEntry.get().getStack();
 				ItemComestible item = (ItemComestible) stack.getItem();
 
+				ItemComestible itemCopy = (ItemComestible) item.copy();
+
 				setAction(new ActionEat(
 					getDungeon(),
 					Player.this,
-					item,
+					itemCopy,
 					new EntityAction.ActionCallback() {
 						@Override
 						public void onComplete() {
 							super.onComplete();
 
-							if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
-								if (stack.getCount() == 1) {
-									inventory.remove(containerEntry.get().getLetter());
-								} else {
-									stack.subtractCount(1);
+							if (stack.getCount() == 1) {
+								inventory.remove(containerEntry.get().getLetter());
+							} else {
+								stack.subtractCount(1);
+							}
+
+							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+								if (getContainer().isPresent()) {
+									getContainer().get().add(new ItemStack(itemCopy, 1));
 								}
 							}
 						}
@@ -895,7 +913,7 @@ public class Player extends LivingEntity {
 
 				inventory.remove(letter);
 
-				EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), stack, getX(), getY());
+				EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), stack);
 				getLevel().addEntity(entityItem);
 
 				if (item.isis() || stack.getCount() > 1) {

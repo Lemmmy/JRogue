@@ -9,7 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public abstract class Item {
+public abstract class Item{
 	private int visualID;
 
 	private boolean identified = false;
@@ -69,7 +69,7 @@ public abstract class Item {
 			Class<? extends Item> itemClass = (Class<? extends Item>) Class.forName(itemClassName);
 			Constructor<? extends Item> itemConstructor = itemClass.getConstructor();
 
-			Item item = (Item) itemConstructor.newInstance();
+			Item item = itemConstructor.newInstance();
 			item.unserialise(serialisedItem);
 			return Optional.of(item);
 		} catch (ClassNotFoundException e) {
@@ -95,6 +95,16 @@ public abstract class Item {
 		visualID = obj.getInt("visualID");
 		identified = obj.getBoolean("identified");
 		bucStatus = BUCStatus.valueOf(obj.getString("buc"));
+	}
+
+	public Item copy() {
+		// /shrug
+
+		JSONObject serialisedItem = new JSONObject();
+		serialise(serialisedItem);
+
+		Optional<Item> itemOptional = createFromJSON(serialisedItem);
+		return itemOptional.isPresent() ? itemOptional.get() : null;
 	}
 
 	public enum BUCStatus {

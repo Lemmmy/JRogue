@@ -12,9 +12,7 @@ public class QuickSpawn {
 		EntityItem entity = new EntityItem(
 			level.getDungeon(),
 			level,
-			new ItemStack(new ItemGold(), amount),
-			x,
-			y
+			x, y, new ItemStack(new ItemGold(), amount)
 		);
 
 		level.addEntity(entity);

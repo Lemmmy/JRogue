@@ -61,7 +61,7 @@ public abstract class ItemComestible extends Item {
 		if (other instanceof ItemComestible) {
 			ItemComestible otherComestible = (ItemComestible) other;
 
-			if (getEatenState() != EatenState.EATEN || otherComestible.getEatenState() != EatenState.EATEN) {
+			if (getEatenState() != EatenState.UNEATEN || otherComestible.getEatenState() != EatenState.UNEATEN) {
 				return false;
 			}
 		}

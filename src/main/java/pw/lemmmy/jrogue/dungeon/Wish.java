@@ -39,10 +39,14 @@ public class Wish {
 			if (wishGoldDroppedMatcher.find()) {
 				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
 
-				dungeon.getLevel().addEntity(new EntityItem(dungeon, dungeon.getLevel(), new ItemStack(
+				dungeon.getLevel().addEntity(new EntityItem(dungeon, dungeon.getLevel(),
+															player.getX(),
+															player.getY(),
+															new ItemStack(
 					new ItemGold(),
 					gold
-				), player.getX(), player.getY()));
+				)
+				));
 
 				dungeon.turn();
 				return;
