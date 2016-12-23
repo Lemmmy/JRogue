@@ -64,7 +64,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 
 	public int getXPForLevel(int level) {
-		return (int) Math.pow(((float) level / 1.75f), 2) * 2 + 15;
+		return (int) Math.pow(((float) level / 1.75f), 2) * 2 + 10;
 	}
 
 	public void addExperience(int experience) {
@@ -76,8 +76,14 @@ public abstract class LivingEntity extends EntityTurnBased {
 				this.experience = 0;
 
 				xpForLevel = getXPForLevel(experienceLevel);
+
+				onLevelUp();
 			}
 		}
+	}
+
+	public void onLevelUp() {
+
 	}
 
 	public int getHealth() {
@@ -171,7 +177,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		health = obj.getInt("health");
 		maxHealth = obj.getInt("maxHealth");
 		experienceLevel = obj.getInt("experienceLevel");
-		experience = obj.getInt("experienceLevel");
+		experience = obj.getInt("experience");
 
 		if (obj.has("inventory")) {
 			JSONObject serialisedInventory = obj.getJSONObject("inventory");

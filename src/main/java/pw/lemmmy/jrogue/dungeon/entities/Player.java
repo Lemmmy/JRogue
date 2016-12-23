@@ -265,6 +265,13 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
+	public void onLevelUp() {
+		super.onLevelUp();
+
+		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
+	}
+
+	@Override
 	public void update() {
 		super.update();
 
