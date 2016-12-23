@@ -36,6 +36,8 @@ public class ErrorHandler {
 
 	public static void error(String error, Throwable trace) {
 		if (error != null) {
+			JRogue.getLogger().error("An error occured: {}", error);
+
 			textArea.setText(error);
 			textArea.append("\n");
 		}
@@ -43,6 +45,8 @@ public class ErrorHandler {
 		String traceString = "";
 
 		if (trace != null) {
+			JRogue.getLogger().error(trace);
+
 			StringWriter sw = new StringWriter();
 			trace.printStackTrace(new PrintWriter(sw));
 			traceString = sw.toString();
@@ -74,7 +78,12 @@ public class ErrorHandler {
 	}
 
 	private static URI getIssueURI(String error, Throwable trace, String traceString) {
-		String issueTitle = (error != null ? error : trace.getMessage());
+		String issueTitle = error != null ? error : trace.getMessage();
+
+		if (issueTitle == null) {
+			issueTitle = "Unknown error";
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(String.format(
