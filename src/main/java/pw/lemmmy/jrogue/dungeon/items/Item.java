@@ -66,8 +66,8 @@ public abstract class Item {
 		String itemClassName = serialisedItem.getString("class");
 
 		try {
-			Class itemClass = Class.forName(itemClassName);
-			Constructor itemConstructor = itemClass.getConstructor();
+			Class<? extends Item> itemClass = (Class<? extends Item>) Class.forName(itemClassName);
+			Constructor<? extends Item> itemConstructor = itemClass.getConstructor();
 
 			Item item = (Item) itemConstructor.newInstance();
 			item.unserialise(serialisedItem);

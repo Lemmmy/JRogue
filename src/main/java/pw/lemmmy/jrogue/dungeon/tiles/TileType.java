@@ -41,7 +41,7 @@ public enum TileType {
 	private short id;
 
 	private Solidity solidity;
-	private Class stateClass;
+	private Class<? extends TileState> stateClass;
 	private boolean buildable;
 
 	private Color light;
@@ -52,11 +52,11 @@ public enum TileType {
 		this(id, solidity, null, false);
 	}
 
-	TileType(int id, Solidity solidity, Class stateClass, boolean buildable) {
+	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass, boolean buildable) {
 		this(id, solidity, stateClass, buildable, null, 0, 0);
 	}
 
-	TileType(int id, Solidity solidity, Class stateClass) {
+	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass) {
 		this(id, solidity, stateClass, false);
 	}
 
@@ -68,7 +68,7 @@ public enum TileType {
 		this(id, solidity, null, buildable, light, lightIntensity, absorb);
 	}
 
-	TileType(int id, Solidity solidity, Class stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
+	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
 
 		this.solidity = solidity;
@@ -93,7 +93,7 @@ public enum TileType {
 		return solidity;
 	}
 
-	public Class getStateClass() {
+	public Class<? extends TileState> getStateClass() {
 		return stateClass;
 	}
 
@@ -155,6 +155,8 @@ public enum TileType {
 				return "There is a staircase up here.";
 			case TILE_ROOM_STAIRS_DOWN:
 				return "There is a staircase down here.";
+			default:
+				break;
 		}
 
 		return null;

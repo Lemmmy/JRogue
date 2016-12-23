@@ -57,10 +57,9 @@ public abstract class DungeonGenerator {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Room buildRoom(Class roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
+	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
 		try {
-			Constructor roomConstructor = roomType.getConstructor(
+			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
 				Level.class, int.class, int.class, int.class, int.class
 			);
 

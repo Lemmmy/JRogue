@@ -48,8 +48,8 @@ public class Tile {
 	private void initialiseState() {
 		if (type.getStateClass() != null) {
 			try {
-				@SuppressWarnings("unchecked") Class<TileState> stateClass = type.getStateClass();
-				Constructor<TileState> stateConstructor = stateClass.getConstructor(Tile.class);
+				Class<? extends TileState> stateClass = type.getStateClass();
+				Constructor<? extends TileState> stateConstructor = stateClass.getConstructor(Tile.class);
 
 				state = stateConstructor.newInstance(this);
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

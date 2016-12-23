@@ -101,15 +101,14 @@ public class RoomBasic extends Room {
 
 		for (int i = 0; i < itemAmount; i++) {
 			ItemGroup group = ITEM_GROUPS.next();
-			Class itemClass = group.getRandomItem();
+			Class<? extends Item> itemClass = group.getRandomItem();
 
 			populateChestItem(container, itemClass);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void populateChestItem(Container container, Class itemClass) {
-		Constructor constructor = ConstructorUtils.getAccessibleConstructor(itemClass, Level.class);
+	private void populateChestItem(Container container, Class<? extends Item> itemClass) {
+		Constructor<? extends Item> constructor = ConstructorUtils.getAccessibleConstructor(itemClass, Level.class);
 		Item item;
 
 		if (constructor != null) {
@@ -143,13 +142,14 @@ public class RoomBasic extends Room {
 	}
 
 	protected static class ItemGroup {
-		private List<Class> items = new ArrayList<>();
+		private List<Class<? extends Item>> items = new ArrayList<>();
 
-		private ItemGroup(Class... items) {
+		@SafeVarargs
+		private ItemGroup(Class<? extends Item>... items) {
 			this.items.addAll(Arrays.asList(items));
 		}
 
-		public Class getRandomItem() {
+		public Class<? extends Item> getRandomItem() {
 			return Utils.randomFrom(items);
 		}
 	}
