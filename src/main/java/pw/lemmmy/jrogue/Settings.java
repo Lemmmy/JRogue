@@ -7,6 +7,7 @@ public class Settings {
 	private int screenHeight = 640;
 
 	private int logSize = 7;
+	private float hudScale = 1.0f;
 
 	private boolean autosave = true;
 
@@ -50,6 +51,14 @@ public class Settings {
 
 	public void setLogSize(int logSize) {
 		this.logSize = logSize;
+	}
+
+	public float getHUDScale() {
+		return hudScale;
+	}
+
+	public void setHUDScale(float hudScale) {
+		this.hudScale = hudScale;
 	}
 
 	public boolean autosave() {

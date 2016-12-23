@@ -124,6 +124,10 @@ public class JRogue {
 			if (displaySection.get("logSize") != null) {
 				settings.setLogSize(Integer.parseInt(displaySection.get("logSize")));
 			}
+
+			if (displaySection.get("hudScale") != null) {
+				settings.setHUDScale(Float.parseFloat(displaySection.get("hudScale")));
+			}
 		}
 
 		if (ini.get("Game") != null) {

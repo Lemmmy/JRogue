@@ -44,7 +44,9 @@ public class HUD implements Dungeon.Listener {
 	}
 
 	public void init() {
-		stage = new Stage(new ScreenViewport());
+		ScreenViewport stageViewport = new ScreenViewport();
+		stageViewport.setUnitsPerPixel(1f / settings.getHUDScale());
+		stage = new Stage(stageViewport);
 		skin = new HUDSkin();
 
 		root = new Table();
