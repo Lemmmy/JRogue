@@ -290,6 +290,8 @@ public class Player extends LivingEntity {
 				case STARVING:
 					getDungeon().redYou("are starving!");
 					break;
+				default:
+					break;
 			}
 		}
 
@@ -344,8 +346,8 @@ public class Player extends LivingEntity {
 
 		String roleClassName = obj.getString("role");
 		try {
-			Class roleClass = Class.forName(roleClassName);
-			Constructor roleConstructor = roleClass.getConstructor();
+			Class<? extends Role> roleClass = (Class<? extends Role>) Class.forName(roleClassName);
+			Constructor<? extends Role> roleConstructor = roleClass.getConstructor();
 			role = (Role) roleConstructor.newInstance();
 		} catch (ClassNotFoundException e) {
 			JRogue.getLogger().error("Unknown role class {}", roleClassName);
@@ -1039,7 +1041,6 @@ public class Player extends LivingEntity {
 		climb(tile, false);
 	}
 
-	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	private void climb(Tile tile, boolean up) {
 		if (!tile.hasState() || !(tile.getState() instanceof TileStateClimbable)) {
 			return;

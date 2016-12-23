@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class EntityChest extends Entity {
@@ -72,7 +71,7 @@ public class EntityChest extends Entity {
 				.collect(Collectors.toList());
 
 			for (Iterator<Map.Entry<Character, ItemStack>> iterator = shatterableItems.iterator(); iterator.hasNext(); ) {
-				Map.Entry<Character, ItemStack> item = iterator.next();
+				iterator.next();
 
 				if (Utils.roll(3) == 1) {
 					// kicking chests has a high chance of damaging items regardless of skill.

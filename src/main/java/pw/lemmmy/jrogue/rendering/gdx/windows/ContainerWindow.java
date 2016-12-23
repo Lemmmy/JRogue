@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.rendering.gdx.windows;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -42,7 +43,7 @@ public class ContainerWindow extends PopupWindow {
 		ScrollPane containerScrollPane = new ScrollPane(containerComponent, getSkin());
 		getWindow().getContentTable().add(containerScrollPane).left().top();
 
-		Container splitter = new Container();
+		Container<Actor> splitter = new Container<Actor>();
 		splitter.setBackground(getSkin().getDrawable("grey4"));
 		getWindow().getContentTable().add(splitter).left().top().bottom().growY();
 

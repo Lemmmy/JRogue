@@ -31,7 +31,6 @@ import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.rendering.gdx.windows.*;
 import pw.lemmmy.jrogue.utils.Gradient;
 
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -63,8 +62,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private List<PopupWindow> windows = new ArrayList<>();
 
-	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	private Optional<Path> lastPath = Optional.empty();
+	private Path lastPath = null;
 	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
 
 	private float zoom = 1.0f;
@@ -156,7 +154,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onLevelChange(Level level) {
 		entityPooledEffects.clear();
 		findTilePooledParticles();
-		lastPath = Optional.empty();
+		lastPath = null;
 	}
 
 	private void findTilePooledParticles() {
@@ -197,7 +195,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
-		lastPath = Optional.empty();
+		lastPath = null;
 	}
 
 	@Override
@@ -217,7 +215,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onPathShow(Path path) {
-		lastPath = Optional.of(path);
+		lastPath = path;
 	}
 
 	@Override
@@ -393,15 +391,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		}
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	private void drawLastPath() {
-		if (!lastPath.isPresent()) {
+		if (lastPath == null) {
 			return;
 		}
 
 		Color oldColour = batch.getColor();
 
-		Path path = lastPath.get();
+		Path path = lastPath;
 		AtomicInteger i = new AtomicInteger(0);
 
 		path.forEach(step -> {

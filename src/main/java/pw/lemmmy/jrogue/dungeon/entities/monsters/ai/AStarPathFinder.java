@@ -123,7 +123,7 @@ public class AStarPathFinder {
 		return (dx + dy) + Math.min(dx, dy);
 	}
 
-	private static class Node implements Comparable {
+	private static class Node implements Comparable<Node> {
 		private int x;
 		private int y;
 		private int depth;
@@ -143,7 +143,7 @@ public class AStarPathFinder {
 			return depth;
 		}
 
-		public int compareTo(Object other) {
+		public int compareTo(Node other) {
 			Node o = (Node) other;
 
 			float f = heuristic + cost;
@@ -152,5 +152,4 @@ public class AStarPathFinder {
 			return (int) Math.max(-1, Math.min(1, of - f));
 		}
 	}
-
 }
