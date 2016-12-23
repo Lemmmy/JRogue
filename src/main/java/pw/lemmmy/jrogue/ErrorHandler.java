@@ -36,7 +36,7 @@ public class ErrorHandler {
 
 	public static void error(String error, Throwable trace) {
 		if (error != null) {
-			JRogue.getLogger().error("An error occured: {}", error);
+			JRogue.getLogger().error("An error occurred: {}", error);
 
 			textArea.setText(error);
 			textArea.append("\n");
