@@ -8,10 +8,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.Player;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterJackal;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterRat;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpider;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
@@ -42,6 +39,10 @@ public class Level {
 		floor1.put(MonsterSpider.class, Range.between(4, 8));
 		floor1.put(MonsterRat.class, Range.between(2, 6));
 		MONSTERS_PER_FLOOR.put(-1, floor1);
+
+		Map<Class, Range<Integer>> floor2 = new HashMap<>();
+		floor2.put(MonsterSkeleton.class, Range.between(2, 3));
+		MONSTERS_PER_FLOOR.put(-2, floor2);
 	}
 
 	private UUID uuid;

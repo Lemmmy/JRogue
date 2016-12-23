@@ -14,7 +14,7 @@ public class GhoulAI extends AI {
 	private Random random = new Random();
 
 	private float moveProbability = 0.25f;
-	private float attackProbability = 0.95f;
+	private float attackProbability = 0.7f;
 
 	public GhoulAI(Monster monster) {
 		super(monster);

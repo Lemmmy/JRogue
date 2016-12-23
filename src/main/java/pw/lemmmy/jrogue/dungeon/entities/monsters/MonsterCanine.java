@@ -40,56 +40,18 @@ public abstract class MonsterCanine extends Monster {
 	}
 
 	@Override
-	public boolean canMoveDiagonally() {
-		return true;
-	}
-
-	@Override
-	public boolean canMeleeAttack() {
-		return true;
-	}
-
-	@Override
-	public boolean canRangedAttack() {
-		return false;
-	}
-
-	@Override
-	public boolean canMagicAttack() {
-		return false;
-	}
-
-	@Override
-	public void meleeAttackPlayer() {
-		if (Utils.roll(1, 2) == 1) {
-			setAction(new ActionMelee(
-				getDungeon(),
-				this,
-				getDungeon().getPlayer(),
-				DamageSource.CANINE_BITE,
-				1,
-				new EntityAction.ActionCallback() {
-					@Override
-					public void onComplete() {
-						getDungeon().orangeThe("%s bites you!", getName(false));
-					}
-				}
-			));
-		}
-	}
-
-	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 
-		if (Utils
-			.roll(1, 5) == 1) { // TODO: If a player has a higher agility or speed, the monster is less likely to dodge
+		if (Utils.roll(1, 5) == 1) {
+			// TODO: If a player has a higher agility or speed, the monster is less likely to dodge
 			getDungeon().orangeThe("%s dodges your kick!", getName(false));
 
 			return;
 		}
 
-		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
+		if (Utils.roll(1, 2) == 1) {
+			// TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 
@@ -114,5 +76,42 @@ public abstract class MonsterCanine extends Monster {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean canMoveDiagonally() {
+		return true;
+	}
+
+	@Override
+	public boolean canMeleeAttack() {
+		return true;
+	}
+
+	@Override
+	public boolean canRangedAttack() {
+		return false;
+	}
+
+	@Override
+	public boolean canMagicAttack() {
+		return false;
+	}
+
+	@Override
+	public void meleeAttackPlayer() {
+		setAction(new ActionMelee(
+			getDungeon(),
+			this,
+			getDungeon().getPlayer(),
+			DamageSource.CANINE_BITE,
+			1,
+			new EntityAction.ActionCallback() {
+				@Override
+				public void onComplete() {
+					getDungeon().orangeThe("%s bites you!", getName(false));
+				}
+			}
+		));
 	}
 }

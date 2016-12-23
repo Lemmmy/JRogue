@@ -118,21 +118,19 @@ public class MonsterSpider extends Monster {
 
 	@Override
 	public void meleeAttackPlayer() {
-		if (Utils.roll(1, 2) == 1) {
-			setAction(new ActionMelee(
-				getDungeon(),
-				this,
-				getDungeon().getPlayer(),
-				DamageSource.SPIDER_BITE,
-				1,
-				new EntityAction.ActionCallback() {
-					@Override
-					public void onComplete() {
-						getDungeon().orangeThe("%s bites you!", getName(false));
-					}
+		setAction(new ActionMelee(
+			getDungeon(),
+			this,
+			getDungeon().getPlayer(),
+			DamageSource.SPIDER_BITE,
+			1,
+			new EntityAction.ActionCallback() {
+				@Override
+				public void onComplete() {
+					getDungeon().orangeThe("%s bites you!", getName(false));
 				}
-			));
-		}
+			}
+		));
 	}
 
 	@Override
