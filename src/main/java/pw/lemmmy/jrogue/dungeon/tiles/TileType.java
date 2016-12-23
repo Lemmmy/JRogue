@@ -127,6 +127,12 @@ public enum TileType {
 			this == TILE_ROOM_DOOR_BROKEN;
 	}
 
+	public boolean isFloorTile() {
+		return this == TILE_ROOM_FLOOR ||
+			this == TILE_ROOM_WATER ||
+			this == TILE_ROOM_PUDDLE;
+	}
+
 	public boolean isInnerRoomTile() {
 		return this == TILE_ROOM_FLOOR ||
 			this == TILE_ROOM_WATER ||

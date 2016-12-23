@@ -45,7 +45,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
 	private static final double SCALE_WATER_NOISE = 0.2;
 
-	private static final double PROBABILITY_GOLD_DROP = 0.08;
+	private static final double PROBABILITY_GOLD_DROP = 0.14;
 
 	private static final double PROBABILITY_FISH = 0.35;
 	private static final double PROBABILITY_PUFFERFISH = 0.15;
@@ -276,7 +276,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
 				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
 
-				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 2, 8));
+				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 3, 10));
 			}
 		});
 	}
