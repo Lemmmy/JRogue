@@ -2,10 +2,9 @@ package pw.lemmmy.jrogue.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.Range;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
@@ -31,6 +30,8 @@ public class Dungeon {
 	private static final int LEVEL_HEIGHT = 30;
 
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
+
+	private static org.apache.logging.log4j.Level gameLogLevel;
 
 	private final List<Listener> listeners = new ArrayList<>();
 
@@ -62,6 +63,8 @@ public class Dungeon {
 
 	public Dungeon(Settings settings) {
 		this.settings = settings;
+
+		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
 
 	public void generateLevel() {
@@ -110,9 +113,8 @@ public class Dungeon {
 		) {
 			JSONObject serialisedDungeon = serialise();
 			writer.append(serialisedDungeon.toString());
-		} catch (IOException e) {
-			JRogue.getLogger().error("Error saving dungeon:");
-			JRogue.getLogger().error(e);
+		} catch (Exception e) {
+			ErrorHandler.error("Error saving dungeon", e);
 		}
 	}
 
@@ -131,9 +133,8 @@ public class Dungeon {
 
 				dungeon.unserialise(serialisedDungeon);
 				return dungeon;
-			} catch (IOException e) {
-				JRogue.getLogger().error("Error loading dungeon:");
-				JRogue.getLogger().error(e);
+			} catch (Exception e) {
+				ErrorHandler.error("Error loading dungeon", e);
 			}
 		}
 
@@ -192,9 +193,8 @@ public class Dungeon {
 
 			level.buildLight();
 			level.updateSight(player);
-		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading dungeon:");
-			JRogue.getLogger().error(e);
+		} catch (Exception e) {
+			ErrorHandler.error("Error loading dungeon", e);
 		}
 	}
 
@@ -304,7 +304,16 @@ public class Dungeon {
 	}
 
 	public void log(String s, Object... objects) {
-		JRogue.getLogger().info(String.format(s, objects));
+		String logString = String.format(s, objects);
+		logString = logString.replaceAll("\\[]", "\u001b[0m");
+		logString = logString.replaceAll("\\[RED]", "\u001b[31m");
+		logString = logString.replaceAll("\\[ORANGE]", "\u001b[31m");
+		logString = logString.replaceAll("\\[YELLOW]", "\u001b[33m");
+		logString = logString.replaceAll("\\[GREEN]", "\u001b[32m");
+		logString = logString.replaceAll("\\[BLUE]", "\u001b[34m");
+		logString = logString.replaceAll("\\[CYAN]", "\u001b[36m");
+		logString = logString + "\u001b[0m";
+		JRogue.getLogger().log(gameLogLevel, logString);
 
 		listeners.forEach(l -> l.onLog(String.format(s, objects)));
 	}

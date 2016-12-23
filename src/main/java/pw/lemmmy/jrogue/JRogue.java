@@ -7,6 +7,7 @@ import org.ini4j.Ini;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
+import pw.lemmmy.jrogue.utils.OperatingSystem;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,7 +16,8 @@ import java.nio.file.Paths;
 
 public class JRogue {
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
-	private static final Logger logger = LogManager.getLogger("JRogue");
+
+	private static Logger logger;
 
 	public Dungeon dungeon;
 	public Renderer renderer;
@@ -34,6 +36,14 @@ public class JRogue {
 	}
 
 	public static void main(String[] args) {
+		System.setProperty(
+			"jrogue.logs",
+			Paths.get(OperatingSystem.get().getAppDataDir().toString(), "jrogue", "logs").toString()
+		);
+
+		logger = LogManager.getLogger("JRogue");
+		logger.info("---- Game started ----");
+
 		Settings settings = new Settings();
 		Options opts = new Options();
 

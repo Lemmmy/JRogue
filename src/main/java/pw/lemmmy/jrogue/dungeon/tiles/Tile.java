@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 
 import java.awt.*;
@@ -52,7 +53,7 @@ public class Tile {
 
 				state = stateConstructor.newInstance(this);
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				e.printStackTrace();
+				JRogue.getLogger().error("Error initialising tile state", e);
 			}
 		}
 	}

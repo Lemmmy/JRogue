@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -69,7 +70,7 @@ public abstract class DungeonGenerator {
 			rooms.add(room);
 			return room;
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			e.printStackTrace();
+			JRogue.getLogger().error("Error building rooms", e);
 		}
 
 		return null;

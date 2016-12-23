@@ -28,12 +28,8 @@ public class ImageLoader {
 		if (imageCache.containsKey(file)) {
 			return imageCache.get(file);
 		} else {
-			JRogue.getLogger().debug("Loading image {}", file);
-
 			Texture texture = new Texture(Gdx.files.internal(file));
 			imageCache.put(file, texture);
-
-			JRogue.getLogger().debug("Loaded and cached image {}", file);
 
 			return texture;
 		}
@@ -70,7 +66,7 @@ public class ImageLoader {
 		try {
 			imageCache.values().forEach(Texture::dispose);
 		} catch (GdxRuntimeException e) {
-			e.printStackTrace();
+			JRogue.getLogger().error("Error cleaning up game", e);
 		}
 	}
 }

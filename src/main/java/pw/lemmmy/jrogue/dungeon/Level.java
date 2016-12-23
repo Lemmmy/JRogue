@@ -474,7 +474,7 @@ public class Level {
 						addEntity(monster);
 					}
 				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-					e.printStackTrace();
+					JRogue.getLogger().error("Error spawning monsters", e);
 				}
 			});
 		}
@@ -505,7 +505,7 @@ public class Level {
 
 				addEntity(monster);
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-				e.printStackTrace();
+				JRogue.getLogger().error("Error spawning monsters", e);
 			}
 		}
 	}

@@ -1,14 +1,17 @@
 package pw.lemmmy.jrogue;
 
+import org.apache.logging.log4j.core.util.IOUtils;
 import org.lwjgl.opengl.GL11;
+import pw.lemmmy.jrogue.utils.OperatingSystem;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ErrorHandler {
 	private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue/issues/new?title=%s&body=%s";
@@ -116,6 +119,26 @@ public class ErrorHandler {
 				"**Trace:**\n```\n%s\n```\n",
 				traceString
 			));
+		}
+
+		Path logFile = Paths.get(
+			OperatingSystem.get().getAppDataDir().toString(),
+			"jrogue",
+			"logs",
+			"jrogue.latest.log"
+		);
+
+		if (logFile.toFile().exists()) {
+			try {
+				String log = new String(Files.readAllBytes(logFile));
+
+				sb.append(String.format(
+					"**Whole Log:**\n```\n%s\n```\n",
+					log
+				));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		try {

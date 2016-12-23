@@ -116,7 +116,7 @@ public class RoomBasic extends Room {
 			try {
 				item = (Item) constructor.newInstance(getLevel());
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
+				JRogue.getLogger().error("Error adding chest items", e);
 				return;
 			}
 		} else {
@@ -125,7 +125,7 @@ public class RoomBasic extends Room {
 			try {
 				item = (Item) constructor.newInstance();
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
+				JRogue.getLogger().error("Error adding chest items", e);
 				return;
 			}
 		}

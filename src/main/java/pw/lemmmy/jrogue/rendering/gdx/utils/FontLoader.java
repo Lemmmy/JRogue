@@ -19,8 +19,6 @@ public class FontLoader {
 		if (fontCache.containsKey(cacheString)) {
 			return fontCache.get(cacheString);
 		} else {
-			JRogue.getLogger().debug("Loading font {} (x{})", file, size);
-
 			FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(file));
 			FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
@@ -37,7 +35,6 @@ public class FontLoader {
 
 			fontCache.put(cacheString, font);
 
-			JRogue.getLogger().debug("Loaded and cached font {} (x{})", file, size);
 			generator.dispose();
 
 			return font;
