@@ -208,7 +208,8 @@ public class HUD implements Dungeon.Listener {
 
 	private void updateInfoLine(Player player) {
 		((Label) infoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
-		((Label) infoLine.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
+		((Label) infoLine.findActor("exp")).setText(String.format("Level: %,d (%,d xp)", player.getExperienceLevel()
+			, player.getExperience()));
 	}
 
 	private void updateAttributes(Player player) {
@@ -319,6 +320,11 @@ public class HUD implements Dungeon.Listener {
 
 	@Override
 	public void onQuit() {
+
+	}
+
+	@Override
+	public void onSaveAndQuit() {
 
 	}
 

@@ -47,7 +47,7 @@ public abstract class Monster extends LivingEntity {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	public void kill(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		if (attacker != null && attacker instanceof LivingEntity) {
 			((LivingEntity) attacker).addExperience(getExperienceRewarded());
 		}
@@ -55,6 +55,8 @@ public abstract class Monster extends LivingEntity {
 		if (getCorpseChance() != 0f && Utils.randomFloat() <= getCorpseChance()) {
 			drop(new ItemStack(new ItemCorpse(this)));
 		}
+
+		super.kill(damageSource, damage, attacker, isPlayer);
 	}
 
 	@Override

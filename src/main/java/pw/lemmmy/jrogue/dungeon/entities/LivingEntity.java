@@ -71,7 +71,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		int xpForLevel = getXPForLevel(experienceLevel);
 
 		for (int i = 0; i < experience; i++) {
-			if (++experience > xpForLevel) {
+			if (++this.experience > xpForLevel) {
 				experienceLevel++;
 				this.experience = 0;
 

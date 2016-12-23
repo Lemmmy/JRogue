@@ -243,7 +243,7 @@ public class Dungeon {
 			public void onResponse(char response) {
 				if (response == 'y') {
 					save();
-					listeners.forEach(Listener::onQuit);
+					listeners.forEach(Listener::onSaveAndQuit);
 				}
 			}
 		}));
@@ -576,5 +576,7 @@ public class Dungeon {
 		void onEntityRemoved(Entity entity);
 
 		void onQuit();
+
+		void onSaveAndQuit();
 	}
 }

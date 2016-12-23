@@ -69,6 +69,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	private float zoom = 1.0f;
 
+	private boolean dontSave = false;
+
 	public GDXRenderer(Settings settings, Dungeon dungeon) {
 		this.settings = settings;
 
@@ -280,6 +282,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onQuit() {
+		dontSave = true;
+		application.exit();
+	}
+
+	@Override
+	public void onSaveAndQuit() {
 		application.exit();
 	}
 
@@ -542,7 +550,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void dispose() {
 		super.dispose();
 
-		if (settings.autosave()) {
+		if (settings.autosave() && !dontSave) {
 			dungeon.save();
 		}
 
