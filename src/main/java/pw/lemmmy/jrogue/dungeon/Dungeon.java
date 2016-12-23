@@ -213,7 +213,7 @@ public class Dungeon {
 		return level;
 	}
 
-	public void changeLevel(Level level) {
+	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 
 		getPlayer().getLevel().removeEntity(player);
@@ -223,7 +223,7 @@ public class Dungeon {
 		level.addEntity(player);
 		level.processEntityQueues();
 
-		getPlayer().setPosition(level.getSpawnX(), level.getSpawnY());
+		getPlayer().setPosition(x, y);
 
 		turn();
 		listeners.forEach(l -> l.onLevelChange(level));

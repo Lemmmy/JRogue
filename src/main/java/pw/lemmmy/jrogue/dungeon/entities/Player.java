@@ -1059,10 +1059,11 @@ public class Player extends LivingEntity {
 			Level level = getDungeon().newLevel(depth, tile);
 			level.processEntityQueues();
 			tsc.setLinkedLevelUUID(level.getUUID());
+			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
 		}
 
 		Level level = tsc.getLinkedLevel().get();
-		getDungeon().changeLevel(level);
+		getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
 	}
 
 	private Map<Character, ItemStack> getWieldablesInInventory() {

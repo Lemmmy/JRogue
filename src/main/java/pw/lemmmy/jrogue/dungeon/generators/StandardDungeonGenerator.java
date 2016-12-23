@@ -356,6 +356,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			if (spawnTile.getState() instanceof TileStateClimbable) {
 				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
 				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
+				tsc.setDestPosition(sourceTile.getX(), sourceTile.getY());
 			}
 		}
 
