@@ -3,11 +3,16 @@ package pw.lemmmy.jrogue.dungeon.entities;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class EntityChest extends Entity {
 	private Container container;
@@ -60,19 +65,23 @@ public class EntityChest extends Entity {
 		if (isPlayer) {
 			getDungeon().You("kick the %s!", getName(false));
 
-			AtomicBoolean somethingShattered = new AtomicBoolean(false);
+			boolean somethingShattered = false;
 
-			container.getItems().entrySet().stream()
-					 .filter(i -> i.getValue().getItem() instanceof Shatterable)
-					 .forEach(i -> {
-						 if (Utils.roll(3) == 1) {
-						 	 // kicking chests has a high chance of damaging items regardless of skill.
-							 container.remove(i.getKey());
-							 somethingShattered.set(true);
-						 }
-					 });
+			List<Map.Entry<Character, ItemStack>> shatterableItems = container.getItems().entrySet().stream()
+				.filter(i -> i.getValue().getItem() instanceof Shatterable)
+				.collect(Collectors.toList());
 
-			if (somethingShattered.get()) {
+			for (Iterator<Map.Entry<Character, ItemStack>> iterator = shatterableItems.iterator(); iterator.hasNext(); ) {
+				Map.Entry<Character, ItemStack> item = iterator.next();
+
+				if (Utils.roll(3) == 1) {
+					// kicking chests has a high chance of damaging items regardless of skill.
+					iterator.remove();
+					somethingShattered = true;
+				}
+			}
+
+			if (somethingShattered) {
 				getDungeon().orangeYou("hear something shatter.");
 			}
 
