@@ -89,39 +89,4 @@ public class RoleWizard extends Role {
 	public int getCharisma() {
 		return 7;
 	}
-
-	@Override
-	public float getStrengthRemaining() {
-		return 0.1f;
-	}
-
-	@Override
-	public float getAgilityRemaining() {
-		return 0.1f;
-	}
-
-	@Override
-	public float getDexterityRemaining() {
-		return 0.2f;
-	}
-
-	@Override
-	public float getConstitutionRemaining() {
-		return 0.2f;
-	}
-
-	@Override
-	public float getIntelligenceRemaining() {
-		return 0.3f;
-	}
-
-	@Override
-	public float getWisdomRemaining() {
-		return 0.1f;
-	}
-
-	@Override
-	public float getCharismaRemaining() {
-		return 0.1f;
-	}
 }
