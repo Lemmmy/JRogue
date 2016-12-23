@@ -262,7 +262,7 @@ public class Dungeon {
 
 			@Override
 			public void onResponse(char response) {
-				if (response == 'y') {
+				if (response == 'y' && player.isAlive()) {
 					save();
 					listeners.forEach(Listener::onSaveAndQuit);
 				}
