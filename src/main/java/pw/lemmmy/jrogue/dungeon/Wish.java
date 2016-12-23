@@ -113,6 +113,9 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("rat")) {
 			dungeon.getLevel().addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
+		} else if (wish.equalsIgnoreCase("skeleton")) {
+			dungeon.getLevel().addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			return true;
 		}
 
 		return false;

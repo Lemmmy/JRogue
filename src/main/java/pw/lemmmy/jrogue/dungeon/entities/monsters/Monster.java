@@ -19,6 +19,8 @@ public abstract class Monster extends LivingEntity {
 
 	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
+
+		this.setExperienceLevel(Math.abs(level.getDepth()));
 	}
 
 	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {

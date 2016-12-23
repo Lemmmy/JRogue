@@ -25,7 +25,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	private Container.ContainerEntry rightHand;
 
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
+		this(dungeon, level, x, y, 1);
 	}
 
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
@@ -35,7 +35,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		health = getMaxHealth();
 	}
 
-	private int getBaseMaxHealth() {
+	protected int getBaseMaxHealth() {
 		return Utils.roll(experienceLevel, 6);
 	}
 

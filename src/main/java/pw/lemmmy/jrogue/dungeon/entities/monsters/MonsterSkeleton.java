@@ -9,6 +9,7 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.List;
@@ -16,10 +17,13 @@ import java.util.List;
 public class MonsterSkeleton extends Monster {
 	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+
+		setAI(new GhoulAI(this));
 	}
 
-	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
+	@Override
+	protected int getBaseMaxHealth() {
+		return Utils.roll(getExperienceLevel() * 2, 6);
 	}
 
 	@Override
@@ -98,11 +102,6 @@ public class MonsterSkeleton extends Monster {
 	}
 
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		getDungeon().You("kill the %s!", getName(false));
-	}
-
-	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 
@@ -110,6 +109,11 @@ public class MonsterSkeleton extends Monster {
 			// TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
+	}
+
+	@Override
+	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+		getDungeon().You("kill the %s!", getName(false));
 	}
 
 	@Override
