@@ -95,6 +95,8 @@ public class Level {
 		Arrays.fill(visibleTiles, false);
 
 		entities = new ArrayList<>();
+		entityAddQueue = new ArrayList<>();
+		entityRemoveQueue = new ArrayList<>();
 	}
 
 	protected void generate(Optional<Tile> sourceTile) {

@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
@@ -410,6 +411,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			true,
 			new ArrayList<>()
 		);
+
+		JRogue.getLogger().debug("Level was generated unreachable - regenerating");
 
 		return path != null;
 	}
