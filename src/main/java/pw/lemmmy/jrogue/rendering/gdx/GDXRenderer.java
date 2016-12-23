@@ -86,44 +86,47 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void create() {
-		try {
-			super.create();
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread thread, Throwable throwable) {
+				ErrorHandler.error(null, throwable);
+				Gdx.app.exit();
+			}
+		});
 
-			ErrorHandler.setGLString();
+		super.create();
 
-			updateWindowTitle();
+		ErrorHandler.setGLString();
 
-			zoom = 24 * TileMap.TILE_WIDTH;
+		updateWindowTitle();
 
-			camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		zoom = 24 * TileMap.TILE_WIDTH;
 
-			camera.viewportWidth = Math.round(zoom);
-			camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-			camera.update();
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
 
-			batch = new SpriteBatch();
-			lightBatch = new ShapeRenderer();
-			lightSpriteBatch = new SpriteBatch();
+		camera.update();
 
-			loadPathSprites();
+		batch = new SpriteBatch();
+		lightBatch = new ShapeRenderer();
+		lightSpriteBatch = new SpriteBatch();
 
-			hud = new HUD(settings, dungeon);
-			hud.init();
-			dungeon.addListener(hud);
+		loadPathSprites();
 
-			InputMultiplexer inputMultiplexer = new InputMultiplexer();
-			inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-			inputMultiplexer.addProcessor(hud.getStage());
-			Gdx.input.setInputProcessor(inputMultiplexer);
+		hud = new HUD(settings, dungeon);
+		hud.init();
+		dungeon.addListener(hud);
 
-			onLevelChange(dungeon.getLevel());
-			dungeon.start();
-		} catch (Exception e) {
-			ErrorHandler.error(null, e);
-			Gdx.app.exit();
-		}
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
+		inputMultiplexer.addProcessor(hud.getStage());
+		Gdx.input.setInputProcessor(inputMultiplexer);
+
+		onLevelChange(dungeon.getLevel());
+		dungeon.start();
 	}
 
 	private void loadPathSprites() {
