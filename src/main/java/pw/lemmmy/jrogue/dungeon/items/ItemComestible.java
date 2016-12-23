@@ -56,6 +56,19 @@ public abstract class ItemComestible extends Item {
 		turnsEaten = obj.getInt("turnsEaten");
 	}
 
+	@Override
+	public boolean equals(Item other) {
+		if (other instanceof ItemComestible) {
+			ItemComestible otherComestible = (ItemComestible) other;
+
+			if (getEatenState() != EatenState.EATEN || otherComestible.getEatenState() != EatenState.EATEN) {
+				return false;
+			}
+		}
+
+		return super.equals(other);
+	}
+
 	public enum EatenState {
 		UNEATEN,
 		PARTLY_EATEN,
