@@ -33,18 +33,4 @@ public abstract class Role {
 	public abstract int getWisdom();
 
 	public abstract int getCharisma();
-
-	public abstract float getStrengthRemaining();
-
-	public abstract float getAgilityRemaining();
-
-	public abstract float getDexterityRemaining();
-
-	public abstract float getConstitutionRemaining();
-
-	public abstract float getIntelligenceRemaining();
-
-	public abstract float getWisdomRemaining();
-
-	public abstract float getCharismaRemaining();
 }

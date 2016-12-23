@@ -59,20 +59,13 @@ public class Player extends LivingEntity {
 
 		nutrition = 1000;
 
-		strength = role.getStrength() +
-			(int) ((float) Math.ceil(role.getStrength() * Utils.randomFloat(role.getStrengthRemaining())));
-		agility = role.getAgility() +
-			(int) ((float) Math.ceil(role.getAgility() * Utils.randomFloat(role.getAgilityRemaining())));
-		dexterity = role.getDexterity() +
-			(int) ((float) Math.ceil(role.getDexterity() * Utils.randomFloat(role.getDexterityRemaining())));
-		constitution = role.getConstitution() +
-			(int) ((float) Math.ceil(role.getConstitution() * Utils.randomFloat(role.getConstitutionRemaining())));
-		intelligence = role.getIntelligence() +
-			(int) ((float) Math.ceil(role.getIntelligence() * Utils.randomFloat(role.getIntelligenceRemaining())));
-		wisdom = role.getWisdom() +
-			(int) ((float) Math.ceil(role.getWisdom() * Utils.randomFloat(role.getWisdomRemaining())));
-		charisma = role.getCharisma() +
-			(int) ((float) Math.ceil(role.getCharisma() * Utils.randomFloat(role.getCharismaRemaining())));
+		strength = role.getStrength();
+		agility = role.getAgility();
+		dexterity = role.getDexterity();
+		constitution = role.getConstitution();
+		intelligence = role.getIntelligence();
+		wisdom = role.getWisdom();
+		charisma = role.getCharisma();
 
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
