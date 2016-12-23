@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AI {
+	private AStarPathfinder pathfinder = new AStarPathfinder();
+
 	private Monster monster;
 
 	private List<TileType> avoidTiles = new ArrayList<>();
@@ -74,7 +76,7 @@ public abstract class AI {
 	}
 
 	protected void moveTowards(int destX, int destY) {
-		Path path = AStarPathFinder.findPath(
+		Path path = pathfinder.findPath(
 			getMonster().getLevel(),
 			getMonster().getX(),
 			getMonster().getY(),

@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
@@ -53,6 +54,10 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final int MAX_FISH_SWARMS = 25;
 
 	private OpenSimplexNoise simplexNoise;
+	private VerificationPathfinder pathfinder = new VerificationPathfinder();
+
+	private Tile startTile;
+	private Tile endTile;
 
 	public StandardDungeonGenerator(Level level, Optional<Tile> sourceTile) {
 		super(level, sourceTile);
@@ -84,7 +89,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		addRandomDrops();
 		spawnFish();
 
-		return true;
+		return verify();
 	}
 
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
@@ -361,6 +366,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		}
 
 		spawnRoom.setSpawn();
+		startTile = level.getTile(stairX, stairY);
 		level.setSpawnPoint(stairX, stairY);
 
 		return true;
@@ -389,5 +395,22 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
 			}
 		}
+
+		endTile = level.getTile(stairX, stairY);
+	}
+
+	private boolean verify() {
+		Path path = pathfinder.findPath(
+			level,
+			startTile.getX(),
+			startTile.getY(),
+			endTile.getX(),
+			endTile.getY(),
+			Integer.MAX_VALUE,
+			true,
+			new ArrayList<>()
+		);
+
+		return path != null;
 	}
 }

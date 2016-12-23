@@ -7,8 +7,8 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AStarPathFinder {
-	public static Path findPath(Level level,
+public class AStarPathfinder {
+	public Path findPath(Level level,
 								int sx,
 								int sy,
 								int tx,
@@ -108,7 +108,7 @@ public class AStarPathFinder {
 		return path;
 	}
 
-	private static boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
+	public boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
 		return !(x < 0 || x >= level.getWidth() ||
 			y < 0 || y >= level.getHeight()) &&
 			level.getTile(x, y) != null &&
@@ -116,14 +116,14 @@ public class AStarPathFinder {
 			!avoidTiles.contains(level.getTileType(x, y));
 	}
 
-	private static float getHeuristicCost(int x, int y, int tx, int ty) {
+	public float getHeuristicCost(int x, int y, int tx, int ty) {
 		float dx = Math.abs(tx - x);
 		float dy = Math.abs(ty - y);
 
 		return (dx + dy) + Math.min(dx, dy);
 	}
 
-	private static class Node implements Comparable<Node> {
+	public class Node implements Comparable<Node> {
 		private int x;
 		private int y;
 		private int depth;
@@ -144,10 +144,9 @@ public class AStarPathFinder {
 		}
 
 		public int compareTo(Node other) {
-			Node o = (Node) other;
 
 			float f = heuristic + cost;
-			float of = o.heuristic + o.cost;
+			float of = other.heuristic + other.cost;
 
 			return (int) Math.max(-1, Math.min(1, of - f));
 		}

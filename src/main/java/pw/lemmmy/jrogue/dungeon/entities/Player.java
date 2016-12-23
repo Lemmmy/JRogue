@@ -10,7 +10,7 @@ import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.actions.*;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathFinder;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
+	private AStarPathfinder pathfinder = new AStarPathfinder();
+
 	private String name;
 	private Role role;
 
@@ -518,7 +520,7 @@ public class Player extends LivingEntity {
 			return;
 		}
 
-		Path path = AStarPathFinder.findPath(
+		Path path = pathfinder.findPath(
 			getLevel(),
 			getX(),
 			getY(),
