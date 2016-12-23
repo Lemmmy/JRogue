@@ -183,6 +183,8 @@ public class Dungeon {
 
 				JRogue.getLogger().error("Something went wrong with your save file and Lemmmy is lazy. Please restart" +
 										 " JRogue."); // TODO: don't be lazy
+
+				return;
 			}
 
 			level = player.getLevel();
