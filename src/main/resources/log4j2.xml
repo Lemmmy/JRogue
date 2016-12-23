@@ -17,6 +17,7 @@
             <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level - %msg%n" />
 
             <Policies>
+                <OnStartupTriggeringPolicy />
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="1 MB"/>
             </Policies>
@@ -24,7 +25,7 @@
             <DefaultRolloverStrategy max="5" />
 
             <Filters>
-                <ThresholdFilter level="GAME" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="GAME" onMatch="DENY" onMismatch="NEUTRAL" />
             </Filters>
         </RollingFile>
     </Appenders>
