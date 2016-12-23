@@ -411,6 +411,6 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			new ArrayList<>()
 		);
 
-		return path == null;
+		return path != null;
 	}
 }
