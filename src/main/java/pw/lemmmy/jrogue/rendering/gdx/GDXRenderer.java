@@ -149,7 +149,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void onLevelChange(Level level) {
+		entityPooledEffects.clear();
 		findTilePooledParticles();
+		lastPath = Optional.empty();
 	}
 
 	private void findTilePooledParticles() {

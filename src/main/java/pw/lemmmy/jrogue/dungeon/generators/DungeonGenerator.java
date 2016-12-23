@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
@@ -10,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public abstract class DungeonGenerator {
@@ -22,12 +24,16 @@ public abstract class DungeonGenerator {
 	}
 
 	protected List<Room> rooms = new ArrayList<>();
+
 	protected Level level;
+	protected Optional<Tile> sourceTile;
+
 	protected Pcg32 rand = new Pcg32();
 	protected Random jrand = new Random();
 
-	public DungeonGenerator(Level level) {
+	public DungeonGenerator(Level level, Optional<Tile> sourceTile) {
 		this.level = level;
+		this.sourceTile = sourceTile;
 	}
 
 	public abstract boolean generate();

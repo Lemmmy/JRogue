@@ -30,11 +30,11 @@ public enum TileType {
 	TILE_ROOM_DOOR_OPEN(19, Solidity.WALK_THROUGH, TileStateDoor.class),
 	TILE_ROOM_DOOR_BROKEN(20, Solidity.WALK_THROUGH, TileStateDoor.class),
 
-	TILE_ROOM_STAIRS_UP(21, Solidity.WALK_ON),
-	TILE_ROOM_STAIRS_DOWN(22, Solidity.WALK_ON),
+	TILE_ROOM_STAIRS_UP(21, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_STAIRS_DOWN(22, Solidity.WALK_ON, TileStateClimbable.class),
 
-	TILE_ROOM_LADDER_UP(23, Solidity.WALK_ON),
-	TILE_ROOM_LADDER_DOWN(24, Solidity.WALK_ON),
+	TILE_ROOM_LADDER_UP(23, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_LADDER_DOWN(24, Solidity.WALK_ON, TileStateClimbable.class),
 
 	TILE_CORRIDOR(25, Solidity.WALK_ON, true);
 

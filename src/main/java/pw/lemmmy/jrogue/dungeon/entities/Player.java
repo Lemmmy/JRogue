@@ -16,6 +16,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -996,6 +997,60 @@ public class Player extends LivingEntity {
 				}
 			}
 		}));
+	}
+
+	public void climbAny() {
+		Tile tile = getLevel().getTile(getX(), getY());
+
+		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP &&
+			tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
+			getDungeon().log("[YELLOW]There is nothing to climb here.[]");
+			return;
+		}
+
+		boolean up = tile.getType() == TileType.TILE_ROOM_STAIRS_UP || tile.getType() == TileType.TILE_ROOM_LADDER_UP;
+		climb(tile, up);
+	}
+
+	public void climbUp() {
+		Tile tile = getLevel().getTile(getX(), getY());
+
+		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP) {
+			getDungeon().log("[YELLOW]There is nothing to climb up here.[]");
+			return;
+		}
+
+		climb(tile, true);
+	}
+
+	public void climbDown() {
+		Tile tile = getLevel().getTile(getX(), getY());
+
+		if (tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
+			getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
+			return;
+		}
+
+		climb(tile, false);
+	}
+
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+	private void climb(Tile tile, boolean up) {
+		if (!tile.hasState() || !(tile.getState() instanceof TileStateClimbable)) {
+			return;
+		}
+
+		TileStateClimbable tsc = (TileStateClimbable) tile.getState();
+
+		if (!tsc.getLinkedLevel().isPresent()) {
+			int depth = getLevel().getDepth() + (up ? 1 : -1);
+			Level level = getDungeon().newLevel(depth, tile);
+			level.processEntityQueues();
+			tsc.setLinkedLevelUUID(level.getUUID());
+		}
+
+		Level level = tsc.getLinkedLevel().get();
+		getDungeon().changeLevel(level);
 	}
 
 	private Map<Character, ItemStack> getWieldablesInInventory() {

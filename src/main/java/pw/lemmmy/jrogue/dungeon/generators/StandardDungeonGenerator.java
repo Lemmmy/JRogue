@@ -5,6 +5,7 @@ import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -53,8 +54,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private OpenSimplexNoise simplexNoise;
 
-	public StandardDungeonGenerator(Level level) {
-		super(level);
+	public StandardDungeonGenerator(Level level, Optional<Tile> sourceTile) {
+		super(level, sourceTile);
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		removeStrayRooms();
 		addWaterBodies();
 		if (!chooseSpawnRoom()) { return false; }
-		chooseDownstairsRoom();
+		chooseNextStairsRoom();
 		addRoomFeatures();
 		addRandomDrops();
 		spawnFish();
@@ -342,7 +343,21 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
 		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
 
-		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
+		if (sourceTile.isPresent()) {
+			Tile spawnTile = level.getTile(stairX, stairY);
+			spawnTile.setType(TileType.TILE_ROOM_STAIRS_UP);
+
+			Tile sourceTile = this.sourceTile.get();
+
+			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
+				spawnTile.setType(TileType.TILE_ROOM_STAIRS_DOWN);
+			}
+
+			if (spawnTile.getState() instanceof TileStateClimbable) {
+				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
+				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
+			}
+		}
 
 		spawnRoom.setSpawn();
 		level.setSpawnPoint(stairX, stairY);
@@ -350,20 +365,28 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		return true;
 	}
 
-	private void chooseDownstairsRoom() {
+	private void chooseNextStairsRoom() {
 		List<Room> temp = rooms.stream().filter(room -> !room.isSpawn()).collect(Collectors.toList());
 
-		Room downstairsRoom = Utils.randomFrom(temp);
+		Room nextStairsRoom = Utils.randomFrom(temp);
 
 		int stairX = nextInt(
-			downstairsRoom.getRoomX() + 2,
-			downstairsRoom.getRoomX() + downstairsRoom.getRoomWidth() - 2
+			nextStairsRoom.getRoomX() + 2,
+			nextStairsRoom.getRoomX() + nextStairsRoom.getRoomWidth() - 2
 		);
 		int stairY = nextInt(
-			downstairsRoom.getRoomY() + 2,
-			downstairsRoom.getRoomY() + downstairsRoom.getRoomHeight() - 2
+			nextStairsRoom.getRoomY() + 2,
+			nextStairsRoom.getRoomY() + nextStairsRoom.getRoomHeight() - 2
 		);
 
 		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
+
+		if (sourceTile.isPresent()) {
+			Tile st = sourceTile.get();
+
+			if (st.getLevel().getDepth() < level.getDepth()) {
+				level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
+			}
+		}
 	}
 }

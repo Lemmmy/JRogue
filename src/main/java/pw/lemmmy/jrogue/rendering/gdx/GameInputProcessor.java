@@ -27,26 +27,6 @@ public class GameInputProcessor implements InputProcessor {
 		this.renderer = renderer;
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		if (renderer.getWindows().size() > 0) { return false; }
-
-		if (dungeon.hasPrompt()) {
-			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
-				dungeon.escapePrompt();
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		dontHandleNext = handleMovementCommands(keycode) ||
-						 handlePlayerCommands(keycode) ||
-						 handleRendererCommands(keycode);
-
-		return dontHandleNext;
-	}
-
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
 			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
@@ -68,38 +48,51 @@ public class GameInputProcessor implements InputProcessor {
 				teleporting = true;
 				return true;
 			}
-		} else {
-			if (keycode == Input.Keys.D) {
-				dungeon.getPlayer().drop();
-				return true;
-			} else if (keycode == Input.Keys.E) {
-				dungeon.getPlayer().eat();
-				return true;
-			} else if (keycode == Input.Keys.COMMA) {
-				dungeon.getPlayer().pickup();
-				return true;
-			} else if (keycode == Input.Keys.L) {
-				dungeon.getPlayer().loot();
-				return true;
-			} else if (keycode == Input.Keys.I) {
-				renderer.showInventoryWindow();
-				return true;
-			} else if (keycode == Input.Keys.W) {
-				dungeon.getPlayer().wield();
-				return true;
-			} else if (keycode == Input.Keys.X) {
-				dungeon.getPlayer().swapHands();
-				return true;
-			} else if (keycode == Input.Keys.Q) {
-				dungeon.quit();
-				return true;
-			} else if (keycode == Input.Keys.S) {
-				dungeon.saveAndQuit();
-				return true;
-			} else if (keycode == Input.Keys.G || keycode == Input.Keys.NUM_5 || keycode == Input.Keys.NUMPAD_5) {
-				dungeon.getPlayer().travelDirectional();
-				return true;
-			}
+		}
+
+		return false;
+	}
+
+	private boolean handlePlayerCommandsCharacters(char key) {
+		if (key == '5' || key == 'g') {
+			dungeon.getPlayer().travelDirectional();
+			return true;
+		} else if (key == 'd') {
+			dungeon.getPlayer().drop();
+			return true;
+		} else if (key == 'e') {
+			dungeon.getPlayer().eat();
+			return true;
+		} else if (key == 'i') {
+			renderer.showInventoryWindow();
+			return true;
+		} else if (key == 'l') {
+			dungeon.getPlayer().loot();
+			return true;
+		} else if (key == 'q') {
+			dungeon.quit();
+			return true;
+		} else if (key == 's') {
+			dungeon.saveAndQuit();
+			return true;
+		} else if (key == 'w') {
+			dungeon.getPlayer().wield();
+			return true;
+		} else if (key == 'x') {
+			dungeon.getPlayer().swapHands();
+			return true;
+		} else if (key == ',') {
+			dungeon.getPlayer().pickup();
+			return true;
+		} else if (key == '.') {
+			dungeon.getPlayer().climbAny();
+			return true;
+		} else if (key == '<') {
+			dungeon.getPlayer().climbUp();
+			return true;
+		} else if (key == '>') {
+			dungeon.getPlayer().climbDown();
+			return true;
 		}
 
 		return false;
@@ -125,44 +118,6 @@ public class GameInputProcessor implements InputProcessor {
 			}
 		}
 
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		if (renderer.getWindows().size() > 0) { return false; }
-
-		if (dontHandleNext) {
-			dontHandleNext = false;
-			return false;
-		}
-
-		if (dungeon.hasPrompt()) {
-			dungeon.promptRespond(character);
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		mouseMoved = false;
-
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (!mouseMoved) {
-			handleWorldClicks(screenToWorldPos(screenX, screenY), button);
-		}
-
-		mouseMoved = false;
 		return false;
 	}
 
@@ -201,6 +156,65 @@ public class GameInputProcessor implements InputProcessor {
 			(int) unprojected.x / TileMap.TILE_WIDTH,
 			(int) unprojected.y / TileMap.TILE_HEIGHT
 		);
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		if (renderer.getWindows().size() > 0) { return false; }
+
+		if (dungeon.hasPrompt()) {
+			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
+				dungeon.escapePrompt();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		dontHandleNext = handleMovementCommands(keycode) ||
+			handlePlayerCommands(keycode) ||
+			handleRendererCommands(keycode);
+
+		return dontHandleNext;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		if (renderer.getWindows().size() > 0) { return false; }
+
+		if (dontHandleNext) {
+			dontHandleNext = false;
+			return false;
+		}
+
+		if (dungeon.hasPrompt()) {
+			dungeon.promptRespond(character);
+			return true;
+		}
+
+		return handlePlayerCommandsCharacters(character);
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		mouseMoved = false;
+
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if (!mouseMoved) {
+			handleWorldClicks(screenToWorldPos(screenX, screenY), button);
+		}
+
+		mouseMoved = false;
+		return false;
 	}
 
 	@Override

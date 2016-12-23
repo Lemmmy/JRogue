@@ -44,6 +44,8 @@ public class Level {
 		MONSTERS_PER_FLOOR.put(-1, floor1);
 	}
 
+	private UUID uuid;
+
 	private Tile[] tiles;
 
 	private Boolean[] discoveredTiles;
@@ -65,6 +67,12 @@ public class Level {
 	private List<Entity> entityRemoveQueue = new ArrayList<>();
 
 	public Level(Dungeon dungeon, int width, int height, int depth) {
+		this(UUID.randomUUID(), dungeon, width, height, depth);
+	}
+
+	public Level(UUID uuid, Dungeon dungeon, int width, int height, int depth) {
+		this.uuid = uuid;
+
 		this.dungeon = dungeon;
 
 		this.width = width;
@@ -88,13 +96,13 @@ public class Level {
 		entities = new ArrayList<>();
 	}
 
-	protected void generate() {
+	protected void generate(Optional<Tile> sourceTile) {
 		boolean gotLevel = false;
 
 		do {
 			initialise();
 
-			DungeonGenerator generator = new StandardDungeonGenerator(this);
+			DungeonGenerator generator = new StandardDungeonGenerator(this, sourceTile);
 
 			if (!generator.generate()) {
 				continue;
@@ -108,13 +116,13 @@ public class Level {
 		spawnMonsters();
 	}
 
-	public static Optional<Level> createFromJSON(JSONObject obj, Dungeon dungeon) {
+	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
 		try {
 			int width = obj.getInt("width");
 			int height = obj.getInt("height");
 			int depth = obj.getInt("depth");
 
-			Level level = new Level(dungeon, width, height, depth);
+			Level level = new Level(uuid, dungeon, width, height, depth);
 			level.unserialise(obj);
 			return Optional.of(level);
 		} catch (JSONException e) {
@@ -338,12 +346,16 @@ public class Level {
 		}
 	}
 
-	public int getDepth() {
-		return depth;
+	public UUID getUUID() {
+		return uuid;
 	}
 
 	public Dungeon getDungeon() {
 		return dungeon;
+	}
+
+	public int getDepth() {
+		return depth;
 	}
 
 	public int getSpawnX() {

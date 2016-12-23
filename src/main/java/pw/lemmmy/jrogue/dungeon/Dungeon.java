@@ -11,15 +11,14 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
@@ -47,6 +46,7 @@ public class Dungeon {
 	 */
 	private String name;
 
+	private Map<UUID, Level> levels = new HashMap<>();
 	private Level level;
 	private Player player;
 
@@ -72,9 +72,10 @@ public class Dungeon {
 			level.removeEntity(player);
 		} else {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+			levels.put(level.getUUID(), level);
 		}
 
-		level.generate();
+		level.generate(Optional.empty());
 
 		if (player == null) {
 			player = new Player(
@@ -150,7 +151,9 @@ public class Dungeon {
 		obj.put("passiveSoundCounter", passiveSoundCounter);
 		obj.put("monsterSpawnCounter", monsterSpawnCounter);
 
-		obj.append("levels", getLevel().serialise()); // TODO: multi level support
+		JSONObject serialisedLevels = new JSONObject();
+		levels.forEach((uuid, level) -> serialisedLevels.put(uuid.toString(), level.serialise()));
+		obj.put("levels", serialisedLevels);
 
 		return obj;
 	}
@@ -164,10 +167,14 @@ public class Dungeon {
 			passiveSoundCounter = obj.getInt("passiveSoundCounter");
 			monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
 
-			JSONArray levels = obj.getJSONArray("levels");
-			levels.forEach(serialisedLevel ->
-				   Level.createFromJSON((JSONObject) serialisedLevel, this).ifPresent(l -> level = l));
+			JSONObject serialisedLevels = obj.getJSONObject("levels");
+			serialisedLevels.keySet().forEach(k -> {
+				UUID uuid = UUID.fromString(k);
+				JSONObject serialisedLevel = serialisedLevels.getJSONObject(k);
+				Level.createFromJSON(uuid, serialisedLevel, this).ifPresent(level -> levels.put(uuid, level));
+			});
 
+			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 
 			level.buildLight();
@@ -176,6 +183,29 @@ public class Dungeon {
 			JRogue.getLogger().error("Error loading dungeon:");
 			JRogue.getLogger().error(e);
 		}
+	}
+
+	public Level newLevel(int depth, Tile sourceTile) {
+		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
+		levels.put(level.getUUID(), level);
+		level.generate(Optional.ofNullable(sourceTile));
+		return level;
+	}
+
+	public void changeLevel(Level level) {
+		this.level = level;
+
+		getPlayer().getLevel().removeEntity(player);
+		getPlayer().getLevel().processEntityQueues();
+
+		getPlayer().setLevel(level);
+		level.addEntity(player);
+		level.processEntityQueues();
+
+		getPlayer().setPosition(level.getSpawnX(), level.getSpawnY());
+
+		turn();
+		listeners.forEach(l -> l.onLevelChange(level));
 	}
 
 	public void quit() {
@@ -242,7 +272,7 @@ public class Dungeon {
 
 	public void start() {
 		if (turn <= 0) {
-			You("descend the stairs into [CYAN]%s[].", this.name);
+			You("drop down into [CYAN]%s[].", this.name);
 			turn();
 		} else {
 			listeners.forEach(l -> l.onBeforeTurn(turn));
@@ -490,6 +520,10 @@ public class Dungeon {
 
 	public Level getLevel() {
 		return level;
+	}
+
+	public Level getLevelFromUUID(UUID uuid) {
+		return levels.get(uuid);
 	}
 
 	public Player getPlayer() {

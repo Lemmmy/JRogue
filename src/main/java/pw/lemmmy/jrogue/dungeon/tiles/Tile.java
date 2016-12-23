@@ -71,6 +71,10 @@ public class Tile {
 		}
 	}
 
+	public Level getLevel() {
+		return level;
+	}
+
 	public TileState getState() {
 		return state;
 	}
