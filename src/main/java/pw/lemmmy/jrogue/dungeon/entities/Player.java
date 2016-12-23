@@ -382,6 +382,8 @@ public class Player extends LivingEntity {
 		} else {
 			getDungeon().redYou("die");
 		}
+
+		getDungeon().deleteSave();
 	}
 
 	@Override

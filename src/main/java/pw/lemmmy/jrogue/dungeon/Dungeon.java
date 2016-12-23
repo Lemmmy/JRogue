@@ -174,6 +174,17 @@ public class Dungeon {
 				Level.createFromJSON(uuid, serialisedLevel, this).ifPresent(level -> levels.put(uuid, level));
 			});
 
+			if (player == null) {
+				File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+
+				if (file.exists() && !file.delete()) {
+					JRogue.getLogger().error("Failed to delete save file. Panic!");
+				}
+
+				JRogue.getLogger().error("Something went wrong with your save file and Lemmmy is lazy. Please restart" +
+										 " JRogue.");
+			}
+
 			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 
@@ -182,6 +193,14 @@ public class Dungeon {
 		} catch (JSONException e) {
 			JRogue.getLogger().error("Error loading dungeon:");
 			JRogue.getLogger().error(e);
+		}
+	}
+
+	public void deleteSave() {
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+
+		if (file.exists() && !file.delete()) {
+			JRogue.getLogger().error("Failed to delete save file. Panic!");
 		}
 	}
 
