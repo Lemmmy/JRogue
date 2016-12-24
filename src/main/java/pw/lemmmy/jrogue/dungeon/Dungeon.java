@@ -226,7 +226,12 @@ public class Dungeon {
 		getPlayer().setPosition(x, y);
 
 		turn();
+
 		listeners.forEach(l -> l.onLevelChange(level));
+
+		level.getEntities().forEach(e -> {
+			listeners.forEach(l -> l.onEntityAdded(e));
+		});
 	}
 
 	public void quit() {
