@@ -648,17 +648,10 @@ public class Player extends LivingEntity {
 				item.getName(false, false)
 			);
 		} else {
-			if (item.beginsWithVowel()) {
-				promptString = String.format(
-					"There is an [YELLOW]%s[] here. Eat it?",
-					item.getName(false, false)
-				);
-			} else {
-				promptString = String.format(
-					"There is a [YELLOW]%s[] here. Eat it?",
-					item.getName(false, false)
-				);
-			}
+			promptString = String.format(
+				"There is %s [YELLOW]%s[] here. Eat it?",
+				item.beginsWithVowel() ? "an" : "a", item.getName(false, false)
+			);
 		}
 
 		getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
@@ -855,19 +848,10 @@ public class Player extends LivingEntity {
 							result.get().getLetter()
 						);
 					} else {
-						if (stack.beginsWithVowel()) {
-							getDungeon().You(
-								"pick up an [YELLOW]%s[] ([YELLOW]%s[]).",
-								stack.getName(false),
-								result.get().getLetter()
-							);
-						} else {
-							getDungeon().You(
-								"pick up a [YELLOW]%s[] ([YELLOW]%s[]).",
-								stack.getName(false),
-								result.get().getLetter()
-							);
-						}
+						getDungeon().You(
+							"pick up %s [YELLOW]%s[] ([YELLOW]%s[]).",
+							stack.beginsWithVowel() ? "an" : "a", stack.getName(false), result.get().getLetter()
+						);
 					}
 
 					break;
@@ -919,11 +903,10 @@ public class Player extends LivingEntity {
 				if (item.isis() || stack.getCount() > 1) {
 					getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 				} else {
-					if (stack.beginsWithVowel()) {
-						getDungeon().You("drop an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-					} else {
-						getDungeon().You("drop a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-					}
+					getDungeon().You(
+						"drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
+						stack.beginsWithVowel() ? "an" : "a", stack.getName(false), letter
+					);
 				}
 
 				getDungeon().turn();
@@ -1016,11 +999,10 @@ public class Player extends LivingEntity {
 				if (item.isis() || stack.getCount() > 1) {
 					getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
 				} else {
-					if (stack.beginsWithVowel()) {
-						getDungeon().You("wield an [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-					} else {
-						getDungeon().You("wield a [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-					}
+					getDungeon().You(
+						"wield %s [YELLOW]%s[] ([YELLOW]%s[]).",
+						stack.beginsWithVowel() ? "an" : "a", stack.getName(false), letter
+					);
 				}
 			}
 		}));

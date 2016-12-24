@@ -65,11 +65,10 @@ public class ActionMove extends EntityAction {
 				if (stack.getCount() > 1) {
 					getDungeon().log("There are [YELLOW]%s[] here.", stack.getName(false));
 				} else {
-					if (stack.beginsWithVowel()) {
-						getDungeon().log("There is an [YELLOW]%s[] here.", stack.getName(false));
-					} else {
-						getDungeon().log("There is a [YELLOW]%s[] here.", stack.getName(false));
-					}
+					getDungeon().log(
+						"There is %s [YELLOW]%s[] here.",
+						stack.beginsWithVowel() ? "an" : "a", stack.getName(false)
+					);
 				}
 			}
 		} else if (items.size() > 1) {
