@@ -872,7 +872,7 @@ public class Player extends LivingEntity {
 
 					break;
 				} else {
-					getDungeon().You("can't hold anything!");
+					getDungeon().yellowYou("can't hold anything!");
 				}
 			}
 		}
