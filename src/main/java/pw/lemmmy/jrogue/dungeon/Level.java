@@ -31,16 +31,16 @@ public class Level {
 
 	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 
-	private static final Map<Integer, Map<Class, Range<Integer>>> MONSTERS_PER_FLOOR = new HashMap<>();
+	private static final Map<Integer, Map<Class<? extends Monster>, Range<Integer>>> MONSTERS_PER_FLOOR = new HashMap<>();
 
 	static {
-		Map<Class, Range<Integer>> floor1 = new HashMap<>();
+		Map<Class<? extends Monster>, Range<Integer>> floor1 = new HashMap<>();
 		floor1.put(MonsterJackal.class, Range.between(2, 5));
 		floor1.put(MonsterSpider.class, Range.between(4, 8));
 		floor1.put(MonsterRat.class, Range.between(2, 6));
 		MONSTERS_PER_FLOOR.put(-1, floor1);
 
-		Map<Class, Range<Integer>> floor2 = new HashMap<>();
+		Map<Class<? extends Monster>, Range<Integer>> floor2 = new HashMap<>();
 		floor2.put(MonsterSkeleton.class, Range.between(2, 3));
 		MONSTERS_PER_FLOOR.put(-2, floor2);
 	}
@@ -299,8 +299,8 @@ public class Level {
 		int y = serialisedEntity.getInt("y");
 
 		try {
-			Class entityClass = Class.forName(entityClassName);
-			Constructor entityConstructor = entityClass.getConstructor(
+			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(entityClassName);
+			Constructor<? extends Entity> entityConstructor = entityClass.getConstructor(
 				Dungeon.class,
 				Level.class,
 				int.class,
@@ -324,7 +324,6 @@ public class Level {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void unserialiseTileState(JSONObject serialisedTileState) {
 		String tileStateClassName = serialisedTileState.getString("class");
 		int x = serialisedTileState.getInt("x");
@@ -333,8 +332,9 @@ public class Level {
 		Tile tile = getTile(x, y);
 
 		try {
-			Class tileStateClass = Class.forName(tileStateClassName);
-			Constructor tileStateConstructor = tileStateClass.getConstructor(Tile.class);
+			@SuppressWarnings("unchecked")
+			Class<? extends TileState> tileStateClass = (Class<? extends TileState>) Class.forName(tileStateClassName);
+			Constructor<? extends TileState> tileStateConstructor = tileStateClass.getConstructor(Tile.class);
 
 			TileState tileState = (TileState) tileStateConstructor.newInstance(tile);
 			tileState.unserialise(serialisedTileState);
@@ -447,7 +447,6 @@ public class Level {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void spawnMonsters() {
 		int floor = depth;
 
@@ -456,11 +455,11 @@ public class Level {
 				continue;
 			}
 
-			Map<Class, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(i);
+			Map<Class<? extends Monster>, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(i);
 
 			floorMonsters.forEach((monsterClass, range) -> {
 				try {
-					Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+					Constructor<? extends Monster> constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 
 					int count = Utils.jrandom(range);
 
@@ -494,11 +493,11 @@ public class Level {
 				return;
 			}
 
-			Map<Class, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(floor);
-			Class monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
+			Map<Class<? extends Monster>, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(floor);
+			Class<? extends Monster> monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
 
 			try {
-				Constructor constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+				Constructor<? extends Monster> constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 				Entity monster = (Entity) constructor.newInstance(
 					dungeon,
 					this,

@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue;
 
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.lwjgl.opengl.GL11;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 
