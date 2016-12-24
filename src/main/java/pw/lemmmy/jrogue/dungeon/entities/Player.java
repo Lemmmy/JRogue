@@ -36,6 +36,8 @@ public class Player extends LivingEntity {
 	private int nutrition;
 	private NutritionState lastNutritionState;
 
+	private int spendableSkillPoints = 3;
+
 	private int strength;
 	private int agility;
 	private int dexterity;
@@ -176,6 +178,10 @@ public class Player extends LivingEntity {
 		}
 	}
 
+	public int getSpendableSkillPoints() {
+		return spendableSkillPoints;
+	}
+
 	public int getStrength() {
 		return strength;
 	}
@@ -198,6 +204,69 @@ public class Player extends LivingEntity {
 
 	public int getCharisma() {
 		return charisma;
+	}
+
+	public void increaseStrength() {
+		if (spendableSkillPoints <= 0 || strength >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		strength++;
+	}
+
+	public void increaseAgility() {
+		if (spendableSkillPoints <= 0 || agility >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		agility++;
+	}
+
+	public void increaseDexterity() {
+		if (spendableSkillPoints <= 0 || dexterity >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		dexterity++;
+	}
+
+	public void increaseConstitution() {
+		if (spendableSkillPoints <= 0 || constitution >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		constitution++;
+	}
+
+	public void increaseIntelligence() {
+		if (spendableSkillPoints <= 0 || intelligence >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		intelligence++;
+	}
+
+	public void increaseWisdom() {
+		if (spendableSkillPoints <= 0 || wisdom >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		wisdom++;
+	}
+
+	public void increaseCharisma() {
+		if (spendableSkillPoints <= 0 || charisma >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		charisma++;
 	}
 
 	@Override
@@ -312,6 +381,7 @@ public class Player extends LivingEntity {
 
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
+		obj.put("spendableSkillPoints", getSpendableSkillPoints());
 		obj.put("strength", getStrength());
 		obj.put("agility", getAgility());
 		obj.put("dexterity", getDexterity());
@@ -337,6 +407,7 @@ public class Player extends LivingEntity {
 		super.unserialise(obj);
 
 		name = obj.getString("name");
+		spendableSkillPoints = obj.getInt("spendableSkillPoints");
 		strength = obj.getInt("strength");
 		agility = obj.getInt("agility");
 		dexterity = obj.getInt("dexterity");
