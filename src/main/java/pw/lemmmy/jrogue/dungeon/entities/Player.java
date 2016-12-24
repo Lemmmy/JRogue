@@ -334,7 +334,7 @@ public class Player extends LivingEntity {
 
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
 		getDungeon().greenYou(
-			"have %,d spendable skill point%.",
+			"have %,d spendable skill point%s.",
 			++spendableSkillPoints,
 			spendableSkillPoints == 1 ? "s" : ""
 		);
