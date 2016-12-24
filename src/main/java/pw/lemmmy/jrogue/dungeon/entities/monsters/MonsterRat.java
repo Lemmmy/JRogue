@@ -58,12 +58,12 @@ public class MonsterRat extends Monster {
 
 	@Override
 	public int getNutrition() {
-		return 100;
+		return 60;
 	}
 
 	@Override
 	public float getCorpseChance() {
-		return 0.25f;
+		return 0.1f;
 	}
 
 	@Override
