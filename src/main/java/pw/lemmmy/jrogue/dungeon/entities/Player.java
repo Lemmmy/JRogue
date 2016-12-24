@@ -288,9 +288,11 @@ public class Player extends LivingEntity {
 				case HUNGRY:
 					getDungeon().orangeYou("are starting to feel hungry.");
 					break;
-				case FAINTING:
 				case STARVING:
 					getDungeon().redYou("are starving!");
+					break;
+				case FAINTING:
+					getDungeon().redYou("are passing out due to starvation!");
 					break;
 				default:
 					break;
