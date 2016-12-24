@@ -880,7 +880,7 @@ public class Player extends LivingEntity {
 
 	public void drop() {
 		if (!getContainer().isPresent()) {
-			getDungeon().You("can't hold anything!");
+			getDungeon().yellowYou("can't hold anything!");
 			return;
 		}
 
