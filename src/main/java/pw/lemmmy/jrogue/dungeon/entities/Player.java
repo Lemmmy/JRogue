@@ -872,7 +872,7 @@ public class Player extends LivingEntity {
 
 					break;
 				} else {
-					getDungeon().You("can't hold anything!");
+					getDungeon().yellowYou("can't hold anything!");
 				}
 			}
 		}
@@ -880,11 +880,16 @@ public class Player extends LivingEntity {
 
 	public void drop() {
 		if (!getContainer().isPresent()) {
-			getDungeon().You("can't hold anything!");
+			getDungeon().yellowYou("can't hold anything!");
 			return;
 		}
 
 		Container inventory = getContainer().get();
+		
+		if (inventory.isEmpty()) {
+			getDungeon().yellowYou("don't have any items to drop!");
+			return;
+		}
 
 		char[] options = ArrayUtils.toPrimitive(inventory.getItems().keySet().toArray(new Character[0]));
 
