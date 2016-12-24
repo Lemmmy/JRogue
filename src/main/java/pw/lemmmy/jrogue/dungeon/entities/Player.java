@@ -333,6 +333,7 @@ public class Player extends LivingEntity {
 		super.onLevelUp();
 
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
+		getDungeon().greenYou("have %,d spendable skill points.", ++spendableSkillPoints);
 	}
 
 	@Override
