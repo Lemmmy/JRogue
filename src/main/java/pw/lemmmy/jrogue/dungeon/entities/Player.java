@@ -885,6 +885,11 @@ public class Player extends LivingEntity {
 		}
 
 		Container inventory = getContainer().get();
+		
+		if (inventory.isEmpty()) {
+			getDungeon().yellowYou("don't have any items to drop!");
+			return;
+		}
 
 		char[] options = ArrayUtils.toPrimitive(inventory.getItems().keySet().toArray(new Character[0]));
 
