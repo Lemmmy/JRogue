@@ -56,6 +56,10 @@ public class ItemCorpse extends ItemComestible {
 		}
 	}
 
+	public LivingEntity getEntity() {
+		return entity;
+	}
+
 	@Override
 	public int getTurnsRequiredToEat() {
 		return entity.getSize() == LivingEntity.Size.LARGE ? 3 : 2;
@@ -68,6 +72,15 @@ public class ItemCorpse extends ItemComestible {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public boolean equals(Item other) {
+		if (other instanceof ItemCorpse) {
+			return super.equals(other) && ((ItemCorpse) other).getEntity().getClass() == entity.getClass();
+		}
+
+		return super.equals(other);
 	}
 
 	@Override
