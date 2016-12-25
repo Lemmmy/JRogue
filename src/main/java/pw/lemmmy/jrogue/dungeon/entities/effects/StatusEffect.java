@@ -2,9 +2,10 @@ package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
-public abstract class StatusEffect {
+public abstract class StatusEffect implements Serialisable {
 	private Dungeon dungeon;
 	private Entity entity;
 
@@ -22,12 +23,14 @@ public abstract class StatusEffect {
 		turnsPassed++;
 	}
 
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("duration", getDuration());
 		obj.put("turnsPassed", getTurnsPassed());
 	}
 
+	@Override
 	public void unserialise(JSONObject obj) {
 		turnsPassed = obj.getInt("turnsPassed");
 	}

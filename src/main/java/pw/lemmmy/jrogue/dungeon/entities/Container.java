@@ -1,13 +1,14 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.*;
 
-public class Container {
+public class Container implements Serialisable {
 	private String name;
 
 	private Map<Character, ItemStack> items = new LinkedHashMap<>();
@@ -137,6 +138,7 @@ public class Container {
 		return container;
 	}
 
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("name", name);
 
@@ -149,6 +151,7 @@ public class Container {
 		obj.put("items", serialisedItems);
 	}
 
+	@Override
 	public void unserialise(JSONObject obj) {
 		JSONObject serialisedItems = obj.getJSONObject("items");
 		serialisedItems.keySet().forEach(k -> {

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.utils.Utils;
 
@@ -15,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Entity {
+public abstract class Entity implements Serialisable {
 	private int x;
 	private int y;
 
@@ -159,6 +160,7 @@ public abstract class Entity {
 		}
 	}
 
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("x", getX());
@@ -176,6 +178,7 @@ public abstract class Entity {
 		});
 	}
 
+	@Override
 	public void unserialise(JSONObject obj) {
 		x = obj.getInt("x");
 		y = obj.getInt("y");
