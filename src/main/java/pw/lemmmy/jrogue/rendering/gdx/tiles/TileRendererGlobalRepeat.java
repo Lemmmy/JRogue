@@ -11,15 +11,24 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 
 public class TileRendererGlobalRepeat extends TileRenderer {
-    private final TextureRegion texture;
+    private Texture texture;
+    private TextureRegion texRegion;
     private static ShaderProgram program;
 
     private float offsetX, offsetY;
-    private float scaleX = 0.2f, scaleY = 0.2f;
+    private float scaleX, scaleY;
 
-    public TileRendererGlobalRepeat(TextureRegion texture) {
+    public TileRendererGlobalRepeat(Texture texture, float offsetX, float offsetY, float scaleX, float scaleY) {
         this.texture = texture;
-        texture.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        texRegion = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
 
         if (program == null) {
             program = new ShaderProgram(
@@ -31,6 +40,14 @@ public class TileRendererGlobalRepeat extends TileRenderer {
                 JRogue.getLogger().error("Shader compilation failed: {}", program.getLog());
             }
         }
+    }
+
+    public TileRendererGlobalRepeat(Texture texture, float scaleX, float scaleY) {
+        this(texture, 0.0f, 0.0f, scaleX, scaleY);
+    }
+
+    public TileRendererGlobalRepeat(Texture texture) {
+        this(texture, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     public float getOffsetX() {
@@ -78,7 +95,8 @@ public class TileRendererGlobalRepeat extends TileRenderer {
         );
 
         program.setUniformMatrix("u_proj", levelProjMat);
-        drawTile(batch, texture, x, y);
+
+        drawTile(batch, texRegion, x, y);
         batch.setShader(previousShader);
     }
 
