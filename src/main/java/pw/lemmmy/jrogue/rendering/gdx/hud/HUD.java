@@ -1,9 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.hud;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
 import pw.lemmmy.jrogue.Settings;
@@ -30,10 +28,13 @@ public class HUD implements Dungeon.Listener {
 	private Label playerLabel;
 	private Table gameLog;
 	private Label promptLabel;
-	private Table infoLine;
 	private Table attributes;
+	private Table topStats;
 	private Label effectsLabel;
 	private HorizontalGroup brightness;
+
+	private int healthLastTurn;
+	private int energyLastTurn;
 
 	private Dungeon dungeon;
 	private List<LogEntry> log = new ArrayList<>();
@@ -60,7 +61,7 @@ public class HUD implements Dungeon.Listener {
 
 		root.add(new Container<>()).expand().row();
 
-		initInfoLine(root);
+		initEffectsLine(root);
 		initAttributes(root);
 
 		root.top();
@@ -68,9 +69,45 @@ public class HUD implements Dungeon.Listener {
 	}
 
 	private void initPlayerLine(Table container) {
+		Table topPlayerLine = new Table();
 		playerLabel = new Label(null, skin, "large");
-		playerLabel.setAlignment(Align.left);
-		container.add(playerLabel).top().growX().pad(2, 4, 0, 4);
+		topPlayerLine.add(playerLabel).padRight(16).left();
+
+		topStats = new Table();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
+		Label hpLabel = new Label("Health: 0/0", skin);
+		hpLabel.setName("health");
+		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
+		Label nutritionLabel = new Label("Not hungry", skin);
+		nutritionLabel.setName("nutrition");
+		topStats.add(nutritionLabel).pad(0, 2, 0, 8).left();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 12, 2, 16, 16, false)));
+		Label expLabel = new Label("Level: 1", skin);
+		expLabel.setName("exp");
+		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 14, 2, 16, 16, false)));
+		Label energyLabel = new Label("Energy: 0/0", skin);
+		energyLabel.setName("energy");
+		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
+		Label goldLabel = new Label("Gold: 0", skin);
+		goldLabel.setName("gold");
+		topStats.add(goldLabel).pad(0, 2, 0, 8).left();
+
+		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 13, 2, 16, 16, false)));
+		Label depthLabel = new Label("Depth: 1", skin);
+		depthLabel.setName("depth");
+		topStats.add(depthLabel).pad(0, 2, 0, 8).left();
+
+		topPlayerLine.add(topStats).left().row();
+
+		container.add(topPlayerLine).left().pad(2, 4, 0, 4);
 		container.row();
 
 		gameLog = new Table();
@@ -83,29 +120,9 @@ public class HUD implements Dungeon.Listener {
 		container.row();
 	}
 
-	private void initInfoLine(Table container) {
+	private void initEffectsLine(Table container) {
 		effectsLabel = new Label(null, skin);
 		container.add(effectsLabel).growX().left().pad(0, 1, 0, 1);
-		container.row();
-
-		infoLine = new Table();
-
-		infoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
-		Label goldLabel = new Label("Gold: 0", skin);
-		goldLabel.setName("gold");
-		infoLine.add(goldLabel).pad(0, 2, 0, 8);
-
-		infoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 12, 2, 16, 16, false)));
-		Label expLabel = new Label("Level: 1", skin);
-		expLabel.setName("exp");
-		infoLine.add(expLabel).pad(0, 2, 0, 8);
-
-		infoLine.add(new Image(ImageLoader.getImageFromSheet("hud.png", 13, 2, 16, 16, false)));
-		Label depthLabel = new Label("Depth: 1", skin);
-		depthLabel.setName("depth");
-		infoLine.add(depthLabel).pad(0, 2, 0, 8);
-
-		container.add(infoLine).left().pad(0, 1, 0, 1);
 		container.row();
 	}
 
@@ -150,12 +167,7 @@ public class HUD implements Dungeon.Listener {
 		attributes.add(new Container<>()).expand();
 
 		brightness = new HorizontalGroup();
-		attributes.add(brightness).pad(0, 2, -2, 8).right();
-
-		attributes.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
-		Label nutritionLabel = new Label("HNG: Not hungry", skin);
-		nutritionLabel.setName("attributeNutrition");
-		attributes.add(nutritionLabel).pad(0, 2, 0, 2).right();
+		attributes.add(brightness).pad(0, 2, -2, 2).right();
 
 		container.add(attributes).left().fillX().pad(0, 1, 0, 1);
 	}
@@ -184,7 +196,10 @@ public class HUD implements Dungeon.Listener {
 
 	@Override
 	public void onLevelChange(Level level) {
-
+		if (dungeon.getPlayer() != null) {
+			healthLastTurn = dungeon.getPlayer().getHealth();
+			updatePlayerLine(dungeon.getPlayer());
+		}
 	}
 
 	@Override
@@ -195,29 +210,45 @@ public class HUD implements Dungeon.Listener {
 	@Override
 	public void onTurn(long turn) {
 		Player player = dungeon.getPlayer();
-		updatePlayerLabel(player);
-		updateInfoLine(player);
+
+		updatePlayerLine(player);
 		updateAttributes(player);
 		updateBrightness(player);
-		updateNutrition(player);
 		updateStatusEffects(player);
+
+		healthLastTurn = player.getHealth();
+		// energyLastTurn = player.getEnergy();
 	}
 
-	private void updatePlayerLabel(Player player) {
+	private void updatePlayerLine(Player player) {
 		playerLabel.setText(String.format(
-			"[P_YELLOW]%s[] the [P_BLUE_2]%s[] - HP [%s]%,d[]/%,d",
+			"[P_YELLOW]%s[] the [P_BLUE_2]%s[]",
 			player.getName(true),
-			player.getRole().getName(),
-			HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
-			player.getHealth(),
-			player.getMaxHealth()
+			player.getRole().getName()
 		));
-	}
 
-	private void updateInfoLine(Player player) {
-		((Label) infoLine.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
-		((Label) infoLine.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
-		((Label) infoLine.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
+		if (player.getHealth() != healthLastTurn) {
+			((Label) topStats.findActor("health")).setStyle(getSkin().get("health", Label.LabelStyle.class));
+			((Label) topStats.findActor("health")).setText(String.format(
+				"Health: %,d/%,d",
+				player.getHealth(),
+				player.getMaxHealth()
+			));
+		} else {
+			((Label) topStats.findActor("health")).setStyle(getSkin().get("default", Label.LabelStyle.class));
+			((Label) topStats.findActor("health")).setText(String.format(
+				"Health: [%s]%,d[]/[P_GREEN_3]%,d[]",
+				HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
+				player.getHealth(),
+				player.getMaxHealth()
+			));
+		}
+
+		((Label) topStats.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
+		((Label) topStats.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
+		((Label) topStats.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
+		((Label) topStats.findActor("nutrition")).setText(player.getNutritionState().toString());
+		topStats.findActor("nutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
 	}
 
 	private void updateAttributes(Player player) {
@@ -233,27 +264,17 @@ public class HUD implements Dungeon.Listener {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 
-		if (player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR) {
-			brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 9, 2, 16, 16, false)));
-		} else {
-			brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", 8, 2, 16, 16, false)));
-		}
+		int sheetX = player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 
+		brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", sheetX, 2, 16, 16, false)));
 		brightness.addActor(new Label("BRI: " + player.getLightLevel(), skin));
-	}
-
-	private void updateNutrition(Player player) {
-		((Label) root.findActor("attributeNutrition")).setText(player.getNutritionState().toString());
-		root.findActor("attributeNutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
 	}
 
 	private void updateStatusEffects(Player player) {
 		if (player.getStatusEffects().size() > 0) {
 			java.util.List<String> effects = player.getStatusEffects().stream()
-												   .map(e -> String.format("[%s]%s[]", HUDUtils.getStatusEffectColour
-													   (e.getSeverity()), e.getName())
-												   )
-												   .collect(Collectors.toList());
+				.map(e -> String.format("[%s]%s[]", HUDUtils.getStatusEffectColour(e.getSeverity()), e.getName()))
+				.collect(Collectors.toList());
 
 			effectsLabel.setText(StringUtils.join(effects, " "));
 		} else {

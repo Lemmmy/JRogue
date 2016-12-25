@@ -88,6 +88,16 @@ public class HUDSkin extends Skin {
 		blue.setColor(Colors.get("P_BLUE_2"));
 		blue.fill();
 		add("blue", new Texture(blue));
+
+		Pixmap health = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		health.setColor(new Color(0xc82020ff));
+		health.fill();
+		add("health", new Texture(health));
+
+		Pixmap energy = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		energy.setColor(new Color(0x773cd0ff));
+		energy.fill();
+		add("energy", new Texture(energy));
 	}
 
 	private void addFonts() {
@@ -101,6 +111,16 @@ public class HUDSkin extends Skin {
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
 		labelStyle.font = getFont("default");
 		add("default", labelStyle);
+
+		Label.LabelStyle healthStyle = new Label.LabelStyle();
+		healthStyle.font = getFont("default");
+		healthStyle.background = getDrawable("health");
+		add("health", healthStyle);
+
+		Label.LabelStyle energyStyle = new Label.LabelStyle();
+		energyStyle.font = getFont("default");
+		energyStyle.background = getDrawable("energy");
+		add("energy", energyStyle);
 
 		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
 		largeLabelStyle.font = getFont("large");
