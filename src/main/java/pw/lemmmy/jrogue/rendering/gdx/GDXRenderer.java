@@ -24,12 +24,13 @@ import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityRenderer;
+import pw.lemmmy.jrogue.rendering.gdx.hud.HUD;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.rendering.gdx.windows.*;
+import pw.lemmmy.jrogue.rendering.gdx.hud.windows.*;
 import pw.lemmmy.jrogue.utils.Gradient;
 
 import java.util.*;

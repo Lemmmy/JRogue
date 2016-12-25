@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.gdx;
+package pw.lemmmy.jrogue.rendering.gdx.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
