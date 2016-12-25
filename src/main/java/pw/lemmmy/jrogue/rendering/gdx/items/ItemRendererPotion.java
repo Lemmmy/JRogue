@@ -8,21 +8,24 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.rendering.gdx.utils.MultiTextureRegionDrawable;
+import pw.lemmmy.jrogue.rendering.gdx.utils.CompositeDrawable;
 
 public class ItemRendererPotion extends ItemRenderer {
     private final TextureRegion fluidTex;
     private final TextureRegion bottleTex;
-    private final MultiTextureRegionDrawable potionDrawable;
+    private final CompositeDrawable potionDrawable;
 
     public ItemRendererPotion(int sheetX, int sheetY, int liquidX, int liquidY) {
         bottleTex = ImageLoader.getImageFromSheet("items.png", sheetX, sheetY);
         fluidTex = ImageLoader.getImageFromSheet("items.png", liquidX, liquidY);
 
-        potionDrawable = new MultiTextureRegionDrawable(new TextureRegionDrawable[] {
-            new TextureRegionDrawable(ImageLoader.getImageFromSheet("items.png", liquidX, liquidY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false)),
-            new TextureRegionDrawable(ImageLoader.getImageFromSheet("items.png", sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false))
-        }, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT);
+        potionDrawable = new CompositeDrawable(
+            ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT,
+            new TextureRegionDrawable(ImageLoader
+                    .getImageFromSheet("items.png", liquidX, liquidY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false)),
+            new TextureRegionDrawable(ImageLoader
+                    .getImageFromSheet("items.png", sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false))
+        );
     }
 
     @Override
