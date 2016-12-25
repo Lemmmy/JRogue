@@ -1,13 +1,14 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 public class Poison extends StatusEffect {
-	public Poison(Dungeon dungeon, Entity entity) {
-		super(dungeon, entity, -1);
+	public Poison(Messenger messenger, Entity entity) {
+		super(messenger, entity, -1);
 	}
 
 	@Override
@@ -37,6 +38,6 @@ public class Poison extends StatusEffect {
 
 	@Override
 	public void onEnd() {
-		getDungeon().greenYou("managed to absorb the deadly poison.");
+		getMessenger().greenYou("managed to absorb the deadly poison.");
 	}
 }

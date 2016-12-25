@@ -2,18 +2,19 @@ package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public abstract class StatusEffect implements Serialisable {
-	private Dungeon dungeon;
+	private Messenger messenger;
 	private Entity entity;
 
 	private int duration;
 	private int turnsPassed = 0;
 
-	public StatusEffect(Dungeon dungeon, Entity entity, int duration) {
-		this.dungeon = dungeon;
+	public StatusEffect(Messenger messenger, Entity entity, int duration) {
+		this.messenger = messenger;
 		this.entity = entity;
 
 		this.duration = duration;
@@ -35,8 +36,8 @@ public abstract class StatusEffect implements Serialisable {
 		turnsPassed = obj.getInt("turnsPassed");
 	}
 
-	public Dungeon getDungeon() {
-		return dungeon;
+	public Messenger getMessenger() {
+		return messenger;
 	}
 
 	public Entity getEntity() {
