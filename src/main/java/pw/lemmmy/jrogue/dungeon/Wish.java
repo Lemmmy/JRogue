@@ -5,6 +5,7 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.items.*;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,6 +168,15 @@ public class Wish {
 			item = new ItemCherries();
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
+		} else if (wish.equalsIgnoreCase("potion")) {
+			Random rand = new Random();
+			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
+			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
+
+			ItemPotion potion = new ItemPotion();
+			potion.setBottleType(bottle);
+			potion.setEmpty(rand.nextBoolean());
+			item = potion;
 		}
 
 		if (item != null && player.getContainer().isPresent()) {

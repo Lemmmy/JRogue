@@ -5,5 +5,6 @@ public enum ItemCategory {
 	WEAPON,
 	COMESTIBLE,
 	GEMS,
+	POTION,
 	MISCELLANEOUS
 }
