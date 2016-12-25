@@ -79,7 +79,7 @@ public class MonsterPufferfish extends Monster {
 	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
 		List<StatusEffect> effects = new ArrayList<>();
 
-		effects.add(new Poison(victim.getDungeon(), victim));
+		effects.add(new Poison());
 
 		return effects;
 	}

@@ -7,8 +7,12 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 public class Poison extends StatusEffect {
-	public Poison(Messenger messenger, Entity entity) {
-		super(messenger, entity, -1);
+	public Poison() {
+		this(-1);
+	}
+
+	public Poison(int duration) {
+		super(duration);
 	}
 
 	@Override

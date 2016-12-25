@@ -75,7 +75,7 @@ public class ActionKick extends EntityAction {
 				}
 
 				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker, isPlayer);
-				kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
+				kicker.addStatusEffect(new StrainedLeg(Utils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
 					getDungeon().You("kick thin air.");

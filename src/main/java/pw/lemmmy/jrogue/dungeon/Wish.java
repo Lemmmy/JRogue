@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
+import pw.lemmmy.jrogue.dungeon.entities.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.*;
 
 import java.util.Random;
@@ -174,13 +175,16 @@ public class Wish {
 			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
 			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
 
-			int effectIndex = rand.nextInt(ItemPotion.PotionType.values().length);
-			ItemPotion.PotionType potionType = ItemPotion.PotionType.values()[effectIndex];
+			int effectIndex = rand.nextInt(PotionType.values().length);
+			PotionType potionType = PotionType.values()[effectIndex];
+
+			float potency = rand.nextFloat() * 6.0f;
 
 			ItemPotion potion = new ItemPotion();
 			potion.setBottleType(bottle);
 			potion.setPotionType(potionType);
 			potion.setEmpty(false);
+			potion.setPotency(potency);
 			item = potion;
 		}
 

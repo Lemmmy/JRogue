@@ -5,8 +5,8 @@ import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public class StrainedLeg extends StatusEffect {
-	public StrainedLeg(Messenger messenger, Entity entity, int duration) {
-		super(messenger, entity, duration);
+	public StrainedLeg(int duration) {
+		super(duration);
 	}
 
 	@Override

@@ -782,6 +782,59 @@ public class Player extends LivingEntity {
 		}));
 	}
 
+	public void drink() {
+		if (!getContainer().isPresent()) {
+			getDungeon().yellowYou("have nothing to drink.");
+			return;
+		}
+
+		Map<Character, ItemStack> drinkables = getDrinkablesInInventory();
+
+		if (drinkables.size() == 0) {
+			getDungeon().yellowYou("have nothing to drink.");
+			return;
+		}
+
+		Container inventory = getContainer().get();
+
+		List<Character> available = drinkables.keySet().stream()
+			.filter(i -> drinkables.get(i).getItem() instanceof ItemDrinkable)
+			.filter(i -> ((ItemDrinkable)drinkables.get(i).getItem()).canDrink())
+			.collect(Collectors.toList());
+
+		char[] options = ArrayUtils.toPrimitive(available.toArray(new Character[0]));
+		options = Arrays.copyOf(options, options.length + 1);
+		options[options.length - 1] = '-';
+
+		getDungeon().prompt(new Prompt("Drink what?", options, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+			}
+
+			@Override
+			public void onResponse(char response) {
+				Optional<Container.ContainerEntry> containerEntry = inventory.get(response);
+
+				if (!containerEntry.isPresent()) {
+					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+					return;
+				}
+
+				ItemStack stack = containerEntry.get().getStack();
+				ItemDrinkable drinkable = (ItemDrinkable) stack.getItem();
+
+				setAction(new ActionDrink(getDungeon(), Player.this, drinkable));
+				getDungeon().turn();
+			}
+		}));
+	}
+
 	public void consume(ItemComestible item) {
 		if (item.getTurnsRequiredToEat() == 1) {
 			getDungeon().greenYou("eat the %s.", item.getName(false, false));
@@ -1067,7 +1120,7 @@ public class Player extends LivingEntity {
 		getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
 	}
 
-	private Map<Character, ItemStack> getWieldablesInInventory() {
+	public Map<Character, ItemStack> getWieldablesInInventory() {
 		if (getContainer().isPresent()) {
 			return getContainer().get().getItems().entrySet().stream()
 								 .filter(e -> e.getValue().getItem() instanceof Wieldable)
@@ -1077,11 +1130,21 @@ public class Player extends LivingEntity {
 		}
 	}
 
-	private Map<Character, ItemStack> getComestiblesInInventory() {
+	public Map<Character, ItemStack> getComestiblesInInventory() {
 		if (getContainer().isPresent()) {
 			return getContainer().get().getItems().entrySet().stream()
 								 .filter(e -> e.getValue().getItem() instanceof ItemComestible)
 								 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else {
+			return Collections.emptyMap();
+		}
+	}
+
+	public Map<Character, ItemStack> getDrinkablesInInventory() {
+		if (getContainer().isPresent()) {
+			return getContainer().get().getItems().entrySet().stream()
+					.filter(e -> e.getValue().getItem() instanceof ItemDrinkable)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
 			return Collections.emptyMap();
 		}

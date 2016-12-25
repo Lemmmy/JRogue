@@ -228,6 +228,8 @@ public abstract class Entity implements Serialisable {
 	}
 
 	public void addStatusEffect(StatusEffect effect) {
+		effect.setEntity(this);
+		effect.setMessenger(getDungeon());
 		statusEffects.add(effect);
 	}
 

@@ -6,5 +6,6 @@ public enum ItemCategory {
 	COMESTIBLE,
 	GEMS,
 	POTION,
+    DRINKABLE,
 	MISCELLANEOUS
 }

@@ -1,9 +1,11 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
-import com.badlogic.gdx.graphics.Color;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.potions.PotionType;
 
-public class ItemPotion extends Item {
+public class ItemPotion extends ItemDrinkable {
     public enum BottleType {
         BOTTLE(ItemAppearance.APPEARANCE_POTION, ItemAppearance.APPEARANCE_POTION_EMPTY),
         BOTTLE_LABELLED(ItemAppearance.APPEARANCE_POTION_LABEL, ItemAppearance.APPEARANCE_POTION_LABEL_EMPTY),
@@ -24,25 +26,10 @@ public class ItemPotion extends Item {
         }
     }
 
-    public enum PotionType {
-        WATER(Color.CYAN),
-        HEALTH(Color.RED),
-        MAGIC(Color.BLUE);
-
-        private final Color colour;
-
-        PotionType(Color colour) {
-            this.colour = colour;
-        }
-
-        public Color getColour() {
-            return colour;
-        }
-    }
-
     private boolean empty = false;
     private BottleType bottleType = BottleType.BOTTLE_LABELLED;
-    private PotionType potionType = PotionType.HEALTH;
+    private PotionType potionType = PotionType.POTION_HEALTH;
+    private float potency = 0.0f;
 
     public boolean isEmpty() {
         return empty;
@@ -56,6 +43,10 @@ public class ItemPotion extends Item {
         return bottleType;
     }
 
+    public void setBottleType(BottleType type) {
+        this.bottleType = type;
+    }
+
     public PotionType getPotionType() {
         return potionType;
     }
@@ -64,8 +55,12 @@ public class ItemPotion extends Item {
         this.potionType = potionType;
     }
 
-    public void setBottleType(BottleType type) {
-        this.bottleType = type;
+    public float getPotency() {
+        return potency;
+    }
+
+    public void setPotency(float potency) {
+        this.potency = potency;
     }
 
     @Override
@@ -85,6 +80,23 @@ public class ItemPotion extends Item {
     }
 
     @Override
+    public void drink(Entity entity) {
+        if (empty) {
+            return;
+        }
+
+        if (entity instanceof LivingEntity) {
+            potionType.getEffect().apply((LivingEntity) entity, potency);
+            empty = true;
+        }
+    }
+
+    @Override
+    public boolean canDrink() {
+        return !empty;
+    }
+
+    @Override
     public ItemCategory getCategory() {
         return ItemCategory.POTION;
     }
@@ -94,8 +106,9 @@ public class ItemPotion extends Item {
         super.serialise(obj);
 
         obj.put("empty", empty);
-        obj.put("type", bottleType.name());
-        obj.put("effect", potionType.name());
+        obj.put("bottle", bottleType.name());
+        obj.put("type", potionType.name());
+        obj.put("potency", (double)potency);
     }
 
     @Override
@@ -103,27 +116,8 @@ public class ItemPotion extends Item {
         super.unserialise(obj);
 
         empty = obj.optBoolean("empty", false);
-        bottleType = BottleType.valueOf(obj.optString("type", "BOTTLE"));
-        potionType = PotionType.valueOf(obj.optString("effect", "WATER"));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ItemPotion that = (ItemPotion) o;
-
-        if (empty != that.empty) return false;
-        if (bottleType != that.bottleType) return false;
-        return potionType == that.potionType;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (empty ? 1 : 0);
-        result = 31 * result + (bottleType != null ? bottleType.hashCode() : 0);
-        result = 31 * result + (potionType != null ? potionType.hashCode() : 0);
-        return result;
+        bottleType = BottleType.valueOf(obj.optString("bottle", "BOTTLE"));
+        potionType = PotionType.valueOf(obj.optString("type", "POTION_WATER"));
+        potency = (float)obj.optDouble("potency", 0.0);
     }
 }
