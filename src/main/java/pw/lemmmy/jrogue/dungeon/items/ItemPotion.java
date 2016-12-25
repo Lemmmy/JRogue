@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import com.badlogic.gdx.graphics.Color;
 import org.json.JSONObject;
 
 public class ItemPotion extends Item {
@@ -23,8 +24,25 @@ public class ItemPotion extends Item {
         }
     }
 
+    public enum PotionType {
+        WATER(Color.CYAN),
+        HEALTH(Color.RED),
+        MAGIC(Color.BLUE);
+
+        private final Color colour;
+
+        PotionType(Color colour) {
+            this.colour = colour;
+        }
+
+        public Color getColour() {
+            return colour;
+        }
+    }
+
     private boolean empty = false;
     private BottleType bottleType = BottleType.BOTTLE_LABELLED;
+    private PotionType potionType = PotionType.HEALTH;
 
     public boolean isEmpty() {
         return empty;
@@ -36,6 +54,14 @@ public class ItemPotion extends Item {
 
     public BottleType getBottleType() {
         return bottleType;
+    }
+
+    public PotionType getPotionType() {
+        return potionType;
+    }
+
+    public void setPotionType(PotionType potionType) {
+        this.potionType = potionType;
     }
 
     public void setBottleType(BottleType type) {
@@ -69,6 +95,7 @@ public class ItemPotion extends Item {
 
         obj.put("empty", empty);
         obj.put("type", bottleType.name());
+        obj.put("effect", potionType.name());
     }
 
     @Override
@@ -77,6 +104,7 @@ public class ItemPotion extends Item {
 
         empty = obj.optBoolean("empty", false);
         bottleType = BottleType.valueOf(obj.optString("type", "BOTTLE"));
+        potionType = PotionType.valueOf(obj.optString("effect", "WATER"));
     }
 
     @Override
@@ -87,13 +115,15 @@ public class ItemPotion extends Item {
         ItemPotion that = (ItemPotion) o;
 
         if (empty != that.empty) return false;
-        return bottleType == that.bottleType;
+        if (bottleType != that.bottleType) return false;
+        return potionType == that.potionType;
     }
 
     @Override
     public int hashCode() {
         int result = (empty ? 1 : 0);
         result = 31 * result + (bottleType != null ? bottleType.hashCode() : 0);
+        result = 31 * result + (potionType != null ? potionType.hashCode() : 0);
         return result;
     }
 }

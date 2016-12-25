@@ -170,12 +170,17 @@ public class Wish {
 			item = new ItemCorn();
 		} else if (wish.equalsIgnoreCase("potion")) {
 			Random rand = new Random();
+
 			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
 			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
 
+			int effectIndex = rand.nextInt(ItemPotion.PotionType.values().length);
+			ItemPotion.PotionType potionType = ItemPotion.PotionType.values()[effectIndex];
+
 			ItemPotion potion = new ItemPotion();
 			potion.setBottleType(bottle);
-			potion.setEmpty(rand.nextBoolean());
+			potion.setPotionType(potionType);
+			potion.setEmpty(false);
 			item = potion;
 		}
 
