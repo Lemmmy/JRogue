@@ -9,18 +9,16 @@ import com.badlogic.gdx.math.Matrix4;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.rendering.gdx.utils.ShaderLoader;
 
 public class TileRendererGlobalRepeat extends TileRenderer {
-    private Texture texture;
     private TextureRegion texRegion;
-    private static ShaderProgram program;
+    private ShaderProgram program;
 
     private float offsetX, offsetY;
     private float scaleX, scaleY;
 
     public TileRendererGlobalRepeat(Texture texture, float offsetX, float offsetY, float scaleX, float scaleY) {
-        this.texture = texture;
-
         this.offsetX = offsetX;
         this.offsetY = offsetY;
 
@@ -29,17 +27,7 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         texRegion = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
-
-        if (program == null) {
-            program = new ShaderProgram(
-                Gdx.files.classpath("shaders/global_repeat.vert.glsl"),
-                Gdx.files.classpath("shaders/global_repeat.frag.glsl")
-            );
-
-            if (!program.isCompiled()) {
-                JRogue.getLogger().error("Shader compilation failed: {}", program.getLog());
-            }
-        }
+        program = ShaderLoader.getProgram("shaders/global_repeat");
     }
 
     public TileRendererGlobalRepeat(Texture texture, float scaleX, float scaleY) {
@@ -98,11 +86,5 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 
         drawTile(batch, texRegion, x, y);
         batch.setShader(previousShader);
-    }
-
-    public static void dispose() {
-        if (program != null) {
-            program.dispose();
-        }
     }
 }
