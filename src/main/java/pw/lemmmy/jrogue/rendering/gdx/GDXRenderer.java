@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.apache.logging.log4j.LogManager;
 import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -564,6 +565,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
+		LogManager.shutdown();
 	}
 
 	public Pixmap takeLevelSnapshot() {
