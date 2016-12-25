@@ -27,8 +27,10 @@ import pw.lemmmy.jrogue.rendering.gdx.entities.EntityRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRenderer;
+import pw.lemmmy.jrogue.rendering.gdx.tiles.TileRendererGlobalRepeat;
 import pw.lemmmy.jrogue.rendering.gdx.utils.FontLoader;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
+import pw.lemmmy.jrogue.rendering.gdx.utils.ShaderLoader;
 import pw.lemmmy.jrogue.rendering.gdx.windows.*;
 import pw.lemmmy.jrogue.utils.Gradient;
 
@@ -565,6 +567,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
+		ShaderLoader.disposeAll();
 		LogManager.shutdown();
 	}
 

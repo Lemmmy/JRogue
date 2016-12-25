@@ -13,6 +13,10 @@ import java.util.Map;
 public class ImageLoader {
 	private static final Map<String, Texture> imageCache = new HashMap<>();
 
+	public static TextureRegion getSubimage(Texture image, int x, int y, int width, int height) {
+		return new TextureRegion(image, x, y, width, height);
+	}
+
 	public static TextureRegion getSubimage(String image, int x, int y, int width, int height) {
 		Texture sheet = ImageLoader.getImage(image);
 
@@ -21,7 +25,18 @@ public class ImageLoader {
 			System.exit(1);
 		}
 
-		return new TextureRegion(sheet, x, y, width, height);
+		return getSubimage(sheet, x, y, width, height);
+	}
+
+	public static TextureRegion getSubimage(String image) {
+		Texture img = ImageLoader.getImage(image);
+
+		if (img == null) {
+			JRogue.getLogger().fatal("Failed to load image {}.", image);
+			System.exit(1);
+		}
+
+		return getSubimage(img, 0, 0, img.getWidth(), img.getHeight());
 	}
 
 	public static Texture getImage(String file) {
