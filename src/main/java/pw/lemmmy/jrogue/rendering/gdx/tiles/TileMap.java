@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.rendering.gdx.tiles;
 
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 
 public enum TileMap {
 	TILE_GROUND(1, 1),
