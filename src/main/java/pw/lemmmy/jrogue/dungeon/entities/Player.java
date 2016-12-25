@@ -336,7 +336,7 @@ public class Player extends LivingEntity {
 		getDungeon().greenYou(
 			"have %,d spendable skill point%s.",
 			++spendableSkillPoints,
-			spendableSkillPoints == 1 ? "s" : ""
+			spendableSkillPoints == 1 ? "" : "s"
 		);
 	}
 
