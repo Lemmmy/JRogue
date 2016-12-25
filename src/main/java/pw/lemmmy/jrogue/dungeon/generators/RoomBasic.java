@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RoomBasic extends Room {
-	private static final float CHEST_PROBABILITY = 0.1f;
+	private static final float CHEST_PROBABILITY = 0.06f;
 
 	private static final WeightedCollection<ItemGroup> ITEM_GROUPS = new WeightedCollection<>();
 
@@ -113,7 +113,7 @@ public class RoomBasic extends Room {
 
 		if (constructor != null) {
 			try {
-				item = (Item) constructor.newInstance(getLevel());
+				item = constructor.newInstance(getLevel());
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 				JRogue.getLogger().error("Error adding chest items", e);
 				return;
@@ -122,7 +122,7 @@ public class RoomBasic extends Room {
 			constructor = ConstructorUtils.getAccessibleConstructor(itemClass);
 
 			try {
-				item = (Item) constructor.newInstance();
+				item = constructor.newInstance();
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 				JRogue.getLogger().error("Error adding chest items", e);
 				return;
