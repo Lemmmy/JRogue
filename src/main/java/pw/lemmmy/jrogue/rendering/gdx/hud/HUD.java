@@ -147,7 +147,7 @@ public class HUD implements Dungeon.Listener {
 		charismaLabel.setName("attributeCharisma");
 		attributes.add(charismaLabel).pad(0, 2, 0, 8);
 
-		attributes.add(new Container<Actor>()).expand();
+		attributes.add(new Container<>()).expand();
 
 		brightness = new HorizontalGroup();
 		attributes.add(brightness).pad(0, 2, -2, 8).right();

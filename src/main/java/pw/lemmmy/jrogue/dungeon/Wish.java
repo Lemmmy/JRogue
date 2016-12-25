@@ -27,8 +27,8 @@ public class Wish {
 			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
 		} else if (wish.equalsIgnoreCase("kill all")) {
 			dungeon.getLevel().getEntities().stream()
-				.filter(e -> e instanceof LivingEntity && !(e instanceof Player))
-				.forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+				   .filter(e -> e instanceof LivingEntity && !(e instanceof Player))
+				   .forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
 
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {
@@ -43,9 +43,9 @@ public class Wish {
 															player.getX(),
 															player.getY(),
 															new ItemStack(
-					new ItemGold(),
-					gold
-				)
+																new ItemGold(),
+																gold
+															)
 				));
 
 				dungeon.turn();
@@ -106,10 +106,12 @@ public class Wish {
 			dungeon.getLevel().addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("hellhound")) {
-			dungeon.getLevel().addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel()
+				   .addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("icehound")) {
-			dungeon.getLevel().addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel()
+				   .addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("spider")) {
 			dungeon.getLevel().addEntity(new MonsterSpider(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
@@ -118,7 +120,8 @@ public class Wish {
 			dungeon.getLevel().addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("skeleton")) {
-			dungeon.getLevel().addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel()
+				   .addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		}
 

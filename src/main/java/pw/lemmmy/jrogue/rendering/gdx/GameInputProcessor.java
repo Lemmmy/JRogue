@@ -128,10 +128,10 @@ public class GameInputProcessor implements InputProcessor {
 
 		if (
 			pos.getX() < 0 ||
-			pos.getY() < 0 ||
-			pos.getX() > dungeon.getLevel().getWidth() ||
-			pos.getY() > dungeon.getLevel().getHeight()
-		) {
+				pos.getY() < 0 ||
+				pos.getX() > dungeon.getLevel().getWidth() ||
+				pos.getY() > dungeon.getLevel().getHeight()
+			) {
 			return false;
 		}
 

@@ -183,7 +183,7 @@ public class Dungeon {
 				}
 
 				JRogue.getLogger().error("Something went wrong with your save file and Lemmmy is lazy. Please restart" +
-										 " JRogue."); // TODO: don't be lazy
+											 " JRogue."); // TODO: don't be lazy
 
 				return;
 			}
@@ -229,13 +229,11 @@ public class Dungeon {
 
 		listeners.forEach(l -> l.onLevelChange(level));
 
-		level.getEntities().forEach(e -> {
-			listeners.forEach(l -> l.onEntityAdded(e));
-		});
+		level.getEntities().forEach(e -> listeners.forEach(l -> l.onEntityAdded(e)));
 	}
 
 	public void quit() {
-		prompt(new Prompt("Really quit?", new char[] {'y', 'n'}, true, new Prompt.PromptCallback() {
+		prompt(new Prompt("Really quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {}
 
@@ -258,7 +256,7 @@ public class Dungeon {
 	}
 
 	public void saveAndQuit() {
-		prompt(new Prompt("Really save and quit?", new char[] {'y', 'n'}, true, new Prompt.PromptCallback() {
+		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {}
 
@@ -522,8 +520,8 @@ public class Dungeon {
 
 		if (
 			level.getHostileMonsters().size() < Math.abs((level.getDepth() * 2) + 10) &&
-			--monsterSpawnCounter <= 0
-		) {
+				--monsterSpawnCounter <= 0
+			) {
 			level.spawnNewMonsters();
 
 			monsterSpawnCounter = Utils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
@@ -532,8 +530,8 @@ public class Dungeon {
 
 	private void emitPassiveSounds() {
 		List<Entity> emitters = level.getEntities().stream()
-												  .filter(e -> e instanceof PassiveSoundEmitter)
-												  .collect(Collectors.toList());
+									 .filter(e -> e instanceof PassiveSoundEmitter)
+									 .collect(Collectors.toList());
 
 		if (emitters.isEmpty()) {
 			return;

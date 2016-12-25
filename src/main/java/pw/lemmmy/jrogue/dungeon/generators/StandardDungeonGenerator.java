@@ -337,8 +337,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
-			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
-			.collect(Collectors.toList());
+							   .filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
+																						.getConnectionPoints().size())
+							   .collect(Collectors.toList());
 
 		if (temp2.isEmpty()) {
 			return false;
@@ -375,23 +376,24 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void chooseNextStairsRoom() {
 		Optional<Room> spawnRoom = rooms.stream()
-			.filter(Room::isSpawn)
-			.findFirst();
+										.filter(Room::isSpawn)
+										.findFirst();
 
 		List<Room> temp = rooms.stream()
-			.filter(room -> !room.isSpawn())
-			.collect(Collectors.toList());
+							   .filter(room -> !room.isSpawn())
+							   .collect(Collectors.toList());
 
 		spawnRoom.ifPresent(room -> temp.sort(Comparator.comparingDouble(a -> Utils.distanceSq(
 			a.getCenterX(),
 			a.getCenterY(),
 			spawnRoom.get().getCenterX(),
-			spawnRoom.get().getCenterX()))
+			spawnRoom.get().getCenterX()
+											  ))
 		));
 
 		List<Room> possibleRooms = temp.stream()
-			.skip(temp.size() - 5)
-			.collect(Collectors.toList());
+									   .skip(temp.size() - 5)
+									   .collect(Collectors.toList());
 
 		Room nextStairsRoom = Utils.randomFrom(possibleRooms);
 

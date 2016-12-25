@@ -428,7 +428,7 @@ public class Player extends LivingEntity {
 		try {
 			Class<? extends Role> roleClass = (Class<? extends Role>) Class.forName(roleClassName);
 			Constructor<? extends Role> roleConstructor = roleClass.getConstructor();
-			role = (Role) roleConstructor.newInstance();
+			role = roleConstructor.newInstance();
 		} catch (ClassNotFoundException e) {
 			JRogue.getLogger().error("Unknown role class {}", roleClassName);
 		} catch (NoSuchMethodException e) {
@@ -563,9 +563,9 @@ public class Player extends LivingEntity {
 
 					if (
 						destTile == null ||
-						i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
-						destTile.getType().getSolidity() == TileType.Solidity.SOLID
-					) {
+							i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
+							destTile.getType().getSolidity() == TileType.Solidity.SOLID
+						) {
 						break;
 					}
 
@@ -622,8 +622,8 @@ public class Player extends LivingEntity {
 		path.forEach(step -> {
 			i.incrementAndGet();
 
-			if (stop.get()) return;
-			if (getX() == step.getX() && getY() == step.getY()) return;
+			if (stop.get()) { return; }
+			if (getX() == step.getX() && getY() == step.getY()) { return; }
 
 			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
 				stop.set(true);
@@ -703,9 +703,9 @@ public class Player extends LivingEntity {
 
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
-			.filter(e -> e instanceof EntityItem)
-			.filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
-			.findFirst();
+												  .filter(e -> e instanceof EntityItem)
+												  .filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
+												  .findFirst();
 
 		if (floorFood.isPresent()) {
 			eatFromFloor((EntityItem) floorFood.get());
@@ -947,7 +947,7 @@ public class Player extends LivingEntity {
 		}
 
 		Container inventory = getContainer().get();
-		
+
 		if (inventory.isEmpty()) {
 			getDungeon().yellowYou("don't have any items to drop!");
 			return;
@@ -999,8 +999,8 @@ public class Player extends LivingEntity {
 
 	public void loot() {
 		List<Entity> containerEntities = getLevel().getEntitiesAt(getX(), getY()).stream()
-			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
-			.collect(Collectors.toList());
+												   .filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
+												   .collect(Collectors.toList());
 
 		if (containerEntities.size() == 0) {
 			getDungeon().log("There is nothing to loot here.");
@@ -1141,8 +1141,10 @@ public class Player extends LivingEntity {
 			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
 		}
 
-		Level level = tsc.getLinkedLevel().get();
-		getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
+		if (tsc.getLinkedLevel().isPresent()) {
+			Level level = tsc.getLinkedLevel().get();
+			getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
+		}
 	}
 
 	private Map<Character, ItemStack> getWieldablesInInventory() {

@@ -63,7 +63,7 @@ public abstract class DungeonGenerator {
 				Level.class, int.class, int.class, int.class, int.class
 			);
 
-			Room room = (Room) roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
+			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
 			room.build();
 
 			rooms.add(room);

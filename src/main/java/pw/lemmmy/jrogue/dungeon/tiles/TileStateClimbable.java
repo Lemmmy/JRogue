@@ -19,7 +19,7 @@ public class TileStateClimbable extends TileState {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 
-		linkedLevelUUID.ifPresent(uuid ->  {
+		linkedLevelUUID.ifPresent(uuid -> {
 			obj.put("uuid", uuid.toString());
 			obj.put("destX", destX);
 			obj.put("destY", destY);

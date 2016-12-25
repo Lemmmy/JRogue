@@ -13,7 +13,7 @@ public abstract class TileState {
 		return tile;
 	}
 
-	public void serialise (JSONObject obj) {}
+	public void serialise(JSONObject obj) {}
 
-	public void unserialise (JSONObject obj) {}
+	public void unserialise(JSONObject obj) {}
 }

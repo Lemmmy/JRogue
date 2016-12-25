@@ -59,7 +59,7 @@ public class RoomBasic extends Room {
 		for (int y = getRoomY(); y < getRoomY() + getRoomHeight(); y++) {
 			for (int x = getRoomX(); x < getRoomX() + getRoomWidth(); x++) {
 				boolean wall = x == getRoomX() || x == getRoomX() + getRoomWidth() - 1 ||
-							   y == getRoomY() || y == getRoomY() + getRoomHeight() - 1;
+					y == getRoomY() || y == getRoomY() + getRoomHeight() - 1;
 
 				if (wall) {
 					if (x > getRoomX() && x < getRoomX() + getRoomWidth() - 1 && x % 4 == 0) {

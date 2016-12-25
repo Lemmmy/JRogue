@@ -68,7 +68,13 @@ public enum TileType {
 		this(id, solidity, null, buildable, light, lightIntensity, absorb);
 	}
 
-	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass, boolean buildable, Color light, int lightIntensity, int absorb) {
+	TileType(int id,
+			 Solidity solidity,
+			 Class<? extends TileState> stateClass,
+			 boolean buildable,
+			 Color light,
+			 int lightIntensity,
+			 int absorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
 
 		this.solidity = solidity;

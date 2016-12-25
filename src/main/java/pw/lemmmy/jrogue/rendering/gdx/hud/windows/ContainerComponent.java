@@ -91,9 +91,9 @@ public class ContainerComponent extends Table {
 
 				if (
 					player.getRightHand() != null && player.getLeftHand() != null &&
-					player.getRightHand().getLetter() == character &&
-					player.getLeftHand().getLetter() == character
-				) {
+						player.getRightHand().getLetter() == character &&
+						player.getLeftHand().getLetter() == character
+					) {
 					suffix = " [P_GREY_3](in both hands)[]";
 				} else if (player.getRightHand() != null && player.getRightHand().getLetter() == character) {
 					suffix = " [P_GREY_3](in right hand)[]";
@@ -110,7 +110,7 @@ public class ContainerComponent extends Table {
 			)).left().padRight(6);
 			itemTable.add(new Label(
 				"[BLACK]" + itemStack.getName(true) + suffix,
-				  getSkin(),
+				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();
 			itemTable.row();

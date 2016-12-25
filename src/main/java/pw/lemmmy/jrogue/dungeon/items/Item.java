@@ -9,7 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public abstract class Item{
+public abstract class Item {
 	private int visualID;
 
 	private boolean identified = false;

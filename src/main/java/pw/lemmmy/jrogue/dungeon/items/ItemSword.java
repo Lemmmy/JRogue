@@ -20,12 +20,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 		super();
 
 		List<Material> validMaterials = Arrays.stream(Material.values())
-			.filter(m -> m.getLevelRequiredToSpawn() <= Math.abs(level.getDepth()))
-			.collect(Collectors.toList());
+											  .filter(m -> m.getLevelRequiredToSpawn() <= Math.abs(level.getDepth()))
+											  .collect(Collectors.toList());
 
 		List<Material> bestMaterials = validMaterials.stream()
-			.skip(Math.max(0, validMaterials.size() - 3))
-			.collect(Collectors.toList());
+													 .skip(Math.max(0, validMaterials.size() - 3))
+													 .collect(Collectors.toList());
 
 		this.material = Utils.randomFrom(bestMaterials);
 	}

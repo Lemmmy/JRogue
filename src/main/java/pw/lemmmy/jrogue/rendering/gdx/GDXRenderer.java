@@ -87,12 +87,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 
 	@Override
 	public void create() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread thread, Throwable throwable) {
-				ErrorHandler.error(null, throwable);
-				Gdx.app.exit();
-			}
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+			ErrorHandler.error(null, throwable);
+			Gdx.app.exit();
 		});
 
 		super.create();
@@ -427,15 +424,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				image = pathB;
 			} else if (a[0] && a[1] && !a[2] && !a[3]) {
 				image = pathH;
-			} else if (!a[0] && !a[1] && a[2] && a[3]) {
+			} else if (!a[0] && !a[1] && a[2]) {
 				image = pathV;
-			} else if (!a[0] && a[1] && !a[2] && a[3]) {
+			} else if (!a[0] && a[1] && !a[2]) {
 				image = pathUL;
-			} else if (a[0] && !a[1] && !a[2] && a[3]) {
+			} else if (a[0] && !a[1] && !a[2]) {
 				image = pathUR;
-			} else if (!a[0] && a[1] && a[2] && !a[3]) {
+			} else if (!a[0] && a[1] && !a[3]) {
 				image = pathBL;
-			} else if (a[0] && !a[1] && a[2] && !a[3]) {
+			} else if (a[0] && !a[1] && !a[3]) {
 				image = pathBR;
 			} else {
 				image = pathSpot;

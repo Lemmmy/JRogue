@@ -4,7 +4,7 @@ public class ItemCherries extends ItemComestible {
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		return plural ? (requiresCapitalisation ? "Pairs of cherries" : "pairs of cherries") :
-			   			(requiresCapitalisation ? "Pair of cherries" : "pair of cherries");
+			   (requiresCapitalisation ? "Pair of cherries" : "pair of cherries");
 	}
 
 	@Override
