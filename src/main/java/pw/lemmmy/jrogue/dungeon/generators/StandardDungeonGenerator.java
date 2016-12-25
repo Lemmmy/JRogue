@@ -47,7 +47,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
 	private static final double SCALE_WATER_NOISE = 0.2;
 
-	private static final double PROBABILITY_GOLD_DROP = 0.14;
+	private static final double PROBABILITY_GOLD_DROP = 0.08;
 
 	private static final double PROBABILITY_FISH = 0.35;
 	private static final double PROBABILITY_PUFFERFISH = 0.15;
@@ -282,7 +282,7 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
 				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
 
-				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 3, 10));
+				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 2, 6));
 			}
 		});
 	}
@@ -337,8 +337,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
-			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1).getConnectionPoints().size())
-			.collect(Collectors.toList());
+							   .filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
+																						.getConnectionPoints().size())
+							   .collect(Collectors.toList());
 
 		if (temp2.isEmpty()) {
 			return false;
@@ -374,9 +375,27 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 	}
 
 	private void chooseNextStairsRoom() {
-		List<Room> temp = rooms.stream().filter(room -> !room.isSpawn()).collect(Collectors.toList());
+		Optional<Room> spawnRoom = rooms.stream()
+										.filter(Room::isSpawn)
+										.findFirst();
 
-		Room nextStairsRoom = Utils.randomFrom(temp);
+		List<Room> temp = rooms.stream()
+							   .filter(room -> !room.isSpawn())
+							   .collect(Collectors.toList());
+
+		spawnRoom.ifPresent(room -> temp.sort(Comparator.comparingDouble(a -> Utils.distanceSq(
+			a.getCenterX(),
+			a.getCenterY(),
+			spawnRoom.get().getCenterX(),
+			spawnRoom.get().getCenterX()
+											  ))
+		));
+
+		List<Room> possibleRooms = temp.stream()
+									   .skip(temp.size() - 5)
+									   .collect(Collectors.toList());
+
+		Room nextStairsRoom = Utils.randomFrom(possibleRooms);
 
 		int stairX = nextInt(
 			nextStairsRoom.getRoomX() + 2,

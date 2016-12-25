@@ -36,6 +36,8 @@ public class Player extends LivingEntity {
 	private int nutrition;
 	private NutritionState lastNutritionState;
 
+	private int spendableSkillPoints = 3;
+
 	private int strength;
 	private int agility;
 	private int dexterity;
@@ -176,6 +178,10 @@ public class Player extends LivingEntity {
 		}
 	}
 
+	public int getSpendableSkillPoints() {
+		return spendableSkillPoints;
+	}
+
 	public int getStrength() {
 		return strength;
 	}
@@ -198,6 +204,69 @@ public class Player extends LivingEntity {
 
 	public int getCharisma() {
 		return charisma;
+	}
+
+	public void increaseStrength() {
+		if (spendableSkillPoints <= 0 || strength >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		strength++;
+	}
+
+	public void increaseAgility() {
+		if (spendableSkillPoints <= 0 || agility >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		agility++;
+	}
+
+	public void increaseDexterity() {
+		if (spendableSkillPoints <= 0 || dexterity >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		dexterity++;
+	}
+
+	public void increaseConstitution() {
+		if (spendableSkillPoints <= 0 || constitution >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		constitution++;
+	}
+
+	public void increaseIntelligence() {
+		if (spendableSkillPoints <= 0 || intelligence >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		intelligence++;
+	}
+
+	public void increaseWisdom() {
+		if (spendableSkillPoints <= 0 || wisdom >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		wisdom++;
+	}
+
+	public void increaseCharisma() {
+		if (spendableSkillPoints <= 0 || charisma >= 30) {
+			return;
+		}
+
+		spendableSkillPoints--;
+		charisma++;
 	}
 
 	@Override
@@ -264,6 +333,11 @@ public class Player extends LivingEntity {
 		super.onLevelUp();
 
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
+		getDungeon().greenYou(
+			"have %,d spendable skill point%s.",
+			++spendableSkillPoints,
+			spendableSkillPoints == 1 ? "" : "s"
+		);
 	}
 
 	@Override
@@ -288,9 +362,11 @@ public class Player extends LivingEntity {
 				case HUNGRY:
 					getDungeon().orangeYou("are starting to feel hungry.");
 					break;
-				case FAINTING:
 				case STARVING:
 					getDungeon().redYou("are starving!");
+					break;
+				case FAINTING:
+					getDungeon().redYou("are passing out due to starvation!");
 					break;
 				default:
 					break;
@@ -310,6 +386,7 @@ public class Player extends LivingEntity {
 
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
+		obj.put("spendableSkillPoints", getSpendableSkillPoints());
 		obj.put("strength", getStrength());
 		obj.put("agility", getAgility());
 		obj.put("dexterity", getDexterity());
@@ -335,6 +412,7 @@ public class Player extends LivingEntity {
 		super.unserialise(obj);
 
 		name = obj.getString("name");
+		spendableSkillPoints = obj.getInt("spendableSkillPoints");
 		strength = obj.getInt("strength");
 		agility = obj.getInt("agility");
 		dexterity = obj.getInt("dexterity");
@@ -350,7 +428,7 @@ public class Player extends LivingEntity {
 		try {
 			Class<? extends Role> roleClass = (Class<? extends Role>) Class.forName(roleClassName);
 			Constructor<? extends Role> roleConstructor = roleClass.getConstructor();
-			role = (Role) roleConstructor.newInstance();
+			role = roleConstructor.newInstance();
 		} catch (ClassNotFoundException e) {
 			JRogue.getLogger().error("Unknown role class {}", roleClassName);
 		} catch (NoSuchMethodException e) {
@@ -485,9 +563,9 @@ public class Player extends LivingEntity {
 
 					if (
 						destTile == null ||
-						i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
-						destTile.getType().getSolidity() == TileType.Solidity.SOLID
-					) {
+							i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
+							destTile.getType().getSolidity() == TileType.Solidity.SOLID
+						) {
 						break;
 					}
 
@@ -544,8 +622,8 @@ public class Player extends LivingEntity {
 		path.forEach(step -> {
 			i.incrementAndGet();
 
-			if (stop.get()) return;
-			if (getX() == step.getX() && getY() == step.getY()) return;
+			if (stop.get()) { return; }
+			if (getX() == step.getX() && getY() == step.getY()) { return; }
 
 			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
 				stop.set(true);
@@ -625,9 +703,9 @@ public class Player extends LivingEntity {
 
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
-			.filter(e -> e instanceof EntityItem)
-			.filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
-			.findFirst();
+												  .filter(e -> e instanceof EntityItem)
+												  .filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
+												  .findFirst();
 
 		if (floorFood.isPresent()) {
 			eatFromFloor((EntityItem) floorFood.get());
@@ -922,7 +1000,7 @@ public class Player extends LivingEntity {
 		}
 
 		Container inventory = getContainer().get();
-		
+
 		if (inventory.isEmpty()) {
 			getDungeon().yellowYou("don't have any items to drop!");
 			return;
@@ -974,8 +1052,8 @@ public class Player extends LivingEntity {
 
 	public void loot() {
 		List<Entity> containerEntities = getLevel().getEntitiesAt(getX(), getY()).stream()
-			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
-			.collect(Collectors.toList());
+												   .filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
+												   .collect(Collectors.toList());
 
 		if (containerEntities.size() == 0) {
 			getDungeon().log("There is nothing to loot here.");
@@ -1116,8 +1194,10 @@ public class Player extends LivingEntity {
 			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
 		}
 
-		Level level = tsc.getLinkedLevel().get();
-		getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
+		if (tsc.getLinkedLevel().isPresent()) {
+			Level level = tsc.getLinkedLevel().get();
+			getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
+		}
 	}
 
 	public Map<Character, ItemStack> getWieldablesInInventory() {

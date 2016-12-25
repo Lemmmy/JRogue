@@ -29,11 +29,11 @@ public class Container implements Serialisable {
 	public Map<Character, ItemStack> getItems() {
 		return items;
 	}
-	
+
 	public int getItemCount() {
 		return items.size();
 	}
-	
+
 	public boolean isEmpty() {
 		return getItemCount() == 0;
 	}

@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.gdx;
+package pw.lemmmy.jrogue.rendering.gdx.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
@@ -152,7 +152,7 @@ public class HUDSkin extends Skin {
 		add("default", buttonStyle);
 	}
 
-	private void  addInventoryButtonStyle() {
+	private void addInventoryButtonStyle() {
 		Button.ButtonStyle inventoryButtonStyle = new Button.ButtonStyle();
 
 		inventoryButtonStyle.disabled = inventoryButtonStyle.up = new NinePatchDrawable(new NinePatch(
@@ -217,7 +217,7 @@ public class HUDSkin extends Skin {
 		textButtonStyle.fontColor = Colors.get("P_GREY_0");
 		textButtonStyle.downFontColor = Colors.get("P_GREY_0");
 		textButtonStyle.overFontColor = Colors.get("P_GREY_0");
-		textButtonStyle.disabledFontColor = Colors.get("P_GREY_4");
+		textButtonStyle.disabledFontColor = Colors.get("P_GREY_0");
 
 		add("default", textButtonStyle);
 	}

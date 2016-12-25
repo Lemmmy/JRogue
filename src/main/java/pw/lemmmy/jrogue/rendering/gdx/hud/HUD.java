@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.gdx;
+package pw.lemmmy.jrogue.rendering.gdx.hud;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -58,7 +58,7 @@ public class HUD implements Dungeon.Listener {
 		initPlayerLine(hudTopContainer);
 		root.add(hudTopContainer).left().fillX().row();
 
-		root.add(new Container<Actor>()).expand().row();
+		root.add(new Container<>()).expand().row();
 
 		initInfoLine(root);
 		initAttributes(root);
@@ -147,7 +147,7 @@ public class HUD implements Dungeon.Listener {
 		charismaLabel.setName("attributeCharisma");
 		attributes.add(charismaLabel).pad(0, 2, 0, 8);
 
-		attributes.add(new Container<Actor>()).expand();
+		attributes.add(new Container<>()).expand();
 
 		brightness = new HorizontalGroup();
 		attributes.add(brightness).pad(0, 2, -2, 8).right();

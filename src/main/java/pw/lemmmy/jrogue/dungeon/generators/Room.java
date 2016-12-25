@@ -83,5 +83,6 @@ public abstract class Room {
 	}
 
 	public abstract void build();
+
 	public abstract void addFeatures();
 }
