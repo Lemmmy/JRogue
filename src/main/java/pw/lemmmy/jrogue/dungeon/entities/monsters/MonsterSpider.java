@@ -75,7 +75,7 @@ public class MonsterSpider extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 4;
+		return 9;
 	}
 	
 	@Override

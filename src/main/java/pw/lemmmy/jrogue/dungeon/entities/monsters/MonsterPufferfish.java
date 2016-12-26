@@ -62,7 +62,7 @@ public class MonsterPufferfish extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 5;
+		return 8;
 	}
 	
 	@Override

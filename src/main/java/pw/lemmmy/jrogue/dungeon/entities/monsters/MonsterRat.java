@@ -73,7 +73,7 @@ public class MonsterRat extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 4;
+		return 8;
 	}
 	
 	@Override

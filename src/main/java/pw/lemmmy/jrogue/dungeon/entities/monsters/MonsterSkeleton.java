@@ -63,7 +63,7 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 9;
+		return 4;
 	}
 	
 	@Override

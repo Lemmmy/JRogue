@@ -89,7 +89,7 @@ public class MonsterFish extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 4;
+		return 10;
 	}
 	
 	@Override

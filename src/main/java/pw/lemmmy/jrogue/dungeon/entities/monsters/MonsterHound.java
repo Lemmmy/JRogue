@@ -55,7 +55,7 @@ public class MonsterHound extends MonsterCanine {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 8;
+		return 5;
 	}
 	
 	@Override
