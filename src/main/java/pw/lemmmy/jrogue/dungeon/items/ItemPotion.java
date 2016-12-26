@@ -87,7 +87,6 @@ public class ItemPotion extends ItemDrinkable {
 
         if (entity instanceof LivingEntity) {
             potionType.getEffect().apply((LivingEntity) entity, potency);
-            empty = true;
         }
     }
 
@@ -119,5 +118,27 @@ public class ItemPotion extends ItemDrinkable {
         bottleType = BottleType.valueOf(obj.optString("bottle", "BOTTLE"));
         potionType = PotionType.valueOf(obj.optString("type", "POTION_WATER"));
         potency = (float)obj.optDouble("potency", 0.0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemPotion that = (ItemPotion) o;
+
+        if (empty != that.empty) return false;
+        if (Float.compare(that.potency, potency) != 0) return false;
+        if (bottleType != that.bottleType) return false;
+        return potionType == that.potionType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (empty ? 1 : 0);
+        result = 31 * result + (bottleType != null ? bottleType.hashCode() : 0);
+        result = 31 * result + (potionType != null ? potionType.hashCode() : 0);
+        result = 31 * result + (potency != +0.0f ? Float.floatToIntBits(potency) : 0);
+        return result;
     }
 }

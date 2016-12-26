@@ -829,7 +829,29 @@ public class Player extends LivingEntity {
 				ItemStack stack = containerEntry.get().getStack();
 				ItemDrinkable drinkable = (ItemDrinkable) stack.getItem();
 
-				setAction(new ActionDrink(getDungeon(), Player.this, drinkable));
+				setAction(new ActionDrink(getDungeon(), Player.this, drinkable, new EntityAction.ActionCallback() {
+					@Override
+					public void onComplete() {
+						super.onComplete();
+
+						if (stack.getCount() == 1) {
+							inventory.remove(containerEntry.get().getLetter());
+						} else {
+							stack.subtractCount(1);
+						}
+
+						if (drinkable instanceof ItemPotion) {
+							ItemPotion potion = (ItemPotion) drinkable;
+
+							ItemPotion emptyPotion = new ItemPotion();
+							emptyPotion.setPotionType(potion.getPotionType());
+							emptyPotion.setBottleType(potion.getBottleType());
+							emptyPotion.setEmpty(true);
+							inventory.add(new ItemStack(emptyPotion, 1));
+						}
+					}
+				}));
+
 				getDungeon().turn();
 			}
 		}));
