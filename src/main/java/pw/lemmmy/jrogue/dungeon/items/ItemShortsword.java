@@ -33,16 +33,6 @@ public class ItemShortsword extends ItemSword {
 	}
 	
 	@Override
-	public float getSmallMissChance() {
-		return 0.2f;
-	}
-	
-	@Override
-	public float getLargeMissChance() {
-		return 0.1f;
-	}
-	
-	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_SHORTSWORD;
 	}

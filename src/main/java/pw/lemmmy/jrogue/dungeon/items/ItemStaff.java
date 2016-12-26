@@ -66,16 +66,6 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public float getSmallMissChance() {
-		return 0.4f;
-	}
-	
-	@Override
-	public float getLargeMissChance() {
-		return 0.1f;
-	}
-	
-	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_STAFF;
 	}
