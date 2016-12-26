@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
-import pw.lemmmy.jrogue.dungeon.entities.potions.PotionType;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.*;
 
 import java.util.Random;

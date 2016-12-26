@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.items;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.entities.potions.PotionType;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
 
 public class ItemPotion extends ItemDrinkable {
     public enum BottleType {

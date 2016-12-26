@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.dungeon.entities.potions;
+package pw.lemmmy.jrogue.dungeon.items.potions;
 
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 

@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.dungeon.entities.potions;
+package pw.lemmmy.jrogue.dungeon.items.potions;
 
 import com.badlogic.gdx.graphics.Color;
 import pw.lemmmy.jrogue.dungeon.entities.effects.Poison;
