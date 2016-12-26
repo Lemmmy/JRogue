@@ -39,30 +39,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 			SkillLevel skillLevel = player.getSkillLevel(getSkill());
 			int skillModifier = skillLevel.getMeleeWeaponDamage();
 			
-			float missChanceMultiplier = 1.0f;
-			
-			switch (skillLevel) {
-				case ADVANCED:
-					missChanceMultiplier = 0.6f;
-					break;
-				case EXPERT:
-					missChanceMultiplier = 0.4f;
-					break;
-				case MASTER:
-					missChanceMultiplier = 0.2f;
-					break;
-			}
-			
-			float missChance = victim.getSize() == LivingEntity.Size.SMALL ?
-							   getSmallMissChance() : getLargeMissChance();
-			
-			missChance *= missChanceMultiplier;
-			
-			if (Utils.randomFloat() < missChance) {
-				damage = 0;
-			} else {
-				damage += skillModifier;
-			}
+			damage += skillModifier;
 		}
 		
 		return damage;
@@ -75,10 +52,6 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 	public abstract int getSmallDamage();
 	
 	public abstract int getLargeDamage();
-	
-	public abstract float getSmallMissChance();
-	
-	public abstract float getLargeMissChance();
 	
 	public abstract Skill getSkill();
 	
