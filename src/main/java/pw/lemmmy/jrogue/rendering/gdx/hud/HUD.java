@@ -204,7 +204,9 @@ public class HUD implements Dungeon.Listener {
 		));
 		
 		if (player.getHealth() != healthLastTurn) {
-			((Label) topStats.findActor("health")).setStyle(getSkin().get("health", Label.LabelStyle.class));
+			String bg = healthLastTurn > player.getHealth() ? "redBackground" : "greenBackground";
+			
+			((Label) topStats.findActor("health")).setStyle(getSkin().get(bg, Label.LabelStyle.class));
 			((Label) topStats.findActor("health")).setText(String.format(
 				"Health: %,d / %,d",
 				player.getHealth(),

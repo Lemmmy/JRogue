@@ -89,15 +89,15 @@ public class HUDSkin extends Skin {
 		blue.fill();
 		add("blue", new Texture(blue));
 		
-		Pixmap health = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		health.setColor(new Color(0xc82020ff));
-		health.fill();
-		add("health", new Texture(health));
+		Pixmap red = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		red.setColor(new Color(0xc82020ff));
+		red.fill();
+		add("redBackground", new Texture(red));
 		
-		Pixmap energy = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		energy.setColor(new Color(0x773cd0ff));
-		energy.fill();
-		add("energy", new Texture(energy));
+		Pixmap green = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		green.setColor(new Color(0x6cdb00ff));
+		green.fill();
+		add("greenBackground", new Texture(green));
 	}
 	
 	private void addFonts() {
@@ -112,15 +112,15 @@ public class HUDSkin extends Skin {
 		labelStyle.font = getFont("default");
 		add("default", labelStyle);
 		
-		Label.LabelStyle healthStyle = new Label.LabelStyle();
-		healthStyle.font = getFont("default");
-		healthStyle.background = getDrawable("health");
-		add("health", healthStyle);
+		Label.LabelStyle redBackgroundStyle = new Label.LabelStyle();
+		redBackgroundStyle.font = getFont("default");
+		redBackgroundStyle.background = getDrawable("redBackground");
+		add("redBackground", redBackgroundStyle);
 		
-		Label.LabelStyle energyStyle = new Label.LabelStyle();
-		energyStyle.font = getFont("default");
-		energyStyle.background = getDrawable("energy");
-		add("energy", energyStyle);
+		Label.LabelStyle greenBackgroundStyle = new Label.LabelStyle();
+		greenBackgroundStyle.font = getFont("default");
+		greenBackgroundStyle.background = getDrawable("greenBackground");
+		add("greenBackground", greenBackgroundStyle);
 		
 		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
 		largeLabelStyle.font = getFont("large");
