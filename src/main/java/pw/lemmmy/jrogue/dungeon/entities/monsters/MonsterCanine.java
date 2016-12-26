@@ -30,6 +30,11 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
+	public int getBaseArmourClass() {
+		return 7;
+	}
+	
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().logRandom("It whimpers.", "It whines.", "It cries.", "It yelps.");
 	}

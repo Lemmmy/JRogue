@@ -42,9 +42,31 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return maxHealth;
 	}
 	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public boolean isAlive() {
+		return health > 0;
+	}
+	
+	public void heal(int amount) {
+		health = Math.min(maxHealth, health + amount);
+	}
+	
 	public int getHealingRate() {
 		return 40;
 	}
+	
+	public int getArmourClass() {
+		return getBaseArmourClass();
+	}
+	
+	public abstract int getBaseArmourClass();
 	
 	public int getExperienceLevel() {
 		return experienceLevel;
@@ -82,22 +104,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public void onLevelUp() {}
-	
-	public int getHealth() {
-		return health;
-	}
-	
-	public void setHealth(int health) {
-		this.health = health;
-	}
-	
-	public void heal(int amount) {
-		health = Math.min(maxHealth, health + amount);
-	}
-	
-	public boolean isAlive() {
-		return health > 0;
-	}
 	
 	public abstract int getMovementSpeed();
 	

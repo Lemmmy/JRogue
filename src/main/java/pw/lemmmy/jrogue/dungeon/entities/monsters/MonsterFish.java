@@ -88,6 +88,11 @@ public class MonsterFish extends Monster {
 	}
 	
 	@Override
+	public int getBaseArmourClass() {
+		return 4;
+	}
+	
+	@Override
 	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}

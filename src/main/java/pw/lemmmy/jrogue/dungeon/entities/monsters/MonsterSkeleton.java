@@ -62,6 +62,11 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
+	public int getBaseArmourClass() {
+		return 9;
+	}
+	
+	@Override
 	public int getVisibilityRange() {
 		return 20;
 	}
