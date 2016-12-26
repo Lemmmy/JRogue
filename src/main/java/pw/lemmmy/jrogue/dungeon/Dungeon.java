@@ -30,8 +30,8 @@ import java.util.zip.GZIPOutputStream;
 public class Dungeon implements Messenger {
 	public static final int NORMAL_SPEED = 12;
 	
-	private static final int LEVEL_WIDTH = 110;
-	private static final int LEVEL_HEIGHT = 50;
+	private static final int LEVEL_WIDTH = 90;
+	private static final int LEVEL_HEIGHT = 40;
 	
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
