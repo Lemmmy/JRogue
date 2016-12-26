@@ -19,7 +19,7 @@ public class DungeonNameGenerator {
 		"The {pronounAdjective} {pronoun}'s {roomType}",
 		"The {pronounAdjective} {pronoun}'s {roomAdjective} {roomType}"
 	};
-
+	
 	static {
 		NAME_OBJECTS.put("roomType", new String[]{
 			"Burrows",
@@ -40,7 +40,7 @@ public class DungeonNameGenerator {
 			"Tunnels",
 			"Vaults"
 		});
-
+		
 		NAME_OBJECTS.put("pronoun", new String[]{
 			"Arachnid",
 			"Army",
@@ -65,7 +65,7 @@ public class DungeonNameGenerator {
 			"Wizard",
 			"Wolf"
 		});
-
+		
 		NAME_OBJECTS.put("pronounAdjective", new String[]{
 			"Barbaric",
 			"Blooded",
@@ -94,7 +94,7 @@ public class DungeonNameGenerator {
 			"Unspoken",
 			"Vanishing"
 		});
-
+		
 		NAME_OBJECTS.put("roomAdjective", new String[]{
 			"Ancient",
 			"Arid",
@@ -147,7 +147,7 @@ public class DungeonNameGenerator {
 			"Yawning"
 		});
 	}
-
+	
 	public static String generate() {
 		return StringReplacer.replace(
 			Utils.randomFrom(NAME_TEMPLATES),

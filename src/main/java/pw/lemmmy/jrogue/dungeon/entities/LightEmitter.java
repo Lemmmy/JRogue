@@ -4,6 +4,6 @@ import java.awt.*;
 
 public interface LightEmitter {
 	Color getLightColour();
-
+	
 	int getLightIntensity();
 }

@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 public enum EntityAppearance {
 	APPEARANCE_PLAYER,
-
+	
 	APPEARANCE_JACKAL,
 	APPEARANCE_FOX,
 	APPEARANCE_HOUND,
@@ -18,9 +18,9 @@ public enum EntityAppearance {
 	APPEARANCE_FISH_BLUE,
 	APPEARANCE_FISH_PURPLE,
 	APPEARANCE_PUFFERFISH,
-
+	
 	APPEARANCE_CHEST,
 	APPEARANCE_FOUNTAIN,
-
+	
 	APPEARANCE_ITEM
 }

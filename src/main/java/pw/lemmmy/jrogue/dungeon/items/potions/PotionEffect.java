@@ -4,5 +4,5 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 @FunctionalInterface
 public interface PotionEffect {
-    void apply(LivingEntity entity, float potency);
+	void apply(LivingEntity entity, float potency);
 }

@@ -17,15 +17,15 @@ public enum DamageSource {
 	POISON("The poison kills you."),
 	CHOKING("You choke to death."),
 	WISH_FOR_DEATH("You wish for death, and your god grants it.");
-
+	
 	String deathString;
-
+	
 	DamageSource() {}
-
+	
 	DamageSource(String deathString) {
 		this.deathString = deathString;
 	}
-
+	
 	public String getDeathString() {
 		return deathString;
 	}

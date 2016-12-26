@@ -12,18 +12,18 @@ import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 public class ItemRendererBasic extends ItemRenderer {
 	private TextureRegion image;
 	private TextureRegion imageDrawable;
-
+	
 	public ItemRendererBasic(String sheetName, int sheetX, int sheetY) {
 		image = getImageFromSheet(sheetName, sheetX, sheetY);
 		imageDrawable = ImageLoader
 			.getImageFromSheet(sheetName, sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
 	}
-
+	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
 		drawItem(batch, image, x, y);
 	}
-
+	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
 		return new TextureRegionDrawable(imageDrawable);

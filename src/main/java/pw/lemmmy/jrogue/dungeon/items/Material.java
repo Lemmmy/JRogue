@@ -12,41 +12,41 @@ public enum Material {
 	GOLD(40, 8, 14),
 	MITHRIL(50, 10, 16),
 	ADAMANTITE(60, 12, 20);
-
+	
 	private int value;
 	private int baseDamage;
 	private int levelRequiredToSpawn;
 	private boolean flammable = false;
-
+	
 	Material(int value, int baseDamage, int levelRequiredToSpawn) {
 		this.value = value;
 		this.baseDamage = baseDamage;
 		this.levelRequiredToSpawn = levelRequiredToSpawn;
 	}
-
+	
 	Material(int value, int baseDamage, int levelRequiredToSpawn, boolean flammable) {
 		this.value = value;
 		this.baseDamage = baseDamage;
 		this.levelRequiredToSpawn = levelRequiredToSpawn;
 		this.flammable = flammable;
 	}
-
+	
 	public int getValue() {
 		return value;
 	}
-
+	
 	public int getBaseDamage() {
 		return baseDamage;
 	}
-
+	
 	public int getLevelRequiredToSpawn() {
 		return levelRequiredToSpawn;
 	}
-
+	
 	public boolean isFlammable() {
 		return flammable;
 	}
-
+	
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(this.name().toLowerCase()) : this.name().toLowerCase();
 	}

@@ -8,11 +8,11 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public class EntityRendererFish extends EntityRenderer {
 	protected TextureRegion image;
-
+	
 	public EntityRendererFish(int sheetX, int sheetY) {
 		image = getImageFromSheet("entities.png", sheetX, sheetY);
 	}
-
+	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
 		Color c = batch.getColor();

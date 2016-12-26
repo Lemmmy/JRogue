@@ -3,8 +3,9 @@ package pw.lemmmy.jrogue.dungeon;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
-import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -15,61 +16,61 @@ public class Wish {
 	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 	private static final Pattern wishSword = Pattern
 		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
-
+	
 	public static void wish(Dungeon dungeon, String wish) {
 		Player player = dungeon.getPlayer();
-
+		
 		if (player.isDebugger()) {
 			JRogue.getLogger().debug("Player wished for '{}'", wish);
 		}
-
+		
 		wish = wish.toLowerCase();
-
+		
 		if (wish.equalsIgnoreCase("death")) {
 			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
 		} else if (wish.equalsIgnoreCase("kill all")) {
 			dungeon.getLevel().getEntities().stream()
-				   .filter(e -> e instanceof LivingEntity && !(e instanceof Player))
-				   .forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
-
+				.filter(e -> e instanceof LivingEntity && !(e instanceof Player))
+				.forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+			
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {
 			player.setNutrition(1000);
 		} else {
 			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
-
+			
 			if (wishGoldDroppedMatcher.find()) {
 				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
-
+				
 				dungeon.getLevel().addEntity(new EntityItem(dungeon, dungeon.getLevel(),
-															player.getX(),
-															player.getY(),
-															new ItemStack(
-																new ItemGold(),
-																gold
-															)
+					player.getX(),
+					player.getY(),
+					new ItemStack(
+						new ItemGold(),
+						gold
+					)
 				));
-
+				
 				dungeon.turn();
 				return;
 			}
-
+			
 			Matcher wishGoldMatcher = wishGold.matcher(wish);
-
+			
 			if (wishGoldMatcher.find()) {
 				int gold = Integer.parseInt(wishGoldMatcher.group(1));
-
+				
 				player.giveGold(gold);
-
+				
 				dungeon.turn();
 				return;
 			}
-
+			
 			if (wish.equalsIgnoreCase("godmode")) {
 				player.godmode();
 				return;
 			}
-
+			
 			if (wish.equalsIgnoreCase("chest")) {
 				dungeon.getLevel().addEntity(
 					new EntityChest(dungeon, dungeon.getLevel(), player.getX(), player.getY())
@@ -77,7 +78,7 @@ public class Wish {
 				dungeon.turn();
 				return;
 			}
-
+			
 			if (wish.equalsIgnoreCase("fountain")) {
 				dungeon.getLevel().addEntity(
 					new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
@@ -85,18 +86,18 @@ public class Wish {
 				dungeon.turn();
 				return;
 			}
-
+			
 			if (wishMonsters(dungeon, player, wish)) {
 				dungeon.turn();
 				return;
 			}
-
+			
 			if (wishItems(dungeon, player, wish)) {
 				dungeon.turn();
 			}
 		}
 	}
-
+	
 	private static boolean wishMonsters(Dungeon dungeon, Player player, String wish) {
 		if (wish.equalsIgnoreCase("jackal")) {
 			dungeon.getLevel().addEntity(new MonsterJackal(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
@@ -109,11 +110,11 @@ public class Wish {
 			return true;
 		} else if (wish.equalsIgnoreCase("hellhound")) {
 			dungeon.getLevel()
-				   .addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+				.addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("icehound")) {
 			dungeon.getLevel()
-				   .addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+				.addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("spider")) {
 			dungeon.getLevel().addEntity(new MonsterSpider(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
@@ -123,22 +124,22 @@ public class Wish {
 			return true;
 		} else if (wish.equalsIgnoreCase("skeleton")) {
 			dungeon.getLevel()
-				   .addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+				.addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		}
-
+		
 		return false;
 	}
-
+	
 	private static boolean wishItems(Dungeon dungeon, Player player, String wish) {
 		Matcher wishSwordMatcher = wishSword.matcher(wish);
-
+		
 		if (wishSwordMatcher.find()) {
 			Material material = Material.valueOf(wishSwordMatcher.group(1).toUpperCase());
 			String type = wishSwordMatcher.group(2);
-
+			
 			Item item = null;
-
+			
 			if (type.equalsIgnoreCase("shortsword")) {
 				item = new ItemShortsword(material);
 			} else if (type.equalsIgnoreCase("longsword")) {
@@ -146,16 +147,16 @@ public class Wish {
 			} else if (type.equalsIgnoreCase("dagger")) {
 				item = new ItemDagger(material);
 			}
-
+			
 			if (item != null && player.getContainer().isPresent()) {
 				player.getContainer().get().add(new ItemStack(item));
-
+				
 				return true;
 			}
 		}
-
+		
 		Item item = null;
-
+		
 		if (wish.equalsIgnoreCase("bread")) {
 			item = new ItemBread();
 		} else if (wish.equalsIgnoreCase("apple")) {
@@ -174,15 +175,15 @@ public class Wish {
 			item = new ItemCorn();
 		} else if (wish.equalsIgnoreCase("potion")) {
 			Random rand = new Random();
-
+			
 			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
 			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
-
+			
 			int effectIndex = rand.nextInt(PotionType.values().length);
 			PotionType potionType = PotionType.values()[effectIndex];
-
+			
 			float potency = rand.nextFloat() * 6.0f;
-
+			
 			ItemPotion potion = new ItemPotion();
 			potion.setBottleType(bottle);
 			potion.setPotionType(potionType);
@@ -190,13 +191,13 @@ public class Wish {
 			potion.setPotency(potency);
 			item = potion;
 		}
-
+		
 		if (item != null && player.getContainer().isPresent()) {
 			player.getContainer().get().add(new ItemStack(item));
-
+			
 			return true;
 		}
-
+		
 		return false;
 	}
 }

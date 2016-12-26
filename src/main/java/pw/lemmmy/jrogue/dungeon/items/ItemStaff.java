@@ -13,67 +13,73 @@ public class ItemStaff extends ItemWeaponMelee {
 			return plural ? "staves" : "staff";
 		}
 	}
-
+	
 	@Override
 	public float getWeight() {
 		return 50;
 	}
-
+	
 	@Override
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_STAFF;
 	}
-
+	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim) {
-
-	}
-
+	public void zap(LivingEntity attacker, LivingEntity victim) {}
+	
 	@Override
-	public void fire(LivingEntity attacker, LivingEntity victim) {
-
-	}
-
+	public void fire(LivingEntity attacker, LivingEntity victim) {}
+	
 	@Override
 	public boolean isMelee() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean isRanged() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean isMagic() {
 		return false;
 	}
-
+	
 	@Override
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.STAFF_BASH;
 	}
-
+	
 	@Override
 	public void onHit(LivingEntity attacker, LivingEntity victim) {
 		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
 	}
-
+	
 	@Override
 	public int getSmallDamage() {
 		return 4;
 	}
-
+	
 	@Override
 	public int getLargeDamage() {
 		return 3;
 	}
-
+	
+	@Override
+	public float getSmallMissChance() {
+		return 0.4f;
+	}
+	
+	@Override
+	public float getLargeMissChance() {
+		return 0.1f;
+	}
+	
 	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_STAFF;
 	}
-
+	
 	@Override
 	public boolean isTwoHanded() {
 		return true;
