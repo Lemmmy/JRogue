@@ -133,6 +133,11 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
+	public int getArmourClass() {
+		return 10;
+	}
+	
+	@Override
 	public int getDepth() {
 		return 3;
 	}
