@@ -1,6 +1,7 @@
-package pw.lemmmy.jrogue.dungeon.generators;
+package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

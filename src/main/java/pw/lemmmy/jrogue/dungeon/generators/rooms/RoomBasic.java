@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.dungeon.generators;
+package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import com.github.alexeyr.pcg.Pcg32;
 import org.apache.commons.lang3.reflect.ConstructorUtils;

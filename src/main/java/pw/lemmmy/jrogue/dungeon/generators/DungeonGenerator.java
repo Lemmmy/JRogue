@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.generators;
 import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
