@@ -14,7 +14,7 @@ public class QuickSpawn {
 			level,
 			x, y, new ItemStack(new ItemGold(), amount)
 		);
-
+		
 		level.addEntity(entity);
 	}
 }

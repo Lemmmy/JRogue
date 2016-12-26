@@ -7,42 +7,40 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
-
+	
 	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Fountain" : "fountain";
 	}
-
+	
 	@Override
 	public EntityAppearance getAppearance() {
 		return EntityAppearance.APPEARANCE_FOUNTAIN;
 	}
-
+	
 	@Override
 	public boolean isStatic() {
 		return true;
 	}
-
+	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-
-	}
-
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {}
+	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
 		getDungeon().log("There is a %s here.", getName(false));
 	}
-
+	
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
 	}
-
+	
 	@Override
 	public float getSoundProbability() {
 		return 0.15f;
 	}
-
+	
 	@Override
 	public String[] getSounds() {
 		return new String[]{

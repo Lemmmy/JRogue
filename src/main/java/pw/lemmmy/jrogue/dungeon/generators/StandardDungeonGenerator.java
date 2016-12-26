@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.Path;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
@@ -14,6 +13,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
+import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
@@ -293,8 +293,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void spawnFish() {
 		Tile[] waterTiles = Arrays.stream(level.getTiles())
-								  .filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
-								  .toArray(Tile[]::new);
+			.filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
+			.toArray(Tile[]::new);
 
 		if (waterTiles.length < 5) { return; }
 
@@ -341,9 +341,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		temp.sort(Comparator.comparingInt(a -> a.getConnectionPoints().size()));
 
 		List<Room> temp2 = temp.stream()
-							   .filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
-																						.getConnectionPoints().size())
-							   .collect(Collectors.toList());
+			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
+				.getConnectionPoints().size())
+			.collect(Collectors.toList());
 
 		if (temp2.isEmpty()) {
 			return false;
@@ -380,12 +380,12 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 
 	private void chooseNextStairsRoom() {
 		Optional<Room> spawnRoom = rooms.stream()
-										.filter(Room::isSpawn)
-										.findFirst();
+			.filter(Room::isSpawn)
+			.findFirst();
 
 		List<Room> temp = rooms.stream()
-							   .filter(room -> !room.isSpawn())
-							   .collect(Collectors.toList());
+			.filter(room -> !room.isSpawn())
+			.collect(Collectors.toList());
 
 		spawnRoom.ifPresent(room -> temp.sort(Comparator.comparingDouble(a -> Utils.distanceSq(
 			a.getCenterX(),
@@ -396,8 +396,8 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 		));
 
 		List<Room> possibleRooms = temp.stream()
-									   .skip(temp.size() - 5)
-									   .collect(Collectors.toList());
+			.skip(temp.size() - 5)
+			.collect(Collectors.toList());
 
 		Room nextStairsRoom = Utils.randomFrom(possibleRooms);
 

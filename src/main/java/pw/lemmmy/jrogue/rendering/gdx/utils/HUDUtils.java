@@ -2,8 +2,8 @@ package pw.lemmmy.jrogue.rendering.gdx.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
-import pw.lemmmy.jrogue.dungeon.entities.Player;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.dungeon.entities.player.NutritionState;
 
 public class HUDUtils {
 	public static String getHealthColour(int health, int maxHealth) {
@@ -17,8 +17,8 @@ public class HUDUtils {
 			return "P_GREEN_3";
 		}
 	}
-
-	public static Color getNutritionColour(Player.NutritionState nutritionState) {
+	
+	public static Color getNutritionColour(NutritionState nutritionState) {
 		switch (nutritionState.getImportance()) {
 			case 1:
 				return Colors.get("P_YELLOW");
@@ -28,7 +28,7 @@ public class HUDUtils {
 				return Color.WHITE;
 		}
 	}
-
+	
 	public static String getStatusEffectColour(StatusEffect.Severity severity) {
 		switch (severity) {
 			case MINOR:
@@ -41,7 +41,7 @@ public class HUDUtils {
 				return "WHITE";
 		}
 	}
-
+	
 	public static String replaceMarkupString(String s) {
 		s = s.replace("[RED]", "[P_RED]");
 		s = s.replace("[ORANGE]", "[P_ORANGE_2]");
@@ -49,7 +49,7 @@ public class HUDUtils {
 		s = s.replace("[GREEN]", "[P_GREEN_3]");
 		s = s.replace("[CYAN]", "[P_CYAN_1]");
 		s = s.replace("[BLUE]", "[P_BLUE_1]");
-
+		
 		return s;
 	}
 }

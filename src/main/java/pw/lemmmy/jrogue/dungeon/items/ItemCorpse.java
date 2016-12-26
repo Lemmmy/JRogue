@@ -15,24 +15,24 @@ import java.util.List;
 
 public class ItemCorpse extends ItemComestible {
 	private LivingEntity entity;
-
+	
 	public ItemCorpse() { // unserialisation constructor
 		super();
 	}
-
+	
 	public ItemCorpse(LivingEntity entity) {
 		super();
-
+		
 		this.entity = entity;
 	}
-
+	
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
 			entity.getName(requiresCapitalisation) +
 			" corpse" + (plural ? "s" : "");
 	}
-
+	
 	@Override
 	public float getWeight() {
 		if (entity instanceof Monster) {
@@ -41,12 +41,12 @@ public class ItemCorpse extends ItemComestible {
 			return 250;
 		}
 	}
-
+	
 	@Override
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_CORPSE;
 	}
-
+	
 	@Override
 	public int getNutrition() {
 		if (entity instanceof Monster) {
@@ -55,16 +55,16 @@ public class ItemCorpse extends ItemComestible {
 			return 0;
 		}
 	}
-
+	
 	public LivingEntity getEntity() {
 		return entity;
 	}
-
+	
 	@Override
 	public int getTurnsRequiredToEat() {
 		return entity.getSize() == LivingEntity.Size.LARGE ? 3 : 2;
 	}
-
+	
 	@Override
 	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
 		if (entity instanceof Monster) {
@@ -73,37 +73,37 @@ public class ItemCorpse extends ItemComestible {
 			return null;
 		}
 	}
-
+	
 	@Override
 	public boolean equals(Item other) {
 		if (other instanceof ItemCorpse) {
 			return super.equals(other) && ((ItemCorpse) other).getEntity().getClass() == entity.getClass();
 		}
-
+		
 		return super.equals(other);
 	}
-
+	
 	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
-
+		
 		JSONObject serialisedEntity = new JSONObject();
 		entity.serialise(serialisedEntity);
-
+		
 		obj.put("entity", serialisedEntity);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
-
+		
 		JSONObject serialisedEntity = obj.getJSONObject("entity");
-
+		
 		String entityClassName = serialisedEntity.getString("class");
 		int x = serialisedEntity.getInt("x");
 		int y = serialisedEntity.getInt("y");
-
+		
 		try {
 			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(entityClassName);
 			Constructor<? extends Entity> entityConstructor = entityClass.getConstructor(
@@ -112,7 +112,7 @@ public class ItemCorpse extends ItemComestible {
 				int.class,
 				int.class
 			);
-
+			
 			entity = (LivingEntity) entityConstructor.newInstance(null, null, x, y);
 			entity.unserialise(serialisedEntity);
 		} catch (ClassNotFoundException e) {

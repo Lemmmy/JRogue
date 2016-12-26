@@ -8,45 +8,45 @@ public class ItemLongsword extends ItemSword {
 	public ItemLongsword() { // unserialisation constructor
 		super();
 	}
-
+	
 	public ItemLongsword(Level level) { // chest spawning constructor
 		super(level);
 	}
-
+	
 	public ItemLongsword(Material material) {
 		super(material);
 	}
-
+	
 	@Override
 	public String getSwordName() {
 		return "longsword";
 	}
-
+	
 	@Override
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_LONGSWORD;
 	}
-
+	
 	@Override
 	protected DamageSource getMeleeDamageSource() {
 		return DamageSource.LONGSWORD;
 	}
-
+	
 	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_LONGSWORD;
 	}
-
+	
 	@Override
 	public float getSmallMissChance() {
 		return 0.15f;
 	}
-
+	
 	@Override
 	public float getLargeMissChance() {
 		return 0.05f;
 	}
-
+	
 	@Override
 	public boolean isTwoHanded() {
 		return true;
