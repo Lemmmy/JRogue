@@ -9,17 +9,17 @@ public enum OperatingSystem {
 	MacOSX(Paths.get(System.getProperty("user.home")).resolve("Library/Application Support")),
 	Linux(Paths.get(System.getProperty("user.home")).resolve(".local/share")),
 	Other(Paths.get(System.getProperty("user.home")));
-
+	
 	public Path getAppDataDir() {
 		return appDataDir;
 	}
-
+	
 	private final Path appDataDir;
-
+	
 	OperatingSystem(Path appDataDir) {
 		this.appDataDir = appDataDir;
 	}
-
+	
 	public static OperatingSystem get() {
 		String name = System.getProperty("os.name");
 		if (name.startsWith("Windows")) { return Windows; } else if (name.startsWith("Linux")) {
