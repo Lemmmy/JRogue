@@ -35,12 +35,12 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		getDungeon().logRandom("It whimpers.", "It whines.", "It cries.", "It yelps.");
 	}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 	

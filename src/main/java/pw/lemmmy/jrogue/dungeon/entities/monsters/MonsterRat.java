@@ -77,10 +77,10 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {}
+	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 	
