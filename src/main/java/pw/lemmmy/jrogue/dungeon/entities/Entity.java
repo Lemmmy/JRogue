@@ -200,14 +200,15 @@ public abstract class Entity implements Serialisable {
 		String statusEffectClassName = serialisedStatusEffect.getString("class");
 
 		try {
-			Class<? extends StatusEffect> statusEffectClass = (Class<? extends StatusEffect>) Class.forName(statusEffectClassName);
+			Class<? extends StatusEffect> statusEffectClass = (Class<? extends StatusEffect>) Class
+				.forName(statusEffectClassName);
 			Constructor<? extends StatusEffect> statusEffectConstructor = statusEffectClass.getConstructor(
 				Dungeon.class,
 				Entity.class,
 				int.class
 			);
 
-			StatusEffect effect = (StatusEffect) statusEffectConstructor.newInstance(
+			StatusEffect effect = statusEffectConstructor.newInstance(
 				getDungeon(),
 				this,
 				serialisedStatusEffect.getInt("duration")

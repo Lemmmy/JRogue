@@ -307,7 +307,7 @@ public class Level {
 				int.class
 			);
 
-			Entity entity = (Entity) entityConstructor.newInstance(dungeon, this, x, y);
+			Entity entity = entityConstructor.newInstance(dungeon, this, x, y);
 			entity.unserialise(serialisedEntity);
 			addEntity(entity);
 
@@ -336,7 +336,7 @@ public class Level {
 			Class<? extends TileState> tileStateClass = (Class<? extends TileState>) Class.forName(tileStateClassName);
 			Constructor<? extends TileState> tileStateConstructor = tileStateClass.getConstructor(Tile.class);
 
-			TileState tileState = (TileState) tileStateConstructor.newInstance(tile);
+			TileState tileState = tileStateConstructor.newInstance(tile);
 			tileState.unserialise(serialisedTileState);
 			tile.setState(tileState);
 		} catch (ClassNotFoundException e) {
@@ -380,14 +380,14 @@ public class Level {
 
 	public List<Entity> getEntitiesAt(int x, int y) {
 		return entities.stream()
-			.filter(e -> e.getX() == x && e.getY() == y)
-			.collect(Collectors.toList());
+					   .filter(e -> e.getX() == x && e.getY() == y)
+					   .collect(Collectors.toList());
 	}
 
 	public List<Entity> getMonsters() {
 		return entities.stream()
-			.filter(Monster.class::isInstance)
-			.collect(Collectors.toList());
+					   .filter(Monster.class::isInstance)
+					   .collect(Collectors.toList());
 	}
 
 	public List<Entity> getHostileMonsters() {
@@ -407,8 +407,8 @@ public class Level {
 
 	public List<Entity> getAdjacentMonsters(int x, int y) {
 		return getAdjacentEntities(x, y).stream()
-					   .filter(e -> e instanceof Monster)
-					   .collect(Collectors.toList());
+										.filter(e -> e instanceof Monster)
+										.collect(Collectors.toList());
 	}
 
 	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
@@ -459,14 +459,15 @@ public class Level {
 
 			floorMonsters.forEach((monsterClass, range) -> {
 				try {
-					Constructor<? extends Monster> constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+					Constructor<? extends Monster> constructor = monsterClass
+						.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 
 					int count = Utils.jrandom(range);
 
 					for (int j = 0; j < count; j++) {
 						Point point = getMonsterSpawnPoint();
 
-						Entity monster = (Entity) constructor.newInstance(
+						Entity monster = constructor.newInstance(
 							getDungeon(),
 							this,
 							point.getX(),
@@ -497,8 +498,9 @@ public class Level {
 			Class<? extends Monster> monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
 
 			try {
-				Constructor<? extends Monster> constructor = monsterClass.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-				Entity monster = (Entity) constructor.newInstance(
+				Constructor<? extends Monster> constructor = monsterClass
+					.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+				Entity monster = constructor.newInstance(
 					dungeon,
 					this,
 					point.getX(),
@@ -514,11 +516,12 @@ public class Level {
 
 	private Point getMonsterSpawnPoint() {
 		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
-			.filter(t -> (
-			   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
-			   t.getType() == TileType.TILE_CORRIDOR
-			)
-			.collect(Collectors.toList())
+										   .filter(t -> (
+											   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
+																										.isInnerRoomTile()) ||
+											   t.getType() == TileType.TILE_CORRIDOR
+										   )
+										   .collect(Collectors.toList())
 		);
 
 		return new Point(tile.getX(), tile.getY());
@@ -528,13 +531,18 @@ public class Level {
 		Player player = dungeon.getPlayer();
 
 		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
-			.filter(t -> (
-			   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
-			   t.getType() == TileType.TILE_CORRIDOR
-			)
-			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
-			.filter(t -> Utils.distance(t.getX(), t.getY(), player.getX(), player.getY()) > MIN_MONSTER_SPAWN_DISTANCE)
-			.collect(Collectors.toList())
+										   .filter(t -> (
+											   t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
+																										.isInnerRoomTile()) ||
+											   t.getType() == TileType.TILE_CORRIDOR
+										   )
+										   .filter(t -> !visibleTiles[width * t.getY() + t.getX()])
+										   .filter(t -> Utils.distance(t.getX(),
+																	   t.getY(),
+																	   player.getX(),
+																	   player.getY()
+										   ) > MIN_MONSTER_SPAWN_DISTANCE)
+										   .collect(Collectors.toList())
 		);
 
 		return new Point(tile.getX(), tile.getY());

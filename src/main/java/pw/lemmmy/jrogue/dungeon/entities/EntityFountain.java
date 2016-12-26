@@ -45,7 +45,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 
 	@Override
 	public String[] getSounds() {
-		return new String[] {
+		return new String[]{
 			"You hear a light splashing sound.",
 			"You hear a light splishing sound.",
 			"You hear a light pattering sound.",

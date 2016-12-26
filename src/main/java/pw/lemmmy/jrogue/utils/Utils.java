@@ -113,7 +113,7 @@ public class Utils {
 		return (int) Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
 
-	private static float distanceSq(float ax, float ay, float bx, float by) {
+	public static float distanceSq(float ax, float ay, float bx, float by) {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 
@@ -125,7 +125,7 @@ public class Utils {
 		return Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
 
-	private static double distanceSq(double ax, double ay, double bx, double by) {
+	public static double distanceSq(double ax, double ay, double bx, double by) {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 

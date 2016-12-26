@@ -67,10 +67,12 @@ public class EntityChest extends Entity {
 			boolean somethingShattered = false;
 
 			List<Map.Entry<Character, ItemStack>> shatterableItems = container.getItems().entrySet().stream()
-				.filter(i -> i.getValue().getItem() instanceof Shatterable)
-				.collect(Collectors.toList());
+																			  .filter(i -> i.getValue()
+																							.getItem() instanceof Shatterable)
+																			  .collect(Collectors.toList());
 
-			for (Iterator<Map.Entry<Character, ItemStack>> iterator = shatterableItems.iterator(); iterator.hasNext(); ) {
+			for (Iterator<Map.Entry<Character, ItemStack>> iterator = shatterableItems.iterator(); iterator
+				.hasNext(); ) {
 				iterator.next();
 
 				if (Utils.roll(3) == 1) {

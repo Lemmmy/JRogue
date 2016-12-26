@@ -29,8 +29,8 @@ public class Path implements Iterable<Tile> {
 			int dy = y + direction[1];
 
 			adjacentSteps[i] = steps.stream()
-				.filter(step -> step.getX() == dx && step.getY() == dy)
-				.count() > 0;
+									.filter(step -> step.getX() == dx && step.getY() == dy)
+									.count() > 0;
 		}
 
 		return adjacentSteps;

@@ -5,7 +5,10 @@ import pw.lemmmy.jrogue.utils.OperatingSystem;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -62,20 +65,24 @@ public class ErrorHandler {
 
 			int n = JOptionPane.showOptionDialog(
 				null,
-				new Object[] { "An error has occurred in JRogue. Please report this.", scrollPane },
+				new Object[]{"An error has occurred in JRogue. Please report this.", scrollPane},
 				"JRogue Error",
 				JOptionPane.DEFAULT_OPTION,
 				JOptionPane.ERROR_MESSAGE,
 				null,
-				new String[] {"Send Report", "Close"},
+				new String[]{"Send Report", "Close"},
 				"Close"
 			);
 
 			if (n == 0) {
-				desktop.browse(getIssueURI(error, trace, traceString));
+				URI issueURI = getIssueURI(error, trace, traceString);
+
+				if (issueURI != null) {
+					desktop.browse(issueURI);
+				}
 			}
 		} catch (Exception e) {
-			JRogue.getLogger().error("An error occured in the crash popup.", e);
+			JRogue.getLogger().error("An error occurred in the crash popup.", e);
 		}
 	}
 

@@ -22,13 +22,10 @@ public enum OperatingSystem {
 
 	public static OperatingSystem get() {
 		String name = System.getProperty("os.name");
-		if (name.startsWith("Windows"))
-			return Windows;
-		else if (name.startsWith("Linux"))
+		if (name.startsWith("Windows")) { return Windows; } else if (name.startsWith("Linux")) {
 			return Linux;
-		else if (name.startsWith("Mac"))
-			return MacOSX;
-		else
+		} else if (name.startsWith("Mac")) { return MacOSX; } else {
 			return Other;
+		}
 	}
 }
