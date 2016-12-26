@@ -431,7 +431,9 @@ public class StandardDungeonGenerator extends DungeonGenerator {
 			new ArrayList<>()
 		);
 
-		JRogue.getLogger().debug("Level was generated unreachable - regenerating");
+		if (path == null) {
+			JRogue.getLogger().debug("Level was generated unreachable - regenerating");
+		}
 
 		return path != null;
 	}

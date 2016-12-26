@@ -76,7 +76,7 @@ public class HUD implements Dungeon.Listener {
 		topStats = new Table();
 
 		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
-		Label hpLabel = new Label("Health: 0/0", skin);
+		Label hpLabel = new Label("Health: 0 / 0", skin);
 		hpLabel.setName("health");
 		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
 
@@ -91,7 +91,7 @@ public class HUD implements Dungeon.Listener {
 		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
 
 		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 14, 2, 16, 16, false)));
-		Label energyLabel = new Label("Energy: 0/0", skin);
+		Label energyLabel = new Label("Energy: 0 / 0", skin);
 		energyLabel.setName("energy");
 		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
 
@@ -230,14 +230,14 @@ public class HUD implements Dungeon.Listener {
 		if (player.getHealth() != healthLastTurn) {
 			((Label) topStats.findActor("health")).setStyle(getSkin().get("health", Label.LabelStyle.class));
 			((Label) topStats.findActor("health")).setText(String.format(
-				"Health: %,d/%,d",
+				"Health: %,d / %,d",
 				player.getHealth(),
 				player.getMaxHealth()
 			));
 		} else {
 			((Label) topStats.findActor("health")).setStyle(getSkin().get("default", Label.LabelStyle.class));
 			((Label) topStats.findActor("health")).setText(String.format(
-				"Health: [%s]%,d[]/[P_GREEN_3]%,d[]",
+				"Health: [%s]%,d[] / [P_GREEN_3]%,d[]",
 				HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
 				player.getHealth(),
 				player.getMaxHealth()

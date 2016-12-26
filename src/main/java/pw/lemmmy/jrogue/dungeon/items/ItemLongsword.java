@@ -38,6 +38,16 @@ public class ItemLongsword extends ItemSword {
 	}
 
 	@Override
+	public float getSmallMissChance() {
+		return 0.15f;
+	}
+
+	@Override
+	public float getLargeMissChance() {
+		return 0.05f;
+	}
+
+	@Override
 	public boolean isTwoHanded() {
 		return true;
 	}

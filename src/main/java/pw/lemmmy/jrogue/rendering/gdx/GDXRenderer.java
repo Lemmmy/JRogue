@@ -124,6 +124,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		onLevelChange(dungeon.getLevel());
+		hud.onLevelChange(dungeon.getLevel());
 		dungeon.start();
 	}
 
