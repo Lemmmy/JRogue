@@ -220,13 +220,13 @@ public abstract class DungeonGenerator {
 		}
 	}
 
-	protected enum Orientation {
+	public enum Orientation {
 		HORIZONTAL,
 		VERTICAL,
 		CORNER
 	}
 
-	protected class ConnectionPoint {
+	public class ConnectionPoint {
 		private int ax, ay;
 		private int bx, by;
 
