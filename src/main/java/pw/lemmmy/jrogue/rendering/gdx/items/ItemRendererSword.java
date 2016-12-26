@@ -17,7 +17,7 @@ import java.util.List;
 public class ItemRendererSword extends ItemRenderer {
 	private List<TextureRegion> images = new ArrayList<>();
 	private List<TextureRegion> imagesDrawable = new ArrayList<>();
-
+	
 	public ItemRendererSword(int sheetX, int sheetY) {
 		for (int i = 0; i < 9; i++) {
 			images.add(getImageFromSheet("items.png", sheetX + i, sheetY));
@@ -31,22 +31,22 @@ public class ItemRendererSword extends ItemRenderer {
 			));
 		}
 	}
-
+	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
 		drawItem(batch, getImageFromMaterial(((HasMaterial) item).getMaterial(), true), x, y);
 	}
-
+	
 	private TextureRegion getImageFromMaterial(Material material, boolean flipped) {
 		int i = material.ordinal();
-
+		
 		if (flipped) {
 			return images.get(i);
 		} else {
 			return imagesDrawable.get(i);
 		}
 	}
-
+	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
 		return new TextureRegionDrawable(getImageFromMaterial(((HasMaterial) item).getMaterial(), false));

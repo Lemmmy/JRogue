@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class Dungeon {
+public class Dungeon implements Messenger {
 	public static final int NORMAL_SPEED = 12;
 	
 	private static final int LEVEL_WIDTH = 110;
@@ -187,7 +187,7 @@ public class Dungeon {
 				}
 				
 				JRogue.getLogger().error("Something went wrong with your save file and Lemmmy is lazy. Please restart" +
-											 " JRogue."); // TODO: don't be lazy
+					" JRogue."); // TODO: don't be lazy
 				
 				return;
 			}
@@ -323,70 +323,6 @@ public class Dungeon {
 		JRogue.getLogger().log(gameLogLevel, logString);
 		
 		listeners.forEach(l -> l.onLog(String.format(s, objects)));
-	}
-	
-	public void logRandom(String... strings) {
-		log(Utils.randomFrom(strings));
-	}
-	
-	public void The(String s, Object... objects) {
-		log("The " + s, objects);
-	}
-	
-	public void redThe(String s, Object... objects) {
-		log("[RED]The " + s, objects);
-	}
-	
-	public void orangeThe(String s, Object... objects) {
-		log("[ORANGE]The " + s, objects);
-	}
-	
-	public void yellowThe(String s, Object... objects) {
-		log("[YELLOW]The " + s, objects);
-	}
-	
-	public void greenThe(String s, Object... objects) {
-		log("[GREEN]The " + s, objects);
-	}
-	
-	public void You(String s, Object... objects) {
-		log("You " + s, objects);
-	}
-	
-	public void redYou(String s, Object... objects) {
-		log("[RED]You " + s, objects);
-	}
-	
-	public void orangeYou(String s, Object... objects) {
-		log("[ORANGE]You " + s, objects);
-	}
-	
-	public void yellowYou(String s, Object... objects) {
-		log("[YELLOW]You " + s, objects);
-	}
-	
-	public void greenYou(String s, Object... objects) {
-		log("[GREEN]You " + s, objects);
-	}
-	
-	public void Your(String s, Object... objects) {
-		log("Your " + s, objects);
-	}
-	
-	public void redYour(String s, Object... objects) {
-		log("[RED]Your " + s, objects);
-	}
-	
-	public void orangeYour(String s, Object... objects) {
-		log("[ORANGE]Your " + s, objects);
-	}
-	
-	public void yellowYour(String s, Object... objects) {
-		log("[YELLOW]Your " + s, objects);
-	}
-	
-	public void greenYour(String s, Object... objects) {
-		log("[GREEN]Your " + s, objects);
 	}
 	
 	public void prompt(Prompt prompt) {

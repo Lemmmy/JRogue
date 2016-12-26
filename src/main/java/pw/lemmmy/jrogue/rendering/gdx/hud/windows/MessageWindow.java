@@ -9,19 +9,19 @@ import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 public class MessageWindow extends PopupWindow {
 	private String title;
 	private String message;
-
+	
 	public MessageWindow(GDXRenderer renderer, Stage stage, Skin skin, String title, String message) {
 		super(renderer, stage, skin, null, null);
-
+		
 		this.title = title;
 		this.message = message;
 	}
-
+	
 	@Override
 	public String getTitle() {
 		return title;
 	}
-
+	
 	@Override
 	public void populateWindow() {
 		Label label = new Label("[P_GREY_0]" + message + "[]", getSkin(), "windowStyleMarkup");

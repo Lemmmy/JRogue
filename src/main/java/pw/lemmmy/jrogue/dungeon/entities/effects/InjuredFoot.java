@@ -20,6 +20,6 @@ public class InjuredFoot extends StatusEffect {
 	
 	@Override
 	public void onEnd() {
-		getDungeon().greenYour("foot feels a lot better.");
+		getMessenger().greenYour("foot feels a lot better.");
 	}
 }

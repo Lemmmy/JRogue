@@ -3,13 +3,14 @@ package pw.lemmmy.jrogue.dungeon.items;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public abstract class Item {
+public abstract class Item implements Serialisable {
 	private int visualID;
 	
 	private boolean identified = false;
@@ -84,6 +85,7 @@ public abstract class Item {
 		return Optional.empty();
 	}
 	
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("visualID", getVisualID());
@@ -91,6 +93,7 @@ public abstract class Item {
 		obj.put("buc", getBUCStatus().name());
 	}
 	
+	@Override
 	public void unserialise(JSONObject obj) {
 		visualID = obj.getInt("visualID");
 		identified = obj.getBoolean("identified");

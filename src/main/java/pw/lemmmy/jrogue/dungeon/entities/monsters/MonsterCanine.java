@@ -72,7 +72,7 @@ public abstract class MonsterCanine extends Monster {
 					getDungeon().log("[RED]It strains your leg!");
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
-					kicker.addStatusEffect(new StrainedLeg(getDungeon(), kicker, Utils.roll(3, 6)));
+					kicker.addStatusEffect(new StrainedLeg(Utils.roll(3, 6)));
 				}
 			}
 		}

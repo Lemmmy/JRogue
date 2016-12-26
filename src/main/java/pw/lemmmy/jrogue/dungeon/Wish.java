@@ -5,7 +5,9 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,12 +43,12 @@ public class Wish {
 				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
 				
 				dungeon.getLevel().addEntity(new EntityItem(dungeon, dungeon.getLevel(),
-															player.getX(),
-															player.getY(),
-															new ItemStack(
-																new ItemGold(),
-																gold
-															)
+					player.getX(),
+					player.getY(),
+					new ItemStack(
+						new ItemGold(),
+						gold
+					)
 				));
 				
 				dungeon.turn();
@@ -171,6 +173,23 @@ public class Wish {
 			item = new ItemCherries();
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
+		} else if (wish.equalsIgnoreCase("potion")) {
+			Random rand = new Random();
+			
+			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
+			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
+			
+			int effectIndex = rand.nextInt(PotionType.values().length);
+			PotionType potionType = PotionType.values()[effectIndex];
+			
+			float potency = rand.nextFloat() * 6.0f;
+			
+			ItemPotion potion = new ItemPotion();
+			potion.setBottleType(bottle);
+			potion.setPotionType(potionType);
+			potion.setEmpty(false);
+			potion.setPotency(potency);
+			item = potion;
 		}
 		
 		if (item != null && player.getContainer().isPresent()) {

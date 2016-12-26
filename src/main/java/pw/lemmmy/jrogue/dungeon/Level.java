@@ -516,12 +516,12 @@ public class Level {
 	
 	private Point getMonsterSpawnPoint() {
 		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
-										 .filter(t -> (
-											 t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
-												 .isInnerRoomTile()) ||
-											 t.getType() == TileType.TILE_CORRIDOR
-										 )
-										 .collect(Collectors.toList())
+			.filter(t -> (
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
+					.isInnerRoomTile()) ||
+				t.getType() == TileType.TILE_CORRIDOR
+			)
+			.collect(Collectors.toList())
 		);
 		
 		return new Point(tile.getX(), tile.getY());
@@ -531,19 +531,19 @@ public class Level {
 		Player player = dungeon.getPlayer();
 		
 		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
-										 .filter(t -> (
-											 t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
-												 .isInnerRoomTile()) ||
-											 t.getType() == TileType.TILE_CORRIDOR
-										 )
-										 .filter(t -> !visibleTiles[width * t.getY() + t.getX()])
-										 .filter(t -> Utils.distance(
-											 t.getX(),
-											 t.getY(),
-											 player.getX(),
-											 player.getY()
-										 ) > MIN_MONSTER_SPAWN_DISTANCE)
-										 .collect(Collectors.toList())
+			.filter(t -> (
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
+					.isInnerRoomTile()) ||
+				t.getType() == TileType.TILE_CORRIDOR
+			)
+			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
+			.filter(t -> Utils.distance(
+				t.getX(),
+				t.getY(),
+				player.getX(),
+				player.getY()
+			) > MIN_MONSTER_SPAWN_DISTANCE)
+			.collect(Collectors.toList())
 		);
 		
 		return new Point(tile.getX(), tile.getY());

@@ -1,18 +1,25 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.BlankMessenger;
+import pw.lemmmy.jrogue.dungeon.Messenger;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
-public abstract class StatusEffect {
-	private Dungeon dungeon;
+public abstract class StatusEffect implements Serialisable {
+	private Messenger messenger;
 	private Entity entity;
 	
 	private int duration;
 	private int turnsPassed = 0;
 	
-	public StatusEffect(Dungeon dungeon, Entity entity, int duration) {
-		this.dungeon = dungeon;
+	public StatusEffect(int duration) {
+		this.messenger = new BlankMessenger();
+		this.duration = duration;
+	}
+	
+	public StatusEffect(Messenger messenger, Entity entity, int duration) {
+		this.messenger = messenger;
 		this.entity = entity;
 		
 		this.duration = duration;
@@ -22,22 +29,32 @@ public abstract class StatusEffect {
 		turnsPassed++;
 	}
 	
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("duration", getDuration());
 		obj.put("turnsPassed", getTurnsPassed());
 	}
 	
+	@Override
 	public void unserialise(JSONObject obj) {
 		turnsPassed = obj.getInt("turnsPassed");
 	}
 	
-	public Dungeon getDungeon() {
-		return dungeon;
+	public void setMessenger(Messenger msg) {
+		this.messenger = msg;
+	}
+	
+	public Messenger getMessenger() {
+		return messenger;
 	}
 	
 	public Entity getEntity() {
 		return entity;
+	}
+	
+	public void setEntity(Entity entity) {
+		this.entity = entity;
 	}
 	
 	public int getDuration() {

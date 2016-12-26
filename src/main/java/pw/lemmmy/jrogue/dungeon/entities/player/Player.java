@@ -760,6 +760,80 @@ public class Player extends LivingEntity {
 		}));
 	}
 	
+	public void drink() {
+		if (!getContainer().isPresent()) {
+			getDungeon().yellowYou("have nothing to drink.");
+			return;
+		}
+		
+		Container inventory = getContainer().get();
+		Map<Character, ItemStack> drinkables = inventory.getDrinkables();
+		
+		if (drinkables.size() == 0) {
+			getDungeon().yellowYou("have nothing to drink.");
+			return;
+		}
+		
+		List<Character> available = drinkables.keySet().stream()
+			.filter(i -> drinkables.get(i).getItem() instanceof ItemDrinkable)
+			.filter(i -> ((ItemDrinkable) drinkables.get(i).getItem()).canDrink())
+			.collect(Collectors.toList());
+		
+		char[] options = ArrayUtils.toPrimitive(available.toArray(new Character[0]));
+		options = Arrays.copyOf(options, options.length + 1);
+		options[options.length - 1] = '-';
+		
+		getDungeon().prompt(new Prompt("Drink what?", options, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {
+				getDungeon().log("Nevermind.");
+			}
+			
+			@Override
+			public void onInvalidResponse(char response) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+			}
+			
+			@Override
+			public void onResponse(char response) {
+				Optional<Container.ContainerEntry> containerEntry = inventory.get(response);
+				
+				if (!containerEntry.isPresent()) {
+					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
+					return;
+				}
+				
+				ItemStack stack = containerEntry.get().getStack();
+				ItemDrinkable drinkable = (ItemDrinkable) stack.getItem();
+				
+				setAction(new ActionDrink(getDungeon(), Player.this, drinkable, new EntityAction.ActionCallback() {
+					@Override
+					public void onComplete() {
+						super.onComplete();
+						
+						if (stack.getCount() == 1) {
+							inventory.remove(containerEntry.get().getLetter());
+						} else {
+							stack.subtractCount(1);
+						}
+						
+						if (drinkable instanceof ItemPotion) {
+							ItemPotion potion = (ItemPotion) drinkable;
+							
+							ItemPotion emptyPotion = new ItemPotion();
+							emptyPotion.setPotionType(potion.getPotionType());
+							emptyPotion.setBottleType(potion.getBottleType());
+							emptyPotion.setEmpty(true);
+							inventory.add(new ItemStack(emptyPotion, 1));
+						}
+					}
+				}));
+				
+				getDungeon().turn();
+			}
+		}));
+	}
+	
 	public void consume(ItemComestible item) {
 		if (item.getTurnsRequiredToEat() == 1) {
 			getDungeon().greenYou("eat the %s.", item.getName(false, false));

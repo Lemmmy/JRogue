@@ -1,11 +1,8 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
-
 public class StrainedLeg extends StatusEffect {
-	public StrainedLeg(Dungeon dungeon, Entity entity, int duration) {
-		super(dungeon, entity, duration);
+	public StrainedLeg(int duration) {
+		super(duration);
 	}
 	
 	@Override
@@ -20,6 +17,6 @@ public class StrainedLeg extends StatusEffect {
 	
 	@Override
 	public void onEnd() {
-		getDungeon().greenYour("leg feels a lot better.");
+		getMessenger().greenYour("leg feels a lot better.");
 	}
 }

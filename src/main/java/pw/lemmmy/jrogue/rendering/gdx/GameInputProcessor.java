@@ -63,16 +63,19 @@ public class GameInputProcessor implements InputProcessor {
 		} else if (key == 'e') {
 			dungeon.getPlayer().eat();
 			return true;
+		} else if (key == 'q') {
+			dungeon.getPlayer().drink();
+			return true;
 		} else if (key == 'i') {
 			renderer.showInventoryWindow();
 			return true;
 		} else if (key == 'l') {
 			dungeon.getPlayer().loot();
 			return true;
-		} else if (key == 'q') {
+		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'Q') {
 			dungeon.quit();
 			return true;
-		} else if (key == 's') {
+		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'S') {
 			dungeon.saveAndQuit();
 			return true;
 		} else if (key == 'w') {

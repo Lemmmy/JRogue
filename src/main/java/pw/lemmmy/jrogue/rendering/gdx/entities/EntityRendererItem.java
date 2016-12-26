@@ -12,13 +12,13 @@ public class EntityRendererItem extends EntityRenderer {
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
 		EntityItem item = (EntityItem) entity;
-
+		
 		if (item.getAppearance() != null) {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
-
+			
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
-
+			
 			if (renderer != null) {
 				renderer.draw(
 					batch,

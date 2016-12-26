@@ -1,17 +1,15 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemComestible;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.Wieldable;
+import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Container {
+public class Container implements Serialisable {
 	private String name;
 	
 	private Map<Character, ItemStack> items = new LinkedHashMap<>();
@@ -141,6 +139,7 @@ public class Container {
 		return container;
 	}
 	
+	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("name", name);
 		
@@ -153,6 +152,7 @@ public class Container {
 		obj.put("items", serialisedItems);
 	}
 	
+	@Override
 	public void unserialise(JSONObject obj) {
 		JSONObject serialisedItems = obj.getJSONObject("items");
 		serialisedItems.keySet().forEach(k -> {
@@ -173,6 +173,12 @@ public class Container {
 	public Map<Character, ItemStack> getComestibles() {
 		return items.entrySet().stream()
 			.filter(e -> e.getValue().getItem() instanceof ItemComestible)
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+	
+	public Map<Character, ItemStack> getDrinkables() {
+		return items.entrySet().stream()
+			.filter(e -> e.getValue().getItem() instanceof ItemDrinkable)
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	
