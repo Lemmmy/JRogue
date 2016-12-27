@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.items;
 public class ItemCorn extends ItemComestible {
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "Corn on the cob" : "corn on the cob") + (plural ? "s" : "");
+		return (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
 	}
 	
 	@Override
