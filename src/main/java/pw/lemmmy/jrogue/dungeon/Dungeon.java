@@ -528,28 +528,28 @@ public class Dungeon implements Messenger {
 	}
 	
 	public interface Listener {
-		default void onLevelChange(Level level) {};
+		default void onLevelChange(Level level) {}
 		
-		default void onBeforeTurn(long turn) {};
+		default void onBeforeTurn(long turn) {}
 		
-		default void onTurn(long turn) {};
+		default void onTurn(long turn) {}
 		
-		default void onLog(String log) {};
+		default void onLog(String log) {}
 		
-		default void onPrompt(Prompt prompt) {};
+		default void onPrompt(Prompt prompt) {}
 		
-		default void onContainerShow(Entity containerEntity) {};
+		default void onContainerShow(Entity containerEntity) {}
 		
-		default void onPathShow(pw.lemmmy.jrogue.utils.Path path) {};
+		default void onPathShow(pw.lemmmy.jrogue.utils.Path path) {}
 		
-		default void onEntityAdded(Entity entity) {};
+		default void onEntityAdded(Entity entity) {}
 		
-		default void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {};
+		default void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {}
 		
-		default void onEntityRemoved(Entity entity) {};
+		default void onEntityRemoved(Entity entity) {}
 		
-		default void onQuit() {};
+		default void onQuit() {}
 		
-		default void onSaveAndQuit() {};
+		default void onSaveAndQuit() {}
 	}
 }
