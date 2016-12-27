@@ -33,18 +33,33 @@ public class Level {
 	
 	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 	
-	private static final Map<Integer, Map<Class<? extends Monster>, Range<Integer>>> MONSTERS_PER_FLOOR = new HashMap<>();
+	private static final List<MonsterSpawn> MONSTER_SPAWNS = new ArrayList<>();
 	
 	static {
-		Map<Class<? extends Monster>, Range<Integer>> floor1 = new HashMap<>();
-		floor1.put(MonsterJackal.class, Range.between(2, 5));
-		floor1.put(MonsterSpider.class, Range.between(4, 8));
-		floor1.put(MonsterRat.class, Range.between(2, 6));
-		MONSTERS_PER_FLOOR.put(-1, floor1);
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 10),
+			Range.between(2, 5),
+			Range.between(1, 3),
+			MonsterJackal.class
+		));
 		
-		Map<Class<? extends Monster>, Range<Integer>> floor2 = new HashMap<>();
-		floor2.put(MonsterSkeleton.class, Range.between(2, 3));
-		MONSTERS_PER_FLOOR.put(-2, floor2);
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 3),
+			Range.between(4, 8),
+			MonsterSpider.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 4),
+			Range.between(2, 6),
+			MonsterRat.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(3, Integer.MAX_VALUE),
+			Range.between(0, 4),
+			MonsterSkeleton.class
+		));
 	}
 	
 	private UUID uuid;
@@ -456,39 +471,21 @@ public class Level {
 	}
 	
 	private void spawnMonsters() {
-		int floor = depth;
-		
-		for (int i = floor; i != 0; i = floor < 0 ? i + 1 : i - 1) {
-			if (!MONSTERS_PER_FLOOR.containsKey(i)) {
-				continue;
-			}
-			
-			Map<Class<? extends Monster>, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(i);
-			
-			floorMonsters.forEach((monsterClass, range) -> {
-				try {
-					Constructor<? extends Monster> constructor = monsterClass
-						.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+		MONSTER_SPAWNS.stream()
+			.filter(s -> s.getLevelRange().contains(Math.abs(depth)))
+			.forEach(s -> {
+				int count = RandomUtils.jrandom(s.getRangePerLevel());
+				
+				for (int j = 0; j < count; j++) {
+					Point point = getMonsterSpawnPoint();
 					
-					int count = RandomUtils.jrandom(range);
-					
-					for (int j = 0; j < count; j++) {
-						Point point = getMonsterSpawnPoint();
-						
-						Entity monster = constructor.newInstance(
-							getDungeon(),
-							this,
-							point.getX(),
-							point.getY()
-						);
-						
-						addEntity(monster);
+					if (s.isPack()) {
+						spawnPackAtPoint(s.getMonsterClass(), point, RandomUtils.random(s.getPackRange()));
+					} else {
+						spawnMonsterAtPoint(s.getMonsterClass(), point);
 					}
-				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-					JRogue.getLogger().error("Error spawning monsters", e);
 				}
 			});
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -496,37 +493,46 @@ public class Level {
 		Point point = getMonsterSpawnPointAwayFromPlayer();
 		
 		if (point != null) {
-			int floor = depth;
+			List<MonsterSpawn> possibleMonsterSpawns = MONSTER_SPAWNS.stream()
+				.filter(s -> s.getLevelRange().contains(Math.abs(depth)))
+				.collect(Collectors.toList());
 			
-			if (!MONSTERS_PER_FLOOR.containsKey(floor)) {
-				return;
-			}
-			
-			Map<Class<? extends Monster>, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(floor);
-			Class<? extends Monster> monsterClass = RandomUtils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
-			
-			try {
-				Constructor<? extends Monster> constructor = monsterClass
-					.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-				Entity monster = constructor.newInstance(
-					dungeon,
-					this,
-					point.getX(),
-					point.getY()
-				);
-				
-				addEntity(monster);
-			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-				JRogue.getLogger().error("Error spawning monsters", e);
-			}
+			MonsterSpawn chosenSpawn = RandomUtils.randomFrom(possibleMonsterSpawns);
+			spawnMonsterAtPoint(chosenSpawn.getMonsterClass(), point);
 		}
+	}
+	
+	private void spawnMonsterAtPoint(Class<? extends Monster> monsterClass, Point point) {
+		try {
+			Constructor<? extends Monster> constructor = monsterClass
+				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
+				
+			Entity monster = constructor.newInstance(getDungeon(), this, point.getX(), point.getY());
+			addEntity(monster);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			JRogue.getLogger().error("Error spawning monsters", e);
+		}
+	}
+	
+	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
+		List<Tile> validTiles = Arrays.stream(tiles)
+			.filter(t ->
+				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+				t.getType() == TileType.TILE_CORRIDOR
+			)
+			.sorted(Comparator.comparingDouble(a -> Utils.distance(
+				point.getX() + RandomUtils.randomDouble(-0.5, 0.5), point.getY() + RandomUtils.randomDouble(-0.5, 0.5),
+				a.getX(), a.getY()
+			)))
+			.collect(Collectors.toList());
+		
+		validTiles.subList(0, amount).forEach(t -> spawnMonsterAtPoint(monsterClass, new Point(t.getX(), t.getY())));
 	}
 	
 	private Point getMonsterSpawnPoint() {
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
-			.filter(t -> (
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
-					.isInnerRoomTile()) ||
+			.filter(t ->
+				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
@@ -539,9 +545,8 @@ public class Level {
 		Player player = dungeon.getPlayer();
 		
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
-			.filter(t -> (
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
-					.isInnerRoomTile()) ||
+			.filter(t ->
+				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
@@ -871,4 +876,5 @@ public class Level {
 			255
 		);
 	}
+	
 }

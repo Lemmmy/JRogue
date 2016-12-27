@@ -52,6 +52,10 @@ public class RandomUtils {
 		return rand.nextFloat(f);
 	}
 	
+	public static double randomDouble(double min, double max) {
+		return rand.nextDouble(max - min) + min;
+	}
+	
 	public static boolean rollD2() {
 		return jrand.nextBoolean();
 	}
