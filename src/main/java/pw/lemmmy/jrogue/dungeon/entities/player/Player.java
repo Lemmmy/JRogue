@@ -1141,7 +1141,7 @@ public class Player extends LivingEntity {
 			target = 1;
 		}
 		
-		int roll = RandomUtils.roll(20);
+		int roll = RandomUtils.jroll(20);
 		
 		if (target <= 1 && roll <= 1) {
 			return new Hit(HitType.JUST_MISS, damage);
@@ -1200,7 +1200,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public Hit hitAgainstMonster(DamageSource damageSource, int damage, LivingEntity victim) {
-		int roll = RandomUtils.roll(20);
+		int roll = RandomUtils.jroll(20);
 		int toHit = 1;
 		
 		if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeapon) {
