@@ -193,19 +193,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	@Override
-	public void onBeforeTurn(long turn) {}
-	
-	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
 		lastPath = null;
 	}
-	
-	@Override
-	public void onLog(String entry) {}
-	
-	@Override
-	public void onPrompt(Prompt prompt) {}
 	
 	@Override
 	public void onContainerShow(Entity containerEntity) {

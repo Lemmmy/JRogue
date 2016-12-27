@@ -26,7 +26,6 @@ public class HUD implements Dungeon.Listener {
 	
 	private Skin skin;
 	private Stage stage;
-	private Table root;
 	private Label playerLabel;
 	private Table gameLog;
 	private Label promptLabel;
@@ -53,7 +52,7 @@ public class HUD implements Dungeon.Listener {
 		stage = new Stage(stageViewport);
 		skin = new HUDSkin();
 		
-		root = new Table();
+		Table root = new Table();
 		root.setFillParent(true);
 		
 		Table hudTopContainer = new Table();
@@ -181,9 +180,6 @@ public class HUD implements Dungeon.Listener {
 	}
 	
 	@Override
-	public void onBeforeTurn(long turn) {}
-	
-	@Override
 	public void onTurn(long turn) {
 		Player player = dungeon.getPlayer();
 		
@@ -298,27 +294,6 @@ public class HUD implements Dungeon.Listener {
 			}
 		}
 	}
-	
-	@Override
-	public void onContainerShow(Entity containerEntity) {}
-	
-	@Override
-	public void onPathShow(Path path) {}
-	
-	@Override
-	public void onEntityAdded(Entity entity) {}
-	
-	@Override
-	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {}
-	
-	@Override
-	public void onEntityRemoved(Entity entity) {}
-	
-	@Override
-	public void onQuit() {}
-	
-	@Override
-	public void onSaveAndQuit() {}
 	
 	private class LogEntry {
 		private long turn;
