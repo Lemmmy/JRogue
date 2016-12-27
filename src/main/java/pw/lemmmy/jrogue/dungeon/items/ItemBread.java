@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.items;
 public class ItemBread extends ItemComestible {
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return requiresCapitalisation ? "Bread" : "bread";
+		return (requiresCapitalisation ? "Loa" : "loa") + (plural ? "ves" : "f") + " of bread";
 	}
 	
 	@Override
