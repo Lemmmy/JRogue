@@ -80,7 +80,6 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		return true;
 	}
 	
-	
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		buildRoom(ROOM_TYPES.next(), roomX, roomY, roomWidth, roomHeight);
 		
@@ -114,18 +113,18 @@ public abstract class RoomGenerator extends DungeonGenerator {
 			for (Room b : rooms) {
 				boolean skip = false;
 				
-				double abDist = Math.pow(a.getCenterX() - b.getCenterX(), 2) + Math
-					.pow(a.getCenterY() - b.getCenterY(), 2);
+				double abDist = Math.pow(a.getCenterX() - b.getCenterX(), 2) +
+					Math.pow(a.getCenterY() - b.getCenterY(), 2);
 				
 				for (Room c : rooms) {
 					if (c.equals(a) || c.equals(b)) {
 						continue;
 					}
 					
-					double acDist = Math.pow(a.getCenterX() - c.getCenterX(), 2) + Math
-						.pow(a.getCenterY() - c.getCenterY(), 2);
-					double bcDist = Math.pow(b.getCenterX() - c.getCenterX(), 2) + Math
-						.pow(b.getCenterY() - c.getCenterY(), 2);
+					double acDist = Math.pow(a.getCenterX() - c.getCenterX(), 2) +
+						Math.pow(a.getCenterY() - c.getCenterY(), 2);
+					double bcDist = Math.pow(b.getCenterX() - c.getCenterX(), 2) +
+						Math.pow(b.getCenterY() - c.getCenterY(), 2);
 					
 					if (acDist < abDist && bcDist < abDist) {
 						skip = true;
