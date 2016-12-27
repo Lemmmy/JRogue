@@ -9,7 +9,7 @@ import pw.lemmmy.jrogue.dungeon.entities.EntityChest;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
 import java.lang.reflect.Constructor;
@@ -98,7 +98,7 @@ public class RoomBasic extends Room {
 		
 		Container container = chest.getContainer().get();
 		
-		int itemAmount = Utils.roll(4) - 1; // possibility that chests can be empty
+		int itemAmount = RandomUtils.roll(4) - 1; // possibility that chests can be empty
 		
 		for (int i = 0; i < itemAmount; i++) {
 			ItemGroup group = ITEM_GROUPS.next();
@@ -151,7 +151,7 @@ public class RoomBasic extends Room {
 		}
 		
 		public Class<? extends Item> getRandomItem() {
-			return Utils.randomFrom(items);
+			return RandomUtils.randomFrom(items);
 		}
 	}
 }

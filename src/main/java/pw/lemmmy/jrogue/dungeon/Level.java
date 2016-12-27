@@ -16,6 +16,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Point;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
@@ -469,7 +470,7 @@ public class Level {
 					Constructor<? extends Monster> constructor = monsterClass
 						.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 					
-					int count = Utils.jrandom(range);
+					int count = RandomUtils.jrandom(range);
 					
 					for (int j = 0; j < count; j++) {
 						Point point = getMonsterSpawnPoint();
@@ -502,7 +503,7 @@ public class Level {
 			}
 			
 			Map<Class<? extends Monster>, Range<Integer>> floorMonsters = MONSTERS_PER_FLOOR.get(floor);
-			Class<? extends Monster> monsterClass = Utils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
+			Class<? extends Monster> monsterClass = RandomUtils.randomFrom(floorMonsters.keySet().toArray(new Class[0]));
 			
 			try {
 				Constructor<? extends Monster> constructor = monsterClass
@@ -522,7 +523,7 @@ public class Level {
 	}
 	
 	private Point getMonsterSpawnPoint() {
-		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
 			.filter(t -> (
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
 					.isInnerRoomTile()) ||
@@ -537,7 +538,7 @@ public class Level {
 	private Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
-		Tile tile = Utils.randomFrom(Arrays.stream(tiles)
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
 			.filter(t -> (
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType()
 					.isInnerRoomTile()) ||

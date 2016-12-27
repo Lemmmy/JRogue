@@ -4,14 +4,13 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class MonsterRat extends Monster {
 	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		speed = (Dungeon.NORMAL_SPEED + 4) - Utils.random(8);
+		speed = (Dungeon.NORMAL_SPEED + 4) - RandomUtils.random(8);
 		
 		setAI(new GhoulAI(this));
 	}
@@ -88,7 +87,7 @@ public class MonsterRat extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 		
-		if (Utils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
+		if (RandomUtils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 	}

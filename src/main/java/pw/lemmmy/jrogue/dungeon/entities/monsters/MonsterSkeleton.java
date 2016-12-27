@@ -3,14 +3,13 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	protected int getBaseMaxHealth() {
-		return Utils.roll(getExperienceLevel() * 2, 6);
+		return RandomUtils.roll(getExperienceLevel() * 2, 6);
 	}
 	
 	@Override
@@ -110,7 +109,7 @@ public class MonsterSkeleton extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 		
-		if (Utils.roll(1, 2) == 1) {
+		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}

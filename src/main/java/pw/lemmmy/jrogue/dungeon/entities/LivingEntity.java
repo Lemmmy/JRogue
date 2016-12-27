@@ -1,11 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +35,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	protected int getBaseMaxHealth() {
-		return Utils.roll(experienceLevel, 6);
+		return RandomUtils.roll(experienceLevel, 6);
 	}
 	
 	public int getMaxHealth() {

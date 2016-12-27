@@ -1,12 +1,12 @@
 package pw.lemmmy.jrogue.dungeon;
 
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public interface Messenger {
 	void log(String s, Object... objects);
 	
 	default void logRandom(String... strings) {
-		log(Utils.randomFrom(strings));
+		log(RandomUtils.randomFrom(strings));
 	}
 	
 	default void The(String s, Object... objects) {

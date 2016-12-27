@@ -16,7 +16,7 @@ import pw.lemmmy.jrogue.dungeon.entities.player.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -455,7 +455,7 @@ public class Dungeon implements Messenger {
 		if (--passiveSoundCounter <= 0) {
 			emitPassiveSounds();
 			
-			passiveSoundCounter = Utils.roll(3, 4);
+			passiveSoundCounter = RandomUtils.roll(3, 4);
 		}
 		
 		if (
@@ -464,7 +464,7 @@ public class Dungeon implements Messenger {
 			) {
 			level.spawnNewMonsters();
 			
-			monsterSpawnCounter = Utils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
+			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
 	}
 	
@@ -481,7 +481,7 @@ public class Dungeon implements Messenger {
 		PassiveSoundEmitter soundEmitter = (PassiveSoundEmitter) emitters.get(0);
 		
 		if (rand.nextFloat() <= soundEmitter.getSoundProbability()) {
-			String sound = Utils.randomFrom(soundEmitter.getSounds());
+			String sound = RandomUtils.randomFrom(soundEmitter.getSounds());
 			
 			log(sound);
 		}

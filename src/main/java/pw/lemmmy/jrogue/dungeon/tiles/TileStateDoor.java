@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class TileStateDoor extends TileState {
 	private int health = 0;
@@ -10,7 +10,7 @@ public class TileStateDoor extends TileState {
 		super(tile);
 		
 		if (tile.getType() != TileType.TILE_ROOM_DOOR_BROKEN) {
-			health = Utils.roll(2, 3);
+			health = RandomUtils.roll(2, 3);
 		}
 	}
 	

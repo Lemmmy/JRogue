@@ -7,7 +7,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -43,7 +43,7 @@ public abstract class Entity implements Serialisable {
 		this.lastSeenX = x;
 		this.lastSeenY = y;
 		
-		this.visualID = Utils.random(1000);
+		this.visualID = RandomUtils.random(1000);
 	}
 	
 	public int getVisualID() {

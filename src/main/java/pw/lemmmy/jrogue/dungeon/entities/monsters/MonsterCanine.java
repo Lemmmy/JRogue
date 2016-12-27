@@ -3,14 +3,13 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public abstract class MonsterCanine extends Monster {
 	public MonsterCanine(Dungeon dungeon, Level level, int x, int y) {
@@ -48,36 +47,36 @@ public abstract class MonsterCanine extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		getDungeon().You("kick the %s!", getName(false));
 		
-		if (Utils.roll(1, 5) == 1) {
+		if (RandomUtils.roll(1, 5) == 1) {
 			// TODO: If a player has a higher agility or speed, the monster is less likely to dodge
 			getDungeon().orangeThe("%s dodges your kick!", getName(false));
 			
 			return;
 		}
 		
-		if (Utils.roll(1, 2) == 1) {
+		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 		
 		if (isAlive()) {
-			if (Utils.roll(1, 5) == 1) {
+			if (RandomUtils.roll(1, 5) == 1) {
 				getDungeon().orangeThe("%s bites your foot!", getName(false));
 				
-				if (Utils.roll(1, 4) == 1) {
+				if (RandomUtils.roll(1, 4) == 1) {
 					getDungeon().redThe("bite was pretty deep!");
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
-					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
+					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, RandomUtils.roll(3, 6)));
 				}
-			} else if (Utils.roll(1, 5) == 1) {
+			} else if (RandomUtils.roll(1, 5) == 1) {
 				getDungeon().orangeThe("%s yanks your leg!", getName(false));
 				
-				if (Utils.roll(1, 4) == 1) {
+				if (RandomUtils.roll(1, 4) == 1) {
 					getDungeon().log("[RED]It strains your leg!");
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
-					kicker.addStatusEffect(new StrainedLeg(Utils.roll(3, 6)));
+					kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 				}
 			}
 		}

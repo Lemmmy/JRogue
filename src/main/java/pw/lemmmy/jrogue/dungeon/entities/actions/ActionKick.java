@@ -10,7 +10,7 @@ import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileStateDoor;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ActionKick extends EntityAction {
 	private Integer[] direction;
@@ -61,7 +61,7 @@ public class ActionKick extends EntityAction {
 		TileType tileType = getEntity().getLevel().getTileType(dx, dy);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
-			if (Utils.roll(5) == 1) {
+			if (RandomUtils.roll(5) == 1) {
 				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not strain their legs
 				if (isPlayer) {
 					getDungeon().logRandom(
@@ -75,7 +75,7 @@ public class ActionKick extends EntityAction {
 				}
 				
 				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker, isPlayer);
-				kicker.addStatusEffect(new StrainedLeg(Utils.roll(3, 6)));
+				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
 					getDungeon().You("kick thin air.");
@@ -108,7 +108,7 @@ public class ActionKick extends EntityAction {
 				getDungeon().You("kick the wall!");
 			}
 			
-			if (Utils
+			if (RandomUtils
 				.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
 					getDungeon().logRandom(
@@ -118,7 +118,7 @@ public class ActionKick extends EntityAction {
 				}
 				
 				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker, isPlayer);
-				kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
+				kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
 					getDungeon().log("[ORANGE]Ouch! That hurt!");

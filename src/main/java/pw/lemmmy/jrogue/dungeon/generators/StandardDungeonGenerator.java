@@ -6,11 +6,10 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class StandardDungeonGenerator extends RoomGenerator {
 	private static final double THRESHOLD_WATER_NOISE = 0.2;
@@ -89,12 +88,12 @@ public class StandardDungeonGenerator extends RoomGenerator {
 		int colourCount = MonsterFish.FishColour.values().length;
 		
 		for (int i = 0; i < swarmCount; i++) {
-			Tile swarmTile = Utils.jrandomFrom(waterTiles);
+			Tile swarmTile = RandomUtils.jrandomFrom(waterTiles);
 			
 			List<Tile> surroundingTiles = level
 				.getTilesInRadius(swarmTile.getX(), swarmTile.getY(), jrand.nextInt(2) + 2);
 			
-			if (Utils.roll(4) == 1) { // spawn a swarm of pufferfish
+			if (RandomUtils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == TileType.TILE_GROUND_WATER &&
 						jrand.nextDouble() <= PROBABILITY_PUFFERFISH &&

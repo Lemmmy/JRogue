@@ -4,7 +4,7 @@ import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ public class FishAI extends AI {
 				.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
 			
 			if (waterTiles.length > 0) {
-				Tile destination = Utils.randomFrom(waterTiles);
+				Tile destination = RandomUtils.randomFrom(waterTiles);
 				
 				moveTowards(destination.getX(), destination.getY());
 			}

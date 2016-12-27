@@ -11,6 +11,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
@@ -234,7 +235,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
 				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
 				
-				QuickSpawn.spawnGold(level, x, y, Utils.roll(Math.abs(level.getDepth()) + 2, 6));
+				QuickSpawn.spawnGold(level, x, y, RandomUtils.roll(Math.abs(level.getDepth()) + 2, 6));
 			}
 		});
 	}
@@ -252,7 +253,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 			return false;
 		}
 		
-		Room spawnRoom = Utils.randomFrom(temp2);
+		Room spawnRoom = RandomUtils.randomFrom(temp2);
 		
 		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
 		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
@@ -300,7 +301,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 			.skip(temp.size() - 5)
 			.collect(Collectors.toList());
 		
-		Room nextStairsRoom = Utils.randomFrom(possibleRooms);
+		Room nextStairsRoom = RandomUtils.randomFrom(possibleRooms);
 		
 		int stairX = nextInt(
 			nextStairsRoom.getRoomX() + 2,

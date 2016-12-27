@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.items;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 			.skip(Math.max(0, validMaterials.size() - 3))
 			.collect(Collectors.toList());
 		
-		this.material = Utils.randomFrom(bestMaterials);
+		this.material = RandomUtils.randomFrom(bestMaterials);
 	}
 	
 	public ItemSword(Material material) {

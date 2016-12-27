@@ -20,6 +20,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.lang.reflect.Constructor;
@@ -1130,17 +1131,17 @@ public class Player extends LivingEntity {
 		if (getArmourClass() >= 0) {
 			target = 10 + getArmourClass() + attacker.getExperienceLevel();
 		} else {
-			int targetRange = Utils.random(getArmourClass(), -1);
+			int targetRange = RandomUtils.random(getArmourClass(), -1);
 			target = 10 + targetRange + attacker.getExperienceLevel();
 			
-			damage -= Utils.roll(Math.abs(getArmourClass()));
+			damage -= RandomUtils.roll(Math.abs(getArmourClass()));
 		}
 		
 		if (target <= 0) {
 			target = 1;
 		}
 		
-		int roll = Utils.roll(20);
+		int roll = RandomUtils.roll(20);
 		
 		if (target <= 1 && roll <= 1) {
 			return new Hit(HitType.JUST_MISS, damage);
@@ -1199,7 +1200,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public Hit hitAgainstMonster(DamageSource damageSource, int damage, LivingEntity victim) {
-		int roll = Utils.roll(20);
+		int roll = RandomUtils.roll(20);
 		int toHit = 1;
 		
 		if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeapon) {

@@ -5,7 +5,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Shatterable;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +21,7 @@ public class EntityChest extends Entity {
 		super(dungeon, level, x, y);
 		
 		container = new Container(getName(true));
-		locked = Utils.rollD2();
+		locked = RandomUtils.rollD2();
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ public class EntityChest extends Entity {
 				.hasNext(); ) {
 				iterator.next();
 				
-				if (Utils.roll(3) == 1) {
+				if (RandomUtils.roll(3) == 1) {
 					// kicking chests has a high chance of damaging items regardless of skill.
 					iterator.remove();
 					somethingShattered = true;
@@ -91,7 +91,7 @@ public class EntityChest extends Entity {
 				getDungeon().orangeYou("hear something shatter.");
 			}
 			
-			if (locked && Utils.roll(4) == 1) {
+			if (locked && RandomUtils.roll(4) == 1) {
 				getDungeon().greenThe("%s breaks open!", getName(false));
 				locked = false;
 			}

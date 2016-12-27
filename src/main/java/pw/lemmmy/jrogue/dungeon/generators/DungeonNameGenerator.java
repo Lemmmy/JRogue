@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.StringReplacer;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -150,9 +150,9 @@ public class DungeonNameGenerator {
 	
 	public static String generate() {
 		return StringReplacer.replace(
-			Utils.randomFrom(NAME_TEMPLATES),
+			RandomUtils.randomFrom(NAME_TEMPLATES),
 			Pattern.compile("\\{(\\w+)}"),
-			(Matcher m) -> Utils.randomFrom(NAME_OBJECTS.get(m.group(1)))
+			(Matcher m) -> RandomUtils.randomFrom(NAME_OBJECTS.get(m.group(1)))
 		);
 	}
 }

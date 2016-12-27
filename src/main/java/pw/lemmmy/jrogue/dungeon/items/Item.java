@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +17,7 @@ public abstract class Item implements Serialisable {
 	private BUCStatus bucStatus = BUCStatus.UNCURSED;
 	
 	public Item() {
-		this.visualID = Utils.random(1000);
+		this.visualID = RandomUtils.random(1000);
 	}
 	
 	public int getVisualID() {

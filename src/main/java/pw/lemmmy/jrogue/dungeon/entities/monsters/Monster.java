@@ -3,13 +3,12 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
 import pw.lemmmy.jrogue.dungeon.items.ItemCorpse;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
 
@@ -50,11 +49,11 @@ public abstract class Monster extends LivingEntity {
 	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
 			attacker.addExperience(
-				Utils.roll(Utils.roll(getExperienceLevel()), getExperienceRewarded())
+				RandomUtils.roll(RandomUtils.roll(getExperienceLevel()), getExperienceRewarded())
 			);
 		}
 		
-		if (getCorpseChance() != 0f && Utils.randomFloat() <= getCorpseChance()) {
+		if (getCorpseChance() != 0f && RandomUtils.randomFloat() <= getCorpseChance()) {
 			dropItem(new ItemStack(new ItemCorpse(this)));
 		}
 		
@@ -93,6 +92,6 @@ public abstract class Monster extends LivingEntity {
 	public void magicAttackPlayer() {}
 	
 	public int getExperienceRewarded() {
-		return getSize() == Size.SMALL ? Utils.roll(1, 2) : Utils.roll(2, 2);
+		return getSize() == Size.SMALL ? RandomUtils.roll(1, 2) : RandomUtils.roll(2, 2);
 	}
 }

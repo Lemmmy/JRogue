@@ -5,15 +5,14 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public abstract class ItemWeaponMelee extends ItemWeapon {
 	@Override
 	public void hit(LivingEntity attacker, LivingEntity victim) {
 		int baseDamage = calculateDamage(attacker, victim);
-		int damage = baseDamage > 0 ? Utils.roll(baseDamage) : baseDamage;
+		int damage = baseDamage > 0 ? RandomUtils.roll(baseDamage) : baseDamage;
 		
 		attacker.setAction(new ActionMelee(
 			attacker.getDungeon(),

@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.items;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.utils.Utils;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ItemGem extends Item implements Shatterable {
 	private Gem gem;
@@ -14,8 +14,8 @@ public class ItemGem extends Item implements Shatterable {
 	}
 	
 	public ItemGem(Level level) { // chest spawning constructor
-		this.gem = Utils.randomFrom(Gem.values());
-		this.worthless = Utils.rollD2();
+		this.gem = RandomUtils.randomFrom(Gem.values());
+		this.worthless = RandomUtils.rollD2();
 	}
 	
 	public ItemGem(Gem gem, boolean worthless) {
