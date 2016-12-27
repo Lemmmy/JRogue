@@ -1,8 +1,8 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 public class Hit {
-	private HitType hitType;
-	private int damage;
+	private final HitType hitType;
+	private final int damage;
 	
 	public Hit(HitType hitType, int damage) {
 		this.hitType = hitType;
