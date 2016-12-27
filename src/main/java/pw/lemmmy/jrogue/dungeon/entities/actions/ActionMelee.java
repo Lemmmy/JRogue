@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Hit;
+import pw.lemmmy.jrogue.dungeon.entities.HitType;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 
@@ -31,7 +32,13 @@ public class ActionMelee extends EntityAction {
 		boolean isAttackerPlayer = attacker instanceof Player;
 		boolean isVictimPlayer = victim instanceof Player;
 		
-		Hit hit = victim.doHit(damageSource, damage, attacker);
+		Hit hit = new Hit(HitType.SUCCESS, damage);
+		
+		if (isAttackerPlayer && !isVictimPlayer) {
+			hit = ((Player) attacker).hitAgainstMonster(damageSource, damage, victim);
+		} else if (!isAttackerPlayer && isVictimPlayer) {
+			hit = ((Player) victim).hitFromMonster(damageSource, damage, attacker);
+		}
 		
 		switch (hit.getHitType()) {
 			case JUST_MISS:

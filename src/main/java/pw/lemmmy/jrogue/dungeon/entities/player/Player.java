@@ -1124,6 +1124,127 @@ public class Player extends LivingEntity {
 		}
 	}
 	
+	public Hit hitFromMonster(DamageSource damageSource, int damage, LivingEntity attacker) {
+		int target;
+		
+		if (getArmourClass() >= 0) {
+			target = 10 + getArmourClass() + attacker.getExperienceLevel();
+		} else {
+			int targetRange = Utils.random(getArmourClass(), -1);
+			target = 10 + targetRange + attacker.getExperienceLevel();
+			
+			damage -= Utils.roll(Math.abs(getArmourClass()));
+		}
+		
+		if (target <= 0) {
+			target = 1;
+		}
+		
+		int roll = Utils.roll(20);
+		
+		if (target <= 1 && roll <= 1) {
+			return new Hit(HitType.JUST_MISS, damage);
+		} else if (roll >= target) {
+			return new Hit(HitType.MISS, damage);
+		} else {
+			return new Hit(HitType.SUCCESS, damage);
+		}
+	}
+	
+	private int getStrengthHitBonus() {
+		int strength = getAttributes().getAttribute(Attribute.STRENGTH);
+		return (int) Math.floor(strength / 5) - 2;
+	}
+	
+	private int getDexterityHitBonus() {
+		int dexterity = getAttributes().getAttribute(Attribute.DEXTERITY);
+		
+		if (dexterity < 15) {
+			return (int) Math.floor(dexterity / 5) - 3;
+		} else {
+			return dexterity - 15;
+		}
+	}
+	
+	private int getWeaponSkillHitBonus(SkillLevel skillLevel) {
+		switch (skillLevel) {
+			case UNSKILLED:
+				return -4;
+			case ADVANCED:
+				return 2;
+			case EXPERT:
+			case MASTER:
+				return 3;
+			default:
+				return 0;
+		}
+	}
+	
+	private int getTwoHandedHitBonus(SkillLevel skillLevel) {
+		switch (skillLevel) {
+			case UNSKILLED:
+				return -9;
+			case ADVANCED:
+				return -5;
+			case EXPERT:
+			case MASTER:
+				return -3;
+			default:
+				return -7;
+		}
+	}
+	
+	private int getSizeHitBonus(Size size) {
+		return size == Size.SMALL ? -1 : 1;
+	}
+	
+	public Hit hitAgainstMonster(DamageSource damageSource, int damage, LivingEntity victim) {
+		int roll = Utils.roll(20);
+		int toHit = 1;
+		
+		if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeapon) {
+			ItemWeapon weapon = (ItemWeapon) getRightHand().getStack().getItem();
+			
+			toHit += weapon.getToHitBonus();
+			
+			// TODO: Add enchantment too
+			
+			toHit += getWeaponSkillHitBonus(getSkillLevel(weapon.getSkill()));
+		}
+		
+		// TODO: rings of increase accuracy enchantment levels
+		
+		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE) {
+			toHit += 1;
+			toHit += getStrengthHitBonus();
+		}
+		
+		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE ||
+			damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+			toHit += getDexterityHitBonus();
+		}
+		
+		if (damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+			toHit += getSizeHitBonus(victim.getSize());
+		}
+		
+		toHit += getExperienceLevel();
+		
+		if (getExperienceLevel() < 3) {
+			toHit += 1;
+		}
+		
+		toHit += victim.getArmourClass();
+		
+		// TODO: ranged and spell
+		
+		if (toHit > roll) {
+			return new Hit(HitType.SUCCESS, damage);
+		} else {
+			return new Hit(HitType.MISS, damage);
+		}
+	}
+	
 	@Override
 	public void swapHands() {
 		super.swapHands();

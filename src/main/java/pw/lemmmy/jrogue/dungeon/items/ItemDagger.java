@@ -33,6 +33,11 @@ public class ItemDagger extends ItemSword {
 	}
 	
 	@Override
+	public int getToHitBonus() {
+		return 2;
+	}
+	
+	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_DAGGER;
 	}

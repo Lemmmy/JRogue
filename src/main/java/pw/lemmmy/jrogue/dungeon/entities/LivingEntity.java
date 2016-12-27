@@ -223,43 +223,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 		}
 	}
 	
-	public Hit doHit(DamageSource damageSource, int damage, LivingEntity attacker) {
-		int target;
-		
-		if (getArmourClass() >= 0) {
-			target = 10 + getArmourClass() + attacker.getExperienceLevel();
-		} else {
-			int targetRange = Utils.random(getArmourClass(), -1);
-			target = 10 + targetRange + attacker.getExperienceLevel();
-			
-			damage -= Utils.roll(Math.abs(getArmourClass()));
-		}
-		
-		if (target <= 0) {
-			target = 1;
-		}
-		
-		int roll = Utils.roll(20);
-		
-		JRogue.getLogger().trace(
-			"{} (AC {}) -> {} (AC {}): Rolled {}, Target {}",
-			attacker.getClass().getSimpleName(),
-			attacker.getArmourClass(),
-			getClass().getSimpleName(),
-			getArmourClass(),
-			roll,
-			target
-		);
-		
-		if (target <= 1 && roll <= 1) {
-			return new Hit(HitType.JUST_MISS, damage);
-		} else if (roll >= target) {
-			return new Hit(HitType.MISS, damage);
-		} else {
-			return new Hit(HitType.SUCCESS, damage);
-		}
-	}
-	
 	public boolean damage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
