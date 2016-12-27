@@ -42,6 +42,11 @@ public class StandardDungeonGenerator extends RoomGenerator {
 		return verify();
 	}
 	
+	@Override
+	public TileType getTorchTileType() {
+		return TileType.TILE_ROOM_TORCH_FIRE;
+	}
+	
 	private void addWaterBodies() {
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {

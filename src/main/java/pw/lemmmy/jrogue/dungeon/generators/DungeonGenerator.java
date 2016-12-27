@@ -44,6 +44,8 @@ public abstract class DungeonGenerator {
 		return rand.nextInt(max - min) + min;
 	}
 	
+	public abstract TileType getTorchTileType();
+	
 	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
 		// the offsets are to prevent rooms directly touching each other
 		
@@ -65,7 +67,7 @@ public abstract class DungeonGenerator {
 			);
 			
 			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
-			room.build();
+			room.build(this);
 			
 			rooms.add(room);
 			return room;

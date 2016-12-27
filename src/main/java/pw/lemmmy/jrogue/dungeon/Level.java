@@ -10,6 +10,7 @@ import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.IceDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileState;
@@ -105,7 +106,13 @@ public class Level {
 		do {
 			initialise();
 			
-			DungeonGenerator generator = new StandardDungeonGenerator(this, sourceTile);
+			DungeonGenerator generator;
+			
+			if (depth < -10) {
+				generator = new IceDungeonGenerator(this, sourceTile);
+			} else {
+				generator = new StandardDungeonGenerator(this, sourceTile);
+			}
 			
 			if (!generator.generate()) {
 				continue;
