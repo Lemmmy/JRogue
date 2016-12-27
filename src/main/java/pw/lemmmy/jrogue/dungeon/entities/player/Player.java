@@ -134,7 +134,7 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public int getDepth() {
-		return 3;
+		return 10;
 	}
 	
 	@Override

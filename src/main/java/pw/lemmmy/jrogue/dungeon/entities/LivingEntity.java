@@ -105,10 +105,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 	public int getDepth() {
 		switch (getSize()) {
 			case SMALL:
-				return 1;
+				return 3;
 			
 			case LARGE:
-				return 2;
+				return 4;
 			
 			default:
 				return 0;
