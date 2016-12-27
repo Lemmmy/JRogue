@@ -40,7 +40,7 @@ public class Attributes {
 	}
 	
 	public boolean canIncrementAttribute(Attribute attribute, Player player) {
-		return player.getSpendableSkillPoints() > 0 || getAttribute(attribute) < 30;
+		return player.getSpendableSkillPoints() > 0 && getAttribute(attribute) < 30;
 	}
 	
 	public void serialise(JSONObject obj) {

@@ -83,7 +83,7 @@ public abstract class Room {
 		this.isSpawn = true;
 	}
 	
-	public abstract void build();
+	public abstract void build(DungeonGenerator generator);
 	
 	public abstract void addFeatures();
 }
