@@ -32,7 +32,7 @@ public class EntityItem extends Entity {
 	
 	@Override
 	public int getDepth() {
-		return 0;
+		return 2;
 	}
 	
 	@Override
