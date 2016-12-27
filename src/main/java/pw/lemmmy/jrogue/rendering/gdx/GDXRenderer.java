@@ -604,7 +604,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	public void showInventoryWindow() {
 		nextFrameDeferred
-			.add(() -> new InventoryWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
+			.add(() -> new PlayerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
 				.show());
 	}
 	

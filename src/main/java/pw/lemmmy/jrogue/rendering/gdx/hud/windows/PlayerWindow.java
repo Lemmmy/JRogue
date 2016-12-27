@@ -10,10 +10,10 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 
-public class InventoryWindow extends PopupWindow {
+public class PlayerWindow extends PopupWindow {
 	private Entity entity;
 	
-	public InventoryWindow(GDXRenderer renderer, Stage stage, Skin skin, Entity entity) {
+	public PlayerWindow(GDXRenderer renderer, Stage stage, Skin skin, Entity entity) {
 		super(renderer, stage, skin, entity.getDungeon(), entity.getLevel());
 		
 		this.entity = entity;
@@ -21,7 +21,7 @@ public class InventoryWindow extends PopupWindow {
 	
 	@Override
 	public String getTitle() {
-		return entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Inventory";
+		return entity instanceof Player ? entity.getName(true) : "Player";
 	}
 	
 	@Override
@@ -32,15 +32,15 @@ public class InventoryWindow extends PopupWindow {
 		String inventoryName = entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Inventory";
 		
 		getWindow().getContentTable().padTop(4);
-		getWindow().getContentTable().add(new Label("Skill points", getSkin(), "windowStyle"));
+		getWindow().getContentTable().add(new Label("Statistics", getSkin(), "windowStyle"));
 		getWindow().getContentTable().add(new Label("", getSkin(), "windowStyle"));
 		getWindow().getContentTable().add(new Label(inventoryName, getSkin(), "windowStyle"));
 		getWindow().getContentTable().row();
 		
 		if (entity instanceof Player) {
-			SkillPointsComponent skillPointsComponent = new SkillPointsComponent(getSkin(), (Player) entity);
-			ScrollPane skillPointsScrollPane = new ScrollPane(skillPointsComponent, getSkin());
-			getWindow().getContentTable().add(skillPointsScrollPane).width(276).left().top();
+			StatisticsComponent statisticsComponent = new StatisticsComponent(getSkin(), (Player) entity);
+			ScrollPane statisticsScrollPane = new ScrollPane(statisticsComponent, getSkin());
+			getWindow().getContentTable().add(statisticsScrollPane).width(276).left().top().padRight(8);
 		}
 		
 		Container<Actor> splitter = new Container<>();
@@ -49,6 +49,6 @@ public class InventoryWindow extends PopupWindow {
 		
 		ContainerComponent inventoryComponent = new ContainerComponent(getSkin(), entity, null, true);
 		ScrollPane inventoryScrollPane = new ScrollPane(inventoryComponent, getSkin());
-		getWindow().getContentTable().add(inventoryScrollPane).left().top();
+		getWindow().getContentTable().add(inventoryScrollPane).left().top().padLeft(8);
 	}
 }
