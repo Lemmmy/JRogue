@@ -84,11 +84,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		buildRoom(ROOM_TYPES.next(), roomX, roomY, roomWidth, roomHeight);
 		
 		for (int[] direction : Utils.DIRECTIONS) {
-			int attempts = 0;
-			
-			while (attempts < 5) {
-				attempts++;
-				
+			for (int attempts = 1; attempts < 5; ++attempts) {
 				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 				int newRoomHeight = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 				

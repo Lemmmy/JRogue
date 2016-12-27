@@ -100,7 +100,7 @@ public class Level {
 		entityRemoveQueue = new ArrayList<>();
 	}
 	
-	protected void generate(Optional<Tile> sourceTile) {
+	protected void generate(Tile sourceTile) {
 		boolean gotLevel = false;
 		
 		do {
