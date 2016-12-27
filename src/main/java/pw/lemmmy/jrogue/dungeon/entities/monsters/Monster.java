@@ -49,7 +49,7 @@ public abstract class Monster extends LivingEntity {
 	@Override
 	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		if (attacker != null) {
-			attacker..addExperience(
+			attacker.addExperience(
 				Utils.roll(Utils.roll(getExperienceLevel()), getExperienceRewarded())
 			);
 		}
