@@ -51,7 +51,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	private Tile startTile;
 	private Tile endTile;
 	
-	public RoomGenerator(Level level, Optional<Tile> sourceTile) {
+	public RoomGenerator(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	
@@ -261,11 +261,9 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
 		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
 		
-		if (sourceTile.isPresent()) {
+		if (sourceTile != null) {
 			Tile spawnTile = level.getTile(stairX, stairY);
 			spawnTile.setType(TileType.TILE_ROOM_STAIRS_UP);
-			
-			Tile sourceTile = this.sourceTile.get();
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
 				spawnTile.setType(TileType.TILE_ROOM_STAIRS_DOWN);
@@ -319,12 +317,8 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		
 		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
 		
-		if (sourceTile.isPresent()) {
-			Tile st = sourceTile.get();
-			
-			if (st.getLevel().getDepth() < level.getDepth()) {
-				level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
-			}
+		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
+			level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
 		}
 		
 		endTile = level.getTile(stairX, stairY);

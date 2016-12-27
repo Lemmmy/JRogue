@@ -24,7 +24,7 @@ public class StandardDungeonGenerator extends RoomGenerator {
 	
 	private OpenSimplexNoise simplexNoise;
 	
-	public StandardDungeonGenerator(Level level, Optional<Tile> sourceTile) {
+	public StandardDungeonGenerator(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	
