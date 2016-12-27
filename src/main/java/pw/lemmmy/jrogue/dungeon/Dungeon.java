@@ -237,7 +237,7 @@ public class Dungeon implements Messenger {
 	}
 	
 	public void quit() {
-		prompt(new Prompt("Really quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
+		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {}
 			
