@@ -65,7 +65,7 @@ public abstract class MonsterCanine extends Monster {
 				getDungeon().orangeThe("%s bites your foot!", getName(false));
 				
 				if (Utils.roll(1, 4) == 1) {
-					getDungeon().redThe("The bite was pretty deep!");
+					getDungeon().redThe("bite was pretty deep!");
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
 					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, Utils.roll(3, 6)));
