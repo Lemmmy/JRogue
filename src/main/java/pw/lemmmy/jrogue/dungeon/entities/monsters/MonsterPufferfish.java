@@ -61,12 +61,17 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	public int getBaseArmourClass() {
+		return 8;
+	}
+	
+	@Override
+	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		getDungeon().You("kill the %s!", getName(false));
 	}
 	

@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Container;
 import pw.lemmmy.jrogue.dungeon.entities.EntityChest;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -55,7 +56,7 @@ public class RoomBasic extends Room {
 	}
 	
 	@Override
-	public void build() {
+	public void build(DungeonGenerator generator) {
 		for (int y = getRoomY(); y < getRoomY() + getRoomHeight(); y++) {
 			for (int x = getRoomX(); x < getRoomX() + getRoomWidth(); x++) {
 				boolean wall = x == getRoomX() || x == getRoomX() + getRoomWidth() - 1 ||
@@ -63,7 +64,7 @@ public class RoomBasic extends Room {
 				
 				if (wall) {
 					if (x > getRoomX() && x < getRoomX() + getRoomWidth() - 1 && x % 4 == 0) {
-						getLevel().setTileType(x, y, TileType.TILE_ROOM_TORCH_FIRE);
+						getLevel().setTileType(x, y, generator.getTorchTileType());
 					} else {
 						getLevel().setTileType(x, y, getWallType());
 					}

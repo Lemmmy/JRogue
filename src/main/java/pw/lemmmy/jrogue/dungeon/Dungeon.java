@@ -82,7 +82,7 @@ public class Dungeon implements Messenger {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(Optional.empty());
+		level.generate(null);
 		
 		if (player == null) {
 			player = new Player(
@@ -213,7 +213,7 @@ public class Dungeon implements Messenger {
 	public Level newLevel(int depth, Tile sourceTile) {
 		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
 		levels.put(level.getUUID(), level);
-		level.generate(Optional.ofNullable(sourceTile));
+		level.generate(sourceTile);
 		return level;
 	}
 	

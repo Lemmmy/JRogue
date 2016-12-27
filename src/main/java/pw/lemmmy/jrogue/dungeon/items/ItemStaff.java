@@ -66,6 +66,11 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
+	public int getToHitBonus() {
+		return 0;
+	}
+	
+	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_STAFF;
 	}

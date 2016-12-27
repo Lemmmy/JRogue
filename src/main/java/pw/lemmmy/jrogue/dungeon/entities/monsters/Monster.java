@@ -47,9 +47,9 @@ public abstract class Monster extends LivingEntity {
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 	
 	@Override
-	public void kill(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
-		if (attacker != null && attacker instanceof LivingEntity) {
-			((LivingEntity) attacker).addExperience(
+	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
+			attacker.addExperience(
 				Utils.roll(Utils.roll(getExperienceLevel()), getExperienceRewarded())
 			);
 		}

@@ -35,7 +35,7 @@ public class MonsterFox extends MonsterCanine {
 	
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return Dungeon.NORMAL_SPEED + 3;
 	}
 	
 	@Override

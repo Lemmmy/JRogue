@@ -9,7 +9,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.utils.Utils;
 
-public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
+public abstract class ItemWeaponMelee extends ItemWeapon {
 	@Override
 	public void hit(LivingEntity attacker, LivingEntity victim) {
 		int baseDamage = calculateDamage(attacker, victim);
@@ -52,8 +52,6 @@ public abstract class ItemWeaponMelee extends ItemWeapon implements Wieldable {
 	public abstract int getSmallDamage();
 	
 	public abstract int getLargeDamage();
-	
-	public abstract Skill getSkill();
 	
 	public void hitLog(String attackerString,
 					   String victimString,

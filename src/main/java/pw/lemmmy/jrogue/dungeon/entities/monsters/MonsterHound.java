@@ -54,6 +54,11 @@ public class MonsterHound extends MonsterCanine {
 	}
 	
 	@Override
+	public int getBaseArmourClass() {
+		return 5;
+	}
+	
+	@Override
 	public int getVisibilityRange() {
 		return 15;
 	}

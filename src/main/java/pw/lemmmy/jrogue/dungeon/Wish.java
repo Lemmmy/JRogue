@@ -6,7 +6,11 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
+import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +40,27 @@ public class Wish {
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {
 			player.setNutrition(1000);
+		} else if (wish.equalsIgnoreCase("downstairs")) {
+			Arrays.stream(player.getLevel().getTiles())
+				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
+				.findFirst()
+				.ifPresent(t -> player.teleport(t.getX(), t.getY()));
+		} else if (wish.equalsIgnoreCase("godmode")) {
+			player.godmode();
+		} else if (wish.equalsIgnoreCase("chest")) {
+			dungeon.getLevel().addEntity(
+				new EntityChest(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("fountain")) {
+			dungeon.getLevel().addEntity(
+				new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wishMonsters(dungeon, player, wish)) {
+			dungeon.turn();
+		} else if (wishItems(dungeon, player, wish)) {
+			dungeon.turn();
 		} else {
 			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
 			
@@ -62,37 +87,6 @@ public class Wish {
 				
 				player.giveGold(gold);
 				
-				dungeon.turn();
-				return;
-			}
-			
-			if (wish.equalsIgnoreCase("godmode")) {
-				player.godmode();
-				return;
-			}
-			
-			if (wish.equalsIgnoreCase("chest")) {
-				dungeon.getLevel().addEntity(
-					new EntityChest(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-				);
-				dungeon.turn();
-				return;
-			}
-			
-			if (wish.equalsIgnoreCase("fountain")) {
-				dungeon.getLevel().addEntity(
-					new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-				);
-				dungeon.turn();
-				return;
-			}
-			
-			if (wishMonsters(dungeon, player, wish)) {
-				dungeon.turn();
-				return;
-			}
-			
-			if (wishItems(dungeon, player, wish)) {
 				dungeon.turn();
 			}
 		}

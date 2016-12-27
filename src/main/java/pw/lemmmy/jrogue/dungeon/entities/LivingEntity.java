@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -42,9 +43,31 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return maxHealth;
 	}
 	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public boolean isAlive() {
+		return health > 0;
+	}
+	
+	public void heal(int amount) {
+		health = Math.min(maxHealth, health + amount);
+	}
+	
 	public int getHealingRate() {
 		return 40;
 	}
+	
+	public int getArmourClass() {
+		return getBaseArmourClass();
+	}
+	
+	public abstract int getBaseArmourClass();
 	
 	public int getExperienceLevel() {
 		return experienceLevel;
@@ -82,22 +105,6 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public void onLevelUp() {}
-	
-	public int getHealth() {
-		return health;
-	}
-	
-	public void setHealth(int health) {
-		this.health = health;
-	}
-	
-	public void heal(int amount) {
-		health = Math.min(maxHealth, health + amount);
-	}
-	
-	public boolean isAlive() {
-		return health > 0;
-	}
 	
 	public abstract int getMovementSpeed();
 	
@@ -216,7 +223,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		}
 	}
 	
-	public boolean damage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	public boolean damage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
 		health = Math.max(0, health - damageModifier);
@@ -235,15 +242,15 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return damage;
 	}
 	
-	protected abstract void onDamage(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
+	protected abstract void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
 	
-	public void kill(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer) {
+	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
 		onDie(damageSource, damage, attacker, isPlayer);
 		
 		getLevel().removeEntity(this);
 	}
 	
-	protected abstract void onDie(DamageSource damageSource, int damage, Entity attacker, boolean isPlayer);
+	protected abstract void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
 	
 	public void dropItem(ItemStack item) {
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());

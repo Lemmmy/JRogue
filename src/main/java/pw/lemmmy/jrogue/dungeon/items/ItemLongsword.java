@@ -33,6 +33,11 @@ public class ItemLongsword extends ItemSword {
 	}
 	
 	@Override
+	public int getToHitBonus() {
+		return 0;
+	}
+	
+	@Override
 	public Skill getSkill() {
 		return Skill.SKILL_LONGSWORD;
 	}
