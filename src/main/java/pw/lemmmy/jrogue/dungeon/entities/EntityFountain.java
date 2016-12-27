@@ -19,6 +19,11 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 	}
 	
 	@Override
+	public int getDepth() {
+		return 0;
+	}
+	
+	@Override
 	public boolean isStatic() {
 		return true;
 	}
