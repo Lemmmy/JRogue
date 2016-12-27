@@ -1,9 +1,13 @@
 package pw.lemmmy.jrogue.rendering.gdx.hud;
 
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -12,6 +16,9 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.rendering.Renderer;
+import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
+import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Path;
@@ -22,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HUD implements Dungeon.Listener {
+	private GDXRenderer renderer;
 	private Settings settings;
 	
 	private Skin skin;
@@ -34,13 +42,16 @@ public class HUD implements Dungeon.Listener {
 	private Label effectsLabel;
 	private HorizontalGroup brightness;
 	
+	private List<Actor> singleTurnActors = new ArrayList<>();
+	
 	private int healthLastTurn;
 	private int energyLastTurn;
 	
 	private Dungeon dungeon;
 	private List<LogEntry> log = new ArrayList<>();
 	
-	public HUD(Settings settings, Dungeon dungeon) {
+	public HUD(GDXRenderer renderer, Settings settings, Dungeon dungeon) {
+		this.renderer = renderer;
 		this.settings = settings;
 		
 		this.dungeon = dungeon;
@@ -55,8 +66,8 @@ public class HUD implements Dungeon.Listener {
 		Table root = new Table();
 		root.setFillParent(true);
 		
-		Table hudTopContainer = new Table();
-		hudTopContainer.setBackground(skin.getDrawable("blackTransparent"));
+		Table hudTopContainer = new Table(skin);
+		hudTopContainer.setBackground("blackTransparent");
 		initPlayerLine(hudTopContainer);
 		root.add(hudTopContainer).left().fillX().row();
 		
@@ -202,14 +213,14 @@ public class HUD implements Dungeon.Listener {
 		if (player.getHealth() != healthLastTurn) {
 			String bg = healthLastTurn > player.getHealth() ? "redBackground" : "greenBackground";
 			
-			((Label) topStats.findActor("health")).setStyle(getSkin().get(bg, Label.LabelStyle.class));
+			((Label) topStats.findActor("health")).setStyle(skin.get(bg, Label.LabelStyle.class));
 			((Label) topStats.findActor("health")).setText(String.format(
 				"Health: %,d / %,d",
 				player.getHealth(),
 				player.getMaxHealth()
 			));
 		} else {
-			((Label) topStats.findActor("health")).setStyle(getSkin().get("default", Label.LabelStyle.class));
+			((Label) topStats.findActor("health")).setStyle(skin.get("default", Label.LabelStyle.class));
 			((Label) topStats.findActor("health")).setText(String.format(
 				"Health: [%s]%,d[] / [P_GREEN_3]%,d[]",
 				HUDUtils.getHealthColour(player.getHealth(), player.getMaxHealth()),
@@ -253,6 +264,40 @@ public class HUD implements Dungeon.Listener {
 		} else {
 			effectsLabel.setText("");
 		}
+	}
+	
+	@Override
+	public void onBeforeTurn(long turn) {
+		singleTurnActors.forEach(Actor::remove);
+		singleTurnActors.clear();
+	}
+	
+	@Override
+	public void onEntityAttacked(Entity entity, int x, int y, int roll, int toHit) {
+		if (!dungeon.getPlayer().isDebugger()) {
+			return;
+		}
+	
+		Vector3 pos = renderer.getCamera().project(
+			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
+		);
+		
+		Table attackStatTable = new Table(skin);
+		attackStatTable.setBackground("blackTransparent");
+		
+		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 17, 2, 16, 16, false)))
+			.width(16).height(16).padRight(4);
+		attackStatTable.add(new Label(String.format("%,d", roll), skin)).padRight(8);
+		
+		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 18, 2, 16, 16, false)))
+			.width(16).height(16).padRight(4);
+		attackStatTable.add(new Label(String.format("[%s]%,d[]", toHit > roll ? "P_GREEN_2" : "RED", toHit), skin));
+		
+		stage.getRoot().addActor(attackStatTable);
+		attackStatTable.pad(4);
+		attackStatTable.pack();
+		attackStatTable.setPosition((int) pos.x - (int) (attackStatTable.getWidth() / 2), (int) pos.y);
+		singleTurnActors.add(attackStatTable);
 	}
 	
 	@Override

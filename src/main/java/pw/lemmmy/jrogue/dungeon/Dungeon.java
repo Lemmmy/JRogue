@@ -523,6 +523,10 @@ public class Dungeon implements Messenger {
 		listeners.forEach(l -> l.onEntityMoved(entity, lastX, lastY, newX, newY));
 	}
 	
+	public void entityAttacked(Entity entity, int x, int y, int roll, int toHit) {
+		listeners.forEach(l -> l.onEntityAttacked(entity, x, y, roll, toHit));
+	}
+	
 	public void entityRemoved(Entity entity) {
 		listeners.forEach(l -> l.onEntityRemoved(entity));
 	}
@@ -545,6 +549,9 @@ public class Dungeon implements Messenger {
 		default void onEntityAdded(Entity entity) {}
 		
 		default void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {}
+		
+		/** Used for attack popups in advanced mode **/
+		default void onEntityAttacked(Entity entity, int x, int y, int roll, int toHit) {}
 		
 		default void onEntityRemoved(Entity entity) {}
 		

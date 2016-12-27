@@ -1238,6 +1238,8 @@ public class Player extends LivingEntity {
 		
 		// TODO: ranged and spell
 		
+		getDungeon().entityAttacked(victim, victim.getX(), victim.getY(), roll, toHit);
+		
 		if (toHit > roll) {
 			return new Hit(HitType.SUCCESS, damage);
 		} else {

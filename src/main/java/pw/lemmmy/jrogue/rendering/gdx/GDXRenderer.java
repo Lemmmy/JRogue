@@ -117,7 +117,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		loadPathSprites();
 		
-		hud = new HUD(settings, dungeon);
+		hud = new HUD(this, settings, dungeon);
 		hud.init();
 		dungeon.addListener(hud);
 		
