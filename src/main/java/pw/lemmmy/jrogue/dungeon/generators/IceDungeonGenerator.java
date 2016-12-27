@@ -7,7 +7,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import java.util.Optional;
 
 public class IceDungeonGenerator extends RoomGenerator {
-	public IceDungeonGenerator(Level level, Optional<Tile> sourceTile) {
+	public IceDungeonGenerator(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	
