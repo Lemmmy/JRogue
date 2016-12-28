@@ -185,8 +185,6 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
 		} else if (wish.equalsIgnoreCase("potion")) {
-			Random rand = new Random();
-			
 			ItemPotion.BottleType bottle = RandomUtils.randomFrom(ItemPotion.BottleType.values());
 			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
 			float potency = RandomUtils.randomFloat(6f);
