@@ -43,7 +43,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 
     @Override
     public void move() {
-
         int x = getX() + dx;
         int y = getY() + dy;
 

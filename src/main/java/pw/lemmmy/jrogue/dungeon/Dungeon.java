@@ -434,10 +434,14 @@ public class Dungeon implements Messenger {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
 		level.getEntities().stream()
-			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-				(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
-				!(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
+			.filter(e -> e instanceof EntityTurnBased)
+			.filter(e -> !(e instanceof Player))
+			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
+				if (e instanceof LivingEntity && !((LivingEntity) e).isAlive()) {
+					return;
+				}
+				
 				EntityTurnBased tbe = (EntityTurnBased) e;
 				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
 				
