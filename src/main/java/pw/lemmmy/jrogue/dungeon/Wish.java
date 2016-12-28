@@ -74,6 +74,12 @@ public class Wish {
 				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("rug")) {
+			Arrays.stream(player.getLevel().getTiles())
+					.filter(t -> t.getX() == player.getX())
+					.filter(t -> t.getY() == player.getY())
+					.findFirst()
+					.ifPresent(t -> t.setType(TileType.TILE_ROOM_RUG));
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {
