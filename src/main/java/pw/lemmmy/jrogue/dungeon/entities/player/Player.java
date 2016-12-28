@@ -455,15 +455,8 @@ public class Player extends LivingEntity {
 	}
 	
 	public void travelDirectional() {
-		getDungeon().prompt(new Prompt("Travel in what direction?", null, true, new Prompt.PromptCallback() {
+		getDungeon().prompt(new Prompt("Travel in what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
 					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
@@ -569,15 +562,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void kick() {
-		getDungeon().prompt(new Prompt("Kick in what direction?", null, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
+		getDungeon().prompt(new Prompt("Kick in what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
