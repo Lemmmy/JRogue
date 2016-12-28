@@ -32,7 +32,7 @@ public class ItemRendererPotion extends ItemRenderer {
 		if (item instanceof ItemPotion) {
 			ItemPotion potion = (ItemPotion) item;
 			Color prevColour = batch.getColor();
-			batch.setColor(potion.getPotionType().getColour());
+			batch.setColor(PotionColourMap.fromPotion(potion));
 			batch.draw(fluidTex, x, y);
 			batch.setColor(prevColour);
 		}
@@ -46,7 +46,7 @@ public class ItemRendererPotion extends ItemRenderer {
 			ItemPotion potion = (ItemPotion) item;
 			return new CompositeDrawable(
 				ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT,
-				fluidDrawable.tint(potion.getPotionType().getColour()), bottleDrawable
+				fluidDrawable.tint(PotionColourMap.fromPotion(potion)), bottleDrawable
 			);
 		}
 		

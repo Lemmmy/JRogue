@@ -1,9 +1,13 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionColour;
 import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ItemPotion extends ItemDrinkable {
 	public enum BottleType {
@@ -32,7 +36,12 @@ public class ItemPotion extends ItemDrinkable {
 	private boolean empty = false;
 	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
 	private PotionType potionType = PotionType.POTION_HEALTH;
+	private PotionColour potionColour;
 	private float potency = 0.0f;
+	
+	public ItemPotion() {
+		potionColour = RandomUtils.randomFrom(PotionColour.values());
+	}
 	
 	public boolean isEmpty() {
 		return empty;
@@ -58,6 +67,14 @@ public class ItemPotion extends ItemDrinkable {
 		this.potionType = potionType;
 	}
 	
+	public PotionColour getPotionColour() {
+		return potionColour;
+	}
+	
+	public void setPotionColour(PotionColour potionColour) {
+		this.potionColour = potionColour;
+	}
+	
 	public float getPotency() {
 		return potency;
 	}
@@ -69,7 +86,16 @@ public class ItemPotion extends ItemDrinkable {
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		String emptyText = requiresCapitalisation ? "Empty " : "empty ";
-		return (empty ? emptyText : "") + (requiresCapitalisation ? "Potion" : "potion") + (plural ? "s" : "");
+		
+		if (empty && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		String colourName = requiresCapitalisation ?
+							StringUtils.capitalize(getPotionColour().getName()) :
+							getPotionColour().getName();
+		
+		return (empty ? emptyText : "") + colourName + " potion" + (plural ? "s" : "");
 	}
 	
 	@Override
@@ -110,6 +136,7 @@ public class ItemPotion extends ItemDrinkable {
 		obj.put("empty", empty);
 		obj.put("bottle", bottleType.name());
 		obj.put("type", potionType.name());
+		obj.put("colour", potionColour.name());
 		obj.put("potency", (double) potency);
 	}
 	
@@ -120,19 +147,21 @@ public class ItemPotion extends ItemDrinkable {
 		empty = obj.optBoolean("empty", false);
 		bottleType = BottleType.valueOf(obj.optString("bottle", "BOTTLE"));
 		potionType = PotionType.valueOf(obj.optString("type", "POTION_WATER"));
+		potionColour = PotionColour.valueOf(obj.optString("colour", "CLEAR"));
 		potency = (float) obj.optDouble("potency", 0.0);
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) { return true; }
-		if (o == null || getClass() != o.getClass()) { return false; }
+	public boolean equals(Item other) {
+		if (this == other) return true;
+		if (other == null || getClass() != other.getClass()) return false;
 		
-		ItemPotion that = (ItemPotion) o;
+		ItemPotion that = (ItemPotion) other;
 		
-		if (empty != that.empty) { return false; }
-		if (Float.compare(that.potency, potency) != 0) { return false; }
-		if (bottleType != that.bottleType) { return false; }
+		if (empty != that.empty) return false;
+		if (Float.compare(that.potency, potency) != 0) return false;
+		if (bottleType != that.bottleType) return false;
+		if (potionColour != that.potionColour) return false;
 		return potionType == that.potionType;
 	}
 	
@@ -141,6 +170,7 @@ public class ItemPotion extends ItemDrinkable {
 		int result = (empty ? 1 : 0);
 		result = 31 * result + (bottleType != null ? bottleType.hashCode() : 0);
 		result = 31 * result + (potionType != null ? potionType.hashCode() : 0);
+		result = 31 * result + (potionColour != null ? potionColour.hashCode() : 0);
 		result = 31 * result + (potency != +0.0f ? Float.floatToIntBits(potency) : 0);
 		return result;
 	}

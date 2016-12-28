@@ -5,9 +5,11 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.potions.PotionColour;
 import pw.lemmmy.jrogue.dungeon.items.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -170,13 +172,9 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("potion")) {
 			Random rand = new Random();
 			
-			int bottleIndex = rand.nextInt(ItemPotion.BottleType.values().length);
-			ItemPotion.BottleType bottle = ItemPotion.BottleType.values()[bottleIndex];
-			
-			int effectIndex = rand.nextInt(PotionType.values().length);
-			PotionType potionType = PotionType.values()[effectIndex];
-			
-			float potency = rand.nextFloat() * 6.0f;
+			ItemPotion.BottleType bottle = RandomUtils.randomFrom(ItemPotion.BottleType.values());
+			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
+			float potency = RandomUtils.randomFloat(6f);
 			
 			ItemPotion potion = new ItemPotion();
 			potion.setBottleType(bottle);
