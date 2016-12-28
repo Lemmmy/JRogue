@@ -5,7 +5,7 @@ import pw.lemmmy.jrogue.dungeon.entities.player.Attributes;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.ItemStaff;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 
 import java.util.ArrayList;
 import java.util.HashMap;

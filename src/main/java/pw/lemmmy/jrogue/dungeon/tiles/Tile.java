@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.tiles;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;

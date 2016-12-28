@@ -64,7 +64,7 @@ public class GameInputProcessor implements InputProcessor {
 			dungeon.getPlayer().eat();
 			return true;
 		} else if (key == 'q') {
-			dungeon.getPlayer().drink();
+			dungeon.getPlayer().quaff();
 			return true;
 		} else if (key == 'i') {
 			renderer.showInventoryWindow();

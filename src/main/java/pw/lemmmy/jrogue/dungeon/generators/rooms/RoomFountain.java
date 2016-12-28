@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import com.github.alexeyr.pcg.Pcg32;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.EntityFountain;
+import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
 
 public class RoomFountain extends RoomBasic {
 	private Pcg32 rand = new Pcg32();

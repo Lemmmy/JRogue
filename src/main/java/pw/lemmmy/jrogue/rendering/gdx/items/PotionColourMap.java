@@ -1,8 +1,8 @@
 package pw.lemmmy.jrogue.rendering.gdx.items;
 
 import com.badlogic.gdx.graphics.Color;
-import pw.lemmmy.jrogue.dungeon.items.ItemPotion;
-import pw.lemmmy.jrogue.dungeon.items.potions.PotionColour;
+import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
+import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionColour;
 
 public enum PotionColourMap {
 	CLEAR(0x91bed566),

@@ -8,7 +8,7 @@ import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomBasic;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomFountain;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomWater;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;

@@ -1,8 +1,8 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterFish;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterPufferfish;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterFish;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterPufferfish;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;

@@ -9,6 +9,8 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.actions.*;
+import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
@@ -16,8 +18,14 @@ import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
+import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
+import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.TileStateClimbable;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;
@@ -766,30 +774,30 @@ public class Player extends LivingEntity {
 		}));
 	}
 	
-	public void drink() {
+	public void quaff() {
 		if (!getContainer().isPresent()) {
-			getDungeon().yellowYou("have nothing to drink.");
+			getDungeon().yellowYou("have nothing to quaff.");
 			return;
 		}
 		
 		Container inventory = getContainer().get();
-		Map<Character, ItemStack> drinkables = inventory.getDrinkables();
+		Map<Character, ItemStack> quaffables = inventory.getQuaffables();
 		
-		if (drinkables.size() == 0) {
-			getDungeon().yellowYou("have nothing to drink.");
+		if (quaffables.size() == 0) {
+			getDungeon().yellowYou("have nothing to quaff.");
 			return;
 		}
 		
-		List<Character> available = drinkables.keySet().stream()
-			.filter(i -> drinkables.get(i).getItem() instanceof ItemDrinkable)
-			.filter(i -> ((ItemDrinkable) drinkables.get(i).getItem()).canDrink())
+		List<Character> available = quaffables.keySet().stream()
+			.filter(i -> quaffables.get(i).getItem() instanceof ItemQuaffable)
+			.filter(i -> ((ItemQuaffable) quaffables.get(i).getItem()).canQuaff())
 			.collect(Collectors.toList());
 		
 		char[] options = ArrayUtils.toPrimitive(available.toArray(new Character[0]));
 		options = Arrays.copyOf(options, options.length + 1);
 		options[options.length - 1] = '-';
 		
-		getDungeon().prompt(new Prompt("Drink what?", options, true, new Prompt.PromptCallback() {
+		getDungeon().prompt(new Prompt("Quaff what?", options, true, new Prompt.PromptCallback() {
 			@Override
 			public void onNoResponse() {
 				getDungeon().log("Nevermind.");
@@ -810,9 +818,9 @@ public class Player extends LivingEntity {
 				}
 				
 				ItemStack stack = containerEntry.get().getStack();
-				ItemDrinkable drinkable = (ItemDrinkable) stack.getItem();
+				ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
 				
-				setAction(new ActionDrink(getDungeon(), Player.this, drinkable, new EntityAction.ActionCallback() {
+				setAction(new ActionQuaff(getDungeon(), Player.this, quaffable, new EntityAction.ActionCallback() {
 					@Override
 					public void onComplete() {
 						super.onComplete();
@@ -823,8 +831,8 @@ public class Player extends LivingEntity {
 							stack.subtractCount(1);
 						}
 						
-						if (drinkable instanceof ItemPotion) {
-							ItemPotion potion = (ItemPotion) drinkable;
+						if (quaffable instanceof ItemPotion) {
+							ItemPotion potion = (ItemPotion) quaffable;
 							
 							ItemPotion emptyPotion = new ItemPotion();
 							emptyPotion.setPotionType(potion.getPotionType());

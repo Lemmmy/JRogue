@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.rendering.gdx.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.EntityItem;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemMap;
 import pw.lemmmy.jrogue.rendering.gdx.items.ItemRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;

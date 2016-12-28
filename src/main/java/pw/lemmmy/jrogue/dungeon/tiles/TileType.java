@@ -1,5 +1,9 @@
 package pw.lemmmy.jrogue.dungeon.tiles;
 
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateDoor;
+
 import java.awt.*;
 import java.util.Arrays;
 
