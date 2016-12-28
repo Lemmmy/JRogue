@@ -7,5 +7,6 @@ public enum ItemCategory {
 	GEM,
 	POTION,
 	QUAFFABLE,
-	MISCELLANEOUS
+	MISCELLANEOUS,
+	ALL
 }

@@ -67,6 +67,10 @@ public class Container implements Serialisable {
 	}
 	
 	public boolean canAdd(ItemStack stack) {
+		if (!(stack.getCategory().equals(ItemCategory.WEAPON)) & (getName().equals("Weapon rack"))) {
+			return false;
+		}
+
 		for (ItemStack storedStack : items.values()) {
 			if (stack.getItem().equals(storedStack.getItem())) {
 				return true;

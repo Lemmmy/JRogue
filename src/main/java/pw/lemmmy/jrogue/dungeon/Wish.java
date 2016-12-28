@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
@@ -71,7 +72,12 @@ public class Wish {
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("candlestick")) {
 			dungeon.getLevel().addEntity(
-				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+					new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("weapon rack")) {
+			dungeon.getLevel().addEntity(
+					new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
