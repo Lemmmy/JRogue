@@ -1,34 +1,28 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.Hit;
-import pw.lemmmy.jrogue.dungeon.entities.HitType;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.Messenger;
+import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 
 public class ActionMelee extends EntityAction {
-	private LivingEntity attacker;
-	private LivingEntity victim;
-	private DamageSource damageSource;
-	private int damage;
+	private final LivingEntity victim;
+	private final DamageSource damageSource;
+	private final int damage;
 	
-	public ActionMelee(Dungeon dungeon,
-					   LivingEntity attacker,
-					   LivingEntity victim,
-					   DamageSource damageSource,
-					   int damage,
-					   ActionCallback actionCallback) {
-		super(dungeon, attacker, actionCallback);
-		
-		this.attacker = attacker;
+	public ActionMelee(LivingEntity victim, DamageSource damageSource, int damage, ActionCallback callback) {
+		super(callback);
 		this.victim = victim;
 		this.damageSource = damageSource;
 		this.damage = damage;
 	}
 	
 	@Override
-	public void execute() {
+	public void execute(Entity entity, Messenger msg) {
+		if (!(entity instanceof LivingEntity)) {
+			return;
+		}
+
+		LivingEntity attacker = (LivingEntity) entity;
 		boolean isAttackerPlayer = attacker instanceof Player;
 		boolean isVictimPlayer = victim instanceof Player;
 		
@@ -43,22 +37,24 @@ public class ActionMelee extends EntityAction {
 		switch (hit.getHitType()) {
 			case JUST_MISS:
 				if (isAttackerPlayer) {
-					getDungeon().orangeYou("just miss the %s.", victim.getName(false));
+					msg.orangeYou("just miss the %s.", victim.getName(false));
 				} else if (isVictimPlayer) {
-					getDungeon().The("%s just misses.", attacker.getName(false));
+					msg.The("%s just misses.", attacker.getName(false));
 				}
 				break;
 			case MISS:
 				if (isAttackerPlayer) {
-					getDungeon().orangeYou("miss the %s.", victim.getName(false));
+					msg.orangeYou("miss the %s.", victim.getName(false));
 				} else if (isVictimPlayer) {
-					getDungeon().The("%s misses.", attacker.getName(false));
+					msg.The("%s misses.", attacker.getName(false));
 				}
 				break;
 			case SUCCESS:
-				runBeforeRunCallback();
+				runBeforeRunCallback(entity);
 				victim.damage(damageSource, damage, attacker, isAttackerPlayer);
-				runOnCompleteCallback();
+				runOnCompleteCallback(entity);
+				break;
+			default:
 				break;
 		}
 	}

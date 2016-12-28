@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.weapons;
 
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
@@ -15,14 +16,12 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		int damage = baseDamage > 0 ? RandomUtils.roll(baseDamage) : baseDamage;
 		
 		attacker.setAction(new ActionMelee(
-			attacker.getDungeon(),
-			attacker,
 			victim,
 			getMeleeDamageSource(),
 			damage,
 			new EntityAction.ActionCallback() {
 				@Override
-				public void beforeRun() {
+				public void beforeRun(Entity entity) {
 					onHit(attacker, victim);
 				}
 			}

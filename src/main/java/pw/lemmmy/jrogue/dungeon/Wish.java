@@ -13,6 +13,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
+import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
@@ -23,7 +24,6 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -191,7 +191,7 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
 		} else if (wish.equalsIgnoreCase("potion")) {
-			ItemPotion.BottleType bottle = RandomUtils.randomFrom(ItemPotion.BottleType.values());
+			BottleType bottle = RandomUtils.randomFrom(BottleType.values());
 			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
 			float potency = RandomUtils.randomFloat(6f);
 			

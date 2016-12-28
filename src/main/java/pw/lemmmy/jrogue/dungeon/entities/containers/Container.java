@@ -167,20 +167,20 @@ public class Container implements Serialisable {
 	}
 	
 	public Map<Character, ItemStack> getWieldables() {
-		return items.entrySet().stream()
-			.filter(e -> e.getValue().getItem() instanceof Wieldable)
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		return getItemStacksOfType(Wieldable.class);
 	}
 	
 	public Map<Character, ItemStack> getComestibles() {
-		return items.entrySet().stream()
-			.filter(e -> e.getValue().getItem() instanceof ItemComestible)
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		return getItemStacksOfType(ItemComestible.class);
 	}
 	
 	public Map<Character, ItemStack> getQuaffables() {
+		return getItemStacksOfType(ItemQuaffable.class);
+	}
+
+	public <T> Map<Character, ItemStack> getItemStacksOfType(Class<? extends T> type) {
 		return items.entrySet().stream()
-			.filter(e -> e.getValue().getItem() instanceof ItemQuaffable)
+			.filter(e -> e.getValue().getItem().getClass().isAssignableFrom(type))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	

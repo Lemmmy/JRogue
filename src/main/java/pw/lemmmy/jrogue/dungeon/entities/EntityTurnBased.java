@@ -38,7 +38,7 @@ public abstract class EntityTurnBased extends Entity {
 	
 	public void move() {
 		if (hasAction()) {
-			nextAction.execute();
+			nextAction.execute(this, getDungeon());
 			nextAction = null;
 		}
 	}

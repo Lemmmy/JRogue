@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
@@ -124,22 +125,15 @@ public class MonsterSkeleton extends Monster {
 	@Override
 	public void meleeAttackPlayer() {
 		setAction(new ActionMelee(
-			getDungeon(),
-			this,
 			getDungeon().getPlayer(),
 			DamageSource.SKELETON_HIT,
 			1,
-			new EntityAction.ActionCallback() {
-				@Override
-				public void onComplete() {
-					getDungeon().logRandom(
-						String.format("[ORANGE]The %s punches you!", getName(false)),
-						String.format("[ORANGE]The %s hits you!", getName(false)),
-						String.format("[ORANGE]The %s kicks you!", getName(false)),
-						String.format("[ORANGE]The %s headbutts you!", getName(false))
-					);
-				}
-			}
+			(EntityAction.CompleteCallback) entity -> getDungeon().logRandom(
+				String.format("[ORANGE]The %s punches you!", getName(false)),
+				String.format("[ORANGE]The %s hits you!", getName(false)),
+				String.format("[ORANGE]The %s kicks you!", getName(false)),
+				String.format("[ORANGE]The %s headbutts you!", getName(false))
+			)
 		));
 	}
 }
