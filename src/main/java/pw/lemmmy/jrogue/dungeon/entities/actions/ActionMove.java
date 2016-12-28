@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
@@ -15,43 +15,42 @@ public class ActionMove extends EntityAction {
 	private int x;
 	private int y;
 	
-	public ActionMove(Dungeon dungeon, Entity entity, int x, int y) {
-		super(dungeon, entity);
-		
+	public ActionMove(int x, int y, ActionCallback callback) {
+		super(callback);
 		this.x = x;
 		this.y = y;
 	}
 	
 	@Override
-	public void execute() {
-		runBeforeRunCallback();
+	public void execute(Entity entity, Messenger msg) {
+		runBeforeRunCallback(entity);
 		
-		List<Entity> unwalkable = getEntity().getLevel().getUnwalkableEntitiesAt(x, y);
+		List<Entity> unwalkable = entity.getLevel().getUnwalkableEntitiesAt(x, y);
 		
 		if (unwalkable.size() > 0) {
-			if (getEntity() instanceof Player) {
-				Entity entity = unwalkable.get(0);
+			if (entity instanceof Player) {
+				Entity unwalkableEnt = unwalkable.get(0);
 				
-				if (entity.getLastX() != entity.getX() || entity.getLastY() != entity.getY()) {
-					getDungeon().The("%s beats you to it!", entity.getName(false));
+				if (unwalkableEnt.getLastX() != unwalkableEnt.getX() || unwalkableEnt.getLastY() != unwalkableEnt.getY()) {
+					msg.The("%s beats you to it!", entity.getName(false));
 				}
 			}
 			
 			return;
 		}
 		
-		getEntity().setPosition(x, y);
+		entity.setPosition(x, y);
 		
-		if (getEntity() instanceof Player) {
-			Tile tile = getEntity().getLevel().getTile(x, y);
+		if (entity instanceof Player) {
+			Tile tile = entity.getLevel().getTile(x, y);
 			
 			if (tile.getType().onWalk() != null) {
-				getDungeon().log(tile.getType().onWalk());
+				msg.log(tile.getType().onWalk());
 			}
 		}
 		
-		List<Entity> walkable = getEntity().getLevel().getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.walk((LivingEntity) getEntity(), getEntity() instanceof Player));
+		List<Entity> walkable = entity.getLevel().getWalkableEntitiesAt(x, y);
+		walkable.forEach(e -> e.walk((LivingEntity) entity, entity instanceof Player));
 		
 		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)
 			.collect(Collectors.toList());
@@ -60,21 +59,21 @@ public class ActionMove extends EntityAction {
 			ItemStack stack = items.get(0).getItemStack();
 			
 			if (stack.getItem().isis()) {
-				getDungeon().log("There is [YELLOW]%s[] here.", stack.getName(false));
+				msg.log("There is [YELLOW]%s[] here.", stack.getName(false));
 			} else {
 				if (stack.getCount() > 1) {
-					getDungeon().log("There are [YELLOW]%s[] here.", stack.getName(false));
+					msg.log("There are [YELLOW]%s[] here.", stack.getName(false));
 				} else {
-					getDungeon().log(
+					msg.log(
 						"There is %s [YELLOW]%s[] here.",
 						stack.beginsWithVowel() ? "an" : "a", stack.getName(false)
 					);
 				}
 			}
 		} else if (items.size() > 1) {
-			getDungeon().log("There are [YELLOW]%d[] items here.", items.size());
+			msg.log("There are [YELLOW]%d[] items here.", items.size());
 		}
 		
-		runOnCompleteCallback();
+		runOnCompleteCallback(entity);
 	}
 }

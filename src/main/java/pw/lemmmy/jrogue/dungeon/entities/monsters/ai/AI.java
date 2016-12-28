@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
+import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -88,11 +89,8 @@ public abstract class AI {
 		);
 		
 		if (path != null) {
-			getMonster().setAction(new ActionMove(
-					getMonster().getDungeon(), getMonster(),
-					path.getStep(1).getX(), path.getStep(1).getY()
-				)
-			);
+			getMonster().setAction(
+				new ActionMove(path.getStep(1).getX(), path.getStep(1).getY(), new EntityAction.NoCallback()));
 		}
 	}
 	

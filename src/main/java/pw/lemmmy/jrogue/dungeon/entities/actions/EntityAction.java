@@ -1,50 +1,43 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
+import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
+import java.util.function.Consumer;
+
 public abstract class EntityAction {
-	private Dungeon dungeon;
-	private Entity entity;
-	
-	private ActionCallback callback;
-	
-	public EntityAction(Dungeon dungeon, Entity entity) {
-		this(dungeon, entity, null);
-	}
-	
-	public EntityAction(Dungeon dungeon, Entity entity, ActionCallback callback) {
-		this.dungeon = dungeon;
-		this.entity = entity;
-		
+	private final ActionCallback callback;
+
+	public EntityAction(ActionCallback callback) {
 		this.callback = callback;
 	}
 	
-	public abstract void execute();
-	
-	public Dungeon getDungeon() {
-		return dungeon;
-	}
-	
-	public Entity getEntity() {
-		return entity;
-	}
-	
-	public void runBeforeRunCallback() {
+	public abstract void execute(Entity entity, Messenger msg);
+
+	public void runBeforeRunCallback(Entity entity) {
 		if (callback != null) {
-			callback.beforeRun();
+			callback.beforeRun(entity);
 		}
 	}
 	
-	public void runOnCompleteCallback() {
+	public void runOnCompleteCallback(Entity entity) {
 		if (callback != null) {
-			callback.onComplete();
+			callback.onComplete(entity);
 		}
 	}
-	
-	public abstract static class ActionCallback {
-		public void beforeRun() {}
-		
-		public void onComplete() {}
+
+	public interface ActionCallback {
+		default void onComplete(Entity entity) {}
+
+		default void beforeRun(Entity entity) {}
 	}
+
+	@FunctionalInterface
+	public interface CompleteCallback extends ActionCallback {
+		@Override
+		void onComplete(Entity entity);
+	}
+
+	public static class NoCallback implements ActionCallback {}
 }

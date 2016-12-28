@@ -106,17 +106,10 @@ public abstract class MonsterCanine extends Monster {
 	@Override
 	public void meleeAttackPlayer() {
 		setAction(new ActionMelee(
-			getDungeon(),
-			this,
 			getDungeon().getPlayer(),
 			DamageSource.CANINE_BITE,
 			1,
-			new EntityAction.ActionCallback() {
-				@Override
-				public void onComplete() {
-					getDungeon().orangeThe("%s bites you!", getName(false));
-				}
-			}
+			(EntityAction.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(false))
 		));
 	}
 }
