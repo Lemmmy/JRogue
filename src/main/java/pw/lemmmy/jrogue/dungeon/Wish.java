@@ -66,12 +66,12 @@ public class Wish {
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("fountain")) {
 			dungeon.getLevel().addEntity(
-					new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+				new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("candlestick")) {
 			dungeon.getLevel().addEntity(
-					new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wishMonsters(dungeon, player, wish)) {
