@@ -572,13 +572,8 @@ public class Player extends LivingEntity {
 				
 				int wisdom = attributes.getAttribute(Attribute.WISDOM);
 				
-				if (wisdom > 5 && hasStatusEffect(InjuredFoot.class)) {
+				if (wisdom > 5 && (hasStatusEffect(InjuredFoot.class) || hasStatusEffect(StrainedLeg.class))) {
 					getDungeon().Your("foot is in no shape for kicking.");
-					return;
-				}
-				
-				if (wisdom > 5 && hasStatusEffect(StrainedLeg.class)) {
-					getDungeon().Your("leg is in no shape for kicking.");
 					return;
 				}
 				
