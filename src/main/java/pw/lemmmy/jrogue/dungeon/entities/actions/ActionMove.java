@@ -29,9 +29,9 @@ public class ActionMove extends EntityAction {
 		
 		if (unwalkable.size() > 0) {
 			if (entity instanceof Player) {
-				Entity ent = unwalkable.get(0);
+				Entity unwalkableEnt = unwalkable.get(0);
 				
-				if (ent.getLastX() != ent.getX() || ent.getLastY() != ent.getY()) {
+				if (unwalkableEnt.getLastX() != unwalkableEnt.getX() || unwalkableEnt.getLastY() != unwalkableEnt.getY()) {
 					msg.The("%s beats you to it!", entity.getName(false));
 				}
 			}
