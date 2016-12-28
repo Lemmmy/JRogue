@@ -11,6 +11,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityArrow;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
@@ -74,6 +75,14 @@ public class Wish {
 				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("arrow")) {
+			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX(), player.getY());
+			int dx = 1;
+			int dy = 0;
+			arrow.setTravelDirection(dx, dy);
+			arrow.setTravelRange(3);
+			JRogue.getLogger().info("Arrow travelling in dir: " + dx + ", " + dy);
+			dungeon.getLevel().addEntity(arrow);
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {

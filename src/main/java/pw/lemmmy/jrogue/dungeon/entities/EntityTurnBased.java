@@ -57,7 +57,7 @@ public abstract class EntityTurnBased extends Entity {
 	
 	public abstract int getMovementSpeed();
 	
-	public void calculateMovement() {
+	public void applyMovementPoints() {
 		movementPoints += Math.max(1, RandomUtils.random(2, 4));
 	}
 }

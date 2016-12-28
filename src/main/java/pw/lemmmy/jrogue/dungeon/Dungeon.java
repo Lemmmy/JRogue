@@ -402,7 +402,7 @@ public class Dungeon implements Messenger {
 					if (entity instanceof EntityTurnBased) {
 						EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
 						
-						turnBasedEntity.calculateMovement();
+						turnBasedEntity.applyMovementPoints();
 					}
 				}
 				

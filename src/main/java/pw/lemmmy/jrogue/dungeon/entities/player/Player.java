@@ -244,7 +244,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public void calculateMovement() {
+	public void applyMovementPoints() {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
