@@ -395,7 +395,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void teleport(int x, int y) {
-		setAction(new ActionTeleport(getDungeon(), this, x, y));
+		setAction(new ActionTeleport(x, y, new EntityAction.NoCallback()));
 		getDungeon().turn();
 	}
 	
@@ -445,7 +445,7 @@ public class Player extends LivingEntity {
 	
 	private void walkAction(Tile tile, int x, int y) {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(getDungeon(), this, x, y));
+			setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
 			getDungeon().The("door is locked.");
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
@@ -484,7 +484,7 @@ public class Player extends LivingEntity {
 					int oldY = getY();
 					
 					pathTaken.addStep(destTile);
-					setAction(new ActionMove(getDungeon(), Player.this, getX() + dx, getY() + dy));
+					setAction(new ActionMove(getX() + dx, getY() + dy, new EntityAction.NoCallback()));
 					getDungeon().turn();
 					
 					if (oldX == getX() && oldY == getY()) { // we didn't go anywhere, so stop
@@ -545,7 +545,7 @@ public class Player extends LivingEntity {
 			int oldY = getY();
 			
 			pathTaken.addStep(step);
-			setAction(new ActionMove(getDungeon(), Player.this, step.getX(), step.getY()));
+			setAction(new ActionMove(step.getX(), step.getY(), new EntityAction.NoCallback()));
 			getDungeon().turn();
 			
 			if (oldX == getX() && oldY == getY()) {
@@ -582,14 +582,9 @@ public class Player extends LivingEntity {
 				int dy = d[1];
 				
 				if (getLevel().getEntitiesAt(getX() + dx, getY() + dy).size() > 0) {
-					setAction(new ActionKick(
-						getDungeon(),
-						Player.this,
-						d,
-						getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0)
-					));
+					setAction(new ActionKick(d, getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0), new EntityAction.NoCallback()));
 				} else {
-					setAction(new ActionKick(getDungeon(), Player.this, d));
+					setAction(new ActionKick(d, new EntityAction.NoCallback()));
 				}
 				
 				getDungeon().turn();
@@ -677,31 +672,24 @@ public class Player extends LivingEntity {
 				ItemComestible itemCopy = (ItemComestible) item.copy();
 
 				setAction(new ActionEat(
-					getDungeon(),
-					Player.this,
 					itemCopy,
-					new EntityAction.ActionCallback() {
-						@Override
-						public void onComplete() {
-							super.onComplete();
+					(EntityAction.CompleteCallback) ent -> {
+						if (stack.getCount() == 1) {
+							entity.getLevel().removeEntity(entity);
+						} else {
+							stack.subtractCount(1);
+						}
 
-							if (stack.getCount() == 1) {
-								entity.getLevel().removeEntity(entity);
-							} else {
-								stack.subtractCount(1);
-							}
+						if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+							EntityItem newStack = new EntityItem(
+								getDungeon(),
+								getLevel(),
+								getX(),
+								getY(),
+								new ItemStack(itemCopy, 1)
+							);
 
-							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-								EntityItem newStack = new EntityItem(
-									getDungeon(),
-									getLevel(),
-									getX(),
-									getY(),
-									new ItemStack(itemCopy, 1)
-								);
-
-								getLevel().addEntity(newStack);
-							}
+							getLevel().addEntity(newStack);
 						}
 					}
 				));
@@ -718,25 +706,18 @@ public class Player extends LivingEntity {
 			ItemComestible itemCopy = (ItemComestible) item.copy();
 
 			setAction(new ActionEat(
-					getDungeon(),
-					Player.this,
-					itemCopy,
-					new EntityAction.ActionCallback() {
-						@Override
-						public void onComplete() {
-							super.onComplete();
-
-							if (stack.getCount() == 1) {
-								inv.remove(ce.getLetter());
-							} else {
-								stack.subtractCount(1);
-							}
-
-							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-								inv.add(new ItemStack(itemCopy, 1));
-							}
-						}
+				itemCopy,
+				(EntityAction.CompleteCallback) entity -> {
+					if (stack.getCount() == 1) {
+						inv.remove(ce.getLetter());
+					} else {
+						stack.subtractCount(1);
 					}
+
+					if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+						inv.add(new ItemStack(itemCopy, 1));
+					}
+				}
 			));
 
 			getDungeon().turn();
@@ -758,11 +739,9 @@ public class Player extends LivingEntity {
 			ItemStack stack = ce.getStack();
 			ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
 
-			setAction(new ActionQuaff(getDungeon(), Player.this, quaffable, new EntityAction.ActionCallback() {
-				@Override
-				public void onComplete() {
-					super.onComplete();
-
+			setAction(new ActionQuaff(
+				quaffable,
+				(EntityAction.CompleteCallback) entity -> {
 					if (stack.getCount() == 1) {
 						inv.remove(ce.getLetter());
 					} else {
@@ -779,8 +758,8 @@ public class Player extends LivingEntity {
 						emptyPotion.setEmpty(true);
 						inv.add(new ItemStack(emptyPotion, 1));
 					}
-				}
-			}));
+				})
+			);
 		});
 
 		switch (result) {
