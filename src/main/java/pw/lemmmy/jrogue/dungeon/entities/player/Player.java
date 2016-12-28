@@ -46,16 +46,20 @@ public class Player extends LivingEntity {
 	private String name;
 	private Role role;
 	
+	private int energy;
+	private int maxEnergy;
+	private int chargingTurns = 0;
+	
 	private int nutrition;
 	private NutritionState lastNutritionState;
 	
 	private int spendableSkillPoints = 3;
 	private Attributes attributes = new Attributes();
+	private Map<Skill, SkillLevel> skills;
 	
 	private int gold = 0;
 	
 	private boolean godmode = false;
-	private Map<Skill, SkillLevel> skills;
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -69,6 +73,8 @@ public class Player extends LivingEntity {
 		
 		nutrition = 1000;
 		maxHealth = getMaxHealth();
+		
+		energy = maxEnergy = role.getMaxEnergy();
 		
 		role.assignAttributes(attributes);
 		
@@ -112,10 +118,35 @@ public class Player extends LivingEntity {
 			case FAINTING:
 				return 100 - constitution;
 			case STARVING:
-				return 40 - (constitution / 3);
+				return 40 - constitution / 3;
 			default:
-				return 20 - (constitution / 2);
+				return 20 - constitution / 2;
 		}
+	}
+	
+	public int getEnergy() {
+		return energy;
+	}
+	
+	public int getMaxEnergy() {
+		return maxEnergy;
+	}
+	
+	public int getChargingRate() {
+		return (int) Math.floor((38 - getExperienceLevel()) * (3.5f / 6f));
+	}
+	
+	public void charge(int amount) {
+		energy = Math.min(maxEnergy, energy + amount);
+	}
+	
+	private void levelUpEnergy() {
+		int wisdom = attributes.getAttribute(Attribute.WISDOM);
+		int gainMax = wisdom / 2 + 2;
+		int gain = RandomUtils.roll(gainMax) + 2;
+		
+		maxEnergy += gain;
+		charge(gain);
 	}
 	
 	@Override
@@ -250,6 +281,8 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public void onLevelUp() {
+		levelUpEnergy();
+		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
 		getDungeon().greenYou("have %,d spendable skill point%s.", ++spendableSkillPoints, spendableSkillPoints == 1 ? "" : "s");
 	}
@@ -257,15 +290,36 @@ public class Player extends LivingEntity {
 	@Override
 	public void update() {
 		super.update();
-
-		if (getHealth() > getMaxHealth()) {
-			setHealth(getMaxHealth());
-		}
+		
+		updateEnergy();
+		updateNutrition();
 		
 		if (godmode) {
 			setHealth(getMaxHealth());
 		}
+	}
+	
+	private void updateEnergy() {
+		energy = Math.max(0, Math.min(maxEnergy, energy));
 		
+		if (energy < maxEnergy) {
+			chargingTurns++;
+		}
+		
+		if (chargingTurns >= getChargingRate()) {
+			int wisdom = attributes.getAttribute(Attribute.WISDOM);
+			int intelligence = attributes.getAttribute(Attribute.INTELLIGENCE);
+			
+			int chargeMax = (int) Math.floor((wisdom + intelligence) / 15) + 1;
+			int chargeAmount = RandomUtils.roll(chargeMax);
+			
+			charge(chargeAmount);
+			
+			chargingTurns = 0;
+		}
+	}
+	
+	private void updateNutrition() {
 		if (getNutritionState() != lastNutritionState) {
 			lastNutritionState = getNutritionState();
 			
@@ -292,6 +346,9 @@ public class Player extends LivingEntity {
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
 		obj.put("spendableSkillPoints", getSpendableSkillPoints());
+		obj.put("energy", getEnergy());
+		obj.put("maxEnergy", getMaxEnergy());
+		obj.put("chargingTurns", chargingTurns);
 		obj.put("nutrition", getNutrition());
 		obj.put("gold", getGold());
 		obj.put("godmode", godmode);
@@ -313,6 +370,9 @@ public class Player extends LivingEntity {
 		
 		name = obj.getString("name");
 		spendableSkillPoints = obj.getInt("spendableSkillPoints");
+		energy = obj.getInt("energy");
+		maxEnergy = obj.getInt("maxEnergy");
+		chargingTurns = obj.getInt("chargingTurns");
 		nutrition = obj.getInt("nutrition");
 		gold = obj.getInt("gold");
 		godmode = obj.getBoolean("godmode");

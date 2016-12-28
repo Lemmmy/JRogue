@@ -22,4 +22,6 @@ public abstract class Role {
 	public abstract Map<Skill, SkillLevel> getStartingSkills();
 	
 	public abstract void assignAttributes(Attributes attributes);
+	
+	public abstract int getMaxEnergy();
 }

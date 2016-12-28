@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,5 +67,10 @@ public class RoleWizard extends Role {
 		attributes.setAttribute(Attribute.INTELLIGENCE, 10);
 		attributes.setAttribute(Attribute.WISDOM, 7);
 		attributes.setAttribute(Attribute.CHARISMA, 7);
+	}
+	
+	@Override
+	public int getMaxEnergy() {
+		return RandomUtils.roll(1, 3, 4); // 4+d3
 	}
 }

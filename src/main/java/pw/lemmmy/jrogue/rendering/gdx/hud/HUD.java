@@ -186,6 +186,7 @@ public class HUD implements Dungeon.Listener {
 	public void onLevelChange(Level level) {
 		if (dungeon.getPlayer() != null) {
 			healthLastTurn = dungeon.getPlayer().getHealth();
+			energyLastTurn = dungeon.getPlayer().getEnergy();
 			updatePlayerLine(dungeon.getPlayer());
 		}
 	}
@@ -200,7 +201,7 @@ public class HUD implements Dungeon.Listener {
 		updateStatusEffects(player);
 		
 		healthLastTurn = player.getHealth();
-		// energyLastTurn = player.getEnergy();
+		energyLastTurn = player.getEnergy();
 	}
 	
 	private void updatePlayerLine(Player player) {
@@ -210,6 +211,17 @@ public class HUD implements Dungeon.Listener {
 			player.getRole().getName()
 		));
 		
+		updateHealth(player);
+		updateEnergy(player);
+		
+		((Label) topStats.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
+		((Label) topStats.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
+		((Label) topStats.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
+		((Label) topStats.findActor("nutrition")).setText(player.getNutritionState().toString());
+		topStats.findActor("nutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
+	}
+	
+	private void updateHealth(Player player) {
 		if (player.getHealth() != healthLastTurn) {
 			String bg = healthLastTurn > player.getHealth() ? "redBackground" : "greenBackground";
 			
@@ -229,11 +241,28 @@ public class HUD implements Dungeon.Listener {
 			));
 		}
 		
-		((Label) topStats.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
-		((Label) topStats.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
-		((Label) topStats.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
-		((Label) topStats.findActor("nutrition")).setText(player.getNutritionState().toString());
-		topStats.findActor("nutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
+		
+	}
+	
+	private void updateEnergy(Player player) {
+		if (player.getEnergy() != energyLastTurn) {
+			String bg = energyLastTurn > player.getEnergy() ? "redBackground" : "greenBackground";
+			
+			((Label) topStats.findActor("energy")).setStyle(skin.get(bg, Label.LabelStyle.class));
+			((Label) topStats.findActor("energy")).setText(String.format(
+				"Energy: %,d / %,d",
+				player.getEnergy(),
+				player.getMaxEnergy()
+			));
+		} else {
+			((Label) topStats.findActor("energy")).setStyle(skin.get("default", Label.LabelStyle.class));
+			((Label) topStats.findActor("energy")).setText(String.format(
+				"Energy: [%s]%,d[] / [P_GREEN_3]%,d[]",
+				HUDUtils.getHealthColour(player.getEnergy(), player.getMaxEnergy()),
+				player.getEnergy(),
+				player.getMaxEnergy()
+			));
+		}
 	}
 	
 	private void updateAttributes(Player player) {
