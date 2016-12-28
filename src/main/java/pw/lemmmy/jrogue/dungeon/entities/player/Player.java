@@ -837,6 +837,7 @@ public class Player extends LivingEntity {
 							ItemPotion emptyPotion = new ItemPotion();
 							emptyPotion.setPotionType(potion.getPotionType());
 							emptyPotion.setBottleType(potion.getBottleType());
+							emptyPotion.setPotionColour(potion.getPotionColour());
 							emptyPotion.setEmpty(true);
 							inventory.add(new ItemStack(emptyPotion, 1));
 						}

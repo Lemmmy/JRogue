@@ -92,11 +92,17 @@ public class ItemPotion extends ItemQuaffable {
 			requiresCapitalisation = false;
 		}
 		
-		String colourName = requiresCapitalisation ?
-							StringUtils.capitalize(getPotionColour().getName()) :
-							getPotionColour().getName();
+		String colourName = "";
 		
-		return (empty ? emptyText : "") + colourName + " potion" + (plural ? "s" : "");
+		if (!empty) {
+			colourName = requiresCapitalisation ?
+						 StringUtils.capitalize(getPotionColour().getName()) :
+						 getPotionColour().getName();
+			
+			colourName += " ";
+		}
+		
+		return (empty ? emptyText : "") + colourName + "potion" + (plural ? "s" : "");
 	}
 	
 	@Override
