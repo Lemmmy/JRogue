@@ -88,4 +88,32 @@ public class Prompt {
 		
 		void onResponse(char response);
 	}
+
+	public abstract static class SimplePromptCallback implements PromptCallback {
+		private final String noResponseMessage, invalidResponseMessage;
+		private final Messenger messenger;
+
+		public SimplePromptCallback(Messenger msg) {
+			this(msg, "Nevermind.", "Invalid response '[YELLOW]%s[]'.");
+		}
+
+		public SimplePromptCallback(Messenger msg, String noResponseMsg, String invalidResponseMsg) {
+			this.messenger = msg;
+			this.noResponseMessage = noResponseMsg;
+			this.invalidResponseMessage = invalidResponseMsg;
+		}
+
+		@Override
+		public void onNoResponse() {
+			messenger.log(noResponseMessage);
+		}
+
+		@Override
+		public void onInvalidResponse(char response) {
+			messenger.log(invalidResponseMessage, response);
+		}
+
+		@Override
+		public abstract void onResponse(char response);
+	}
 }

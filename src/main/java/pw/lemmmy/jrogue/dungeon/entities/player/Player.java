@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.player;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
@@ -36,6 +37,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Player extends LivingEntity {
@@ -612,7 +616,51 @@ public class Player extends LivingEntity {
 			}
 		}));
 	}
-	
+
+	public enum InventoryUseResult {
+		SUCCESS, NO_CONTAINER, NO_ITEM
+	}
+
+	public InventoryUseResult useInventoryItem(String promptString, Predicate<ItemStack> isEligible, TriConsumer<Character, Container.ContainerEntry, Container> responseCallback, boolean allowHyphen) {
+		if (!getContainer().isPresent()) {
+			return InventoryUseResult.NO_CONTAINER;
+		}
+
+		Container inv = getContainer().get();
+		Map<Character, ItemStack> eligibleItems = inv.getItems().entrySet().stream()
+			.filter(e -> isEligible.test(e.getValue()))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+		if (eligibleItems.isEmpty()) {
+			return InventoryUseResult.NO_ITEM;
+		}
+
+		char[] options = ArrayUtils.toPrimitive(eligibleItems.keySet().toArray(new Character[0]));
+		options = Arrays.copyOf(options, options.length + 1);
+		options[options.length - 1] = '-';
+
+		getDungeon().prompt(new Prompt(promptString, options, true, new Prompt.SimplePromptCallback(getDungeon()) {
+			@Override
+			public void onResponse(char response) {
+				Optional<Container.ContainerEntry> containerEntry = inv.get(response);
+
+				if (!allowHyphen && !containerEntry.isPresent()) {
+					getDungeon().log("Invalid item '[YELLOW]%s[]'.", response);
+					return;
+				}
+
+				Container.ContainerEntry entry = containerEntry.isPresent() ? containerEntry.get() : null;
+				responseCallback.accept(response, entry, inv);
+			}
+		}));
+
+		return InventoryUseResult.SUCCESS;
+	}
+
+	public InventoryUseResult useInventoryItem(String promptString, Predicate<ItemStack> isEligible, TriConsumer<Character, Container.ContainerEntry, Container> responseCallback) {
+		return useInventoryItem(promptString, isEligible, responseCallback, false);
+	}
+
 	public void eat() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 		
@@ -632,41 +680,22 @@ public class Player extends LivingEntity {
 	private void eatFromFloor(EntityItem entity) {
 		ItemStack stack = entity.getItemStack();
 		ItemComestible item = (ItemComestible) entity.getItem();
-		
-		String promptString;
-		
-		if (item.isis()) {
-			promptString = String.format(
-				"There is [YELLOW]%s[] here. Eat it?",
-				item.getName(false, false)
-			);
-		} else {
-			promptString = String.format(
-				"There is %s [YELLOW]%s[] here. Eat it?",
-				item.beginsWithVowel() ? "an" : "a", item.getName(false, false)
-			);
-		}
-		
-		getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {
-				getDungeon().log(String.format("Invalid response '[YELLOW]%s[]'.", response));
-			}
-			
+
+		String itemName = item.getName(false, false);
+		String article = item.beginsWithVowel() ? "an" : "a";
+		String promptString = item.isis() ? String.format("There is [YELLOW]%s[] here. Eat it?", itemName) :
+											String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
+
+		getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'n') {
 					eatFromInventory();
 					return;
 				}
-				
+
 				ItemComestible itemCopy = (ItemComestible) item.copy();
-				
+
 				setAction(new ActionEat(
 					getDungeon(),
 					Player.this,
@@ -675,13 +704,13 @@ public class Player extends LivingEntity {
 						@Override
 						public void onComplete() {
 							super.onComplete();
-							
+
 							if (stack.getCount() == 1) {
 								entity.getLevel().removeEntity(entity);
 							} else {
 								stack.subtractCount(1);
 							}
-							
+
 							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
 								EntityItem newStack = new EntityItem(
 									getDungeon(),
@@ -690,62 +719,25 @@ public class Player extends LivingEntity {
 									getY(),
 									new ItemStack(itemCopy, 1)
 								);
-								
+
 								getLevel().addEntity(newStack);
 							}
 						}
 					}
 				));
-				
+
 				getDungeon().turn();
 			}
 		}));
 	}
 	
 	private void eatFromInventory() {
-		if (!getContainer().isPresent()) {
-			getDungeon().You("have nothing to eat.");
-			return;
-		}
-		
-		Container inventory = getContainer().get();
-		Map<Character, ItemStack> comestibles = inventory.getComestibles();
-		
-		if (comestibles.size() == 0) {
-			getDungeon().You("have nothing to eat.");
-			return;
-		}
-		
-		char[] options = ArrayUtils.toPrimitive(comestibles.keySet().toArray(new Character[0]));
-		options = Arrays.copyOf(options, options.length + 1);
-		options[options.length - 1] = '-';
-		
-		getDungeon().prompt(new Prompt("Eat what?", options, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
-			}
-			
-			@Override
-			public void onResponse(char letter) {
-				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
-				
-				if (!containerEntry.isPresent()) {
-					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
-					return;
-				}
-				
-				ItemStack stack = containerEntry.get().getStack();
-				ItemComestible item = (ItemComestible) stack.getItem();
-				
-				ItemComestible itemCopy = (ItemComestible) item.copy();
-				
-				setAction(new ActionEat(
+		InventoryUseResult result = useInventoryItem("Eat what?", is -> is.getItem() instanceof ItemComestible, (c, ce, inv) -> {
+			ItemStack stack = ce.getStack();
+			ItemComestible item = (ItemComestible) stack.getItem();
+			ItemComestible itemCopy = (ItemComestible) item.copy();
+
+			setAction(new ActionEat(
 					getDungeon(),
 					Player.this,
 					itemCopy,
@@ -753,100 +745,72 @@ public class Player extends LivingEntity {
 						@Override
 						public void onComplete() {
 							super.onComplete();
-							
+
 							if (stack.getCount() == 1) {
-								inventory.remove(containerEntry.get().getLetter());
+								inv.remove(ce.getLetter());
 							} else {
 								stack.subtractCount(1);
 							}
-							
+
 							if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-								if (getContainer().isPresent()) {
-									getContainer().get().add(new ItemStack(itemCopy, 1));
-								}
+								inv.add(new ItemStack(itemCopy, 1));
 							}
 						}
 					}
-				));
-				
-				getDungeon().turn();
-			}
-		}));
+			));
+
+			getDungeon().turn();
+		});
+
+		switch (result) {
+			case NO_CONTAINER:
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to eat.");
+				break;
+			default:
+				break;
+		}
 	}
 	
 	public void quaff() {
-		if (!getContainer().isPresent()) {
-			getDungeon().yellowYou("have nothing to quaff.");
-			return;
-		}
-		
-		Container inventory = getContainer().get();
-		Map<Character, ItemStack> quaffables = inventory.getQuaffables();
-		
-		if (quaffables.size() == 0) {
-			getDungeon().yellowYou("have nothing to quaff.");
-			return;
-		}
-		
-		List<Character> available = quaffables.keySet().stream()
-			.filter(i -> quaffables.get(i).getItem() instanceof ItemQuaffable)
-			.filter(i -> ((ItemQuaffable) quaffables.get(i).getItem()).canQuaff())
-			.collect(Collectors.toList());
-		
-		char[] options = ArrayUtils.toPrimitive(available.toArray(new Character[0]));
-		options = Arrays.copyOf(options, options.length + 1);
-		options[options.length - 1] = '-';
-		
-		getDungeon().prompt(new Prompt("Quaff what?", options, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
-			}
-			
-			@Override
-			public void onResponse(char response) {
-				Optional<Container.ContainerEntry> containerEntry = inventory.get(response);
-				
-				if (!containerEntry.isPresent()) {
-					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				ItemStack stack = containerEntry.get().getStack();
-				ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
-				
-				setAction(new ActionQuaff(getDungeon(), Player.this, quaffable, new EntityAction.ActionCallback() {
-					@Override
-					public void onComplete() {
-						super.onComplete();
-						
-						if (stack.getCount() == 1) {
-							inventory.remove(containerEntry.get().getLetter());
-						} else {
-							stack.subtractCount(1);
-						}
-						
-						if (quaffable instanceof ItemPotion) {
-							ItemPotion potion = (ItemPotion) quaffable;
-							
-							ItemPotion emptyPotion = new ItemPotion();
-							emptyPotion.setPotionType(potion.getPotionType());
-							emptyPotion.setBottleType(potion.getBottleType());
-							emptyPotion.setPotionColour(potion.getPotionColour());
-							emptyPotion.setEmpty(true);
-							inventory.add(new ItemStack(emptyPotion, 1));
-						}
+		InventoryUseResult result =
+				useInventoryItem("Quaff what?", is -> is.getItem() instanceof ItemQuaffable && ((ItemQuaffable)is.getItem()).canQuaff(), (c, ce, inv) -> {
+			ItemStack stack = ce.getStack();
+			ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
+
+			setAction(new ActionQuaff(getDungeon(), Player.this, quaffable, new EntityAction.ActionCallback() {
+				@Override
+				public void onComplete() {
+					super.onComplete();
+
+					if (stack.getCount() == 1) {
+						inv.remove(ce.getLetter());
+					} else {
+						stack.subtractCount(1);
 					}
-				}));
-				
-				getDungeon().turn();
-			}
-		}));
+
+					if (quaffable instanceof ItemPotion) {
+						ItemPotion potion = (ItemPotion) quaffable;
+
+						ItemPotion emptyPotion = new ItemPotion();
+						emptyPotion.setPotionType(potion.getPotionType());
+						emptyPotion.setBottleType(potion.getBottleType());
+						emptyPotion.setPotionColour(potion.getPotionColour());
+						emptyPotion.setEmpty(true);
+						inv.add(new ItemStack(emptyPotion, 1));
+					}
+				}
+			}));
+		});
+
+		switch (result) {
+			case NO_CONTAINER:
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to quaff.");
+				break;
+			default:
+				break;
+		}
 	}
 	
 	public void consume(ItemComestible item) {
@@ -931,58 +895,32 @@ public class Player extends LivingEntity {
 	}
 	
 	public void drop() {
-		if (!getContainer().isPresent()) {
-			getDungeon().yellowYou("can't hold anything!");
-			return;
+		InventoryUseResult result = useInventoryItem("Drop what?", is -> true, (c, ce, inv) -> {
+			ItemStack stack = ce.getStack();
+			Item item = stack.getItem();
+
+			inv.remove(c);
+			dropItem(stack);
+
+			if (item.isis() || stack.getCount() > 1) {
+				getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), c);
+			} else {
+				getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", stack.getName(false), c);
+			}
+
+			getDungeon().turn();
+		});
+
+		switch (result) {
+			case NO_CONTAINER:
+				getDungeon().yellowYou("can't hold anything!");
+				break;
+			case NO_ITEM:
+				getDungeon().yellowYou("don't have any items to drop!");
+				break;
+			default:
+				break;
 		}
-		
-		Container inventory = getContainer().get();
-		
-		if (inventory.isEmpty()) {
-			getDungeon().yellowYou("don't have any items to drop!");
-			return;
-		}
-		
-		char[] options = ArrayUtils.toPrimitive(inventory.getItems().keySet().toArray(new Character[0]));
-		
-		getDungeon().prompt(new Prompt("Drop what?", options, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
-			}
-			
-			@Override
-			public void onResponse(char letter) {
-				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
-				
-				if (!containerEntry.isPresent()) {
-					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
-					return;
-				}
-				
-				ItemStack stack = containerEntry.get().getStack();
-				Item item = stack.getItem();
-				
-				inventory.remove(letter);
-				dropItem(stack);
-				
-				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-				} else {
-					getDungeon().You(
-						"drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
-						stack.beginsWithVowel() ? "an" : "a", stack.getName(false), letter
-					);
-				}
-				
-				getDungeon().turn();
-			}
-		}));
 	}
 	
 	public void loot() {
@@ -1009,73 +947,52 @@ public class Player extends LivingEntity {
 	}
 	
 	public void wield() {
-		if (!getContainer().isPresent()) {
-			getDungeon().You("can't wield anything!");
-			return;
+		InventoryUseResult result = useInventoryItem("Wield what?", is -> is.getItem() instanceof Wieldable, (c, ce, inv) -> {
+			if (c == '-') {
+				setLeftHand(null);
+				setRightHand(null);
+				getDungeon().You("unwield everything.");
+				getDungeon().turn();
+				return;
+			}
+
+			if (ce == null) {
+				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", c));
+				return;
+			}
+
+			ItemStack stack = ce.getStack();
+			Item item = stack.getItem();
+
+			if (getRightHand() != null && ((Wieldable) getRightHand().getStack().getItem()).isTwoHanded()) {
+				setLeftHand(null);
+			}
+
+			setRightHand(ce);
+
+			if (((Wieldable) item).isTwoHanded()) {
+				setLeftHand(ce);
+			}
+
+			String name = stack.getName(false);
+
+			if (item.isis() || stack.getCount() > 1) {
+				getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
+			} else {
+				getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
+			}
+
+			getDungeon().turn();
+		}, true);
+
+		switch (result) {
+			case NO_CONTAINER:
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to wield!");
+				break;
+			default:
+				break;
 		}
-		
-		Container inventory = getContainer().get();
-		Map<Character, ItemStack> wieldables = inventory.getWieldables();
-		
-		if (wieldables.size() == 0) {
-			getDungeon().You("have nothing to wield.");
-			return;
-		}
-		
-		char[] options = ArrayUtils.toPrimitive(wieldables.keySet().toArray(new Character[0]));
-		options = Arrays.copyOf(options, options.length + 1);
-		options[options.length - 1] = '-';
-		
-		getDungeon().prompt(new Prompt("Wield what?", options, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {
-				getDungeon().log("Nevermind.");
-			}
-			
-			@Override
-			public void onInvalidResponse(char response) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", response));
-			}
-			
-			@Override
-			public void onResponse(char letter) {
-				if (letter == '-') {
-					setLeftHand(null);
-					setRightHand(null);
-					getDungeon().You("unwield everything.");
-					return;
-				}
-				
-				Optional<Container.ContainerEntry> containerEntry = inventory.get(letter);
-				
-				if (!containerEntry.isPresent()) {
-					getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", letter));
-					return;
-				}
-				
-				ItemStack stack = containerEntry.get().getStack();
-				Item item = stack.getItem();
-				
-				if (getRightHand() != null && ((Wieldable) getRightHand().getStack().getItem()).isTwoHanded()) {
-					setLeftHand(null);
-				}
-				
-				setRightHand(containerEntry.get());
-				
-				if (((Wieldable) item).isTwoHanded()) {
-					setLeftHand(containerEntry.get());
-				}
-				
-				if (item.isis() || stack.getCount() > 1) {
-					getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), letter);
-				} else {
-					getDungeon().You(
-						"wield %s [YELLOW]%s[] ([YELLOW]%s[]).",
-						stack.beginsWithVowel() ? "an" : "a", stack.getName(false), letter
-					);
-				}
-			}
-		}));
 	}
 	
 	public void climbAny() {
