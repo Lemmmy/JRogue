@@ -520,8 +520,8 @@ public class Level {
 				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.sorted(Comparator.comparingDouble(a -> Utils.distance(
-				point.getX() + RandomUtils.randomDouble(-0.5, 0.5), point.getY() + RandomUtils.randomDouble(-0.5, 0.5),
+			.sorted(Comparator.comparingInt(a -> Utils.distance(
+				point.getX(), point.getY(),
 				a.getX(), a.getY()
 			)))
 			.collect(Collectors.toList());
