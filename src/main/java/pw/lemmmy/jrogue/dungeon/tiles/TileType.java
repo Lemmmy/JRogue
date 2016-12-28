@@ -40,7 +40,7 @@ public enum TileType {
 	TILE_ROOM_LADDER_UP(23, Solidity.WALK_ON, TileStateClimbable.class),
 	TILE_ROOM_LADDER_DOWN(24, Solidity.WALK_ON, TileStateClimbable.class),
 	
-	TILE_CORRIDOR(25, Solidity.WALK_ON, true, Color.BLACK, 0, 40);
+	TILE_CORRIDOR(25, Solidity.WALK_ON, true, Color.BLACK, 0, 20);
 	
 	private short id;
 	
