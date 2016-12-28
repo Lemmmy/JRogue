@@ -37,8 +37,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -80,13 +78,15 @@ public class Player extends LivingEntity {
 		if (getContainer().isPresent()) {
 			role.getStartingItems().forEach(i -> {
 				Optional<Container.ContainerEntry> entry = getContainer().get().add(i);
-				
-				if (entry.isPresent() && role.getStartingLeftHand() == entry.get().getStack()) {
-					setLeftHand(entry.get());
-				}
-				
-				if (entry.isPresent() && role.getStartingRightHand() == entry.get().getStack()) {
-					setRightHand(entry.get());
+
+				if (entry.isPresent()) {
+					if (role.getStartingLeftHand() == entry.get().getStack()) {
+						setLeftHand(entry.get());
+					}
+
+					if (role.getStartingRightHand() == entry.get().getStack()) {
+						setRightHand(entry.get());
+					}
 				}
 			});
 		}
@@ -101,23 +101,20 @@ public class Player extends LivingEntity {
 	}
 	
 	public int getConstitutionBonus() {
-		if (attributes == null) {
-			return 0;
-		}
-		
-		return (int) Math.floor(0.25 * attributes.getAttribute(Attribute.CONSTITUTION) - 2);
+		return attributes != null ? (int) Math.floor(0.25 * attributes.getAttribute(Attribute.CONSTITUTION) - 2) : 0;
 	}
 	
 	@Override
 	public int getHealingRate() {
 		int constitution = attributes.getAttribute(Attribute.CONSTITUTION);
-		
-		if (getNutritionState() == NutritionState.FAINTING) {
-			return 100 - constitution;
-		} else if (getNutritionState() == NutritionState.STARVING) {
-			return 40 - (constitution / 3);
-		} else {
-			return 20 - (constitution / 2);
+
+		switch (getNutritionState()) {
+			case FAINTING:
+				return 100 - constitution;
+			case STARVING:
+				return 40 - (constitution / 3);
+			default:
+				return 20 - (constitution / 2);
 		}
 	}
 	
@@ -138,11 +135,7 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public int getDamageModifier(DamageSource damageSource, int damage) {
-		if (godmode) {
-			return 0;
-		}
-		
-		return super.getDamageModifier(damageSource, damage);
+		return godmode ? 0 : super.getDamageModifier(damageSource, damage);
 	}
 	
 	@Override
@@ -239,11 +232,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public SkillLevel getSkillLevel(Skill skill) {
-		if (!skills.containsKey(skill)) {
-			return SkillLevel.UNSKILLED;
-		} else {
-			return skills.get(skill);
-		}
+		return !skills.containsKey(skill) ? SkillLevel.UNSKILLED : skills.get(skill);
 	}
 	
 	public boolean isDebugger() {
@@ -261,20 +250,14 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public void onLevelUp() {
-		super.onLevelUp();
-		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
-		getDungeon().greenYou(
-			"have %,d spendable skill point%s.",
-			++spendableSkillPoints,
-			spendableSkillPoints == 1 ? "" : "s"
-		);
+		getDungeon().greenYou("have %,d spendable skill point%s.", ++spendableSkillPoints, spendableSkillPoints == 1 ? "" : "s");
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		
+
 		if (getHealth() > getMaxHealth()) {
 			setHealth(getMaxHealth());
 		}
@@ -287,20 +270,11 @@ public class Player extends LivingEntity {
 			lastNutritionState = getNutritionState();
 			
 			switch (getNutritionState()) {
-				case CHOKING:
-					getDungeon().redYou("are choking!");
-					break;
-				case HUNGRY:
-					getDungeon().orangeYou("are starting to feel hungry.");
-					break;
-				case STARVING:
-					getDungeon().redYou("are starving!");
-					break;
-				case FAINTING:
-					getDungeon().redYou("are passing out due to starvation!");
-					break;
-				default:
-					break;
+				case CHOKING: 	getDungeon().redYou("are choking!"); break;
+				case HUNGRY: 	getDungeon().orangeYou("are starting to feel hungry."); break;
+				case STARVING: 	getDungeon().redYou("are starving!"); break;
+				case FAINTING: 	getDungeon().redYou("are passing out due to starvation!"); break;
+				default:		break;
 			}
 		}
 		
@@ -725,11 +699,8 @@ public class Player extends LivingEntity {
 
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to eat.");
-				break;
-			default:
-				break;
+			case NO_ITEM: 		getDungeon().yellowYou("have nothing to eat."); break;
+			default: 			break;
 		}
 	}
 	
@@ -764,11 +735,8 @@ public class Player extends LivingEntity {
 
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to quaff.");
-				break;
-			default:
-				break;
+			case NO_ITEM:		getDungeon().yellowYou("have nothing to quaff."); break;
+			default:			break;
 		}
 	}
 	
@@ -871,14 +839,9 @@ public class Player extends LivingEntity {
 		});
 
 		switch (result) {
-			case NO_CONTAINER:
-				getDungeon().yellowYou("can't hold anything!");
-				break;
-			case NO_ITEM:
-				getDungeon().yellowYou("don't have any items to drop!");
-				break;
-			default:
-				break;
+			case NO_CONTAINER:	getDungeon().yellowYou("can't hold anything!"); break;
+			case NO_ITEM:		getDungeon().yellowYou("don't have any items to drop!"); break;
+			default: 			break;
 		}
 	}
 	
@@ -946,11 +909,8 @@ public class Player extends LivingEntity {
 
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to wield!");
-				break;
-			default:
-				break;
+			case NO_ITEM:		getDungeon().yellowYou("have nothing to wield!"); break;
+			default:			break;
 		}
 	}
 	
@@ -1044,39 +1004,26 @@ public class Player extends LivingEntity {
 	
 	private int getDexterityHitBonus() {
 		int dexterity = getAttributes().getAttribute(Attribute.DEXTERITY);
-		
-		if (dexterity < 15) {
-			return (int) Math.floor(dexterity / 5) - 3;
-		} else {
-			return dexterity - 15;
-		}
+		return dexterity < 15 ? (int) Math.floor(dexterity / 5) - 3 : dexterity - 15;
 	}
 	
 	private int getWeaponSkillHitBonus(SkillLevel skillLevel) {
 		switch (skillLevel) {
-			case UNSKILLED:
-				return -4;
-			case ADVANCED:
-				return 2;
+			case UNSKILLED:	return -4;
+			case ADVANCED: 	return 2;
 			case EXPERT:
-			case MASTER:
-				return 3;
-			default:
-				return 0;
+			case MASTER:	return 3;
+			default:		return 0;
 		}
 	}
 	
 	private int getTwoHandedHitBonus(SkillLevel skillLevel) {
 		switch (skillLevel) {
-			case UNSKILLED:
-				return -9;
-			case ADVANCED:
-				return -5;
+			case UNSKILLED:	return -9;
+			case ADVANCED:	return -5;
 			case EXPERT:
-			case MASTER:
-				return -3;
-			default:
-				return -7;
+			case MASTER:	return -3;
+			default:		return -7;
 		}
 	}
 	
@@ -1125,18 +1072,12 @@ public class Player extends LivingEntity {
 		// TODO: ranged and spell
 		
 		getDungeon().entityAttacked(victim, victim.getX(), victim.getY(), roll, toHit);
-		
-		if (toHit > roll) {
-			return new Hit(HitType.SUCCESS, damage);
-		} else {
-			return new Hit(HitType.MISS, damage);
-		}
+		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	
 	@Override
 	public void swapHands() {
 		super.swapHands();
-		
 		getDungeon().You("swap your weapons.");
 	}
 }
