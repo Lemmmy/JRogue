@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
-public class EntityRendererCandlestick extends EntityRendererRandom {
-	public EntityRendererCandlestick(int sheetX, int sheetY, int count) {
-		super(sheetX, sheetY, count);
+public class EntityRendererCandlestick extends EntityRendererBasic {
+	public EntityRendererCandlestick(int sheetX, int sheetY) {
+		super("entities.png", sheetX, sheetY);
 
 		ParticleEffect torchEffect = new ParticleEffect();
 		torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
