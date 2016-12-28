@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
@@ -66,6 +67,11 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("fountain")) {
 			dungeon.getLevel().addEntity(
 				new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("candlestick")) {
+			dungeon.getLevel().addEntity(
+				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wishMonsters(dungeon, player, wish)) {
