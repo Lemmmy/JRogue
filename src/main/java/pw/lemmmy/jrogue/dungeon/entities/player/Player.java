@@ -545,10 +545,15 @@ public class Player extends LivingEntity {
 				}
 				
 				int wisdom = attributes.getAttribute(Attribute.WISDOM);
-				
-				if (wisdom > 5 && (hasStatusEffect(InjuredFoot.class) || hasStatusEffect(StrainedLeg.class))) {
-					getDungeon().Your("foot is in no shape for kicking.");
-					return;
+
+				if (wisdom > 5) {
+					if (hasStatusEffect(InjuredFoot.class)) {
+						getDungeon().Your("foot is in no shape for kicking."); return;
+					}
+
+					if (hasStatusEffect(StrainedLeg.class)) {
+						getDungeon().Your("leg is in no shape for kicking."); return;
+					}
 				}
 				
 				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
