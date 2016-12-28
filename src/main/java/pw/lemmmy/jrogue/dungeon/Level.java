@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Level {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
@@ -760,7 +761,7 @@ public class Level {
 			lightTiles.get(index).add(tile);
 		}
 		
-		entities.stream()
+		Stream.concat(entities.stream(), entityAddQueue.stream())
 			.filter(e -> e instanceof LightEmitter)
 			.forEach(e -> {
 				LightEmitter lightEmitter = (LightEmitter) e;
