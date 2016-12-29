@@ -5,6 +5,8 @@ import pw.lemmmy.jrogue.dungeon.entities.player.Attributes;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellStrike;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -61,6 +63,15 @@ public class RoleWizard extends Role {
 		skillMap.put(Skill.SKILL_SPELLS_OTHER, SkillLevel.EXPERT);
 		
 		return skillMap;
+	}
+	
+	@Override
+	public Map<Class<? extends Spell>, Spell> getStartingSpells() {
+		Map<Class<? extends Spell>, Spell> spellMap = new HashMap<>();
+		
+		spellMap.put(SpellStrike.class, new SpellStrike());
+		
+		return spellMap;
 	}
 	
 	@Override

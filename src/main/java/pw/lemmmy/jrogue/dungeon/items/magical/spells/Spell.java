@@ -1,5 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
+import org.json.JSONObject;
+import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -9,7 +11,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
 import pw.lemmmy.jrogue.dungeon.items.magical.MagicalSchool;
 
-public abstract class Spell {
+public abstract class Spell implements Serialisable {
 	private int timesUsed;
 	
 	private int knowledgeTimeout = 20000;
@@ -39,6 +41,20 @@ public abstract class Spell {
 		if (knowledgeTimeout <= 0) {
 			known = false;
 		}
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		obj.put("timesUsed", timesUsed);
+		obj.put("knowledgeTimeout", knowledgeTimeout);
+		obj.put("known", known);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		timesUsed = obj.getInt("timesUsed");
+		knowledgeTimeout = obj.getInt("knowledgeTimeout");
+		known = obj.getBoolean("known");
 	}
 	
 	public int getCastingCost() {

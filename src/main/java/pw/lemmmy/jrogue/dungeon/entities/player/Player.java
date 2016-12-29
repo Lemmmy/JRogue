@@ -20,6 +20,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
@@ -49,6 +50,7 @@ public class Player extends LivingEntity {
 	private int energy;
 	private int maxEnergy;
 	private int chargingTurns = 0;
+	private Map<Class<? extends Spell>, Spell> knownSpells;
 	
 	private int nutrition;
 	private NutritionState lastNutritionState;
@@ -75,6 +77,7 @@ public class Player extends LivingEntity {
 		maxHealth = getMaxHealth();
 		
 		energy = maxEnergy = role.getMaxEnergy();
+		knownSpells = new HashMap<>(role.getStartingSpells());
 		
 		role.assignAttributes(attributes);
 		
@@ -356,8 +359,16 @@ public class Player extends LivingEntity {
 		attributes.serialise(obj);
 		
 		JSONObject serialisedSkills = new JSONObject();
-		skills.entrySet().forEach(e -> serialisedSkills.put(e.getKey().name(), e.getValue().name()));
+		skills.forEach((skill, skillLevel) -> serialisedSkills.put(skill.name(), skillLevel.name()));
 		obj.put("skills", serialisedSkills);
+		
+		JSONObject serialisedSpells = new JSONObject();
+		knownSpells.forEach((spellClas, spell) -> {
+			JSONObject serialisedSpell = new JSONObject();
+			spell.serialise(serialisedSpell);
+			serialisedSpells.put(spellClas.getName(), serialisedSpell);
+		});
+		obj.put("knownSpells", serialisedSpells);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -365,6 +376,7 @@ public class Player extends LivingEntity {
 	public void unserialise(JSONObject obj) {
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>();
+		knownSpells = new HashMap<>();
 		
 		super.unserialise(obj);
 		
@@ -398,6 +410,24 @@ public class Player extends LivingEntity {
 		serialisedSkills.keySet().forEach(k -> {
 			String v = serialisedSkills.getString(k);
 			skills.put(Skill.valueOf(k), SkillLevel.valueOf(v));
+		});
+		
+		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
+		serialisedSpells.keySet().forEach(spellClassName -> {
+			try {
+				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
+				Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
+				Spell spell = spellConstructor.newInstance();
+				spell.unserialise(serialisedSpells.getJSONObject(spellClassName));
+				knownSpells.put(spellClass, spell);
+			} catch (ClassNotFoundException e) {
+				JRogue.getLogger().error("Unknown spell class {}", spellClassName);
+			} catch (NoSuchMethodException e) {
+				JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
+			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				JRogue.getLogger().error("Error loading spell class {}", spellClassName);
+				JRogue.getLogger().error(e);
+			}
 		});
 	}
 	
