@@ -78,4 +78,19 @@ public class RoleWizard extends Role {
 	public int getMaxEnergy() {
 		return RandomUtils.roll(1, 3, 4); // 4+d3
 	}
+	
+	@Override
+	public int getSpellcastingSuccessBase() {
+		return 1;
+	}
+	
+	@Override
+	public int getSpellcastingSuccessEscape() {
+		return 0;
+	}
+	
+	@Override
+	public Attribute getSpellcastingSuccessAttribute() {
+		return Attribute.INTELLIGENCE;
+	}
 }

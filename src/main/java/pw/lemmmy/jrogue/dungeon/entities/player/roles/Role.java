@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.player.roles;
 
+import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attributes;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
@@ -24,4 +25,10 @@ public abstract class Role {
 	public abstract void assignAttributes(Attributes attributes);
 	
 	public abstract int getMaxEnergy();
+	
+	public abstract int getSpellcastingSuccessBase();
+	
+	public abstract int getSpellcastingSuccessEscape();
+	
+	public abstract Attribute getSpellcastingSuccessAttribute();
 }
