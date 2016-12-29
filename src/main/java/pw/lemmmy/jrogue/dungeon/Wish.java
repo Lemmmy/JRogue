@@ -82,6 +82,7 @@ public class Wish {
 			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
 			arrow.setTravelDirection(dx, dy);
 			arrow.setTravelRange(3);
+			arrow.setSource(player);
 			dungeon.getLevel().addEntity(arrow);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("strike")) {
