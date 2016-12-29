@@ -94,7 +94,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
     
     public void onHitEntity(Entity victim) {
         if (victim instanceof EntityItem && ((EntityItem) victim).getItem() instanceof Shatterable) {
-            getDungeon().The("%s shatters into a thousand pieces!", getName(false));
+            getDungeon().The(
+                "%s shatters into a thousand pieces!",
+                ((EntityItem) victim).getItem().getName(false, false)
+            );
             getLevel().removeEntity(victim);
         }
     }
