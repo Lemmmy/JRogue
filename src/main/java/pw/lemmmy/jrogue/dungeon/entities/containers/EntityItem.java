@@ -50,11 +50,14 @@ public class EntityItem extends Entity {
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		x = x + (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
+		y = y + (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
+
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			if (isPlayer) {
-				getDungeon().You("cannot kick the %s any further that way.", getName(false));
+				getDungeon().The("%s strikes the side of the %s.", getName(false), tile.getID());
 			}
 			
 			return;
