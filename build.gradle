@@ -14,7 +14,7 @@ apply plugin: "application"
 
 archivesBaseName = "JRogue"
 mainClassName = "pw.lemmmy.jrogue.JRogue"
-version = "0.1"
+version = "0.2"
 
 sourceCompatibility = 1.8
 
