@@ -16,7 +16,8 @@ public enum DamageSource {
 	SKELETON_HIT(DamageType.MELEE),
 	POISON("The poison kills you."),
 	CHOKING("You choke to death."),
-	WISH_FOR_DEATH("You wish for death, and your god grants it.");
+	WISH_FOR_DEATH("You wish for death, and your god grants it."),
+	ARROW(DamageType.RANGED, "An arrow penetrates you. You die.");
 	
 	DamageType damageType;
 	String deathString;
