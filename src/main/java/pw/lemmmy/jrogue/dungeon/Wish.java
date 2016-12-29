@@ -24,6 +24,7 @@ import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -199,6 +200,8 @@ public class Wish {
 			item = new ItemCherries();
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
+		} else if (wish.equalsIgnoreCase("staff")) {
+			item = new ItemStaff();
 		} else if (wish.equalsIgnoreCase("potion")) {
 			BottleType bottle = RandomUtils.randomFrom(BottleType.values());
 			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
