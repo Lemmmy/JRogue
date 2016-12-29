@@ -17,7 +17,8 @@ public enum DamageSource {
 	STRIKE_SPELL(DamageType.MAGIC, "The strike penetrates your body, cutting it into several pieces."),
 	POISON("The poison kills you."),
 	CHOKING("You choke to death."),
-	WISH_FOR_DEATH("You wish for death, and your god grants it.");
+	WISH_FOR_DEATH("You wish for death, and your god grants it."),
+	ARROW(DamageType.RANGED, "An arrow penetrates you. You die.");
 	
 	DamageType damageType;
 	String deathString;

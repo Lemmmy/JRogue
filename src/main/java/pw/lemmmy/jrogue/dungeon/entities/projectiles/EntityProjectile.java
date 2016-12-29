@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
@@ -13,6 +14,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
     private int dx = 0, dy = 0;
     private int range = Integer.MAX_VALUE;
     private int distanceTravelled = 0;
+
+    private Entity source = null;
 
     public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
@@ -30,6 +33,14 @@ public abstract class EntityProjectile extends EntityTurnBased {
 
     public void setTravelRange(int range) {
         this.range = range;
+    }
+
+    public void setSource(Entity source) {
+        this.source = source;
+    }
+
+    public Entity getSource() {
+        return source;
     }
 
     public int getDistanceTravelled() {
@@ -50,6 +61,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
             setPosition(x, y);
             distanceTravelled++;
 
+            getLevel().getEntitiesAt(x, y).forEach(this::onHitEntity);
+
             if (distanceTravelled > range) {
                 getLevel().removeEntity(this);
             }
@@ -61,6 +74,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
     @Override
     public void applyMovementPoints() {
         setMovementPoints(getMovementPoints() + getMovementSpeed());
+    }
+
+    public void onHitEntity(Entity victim) {
+
     }
 
     @Override
