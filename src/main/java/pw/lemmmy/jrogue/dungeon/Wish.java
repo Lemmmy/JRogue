@@ -1,9 +1,11 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.entities.*;
+import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
@@ -13,7 +15,9 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityArrow;
 import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityStrike;
-import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.Material;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
@@ -22,6 +26,7 @@ import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -92,6 +97,17 @@ public class Wish {
 			strike.setTravelRange(3);
 			dungeon.getLevel().addEntity(strike);
 			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("weapon rack")) {
+			dungeon.getLevel().addEntity(
+				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("rug")) {
+			Arrays.stream(player.getLevel().getTiles())
+				.filter(t -> t.getX() == player.getX())
+				.filter(t -> t.getY() == player.getY())
+				.findFirst()
+				.ifPresent(t -> t.setType(TileType.TILE_ROOM_RUG));
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {
@@ -202,6 +218,8 @@ public class Wish {
 			item = new ItemCherries();
 		} else if (wish.equalsIgnoreCase("corn")) {
 			item = new ItemCorn();
+		} else if (wish.equalsIgnoreCase("staff")) {
+			item = new ItemStaff();
 		} else if (wish.equalsIgnoreCase("potion")) {
 			BottleType bottle = RandomUtils.randomFrom(BottleType.values());
 			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
