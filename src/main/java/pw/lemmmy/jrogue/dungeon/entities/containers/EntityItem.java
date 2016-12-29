@@ -8,6 +8,7 @@ import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.Optional;
@@ -50,11 +51,24 @@ public class EntityItem extends Entity {
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		if (getItem() instanceof Shatterable) {
+			if (isPlayer) {
+				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
+			}
+
+			getLevel().removeEntity(this);
+			return;
+		}
+
+		x = x + (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
+		y = y + (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
+
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			if (isPlayer) {
-				getDungeon().You("cannot kick the %s any further that way.", getName(false));
+				getDungeon().The("%s strikes the side of the wall.", getName(false));
+				// "wall" currently seems appropriate for all current SOLID tiles
 			}
 			
 			return;

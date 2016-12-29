@@ -6,10 +6,9 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
-import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-public class ItemGem extends Item implements Shatterable {
+public class ItemGem extends Item {
 	private Gem gem;
 	private boolean worthless = false;
 	

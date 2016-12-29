@@ -62,11 +62,7 @@ public class EntityWeaponRack extends Entity {
 	}
 
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(false));
-		}
-	}
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {}
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
