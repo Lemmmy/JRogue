@@ -5,6 +5,8 @@ import pw.lemmmy.jrogue.dungeon.entities.player.Attributes;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellStrike;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -64,6 +66,15 @@ public class RoleWizard extends Role {
 	}
 	
 	@Override
+	public Map<Character, Spell> getStartingSpells() {
+		Map<Character, Spell> spellMap = new HashMap<>();
+		
+		spellMap.put('a', new SpellStrike());
+		
+		return spellMap;
+	}
+	
+	@Override
 	public void assignAttributes(Attributes attributes) {
 		attributes.setAttribute(Attribute.STRENGTH, 7);
 		attributes.setAttribute(Attribute.AGILITY, 7);
@@ -77,5 +88,20 @@ public class RoleWizard extends Role {
 	@Override
 	public int getMaxEnergy() {
 		return RandomUtils.roll(1, 3, 4); // 4+d3
+	}
+	
+	@Override
+	public int getSpellcastingSuccessBase() {
+		return 1;
+	}
+	
+	@Override
+	public int getSpellcastingSuccessEscape() {
+		return 0;
+	}
+	
+	@Override
+	public Attribute getSpellcastingSuccessAttribute() {
+		return Attribute.INTELLIGENCE;
 	}
 }

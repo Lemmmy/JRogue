@@ -84,6 +84,9 @@ public class GameInputProcessor implements InputProcessor {
 		} else if (key == 'x') {
 			dungeon.getPlayer().swapHands();
 			return true;
+		} else if (key == 'Z') {
+			renderer.showSpellWindow();
+			return true;
 		} else if (key == ',') {
 			dungeon.getPlayer().pickup();
 			return true;

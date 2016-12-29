@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
+import pw.lemmmy.jrogue.rendering.gdx.hud.components.ContainerComponent;
 
 public class ContainerWindow extends PopupWindow {
 	private Entity entity;

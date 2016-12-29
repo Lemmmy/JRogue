@@ -8,6 +8,8 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
@@ -91,7 +93,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
     }
     
     public void onHitEntity(Entity victim) {
-
+        if (victim instanceof EntityItem && ((EntityItem) victim).getItem() instanceof Shatterable) {
+            getDungeon().The("%s shatters into a thousand pieces!", getName(false));
+            getLevel().removeEntity(victim);
+        }
     }
 
     @Override

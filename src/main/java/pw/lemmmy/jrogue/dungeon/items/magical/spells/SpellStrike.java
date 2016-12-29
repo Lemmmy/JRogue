@@ -3,6 +3,8 @@ package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityStrike;
+import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
 import pw.lemmmy.jrogue.dungeon.items.magical.MagicalSchool;
 import pw.lemmmy.jrogue.utils.RandomUtils;
@@ -40,7 +42,7 @@ public class SpellStrike extends Spell {
 	}
 	
 	@Override
-	public void castNowhere(LivingEntity caster) {
+	public void castNonDirectional(LivingEntity caster) {
 		castDirectional(caster, 0, 0); // cast straight down at the player, dealing splash damage to those around them
 	}
 	
@@ -50,6 +52,14 @@ public class SpellStrike extends Spell {
 			splash(caster, caster.getX(), caster.getY());
 			return;
 		}
+		
+		EntityStrike strike = new EntityStrike(
+			caster.getDungeon(), caster.getLevel(),
+			caster.getX() + dx, caster.getY() + dy
+		);
+		strike.setTravelDirection(dx, dy);
+		strike.setTravelRange(3);
+		caster.getLevel().addEntity(strike);
 	}
 	
 	private int getDamage() {

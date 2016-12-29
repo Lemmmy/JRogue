@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.rendering.gdx.hud.windows;
+package pw.lemmmy.jrogue.rendering.gdx.hud.components;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

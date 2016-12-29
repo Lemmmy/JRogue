@@ -20,6 +20,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
@@ -49,6 +50,7 @@ public class Player extends LivingEntity {
 	private int energy;
 	private int maxEnergy;
 	private int chargingTurns = 0;
+	private Map<Character, Spell> knownSpells;
 	
 	private int nutrition;
 	private NutritionState lastNutritionState;
@@ -75,6 +77,7 @@ public class Player extends LivingEntity {
 		maxHealth = getMaxHealth();
 		
 		energy = maxEnergy = role.getMaxEnergy();
+		knownSpells = new HashMap<>(role.getStartingSpells());
 		
 		role.assignAttributes(attributes);
 		
@@ -147,6 +150,10 @@ public class Player extends LivingEntity {
 		
 		maxEnergy += gain;
 		charge(gain);
+	}
+	
+	public Map<Character, Spell> getKnownSpells() {
+		return knownSpells;
 	}
 	
 	@Override
@@ -356,8 +363,16 @@ public class Player extends LivingEntity {
 		attributes.serialise(obj);
 		
 		JSONObject serialisedSkills = new JSONObject();
-		skills.entrySet().forEach(e -> serialisedSkills.put(e.getKey().name(), e.getValue().name()));
+		skills.forEach((skill, skillLevel) -> serialisedSkills.put(skill.name(), skillLevel.name()));
 		obj.put("skills", serialisedSkills);
+		
+		JSONObject serialisedSpells = new JSONObject();
+		knownSpells.forEach((spellLetter, spell) -> {
+			JSONObject serialisedSpell = new JSONObject();
+			spell.serialise(serialisedSpell);
+			serialisedSpells.put(spellLetter.toString() + "!" + spell.getClass().getName(), serialisedSpell);
+		});
+		obj.put("knownSpells", serialisedSpells);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -365,6 +380,7 @@ public class Player extends LivingEntity {
 	public void unserialise(JSONObject obj) {
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>();
+		knownSpells = new HashMap<>();
 		
 		super.unserialise(obj);
 		
@@ -398,6 +414,27 @@ public class Player extends LivingEntity {
 		serialisedSkills.keySet().forEach(k -> {
 			String v = serialisedSkills.getString(k);
 			skills.put(Skill.valueOf(k), SkillLevel.valueOf(v));
+		});
+		
+		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
+		serialisedSpells.keySet().forEach(key -> {
+			Character spellLetter = key.charAt(0);
+			String spellClassName = key.substring(2, key.length());
+			
+			try {
+				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
+				Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
+				Spell spell = spellConstructor.newInstance();
+				spell.unserialise(serialisedSpells.getJSONObject(key));
+				knownSpells.put(spellLetter, spell);
+			} catch (ClassNotFoundException e) {
+				JRogue.getLogger().error("Unknown spell class {}", spellClassName);
+			} catch (NoSuchMethodException e) {
+				JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
+			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				JRogue.getLogger().error("Error loading spell class {}", spellClassName);
+				JRogue.getLogger().error(e);
+			}
 		});
 	}
 	
@@ -464,8 +501,10 @@ public class Player extends LivingEntity {
 			if (ent.isPresent()) {
 				if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeaponMelee) {
 					((ItemWeaponMelee) getRightHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
+				} else if (getLeftHand() != null && getLeftHand().getStack().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getLeftHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
 				} else {
-					walkAction(tile, newX, newY);
+					getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
 				}
 			} else {
 				walkAction(tile, newX, newY);
@@ -630,7 +669,63 @@ public class Player extends LivingEntity {
 			}
 		}));
 	}
-
+	
+	public void castSpell(Spell spell) {
+		switch (spell.getDirectionType()) {
+			case NON_DIRECTIONAL:
+				castSpellNonDirectional(spell);
+				break;
+			default:
+				castSpellDirectional(spell);
+				break;
+		}
+	}
+	
+	private boolean canCastSpell(Spell spell) {
+		return energy >= spell.getCastingCost();
+	}
+	
+	private void castSpellNonDirectional(Spell spell) {
+		if (!canCastSpell(spell)) {
+			getDungeon().redYou("don't have enough energy to cast that spell.");
+			return;
+		}
+		
+		nutrition -= spell.getNutritionCost();
+		energy -= spell.getCastingCost();
+		spell.castNonDirectional(this);
+		getDungeon().turn();
+	}
+	
+	private void castSpellDirectional(Spell spell) {
+		if (!canCastSpell(spell)) {
+			getDungeon().redYou("don't have enough energy to cast that spell.");
+			return;
+		}
+		
+		getDungeon().prompt(new Prompt("Cast in what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+			@Override
+			public void onResponse(char response) {
+				if (!Utils.MOVEMENT_CHARS.containsKey(response) &&
+					spell.canCastAtSelf() && response != '5' && response != '.') {
+					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
+					return;
+				}
+				
+				Integer[] d = response == '5' || response == '.' ?
+							  new Integer[] {0, 0} :
+							  Utils.MOVEMENT_CHARS.get(response);
+				int dx = d[0];
+				int dy = d[1];
+				
+				nutrition -= spell.getNutritionCost();
+				energy -= spell.getCastingCost();
+				spell.castDirectional(Player.this, dx, dy);
+				getDungeon().turn();
+			}
+		}));
+	}
+	
 	public enum InventoryUseResult {
 		SUCCESS, NO_CONTAINER, NO_ITEM
 	}
