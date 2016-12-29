@@ -6,20 +6,12 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.Shatterable;
-import pw.lemmmy.jrogue.utils.RandomUtils;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class EntityWeaponRack extends Entity {
 	private Container container;
-
+	
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
@@ -33,7 +25,8 @@ public class EntityWeaponRack extends Entity {
 	
 	@Override
 	public EntityAppearance getAppearance() {
-		return container.isEmpty() ? EntityAppearance.APPEARANCE_WEAPON_RACK : EntityAppearance.APPEARANCE_WEAPON_RACK_STOCKED;
+		return container.isEmpty() ? EntityAppearance.APPEARANCE_WEAPON_RACK
+								   : EntityAppearance.APPEARANCE_WEAPON_RACK_STOCKED;
 	}
 	
 	@Override
@@ -50,7 +43,7 @@ public class EntityWeaponRack extends Entity {
 	public Optional<Container> getContainer() {
 		return Optional.of(container);
 	}
-
+	
 	@Override
 	public boolean lootable() {
 		return true;
@@ -60,7 +53,7 @@ public class EntityWeaponRack extends Entity {
 	public Optional<String> lootSuccessString() {
 		return Optional.of(String.format("You browse the %s.", getName(false)));
 	}
-
+	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {}
 	

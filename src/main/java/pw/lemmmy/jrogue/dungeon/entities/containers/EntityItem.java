@@ -55,14 +55,14 @@ public class EntityItem extends Entity {
 			if (isPlayer) {
 				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
 			}
-
+			
 			getLevel().removeEntity(this);
 			return;
 		}
-
+		
 		x = x + (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
 		y = y + (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
-
+		
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {

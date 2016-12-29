@@ -1,7 +1,8 @@
 package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.entities.*;
+import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
@@ -12,7 +13,9 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.Material;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
@@ -72,20 +75,20 @@ public class Wish {
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("candlestick")) {
 			dungeon.getLevel().addEntity(
-					new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
 			dungeon.getLevel().addEntity(
-					new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
 			Arrays.stream(player.getLevel().getTiles())
-					.filter(t -> t.getX() == player.getX())
-					.filter(t -> t.getY() == player.getY())
-					.findFirst()
-					.ifPresent(t -> t.setType(TileType.TILE_ROOM_RUG));
+				.filter(t -> t.getX() == player.getX())
+				.filter(t -> t.getY() == player.getY())
+				.findFirst()
+				.ifPresent(t -> t.setType(TileType.TILE_ROOM_RUG));
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {

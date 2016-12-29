@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
@@ -9,18 +8,18 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateDoor;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateDoor;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ActionKick extends EntityAction {
 	private final Integer[] direction;
 	private final Entity kickedEntity;
-
+	
 	public ActionKick(Integer[] direction, ActionCallback callback) {
 		this(direction, null, callback);
 	}
-
+	
 	public ActionKick(Integer[] direction, Entity kicked, ActionCallback callback) {
 		super(callback);
 		this.direction = direction;
