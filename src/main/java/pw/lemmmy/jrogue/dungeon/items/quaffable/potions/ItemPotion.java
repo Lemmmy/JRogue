@@ -11,7 +11,6 @@ import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ItemPotion extends ItemQuaffable {
-	
 	private boolean empty = false;
 	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
 	private PotionType potionType = PotionType.POTION_HEALTH;

@@ -45,6 +45,8 @@ public class EntityStrike extends EntityProjectile {
     
     @Override
     public void onHitEntity(Entity victim) {
+        super.onHitEntity(victim);
+        
         if (victim instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) victim;
             Entity source = getSource();

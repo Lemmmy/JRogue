@@ -29,7 +29,7 @@ public abstract class Spell implements Serialisable {
 	
 	public abstract boolean canCastAtSelf();
 	
-	public abstract void castNowhere(LivingEntity caster);
+	public abstract void castNonDirectional(LivingEntity caster);
 	
 	public abstract void castDirectional(LivingEntity caster, int dx, int dy);
 	

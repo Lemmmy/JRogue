@@ -42,7 +42,7 @@ public class SpellStrike extends Spell {
 	}
 	
 	@Override
-	public void castNowhere(LivingEntity caster) {
+	public void castNonDirectional(LivingEntity caster) {
 		castDirectional(caster, 0, 0); // cast straight down at the player, dealing splash damage to those around them
 	}
 	
@@ -53,7 +53,10 @@ public class SpellStrike extends Spell {
 			return;
 		}
 		
-		EntityStrike strike = new EntityStrike(caster.getDungeon(), caster.getLevel(), dx, dy);
+		EntityStrike strike = new EntityStrike(
+			caster.getDungeon(), caster.getLevel(),
+			caster.getX() + dx, caster.getY() + dy
+		);
 		strike.setTravelDirection(dx, dy);
 		strike.setTravelRange(3);
 		caster.getLevel().addEntity(strike);
