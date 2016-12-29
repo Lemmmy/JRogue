@@ -55,7 +55,7 @@ public class SpellStrike extends Spell {
 		
 		EntityStrike strike = new EntityStrike(
 			caster.getDungeon(), caster.getLevel(),
-			caster.getX() + dx, caster.getY() + dy
+			caster.getX(), caster.getY()
 		);
 		strike.setTravelDirection(dx, dy);
 		strike.setTravelRange(3);
