@@ -12,6 +12,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityArrow;
+import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityStrike;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
@@ -76,13 +77,21 @@ public class Wish {
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("arrow")) {
-			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX(), player.getY());
 			int dx = 1;
 			int dy = 0;
+			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
 			arrow.setTravelDirection(dx, dy);
 			arrow.setTravelRange(3);
-			JRogue.getLogger().info("Arrow travelling in dir: " + dx + ", " + dy);
 			dungeon.getLevel().addEntity(arrow);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("strike")) {
+			int dx = 1;
+			int dy = 0;
+			EntityStrike strike = new EntityStrike(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
+			strike.setTravelDirection(dx, dy);
+			strike.setTravelRange(3);
+			dungeon.getLevel().addEntity(strike);
+			dungeon.turn();
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {

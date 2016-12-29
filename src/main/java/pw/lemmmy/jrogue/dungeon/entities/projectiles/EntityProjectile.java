@@ -8,6 +8,7 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 public abstract class EntityProjectile extends EntityTurnBased {
@@ -75,6 +76,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
                 getLevel().removeEntity(this);
             }
         } else {
+            onHitTile(getLevel().getTile(x, y));
             getLevel().removeEntity(this);
         }
     }
@@ -84,6 +86,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
         setMovementPoints(getMovementPoints() + getMovementSpeed());
     }
 
+    public void onHitTile(Tile tile) {
+        
+    }
+    
     public void onHitEntity(Entity victim) {
 
     }
