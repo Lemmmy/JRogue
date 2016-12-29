@@ -404,8 +404,10 @@ public class Player extends LivingEntity {
 			if (ent.isPresent()) {
 				if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeaponMelee) {
 					((ItemWeaponMelee) getRightHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
+				} else if (getLeftHand() != null && getLeftHand().getStack().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getLeftHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
 				} else {
-					walkAction(tile, newX, newY);
+					getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
 				}
 			} else {
 				walkAction(tile, newX, newY);
