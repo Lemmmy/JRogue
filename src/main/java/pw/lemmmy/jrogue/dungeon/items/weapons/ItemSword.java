@@ -68,10 +68,10 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim) {}
+	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
 	
 	@Override
-	public void fire(LivingEntity attacker, LivingEntity victim) {}
+	public void fire(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
 	
 	@Override
 	public boolean isMelee() {
