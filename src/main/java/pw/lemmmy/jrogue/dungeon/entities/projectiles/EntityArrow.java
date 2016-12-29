@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon.entities.projectiles;
 
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;

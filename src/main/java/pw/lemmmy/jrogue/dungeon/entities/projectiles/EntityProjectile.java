@@ -20,7 +20,15 @@ public abstract class EntityProjectile extends EntityTurnBased {
     public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
     }
-
+    
+    public int getDeltaX() {
+        return dx;
+    }
+    
+    public int getDeltaY() {
+        return dy;
+    }
+    
     public void setTravelDirection(int dx, int dy) {
         if (dx > 0) dx = 1;
         if (dy > 0) dy = 1;
