@@ -118,13 +118,15 @@ public class Container implements Serialisable {
 		}
 		
 		if (player != null) {
-			if (player.getLeftHand().getStack() == itemStack) {
-				player.setLeftHand(null);
-			}
-			
-			if (player.getRightHand().getStack() == itemStack) {
-				player.setRightHand(null);
-			}
+			if (player.getLeftHand() != null) {
+				if (player.getLeftHand().getStack() == itemStack) {
+					player.setLeftHand(null);
+			}}
+
+			if (player.getRightHand() != null) {
+				if (player.getRightHand().getStack() == itemStack) {
+					player.setRightHand(null);
+			}}
 		}
 		
 		destContainer.add(itemStack);
