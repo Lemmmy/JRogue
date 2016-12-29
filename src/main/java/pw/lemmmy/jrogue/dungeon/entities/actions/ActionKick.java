@@ -53,6 +53,9 @@ public class ActionKick extends EntityAction {
 	}
 	
 	private void entityKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		if (kickedEntity.isStatic()) {
+			entity.getDungeon().You("kick the %s!", kickedEntity.getName(false));
+		}
 		kickedEntity.kick(kicker, isPlayer, dx, dy);
 	}
 	
