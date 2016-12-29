@@ -70,7 +70,7 @@ public class Container implements Serialisable {
 	}
 	
 	public boolean canAdd(ItemStack stack) {
-		if (!(stack.getCategory().equals(ItemCategory.WEAPON)) & (getName().equals("Weapon rack"))) {
+		if (!(stack.getCategory().equals(ItemCategory.WEAPON)) && (getName().equals("Weapon rack"))) {
 			return false;
 		}
 		

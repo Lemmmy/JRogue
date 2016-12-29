@@ -60,15 +60,15 @@ public class EntityItem extends Entity {
 			return;
 		}
 		
-		x = x + (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
-		y = y + (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
+		x += (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
+		y += (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
 		
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			if (isPlayer) {
 				getDungeon().The("%s strikes the side of the wall.", getName(false));
-				// "wall" currently seems appropriate for all current SOLID tiles
+				// "wall" seems appropriate for all current SOLID tiles
 			}
 			
 			return;

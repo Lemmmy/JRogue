@@ -41,7 +41,7 @@ public class EntityWeaponRack extends Entity {
 	
 	@Override
 	public Optional<Container> getContainer() {
-		return Optional.of(container);
+		return Optional.ofNullable(container);
 	}
 	
 	@Override
