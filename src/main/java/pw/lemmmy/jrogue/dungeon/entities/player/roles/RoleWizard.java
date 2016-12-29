@@ -52,8 +52,13 @@ public class RoleWizard extends Role {
 		
 		skillMap.put(Skill.SKILL_STAFF, SkillLevel.BEGINNER);
 		
-		skillMap.put(Skill.SKILL_SPELLS_ATTACK, SkillLevel.BEGINNER);
-		skillMap.put(Skill.SKILL_SPELLS_ENCHANTMENT, SkillLevel.BEGINNER);
+		skillMap.put(Skill.SKILL_SPELLS_ATTACK, SkillLevel.EXPERT);
+		skillMap.put(Skill.SKILL_SPELLS_HEALING, SkillLevel.ADVANCED);
+		skillMap.put(Skill.SKILL_SPELLS_DIVINATION, SkillLevel.EXPERT);
+		skillMap.put(Skill.SKILL_SPELLS_ENCHANTMENT, SkillLevel.ADVANCED);
+		skillMap.put(Skill.SKILL_SPELLS_CLERICAL, SkillLevel.ADVANCED);
+		skillMap.put(Skill.SKILL_SPELLS_ESCAPE, SkillLevel.EXPERT);
+		skillMap.put(Skill.SKILL_SPELLS_OTHER, SkillLevel.EXPERT);
 		
 		return skillMap;
 	}

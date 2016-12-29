@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.magical;
 
-public enum School {
+public enum MagicalSchool {
 	ATTACK,
 	CLERICAL,
 	DIVINATION,

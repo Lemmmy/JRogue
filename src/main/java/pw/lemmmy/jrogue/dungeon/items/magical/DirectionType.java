@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.magical;
 
-public enum Direction {
+public enum DirectionType {
 	BEAM,
 	RAY,
 	NON_DIRECTIONAL
