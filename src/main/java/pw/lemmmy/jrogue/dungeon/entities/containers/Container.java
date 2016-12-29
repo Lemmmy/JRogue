@@ -3,7 +3,10 @@ package pw.lemmmy.jrogue.dungeon.entities.containers;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -67,6 +70,10 @@ public class Container implements Serialisable {
 	}
 	
 	public boolean canAdd(ItemStack stack) {
+		if (!(stack.getCategory().equals(ItemCategory.WEAPON)) && (getName().equals("Weapon rack"))) {
+			return false;
+		}
+		
 		for (ItemStack storedStack : items.values()) {
 			if (stack.getItem().equals(storedStack.getItem())) {
 				return true;
@@ -114,12 +121,16 @@ public class Container implements Serialisable {
 		}
 		
 		if (player != null) {
-			if (player.getLeftHand().getStack() == itemStack) {
-				player.setLeftHand(null);
+			if (player.getLeftHand() != null) {
+				if (player.getLeftHand().getStack() == itemStack) {
+					player.setLeftHand(null);
+				}
 			}
 			
-			if (player.getRightHand().getStack() == itemStack) {
-				player.setRightHand(null);
+			if (player.getRightHand() != null) {
+				if (player.getRightHand().getStack() == itemStack) {
+					player.setRightHand(null);
+				}
 			}
 		}
 		
@@ -177,7 +188,7 @@ public class Container implements Serialisable {
 	public Map<Character, ItemStack> getQuaffables() {
 		return getItemStacksOfType(ItemQuaffable.class);
 	}
-
+	
 	public <T> Map<Character, ItemStack> getItemStacksOfType(Class<? extends T> type) {
 		return items.entrySet().stream()
 			.filter(e -> e.getValue().getItem().getClass().isAssignableFrom(type))

@@ -24,6 +24,8 @@ public enum EntityMap {
 	APPEARANCE_CHEST(new EntityRendererRandom(1, 1, 12)),
 	APPEARANCE_FOUNTAIN(new EntityRendererFountain(13, 1, 2)),
 	APPEARANCE_CANDLESTICK(new EntityRendererCandlestick(15, 1)),
+	APPEARANCE_WEAPON_RACK(16, 1),
+	APPEARANCE_WEAPON_RACK_STOCKED(17, 1),
 	
 	APPEARANCE_ITEM(new EntityRendererItem());
 	

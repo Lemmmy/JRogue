@@ -28,6 +28,7 @@ public enum TileType {
 	TILE_ROOM_FLOOR(14, Solidity.WALK_ON),
 	TILE_ROOM_WATER(15, Solidity.WATER),
 	TILE_ROOM_PUDDLE(16, Solidity.WALK_ON),
+	TILE_ROOM_RUG(26, Solidity.WALK_ON),
 	
 	TILE_ROOM_DOOR_LOCKED(17, Solidity.SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_CLOSED(18, Solidity.SOLID, TileStateDoor.class),
