@@ -26,7 +26,7 @@ public class SpellWindow extends PopupWindow {
 		getWindow().setWidth(300);
 		getWindow().setHeight(150);
 		
-		SpellComponent spellComponent = new SpellComponent(getSkin(), player);
+		SpellComponent spellComponent = new SpellComponent(getSkin(), getWindow(), player);
 		ScrollPane spellScrollPane = new ScrollPane(spellComponent, getSkin());
 		getWindow().getContentTable().add(spellScrollPane).width(296).left().top().growY();
 	}

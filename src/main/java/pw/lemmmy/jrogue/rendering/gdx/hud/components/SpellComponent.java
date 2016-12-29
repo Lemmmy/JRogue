@@ -8,21 +8,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 
 public class SpellComponent extends Table {
+	private pw.lemmmy.jrogue.rendering.gdx.hud.windows.Window parentWindow;
 	private Player player;
 	
-	public SpellComponent(Skin skin, Player player) {
+	public SpellComponent(Skin skin, pw.lemmmy.jrogue.rendering.gdx.hud.windows.Window parentWindow, Player player) {
 		super(skin);
 		
+		this.parentWindow = parentWindow;
 		this.player = player;
 				
 		update();
 	}
 	
 	private void update() {
+		clearListeners();
 		clearChildren();
 		showSpells();
-		
 		top();
+		addKeyListener();
 	}
 		
 	private void showSpells() {
@@ -60,33 +63,31 @@ public class SpellComponent extends Table {
 			spellButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					update();
+					if (event.getButton() == Input.Buttons.LEFT) {
+						player.castSpell(spell);
+						parentWindow.hide();
+					}
 				}
 			});
 			
 			spellButton.add(spellTable).left().width(289);
 			
 			add(spellButton).left().top().width(292).padTop(1).row();
-			
-			addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					if (event.getButton() == Input.Buttons.LEFT) {
-						player.castSpell(spell);
-					}
+		});
+	}
+	
+	private void addKeyListener() {
+		parentWindow.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				if (player.getKnownSpells().containsKey(character)) {
+					player.castSpell(player.getKnownSpells().get(character));
+					parentWindow.hide();
+					return true;
 				}
-			});
-			
-			addListener(new InputListener() {
-				@Override
-				public boolean keyTyped(InputEvent event, char character) {
-					if (character == letter) {
-						player.castSpell(spell);
-					}
-					
-					return character == letter;
-				}
-			});
+				
+				return false;
+			}
 		});
 	}
 }
