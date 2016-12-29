@@ -50,7 +50,7 @@ public class Player extends LivingEntity {
 	private int energy;
 	private int maxEnergy;
 	private int chargingTurns = 0;
-	private Map<Class<? extends Spell>, Spell> knownSpells;
+	private Map<Character, Spell> knownSpells;
 	
 	private int nutrition;
 	private NutritionState lastNutritionState;
@@ -150,6 +150,10 @@ public class Player extends LivingEntity {
 		
 		maxEnergy += gain;
 		charge(gain);
+	}
+	
+	public Map<Character, Spell> getKnownSpells() {
+		return knownSpells;
 	}
 	
 	@Override
@@ -363,10 +367,10 @@ public class Player extends LivingEntity {
 		obj.put("skills", serialisedSkills);
 		
 		JSONObject serialisedSpells = new JSONObject();
-		knownSpells.forEach((spellClas, spell) -> {
+		knownSpells.forEach((spellLetter, spell) -> {
 			JSONObject serialisedSpell = new JSONObject();
 			spell.serialise(serialisedSpell);
-			serialisedSpells.put(spellClas.getName(), serialisedSpell);
+			serialisedSpells.put(spellLetter.toString() + "!" + spell.getClass().getName(), serialisedSpell);
 		});
 		obj.put("knownSpells", serialisedSpells);
 	}
@@ -413,13 +417,16 @@ public class Player extends LivingEntity {
 		});
 		
 		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
-		serialisedSpells.keySet().forEach(spellClassName -> {
+		serialisedSpells.keySet().forEach(key -> {
+			Character spellLetter = key.charAt(0);
+			String spellClassName = key.substring(2, key.length());
+			
 			try {
 				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
 				Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
 				Spell spell = spellConstructor.newInstance();
-				spell.unserialise(serialisedSpells.getJSONObject(spellClassName));
-				knownSpells.put(spellClass, spell);
+				spell.unserialise(serialisedSpells.getJSONObject(key));
+				knownSpells.put(spellLetter, spell);
 			} catch (ClassNotFoundException e) {
 				JRogue.getLogger().error("Unknown spell class {}", spellClassName);
 			} catch (NoSuchMethodException e) {

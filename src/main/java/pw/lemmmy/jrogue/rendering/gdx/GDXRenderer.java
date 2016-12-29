@@ -605,6 +605,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				.show());
 	}
 	
+	public void showSpellWindow() {
+		nextFrameDeferred
+			.add(() -> new SpellWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
+				.show());
+	}
+	
 	public OrthographicCamera getCamera() {
 		return camera;
 	}

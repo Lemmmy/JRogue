@@ -23,7 +23,7 @@ public abstract class Role {
 	
 	public abstract Map<Skill, SkillLevel> getStartingSkills();
 	
-	public abstract Map<Class<? extends Spell>, Spell> getStartingSpells();
+	public abstract Map<Character, Spell> getStartingSpells();
 	
 	public abstract void assignAttributes(Attributes attributes);
 	

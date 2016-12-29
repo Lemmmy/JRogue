@@ -66,10 +66,10 @@ public class RoleWizard extends Role {
 	}
 	
 	@Override
-	public Map<Class<? extends Spell>, Spell> getStartingSpells() {
-		Map<Class<? extends Spell>, Spell> spellMap = new HashMap<>();
+	public Map<Character, Spell> getStartingSpells() {
+		Map<Character, Spell> spellMap = new HashMap<>();
 		
-		spellMap.put(SpellStrike.class, new SpellStrike());
+		spellMap.put('a', new SpellStrike());
 		
 		return spellMap;
 	}
