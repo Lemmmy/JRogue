@@ -70,8 +70,6 @@ public class EntityChest extends Entity {
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(false));
-			
 			boolean somethingShattered = false;
 			
 			List<Map.Entry<Character, ItemStack>> shatterableItems = container.getItems().entrySet().stream()
