@@ -19,15 +19,11 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 	private boolean lit = true;
 	
 	public void light() {
-		// Hacky workaround to get rid of particle residue
-		getLevel().addEntity(new EntityCandlestick(getDungeon(),getLevel(),getX(),getY(),true));
-		getLevel().removeEntity(this);
+		lit = true;
 	}
 	
 	public void extinguish() {
-		// Hacky workaround to get rid of particle residue
-		getLevel().addEntity(new EntityCandlestick(getDungeon(),getLevel(),getX(),getY(),false));
-		getLevel().removeEntity(this);
+		lit = false;
 	}
 	
 	@Override
