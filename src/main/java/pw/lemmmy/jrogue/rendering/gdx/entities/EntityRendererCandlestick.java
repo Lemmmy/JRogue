@@ -7,14 +7,18 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
-	public EntityRendererCandlestick(int sheetX, int sheetY) {
+	public EntityRendererCandlestick(int sheetX, int sheetY, boolean isLit) {
 		super("entities.png", sheetX, sheetY);
+		lit = isLit;
 
-		ParticleEffect torchEffect = new ParticleEffect();
-		torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
+		if (isLit) {
+			ParticleEffect torchEffect = new ParticleEffect();
+			torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
 
-		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
+			effectPool = new ParticleEffectPool(torchEffect, 50, 500);
+		}
 	}
+	private boolean lit;
 	
 	@Override
 	public int getParticleXOffset(Entity entity) {
@@ -28,7 +32,7 @@ public class EntityRendererCandlestick extends EntityRendererBasic {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
-		return true;
+		return lit;
 	}
 	
 	@Override

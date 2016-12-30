@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -59,6 +60,10 @@ public class EntityStrike extends EntityProjectile {
         
                 living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
             }
+        }
+
+        if (victim instanceof EntityCandlestick) {
+            ((EntityCandlestick) victim).extinguish();
         }
     }
 

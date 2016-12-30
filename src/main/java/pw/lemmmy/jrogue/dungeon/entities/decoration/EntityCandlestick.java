@@ -10,7 +10,24 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
-	
+	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y, boolean isLit) {
+		super(dungeon, level, x, y);
+		lit = isLit;
+	}
+	private boolean lit = true;
+
+	public void light() {
+		// Hacky workaround to get rid of particle residue
+		getLevel().addEntity(new EntityCandlestick(getDungeon(),getLevel(),getX(),getY(),true));
+		getLevel().removeEntity(this);
+	}
+
+	public void extinguish() {
+		// Hacky workaround to get rid of particle residue
+		getLevel().addEntity(new EntityCandlestick(getDungeon(),getLevel(),getX(),getY(),false));
+		getLevel().removeEntity(this);
+	}
+
 	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Candlestick" : "candlestick";
@@ -18,7 +35,7 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 	
 	@Override
 	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_CANDLESTICK;
+		return lit ? EntityAppearance.APPEARANCE_CANDLESTICK : EntityAppearance.APPEARANCE_CANDLESTICK_EXTINGUISHED;
 	}
 	
 	@Override
@@ -51,6 +68,6 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 
 	@Override
 	public int getLightIntensity() {
-		return 100;
+		return lit ? 100 : 0;
 	}
 }
