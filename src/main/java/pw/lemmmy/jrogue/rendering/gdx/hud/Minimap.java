@@ -129,9 +129,22 @@ public class Minimap implements Dungeon.Listener {
 	}
 	
 	private void drawIcons() {
+		drawStairIcons();
 		drawEntityIcons();
 		drawMonsterIcons();
 		drawPlayerIcon();
+	}
+	
+	private void drawStairIcons() {
+		Arrays.stream(dungeon.getLevel().getTiles())
+			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP || t.getType() == TileType.TILE_ROOM_LADDER_UP)
+			.filter(t -> dungeon.getLevel().isTileDiscovered(t.getX(), t.getY()))
+			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
+		
+		Arrays.stream(dungeon.getLevel().getTiles())
+			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN || t.getType() == TileType.TILE_ROOM_LADDER_DOWN)
+			.filter(t -> dungeon.getLevel().isTileDiscovered(t.getX(), t.getY()))
+			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
 	}
 	
 	private void drawEntityIcons() {
