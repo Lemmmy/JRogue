@@ -102,14 +102,14 @@ public class Minimap implements Dungeon.Listener {
 	}
 	
 	private void drawMap() {
-		Arrays.stream(dungeon.getLevel().getTiles()).forEach(tile -> {
+		for (Tile tile : dungeon.getLevel().getTiles()) {
 			boolean discovered = dungeon.getLevel().isTileDiscovered(tile.getX(), tile.getY());
 			boolean visible = !dungeon.getLevel().isTileInvisible(tile.getX(), tile.getY());
 			
 			if (discovered) {
 				drawTile(tile, visible);
 			}
-		});
+		}
 	}
 	
 	private void drawTile(Tile tile, boolean isVisible) {
@@ -151,24 +151,18 @@ public class Minimap implements Dungeon.Listener {
 		dungeon.getLevel().getEntities().stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
+			.filter(e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
+						 !dungeon.getLevel().isTileInvisible(e.getX(), e.getY()))
 			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> {
-				if (!e.isStatic() && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
-					return;
-				}
-				
-				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR);
-			});
+			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
 		dungeon.getLevel().getMonsters().stream()
+			.filter(e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
+						 !dungeon.getLevel().isTileInvisible(e.getX(), e.getY()))
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!e.isStatic() && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
-					return;
-				}
-								
 				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), MONSTER_ICON_COLOUR);
 			});
 	}
