@@ -23,6 +23,7 @@ import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.hud.HUD;
+import pw.lemmmy.jrogue.rendering.gdx.hud.Minimap;
 import pw.lemmmy.jrogue.rendering.gdx.hud.windows.*;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TilePooledEffect;
@@ -50,6 +51,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private LwjglApplication application;
 	
 	private HUD hud;
+	private Minimap minimap;
 	
 	private SpriteBatch batch;
 	private ShapeRenderer lightBatch;
@@ -120,6 +122,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		hud.init();
 		dungeon.addListener(hud);
 		
+		minimap = new Minimap(settings, dungeon);
+		minimap.init();
+		dungeon.addListener(minimap);
+		
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
 		inputMultiplexer.addProcessor(hud.getStage());
@@ -127,6 +133,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		onLevelChange(dungeon.getLevel());
 		hud.onLevelChange(dungeon.getLevel());
+		minimap.onLevelChange(dungeon.getLevel());
 		dungeon.start();
 	}
 	
@@ -293,6 +300,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera.viewportHeight = Math.round(zoom * height / width);
 		
 		hud.updateViewport(width, height);
+		
+		minimap.resize();
 	}
 	
 	@Override
@@ -335,6 +344,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		drawLights();
 		
 		hud.updateAndDraw(delta);
+		
+		minimap.render();
 	}
 	
 	private void drawMap() {
