@@ -17,7 +17,6 @@ import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
@@ -182,8 +181,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
 				
 				effect.setPosition(
-					(x * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(),
-					(y * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset()
+					x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(),
+					y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset()
 				);
 				
 				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
@@ -227,8 +226,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
 		
 		effect.setPosition(
-			(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
-			(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+			entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
+			entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
 		);
 		
 		boolean over = renderer.shouldDrawParticlesOver(dungeon, entity, entity.getX(), entity.getY());
@@ -261,8 +260,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				}
 				
 				e.getPooledEffect().setPosition(
-					(entity.getX() * TileMap.TILE_WIDTH) + renderer.getParticleXOffset(entity),
-					(entity.getY() * TileMap.TILE_HEIGHT) + renderer.getParticleYOffset(entity)
+					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
+					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
 				);
 			}
 		}
@@ -309,7 +308,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		float delta = Gdx.graphics.getDeltaTime();
 		
 		if (dungeon.getPlayer() != null) {
-			camera.position.x = (dungeon.getPlayer().getX() * TileMap.TILE_WIDTH) + (TileMap.TILE_WIDTH / 2);
+			camera.position.x = dungeon.getPlayer().getX() * TileMap.TILE_WIDTH + TileMap.TILE_WIDTH / 2;
 			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
 		}
 		
