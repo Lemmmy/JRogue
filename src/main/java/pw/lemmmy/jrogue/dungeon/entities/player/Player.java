@@ -1159,12 +1159,12 @@ public class Player extends LivingEntity {
 	
 	private int getStrengthHitBonus() {
 		int strength = getAttributes().getAttribute(Attribute.STRENGTH);
-		return (int) Math.floor(strength / 5) - 2;
+		return (int) Math.floor(strength / 5);
 	}
 	
 	private int getDexterityHitBonus() {
 		int dexterity = getAttributes().getAttribute(Attribute.DEXTERITY);
-		return dexterity < 15 ? (int) Math.floor(dexterity / 5) - 3 : dexterity - 15;
+		return dexterity < 15 ? (int) Math.floor(dexterity / 5) - 2: dexterity - 15;
 	}
 	
 	private int getWeaponSkillHitBonus(SkillLevel skillLevel) {
@@ -1174,16 +1174,6 @@ public class Player extends LivingEntity {
 			case EXPERT:
 			case MASTER:	return 3;
 			default:		return 0;
-		}
-	}
-	
-	private int getTwoHandedHitBonus(SkillLevel skillLevel) {
-		switch (skillLevel) {
-			case UNSKILLED:	return -9;
-			case ADVANCED:	return -5;
-			case EXPERT:
-			case MASTER:	return -3;
-			default:		return -7;
 		}
 	}
 	

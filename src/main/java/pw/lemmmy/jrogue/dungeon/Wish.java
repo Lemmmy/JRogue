@@ -29,12 +29,14 @@ import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Wish {
+	private static final Pattern wishDRoll = Pattern.compile("^roll (\\d+)?d(\\d+)(?:\\+(\\d+))?");
 	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
 	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 	private static final Pattern wishSword = Pattern
@@ -113,6 +115,31 @@ public class Wish {
 		} else if (wishItems(dungeon, player, wish)) {
 			dungeon.turn();
 		} else {
+			Matcher wishDRollMatcher = wishDRoll.matcher(wish);
+			
+			if (wishDRollMatcher.find()) {
+				String a = wishDRollMatcher.group(1);
+				
+				if (a == null) {
+					a = "1";
+				}
+				
+				String x = wishDRollMatcher.group(2);
+				
+				String b = wishDRollMatcher.group(3);
+				
+				if (b == null) {
+					b = "0";
+				}
+				
+				int ia = Integer.parseInt(a);
+				int ix = Integer.parseInt(x);
+				int ib = Integer.parseInt(b);
+				
+				int roll = RandomUtils.roll(ia, ix, ib);
+				dungeon.greenYou("roll a %,dd%,d+%,d. Result: %,d.", ia, ix, ib, roll);
+			}
+			
 			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
 			
 			if (wishGoldDroppedMatcher.find()) {
