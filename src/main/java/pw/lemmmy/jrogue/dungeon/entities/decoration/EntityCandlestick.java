@@ -26,6 +26,10 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 		lit = false;
 	}
 	
+	public boolean isLit() {
+		return lit;
+	}
+	
 	@Override
 	public String getName(boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Candlestick" : "candlestick";

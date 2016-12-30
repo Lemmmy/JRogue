@@ -5,20 +5,17 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
-	public EntityRendererCandlestick(int sheetX, int sheetY, boolean isLit) {
+	public EntityRendererCandlestick(int sheetX, int sheetY) {
 		super("entities.png", sheetX, sheetY);
-		lit = isLit;
 
-		if (isLit) {
-			ParticleEffect torchEffect = new ParticleEffect();
-			torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
+		ParticleEffect torchEffect = new ParticleEffect();
+		torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
 
-			effectPool = new ParticleEffectPool(torchEffect, 50, 500);
-		}
+		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
 	}
-	private boolean lit;
 	
 	@Override
 	public int getParticleXOffset(Entity entity) {
@@ -32,7 +29,11 @@ public class EntityRendererCandlestick extends EntityRendererBasic {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
-		return lit;
+		if (entity instanceof EntityCandlestick) {
+			return ((EntityCandlestick) entity).isLit();
+		} else {
+			return false;
+		}
 	}
 	
 	@Override
