@@ -138,6 +138,19 @@ public class JRogue {
 			if (displaySection.get("hudScale") != null) {
 				settings.setHUDScale(Float.parseFloat(displaySection.get("hudScale")));
 			}
+			
+			if (displaySection.get("minimapTileWidth") != null) {
+				settings.setMinimapTileWidth(Integer.parseInt(displaySection.get("minimapTileWidth")));
+			}
+			
+			if (displaySection.get("minimapTileHeight") != null) {
+				settings.setMinimapTileHeight(Integer.parseInt(displaySection.get("minimapTileHeight")));
+			}
+			
+			if (displaySection.get("minimapTileScale") != null) {
+				settings.setMinimapTileWidth(Integer.parseInt(displaySection.get("minimapTileScale")));
+				settings.setMinimapTileHeight(Integer.parseInt(displaySection.get("minimapTileScale")));
+			}
 		}
 		
 		if (ini.get("Game") != null) {

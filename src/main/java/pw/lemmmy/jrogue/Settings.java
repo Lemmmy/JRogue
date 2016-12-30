@@ -8,6 +8,8 @@ public class Settings {
 	
 	private int logSize = 7;
 	private float hudScale = 1.0f;
+	private int minimapTileWidth = 2;
+	private int minimapTileHeight = 2;
 	
 	private boolean autosave = true;
 	
@@ -67,5 +69,21 @@ public class Settings {
 	
 	public void setAutosave(boolean autosave) {
 		this.autosave = autosave;
+	}
+	
+	public int getMinimapTileWidth() {
+		return minimapTileWidth;
+	}
+	
+	public void setMinimapTileWidth(int minimapTileWidth) {
+		this.minimapTileWidth = minimapTileWidth;
+	}
+	
+	public int getMinimapTileHeight() {
+		return minimapTileHeight;
+	}
+	
+	public void setMinimapTileHeight(int minimapTileHeight) {
+		this.minimapTileHeight = minimapTileHeight;
 	}
 }
