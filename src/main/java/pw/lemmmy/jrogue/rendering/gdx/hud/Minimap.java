@@ -11,6 +11,7 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -24,7 +25,8 @@ public class Minimap implements Dungeon.Listener {
 	private static final Color NONSOLID_COLOUR = new Color(0xaaaaaacc);
 	private static final Color DOOR_COLOUR = new Color(0xab5e20cc);
 	
-	private static final Color PLAYER_ICON_COLOUR = new Color(0x4cd508ff);
+	private static final Color PLAYER_ICON_COLOUR = new Color(0xffffffff);
+	private static final Color ENTITY_ICON_COLOUR = new Color(0xffd200ff);
 	private static final Color MONSTER_ICON_COLOUR = new Color(0xd50808ff);
 	
 	private static final float INVISIBLE_ALPHA = -0.15f;
@@ -127,18 +129,23 @@ public class Minimap implements Dungeon.Listener {
 	}
 	
 	private void drawIcons() {
+		drawEntityIcons();
 		drawMonsterIcons();
 		drawPlayerIcon();
 	}
 	
-	private void drawPlayerIcon() {
-		Player player = dungeon.getPlayer();
-		
-		if (player == null || !player.isAlive()) {
-			return;
-		}
-		
-		drawIcon(iconPoint, player.getX(), player.getY(), PLAYER_ICON_COLOUR);
+	private void drawEntityIcons() {
+		dungeon.getLevel().getEntities().stream()
+			.filter(e -> !(e instanceof Player))
+			.filter(e -> !(e instanceof Monster))
+			.sorted(Comparator.comparingInt(Entity::getDepth))
+			.forEach(e -> {
+				if (!e.isStatic() && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
+					return;
+				}
+				
+				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR);
+			});
 	}
 	
 	private void drawMonsterIcons() {
@@ -151,6 +158,16 @@ public class Minimap implements Dungeon.Listener {
 								
 				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), MONSTER_ICON_COLOUR);
 			});
+	}
+	
+	private void drawPlayerIcon() {
+		Player player = dungeon.getPlayer();
+		
+		if (player == null || !player.isAlive()) {
+			return;
+		}
+		
+		drawIcon(iconPoint, player.getX(), player.getY(), PLAYER_ICON_COLOUR);
 	}
 	
 	private void drawIcon(TextureRegion icon, int x, int y, Color colour) {
