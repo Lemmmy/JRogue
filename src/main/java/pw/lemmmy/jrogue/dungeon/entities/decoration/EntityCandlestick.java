@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 
 import java.awt.*;
 
-public class EntityCandlestick extends Entity implements LightEmitter {
+public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private boolean lit = true;
 
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
@@ -18,20 +18,24 @@ public class EntityCandlestick extends Entity implements LightEmitter {
 		lit = isLit;
 	}
 	
+	@Override
 	public void light() {
 		lit = true;
 	}
-
+	
+	@Override
 	public void extinguish() {
 		lit = false;
 	}
-
-	public void setLit(boolean isLit) {
-		lit = isLit;
-	}
 	
+	@Override
 	public boolean isLit() {
 		return lit;
+	}
+	
+	@Override
+	public void setLit(boolean lit) {
+		this.lit = lit;
 	}
 	
 	@Override
