@@ -195,7 +195,7 @@ public class Dungeon implements Messenger {
 			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 			
-			level.buildLight();
+			level.buildLight(true);
 			level.updateSight(player);
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);
@@ -424,8 +424,8 @@ public class Dungeon implements Messenger {
 		
 		level.processEntityQueues();
 		
-		level.buildLight();
 		level.updateSight(player);
+		level.buildLight(false);
 		
 		listeners.forEach(l -> l.onTurn(turn));
 	}
@@ -435,7 +435,7 @@ public class Dungeon implements Messenger {
 		
 		level.getEntities().stream()
 			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-				(e instanceof LivingEntity && ((LivingEntity) e).isAlive()) &&
+				e instanceof LivingEntity && ((LivingEntity) e).isAlive() &&
 				!(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
 				EntityTurnBased tbe = (EntityTurnBased) e;
@@ -459,7 +459,7 @@ public class Dungeon implements Messenger {
 		}
 		
 		if (
-			level.getHostileMonsters().size() < Math.abs((level.getDepth() * 2) + 10) &&
+			level.getHostileMonsters().size() < Math.abs(level.getDepth() * 2 + 10) &&
 				--monsterSpawnCounter <= 0
 			) {
 			level.spawnNewMonsters();
