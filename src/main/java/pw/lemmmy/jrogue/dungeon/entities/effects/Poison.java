@@ -19,12 +19,16 @@ public class Poison extends StatusEffect {
 		if (getEntity() instanceof LivingEntity) {
 			LivingEntity livingEntity = (LivingEntity) getEntity();
 			
-			livingEntity.damage(DamageSource.POISON, 1, null, false);
+			livingEntity.damage(getDamageSource(), 1, null, false);
 			
 			if (getTurnsPassed() >= 15) {
-				livingEntity.kill(DamageSource.POISON, 1, null, false);
+				livingEntity.kill(getDamageSource(), 1, null, false);
 			}
 		}
+	}
+	
+	public DamageSource getDamageSource() {
+		return DamageSource.POISON;
 	}
 	
 	@Override
