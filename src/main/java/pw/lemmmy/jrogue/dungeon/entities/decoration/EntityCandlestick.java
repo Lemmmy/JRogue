@@ -7,6 +7,8 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import java.awt.*;
 
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
+	private static final int LIGHT_INTENSITY = 60;
+	
 	private boolean lit = true;
 
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
@@ -78,6 +80,6 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	
 	@Override
 	public int getLightIntensity() {
-		return lit ? 100 : 0;
+		return lit ? LIGHT_INTENSITY : 0;
 	}
 }
