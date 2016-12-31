@@ -1,9 +1,13 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 public interface Extinguishable {
-	void light();
+	default void light() {
+		setLit(true);
+	}
 	
-	void extinguish();
+	default void extinguish() {
+		setLit(false);
+	}
 	
 	boolean isLit();
 	

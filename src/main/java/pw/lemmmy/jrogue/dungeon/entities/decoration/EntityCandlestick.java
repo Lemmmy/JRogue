@@ -21,16 +21,6 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	}
 	
 	@Override
-	public void light() {
-		lit = true;
-	}
-	
-	@Override
-	public void extinguish() {
-		lit = false;
-	}
-	
-	@Override
 	public boolean isLit() {
 		return lit;
 	}
