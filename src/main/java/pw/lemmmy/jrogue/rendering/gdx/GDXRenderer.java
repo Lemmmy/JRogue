@@ -443,12 +443,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 			
-			if (!effect.getRenderer().shouldDrawParticles(
+			boolean shouldDrawParticles = effect.getRenderer().shouldDrawParticles(
 				dungeon,
 				effect.getEntity(),
 				effect.getEntity().getX(),
 				effect.getEntity().getY()
-			)) {
+			);
+			
+			if (!shouldDrawParticles) {
 				effect.getPooledEffect().free();
 				iterator.remove();
 				return;
