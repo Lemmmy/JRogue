@@ -8,7 +8,11 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-public class EntityStrike extends EntityProjectile {
+import java.awt.*;
+
+public class EntityStrike extends EntityProjectile implements LightEmitter {
+    private static final Color LIGHT_COLOUR = new Color(0x75e5f6);
+    
     public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
         
@@ -71,5 +75,15 @@ public class EntityStrike extends EntityProjectile {
     @Override
     protected void onWalk(LivingEntity walker, boolean isPlayer) {
 
+    }
+    
+    @Override
+    public Color getLightColour() {
+        return LIGHT_COLOUR;
+    }
+    
+    @Override
+    public int getLightIntensity() {
+        return 75;
     }
 }
