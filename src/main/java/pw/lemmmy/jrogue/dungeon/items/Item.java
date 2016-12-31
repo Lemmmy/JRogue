@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;

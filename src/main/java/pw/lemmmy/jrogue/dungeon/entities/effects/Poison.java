@@ -11,6 +11,14 @@ public class Poison extends StatusEffect {
 	public Poison(int duration) {
 		super(duration);
 	}
+
+	public int getDamageLimit() {
+		return 0;
+	}
+
+	public int getHealthLimit() {
+		return 0;
+	}
 	
 	@Override
 	public void turn() {
@@ -18,10 +26,15 @@ public class Poison extends StatusEffect {
 		
 		if (getEntity() instanceof LivingEntity) {
 			LivingEntity livingEntity = (LivingEntity) getEntity();
-			
-			livingEntity.damage(getDamageSource(), 1, null, false);
-			
-			if (getTurnsPassed() >= 15) {
+
+			if ((getDamageLimit() == 0) || (livingEntity.getHealth() > livingEntity.getMaxHealth() - getDamageLimit())) {
+				if (getHealthLimit() < livingEntity.getHealth()) {
+					livingEntity.damage(getDamageSource(), 1, null, false);
+				}
+			}
+
+			if (getHealthLimit() >= livingEntity.getMaxHealth()) {
+				// The victim is far too weak to take normal damage and is killed instantaneously
 				livingEntity.kill(getDamageSource(), 1, null, false);
 			}
 		}
