@@ -175,6 +175,8 @@ public class Level {
 		
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
 		
+		serialiseLights().ifPresent(bytes -> obj.put("lights", new String(Base64.getEncoder().encode(bytes))));
+		
 		serialiseBooleanArray(visibleTiles)
 			.ifPresent(bytes -> obj.put("visibleTiles", new String(Base64.getEncoder().encode(bytes))));
 		
@@ -226,6 +228,32 @@ public class Level {
 		return Optional.empty();
 	}
 	
+	private Optional<byte[]> serialiseLights() {
+		try (
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(bos)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					dos.writeInt(t.getLightColour().getRGB());
+					dos.writeByte(t.getLightIntensity());
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error saving level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+			
+			dos.flush();
+			
+			return Optional.of(bos.toByteArray());
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error saving level:");
+			JRogue.getLogger().error(e);
+		}
+		
+		return Optional.empty();
+	}
+	
 	private Optional<byte[]> serialiseBooleanArray(Boolean[] arr) {
 		try (
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -260,6 +288,8 @@ public class Level {
 			
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 			
+			unserialiseLights(Base64.getDecoder().decode(obj.getString("lights")));
+			
 			visibleTiles = unserialiseBooleanArray(
 				Base64.getDecoder().decode(obj.getString("visibleTiles")),
 				width * height
@@ -291,6 +321,28 @@ public class Level {
 					short id = dis.readShort();
 					TileType type = TileType.fromID(id);
 					t.setType(type);
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error loading level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+	}
+	
+	private void unserialiseLights(byte[] bytes) {
+		try (
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			DataInputStream dis = new DataInputStream(bis)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					int colourInt = dis.readInt();
+					int intensity = dis.readByte();
+					t.setLightColour(new Color(colourInt));
+					t.setLightIntensity(intensity);
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error loading level:");
 					JRogue.getLogger().error(e);
