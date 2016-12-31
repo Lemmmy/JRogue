@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
@@ -29,11 +30,7 @@ public class EntityRendererCandlestick extends EntityRendererBasic {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
-		if (entity instanceof EntityCandlestick) {
-			return ((EntityCandlestick) entity).isLit();
-		} else {
-			return false;
-		}
+		return entity.getAppearance() == EntityAppearance.APPEARANCE_CANDLESTICK;
 	}
 	
 	@Override
