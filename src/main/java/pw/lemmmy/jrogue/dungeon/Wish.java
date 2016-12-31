@@ -21,6 +21,7 @@ import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemThermometer;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
@@ -240,6 +241,8 @@ public class Wish {
 			potion.setEmpty(false);
 			potion.setPotency(potency);
 			item = potion;
+		} else if (wish.equalsIgnoreCase("thermometer")) {
+			item = new ItemThermometer();
 		}
 		
 		if (item != null && player.getContainer().isPresent()) {
