@@ -18,12 +18,12 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
         
         setMovementPoints(getMovementSpeed());
     }
-
+	
     @Override
     public String getName(boolean requiresCapitalisation) {
         return requiresCapitalisation ? "Strike" : "strike";
     }
-
+	
     @Override
     public EntityAppearance getAppearance() {
         return EntityAppearance.APPEARANCE_STRIKE;
@@ -52,22 +52,26 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
             LivingEntity living = (LivingEntity) victim;
             Entity source = getSource();
             LivingEntity livingSource = source instanceof LivingEntity ? (LivingEntity) source : null;
-    
+			
             int roll = RandomUtils.roll(20);
-    
+			
             if (roll < 10 + living.getArmourClass()) {
                 int damage = RandomUtils.roll(2, 12);
-        
+				
                 living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
             }
         }
+		
+        if (victim instanceof Extinguishable) {
+            ((Extinguishable) victim).extinguish();
+        }
     }
-
+	
     @Override
     protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 
     }
-
+	
     @Override
     protected void onWalk(LivingEntity walker, boolean isPlayer) {
 
