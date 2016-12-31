@@ -522,7 +522,7 @@ public class Level {
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
 		List<Tile> validTiles = Arrays.stream(tiles)
 			.filter(t ->
-				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.sorted(Comparator.comparingInt(a -> Utils.distance(
@@ -537,7 +537,7 @@ public class Level {
 	private Point getMonsterSpawnPoint() {
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
 			.filter(t ->
-				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
@@ -551,7 +551,7 @@ public class Level {
 		
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
 			.filter(t ->
-				(t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile()) ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
@@ -666,7 +666,7 @@ public class Level {
 	}
 	
 	public boolean isTileInvisible(int x, int y) {
-		return (x < 0 || y < 0 || x >= width || y >= height) || !visibleTiles[width * y + x];
+		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[width * y + x];
 	}
 	
 	public void seeTile(int x, int y) {
@@ -711,7 +711,7 @@ public class Level {
 				
 				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
 					type.getSolidity() == TileType.Solidity.SOLID ||
-					(!(dx == player.getX() && dy == player.getY()) && type.isSemiTransparent()) ||
+					!(dx == player.getX() && dy == player.getY()) && type.isSemiTransparent() ||
 					breakNext) {
 					break;
 				}
