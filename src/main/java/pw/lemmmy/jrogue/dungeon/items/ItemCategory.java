@@ -3,13 +3,14 @@ package pw.lemmmy.jrogue.dungeon.items;
 public enum ItemCategory {
 	ARMOUR,
 	WEAPON,
+	PROJECTILE,
 	COMESTIBLE,
 	QUAFFABLE,
 	POTION,
-	SPELLBOOKS,
-	SCROLLS,
-	WANDS,
-	RINGS,
+	SPELLBOOK,
+	SCROLL,
+	WAND,
+	RING,
 	GEM,
 	MISCELLANEOUS
 }

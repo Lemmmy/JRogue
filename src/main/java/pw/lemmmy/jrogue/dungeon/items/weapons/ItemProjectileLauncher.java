@@ -1,37 +1,19 @@
 package pw.lemmmy.jrogue.dungeon.items.weapons;
 
 import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityProjectile;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 
-import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Optional;
 
-public abstract class ItemProjectileEmitter<T extends EntityProjectile> extends ItemWeapon {
-    private final Class<? extends T> projectileType;
-
-    public ItemProjectileEmitter(Class<? extends T> projectileType) {
-        this.projectileType = projectileType;
-    }
-
-    protected Optional<T> createProjectile(Entity emitter, int x, int y) {
-        try {
-            Constructor<? extends T> c = projectileType.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-            return Optional.of(
-                    c.newInstance(emitter.getDungeon(), emitter.getLevel(), emitter.getX() + x, emitter.getY() + y));
-        } catch (Exception e) {
-            JRogue.getLogger().error("Couldn't create projectile entity", e);
-        }
-
-        return Optional.empty();
-    }
-
-    @Override
+public abstract class ItemProjectileLauncher extends ItemWeapon {
+	@Override
     public void hit(LivingEntity attacker, LivingEntity victim) {
 
     }
@@ -42,20 +24,33 @@ public abstract class ItemProjectileEmitter<T extends EntityProjectile> extends 
     }
 
     @Override
-    public void fire(LivingEntity attacker, LivingEntity victim, int dx, int dy) {
-        Optional<T> projectileOpt = createProjectile(attacker, 0, 0);
+    public void fire(LivingEntity attacker, LivingEntity victim, ItemProjectile projectileItem, int dx, int dy) {
+        Optional<? extends EntityProjectile> projectileOpt = projectileItem.createProjectile(attacker, 0, 0);
 
         if (!projectileOpt.isPresent()) {
-            JRogue.getLogger().error("Failed to fire projectile!!");
+            JRogue.getLogger().error("Failed to fire projectile!");
             return;
         }
 
         EntityProjectile projectile = projectileOpt.get();
+        projectile.setTravelRange(getTravelRange(attacker));
         projectile.update();
         attacker.getLevel().addEntity(projectile);
     }
-
-    @Override
+	
+	private int getTravelRange(LivingEntity attacker) {
+		int strength = 8;
+		
+		if (attacker instanceof Player) {
+			strength = ((Player) attacker).getAttributes().getAttribute(Attribute.STRENGTH);
+		}
+		
+		// TODO: check if this is appropriate launcher
+		
+		return (int) Math.floor(strength / 2 + 2);
+	}
+	
+	@Override
     public boolean isMelee() {
         return false;
     }
@@ -85,4 +80,6 @@ public abstract class ItemProjectileEmitter<T extends EntityProjectile> extends 
 
     @Override
     public abstract ItemAppearance getAppearance();
+    
+    public abstract List<Class<? extends ItemProjectile>> getValidProjectiles();
 }

@@ -25,6 +25,9 @@ public enum ItemMap {
 	APPEARANCE_SHORTSWORD(new ItemRendererSword(0, 2)),
 	APPEARANCE_LONGSWORD(new ItemRendererSword(9, 2)),
 	
+	APPEARANCE_BOW(1, 3),
+	APPEARANCE_ARROW(4, 0),
+	
 	APPEARANCE_GOLD(new ItemRendererGold()),
 	
 	APPEARANCE_GEM_WHITE(11, 7),
