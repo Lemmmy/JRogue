@@ -22,6 +22,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
 
     public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
+    
+        setMovementPoints(getMovementSpeed());
     }
     
     public int getDeltaX() {

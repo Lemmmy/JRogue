@@ -50,7 +50,7 @@ public class EntityArrow extends EntityProjectile {
                     living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(false));
                 }
 
-                living.damage(DamageSource.ARROW, 1, (LivingEntity)source, source instanceof Player);
+                living.damage(DamageSource.ARROW, 1, (LivingEntity) source, source instanceof Player);
 
                 if (!canPenetrate) {
                     getLevel().removeEntity(this);
