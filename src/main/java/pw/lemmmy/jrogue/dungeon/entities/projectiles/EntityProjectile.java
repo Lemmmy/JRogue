@@ -74,7 +74,9 @@ public abstract class EntityProjectile extends EntityTurnBased {
             setPosition(x, y);
             distanceTravelled++;
 
-            getLevel().getEntitiesAt(x, y).forEach(this::onHitEntity);
+            getLevel().getEntitiesAt(x, y).stream()
+                .filter(e -> !(e == this))
+                .forEach(this::onHitEntity);
 
             if (distanceTravelled > range) {
                 getLevel().removeEntity(this);
