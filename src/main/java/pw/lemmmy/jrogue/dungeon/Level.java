@@ -456,6 +456,7 @@ public class Level {
 	}
 	
 	public boolean removeEntity(Entity entity) {
+		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
 	}
 	

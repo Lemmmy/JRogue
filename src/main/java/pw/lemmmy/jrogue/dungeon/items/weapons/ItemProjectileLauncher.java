@@ -24,20 +24,23 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
     }
 
     @Override
-    public void fire(LivingEntity attacker, ItemProjectile projectileItem, int dx, int dy) {
+    public boolean fire(LivingEntity attacker, ItemProjectile projectileItem, int dx, int dy) {
         Optional<? extends EntityProjectile> projectileOpt = projectileItem.createProjectile(attacker, 0, 0);
 
         if (!projectileOpt.isPresent()) {
             JRogue.getLogger().error("Failed to fire projectile!");
-            return;
+            return false;
         }
 
         EntityProjectile projectile = projectileOpt.get();
         projectile.setSource(attacker);
         projectile.setTravelRange(getTravelRange(attacker, projectileItem));
         projectile.setTravelDirection(dx, dy);
+        projectile.setOriginalItem(projectileItem);
         projectile.update();
         attacker.getLevel().addEntity(projectile);
+        
+        return true;
     }
 	
 	private int getTravelRange(LivingEntity attacker, ItemProjectile projectileItem) {

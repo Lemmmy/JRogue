@@ -30,7 +30,9 @@ public class ItemStaff extends ItemWeaponMelee {
 	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
 	
 	@Override
-	public void fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {}
+	public boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {
+		return false;
+	}
 	
 	@Override
 	public boolean isMelee() {

@@ -1103,7 +1103,15 @@ public class Player extends LivingEntity {
 						getRightHand().getStack().getItem() instanceof ItemProjectileLauncher
 					) {
 						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getStack().getItem();
-						launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
+						boolean fired = launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
+						
+						if (fired) {
+							if (stack.getCount() <= 1) {
+								inv.remove(ce.getLetter());
+							} else {
+								stack.subtractCount(1);
+							}
+						}
 					} else {
 						// TODO: regular item throwing
 					}

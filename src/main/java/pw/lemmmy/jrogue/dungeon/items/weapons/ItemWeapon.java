@@ -12,7 +12,7 @@ public abstract class ItemWeapon extends Item implements Wieldable {
 	
 	public abstract void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy);
 	
-	public abstract void fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy);
+	public abstract boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy);
 	
 	public abstract boolean isMelee();
 	
