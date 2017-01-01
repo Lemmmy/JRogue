@@ -24,7 +24,7 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
     }
 
     @Override
-    public void fire(LivingEntity attacker, LivingEntity victim, ItemProjectile projectileItem, int dx, int dy) {
+    public void fire(LivingEntity attacker, ItemProjectile projectileItem, int dx, int dy) {
         Optional<? extends EntityProjectile> projectileOpt = projectileItem.createProjectile(attacker, 0, 0);
 
         if (!projectileOpt.isPresent()) {
@@ -33,21 +33,23 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
         }
 
         EntityProjectile projectile = projectileOpt.get();
-        projectile.setTravelRange(getTravelRange(attacker));
+        projectile.setTravelRange(getTravelRange(attacker, projectileItem));
         projectile.update();
         attacker.getLevel().addEntity(projectile);
     }
 	
-	private int getTravelRange(LivingEntity attacker) {
+	private int getTravelRange(LivingEntity attacker, ItemProjectile projectileItem) {
 		int strength = 8;
 		
 		if (attacker instanceof Player) {
 			strength = ((Player) attacker).getAttributes().getAttribute(Attribute.STRENGTH);
 		}
 		
-		// TODO: check if this is appropriate launcher
-		
-		return (int) Math.floor(strength / 2 + 2);
+		if (getValidProjectiles().contains(projectileItem.getClass())) {
+			return (int) Math.floor(strength / 2 + 2);
+		} else {
+			return (int) Math.floor(strength / 5.5);
+		}
 	}
 	
 	@Override

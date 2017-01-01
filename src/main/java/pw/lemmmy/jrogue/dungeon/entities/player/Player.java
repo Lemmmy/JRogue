@@ -21,9 +21,11 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemProjectileLauncher;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
@@ -1071,6 +1073,50 @@ public class Player extends LivingEntity {
 			case NO_CONTAINER:
 			case NO_ITEM:		getDungeon().yellowYou("have nothing to wield!"); break;
 			default:			break;
+		}
+	}
+	
+	public void fire() {
+		// TODO: quiver
+	}
+	
+	public void throwItem() {
+		InventoryUseResult result = useInventoryItem("Throw what?", is -> true, (c, ce, inv) -> {
+			ItemStack stack = ce.getStack();
+			Item item = stack.getItem();
+			
+			getDungeon().prompt(new Prompt("In what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+				@Override
+				public void onResponse(char response) {
+					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+						getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
+						return;
+					}
+					
+					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+					int dx = d[0];
+					int dy = d[1];
+					
+					if (
+						item instanceof ItemProjectile &&
+						getRightHand() != null &&
+						getRightHand().getStack().getItem() instanceof ItemProjectileLauncher
+					) {
+						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getStack().getItem();
+						launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
+					} else {
+						// TODO: regular item throwing
+					}
+					
+					getDungeon().turn();
+				}
+			}));
+		});
+		
+		switch (result) {
+			case NO_CONTAINER:	getDungeon().yellowYou("can't hold anything!"); break;
+			case NO_ITEM:		getDungeon().yellowYou("don't have any items to throw!"); break;
+			default: 			break;
 		}
 	}
 	
