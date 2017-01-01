@@ -34,6 +34,7 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
 
         EntityProjectile projectile = projectileOpt.get();
         projectile.setTravelRange(getTravelRange(attacker, projectileItem));
+        projectile.setTravelDirection(dx, dy);
         projectile.update();
         attacker.getLevel().addEntity(projectile);
     }

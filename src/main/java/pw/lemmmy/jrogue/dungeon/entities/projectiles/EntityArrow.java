@@ -24,7 +24,12 @@ public class EntityArrow extends EntityProjectile {
     public EntityAppearance getAppearance() {
         return EntityAppearance.APPEARANCE_ARROW;
     }
-
+    
+    @Override
+    public int getMovementSpeed() {
+        return Dungeon.NORMAL_SPEED * 3;
+    }
+    
     public void setCanPenetrate(boolean penetrate) {
         canPenetrate = penetrate;
     }
@@ -38,11 +43,11 @@ public class EntityArrow extends EntityProjectile {
                 LivingEntity living = (LivingEntity) victim;
 
                 if (source instanceof Player) {
-                    source.getDungeon().Your("arrow hits the %s.", living.getName(false));
+                    source.getDungeon().Your("arrow hits the %s!", living.getName(false));
                 }
 
                 if (living instanceof Player) {
-                    living.getDungeon().You("You get hit by an arrow from %s." + source.getName(false));
+                    living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(false));
                 }
 
                 living.damage(DamageSource.ARROW, 1, (LivingEntity)source, source instanceof Player);
