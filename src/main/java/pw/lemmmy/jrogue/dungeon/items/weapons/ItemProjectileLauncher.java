@@ -33,6 +33,7 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
         }
 
         EntityProjectile projectile = projectileOpt.get();
+        projectile.setSource(attacker);
         projectile.setTravelRange(getTravelRange(attacker, projectileItem));
         projectile.setTravelDirection(dx, dy);
         projectile.update();
