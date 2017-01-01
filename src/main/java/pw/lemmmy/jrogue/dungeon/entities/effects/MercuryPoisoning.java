@@ -25,7 +25,7 @@ public class MercuryPoisoning extends Poison {
 
 	@Override
 	public Severity getSeverity() {
-		return Severity.MINOR;
+		return Severity.MAJOR;
 	}
 	
 	@Override
