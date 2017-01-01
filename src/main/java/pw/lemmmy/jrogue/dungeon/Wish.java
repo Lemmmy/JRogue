@@ -79,23 +79,6 @@ public class Wish {
 				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("arrow")) {
-			int dx = 1;
-			int dy = 0;
-			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
-			arrow.setTravelDirection(dx, dy);
-			arrow.setTravelRange(3);
-			arrow.setSource(player);
-			dungeon.getLevel().addEntity(arrow);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("strike")) {
-			int dx = 1;
-			int dy = 0;
-			EntityStrike strike = new EntityStrike(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
-			strike.setTravelDirection(dx, dy);
-			strike.setTravelRange(3);
-			dungeon.getLevel().addEntity(strike);
-			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
 			dungeon.getLevel().addEntity(
 				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
