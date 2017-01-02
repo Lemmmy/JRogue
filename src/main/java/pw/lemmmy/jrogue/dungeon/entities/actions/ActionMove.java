@@ -35,7 +35,7 @@ public class ActionMove extends EntityAction {
 					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
 					unwalkableEnt.getLastY() != unwalkableEnt.getY()
 				) {
-					msg.The("%s beats you to it!", entity.getName(false));
+					msg.The("%s beats you to it!", unwalkableEnt.getName(false));
 				}
 			}
 			
