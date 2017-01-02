@@ -57,7 +57,7 @@ public class SpellComponent extends Table {
 				"windowStyleMarkup"
 			)).right().padLeft(6);
 			spellTable.add(new Label(
-				String.format("[P_GREY_2]%.1f%% fail", spell.getFailChance(player)),
+				String.format("[P_GREY_2]%.1f%% success", spell.getSuccessChance(player)),
 				getSkin(),
 				"windowStyleMarkup"
 			)).right().padLeft(6);

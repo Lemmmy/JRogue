@@ -80,7 +80,7 @@ public abstract class Spell implements Serialisable {
 		return Math.max(0, Math.min(20, penalty));
 	}
 	
-	public float getFailChance(Player player) {
+	public float getSuccessChance(Player player) {
 		// TODO: Ensure this is balanced
 		
 		Role role = player.getRole();
