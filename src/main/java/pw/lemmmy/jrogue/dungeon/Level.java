@@ -139,7 +139,7 @@ public class Level {
 				continue;
 			}
 			
-			buildLight();
+			buildLight(true);
 			
 			gotLevel = true;
 		} while (!gotLevel);
@@ -174,6 +174,8 @@ public class Level {
 		obj.put("spawnY", getSpawnY());
 		
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
+		
+		serialiseLights().ifPresent(bytes -> obj.put("lights", new String(Base64.getEncoder().encode(bytes))));
 		
 		serialiseBooleanArray(visibleTiles)
 			.ifPresent(bytes -> obj.put("visibleTiles", new String(Base64.getEncoder().encode(bytes))));
@@ -226,6 +228,32 @@ public class Level {
 		return Optional.empty();
 	}
 	
+	private Optional<byte[]> serialiseLights() {
+		try (
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(bos)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					dos.writeInt(t.getLightColour().getRGB());
+					dos.writeByte(t.getLightIntensity());
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error saving level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+			
+			dos.flush();
+			
+			return Optional.of(bos.toByteArray());
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error saving level:");
+			JRogue.getLogger().error(e);
+		}
+		
+		return Optional.empty();
+	}
+	
 	private Optional<byte[]> serialiseBooleanArray(Boolean[] arr) {
 		try (
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -260,6 +288,8 @@ public class Level {
 			
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 			
+			unserialiseLights(Base64.getDecoder().decode(obj.getString("lights")));
+			
 			visibleTiles = unserialiseBooleanArray(
 				Base64.getDecoder().decode(obj.getString("visibleTiles")),
 				width * height
@@ -291,6 +321,28 @@ public class Level {
 					short id = dis.readShort();
 					TileType type = TileType.fromID(id);
 					t.setType(type);
+				} catch (IOException e) {
+					JRogue.getLogger().error("Error loading level:");
+					JRogue.getLogger().error(e);
+				}
+			});
+		} catch (IOException e) {
+			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error(e);
+		}
+	}
+	
+	private void unserialiseLights(byte[] bytes) {
+		try (
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			DataInputStream dis = new DataInputStream(bis)
+		) {
+			Arrays.stream(tiles).forEach(t -> {
+				try {
+					int colourInt = dis.readInt();
+					int intensity = dis.readByte();
+					t.setLightColour(new Color(colourInt));
+					t.setLightIntensity(intensity);
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error loading level:");
 					JRogue.getLogger().error(e);
@@ -750,7 +802,7 @@ public class Level {
 		);
 	}
 	
-	public void buildLight() {
+	public void buildLight(boolean isInitial) {
 		resetLight();
 		
 		for (Tile tile : tiles) {
@@ -771,8 +823,11 @@ public class Level {
 				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 				
 				Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
-				tile.setLightColour(lightEmitter.getLightColour());
-				tile.setLightIntensity(lightEmitter.getLightIntensity());
+				
+				if (!isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+					tile.setLightColour(lightEmitter.getLightColour());
+					tile.setLightIntensity(lightEmitter.getLightIntensity());
+				}
 				
 				lightTiles.get(index).add(tile);
 			});
@@ -786,7 +841,7 @@ public class Level {
 				
 				if (tile.getLightIntensity() != i + 1) { continue; }
 				
-				propagateLighting(tile);
+				propagateLighting(tile, isInitial);
 			}
 		}
 	}
@@ -798,12 +853,12 @@ public class Level {
 			lightTiles.add(i, new ArrayList<>());
 		}
 		
-		for (Tile tile : tiles) {
-			tile.resetLight();
-		}
+		Arrays.stream(tiles)
+			.filter(t -> !isTileInvisible(t.getX(), t.getY()))
+			.forEach(Tile::resetLight);
 	}
 	
-	public void propagateLighting(Tile tile) {
+	public void propagateLighting(Tile tile, boolean isInitial) {
 		int x = tile.getX();
 		int y = tile.getY();
 		
@@ -815,10 +870,10 @@ public class Level {
 		
 		Color colour = reapplyIntensity(tile.getLightColour(), tile.getLightIntensity(), intensity);
 		
-		if (x > 0) { setIntensity(getTile(x - 1, y), intensity, colour); }
-		if (x < getWidth() - 1) { setIntensity(getTile(x + 1, y), intensity, colour); }
-		if (y > 0) { setIntensity(getTile(x, y - 1), intensity, colour); }
-		if (y < getHeight() - 1) { setIntensity(getTile(x, y + 1), intensity, colour); }
+		if (x > 0) { setIntensity(getTile(x - 1, y), intensity, colour, isInitial); }
+		if (x < getWidth() - 1) { setIntensity(getTile(x + 1, y), intensity, colour, isInitial); }
+		if (y > 0) { setIntensity(getTile(x, y - 1), intensity, colour, isInitial); }
+		if (y < getHeight() - 1) { setIntensity(getTile(x, y + 1), intensity, colour, isInitial); }
 		
 		colour = new Color(
 			(int) (colour.getRed() * 0.9f),
@@ -827,10 +882,10 @@ public class Level {
 			colour.getAlpha()
 		);
 		
-		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour); }
-		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour); }
-		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour); }
-		if (x < getWidth() - 1 && y < getHeight() - 1) { setIntensity(getTile(x + 1, y + 1), intensity, colour); }
+		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour, isInitial); }
+		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour, isInitial); }
+		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour, isInitial); }
+		if (x < getWidth() - 1 && y < getHeight() - 1) { setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial); }
 	}
 	
 	public Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {
@@ -847,8 +902,8 @@ public class Level {
 		);
 	}
 	
-	public void setIntensity(Tile tile, int intensity, Color colour) {
-		if (tile == null) {
+	public void setIntensity(Tile tile, int intensity, Color colour, boolean isInitial) {
+		if (tile == null || isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 			return;
 		}
 		
