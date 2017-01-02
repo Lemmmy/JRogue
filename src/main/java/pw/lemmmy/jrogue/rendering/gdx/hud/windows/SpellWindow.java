@@ -23,11 +23,11 @@ public class SpellWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(300);
+		getWindow().setWidth(400);
 		getWindow().setHeight(150);
 		
 		SpellComponent spellComponent = new SpellComponent(getSkin(), getWindow(), player);
 		ScrollPane spellScrollPane = new ScrollPane(spellComponent, getSkin());
-		getWindow().getContentTable().add(spellScrollPane).width(296).left().top().growY();
+		getWindow().getContentTable().add(spellScrollPane).width(396).left().top().growY();
 	}
 }

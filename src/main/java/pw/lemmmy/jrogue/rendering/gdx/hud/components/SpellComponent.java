@@ -61,6 +61,15 @@ public class SpellComponent extends Table {
 				getSkin(),
 				"windowStyleMarkup"
 			)).right().padLeft(6);
+			spellTable.add(new Label(
+				String.format(
+					"[%s]%,d energy",
+					spell.getCastingCost() >= player.getEnergy() ? "P_RED" : "P_GREEN_2",
+					spell.getCastingCost()
+				),
+				getSkin(),
+				"windowStyleMarkup"
+			)).right().padLeft(6);
 			spellTable.row();
 			
 			spellButton.addListener(new ClickListener() {
@@ -73,9 +82,9 @@ public class SpellComponent extends Table {
 				}
 			});
 			
-			spellButton.add(spellTable).left().width(289);
+			spellButton.add(spellTable).left().width(389);
 			
-			add(spellButton).left().top().width(292).padTop(1).row();
+			add(spellButton).left().top().width(392).padTop(1).row();
 		});
 	}
 	
