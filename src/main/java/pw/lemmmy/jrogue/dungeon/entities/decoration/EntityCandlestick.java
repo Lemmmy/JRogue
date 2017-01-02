@@ -51,7 +51,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {}
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {}
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {

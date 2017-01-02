@@ -468,7 +468,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().orangeYou("step on your own foot.");
 	}
 	

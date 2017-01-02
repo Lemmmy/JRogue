@@ -33,7 +33,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {}
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {}
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {

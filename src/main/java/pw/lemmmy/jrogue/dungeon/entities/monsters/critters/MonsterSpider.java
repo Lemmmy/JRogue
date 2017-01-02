@@ -87,7 +87,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().You("step on the %s!", getName(false));
 		
 		if (RandomUtils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill

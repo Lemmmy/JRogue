@@ -30,8 +30,8 @@ public class ActionKick extends EntityAction {
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		
-		int dx = entity.getX() + direction[0];
-		int dy = entity.getY() + direction[1];
+		int x = entity.getX() + direction[0];
+		int y = entity.getY() + direction[1];
 		
 		boolean isLivingEntity = entity instanceof LivingEntity;
 		
@@ -43,9 +43,9 @@ public class ActionKick extends EntityAction {
 		LivingEntity livingEntity = (LivingEntity) entity;
 		
 		if (kickedEntity != null) {
-			entityKick(msg, entity, livingEntity, isPlayer, dx, dy);
+			entityKick(msg, entity, livingEntity, isPlayer, direction[0], direction[1]);
 		} else {
-			tileKick(msg, entity, livingEntity, isPlayer, dx, dy);
+			tileKick(msg, entity, livingEntity, isPlayer, x, y);
 		}
 		
 		runOnCompleteCallback(entity);
@@ -63,9 +63,9 @@ public class ActionKick extends EntityAction {
 		kickedEntity.kick(kicker, isPlayer, dx, dy);
 	}
 	
-	private void tileKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		Tile tile = entity.getLevel().getTile(dx, dy);
-		TileType tileType = entity.getLevel().getTileType(dx, dy);
+	private void tileKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int x, int y) {
+		Tile tile = entity.getLevel().getTile(x, y);
+		TileType tileType = entity.getLevel().getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {

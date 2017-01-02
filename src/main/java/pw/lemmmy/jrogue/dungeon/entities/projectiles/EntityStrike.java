@@ -66,7 +66,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		
 	}
 	

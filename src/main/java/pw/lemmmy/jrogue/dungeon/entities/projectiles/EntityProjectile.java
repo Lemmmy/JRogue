@@ -179,7 +179,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	public abstract EntityAppearance getAppearance();
 	
 	@Override
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
 	
 	@Override
 	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);

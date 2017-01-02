@@ -52,7 +52,10 @@ public class EntityItem extends Entity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		int x = getX() + dx;
+		int y = getY() + dy;
+		
 		if (getItem() instanceof Shatterable) {
 			if (isPlayer) {
 				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
@@ -65,12 +68,6 @@ public class EntityItem extends Entity {
 			getLevel().removeEntity(this);
 			return;
 		}
-		
-		int dx = Math.max(-1, Math.min(1, x));
-		int dy = Math.max(-1, Math.min(1, y));
-		
-		x = kicker.getX() + dx;
-		y = kicker.getY() + dy;
 		
 		TileType tile = getLevel().getTileType(x, y);
 		

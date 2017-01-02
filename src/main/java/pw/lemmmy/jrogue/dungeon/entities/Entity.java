@@ -253,11 +253,11 @@ public abstract class Entity implements Serialisable {
 		return statusEffects;
 	}
 	
-	public void kick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		onKick(kicker, isPlayer, x, y);
+	public void kick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		onKick(kicker, isPlayer, dx, dy);
 	}
 	
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
 	
 	public void walk(LivingEntity walker, boolean isPlayer) {
 		onWalk(walker, isPlayer);

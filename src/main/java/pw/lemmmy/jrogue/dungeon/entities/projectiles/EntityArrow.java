@@ -74,7 +74,7 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		
 	}
 	
