@@ -60,7 +60,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	public boolean generate() {
 		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
-				
+
 		createRoom(
 			nextInt(1, level.getWidth() - width - 1),
 			nextInt(1, level.getHeight() - height - 1),

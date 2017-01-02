@@ -302,7 +302,7 @@ public class HUD implements Dungeon.Listener {
 		if (!dungeon.getPlayer().isDebugger()) {
 			return;
 		}
-	
+		
 		Vector3 pos = renderer.getCamera().project(
 			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
 		);

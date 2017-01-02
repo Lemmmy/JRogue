@@ -19,7 +19,7 @@ public class SpellComponent extends Table {
 		
 		this.parentWindow = parentWindow;
 		this.player = player;
-				
+		
 		update();
 	}
 	
@@ -30,12 +30,12 @@ public class SpellComponent extends Table {
 		top();
 		addKeyListener();
 	}
-		
+	
 	private void showSpells() {
 		player.getKnownSpells().forEach((letter, spell) -> {
 			Button spellButton = new Button(getSkin(), "inventory");
 			Table spellTable = new Table();
-						
+			
 			spellTable.add(new Label(
 				"[P_GREY_3]" + letter.toString(),
 				getSkin(),

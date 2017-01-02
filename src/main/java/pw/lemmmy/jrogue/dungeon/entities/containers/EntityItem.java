@@ -57,7 +57,7 @@ public class EntityItem extends Entity {
 			if (isPlayer) {
 				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
 			}
-
+			
 			if (getItem() instanceof ItemThermometer) {
 				kicker.addStatusEffect(new MercuryPoisoning());
 			}

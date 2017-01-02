@@ -156,16 +156,20 @@ public class Minimap implements Dungeon.Listener {
 		dungeon.getLevel().getEntities().stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
-			.filter(e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
-						 !dungeon.getLevel().isTileInvisible(e.getX(), e.getY()))
+			.filter(
+				e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
+				!dungeon.getLevel().isTileInvisible(e.getX(), e.getY())
+			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
 		dungeon.getLevel().getMonsters().stream()
-			.filter(e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
-						 !dungeon.getLevel().isTileInvisible(e.getX(), e.getY()))
+			.filter(
+				e -> e.isStatic() && dungeon.getLevel().isTileDiscovered(e.getX(), e.getY()) ||
+				!dungeon.getLevel().isTileInvisible(e.getX(), e.getY())
+			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
 				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), MONSTER_ICON_COLOUR);
@@ -184,6 +188,9 @@ public class Minimap implements Dungeon.Listener {
 	
 	private void drawIcon(TextureRegion icon, int x, int y, Color colour) {
 		iconBatch.setColor(colour);
-		iconBatch.draw(icon, xOffset + x * tileWidth - icon.getRegionWidth() / 2, y * tileHeight - icon.getRegionHeight() / 2);
+		iconBatch.draw(icon,
+			xOffset + x * tileWidth - icon.getRegionWidth() / 2,
+			y * tileHeight - icon.getRegionHeight() / 2
+		);
 	}
 }

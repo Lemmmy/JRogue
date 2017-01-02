@@ -11,77 +11,77 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 import java.awt.*;
 
 public class EntityStrike extends EntityProjectile implements LightEmitter {
-    private static final Color LIGHT_COLOUR = new Color(0x75e5f6);
-    
-    public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
-        super(dungeon, level, x, y);
-    }
+	private static final Color LIGHT_COLOUR = new Color(0x75e5f6);
 	
-    @Override
-    public String getName(boolean requiresCapitalisation) {
-        return requiresCapitalisation ? "Strike" : "strike";
-    }
+	public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y);
+	}
 	
-    @Override
-    public EntityAppearance getAppearance() {
-        return EntityAppearance.APPEARANCE_STRIKE;
-    }
-    
-    @Override
-    public int getMovementSpeed() {
-        return Dungeon.NORMAL_SPEED * 4;
-    }
-    
-    @Override
-    public void onHitTile(Tile tile) {
-        super.onHitTile(tile);
-        
-        if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED || tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-            getDungeon().The("door crashes open!");
-            tile.setType(TileType.TILE_ROOM_DOOR_BROKEN);
-        }
-    }
-    
-    @Override
-    public void onHitEntity(Entity victim) {
-        super.onHitEntity(victim);
-        
-        if (victim instanceof LivingEntity) {
-            LivingEntity living = (LivingEntity) victim;
-            Entity source = getSource();
-            LivingEntity livingSource = source instanceof LivingEntity ? (LivingEntity) source : null;
-			
-            int roll = RandomUtils.roll(20);
-			
-            if (roll < 10 + living.getArmourClass()) {
-                int damage = RandomUtils.roll(2, 12);
-				
-                living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
-            }
-        }
+	@Override
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Strike" : "strike";
+	}
+	
+	@Override
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_STRIKE;
+	}
+	
+	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED * 4;
+	}
+	
+	@Override
+	public void onHitTile(Tile tile) {
+		super.onHitTile(tile);
 		
-        if (victim instanceof Extinguishable) {
-            ((Extinguishable) victim).extinguish();
-        }
-    }
+		if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED || tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
+			getDungeon().The("door crashes open!");
+			tile.setType(TileType.TILE_ROOM_DOOR_BROKEN);
+		}
+	}
 	
-    @Override
-    protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-
-    }
+	@Override
+	public void onHitEntity(Entity victim) {
+		super.onHitEntity(victim);
+		
+		if (victim instanceof LivingEntity) {
+			LivingEntity living = (LivingEntity) victim;
+			Entity source = getSource();
+			LivingEntity livingSource = source instanceof LivingEntity ? (LivingEntity) source : null;
+			
+			int roll = RandomUtils.roll(20);
+			
+			if (roll < 10 + living.getArmourClass()) {
+				int damage = RandomUtils.roll(2, 12);
+				
+				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
+			}
+		}
+		
+		if (victim instanceof Extinguishable) {
+			((Extinguishable) victim).extinguish();
+		}
+	}
 	
-    @Override
-    protected void onWalk(LivingEntity walker, boolean isPlayer) {
-
-    }
-    
-    @Override
-    public Color getLightColour() {
-        return LIGHT_COLOUR;
-    }
-    
-    @Override
-    public int getLightIntensity() {
-        return 75;
-    }
+	@Override
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+		
+	}
+	
+	@Override
+	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+		
+	}
+	
+	@Override
+	public Color getLightColour() {
+		return LIGHT_COLOUR;
+	}
+	
+	@Override
+	public int getLightIntensity() {
+		return 75;
+	}
 }

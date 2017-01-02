@@ -12,17 +12,17 @@ public class MercuryPoisoning extends Poison {
 	public DamageSource getDamageSource() {
 		return DamageSource.MERCURY;
 	}
-
+	
 	@Override
 	public int getDamageLimit() {
 		return 2;
 	}
-
+	
 	@Override
 	public int getHealthLimit() {
 		return 2;
 	}
-
+	
 	@Override
 	public Severity getSeverity() {
 		return Severity.MAJOR;

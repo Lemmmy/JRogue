@@ -20,7 +20,7 @@ public class ItemThermometer extends Item implements Shatterable {
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.APPEARANCE_THERMOMETER;
 	}
-
+	
 	@Override
 	public ItemCategory getCategory() {
 		return ItemCategory.MISCELLANEOUS;

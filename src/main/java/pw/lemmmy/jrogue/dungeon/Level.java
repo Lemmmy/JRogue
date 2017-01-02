@@ -565,7 +565,7 @@ public class Level {
 		try {
 			Constructor<? extends Monster> constructor = monsterClass
 				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-				
+			
 			Entity monster = constructor.newInstance(getDungeon(), this, point.getX(), point.getY());
 			addEntity(monster);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -886,7 +886,9 @@ public class Level {
 		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour, isInitial); }
 		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour, isInitial); }
 		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour, isInitial); }
-		if (x < getWidth() - 1 && y < getHeight() - 1) { setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial); }
+		if (x < getWidth() - 1 && y < getHeight() - 1) {
+			setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial);
+		}
 	}
 	
 	public Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {

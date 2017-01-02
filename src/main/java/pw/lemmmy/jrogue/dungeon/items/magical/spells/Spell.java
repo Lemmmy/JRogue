@@ -60,7 +60,7 @@ public abstract class Spell implements Serialisable {
 	public int getCastingCost() {
 		return getLevel() * 5;
 	}
-
+	
 	public int getNutritionCost() {
 		return getCastingCost() * 2;
 	}

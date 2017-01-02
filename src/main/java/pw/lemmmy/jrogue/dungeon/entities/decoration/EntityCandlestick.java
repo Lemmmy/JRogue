@@ -10,7 +10,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	private static final int LIGHT_INTENSITY = 60;
 	
 	private boolean lit = true;
-
+	
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}

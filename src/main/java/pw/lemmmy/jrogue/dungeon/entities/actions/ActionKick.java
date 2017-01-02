@@ -59,7 +59,7 @@ public class ActionKick extends EntityAction {
 				entity.getDungeon().The("%s kicks the %s!", kicker.getName(false), kickedEntity.getName(false));
 			}
 		}
-    
+		
 		kickedEntity.kick(kicker, isPlayer, dx, dy);
 	}
 	
@@ -92,9 +92,11 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 		
-		if ((tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
+		if (
+			(tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
 			tile.hasState() &&
-			tile.getState() instanceof TileStateDoor) {
+			tile.getState() instanceof TileStateDoor
+		) {
 			if (((TileStateDoor) tile.getState()).damage(1) > 0) { // TODO: Make this based on strength
 				msg.logRandom(
 					"WHAMM!!",
@@ -115,8 +117,8 @@ public class ActionKick extends EntityAction {
 				msg.You("kick the wall!");
 			}
 			
-			if (RandomUtils
-				.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
+			if (RandomUtils.roll(5) == 1) {
+				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
 					msg.logRandom(
 						"[RED]Ouch! That hurt a lot!",
