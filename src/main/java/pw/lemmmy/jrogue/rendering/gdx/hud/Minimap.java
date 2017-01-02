@@ -15,7 +15,10 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
+import pw.lemmmy.jrogue.utils.Gradient;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -124,7 +127,10 @@ public class Minimap implements Dungeon.Listener {
 			colour = DOOR_COLOUR;
 		}
 		
-		mapBatch.setColor(colour.r, colour.g, colour.b, isVisible ? colour.a : colour.a / 4f);
+		Gradient gradient = new Gradient(colour, Utils.awtColourToGdx(tile.getLightColour()));
+		Color newColour = gradient.getColourAtPoint(0.5f);
+		
+		mapBatch.setColor(newColour.r, newColour.g, newColour.b, isVisible ? colour.a : colour.a / 3f);
 		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
 	}
 	

@@ -21,6 +21,6 @@ public class Gradient {
 	}
 	
 	private static float sigmoid(float x) {
-		return (float) (1 / (1 + Math.pow(Math.E, (-1 * x))));
+		return (float) (1 / (1 + Math.pow(Math.E, -1 * x)));
 	}
 }
