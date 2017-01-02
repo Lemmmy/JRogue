@@ -717,8 +717,17 @@ public class Player extends LivingEntity {
 		}
 		
 		nutrition -= spell.getNutritionCost();
-		energy -= spell.getCastingCost();
-		spell.castNonDirectional(this);
+		
+		float successChance = spell.getSuccessChance(this) / 100f;
+		
+		if (RandomUtils.randomFloat() <= successChance) {
+			energy -= spell.getCastingCost();
+			spell.castNonDirectional(this);
+		} else {
+			energy -= Math.floor(spell.getCastingCost() / 2);
+			getDungeon().orangeYou("fail to cast the spell correctly.");
+		}
+		
 		getDungeon().turn();
 	}
 	
