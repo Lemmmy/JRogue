@@ -40,10 +40,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	}
 	
 	public void setTravelDirection(int dx, int dy) {
-		if (dx > 0) { dx = 1; }
-		if (dy > 0) { dy = 1; }
-		if (dx < 0) { dx = -1; }
-		if (dy < 0) { dy = -1; }
+		dx = Math.max(-1, Math.min(1, dx));
+		dy = Math.max(-1, Math.min(1, dy));
 		
 		this.dx = dx;
 		this.dy = dy;

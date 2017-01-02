@@ -66,8 +66,11 @@ public class EntityItem extends Entity {
 			return;
 		}
 		
-		x += (kicker.getX() < x ? 1 : -1) + (kicker.getX() == x ? 1 : 0);
-		y += (kicker.getY() < y ? 1 : -1) + (kicker.getY() == y ? 1 : 0);
+		int dx = Math.max(-1, Math.min(1, x));
+		int dy = Math.max(-1, Math.min(1, y));
+		
+		x = kicker.getX() + dx;
+		y = kicker.getY() + dy;
 		
 		TileType tile = getLevel().getTileType(x, y);
 		
