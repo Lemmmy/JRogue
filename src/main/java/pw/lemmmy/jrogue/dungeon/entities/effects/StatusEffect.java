@@ -68,7 +68,9 @@ public abstract class StatusEffect implements Serialisable {
 	public abstract String getName();
 	
 	public abstract Severity getSeverity();
-	
+
+	//public abstract void onContract(); //TODO: Move "oh no you strained your leg" etc. here
+
 	public abstract void onEnd();
 	
 	public enum Severity {

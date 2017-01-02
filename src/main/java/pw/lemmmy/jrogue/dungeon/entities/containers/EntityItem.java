@@ -6,9 +6,11 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.MercuryPoisoning;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Shatterable;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemThermometer;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.Optional;
@@ -54,6 +56,10 @@ public class EntityItem extends Entity {
 		if (getItem() instanceof Shatterable) {
 			if (isPlayer) {
 				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
+			}
+
+			if (getItem() instanceof ItemThermometer) {
+				kicker.addStatusEffect(new MercuryPoisoning());
 			}
 			
 			getLevel().removeEntity(this);

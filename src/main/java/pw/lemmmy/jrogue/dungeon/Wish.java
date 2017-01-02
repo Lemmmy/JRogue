@@ -13,8 +13,6 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityArrow;
-import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityStrike;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Material;
@@ -25,9 +23,13 @@ import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
 import pw.lemmmy.jrogue.dungeon.items.weapons.*;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemThermometer;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -240,6 +242,8 @@ public class Wish {
 			item = new ItemBow();
 		} else if (wish.equalsIgnoreCase("arrow")) {
 			item = new ItemArrow();
+		} else if (wish.equalsIgnoreCase("thermometer")) {
+			item = new ItemThermometer();
 		}
 		
 		if (item != null && player.getContainer().isPresent()) {

@@ -52,7 +52,9 @@ public enum ItemMap {
 	APPEARANCE_POTION_LABEL(new ItemRendererPotion(11, 6, 15, 6)),
 	APPEARANCE_POTION_CORK(new ItemRendererPotion(12, 6, 15, 6)),
 	APPEARANCE_POTION_CORK_LABEL(new ItemRendererPotion(13, 6, 15, 6)),
-	APPEARANCE_POTION_FAT(new ItemRendererPotion(14, 6, 16, 6));
+	APPEARANCE_POTION_FAT(new ItemRendererPotion(14, 6, 16, 6)),
+
+	APPEARANCE_THERMOMETER(0, 8);
 	
 	public static final int ITEM_WIDTH = 16;
 	public static final int ITEM_HEIGHT = 16;
