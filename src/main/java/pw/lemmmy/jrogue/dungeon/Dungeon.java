@@ -333,10 +333,12 @@ public class Dungeon implements Messenger {
 	public void promptRespond(char response) {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
-			this.prompt = null;
 			prompt.respond(response);
 			
-			listeners.forEach(l -> l.onPrompt(null));
+			if (prompt == this.prompt) {
+				this.prompt = null;
+				listeners.forEach(l -> l.onPrompt(null));
+			}
 		}
 	}
 	

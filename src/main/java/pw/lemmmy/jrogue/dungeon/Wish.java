@@ -19,14 +19,12 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Material;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemArrow;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
+import pw.lemmmy.jrogue.dungeon.items.weapons.*;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -83,33 +81,13 @@ public class Wish {
 				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("arrow")) {
-			int dx = 1;
-			int dy = 0;
-			EntityArrow arrow = new EntityArrow(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
-			arrow.setTravelDirection(dx, dy);
-			arrow.setTravelRange(3);
-			dungeon.getLevel().addEntity(arrow);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("strike")) {
-			int dx = 1;
-			int dy = 0;
-			EntityStrike strike = new EntityStrike(dungeon, dungeon.getLevel(), player.getX() + dx, player.getY() + dy);
-			strike.setTravelDirection(dx, dy);
-			strike.setTravelRange(3);
-			dungeon.getLevel().addEntity(strike);
-			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
 			dungeon.getLevel().addEntity(
 				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
-			Arrays.stream(player.getLevel().getTiles())
-				.filter(t -> t.getX() == player.getX())
-				.filter(t -> t.getY() == player.getY())
-				.findFirst()
-				.ifPresent(t -> t.setType(TileType.TILE_ROOM_RUG));
+			player.getLevel().setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_RUG);
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {
@@ -258,6 +236,10 @@ public class Wish {
 			potion.setEmpty(false);
 			potion.setPotency(potency);
 			item = potion;
+		} else if (wish.equalsIgnoreCase("bow")) {
+			item = new ItemBow();
+		} else if (wish.equalsIgnoreCase("arrow")) {
+			item = new ItemArrow();
 		}
 		
 		if (item != null && player.getContainer().isPresent()) {

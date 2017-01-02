@@ -7,8 +7,11 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class EntityArrow extends EntityProjectile {
+    private boolean canPenetrate = false;
+
     public EntityArrow(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
     }
@@ -22,7 +25,16 @@ public class EntityArrow extends EntityProjectile {
     public EntityAppearance getAppearance() {
         return EntityAppearance.APPEARANCE_ARROW;
     }
-
+    
+    @Override
+    public int getMovementSpeed() {
+        return Dungeon.NORMAL_SPEED * 3;
+    }
+    
+    public void setCanPenetrate(boolean penetrate) {
+        canPenetrate = penetrate;
+    }
+    
     @Override
     public void onHitEntity(Entity victim) {
         if (victim instanceof LivingEntity) {
@@ -30,11 +42,37 @@ public class EntityArrow extends EntityProjectile {
 
             if (source != null && source instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) victim;
-                living.damage(DamageSource.ARROW, 1, (LivingEntity)source, source instanceof Player);
+
+                if (source instanceof Player) {
+                    source.getDungeon().Your("arrow hits the %s!", living.getName(false));
+                }
+
+                if (living instanceof Player) {
+                    living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(false));
+                }
+
+                living.damage(DamageSource.ARROW, getArrowDamage(), (LivingEntity) source, source instanceof Player);
+
+                if (!canPenetrate) {
+                    killProjectile();
+                }
             }
         }
     }
-
+    
+    private int getArrowDamage() {
+        return RandomUtils.roll(6);
+    }
+    
+    @Override
+    public void killProjectile() {
+        if (!isBeingRemoved() && RandomUtils.roll(3) != 3) {
+            dropItems();
+        }
+        
+        super.killProjectile();
+    }
+    
     @Override
     protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
 

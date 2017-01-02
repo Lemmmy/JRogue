@@ -15,8 +15,6 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
     
     public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
         super(dungeon, level, x, y);
-        
-        setMovementPoints(getMovementSpeed());
     }
 	
     @Override

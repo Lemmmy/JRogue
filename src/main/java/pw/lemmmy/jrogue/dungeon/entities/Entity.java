@@ -29,6 +29,8 @@ public abstract class Entity implements Serialisable {
 	
 	private int visualID;
 	
+	private boolean beingRemoved = false;
+	
 	private Dungeon dungeon;
 	private Level level;
 	
@@ -146,6 +148,14 @@ public abstract class Entity implements Serialisable {
 	
 	public void setLevel(Level level) {
 		this.level = level;
+	}
+	
+	public boolean isBeingRemoved() {
+		return beingRemoved;
+	}
+	
+	public void setBeingRemoved(boolean beingRemoved) {
+		this.beingRemoved = beingRemoved;
 	}
 	
 	public void update() {
