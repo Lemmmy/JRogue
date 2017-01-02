@@ -6,8 +6,8 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
-import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemCorpse;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemCorpse;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;

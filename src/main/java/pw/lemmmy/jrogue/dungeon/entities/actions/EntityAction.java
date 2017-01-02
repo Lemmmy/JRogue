@@ -1,10 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.actions;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-
-import java.util.function.Consumer;
 
 public abstract class EntityAction {
 	private final ActionCallback callback;

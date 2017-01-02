@@ -15,7 +15,6 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
 import pw.lemmmy.jrogue.utils.Gradient;
 import pw.lemmmy.jrogue.utils.Utils;

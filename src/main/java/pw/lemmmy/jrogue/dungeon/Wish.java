@@ -22,12 +22,8 @@ import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.PotionType;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
-import pw.lemmmy.jrogue.dungeon.items.weapons.*;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemThermometer;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
+import pw.lemmmy.jrogue.dungeon.items.weapons.*;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 

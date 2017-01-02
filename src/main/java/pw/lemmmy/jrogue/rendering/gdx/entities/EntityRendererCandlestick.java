@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
 	public EntityRendererCandlestick(int sheetX, int sheetY) {
