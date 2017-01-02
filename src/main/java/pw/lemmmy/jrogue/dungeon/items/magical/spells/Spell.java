@@ -77,7 +77,7 @@ public abstract class Spell implements Serialisable {
 		
 		// TODO: half the penalty if the player is wearing a robe
 		
-		return penalty;
+		return Math.max(0, Math.min(20, penalty));
 	}
 	
 	public float getFailChance(Player player) {
@@ -89,7 +89,7 @@ public abstract class Spell implements Serialisable {
 		SkillLevel skillLevel = player.getSkillLevel(skill);
 		
 		float penalty = getSuccessPenalty(player);
-		float baseChance = player.getAttributes().getAttribute(baseChanceAttribute) * 3.3f;
+		float baseChance = player.getAttributes().getAttribute(baseChanceAttribute) * 5.5f;
 		float difficulty = getLevel() * 4 - skillLevel.ordinal() * 6 - player.getExperienceLevel() / 3 - 5;
 		float chance = baseChance;
 		
