@@ -36,6 +36,10 @@ public class SpellLightOrb extends Spell {
 		return true;
 	}
 	
+	public int getCastingCost() {
+		return getLevel() * 2;
+	}
+	
 	@Override
 	public void castNonDirectional(LivingEntity caster) {
 		EntityLightOrb orb = new EntityLightOrb(caster.getDungeon(), caster.getLevel(), caster.getX(), caster.getY());
