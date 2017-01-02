@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellLightOrb;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellStrike;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemStaff;
 import pw.lemmmy.jrogue.utils.RandomUtils;
@@ -70,6 +71,7 @@ public class RoleWizard extends Role {
 		Map<Character, Spell> spellMap = new HashMap<>();
 		
 		spellMap.put('a', new SpellStrike());
+		spellMap.put('b', new SpellLightOrb());
 		
 		return spellMap;
 	}
