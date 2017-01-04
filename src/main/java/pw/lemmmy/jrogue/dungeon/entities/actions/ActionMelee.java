@@ -21,7 +21,7 @@ public class ActionMelee extends EntityAction {
 		if (!(entity instanceof LivingEntity)) {
 			return;
 		}
-
+		
 		LivingEntity attacker = (LivingEntity) entity;
 		boolean isAttackerPlayer = attacker instanceof Player;
 		boolean isVictimPlayer = victim instanceof Player;

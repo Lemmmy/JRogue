@@ -333,10 +333,12 @@ public class Dungeon implements Messenger {
 	public void promptRespond(char response) {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
-			this.prompt = null;
 			prompt.respond(response);
 			
-			listeners.forEach(l -> l.onPrompt(null));
+			if (prompt == this.prompt) {
+				this.prompt = null;
+				listeners.forEach(l -> l.onPrompt(null));
+			}
 		}
 	}
 	
@@ -402,7 +404,7 @@ public class Dungeon implements Messenger {
 					if (entity instanceof EntityTurnBased) {
 						EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
 						
-						turnBasedEntity.calculateMovement();
+						turnBasedEntity.applyMovementPoints();
 					}
 				}
 				
@@ -434,10 +436,14 @@ public class Dungeon implements Messenger {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
 		level.getEntities().stream()
-			.filter(e -> e instanceof EntityTurnBased && !(e instanceof Player) &&
-				e instanceof LivingEntity && ((LivingEntity) e).isAlive() &&
-				!(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
+			.filter(e -> e instanceof EntityTurnBased)
+			.filter(e -> !(e instanceof Player))
+			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
+				if (e instanceof LivingEntity && !((LivingEntity) e).isAlive()) {
+					return;
+				}
+				
 				EntityTurnBased tbe = (EntityTurnBased) e;
 				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
 				
@@ -550,7 +556,9 @@ public class Dungeon implements Messenger {
 		
 		default void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {}
 		
-		/** Used for attack popups in advanced mode **/
+		/**
+		 * Used for attack popups in advanced mode
+		 **/
 		default void onEntityAttacked(Entity entity, int x, int y, int roll, int toHit) {}
 		
 		default void onEntityRemoved(Entity entity) {}

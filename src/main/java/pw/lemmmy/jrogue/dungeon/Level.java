@@ -7,7 +7,8 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.*;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
@@ -17,8 +18,8 @@ import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.IceDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
 import pw.lemmmy.jrogue.utils.Point;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -508,6 +509,7 @@ public class Level {
 	}
 	
 	public boolean removeEntity(Entity entity) {
+		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
 	}
 	
@@ -563,7 +565,7 @@ public class Level {
 		try {
 			Constructor<? extends Monster> constructor = monsterClass
 				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-				
+			
 			Entity monster = constructor.newInstance(getDungeon(), this, point.getX(), point.getY());
 			addEntity(monster);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -884,7 +886,9 @@ public class Level {
 		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour, isInitial); }
 		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour, isInitial); }
 		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour, isInitial); }
-		if (x < getWidth() - 1 && y < getHeight() - 1) { setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial); }
+		if (x < getWidth() - 1 && y < getHeight() - 1) {
+			setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial);
+		}
 	}
 	
 	public Color reapplyIntensity(Color colour, int intensityOld, int intensityNew) {

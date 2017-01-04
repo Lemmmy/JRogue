@@ -2,8 +2,8 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
-import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
 
 /**
  * Utils to quickly spawn common entities

@@ -11,7 +11,7 @@ import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-public class ItemPotion extends ItemQuaffable implements Shatterable {	
+public class ItemPotion extends ItemQuaffable implements Shatterable {
 	private boolean empty = false;
 	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
 	private PotionType potionType = PotionType.POTION_HEALTH;
@@ -138,15 +138,15 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	
 	@Override
 	public boolean equals(Item other) {
-		if (this == other) return true;
-		if (other == null || getClass() != other.getClass()) return false;
+		if (this == other) { return true; }
+		if (other == null || getClass() != other.getClass()) { return false; }
 		
 		ItemPotion that = (ItemPotion) other;
 		
-		if (empty != that.empty) return false;
-		if (Float.compare(that.potency, potency) != 0) return false;
-		if (bottleType != that.bottleType) return false;
-		if (potionColour != that.potionColour) return false;
+		if (empty != that.empty) { return false; }
+		if (Float.compare(that.potency, potency) != 0) { return false; }
+		if (bottleType != that.bottleType) { return false; }
+		if (potionColour != that.potionColour) { return false; }
 		return potionType == that.potionType;
 	}
 	

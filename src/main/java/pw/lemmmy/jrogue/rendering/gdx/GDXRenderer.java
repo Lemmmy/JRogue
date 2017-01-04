@@ -453,6 +453,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
 			EntityPooledEffect effect = iterator.next();
 			
+			boolean shouldDrawParticles = effect.getRenderer().shouldDrawParticles(
+				dungeon,
+				effect.getEntity(),
+				effect.getEntity().getX(),
+				effect.getEntity().getY()
+			);
+			
+			if (!shouldDrawParticles) {
+				effect.getPooledEffect().free();
+				iterator.remove();
+				return;
+			}
+			
 			if (effect.shouldDrawOver() != over) { continue; }
 			
 			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(
@@ -612,6 +625,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void showWishWindow() {
 		nextFrameDeferred
 			.add(() -> new WishWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
+				.show());
+	}
+	
+	public void showSpellWindow() {
+		nextFrameDeferred
+			.add(() -> new SpellWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
 				.show());
 	}
 	

@@ -214,7 +214,9 @@ public abstract class LivingEntity extends EntityTurnBased {
 	public void update() {
 		super.update();
 		
-		if (health < maxHealth) {
+		setHealth(Math.max(0, Math.min(getMaxHealth(), getHealth())));
+		
+		if (getHealth() < getMaxHealth()) {
 			healingTurns++;
 		}
 		

@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
@@ -26,10 +27,12 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim) {}
+	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
 	
 	@Override
-	public void fire(LivingEntity attacker, LivingEntity victim) {}
+	public boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {
+		return false;
+	}
 	
 	@Override
 	public boolean isMelee() {

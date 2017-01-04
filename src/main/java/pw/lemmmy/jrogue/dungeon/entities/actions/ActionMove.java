@@ -2,8 +2,8 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
@@ -31,8 +31,11 @@ public class ActionMove extends EntityAction {
 			if (entity instanceof Player) {
 				Entity unwalkableEnt = unwalkable.get(0);
 				
-				if (unwalkableEnt.getLastX() != unwalkableEnt.getX() || unwalkableEnt.getLastY() != unwalkableEnt.getY()) {
-					msg.The("%s beats you to it!", entity.getName(false));
+				if (
+					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
+					unwalkableEnt.getLastY() != unwalkableEnt.getY()
+				) {
+					msg.The("%s beats you to it!", unwalkableEnt.getName(false));
 				}
 			}
 			

@@ -25,6 +25,9 @@ public enum ItemMap {
 	APPEARANCE_SHORTSWORD(new ItemRendererSword(0, 2)),
 	APPEARANCE_LONGSWORD(new ItemRendererSword(9, 2)),
 	
+	APPEARANCE_BOW(1, 3),
+	APPEARANCE_ARROW(4, 0),
+	
 	APPEARANCE_GOLD(new ItemRendererGold()),
 	
 	APPEARANCE_GEM_WHITE(11, 7),
@@ -49,7 +52,9 @@ public enum ItemMap {
 	APPEARANCE_POTION_LABEL(new ItemRendererPotion(11, 6, 15, 6)),
 	APPEARANCE_POTION_CORK(new ItemRendererPotion(12, 6, 15, 6)),
 	APPEARANCE_POTION_CORK_LABEL(new ItemRendererPotion(13, 6, 15, 6)),
-	APPEARANCE_POTION_FAT(new ItemRendererPotion(14, 6, 16, 6));
+	APPEARANCE_POTION_FAT(new ItemRendererPotion(14, 6, 16, 6)),
+	
+	APPEARANCE_THERMOMETER(0, 8);
 	
 	public static final int ITEM_WIDTH = 16;
 	public static final int ITEM_HEIGHT = 16;

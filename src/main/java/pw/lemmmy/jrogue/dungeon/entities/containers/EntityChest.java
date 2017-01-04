@@ -68,7 +68,7 @@ public class EntityChest extends Entity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		if (isPlayer) {
 			boolean somethingShattered = false;
 			

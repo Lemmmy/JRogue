@@ -4,10 +4,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.apache.commons.lang3.StringUtils;
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -16,12 +14,10 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.rendering.gdx.tiles.TileMap;
 import pw.lemmmy.jrogue.rendering.gdx.utils.HUDUtils;
 import pw.lemmmy.jrogue.rendering.gdx.utils.ImageLoader;
-import pw.lemmmy.jrogue.utils.Path;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -186,6 +182,7 @@ public class HUD implements Dungeon.Listener {
 	public void onLevelChange(Level level) {
 		if (dungeon.getPlayer() != null) {
 			healthLastTurn = dungeon.getPlayer().getHealth();
+			energyLastTurn = dungeon.getPlayer().getEnergy();
 			updatePlayerLine(dungeon.getPlayer());
 		}
 	}
@@ -200,7 +197,7 @@ public class HUD implements Dungeon.Listener {
 		updateStatusEffects(player);
 		
 		healthLastTurn = player.getHealth();
-		// energyLastTurn = player.getEnergy();
+		energyLastTurn = player.getEnergy();
 	}
 	
 	private void updatePlayerLine(Player player) {
@@ -210,6 +207,17 @@ public class HUD implements Dungeon.Listener {
 			player.getRole().getName()
 		));
 		
+		updateHealth(player);
+		updateEnergy(player);
+		
+		((Label) topStats.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
+		((Label) topStats.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
+		((Label) topStats.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
+		((Label) topStats.findActor("nutrition")).setText(player.getNutritionState().toString());
+		topStats.findActor("nutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
+	}
+	
+	private void updateHealth(Player player) {
 		if (player.getHealth() != healthLastTurn) {
 			String bg = healthLastTurn > player.getHealth() ? "redBackground" : "greenBackground";
 			
@@ -229,11 +237,28 @@ public class HUD implements Dungeon.Listener {
 			));
 		}
 		
-		((Label) topStats.findActor("gold")).setText(String.format("Gold: %,d", player.getGold()));
-		((Label) topStats.findActor("exp")).setText(String.format("Level: %,d", player.getExperienceLevel()));
-		((Label) topStats.findActor("depth")).setText(String.format("Depth: %,d", player.getLevel().getDepth()));
-		((Label) topStats.findActor("nutrition")).setText(player.getNutritionState().toString());
-		topStats.findActor("nutrition").setColor(HUDUtils.getNutritionColour(player.getNutritionState()));
+		
+	}
+	
+	private void updateEnergy(Player player) {
+		if (player.getEnergy() != energyLastTurn) {
+			String bg = energyLastTurn > player.getEnergy() ? "redBackground" : "greenBackground";
+			
+			((Label) topStats.findActor("energy")).setStyle(skin.get(bg, Label.LabelStyle.class));
+			((Label) topStats.findActor("energy")).setText(String.format(
+				"Energy: %,d / %,d",
+				player.getEnergy(),
+				player.getMaxEnergy()
+			));
+		} else {
+			((Label) topStats.findActor("energy")).setStyle(skin.get("default", Label.LabelStyle.class));
+			((Label) topStats.findActor("energy")).setText(String.format(
+				"Energy: [%s]%,d[] / [P_GREEN_3]%,d[]",
+				HUDUtils.getHealthColour(player.getEnergy(), player.getMaxEnergy()),
+				player.getEnergy(),
+				player.getMaxEnergy()
+			));
+		}
 	}
 	
 	private void updateAttributes(Player player) {
@@ -277,7 +302,7 @@ public class HUD implements Dungeon.Listener {
 		if (!dungeon.getPlayer().isDebugger()) {
 			return;
 		}
-	
+		
 		Vector3 pos = renderer.getCamera().project(
 			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
 		);

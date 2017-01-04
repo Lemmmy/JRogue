@@ -29,6 +29,8 @@ public abstract class Entity implements Serialisable {
 	
 	private int visualID;
 	
+	private boolean beingRemoved = false;
+	
 	private Dungeon dungeon;
 	private Level level;
 	
@@ -148,6 +150,14 @@ public abstract class Entity implements Serialisable {
 		this.level = level;
 	}
 	
+	public boolean isBeingRemoved() {
+		return beingRemoved;
+	}
+	
+	public void setBeingRemoved(boolean beingRemoved) {
+		this.beingRemoved = beingRemoved;
+	}
+	
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
 			StatusEffect statusEffect = iterator.next();
@@ -243,11 +253,11 @@ public abstract class Entity implements Serialisable {
 		return statusEffects;
 	}
 	
-	public void kick(LivingEntity kicker, boolean isPlayer, int x, int y) {
-		onKick(kicker, isPlayer, x, y);
+	public void kick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		onKick(kicker, isPlayer, dx, dy);
 	}
 	
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int x, int y);
+	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
 	
 	public void walk(LivingEntity walker, boolean isPlayer) {
 		onWalk(walker, isPlayer);

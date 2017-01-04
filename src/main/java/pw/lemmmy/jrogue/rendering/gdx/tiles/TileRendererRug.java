@@ -23,11 +23,11 @@ public class TileRendererRug extends TileRendererBlob {
 	}
 
 	public TileRendererRug(int sheetX,
-                           int sheetY,
-                           int floorSheetX,
-                           int floorSheetY,
-                           boolean connectToOthers,
-                           TileType self) {
+						   int sheetY,
+						   int floorSheetX,
+						   int floorSheetY,
+						   boolean connectToOthers,
+						   TileType self) {
 		super(1, 0);
 		
 		this.connectToOthers = connectToOthers;

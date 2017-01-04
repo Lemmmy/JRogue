@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.HasMaterial;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.Material;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
@@ -68,10 +69,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim) {}
+	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
 	
 	@Override
-	public void fire(LivingEntity attacker, LivingEntity victim) {}
+	public boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {
+		return false;
+	}
 	
 	@Override
 	public boolean isMelee() {

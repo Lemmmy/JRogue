@@ -8,8 +8,8 @@ import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomBasic;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomFountain;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomWater;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -60,7 +60,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	public boolean generate() {
 		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
-				
+
 		createRoom(
 			nextInt(1, level.getWidth() - width - 1),
 			nextInt(1, level.getHeight() - height - 1),

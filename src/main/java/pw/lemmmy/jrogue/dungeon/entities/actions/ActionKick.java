@@ -30,8 +30,8 @@ public class ActionKick extends EntityAction {
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		
-		int dx = entity.getX() + direction[0];
-		int dy = entity.getY() + direction[1];
+		int x = entity.getX() + direction[0];
+		int y = entity.getY() + direction[1];
 		
 		boolean isLivingEntity = entity instanceof LivingEntity;
 		
@@ -43,9 +43,9 @@ public class ActionKick extends EntityAction {
 		LivingEntity livingEntity = (LivingEntity) entity;
 		
 		if (kickedEntity != null) {
-			entityKick(msg, entity, livingEntity, isPlayer, dx, dy);
+			entityKick(msg, entity, livingEntity, isPlayer, direction[0], direction[1]);
 		} else {
-			tileKick(msg, entity, livingEntity, isPlayer, dx, dy);
+			tileKick(msg, entity, livingEntity, isPlayer, x, y);
 		}
 		
 		runOnCompleteCallback(entity);
@@ -59,13 +59,13 @@ public class ActionKick extends EntityAction {
 				entity.getDungeon().The("%s kicks the %s!", kicker.getName(false), kickedEntity.getName(false));
 			}
 		}
-    
+		
 		kickedEntity.kick(kicker, isPlayer, dx, dy);
 	}
 	
-	private void tileKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		Tile tile = entity.getLevel().getTile(dx, dy);
-		TileType tileType = entity.getLevel().getTileType(dx, dy);
+	private void tileKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int x, int y) {
+		Tile tile = entity.getLevel().getTile(x, y);
+		TileType tileType = entity.getLevel().getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
@@ -92,9 +92,11 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 		
-		if ((tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
+		if (
+			(tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
 			tile.hasState() &&
-			tile.getState() instanceof TileStateDoor) {
+			tile.getState() instanceof TileStateDoor
+		) {
 			if (((TileStateDoor) tile.getState()).damage(1) > 0) { // TODO: Make this based on strength
 				msg.logRandom(
 					"WHAMM!!",
@@ -115,8 +117,8 @@ public class ActionKick extends EntityAction {
 				msg.You("kick the wall!");
 			}
 			
-			if (RandomUtils
-				.roll(5) == 1) { // TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
+			if (RandomUtils.roll(5) == 1) {
+				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
 					msg.logRandom(
 						"[RED]Ouch! That hurt a lot!",

@@ -18,16 +18,21 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.dungeon.items.*;
+import pw.lemmmy.jrogue.dungeon.items.Item;
+import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
+import pw.lemmmy.jrogue.dungeon.items.weapons.ItemProjectileLauncher;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
@@ -46,16 +51,21 @@ public class Player extends LivingEntity {
 	private String name;
 	private Role role;
 	
+	private int energy;
+	private int maxEnergy;
+	private int chargingTurns = 0;
+	private Map<Character, Spell> knownSpells;
+	
 	private int nutrition;
 	private NutritionState lastNutritionState;
 	
 	private int spendableSkillPoints = 3;
 	private Attributes attributes = new Attributes();
+	private Map<Skill, SkillLevel> skills;
 	
 	private int gold = 0;
 	
 	private boolean godmode = false;
-	private Map<Skill, SkillLevel> skills;
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -70,26 +80,27 @@ public class Player extends LivingEntity {
 		nutrition = 1000;
 		maxHealth = getMaxHealth();
 		
+		energy = maxEnergy = role.getMaxEnergy();
+		knownSpells = new HashMap<>(role.getStartingSpells());
+		
 		role.assignAttributes(attributes);
 		
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
 		
-		if (getContainer().isPresent()) {
-			role.getStartingItems().forEach(i -> {
-				Optional<Container.ContainerEntry> entry = getContainer().get().add(i);
-
-				if (entry.isPresent()) {
-					if (role.getStartingLeftHand() == entry.get().getStack()) {
-						setLeftHand(entry.get());
-					}
-
-					if (role.getStartingRightHand() == entry.get().getStack()) {
-						setRightHand(entry.get());
-					}
+		getContainer().ifPresent(container -> role.getStartingItems().forEach(i -> {
+			Optional<Container.ContainerEntry> optionalEntry = container.add(i);
+			
+			optionalEntry.ifPresent(entry -> {
+				if (role.getStartingLeftHand() == entry.getStack()) {
+					setLeftHand(entry);
+				}
+				
+				if (role.getStartingRightHand() == entry.getStack()) {
+					setRightHand(entry);
 				}
 			});
-		}
+		}));
 		
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
@@ -107,15 +118,44 @@ public class Player extends LivingEntity {
 	@Override
 	public int getHealingRate() {
 		int constitution = attributes.getAttribute(Attribute.CONSTITUTION);
-
+		
 		switch (getNutritionState()) {
 			case FAINTING:
 				return 100 - constitution;
 			case STARVING:
-				return 40 - (constitution / 3);
+				return 40 - constitution / 3;
 			default:
-				return 20 - (constitution / 2);
+				return 20 - constitution / 2;
 		}
+	}
+	
+	public int getEnergy() {
+		return energy;
+	}
+	
+	public int getMaxEnergy() {
+		return maxEnergy;
+	}
+	
+	public int getChargingRate() {
+		return (int) Math.floor((38 - getExperienceLevel()) * (3.5f / 6f));
+	}
+	
+	public void charge(int amount) {
+		energy = Math.min(maxEnergy, energy + amount);
+	}
+	
+	private void levelUpEnergy() {
+		int wisdom = attributes.getAttribute(Attribute.WISDOM);
+		int gainMax = wisdom / 2 + 2;
+		int gain = RandomUtils.roll(gainMax) + 2;
+		
+		maxEnergy += gain;
+		charge(gain);
+	}
+	
+	public Map<Character, Spell> getKnownSpells() {
+		return knownSpells;
 	}
 	
 	@Override
@@ -244,37 +284,73 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public void calculateMovement() {
+	public void applyMovementPoints() {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
 	@Override
 	public void onLevelUp() {
+		levelUpEnergy();
+		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
-		getDungeon().greenYou("have %,d spendable skill point%s.", ++spendableSkillPoints, spendableSkillPoints == 1 ? "" : "s");
+		getDungeon().greenYou(
+			"have %,d spendable skill point%s.",
+			++spendableSkillPoints,
+			spendableSkillPoints == 1 ? "" : "s"
+		);
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-
-		if (getHealth() > getMaxHealth()) {
-			setHealth(getMaxHealth());
-		}
+		
+		updateEnergy();
+		updateNutrition();
 		
 		if (godmode) {
 			setHealth(getMaxHealth());
 		}
+	}
+	
+	private void updateEnergy() {
+		energy = Math.max(0, Math.min(maxEnergy, energy));
 		
+		if (energy < maxEnergy) {
+			chargingTurns++;
+		}
+		
+		if (chargingTurns >= getChargingRate()) {
+			int wisdom = attributes.getAttribute(Attribute.WISDOM);
+			int intelligence = attributes.getAttribute(Attribute.INTELLIGENCE);
+			
+			int chargeMax = (int) Math.floor((wisdom + intelligence) / 15) + 1;
+			int chargeAmount = RandomUtils.roll(chargeMax);
+			
+			charge(chargeAmount);
+			
+			chargingTurns = 0;
+		}
+	}
+	
+	private void updateNutrition() {
 		if (getNutritionState() != lastNutritionState) {
 			lastNutritionState = getNutritionState();
 			
 			switch (getNutritionState()) {
-				case CHOKING: 	getDungeon().redYou("are choking!"); break;
-				case HUNGRY: 	getDungeon().orangeYou("are starting to feel hungry."); break;
-				case STARVING: 	getDungeon().redYou("are starving!"); break;
-				case FAINTING: 	getDungeon().redYou("are passing out due to starvation!"); break;
-				default:		break;
+				case CHOKING:
+					getDungeon().redYou("are choking!");
+					break;
+				case HUNGRY:
+					getDungeon().orangeYou("are starting to feel hungry.");
+					break;
+				case STARVING:
+					getDungeon().redYou("are starving!");
+					break;
+				case FAINTING:
+					getDungeon().redYou("are passing out due to starvation!");
+					break;
+				default:
+					break;
 			}
 		}
 		
@@ -292,6 +368,9 @@ public class Player extends LivingEntity {
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
 		obj.put("spendableSkillPoints", getSpendableSkillPoints());
+		obj.put("energy", getEnergy());
+		obj.put("maxEnergy", getMaxEnergy());
+		obj.put("chargingTurns", chargingTurns);
 		obj.put("nutrition", getNutrition());
 		obj.put("gold", getGold());
 		obj.put("godmode", godmode);
@@ -299,8 +378,16 @@ public class Player extends LivingEntity {
 		attributes.serialise(obj);
 		
 		JSONObject serialisedSkills = new JSONObject();
-		skills.entrySet().forEach(e -> serialisedSkills.put(e.getKey().name(), e.getValue().name()));
+		skills.forEach((skill, skillLevel) -> serialisedSkills.put(skill.name(), skillLevel.name()));
 		obj.put("skills", serialisedSkills);
+		
+		JSONObject serialisedSpells = new JSONObject();
+		knownSpells.forEach((spellLetter, spell) -> {
+			JSONObject serialisedSpell = new JSONObject();
+			spell.serialise(serialisedSpell);
+			serialisedSpells.put(spellLetter.toString() + "!" + spell.getClass().getName(), serialisedSpell);
+		});
+		obj.put("knownSpells", serialisedSpells);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -308,11 +395,15 @@ public class Player extends LivingEntity {
 	public void unserialise(JSONObject obj) {
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>();
+		knownSpells = new HashMap<>();
 		
 		super.unserialise(obj);
 		
 		name = obj.getString("name");
 		spendableSkillPoints = obj.getInt("spendableSkillPoints");
+		energy = obj.getInt("energy");
+		maxEnergy = obj.getInt("maxEnergy");
+		chargingTurns = obj.getInt("chargingTurns");
 		nutrition = obj.getInt("nutrition");
 		gold = obj.getInt("gold");
 		godmode = obj.getBoolean("godmode");
@@ -339,6 +430,27 @@ public class Player extends LivingEntity {
 			String v = serialisedSkills.getString(k);
 			skills.put(Skill.valueOf(k), SkillLevel.valueOf(v));
 		});
+		
+		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
+		serialisedSpells.keySet().forEach(key -> {
+			Character spellLetter = key.charAt(0);
+			String spellClassName = key.substring(2, key.length());
+			
+			try {
+				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
+				Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
+				Spell spell = spellConstructor.newInstance();
+				spell.unserialise(serialisedSpells.getJSONObject(key));
+				knownSpells.put(spellLetter, spell);
+			} catch (ClassNotFoundException e) {
+				JRogue.getLogger().error("Unknown spell class {}", spellClassName);
+			} catch (NoSuchMethodException e) {
+				JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
+			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				JRogue.getLogger().error("Error loading spell class {}", spellClassName);
+				JRogue.getLogger().error(e);
+			}
+		});
 	}
 	
 	@Override
@@ -356,7 +468,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int x, int y) {
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().orangeYou("step on your own foot.");
 	}
 	
@@ -431,7 +543,9 @@ public class Player extends LivingEntity {
 	}
 	
 	public void travelDirectional() {
-		getDungeon().prompt(new Prompt("Travel in what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+		String msg = "Travel in what direction?";
+		
+		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
@@ -538,7 +652,9 @@ public class Player extends LivingEntity {
 	}
 	
 	public void kick() {
-		getDungeon().prompt(new Prompt("Kick in what direction?", null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+		String msg = "Kick in what direction?";
+		
+		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
@@ -547,14 +663,16 @@ public class Player extends LivingEntity {
 				}
 				
 				int wisdom = attributes.getAttribute(Attribute.WISDOM);
-
+				
 				if (wisdom > 5) {
 					if (hasStatusEffect(InjuredFoot.class)) {
-						getDungeon().Your("foot is in no shape for kicking."); return;
+						getDungeon().Your("foot is in no shape for kicking.");
+						return;
 					}
-
+					
 					if (hasStatusEffect(StrainedLeg.class)) {
-						getDungeon().Your("leg is in no shape for kicking."); return;
+						getDungeon().Your("leg is in no shape for kicking.");
+						return;
 					}
 				}
 				
@@ -563,7 +681,11 @@ public class Player extends LivingEntity {
 				int dy = d[1];
 				
 				if (getLevel().getEntitiesAt(getX() + dx, getY() + dy).size() > 0) {
-					setAction(new ActionKick(d, getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0), new EntityAction.NoCallback()));
+					setAction(new ActionKick(
+						d,
+						getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0),
+						new EntityAction.NoCallback()
+					));
 				} else {
 					setAction(new ActionKick(d, new EntityAction.NoCallback()));
 				}
@@ -572,51 +694,123 @@ public class Player extends LivingEntity {
 			}
 		}));
 	}
-
+	
+	public void castSpell(Spell spell) {
+		switch (spell.getDirectionType()) {
+			case NON_DIRECTIONAL:
+				castSpellNonDirectional(spell);
+				break;
+			default:
+				castSpellDirectional(spell);
+				break;
+		}
+	}
+	
+	private boolean canCastSpell(Spell spell) {
+		return energy >= spell.getCastingCost();
+	}
+	
+	private void castSpellNonDirectional(Spell spell) {
+		if (!canCastSpell(spell)) {
+			getDungeon().redYou("don't have enough energy to cast that spell.");
+			return;
+		}
+		
+		nutrition -= spell.getNutritionCost();
+		
+		float successChance = spell.getSuccessChance(this) / 100f;
+		
+		if (RandomUtils.randomFloat() <= successChance) {
+			energy -= spell.getCastingCost();
+			spell.castNonDirectional(this);
+		} else {
+			energy -= Math.floor(spell.getCastingCost() / 2);
+			getDungeon().orangeYou("fail to cast the spell correctly.");
+		}
+		
+		getDungeon().turn();
+	}
+	
+	private void castSpellDirectional(Spell spell) {
+		if (!canCastSpell(spell)) {
+			getDungeon().redYou("don't have enough energy to cast that spell.");
+			return;
+		}
+		
+		String msg = "Cast in what direction?";
+		
+		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+			@Override
+			public void onResponse(char response) {
+				if (!Utils.MOVEMENT_CHARS.containsKey(response) &&
+					spell.canCastAtSelf() && response != '5' && response != '.') {
+					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
+					return;
+				}
+				
+				Integer[] d = response == '5' || response == '.' ?
+							  new Integer[]{0, 0} :
+							  Utils.MOVEMENT_CHARS.get(response);
+				int dx = d[0];
+				int dy = d[1];
+				
+				nutrition -= spell.getNutritionCost();
+				energy -= spell.getCastingCost();
+				spell.castDirectional(Player.this, dx, dy);
+				getDungeon().turn();
+			}
+		}));
+	}
+	
 	public enum InventoryUseResult {
 		SUCCESS, NO_CONTAINER, NO_ITEM
 	}
-
-	public InventoryUseResult useInventoryItem(String promptString, Predicate<ItemStack> isEligible, TriConsumer<Character, Container.ContainerEntry, Container> responseCallback, boolean allowHyphen) {
+	
+	public InventoryUseResult useInventoryItem(String promptString,
+											   Predicate<ItemStack> isEligible,
+											   TriConsumer<Character, Container.ContainerEntry, Container> responseCallback,
+											   boolean allowHyphen) {
 		if (!getContainer().isPresent()) {
 			return InventoryUseResult.NO_CONTAINER;
 		}
-
+		
 		Container inv = getContainer().get();
 		Map<Character, ItemStack> eligibleItems = inv.getItems().entrySet().stream()
 			.filter(e -> isEligible.test(e.getValue()))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
+		
 		if (eligibleItems.isEmpty()) {
 			return InventoryUseResult.NO_ITEM;
 		}
-
+		
 		char[] options = ArrayUtils.toPrimitive(eligibleItems.keySet().toArray(new Character[0]));
 		options = Arrays.copyOf(options, options.length + 1);
 		options[options.length - 1] = '-';
-
+		
 		getDungeon().prompt(new Prompt(promptString, options, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				Optional<Container.ContainerEntry> containerEntry = inv.get(response);
-
+				
 				if (!allowHyphen && !containerEntry.isPresent()) {
 					getDungeon().log("Invalid item '[YELLOW]%s[]'.", response);
 					return;
 				}
-
+				
 				Container.ContainerEntry entry = containerEntry.isPresent() ? containerEntry.get() : null;
 				responseCallback.accept(response, entry, inv);
 			}
 		}));
-
+		
 		return InventoryUseResult.SUCCESS;
 	}
-
-	public InventoryUseResult useInventoryItem(String promptString, Predicate<ItemStack> isEligible, TriConsumer<Character, Container.ContainerEntry, Container> responseCallback) {
+	
+	public InventoryUseResult useInventoryItem(String promptString,
+											   Predicate<ItemStack> isEligible,
+											   TriConsumer<Character, Container.ContainerEntry, Container> responseCallback) {
 		return useInventoryItem(promptString, isEligible, responseCallback, false);
 	}
-
+	
 	public void eat() {
 		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
 		
@@ -636,22 +830,24 @@ public class Player extends LivingEntity {
 	private void eatFromFloor(EntityItem entity) {
 		ItemStack stack = entity.getItemStack();
 		ItemComestible item = (ItemComestible) entity.getItem();
-
+		
 		String itemName = item.getName(false, false);
 		String article = item.beginsWithVowel() ? "an" : "a";
 		String promptString = item.isis() ? String.format("There is [YELLOW]%s[] here. Eat it?", itemName) :
-											String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
-
-		getDungeon().prompt(new Prompt(promptString, new char[]{'y', 'n'}, true, new Prompt.SimplePromptCallback(getDungeon()) {
+							  String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
+		
+		char[] options = new char[]{'y', 'n'};
+		
+		getDungeon().prompt(new Prompt(promptString, options, true, new Prompt.SimplePromptCallback(getDungeon()) {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'n') {
 					eatFromInventory();
 					return;
 				}
-
+				
 				ItemComestible itemCopy = (ItemComestible) item.copy();
-
+				
 				setAction(new ActionEat(
 					itemCopy,
 					(EntityAction.CompleteCallback) ent -> {
@@ -660,7 +856,7 @@ public class Player extends LivingEntity {
 						} else {
 							stack.subtractCount(1);
 						}
-
+						
 						if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
 							EntityItem newStack = new EntityItem(
 								getDungeon(),
@@ -669,23 +865,25 @@ public class Player extends LivingEntity {
 								getY(),
 								new ItemStack(itemCopy, 1)
 							);
-
+							
 							getLevel().addEntity(newStack);
 						}
 					}
 				));
-
+				
 				getDungeon().turn();
 			}
 		}));
 	}
 	
 	private void eatFromInventory() {
-		InventoryUseResult result = useInventoryItem("Eat what?", is -> is.getItem() instanceof ItemComestible, (c, ce, inv) -> {
+		String msg = "Eat what?";
+		
+		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof ItemComestible, (c, ce, inv) -> {
 			ItemStack stack = ce.getStack();
 			ItemComestible item = (ItemComestible) stack.getItem();
 			ItemComestible itemCopy = (ItemComestible) item.copy();
-
+			
 			setAction(new ActionEat(
 				itemCopy,
 				(EntityAction.CompleteCallback) entity -> {
@@ -694,56 +892,60 @@ public class Player extends LivingEntity {
 					} else {
 						stack.subtractCount(1);
 					}
-
+					
 					if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
 						inv.add(new ItemStack(itemCopy, 1));
 					}
 				}
 			));
-
+			
 			getDungeon().turn();
 		});
-
+		
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM: 		getDungeon().yellowYou("have nothing to eat."); break;
-			default: 			break;
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to eat.");
+				break;
+			default:
+				break;
 		}
 	}
 	
 	public void quaff() {
-		InventoryUseResult result =
-				useInventoryItem("Quaff what?", is -> is.getItem() instanceof ItemQuaffable && ((ItemQuaffable)is.getItem()).canQuaff(), (c, ce, inv) -> {
+		String msg = "Quaff what?";
+		
+		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(), (c, ce, inv) -> {
 			ItemStack stack = ce.getStack();
 			ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
-
-			setAction(new ActionQuaff(
-				quaffable,
-				(EntityAction.CompleteCallback) entity -> {
-					if (stack.getCount() == 1) {
-						inv.remove(ce.getLetter());
-					} else {
-						stack.subtractCount(1);
-					}
-
-					if (quaffable instanceof ItemPotion) {
-						ItemPotion potion = (ItemPotion) quaffable;
-
-						ItemPotion emptyPotion = new ItemPotion();
-						emptyPotion.setPotionType(potion.getPotionType());
-						emptyPotion.setBottleType(potion.getBottleType());
-						emptyPotion.setPotionColour(potion.getPotionColour());
-						emptyPotion.setEmpty(true);
-						inv.add(new ItemStack(emptyPotion, 1));
-					}
-				})
-			);
+			
+			setAction(new ActionQuaff(quaffable, (EntityAction.CompleteCallback) entity -> {
+				if (stack.getCount() == 1) {
+					inv.remove(ce.getLetter());
+				} else {
+					stack.subtractCount(1);
+				}
+				
+				if (quaffable instanceof ItemPotion) {
+					ItemPotion potion = (ItemPotion) quaffable;
+					
+					ItemPotion emptyPotion = new ItemPotion();
+					emptyPotion.setPotionType(potion.getPotionType());
+					emptyPotion.setBottleType(potion.getBottleType());
+					emptyPotion.setPotionColour(potion.getPotionColour());
+					emptyPotion.setEmpty(true);
+					inv.add(new ItemStack(emptyPotion, 1));
+				}
+			}));
 		});
-
+		
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM:		getDungeon().yellowYou("have nothing to quaff."); break;
-			default:			break;
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to quaff.");
+				break;
+			default:
+				break;
 		}
 	}
 	
@@ -829,26 +1031,37 @@ public class Player extends LivingEntity {
 	}
 	
 	public void drop() {
-		InventoryUseResult result = useInventoryItem("Drop what?", is -> true, (c, ce, inv) -> {
+		String msg = "Drop what?";
+		
+		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
 			ItemStack stack = ce.getStack();
 			Item item = stack.getItem();
-
+			
 			inv.remove(c);
 			dropItem(stack);
-
+			
 			if (item.isis() || stack.getCount() > 1) {
 				getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), c);
 			} else {
-				getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", stack.getName(false), c);
+				getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
+					stack.beginsWithVowel() ? "an" : "a",
+					stack.getName(false),
+					c
+				);
 			}
-
+			
 			getDungeon().turn();
 		});
-
+		
 		switch (result) {
-			case NO_CONTAINER:	getDungeon().yellowYou("can't hold anything!"); break;
-			case NO_ITEM:		getDungeon().yellowYou("don't have any items to drop!"); break;
-			default: 			break;
+			case NO_CONTAINER:
+				getDungeon().yellowYou("can't hold anything!");
+				break;
+			case NO_ITEM:
+				getDungeon().yellowYou("don't have any items to drop!");
+				break;
+			default:
+				break;
 		}
 	}
 	
@@ -876,7 +1089,9 @@ public class Player extends LivingEntity {
 	}
 	
 	public void wield() {
-		InventoryUseResult result = useInventoryItem("Wield what?", is -> is.getItem() instanceof Wieldable, (c, ce, inv) -> {
+		String msg = "Wield what?";
+		
+		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof Wieldable, (c, ce, inv) -> {
 			if (c == '-') {
 				setLeftHand(null);
 				setRightHand(null);
@@ -884,40 +1099,104 @@ public class Player extends LivingEntity {
 				getDungeon().turn();
 				return;
 			}
-
+			
 			if (ce == null) {
 				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", c));
 				return;
 			}
-
+			
 			ItemStack stack = ce.getStack();
 			Item item = stack.getItem();
-
+			
 			if (getRightHand() != null && ((Wieldable) getRightHand().getStack().getItem()).isTwoHanded()) {
 				setLeftHand(null);
 			}
-
+			
 			setRightHand(ce);
-
+			
 			if (((Wieldable) item).isTwoHanded()) {
 				setLeftHand(ce);
 			}
-
+			
 			String name = stack.getName(false);
-
+			
 			if (item.isis() || stack.getCount() > 1) {
 				getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
 			} else {
 				getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
 			}
-
+			
 			getDungeon().turn();
 		}, true);
-
+		
 		switch (result) {
 			case NO_CONTAINER:
-			case NO_ITEM:		getDungeon().yellowYou("have nothing to wield!"); break;
-			default:			break;
+			case NO_ITEM:
+				getDungeon().yellowYou("have nothing to wield!");
+				break;
+			default:
+				break;
+		}
+	}
+	
+	public void fire() {
+		// TODO: quiver
+	}
+	
+	public void throwItem() {
+		String msg = "Throw what?";
+		
+		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
+			ItemStack stack = ce.getStack();
+			Item item = stack.getItem();
+			
+			String msg2 = "In what direction?";
+			
+			getDungeon().prompt(new Prompt(msg2, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
+				@Override
+				public void onResponse(char response) {
+					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+						getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
+						return;
+					}
+					
+					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+					int dx = d[0];
+					int dy = d[1];
+					
+					if (
+						item instanceof ItemProjectile &&
+						getRightHand() != null &&
+						getRightHand().getStack().getItem() instanceof ItemProjectileLauncher
+					) {
+						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getStack().getItem();
+						boolean fired = launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
+						
+						if (fired) {
+							if (stack.getCount() <= 1) {
+								inv.remove(ce.getLetter());
+							} else {
+								stack.subtractCount(1);
+							}
+						}
+					} else {
+						// TODO: regular item throwing
+					}
+					
+					getDungeon().turn();
+				}
+			}));
+		});
+		
+		switch (result) {
+			case NO_CONTAINER:
+				getDungeon().yellowYou("can't hold anything!");
+				break;
+			case NO_ITEM:
+				getDungeon().yellowYou("don't have any items to throw!");
+				break;
+			default:
+				break;
 		}
 	}
 	
@@ -1011,16 +1290,20 @@ public class Player extends LivingEntity {
 	
 	private int getDexterityHitBonus() {
 		int dexterity = getAttributes().getAttribute(Attribute.DEXTERITY);
-		return dexterity < 15 ? (int) Math.floor(dexterity / 5) - 2: dexterity - 15;
+		return dexterity < 15 ? (int) Math.floor(dexterity / 5) - 2 : dexterity - 15;
 	}
 	
 	private int getWeaponSkillHitBonus(SkillLevel skillLevel) {
 		switch (skillLevel) {
-			case UNSKILLED:	return -4;
-			case ADVANCED: 	return 2;
+			case UNSKILLED:
+				return -4;
+			case ADVANCED:
+				return 2;
 			case EXPERT:
-			case MASTER:	return 3;
-			default:		return 0;
+			case MASTER:
+				return 3;
+			default:
+				return 0;
 		}
 	}
 	
