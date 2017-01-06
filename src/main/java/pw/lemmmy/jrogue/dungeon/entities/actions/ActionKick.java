@@ -98,11 +98,7 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 		
-		if (
-			(tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
-			tile.hasState() &&
-			tile.getState() instanceof TileStateDoor
-		) {
+		if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
 			int damage = 1;
 			
 			if (isPlayer) {

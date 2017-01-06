@@ -7,6 +7,8 @@ import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateDoor;
 import java.awt.*;
 import java.util.Arrays;
 
+import static pw.lemmmy.jrogue.dungeon.tiles.TileFlag.*;
+
 public enum TileType {
 	TILE_DUMMY(0, Solidity.WALK_ON),
 	
@@ -19,72 +21,72 @@ public enum TileType {
 	TILE_DEBUG_G(7, Solidity.WALK_ON),
 	TILE_DEBUG_H(8, Solidity.WALK_ON),
 	
-	TILE_GROUND(9, Solidity.SOLID, true),
-	TILE_GROUND_WATER(10, Solidity.WATER, true, new Color(0x3072D6), 40, 5),
+	TILE_GROUND(9, BUILDABLE, Solidity.SOLID),
+	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Color(0x3072D6), 40, 5),
 	
-	TILE_ROOM_WALL(11, Solidity.SOLID),
-	TILE_ROOM_TORCH_FIRE(12, Solidity.SOLID, false, new Color(0xFF9B26), 100, 0),
-	TILE_ROOM_TORCH_ICE(13, Solidity.SOLID, false, new Color(0x8BD1EC), 100, 0),
-	TILE_ROOM_FLOOR(14, Solidity.WALK_ON),
-	TILE_ROOM_WATER(15, Solidity.WATER),
-	TILE_ROOM_PUDDLE(16, Solidity.WALK_ON),
-	TILE_ROOM_RUG(26, Solidity.WALK_ON),
+	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
+	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Color(0xFF9B26), 100, 0),
+	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Color(0x8BD1EC), 100, 0),
+	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
+	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM, Solidity.WALK_ON),
 	
-	TILE_ROOM_DOOR_LOCKED(17, Solidity.SOLID, TileStateDoor.class),
-	TILE_ROOM_DOOR_CLOSED(18, Solidity.SOLID, TileStateDoor.class),
-	TILE_ROOM_DOOR_OPEN(19, Solidity.WALK_THROUGH, TileStateDoor.class),
-	TILE_ROOM_DOOR_BROKEN(20, Solidity.WALK_THROUGH, TileStateDoor.class),
+	TILE_ROOM_DOOR_LOCKED(17, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_CLOSED(18, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_OPEN(19, WALL | DOOR | SEMI_TRANSPARENT, Solidity.WALK_THROUGH, TileStateDoor.class),
+	TILE_ROOM_DOOR_BROKEN(20, WALL | DOOR | SEMI_TRANSPARENT, Solidity.WALK_THROUGH, TileStateDoor.class),
 	
-	TILE_ROOM_STAIRS_UP(21, Solidity.WALK_ON, TileStateClimbable.class),
-	TILE_ROOM_STAIRS_DOWN(22, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_STAIRS_UP(21, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_STAIRS_DOWN(22, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
 	
-	TILE_ROOM_LADDER_UP(23, Solidity.WALK_ON, TileStateClimbable.class),
-	TILE_ROOM_LADDER_DOWN(24, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_LADDER_UP(23, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_LADDER_DOWN(24, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
 	
-	TILE_CORRIDOR(25, Solidity.WALK_ON, true, Color.BLACK, 0, 20);
+	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON, Color.BLACK, 0, 20);
 	
 	private short id;
+	private int flags;
 	
 	private Solidity solidity;
 	private Class<? extends TileState> stateClass;
-	private boolean buildable;
 	
 	private Color light;
 	private int lightIntensity = 0;
 	private int absorb;
 	
 	TileType(int id, Solidity solidity) {
-		this(id, solidity, null, false);
+		this(id, 0, solidity, null);
 	}
 	
-	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass, boolean buildable) {
-		this(id, solidity, stateClass, buildable, null, 0, 0);
+	TileType(int id, int flags, Solidity solidity) {
+		this(id, flags, solidity, null);
 	}
 	
 	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass) {
-		this(id, solidity, stateClass, false);
+		this(id, 0, solidity, stateClass, null, 0, 0);
 	}
 	
-	TileType(int id, Solidity solidity, boolean buildable) {
-		this(id, solidity, null, buildable, null, 0, 0);
+	TileType(int id, int flags, Solidity solidity, Class<? extends TileState> stateClass) {
+		this(id, flags, solidity, stateClass, null, 0, 0);
 	}
 	
-	TileType(int id, Solidity solidity, boolean buildable, Color light, int lightIntensity, int absorb) {
-		this(id, solidity, null, buildable, light, lightIntensity, absorb);
+	TileType(int id, int flags, Solidity solidity, Color light, int lightIntensity, int absorb) {
+		this(id, flags, solidity, null, light, lightIntensity, absorb);
 	}
 	
 	TileType(int id,
+			 int flags,
 			 Solidity solidity,
 			 Class<? extends TileState> stateClass,
-			 boolean buildable,
 			 Color light,
 			 int lightIntensity,
 			 int absorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
+		this.flags = flags;
 		
 		this.solidity = solidity;
 		this.stateClass = stateClass;
-		this.buildable = buildable;
 		
 		this.light = light;
 		this.lightIntensity = lightIntensity;
@@ -100,16 +102,20 @@ public enum TileType {
 		}
 	}
 	
+	public short getID() {
+		return id;
+	}
+	
+	public int getFlags() {
+		return flags;
+	}
+	
 	public Solidity getSolidity() {
 		return solidity;
 	}
 	
 	public Class<? extends TileState> getStateClass() {
 		return stateClass;
-	}
-	
-	public boolean isBuildable() {
-		return buildable;
 	}
 	
 	public Color getLight() {
@@ -124,40 +130,36 @@ public enum TileType {
 		return absorb;
 	}
 	
-	public short getID() {
-		return id;
+	public boolean isBuildable() {
+		return (flags & TileFlag.BUILDABLE) == TileFlag.BUILDABLE;
 	}
 	
 	public boolean isWallTile() {
-		return this == TILE_ROOM_WALL ||
-			this == TILE_ROOM_TORCH_FIRE ||
-			this == TILE_ROOM_TORCH_ICE ||
-			this == TILE_ROOM_DOOR_LOCKED ||
-			this == TILE_ROOM_DOOR_CLOSED ||
-			this == TILE_ROOM_DOOR_OPEN ||
-			this == TILE_ROOM_DOOR_BROKEN;
+		return (flags & TileFlag.WALL) == TileFlag.WALL;
 	}
 	
 	public boolean isFloorTile() {
-		return this == TILE_ROOM_FLOOR ||
-			this == TILE_ROOM_WATER ||
-			this == TILE_ROOM_PUDDLE;
+		return (flags & TileFlag.FLOOR) == TileFlag.FLOOR;
 	}
 	
 	public boolean isInnerRoomTile() {
-		return this == TILE_ROOM_FLOOR ||
-			this == TILE_ROOM_WATER ||
-			this == TILE_ROOM_PUDDLE ||
-			this == TILE_ROOM_STAIRS_UP ||
-			this == TILE_ROOM_STAIRS_DOWN;
+		return (flags & TileFlag.INNER_ROOM) == TileFlag.INNER_ROOM;
 	}
 	
 	public boolean isSemiTransparent() {
-		return this == TILE_ROOM_DOOR_OPEN || this == TILE_ROOM_DOOR_BROKEN;
+		return (flags & TileFlag.SEMI_TRANSPARENT) == TileFlag.SEMI_TRANSPARENT;
 	}
 	
 	public boolean isWater() {
-		return this == TILE_GROUND_WATER || this == TILE_ROOM_WATER || this == TILE_ROOM_PUDDLE;
+		return (flags & TileFlag.WATER) == TileFlag.WATER;
+	}
+	
+	public boolean isDoor() {
+		return (flags & TileFlag.DOOR) == TileFlag.DOOR;
+	}
+	
+	public boolean isDoorShut() {
+		return (flags & TileFlag.DOOR_SHUT) == TileFlag.DOOR_SHUT;
 	}
 	
 	public String onWalk() {
