@@ -104,10 +104,12 @@ public class ActionKick extends EntityAction {
 			if (isPlayer) {
 				Player player = (Player) kicker;
 				int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-				damage = (int) Math.ceil(strength / 8);
+				damage = RandomUtils.roll((int) Math.ceil(strength / 8) + 1);
 			}
 			
-			if (((TileStateDoor) tile.getState()).damage(damage) > 0) {
+			TileStateDoor doorState = (TileStateDoor) tile.getState();
+			
+			if (doorState.damage(damage) > 0) {
 				msg.logRandom(
 					"WHAMM!!",
 					"CRASH!!"
