@@ -131,31 +131,31 @@ public enum TileType {
 	}
 	
 	public boolean isBuildable() {
-		return (flags & TileFlag.BUILDABLE) == TileFlag.BUILDABLE;
+		return (flags & BUILDABLE) == BUILDABLE;
 	}
 	
 	public boolean isWallTile() {
-		return (flags & TileFlag.WALL) == TileFlag.WALL;
+		return (flags & WALL) == WALL;
 	}
 	
 	public boolean isFloorTile() {
-		return (flags & TileFlag.FLOOR) == TileFlag.FLOOR;
+		return (flags & FLOOR) == FLOOR;
 	}
 	
 	public boolean isInnerRoomTile() {
-		return (flags & TileFlag.INNER_ROOM) == TileFlag.INNER_ROOM;
+		return (flags & INNER_ROOM) == INNER_ROOM;
 	}
 	
 	public boolean isSemiTransparent() {
-		return (flags & TileFlag.SEMI_TRANSPARENT) == TileFlag.SEMI_TRANSPARENT;
+		return (flags & SEMI_TRANSPARENT) == SEMI_TRANSPARENT;
 	}
 	
 	public boolean isWater() {
-		return (flags & TileFlag.WATER) == TileFlag.WATER;
+		return (flags & WATER) == WATER;
 	}
 	
 	public boolean isDoor() {
-		return (flags & TileFlag.DOOR) == TileFlag.DOOR;
+		return (flags & DOOR) == DOOR;
 	}
 	
 	public boolean isDoorShut() {
