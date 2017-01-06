@@ -494,13 +494,12 @@ public class Player extends LivingEntity {
 		
 		Tile tile = getLevel().getTile(newX, newY);
 		
-		// TODO: More in-depth movement verification
-		// 		 e.g. a player shouldn't be able to travel diagonally to
-		//       a different tile type than the one they are standing on
-		//       unless it is a door
-		
 		if (tile == null) {
-			getDungeon().log("It would be silly to walk there.");
+			return;
+		}
+		
+		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
+			// prevent diagonal movement to a door - the player cannot reach the handle
 			return;
 		}
 		
