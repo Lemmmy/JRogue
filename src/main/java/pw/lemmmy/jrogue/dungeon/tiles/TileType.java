@@ -130,7 +130,7 @@ public enum TileType {
 	
 	public boolean isWallTile() {
 		return this == TILE_ROOM_WALL ||
-			  this == TILE_ROOM_TORCH_FIRE ||
+			this == TILE_ROOM_TORCH_FIRE ||
 			this == TILE_ROOM_TORCH_ICE ||
 			this == TILE_ROOM_DOOR_LOCKED ||
 			this == TILE_ROOM_DOOR_CLOSED ||
