@@ -64,7 +64,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	
 	@Override
 	public String getName(boolean requiresCapitalisation, boolean plural) {
-		String emptyText = requiresCapitalisation ? "Empty " : "empty ";
+		String emptyText = requiresCapitalisation ? "Glass bottle" : "glass bottle";
 		
 		if (empty && requiresCapitalisation) {
 			requiresCapitalisation = false;
@@ -80,7 +80,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 			colourName += " ";
 		}
 		
-		return (empty ? emptyText : "") + colourName + "potion" + (plural ? "s" : "");
+		return (empty ? emptyText : colourName + "potion") + (plural ? "s" : "");
 	}
 	
 	@Override
