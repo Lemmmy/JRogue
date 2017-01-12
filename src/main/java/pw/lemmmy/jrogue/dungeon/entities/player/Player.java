@@ -16,7 +16,9 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerTeleport;
 import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerVisitor;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerWalk;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -486,64 +488,11 @@ public class Player extends LivingEntity {
 	}
 	
 	public void teleport(int x, int y) {
-		setAction(new ActionTeleport(x, y, new EntityAction.NoCallback()));
-		getDungeon().turn();
+		acceptVisitor(new PlayerTeleport(x, y));
 	}
 	
 	public void walk(int dx, int dy) {
-		dx = Math.max(-1, Math.min(1, dx));
-		dy = Math.max(-1, Math.min(1, dy));
-		
-		int newX = getX() + dx;
-		int newY = getY() + dy;
-		
-		Tile tile = getLevel().getTile(newX, newY);
-		
-		if (tile == null) {
-			return;
-		}
-		
-		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
-			// prevent diagonal movement to a door - the player cannot reach the handle
-			return;
-		}
-		
-		List<Entity> destEntities = getLevel().getEntitiesAt(newX, newY);
-		
-		if (destEntities.size() > 0) {
-			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
-			
-			Optional<Entity> ent = destEntities.stream()
-				.filter(e -> e instanceof LivingEntity)
-				.findFirst();
-			
-			if (ent.isPresent()) {
-				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getRightHand().getItem()).hit(this, (LivingEntity) ent.get());
-				} else if (getLeftHand() != null && getLeftHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getLeftHand().getItem()).hit(this, (LivingEntity) ent.get());
-				} else {
-					getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
-				}
-			} else {
-				walkAction(tile, newX, newY);
-			}
-		} else {
-			walkAction(tile, newX, newY);
-		} // TODO: Restructure this mess
-		
-		getDungeon().turn();
-	}
-	
-	private void walkAction(Tile tile, int x, int y) {
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			getDungeon().The("door is locked.");
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
-			getDungeon().You("open the door.");
-		}
+		acceptVisitor(new PlayerWalk(dx, dy));
 	}
 	
 	public void travelDirectional() {
