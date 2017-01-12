@@ -17,6 +17,7 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerTeleport;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerTravelDirectional;
 import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerVisitor;
 import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerWalk;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
@@ -496,52 +497,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void travelDirectional() {
-		String msg = "Travel in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				Path pathTaken = new Path();
-				
-				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				for (int i = 0; i < 50; i++) { // max 50 steps in one move
-					Tile destTile = getLevel().getTile(getX() + dx, getY() + dy);
-					
-					if (
-						destTile == null ||
-							i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
-							destTile.getType().getSolidity() == TileType.Solidity.SOLID
-						) {
-						break;
-					}
-					
-					int oldX = getX();
-					int oldY = getY();
-					
-					pathTaken.addStep(destTile);
-					setAction(new ActionMove(getX() + dx, getY() + dy, new EntityAction.NoCallback()));
-					getDungeon().turn();
-					
-					if (oldX == getX() && oldY == getY()) { // we didn't go anywhere, so stop
-						break;
-					}
-					
-					if (i > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
-						break;
-					}
-				}
-				
-				getDungeon().showPath(pathTaken);
-			}
-		}));
+		acceptVisitor(new PlayerTravelDirectional());
 	}
 	
 	public void travelPathfind(int tx, int ty) {
