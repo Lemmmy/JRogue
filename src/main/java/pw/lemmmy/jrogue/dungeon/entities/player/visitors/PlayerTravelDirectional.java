@@ -23,41 +23,45 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 					return;
 				}
 				
-				Path pathTaken = new Path();
-				
-				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				for (int i = 0; i < 50; i++) { // max 50 steps in one move
-					Tile destTile = player.getLevel().getTile(player.getX() + dx, player.getY() + dy);
-					
-					if (
-						destTile == null ||
-							i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
-							destTile.getType().getSolidity() == TileType.Solidity.SOLID
-						) {
-						break;
-					}
-					
-					int oldX = player.getX();
-					int oldY = player.getY();
-					
-					pathTaken.addStep(destTile);
-					player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new EntityAction.NoCallback()));
-					player.getDungeon().turn();
-					
-					if (oldX == player.getX() && oldY == player.getY()) { // we didn't go anywhere, so stop
-						break;
-					}
-					
-					if (i > 2 && player.getLevel().getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
-						break;
-					}
-				}
-				
-				player.getDungeon().showPath(pathTaken);
+				travel(response, player);
 			}
 		}));
+	}
+	
+	private void travel(char response, Player player) {
+		Path pathTaken = new Path();
+		
+		Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+		int dx = d[0];
+		int dy = d[1];
+		
+		for (int i = 0; i < 50; i++) { // max 50 steps in one move
+			Tile destTile = player.getLevel().getTile(player.getX() + dx, player.getY() + dy);
+			
+			if (
+				destTile == null ||
+					i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
+					destTile.getType().getSolidity() == TileType.Solidity.SOLID
+				) {
+				break;
+			}
+			
+			int oldX = player.getX();
+			int oldY = player.getY();
+			
+			pathTaken.addStep(destTile);
+			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new EntityAction.NoCallback()));
+			player.getDungeon().turn();
+			
+			if (oldX == player.getX() && oldY == player.getY()) { // we didn't go anywhere, so stop
+				break;
+			}
+			
+			if (i > 2 && player.getLevel().getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
+				break;
+			}
+		}
+		
+		player.getDungeon().showPath(pathTaken);
 	}
 }
