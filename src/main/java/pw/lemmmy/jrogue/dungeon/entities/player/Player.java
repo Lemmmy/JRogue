@@ -16,10 +16,7 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
-import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerTeleport;
-import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerTravelDirectional;
-import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerVisitor;
-import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerWalk;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.*;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -286,6 +283,10 @@ public class Player extends LivingEntity {
 	public void godmode() {
 		this.godmode = true;
 	}
+		
+	public AStarPathfinder getPathfinder() {
+		return pathfinder;
+	}
 	
 	@Override
 	public void applyMovementPoints() {
@@ -501,63 +502,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void travelPathfind(int tx, int ty) {
-		Tile destTile = getLevel().getTile(tx, ty);
-		
-		if (destTile == null || !getLevel().isTileDiscovered(tx, ty)) {
-			getDungeon().You("can't travel there.");
-			return;
-		}
-		
-		Path path = pathfinder.findPath(
-			getLevel(),
-			getX(),
-			getY(),
-			tx,
-			ty,
-			50,
-			true,
-			new ArrayList<>()
-		);
-		
-		Path pathTaken = new Path();
-		
-		if (path == null || path.getLength() == 0) {
-			getDungeon().You("can't travel there.");
-			return;
-		}
-		
-		AtomicBoolean stop = new AtomicBoolean(false);
-		AtomicInteger i = new AtomicInteger(0);
-		
-		path.forEach(step -> {
-			i.incrementAndGet();
-			
-			if (stop.get()) { return; }
-			if (getX() == step.getX() && getY() == step.getY()) { return; }
-			
-			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
-				stop.set(true);
-				return;
-			}
-			
-			int oldX = getX();
-			int oldY = getY();
-			
-			pathTaken.addStep(step);
-			setAction(new ActionMove(step.getX(), step.getY(), new EntityAction.NoCallback()));
-			getDungeon().turn();
-			
-			if (oldX == getX() && oldY == getY()) {
-				stop.set(true);
-				return;
-			}
-			
-			if (i.get() > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
-				stop.set(true);
-			}
-		});
-		
-		getDungeon().showPath(pathTaken);
+		acceptVisitor(new PlayerTravelPathfind(tx, ty));
 	}
 	
 	public void kick() {
