@@ -16,6 +16,7 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.PlayerVisitor;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -478,6 +479,10 @@ public class Player extends LivingEntity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return false;
+	}
+	
+	private void acceptVisitor(PlayerVisitor visitor) {
+		visitor.visit(this);
 	}
 	
 	public void teleport(int x, int y) {
