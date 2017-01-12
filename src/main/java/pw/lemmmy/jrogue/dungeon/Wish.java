@@ -17,6 +17,8 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Material;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
+import pw.lemmmy.jrogue.dungeon.items.magical.ItemSpellbook;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellLightOrb;
 import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemArrow;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
@@ -234,7 +236,10 @@ public class Wish {
 			potion.setEmpty(false);
 			potion.setPotency(potency);
 			item = potion;
-		} else if (wish.equalsIgnoreCase("bow")) {
+		} else if (wish.equalsIgnoreCase("spellbook")) {
+			item = new ItemSpellbook();
+			((ItemSpellbook) item).setSpell(new SpellLightOrb());
+		}  else if (wish.equalsIgnoreCase("bow")) {
 			item = new ItemBow();
 		} else if (wish.equalsIgnoreCase("arrow")) {
 			item = new ItemArrow();
