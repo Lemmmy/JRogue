@@ -23,7 +23,7 @@ public class MonsterRat extends Monster {
 	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		speed = (Dungeon.NORMAL_SPEED + 4) - RandomUtils.random(8);
+		speed = Dungeon.NORMAL_SPEED + 4 - RandomUtils.random(8);
 		
 		setAI(new GhoulAI(this));
 	}
