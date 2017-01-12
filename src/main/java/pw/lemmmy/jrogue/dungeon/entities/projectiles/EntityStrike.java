@@ -36,7 +36,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	public void onHitTile(Tile tile) {
 		super.onHitTile(tile);
 		
-		if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED || tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
+		if (tile.getType().isDoorShut()) {
 			getDungeon().The("door crashes open!");
 			tile.setType(TileType.TILE_ROOM_DOOR_BROKEN);
 		}

@@ -221,15 +221,23 @@ public class Container implements Serialisable {
 			return letter;
 		}
 		
+		public Item getItem() {
+			return stack.getItem();
+		}
+		
+		public int getCount() {
+			return stack.getCount();
+		}
+		
 		public ItemStack getStack() {
 			return stack;
 		}
 		
-		public ItemStack setValue(final ItemStack value) {
-			final ItemStack oldValue = this.stack;
+		public ItemStack setStack(final ItemStack value) {
+			final ItemStack oldStack = this.stack;
 			this.stack = value;
 			items.put(letter, value);
-			return oldValue;
+			return oldStack;
 		}
 	}
 }

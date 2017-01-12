@@ -11,6 +11,8 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -90,7 +92,15 @@ public class MonsterSpider extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().You("step on the %s!", getName(false));
 		
-		if (RandomUtils.roll(1, 2) == 1) { // TODO: Make this dependent on player strength and martial arts skill
+		int damageChance = 2;
+		
+		if (isPlayer) {
+			Player player = (Player) kicker;
+			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+			damageChance = (int) Math.ceil(strength / 6) + 1;
+		}
+		
+		if (RandomUtils.roll(1, damageChance) == 1) {
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 	}

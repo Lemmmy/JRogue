@@ -65,7 +65,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
-	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>(); // TODO: Below and above
+	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
 	
 	private List<PopupWindow> windows = new ArrayList<>();
 	

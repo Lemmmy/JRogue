@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
+import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -69,8 +70,13 @@ public class ActionKick extends EntityAction {
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
-				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not strain their legs
 				if (isPlayer) {
+					Player player = (Player) kicker;
+					
+					if (player.getAttributes().getAttribute(Attribute.STRENGTH) >= 12) {
+						return;
+					}
+					
 					msg.logRandom(
 						"[RED]Bad move! You strain your leg!",
 						"[RED]Bad idea! You strain your leg!",
@@ -92,12 +98,18 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 		
-		if (
-			(tileType == TileType.TILE_ROOM_DOOR_LOCKED || tileType == TileType.TILE_ROOM_DOOR_CLOSED) &&
-			tile.hasState() &&
-			tile.getState() instanceof TileStateDoor
-		) {
-			if (((TileStateDoor) tile.getState()).damage(1) > 0) { // TODO: Make this based on strength
+		if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
+			int damage = 1;
+			
+			if (isPlayer) {
+				Player player = (Player) kicker;
+				int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+				damage = RandomUtils.roll((int) Math.ceil(strength / 8) + 1);
+			}
+			
+			TileStateDoor doorState = (TileStateDoor) tile.getState();
+			
+			if (doorState.damage(damage) > 0) {
 				msg.logRandom(
 					"WHAMM!!",
 					"CRASH!!"
@@ -118,8 +130,13 @@ public class ActionKick extends EntityAction {
 			}
 			
 			if (RandomUtils.roll(5) == 1) {
-				// TODO: If the player is skilled in martial arts or has high strength/agility, make them not damage their feet
 				if (isPlayer) {
+					Player player = (Player) kicker;
+					
+					if (player.getAttributes().getAttribute(Attribute.STRENGTH) >= 12) {
+						return;
+					}
+					
 					msg.logRandom(
 						"[RED]Ouch! That hurt a lot!",
 						"[RED]Ouch! That caused some bad damage to your foot!"

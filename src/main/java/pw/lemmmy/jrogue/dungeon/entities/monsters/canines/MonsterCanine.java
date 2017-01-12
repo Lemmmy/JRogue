@@ -10,6 +10,8 @@ import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public abstract class MonsterCanine extends Monster {
@@ -48,15 +50,29 @@ public abstract class MonsterCanine extends Monster {
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().You("kick the %s!", getName(false));
 		
-		if (RandomUtils.roll(1, 5) == 1) {
-			// TODO: If a player has a higher agility or speed, the monster is less likely to dodge
+		int dodgeChance = 5;
+		
+		if (isPlayer) {
+			Player player = (Player) kicker;
+			int agility = player.getAttributes().getAttribute(Attribute.AGILITY);
+			dodgeChance = (int) Math.ceil(agility / 3);
+		}
+		
+		if (RandomUtils.roll(1, dodgeChance) == 1) {
 			getDungeon().orangeThe("%s dodges your kick!", getName(false));
 			
 			return;
 		}
+				
+		int damageChance = 2;
 		
-		if (RandomUtils.roll(1, 2) == 1) {
-			// TODO: Make this dependent on player strength and martial arts skill
+		if (isPlayer) {
+			Player player = (Player) kicker;
+			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+			damageChance = (int) Math.ceil(strength / 6) + 1;
+		}
+		
+		if (RandomUtils.roll(1, damageChance) == 1) {
 			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
 		}
 		

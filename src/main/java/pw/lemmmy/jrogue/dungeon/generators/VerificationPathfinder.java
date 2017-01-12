@@ -14,7 +14,7 @@ public class VerificationPathfinder extends AStarPathfinder {
 			level.getTile(x, y) != null &&
 			(
 				level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID ||
-					level.getTileType(x, y) == TileType.TILE_ROOM_DOOR_CLOSED
+				level.getTileType(x, y).isDoorShut()
 			) &&
 			!avoidTiles.contains(level.getTileType(x, y));
 	}

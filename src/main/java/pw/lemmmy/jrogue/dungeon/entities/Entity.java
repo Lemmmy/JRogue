@@ -265,5 +265,11 @@ public abstract class Entity implements Serialisable {
 	
 	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
 	
+	public void teleport(LivingEntity walker, boolean isPlayer) {
+		onTeleport(walker, isPlayer);
+	}
+	
+	protected void onTeleport(LivingEntity walker, boolean isPlayer) {}
+	
 	public abstract boolean canBeWalkedOn();
 }

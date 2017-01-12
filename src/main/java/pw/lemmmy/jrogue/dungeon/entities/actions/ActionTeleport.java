@@ -38,8 +38,7 @@ public class ActionTeleport extends EntityAction {
 		}
 		
 		List<Entity> walkable = entity.getLevel().getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.walk((LivingEntity) entity, entity instanceof Player));
-		// TODO: change to teleport
+		walkable.forEach(e -> e.teleport((LivingEntity) entity, entity instanceof Player));
 		
 		runOnCompleteCallback(entity);
 	}

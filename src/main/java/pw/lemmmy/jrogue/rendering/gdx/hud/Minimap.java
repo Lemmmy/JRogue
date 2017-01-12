@@ -119,10 +119,7 @@ public class Minimap implements Dungeon.Listener {
 		
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			colour = NONSOLID_COLOUR;
-		}
-		
-		if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED ||
-			tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
+		} else if (tile.getType().isDoorShut()) {
 			colour = DOOR_COLOUR;
 		}
 		

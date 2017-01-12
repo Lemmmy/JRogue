@@ -494,13 +494,12 @@ public class Player extends LivingEntity {
 		
 		Tile tile = getLevel().getTile(newX, newY);
 		
-		// TODO: More in-depth movement verification
-		// 		 e.g. a player shouldn't be able to travel diagonally to
-		//       a different tile type than the one they are standing on
-		//       unless it is a door
-		
 		if (tile == null) {
-			getDungeon().log("It would be silly to walk there.");
+			return;
+		}
+		
+		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
+			// prevent diagonal movement to a door - the player cannot reach the handle
 			return;
 		}
 		
@@ -514,10 +513,10 @@ public class Player extends LivingEntity {
 				.findFirst();
 			
 			if (ent.isPresent()) {
-				if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getRightHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
-				} else if (getLeftHand() != null && getLeftHand().getStack().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getLeftHand().getStack().getItem()).hit(this, (LivingEntity) ent.get());
+				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getRightHand().getItem()).hit(this, (LivingEntity) ent.get());
+				} else if (getLeftHand() != null && getLeftHand().getItem() instanceof ItemWeaponMelee) {
+					((ItemWeaponMelee) getLeftHand().getItem()).hit(this, (LivingEntity) ent.get());
 				} else {
 					getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
 				}
@@ -1108,7 +1107,7 @@ public class Player extends LivingEntity {
 			ItemStack stack = ce.getStack();
 			Item item = stack.getItem();
 			
-			if (getRightHand() != null && ((Wieldable) getRightHand().getStack().getItem()).isTwoHanded()) {
+			if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
 				setLeftHand(null);
 			}
 			
@@ -1167,9 +1166,9 @@ public class Player extends LivingEntity {
 					if (
 						item instanceof ItemProjectile &&
 						getRightHand() != null &&
-						getRightHand().getStack().getItem() instanceof ItemProjectileLauncher
+						getRightHand().getItem() instanceof ItemProjectileLauncher
 					) {
-						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getStack().getItem();
+						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getItem();
 						boolean fired = launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
 						
 						if (fired) {
@@ -1315,8 +1314,8 @@ public class Player extends LivingEntity {
 		int roll = RandomUtils.jroll(20);
 		int toHit = 1;
 		
-		if (getRightHand() != null && getRightHand().getStack().getItem() instanceof ItemWeapon) {
-			ItemWeapon weapon = (ItemWeapon) getRightHand().getStack().getItem();
+		if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeapon) {
+			ItemWeapon weapon = (ItemWeapon) getRightHand().getItem();
 			
 			toHit += weapon.getToHitBonus();
 			
