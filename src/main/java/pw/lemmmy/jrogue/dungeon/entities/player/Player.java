@@ -506,47 +506,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void kick() {
-		String msg = "Kick in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				int wisdom = attributes.getAttribute(Attribute.WISDOM);
-				
-				if (wisdom > 5) {
-					if (hasStatusEffect(InjuredFoot.class)) {
-						getDungeon().Your("foot is in no shape for kicking.");
-						return;
-					}
-					
-					if (hasStatusEffect(StrainedLeg.class)) {
-						getDungeon().Your("leg is in no shape for kicking.");
-						return;
-					}
-				}
-				
-				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				if (getLevel().getEntitiesAt(getX() + dx, getY() + dy).size() > 0) {
-					setAction(new ActionKick(
-						d,
-						getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0),
-						new EntityAction.NoCallback()
-					));
-				} else {
-					setAction(new ActionKick(d, new EntityAction.NoCallback()));
-				}
-				
-				getDungeon().turn();
-			}
-		}));
+		acceptVisitor(new PlayerKick());
 	}
 	
 	public void castSpell(Spell spell) {

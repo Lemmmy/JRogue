@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.player.visitors;
 
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionTeleport;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
