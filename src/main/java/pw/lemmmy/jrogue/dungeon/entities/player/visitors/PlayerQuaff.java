@@ -24,6 +24,8 @@ public class PlayerQuaff extends PlayerItemVisitor {
 					quaffable,
 					(EntityAction.CompleteCallback) entity -> quaffCallback(ce, inv, stack, quaffable))
 				);
+				
+				player.getDungeon().turn();
 			}
 		);
 		
