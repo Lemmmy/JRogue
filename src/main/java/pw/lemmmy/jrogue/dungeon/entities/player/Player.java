@@ -541,40 +541,6 @@ public class Player extends LivingEntity {
 	}
 	
 	public void quaff() {
-		String msg = "Quaff what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(), (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
-			
-			setAction(new ActionQuaff(quaffable, (EntityAction.CompleteCallback) entity -> {
-				if (stack.getCount() == 1) {
-					inv.remove(ce.getLetter());
-				} else {
-					stack.subtractCount(1);
-				}
-				
-				if (quaffable instanceof ItemPotion) {
-					ItemPotion potion = (ItemPotion) quaffable;
-					
-					ItemPotion emptyPotion = new ItemPotion();
-					emptyPotion.setPotionType(potion.getPotionType());
-					emptyPotion.setBottleType(potion.getBottleType());
-					emptyPotion.setPotionColour(potion.getPotionColour());
-					emptyPotion.setEmpty(true);
-					inv.add(new ItemStack(emptyPotion, 1));
-				}
-			}));
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to quaff.");
-				break;
-			default:
-				break;
-		}
 	}
 	
 	public void consume(ItemComestible item) {

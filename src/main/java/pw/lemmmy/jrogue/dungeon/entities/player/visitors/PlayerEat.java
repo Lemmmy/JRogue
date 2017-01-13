@@ -4,6 +4,7 @@ import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionEat;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
+import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -53,30 +54,35 @@ public class PlayerEat extends PlayerItemVisitor {
 				
 				player.setAction(new ActionEat(
 					itemCopy,
-					(EntityAction.CompleteCallback) ent -> {
-						if (stack.getCount() == 1) {
-							entity.getLevel().removeEntity(entity);
-						} else {
-							stack.subtractCount(1);
-						}
-						
-						if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-							EntityItem newStack = new EntityItem(
-								player.getDungeon(),
-								player.getLevel(),
-								player.getX(),
-								player.getY(),
-								new ItemStack(itemCopy, 1)
-							);
-							
-							player.getLevel().addEntity(newStack);
-						}
-					}
+					(EntityAction.CompleteCallback) ent -> eatFromFloorCallback(itemCopy, stack, entity, player)
 				));
 				
 				player.getDungeon().turn();
 			}
 		}));
+	}
+	
+	private void eatFromFloorCallback(ItemComestible itemCopy,
+									  ItemStack stack,
+									  EntityItem entity,
+									  Player player) {
+		if (stack.getCount() == 1) {
+			entity.getLevel().removeEntity(entity);
+		} else {
+			stack.subtractCount(1);
+		}
+		
+		if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+			EntityItem newStack = new EntityItem(
+				player.getDungeon(),
+				player.getLevel(),
+				player.getX(),
+				player.getY(),
+				new ItemStack(itemCopy, 1)
+			);
+			
+			player.getLevel().addEntity(newStack);
+		}
 	}
 	
 	private void eatFromInventory(Player player) {
@@ -90,15 +96,7 @@ public class PlayerEat extends PlayerItemVisitor {
 			player.setAction(new ActionEat(
 				itemCopy,
 				(EntityAction.CompleteCallback) entity -> {
-					if (stack.getCount() == 1) {
-						inv.remove(ce.getLetter());
-					} else {
-						stack.subtractCount(1);
-					}
-					
-					if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-						inv.add(new ItemStack(itemCopy, 1));
-					}
+					eatFromInventoryCallback(ce, inv, stack, itemCopy);
 				}
 			));
 			
@@ -112,6 +110,21 @@ public class PlayerEat extends PlayerItemVisitor {
 				break;
 			default:
 				break;
+		}
+	}
+	
+	private void eatFromInventoryCallback(Container.ContainerEntry ce,
+										  Container inv,
+										  ItemStack stack,
+										  ItemComestible itemCopy) {
+		if (stack.getCount() == 1) {
+			inv.remove(ce.getLetter());
+		} else {
+			stack.subtractCount(1);
+		}
+		
+		if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+			inv.add(new ItemStack(itemCopy, 1));
 		}
 	}
 }
