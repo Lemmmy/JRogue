@@ -256,11 +256,11 @@ public abstract class LivingEntity extends EntityTurnBased {
 	protected abstract void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
 	
 	public void dropItem(ItemStack item) {
-		if (leftHand.getItem().equals(item.getItem())) {
+		if (leftHand != null && leftHand.getItem().equals(item.getItem())) {
 			leftHand = null;
 		}
 		
-		if (rightHand.getItem().equals(item.getItem())) {
+		if (rightHand != null && rightHand.getItem().equals(item.getItem())) {
 			rightHand = null;
 		}
 		
