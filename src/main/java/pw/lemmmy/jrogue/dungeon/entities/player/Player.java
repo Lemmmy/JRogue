@@ -541,6 +541,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void quaff() {
+		acceptVisitor(new PlayerQuaff());
 	}
 	
 	public void consume(ItemComestible item) {
