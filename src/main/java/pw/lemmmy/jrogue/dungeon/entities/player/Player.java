@@ -545,39 +545,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void consume(ItemComestible item) {
-		if (item.getTurnsRequiredToEat() == 1) {
-			getDungeon().greenYou("eat the %s.", item.getName(false, false));
-			nutrition += item.getNutrition();
-			
-			item.eatPart();
-			return;
-		}
-		
-		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
-			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
-				getDungeon().greenYou("finish eating the %s.", item.getName(false, false));
-				
-				nutrition += Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat());
-				
-				if (item.getStatusEffects(this) != null) {
-					item.getStatusEffects(this).forEach(this::addStatusEffect);
-				}
-			} else {
-				getDungeon().You("eat a part of the %s.", item.getName(false, false));
-				
-				nutrition += Math.floor(item.getNutrition() / item.getTurnsRequiredToEat());
-				
-				if (item.getStatusEffects(this) != null &&
-					getNutritionState() != NutritionState.STARVING &&
-					getNutritionState() != NutritionState.FAINTING &&
-					attributes.getAttribute(Attribute.WISDOM) > 6) {
-					
-					getDungeon().You("feel funny - it might not be a good idea to continue eating.");
-				}
-			}
-		}
-		
-		item.eatPart();
+		acceptVisitor(new PlayerConsume(item));
 	}
 	
 	public void pickup() {
