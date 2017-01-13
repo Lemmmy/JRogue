@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.player.visitors;
 
 import pw.lemmmy.jrogue.dungeon.Prompt;
+import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -27,30 +28,7 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 						return;
 					}
 					
-					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-					int dx = d[0];
-					int dy = d[1];
-					
-					if (
-						item instanceof ItemProjectile &&
-							player.getRightHand() != null &&
-							player.getRightHand().getItem() instanceof ItemProjectileLauncher
-						) {
-						ItemProjectileLauncher launcher = (ItemProjectileLauncher) player.getRightHand().getItem();
-						boolean fired = launcher.fire(player, (ItemProjectile) item, dx, dy);
-						
-						if (fired) {
-							if (stack.getCount() <= 1) {
-								inv.remove(ce.getLetter());
-							} else {
-								stack.subtractCount(1);
-							}
-						}
-					} else {
-						// TODO: regular item throwing
-					}
-					
-					player.getDungeon().turn();
+					throwItem(player, response, item, stack, inv, ce);
 				}
 			}));
 		});
@@ -65,5 +43,37 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 			default:
 				break;
 		}
+	}
+	
+	private void throwItem(Player player,
+						   char response,
+						   Item item,
+						   ItemStack stack,
+						   Container inv,
+						   Container.ContainerEntry ce) {
+		Integer[] d = Utils.MOVEMENT_CHARS.get(response);
+		int dx = d[0];
+		int dy = d[1];
+		
+		if (
+			item instanceof ItemProjectile &&
+				player.getRightHand() != null &&
+				player.getRightHand().getItem() instanceof ItemProjectileLauncher
+			) {
+			ItemProjectileLauncher launcher = (ItemProjectileLauncher) player.getRightHand().getItem();
+			boolean fired = launcher.fire(player, (ItemProjectile) item, dx, dy);
+			
+			if (fired) {
+				if (stack.getCount() <= 1) {
+					inv.remove(ce.getLetter());
+				} else {
+					stack.subtractCount(1);
+				}
+			}
+		} else {
+			// TODO: regular item throwing
+		}
+		
+		player.getDungeon().turn();
 	}
 }

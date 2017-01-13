@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.player.visitors;
 
+import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -24,28 +25,7 @@ public class PlayerWield extends PlayerItemVisitor {
 				return;
 			}
 			
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			if (player.getRightHand() != null && ((Wieldable) player.getRightHand().getItem()).isTwoHanded()) {
-				player.setLeftHand(null);
-			}
-			
-			player.setRightHand(ce);
-			
-			if (((Wieldable) item).isTwoHanded()) {
-				player.setLeftHand(ce);
-			}
-			
-			String name = stack.getName(false);
-			
-			if (item.isis() || stack.getCount() > 1) {
-				player.getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
-			} else {
-				player.getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
-			}
-			
-			player.getDungeon().turn();
+			wield(player, c, ce);
 		}, true);
 		
 		switch (result) {
@@ -56,5 +36,30 @@ public class PlayerWield extends PlayerItemVisitor {
 			default:
 				break;
 		}
+	}
+	
+	private void wield(Player player, Character c, Container.ContainerEntry ce) {
+		ItemStack stack = ce.getStack();
+		Item item = stack.getItem();
+		
+		if (player.getRightHand() != null && ((Wieldable) player.getRightHand().getItem()).isTwoHanded()) {
+			player.setLeftHand(null);
+		}
+		
+		player.setRightHand(ce);
+		
+		if (((Wieldable) item).isTwoHanded()) {
+			player.setLeftHand(ce);
+		}
+		
+		String name = stack.getName(false);
+		
+		if (item.isis() || stack.getCount() > 1) {
+			player.getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
+		} else {
+			player.getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
+		}
+		
+		player.getDungeon().turn();
 	}
 }
