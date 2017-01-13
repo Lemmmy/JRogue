@@ -561,54 +561,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void wield() {
-		String msg = "Wield what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof Wieldable, (c, ce, inv) -> {
-			if (c == '-') {
-				setLeftHand(null);
-				setRightHand(null);
-				getDungeon().You("unwield everything.");
-				getDungeon().turn();
-				return;
-			}
-			
-			if (ce == null) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", c));
-				return;
-			}
-			
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
-				setLeftHand(null);
-			}
-			
-			setRightHand(ce);
-			
-			if (((Wieldable) item).isTwoHanded()) {
-				setLeftHand(ce);
-			}
-			
-			String name = stack.getName(false);
-			
-			if (item.isis() || stack.getCount() > 1) {
-				getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
-			} else {
-				getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
-			}
-			
-			getDungeon().turn();
-		}, true);
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to wield!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerWield());
 	}
 	
 	public void fire() {
