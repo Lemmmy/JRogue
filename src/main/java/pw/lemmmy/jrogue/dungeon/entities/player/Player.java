@@ -549,48 +549,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void pickup() {
-		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
-		
-		for (Entity entity : floorEntities) {
-			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
-				ItemStack stack = ((EntityItem) entity).getItemStack();
-				Item item = stack.getItem();
-				
-				if (item instanceof ItemGold) {
-					giveGold(stack.getCount());
-					getLevel().removeEntity(entity);
-					getDungeon().turn();
-					getDungeon().You("pick up [YELLOW]%s[].", stack.getName(false));
-				} else if (getContainer().isPresent()) {
-					Optional<Container.ContainerEntry> result = getContainer().get().add(stack);
-					
-					if (!result.isPresent()) {
-						getDungeon().You("can't hold any more items.");
-						return;
-					}
-					
-					getLevel().removeEntity(entity);
-					getDungeon().turn();
-					
-					if (item.isis() || stack.getCount() > 1) {
-						getDungeon().You(
-							"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.getName(false),
-							result.get().getLetter()
-						);
-					} else {
-						getDungeon().You(
-							"pick up %s [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.beginsWithVowel() ? "an" : "a", stack.getName(false), result.get().getLetter()
-						);
-					}
-					
-					break;
-				} else {
-					getDungeon().yellowYou("can't hold anything!");
-				}
-			}
-		}
+		acceptVisitor(new PlayerPickup());
 	}
 	
 	public void drop() {
