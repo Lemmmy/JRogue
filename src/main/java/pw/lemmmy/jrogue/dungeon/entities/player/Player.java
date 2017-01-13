@@ -573,59 +573,19 @@ public class Player extends LivingEntity {
 	}
 	
 	public void climbAny() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP &&
-			tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
-			getDungeon().log("[YELLOW]There is nothing to climb here.[]");
-			return;
-		}
-		
-		boolean up = tile.getType() == TileType.TILE_ROOM_STAIRS_UP || tile.getType() == TileType.TILE_ROOM_LADDER_UP;
-		climb(tile, up);
+		acceptVisitor(new PlayerClimbAny());
 	}
 	
 	public void climbUp() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP) {
-			getDungeon().log("[YELLOW]There is nothing to climb up here.[]");
-			return;
-		}
-		
-		climb(tile, true);
+		acceptVisitor(new PlayerClimbUp());
 	}
 	
 	public void climbDown() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
-			getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
-			return;
-		}
-		
-		climb(tile, false);
+		acceptVisitor(new PlayerClimbDown());
 	}
 	
-	private void climb(Tile tile, boolean up) {
-		if (!tile.hasState() || !(tile.getState() instanceof TileStateClimbable)) {
-			return;
-		}
-		
-		TileStateClimbable tsc = (TileStateClimbable) tile.getState();
-		
-		if (!tsc.getLinkedLevel().isPresent()) {
-			int depth = getLevel().getDepth() + (up ? 1 : -1);
-			Level level = getDungeon().newLevel(depth, tile);
-			level.processEntityQueues();
-			tsc.setLinkedLevelUUID(level.getUUID());
-			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
-		}
-		
-		if (tsc.getLinkedLevel().isPresent()) {
-			Level level = tsc.getLinkedLevel().get();
-			getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
-		}
+	public void climb(Tile tile, boolean up) {
+		acceptVisitor(new PlayerClimb(tile, up));
 	}
 	
 	public Hit hitFromMonster(DamageSource damageSource, int damage, LivingEntity attacker) {
