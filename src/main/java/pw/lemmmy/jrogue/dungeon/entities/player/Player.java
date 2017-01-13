@@ -569,60 +569,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void throwItem() {
-		String msg = "Throw what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			String msg2 = "In what direction?";
-			
-			getDungeon().prompt(new Prompt(msg2, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-				@Override
-				public void onResponse(char response) {
-					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-						getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-						return;
-					}
-					
-					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-					int dx = d[0];
-					int dy = d[1];
-					
-					if (
-						item instanceof ItemProjectile &&
-						getRightHand() != null &&
-						getRightHand().getItem() instanceof ItemProjectileLauncher
-					) {
-						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getItem();
-						boolean fired = launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
-						
-						if (fired) {
-							if (stack.getCount() <= 1) {
-								inv.remove(ce.getLetter());
-							} else {
-								stack.subtractCount(1);
-							}
-						}
-					} else {
-						// TODO: regular item throwing
-					}
-					
-					getDungeon().turn();
-				}
-			}));
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-				getDungeon().yellowYou("can't hold anything!");
-				break;
-			case NO_ITEM:
-				getDungeon().yellowYou("don't have any items to throw!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerThrowItem());
 	}
 	
 	public void climbAny() {
