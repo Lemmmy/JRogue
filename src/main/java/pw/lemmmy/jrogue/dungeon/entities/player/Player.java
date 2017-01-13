@@ -134,6 +134,10 @@ public class Player extends LivingEntity {
 		return energy;
 	}
 	
+	public void setEnergy(int energy) {
+		this.energy = energy;
+	}
+	
 	public int getMaxEnergy() {
 		return maxEnergy;
 	}
@@ -520,60 +524,16 @@ public class Player extends LivingEntity {
 		}
 	}
 	
-	private boolean canCastSpell(Spell spell) {
+	public boolean canCastSpell(Spell spell) {
 		return energy >= spell.getCastingCost();
 	}
 	
 	private void castSpellNonDirectional(Spell spell) {
-		if (!canCastSpell(spell)) {
-			getDungeon().redYou("don't have enough energy to cast that spell.");
-			return;
-		}
-		
-		nutrition -= spell.getNutritionCost();
-		
-		float successChance = spell.getSuccessChance(this) / 100f;
-		
-		if (RandomUtils.randomFloat() <= successChance) {
-			energy -= spell.getCastingCost();
-			spell.castNonDirectional(this);
-		} else {
-			energy -= Math.floor(spell.getCastingCost() / 2);
-			getDungeon().orangeYou("fail to cast the spell correctly.");
-		}
-		
-		getDungeon().turn();
+		acceptVisitor(new PlayerCastSpellNonDirectional(spell));
 	}
 	
 	private void castSpellDirectional(Spell spell) {
-		if (!canCastSpell(spell)) {
-			getDungeon().redYou("don't have enough energy to cast that spell.");
-			return;
-		}
-		
-		String msg = "Cast in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response) &&
-					spell.canCastAtSelf() && response != '5' && response != '.') {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				Integer[] d = response == '5' || response == '.' ?
-							  new Integer[]{0, 0} :
-							  Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				nutrition -= spell.getNutritionCost();
-				energy -= spell.getCastingCost();
-				spell.castDirectional(Player.this, dx, dy);
-				getDungeon().turn();
-			}
-		}));
+		acceptVisitor(new PlayerCastSpellDirectional(spell));
 	}
 	
 	public enum InventoryUseResult {
