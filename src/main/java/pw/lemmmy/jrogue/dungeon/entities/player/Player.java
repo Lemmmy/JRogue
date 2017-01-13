@@ -553,38 +553,7 @@ public class Player extends LivingEntity {
 	}
 	
 	public void drop() {
-		String msg = "Drop what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			inv.remove(c);
-			dropItem(stack);
-			
-			if (item.isis() || stack.getCount() > 1) {
-				getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), c);
-			} else {
-				getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
-					stack.beginsWithVowel() ? "an" : "a",
-					stack.getName(false),
-					c
-				);
-			}
-			
-			getDungeon().turn();
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-				getDungeon().yellowYou("can't hold anything!");
-				break;
-			case NO_ITEM:
-				getDungeon().yellowYou("don't have any items to drop!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerDrop());
 	}
 	
 	public void loot() {
