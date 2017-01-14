@@ -13,23 +13,12 @@ import java.util.Optional;
 public abstract class Item implements Serialisable {
 	private int visualID;
 	
-	private boolean identified = false;
-	private BUCStatus bucStatus = BUCStatus.UNCURSED;
-	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
 	}
 	
 	public int getVisualID() {
 		return visualID;
-	}
-	
-	public boolean isIdentified() {
-		return identified;
-	}
-	
-	public void setIdentified(boolean identified) {
-		this.identified = identified;
 	}
 	
 	public boolean isis() {
@@ -46,19 +35,10 @@ public abstract class Item implements Serialisable {
 	
 	public boolean equals(Item other) {
 		return other.getClass() == getClass() &&
-			other.getAppearance() == getAppearance() &&
-			other.getBUCStatus() == getBUCStatus();
+			other.getAppearance() == getAppearance();
 	}
 	
 	public abstract ItemAppearance getAppearance();
-	
-	public BUCStatus getBUCStatus() {
-		return bucStatus;
-	}
-	
-	public void setBUCStatus(BUCStatus bucStatus) {
-		this.bucStatus = bucStatus;
-	}
 	
 	public abstract ItemCategory getCategory();
 	
@@ -89,15 +69,11 @@ public abstract class Item implements Serialisable {
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("visualID", getVisualID());
-		obj.put("identified", isIdentified());
-		obj.put("buc", getBUCStatus().name());
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
 		visualID = obj.getInt("visualID");
-		identified = obj.getBoolean("identified");
-		bucStatus = BUCStatus.valueOf(obj.getString("buc"));
 	}
 	
 	public Item copy() {

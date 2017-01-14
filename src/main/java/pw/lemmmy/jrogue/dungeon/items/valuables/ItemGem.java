@@ -30,7 +30,7 @@ public class ItemGem extends Item {
 	public String getName(boolean requiresCapitalisation, boolean plural) {
 		String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
 		
-		if (isIdentified()) {
+		// if (isIdentified()) {
 			if (worthless) {
 				if (requiresCapitalisation) {
 					return plural ?
@@ -46,13 +46,13 @@ public class ItemGem extends Item {
 				
 				return requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
 			}
-		} else {
+		/* } else {
 			return String.format(
 				"%s gem%s",
 				requiresCapitalisation ? StringUtils.capitalize(colour) : colour,
 				plural ? "s" : ""
 			);
-		}
+		} */
 	}
 	
 	@Override
