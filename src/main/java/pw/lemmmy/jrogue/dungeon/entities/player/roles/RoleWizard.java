@@ -71,7 +71,7 @@ public class RoleWizard extends Role {
 		Map<Character, Spell> spellMap = new HashMap<>();
 		
 		spellMap.put('a', new SpellStrike());
-		spellMap.put('b', new SpellLightOrb());
+		// spellMap.put('b', new SpellLightOrb());
 		
 		return spellMap;
 	}
