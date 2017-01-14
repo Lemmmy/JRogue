@@ -109,10 +109,4 @@ public abstract class Item implements Serialisable {
 		Optional<Item> itemOptional = createFromJSON(serialisedItem);
 		return itemOptional.isPresent() ? itemOptional.get() : null;
 	}
-	
-	public enum BUCStatus {
-		BLESSED,
-		UNCURSED,
-		CURSED
-	}
 }
