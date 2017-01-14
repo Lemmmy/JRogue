@@ -64,7 +64,7 @@ public class SpellComponent extends Table {
 			spellTable.add(new Label(
 				String.format(
 					"[%s]%,d energy",
-					spell.getCastingCost() >= player.getEnergy() ? "P_RED" : "P_GREEN_2",
+					spell.getCastingCost() > player.getEnergy() ? "P_RED" : "P_GREEN_2",
 					spell.getCastingCost()
 				),
 				getSkin(),
