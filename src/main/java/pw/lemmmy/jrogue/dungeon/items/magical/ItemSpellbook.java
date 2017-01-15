@@ -75,7 +75,7 @@ public class ItemSpellbook extends Item implements Readable {
 			return;
 		}
 		
-		if (letter.get() == ' ') {
+		if (letter.get() == 0) {
 			reader.getDungeon().yellowYou("can't learn any more spells.");
 		}
 		

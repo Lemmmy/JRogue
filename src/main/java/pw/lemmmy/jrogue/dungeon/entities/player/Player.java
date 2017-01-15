@@ -170,7 +170,7 @@ public class Player extends LivingEntity {
 			}
 		}
 		
-		return ' ';
+		return 0;
 	}
 	
 	@Override
