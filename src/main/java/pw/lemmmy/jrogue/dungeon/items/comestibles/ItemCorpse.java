@@ -29,10 +29,18 @@ public class ItemCorpse extends ItemComestible {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
-			entity.getName(requiresCapitalisation) +
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
+			entity.getName(observer, requiresCapitalisation) +
 			" corpse" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override

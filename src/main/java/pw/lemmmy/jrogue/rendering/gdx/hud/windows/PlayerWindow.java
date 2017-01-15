@@ -23,7 +23,7 @@ public class PlayerWindow extends PopupWindow {
 	
 	@Override
 	public String getTitle() {
-		return entity instanceof Player ? entity.getName(true) : "Player";
+		return entity instanceof Player ? entity.getName((Player) entity, true) : "Player";
 	}
 	
 	@Override

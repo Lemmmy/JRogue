@@ -31,7 +31,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Spider" : "spider";
 	}
 	
@@ -85,12 +85,16 @@ public class MonsterSpider extends Monster {
 	
 	@Override
 	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		getDungeon().You("kill the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kill the %s!", getName(attacker, false));
+		}
 	}
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().You("step on the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("step on the %s!", getName(kicker, false));
+		}
 		
 		int damageChance = 2;
 		
@@ -136,7 +140,7 @@ public class MonsterSpider extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.SPIDER_BITE,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(false))
+			(EntityAction.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));
 	}
 	

@@ -4,12 +4,14 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Prompt;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
 import pw.lemmmy.jrogue.dungeon.items.Readable;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectBookContents;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -24,17 +26,31 @@ public class ItemSpellbook extends Item implements Readable {
 	private int timesRead = 0;
 	private int readingProgress = 0;
 	
+	public ItemSpellbook() {
+		super();
+		
+		addAspect(new AspectBookContents());
+	}
+	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		if (!isIdentified()) {
-			return (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
+		if (!isAspectKnown(observer, AspectBookContents.class)) {
+			s += (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
+			
+			return s;
 		}
 		
-		String name = (requiresCapitalisation ? "S" : "s") + "pellbook of ";
-		name += spell.getName(false);
-		name += plural ? "s" : "";
+		s += (requiresCapitalisation ? "S" : "s") + "pellbook of ";
+		s += spell.getName(false);
+		s += plural ? "s" : "";
 		
-		return name;
+		return s;
 	}
 	
 	@Override
@@ -54,6 +70,8 @@ public class ItemSpellbook extends Item implements Readable {
 	
 	@Override
 	public void onRead(Player reader) {
+		observeAspect(reader, AspectBookContents.class);
+		
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		AtomicBoolean alreadyKnown = new AtomicBoolean(false);
 		AtomicInteger letter = new AtomicInteger(reader.getAvailableSpellLetter());

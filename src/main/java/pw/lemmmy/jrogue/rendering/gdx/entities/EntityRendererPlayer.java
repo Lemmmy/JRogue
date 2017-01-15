@@ -34,7 +34,7 @@ public class EntityRendererPlayer extends EntityRenderer {
 	}
 	
 	private TextureRegion getTextureFromPlayer(Player player) {
-		if (player.getName(false).equalsIgnoreCase("justyn")) {
+		if (player.getName(player, false).equalsIgnoreCase("justyn")) {
 			return playerJustyn;
 		}
 		

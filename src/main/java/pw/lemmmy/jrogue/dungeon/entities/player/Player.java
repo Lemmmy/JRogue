@@ -230,7 +230,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
 	}
 	

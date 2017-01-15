@@ -17,11 +17,11 @@ public class PlayerDrop extends PlayerItemVisitor {
 			player.dropItem(stack);
 			
 			if (item.isis() || stack.getCount() > 1) {
-				player.getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), c);
+				player.getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(player, false), c);
 			} else {
 				player.getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
-					stack.beginsWithVowel() ? "an" : "a",
-					stack.getName(false),
+					stack.beginsWithVowel(player) ? "an" : "a",
+					stack.getName(player, false),
 					c
 				);
 			}

@@ -80,7 +80,7 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
 	public abstract Skill getSkill();
 	
 	@Override
-	public abstract String getName(boolean requiresCapitalisation, boolean plural);
+	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural);
 	
 	@Override
 	public abstract float getWeight();
