@@ -12,8 +12,6 @@ import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
 import pw.lemmmy.jrogue.dungeon.items.magical.MagicalSchool;
 
 public abstract class Spell implements Serialisable {
-	private int timesUsed;
-	
 	private int knowledgeTimeout = 20000;
 	private boolean known = false;
 	
@@ -26,6 +24,22 @@ public abstract class Spell implements Serialisable {
 	public abstract int getTurnsToRead();
 	
 	public abstract int getLevel();
+	
+	public int getKnowledgeTimeout() {
+		return knowledgeTimeout;
+	}
+	
+	public void setKnowledgeTimeout(int knowledgeTimeout) {
+		this.knowledgeTimeout = knowledgeTimeout;
+	}
+	
+	public boolean isKnown() {
+		return known;
+	}
+	
+	public void setKnown(boolean known) {
+		this.known = known;
+	}
 	
 	public abstract boolean canCastAtSelf();
 	
@@ -45,14 +59,12 @@ public abstract class Spell implements Serialisable {
 	
 	@Override
 	public void serialise(JSONObject obj) {
-		obj.put("timesUsed", timesUsed);
 		obj.put("knowledgeTimeout", knowledgeTimeout);
 		obj.put("known", known);
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		timesUsed = obj.getInt("timesUsed");
 		knowledgeTimeout = obj.getInt("knowledgeTimeout");
 		known = obj.getBoolean("known");
 	}
@@ -104,5 +116,15 @@ public abstract class Spell implements Serialisable {
 		
 		float actualChance = chance * (20 - penalty) / 15 - penalty;
 		return Math.max(0, Math.min(100, actualChance));
+	}
+	
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return getClass().equals(o.getClass());
 	}
 }

@@ -78,6 +78,9 @@ public class GameInputProcessor implements InputProcessor {
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'Q') {
 			dungeon.quit();
 			return true;
+		} else if (key == 'r') {
+			dungeon.getPlayer().read();
+			return true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'S') {
 			dungeon.saveAndQuit();
 			return true;

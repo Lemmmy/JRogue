@@ -53,14 +53,16 @@ public class Container implements Serialisable {
 			return Optional.empty();
 		}
 		
-		for (Map.Entry<Character, ItemStack> entry : items.entrySet()) {
-			ItemStack storedStack = entry.getValue();
-			
-			if (item.equals(storedStack.getItem())) {
-				storedStack.addCount(stack.getCount());
-				ContainerEntry newEntry = new ContainerEntry(entry);
-				listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
-				return Optional.of(newEntry);
+		if (stack.getItem().shouldStack()) {
+			for (Map.Entry<Character, ItemStack> entry : items.entrySet()) {
+				ItemStack storedStack = entry.getValue();
+				
+				if (item.equals(storedStack.getItem())) {
+					storedStack.addCount(stack.getCount());
+					ContainerEntry newEntry = new ContainerEntry(entry);
+					listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
+					return Optional.of(newEntry);
+				}
 			}
 		}
 		
@@ -72,9 +74,11 @@ public class Container implements Serialisable {
 	}
 	
 	public boolean canAdd(ItemStack stack) {
-		for (ItemStack storedStack : items.values()) {
-			if (stack.getItem().equals(storedStack.getItem())) {
-				return true;
+		if (stack.getItem().shouldStack()) {
+			for (ItemStack storedStack : items.values()) {
+				if (stack.getItem().equals(storedStack.getItem())) {
+					return true;
+				}
 			}
 		}
 		

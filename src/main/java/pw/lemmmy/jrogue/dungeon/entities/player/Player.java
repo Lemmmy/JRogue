@@ -19,6 +19,7 @@ import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.RandomUtils;
+import pw.lemmmy.jrogue.utils.Utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -141,6 +142,16 @@ public class Player extends LivingEntity {
 	
 	public Map<Character, Spell> getKnownSpells() {
 		return knownSpells;
+	}
+	
+	public char getAvailableSpellLetter() {
+		for (char letter : Utils.INVENTORY_CHARS) {
+			if (!knownSpells.containsKey(letter)) {
+				return letter;
+			}
+		}
+		
+		return 0;
 	}
 	
 	@Override
@@ -295,6 +306,7 @@ public class Player extends LivingEntity {
 		
 		updateEnergy();
 		updateNutrition();
+		updateSpells();
 		
 		if (godmode) {
 			setHealth(getMaxHealth());
@@ -348,6 +360,10 @@ public class Player extends LivingEntity {
 		}
 		
 		nutrition--;
+	}
+	
+	private void updateSpells() {
+		knownSpells.values().forEach(Spell::update);
 	}
 	
 	@Override
@@ -566,6 +582,10 @@ public class Player extends LivingEntity {
 	
 	public void climb(Tile tile, boolean up) {
 		acceptVisitor(new PlayerClimb(tile, up));
+	}
+	
+	public void read() {
+		acceptVisitor(new PlayerRead());
 	}
 	
 	public Hit hitFromMonster(DamageSource damageSource, int damage, LivingEntity attacker) {
