@@ -125,6 +125,17 @@ public class ItemSpellbook extends Item implements Readable {
 			
 			reader.getDungeon().greenYou("finish reading the book.");
 			
+			if (++timesRead >= 4) {
+				reader.getDungeon().orangeThe("book disappears into thin air!");
+				
+				reader.getContainer().ifPresent(c -> c.getItems().entrySet().stream()
+					.filter(e -> e.getValue().getItem().equals(ItemSpellbook.this))
+					.findFirst()
+					.ifPresent(e -> {
+						c.remove(e.getKey());
+					}));
+			}
+			
 			if (alreadyKnown) {
 				Spell playerSpell = reader.getKnownSpells().get(letter);
 				playerSpell.setKnowledgeTimeout(20000);
