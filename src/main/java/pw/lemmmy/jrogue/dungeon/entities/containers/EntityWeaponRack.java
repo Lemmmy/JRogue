@@ -15,7 +15,7 @@ public class EntityWeaponRack extends Entity {
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		container = new Container(getName(true));
+		container = new WeaponRackContainer(getName(true));
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class EntityWeaponRack extends Entity {
 		
 		if (obj.has("inventory")) {
 			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(serialisedInventory);
+			container = Container.createFromJSON(WeaponRackContainer.class, serialisedInventory);
 		}
 	}
 }
