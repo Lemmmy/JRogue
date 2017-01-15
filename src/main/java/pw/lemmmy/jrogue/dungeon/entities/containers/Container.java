@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
