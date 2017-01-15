@@ -1,17 +1,12 @@
 package pw.lemmmy.jrogue.dungeon.entities.player;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.*;
-import pw.lemmmy.jrogue.dungeon.entities.actions.*;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
-import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
@@ -19,32 +14,17 @@ import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
 import pw.lemmmy.jrogue.dungeon.entities.player.visitors.*;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
-import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
-import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
-import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
-import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemProjectileLauncher;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
-import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class Player extends LivingEntity {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
