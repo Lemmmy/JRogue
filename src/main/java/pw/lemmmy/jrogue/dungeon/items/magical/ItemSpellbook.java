@@ -5,11 +5,10 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.items.Readable;
-
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.items.Readable;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
