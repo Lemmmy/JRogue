@@ -114,7 +114,8 @@ public class ItemSpellbook extends Item implements Readable {
 				
 				if (reader.getHealth() < lastHealth) {
 					reader.getDungeon().You("stop reading the book.");
-					break;
+					reader.getDungeon().turn();
+					return;
 				}
 				
 				lastHealth = reader.getHealth();
