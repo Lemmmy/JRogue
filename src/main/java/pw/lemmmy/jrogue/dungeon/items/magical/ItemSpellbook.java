@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.items.magical;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -101,10 +102,12 @@ public class ItemSpellbook extends Item implements Readable {
 	}
 	
 	private void read(Player reader, float chance, boolean alreadyKnown, char letter) {
+		Dungeon dungeon = reader.getDungeon();
+		
 		float roll = RandomUtils.randomFloat();
 		float turns = spell.getTurnsToRead();
 		
-		reader.getDungeon().You("start reading the book.");
+		dungeon.You("start reading the book.");
 		
 		if (roll >= chance) {
 			int lastHealth = reader.getHealth();
@@ -113,20 +116,20 @@ public class ItemSpellbook extends Item implements Readable {
 				readingProgress++;
 				
 				if (reader.getHealth() < lastHealth) {
-					reader.getDungeon().You("stop reading the book.");
-					reader.getDungeon().turn();
+					dungeon.You("stop reading the book.");
+					dungeon.turn();
 					return;
 				}
 				
 				lastHealth = reader.getHealth();
 				
-				reader.getDungeon().turn();
+				dungeon.turn();
 			}
 			
-			reader.getDungeon().greenYou("finish reading the book.");
+			dungeon.greenYou("finish reading the book.");
 			
 			if (++timesRead >= 4) {
-				reader.getDungeon().orangeThe("book disappears into thin air!");
+				dungeon.orangeThe("book disappears into thin air!");
 				
 				reader.getContainer().ifPresent(c -> c.getItems().entrySet().stream()
 					.filter(e -> e.getValue().getItem().equals(ItemSpellbook.this))
@@ -141,17 +144,17 @@ public class ItemSpellbook extends Item implements Readable {
 				playerSpell.setKnowledgeTimeout(20000);
 				playerSpell.setKnown(true);
 				
-				reader.getDungeon().greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName(false));
 			} else {
 				spell.setKnowledgeTimeout(20000);
 				spell.setKnown(true);
 				reader.getKnownSpells().put(letter, spell);
 				
-				reader.getDungeon().greenYou("learned [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("learned [CYAN]%s[]!", spell.getName(false));
 			}
 			
 		} else {
-			reader.getDungeon().redYou("fail to read the book correctly!");
+			dungeon.redYou("fail to read the book correctly!");
 			
 			// TODO: paralyse the player for turns - 2
 		}
