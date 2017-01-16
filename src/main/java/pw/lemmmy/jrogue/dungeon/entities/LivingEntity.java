@@ -95,7 +95,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public int getXPForLevel(int level) {
-		return (int) Math.pow(((float) level / 1.75f), 2) * 2 + 10;
+		return (int) Math.pow((float) level / 1.75f, 2) * 2 + 10;
 	}
 	
 	public void addExperience(int experience) {
@@ -277,7 +277,9 @@ public abstract class LivingEntity extends EntityTurnBased {
 			healingTurns = 0;
 		}
 		
-		inventory.update();
+		if (inventory != null) {
+			inventory.update();
+		}
 	}
 	
 	public boolean damage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
