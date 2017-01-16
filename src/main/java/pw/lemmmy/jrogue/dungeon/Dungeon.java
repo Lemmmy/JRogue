@@ -369,6 +369,10 @@ public class Dungeon implements Messenger {
 	}
 	
 	public void turn() {
+		if (!player.isAlive()) {
+			return;
+		}
+		
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
 		level.processEntityQueues();
 		

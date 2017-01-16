@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -53,7 +54,7 @@ public abstract class Entity implements Serialisable {
 		return visualID;
 	}
 	
-	public abstract String getName(boolean requiresCapitalisation);
+	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation);
 	
 	public abstract EntityAppearance getAppearance();
 	
@@ -170,6 +171,10 @@ public abstract class Entity implements Serialisable {
 			}
 		}
 	}
+	
+	public void onSpawn() {}
+	
+	public void onItemDropped(EntityItem entityItem) {}
 	
 	@Override
 	public void serialise(JSONObject obj) {

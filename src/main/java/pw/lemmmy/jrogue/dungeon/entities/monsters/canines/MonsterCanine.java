@@ -43,12 +43,16 @@ public abstract class MonsterCanine extends Monster {
 	
 	@Override
 	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		getDungeon().You("kill the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kill the %s!", getName(attacker, false));
+		}
 	}
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().You("kick the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kick the %s!", getName(kicker, false));
+		}
 		
 		int dodgeChance = 5;
 		
@@ -59,7 +63,9 @@ public abstract class MonsterCanine extends Monster {
 		}
 		
 		if (RandomUtils.roll(1, dodgeChance) == 1) {
-			getDungeon().orangeThe("%s dodges your kick!", getName(false));
+			if (isPlayer) {
+				getDungeon().orangeThe("%s dodges your kick!", getName(kicker, false));
+			}
 			
 			return;
 		}
@@ -78,19 +84,27 @@ public abstract class MonsterCanine extends Monster {
 		
 		if (isAlive()) {
 			if (RandomUtils.roll(1, 5) == 1) {
-				getDungeon().orangeThe("%s bites your foot!", getName(false));
+				if (isPlayer) {
+					getDungeon().orangeThe("%s bites your foot!", getName(kicker, false));
+				}
 				
 				if (RandomUtils.roll(1, 4) == 1) {
-					getDungeon().redThe("bite was pretty deep!");
+					if (isPlayer) {
+						getDungeon().redThe("bite was pretty deep!");
+					}
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
 					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, RandomUtils.roll(3, 6)));
 				}
 			} else if (RandomUtils.roll(1, 5) == 1) {
-				getDungeon().orangeThe("%s yanks your leg!", getName(false));
+				if (isPlayer) {
+					getDungeon().orangeThe("%s yanks your leg!", getName(kicker, false));
+				}
 				
 				if (RandomUtils.roll(1, 4) == 1) {
-					getDungeon().log("[RED]It strains your leg!");
+					if (isPlayer) {
+						getDungeon().log("[RED]It strains your leg!");
+					}
 					
 					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
 					kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
@@ -125,7 +139,7 @@ public abstract class MonsterCanine extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.CANINE_BITE,
 			1,
-			(EntityAction.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(false))
+			(EntityAction.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));
 	}
 }

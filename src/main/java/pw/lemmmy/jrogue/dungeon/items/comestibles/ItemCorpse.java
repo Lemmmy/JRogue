@@ -6,14 +6,18 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.FoodPoisoning;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ItemCorpse extends ItemComestible {
 	private LivingEntity entity;
@@ -29,10 +33,18 @@ public class ItemCorpse extends ItemComestible {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
-			entity.getName(requiresCapitalisation) +
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
+			entity.getName(observer, requiresCapitalisation) +
 			" corpse" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override
@@ -64,16 +76,62 @@ public class ItemCorpse extends ItemComestible {
 	
 	@Override
 	public int getTurnsRequiredToEat() {
-		return entity.getSize() == LivingEntity.Size.LARGE ? 3 : 2;
+		if (entity instanceof Monster) {
+			return ((Monster) entity).getWeight() / 64 + 3;
+		} else {
+			return entity.getSize() == LivingEntity.Size.LARGE ? 5 : 4;
+		}
 	}
 	
 	@Override
 	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
+		List<StatusEffect> effects = new ArrayList<>();
+		
 		if (entity instanceof Monster) {
-			return ((Monster) entity).getCorpseEffects(victim);
-		} else {
-			return null;
+			Monster monster = (Monster) entity;
+			
+			if (monster.getCorpseEffects(victim) != null) {
+				effects.addAll(monster.getCorpseEffects(victim));
+			}
+			
+			if (getRottenness() > 6) {
+				effects.add(new FoodPoisoning(entity.getDungeon(), entity));
+			}
 		}
+		
+		return effects;
+	}
+	
+	public int getRottenness() {
+		if (entity instanceof Monster) {
+			Monster monster = (Monster) entity;
+			
+			if (monster.shouldCorpsesRot()) {
+				AtomicInteger rottenness = new AtomicInteger(getAge() / 15);
+				
+				getAspect(AspectBeatitude.class).ifPresent(a -> {
+					AspectBeatitude ab = (AspectBeatitude) a;
+					
+					switch (ab.getBeatitude()) {
+						case BLESSED:
+							rottenness.addAndGet(-2);
+							break;
+						case CURSED:
+							rottenness.addAndGet(2);
+							break;
+					}
+				});
+				
+				return Math.max(rottenness.get(), 0);
+			}
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public boolean shouldStack() {
+		return false;
 	}
 	
 	@Override

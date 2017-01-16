@@ -52,14 +52,19 @@ public class EntityItem extends Entity {
 	}
 	
 	@Override
+	public void update() {
+		super.update();
+		
+		itemStack.getItem().update();
+	}
+	
+	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		int x = getX() + dx;
 		int y = getY() + dy;
 		
 		if (getItem() instanceof Shatterable) {
-			if (isPlayer) {
-				getDungeon().The("%s shatters into a thousand pieces!", getName(false));
-			}
+			getDungeon().The("%s shatters into a thousand pieces!", getName(getDungeon().getPlayer(), false));
 			
 			if (getItem() instanceof ItemThermometer) {
 				kicker.addStatusEffect(new MercuryPoisoning());
@@ -72,10 +77,7 @@ public class EntityItem extends Entity {
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
-			if (isPlayer) {
-				getDungeon().The("%s strikes the side of the wall.", getName(false));
-				// "wall" seems appropriate for all current SOLID tiles
-			}
+			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
 			
 			return;
 		}
@@ -84,12 +86,21 @@ public class EntityItem extends Entity {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return itemStack.getName(requiresCapitalisation);
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+		return itemStack.getName(observer, requiresCapitalisation);
 	}
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	
+	@Override
+	public void onSpawn() {
+		super.onSpawn();
+		
+		getLevel().getEntitiesAt(getX(), getY()).stream()
+			.filter(e -> e != this)
+			.forEach(e -> e.onItemDropped(this));
+	}
 	
 	@Override
 	public boolean canBeWalkedOn() {

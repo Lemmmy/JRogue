@@ -17,7 +17,7 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Arrow" : "arrow";
 	}
 	
@@ -44,11 +44,11 @@ public class EntityArrow extends EntityProjectile {
 				LivingEntity living = (LivingEntity) victim;
 				
 				if (source instanceof Player) {
-					source.getDungeon().Your("arrow hits the %s!", living.getName(false));
+					source.getDungeon().Your("arrow hits the %s!", living.getName((LivingEntity) source, false));
 				}
 				
 				if (living instanceof Player) {
-					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(false));
+					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(living, false));
 				}
 				
 				living.damage(DamageSource.ARROW, getArrowDamage(), (LivingEntity) source, source instanceof Player);

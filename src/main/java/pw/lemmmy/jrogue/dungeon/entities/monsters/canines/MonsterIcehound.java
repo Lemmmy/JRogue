@@ -16,7 +16,7 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Icehound" : "icehound";
 	}
 	

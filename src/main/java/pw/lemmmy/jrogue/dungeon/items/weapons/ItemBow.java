@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.weapons;
 
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemArrow;
@@ -30,8 +31,16 @@ public class ItemBow extends ItemProjectileLauncher {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override

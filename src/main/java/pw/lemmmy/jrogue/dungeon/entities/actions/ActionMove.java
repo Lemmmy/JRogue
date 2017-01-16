@@ -35,7 +35,7 @@ public class ActionMove extends EntityAction {
 					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
 					unwalkableEnt.getLastY() != unwalkableEnt.getY()
 				) {
-					msg.The("%s beats you to it!", unwalkableEnt.getName(false));
+					msg.The("%s beats you to it!", unwalkableEnt.getName((LivingEntity) entity, false));
 				}
 			}
 			
@@ -58,23 +58,26 @@ public class ActionMove extends EntityAction {
 		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)
 			.collect(Collectors.toList());
 		
-		if (items.size() == 1) {
-			ItemStack stack = items.get(0).getItemStack();
-			
-			if (stack.getItem().isis()) {
-				msg.log("There is [YELLOW]%s[] here.", stack.getName(false));
-			} else {
-				if (stack.getCount() > 1) {
-					msg.log("There are [YELLOW]%s[] here.", stack.getName(false));
+		
+		if (entity instanceof Player) {
+			if (items.size() == 1) {
+				ItemStack stack = items.get(0).getItemStack();
+				
+				if (stack.getItem().isis()) {
+					msg.log("There is [YELLOW]%s[] here.", stack.getName((LivingEntity) entity, false));
 				} else {
-					msg.log(
-						"There is %s [YELLOW]%s[] here.",
-						stack.beginsWithVowel() ? "an" : "a", stack.getName(false)
-					);
+					if (stack.getCount() > 1) {
+						msg.log("There are [YELLOW]%s[] here.", stack.getName((LivingEntity) entity, false));
+					} else {
+						msg.log(
+							"There is %s [YELLOW]%s[] here.",
+							stack.beginsWithVowel((LivingEntity) entity) ? "an" : "a", stack.getName((LivingEntity) entity, false)
+						);
+					}
 				}
+			} else if (items.size() > 1) {
+				msg.log("There are [YELLOW]%d[] items here.", items.size());
 			}
-		} else if (items.size() > 1) {
-			msg.log("There are [YELLOW]%d[] items here.", items.size());
 		}
 		
 		runOnCompleteCallback(entity);

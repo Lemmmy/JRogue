@@ -37,16 +37,16 @@ public class ActionMelee extends EntityAction {
 		switch (hit.getHitType()) {
 			case JUST_MISS:
 				if (isAttackerPlayer) {
-					msg.orangeYou("just miss the %s.", victim.getName(false));
+					msg.orangeYou("just miss the %s.", victim.getName((LivingEntity) entity, false));
 				} else if (isVictimPlayer) {
-					msg.The("%s just misses.", attacker.getName(false));
+					msg.The("%s just misses.", attacker.getName((LivingEntity) entity, false));
 				}
 				break;
 			case MISS:
 				if (isAttackerPlayer) {
-					msg.orangeYou("miss the %s.", victim.getName(false));
+					msg.orangeYou("miss the %s.", victim.getName((LivingEntity) entity, false));
 				} else if (isVictimPlayer) {
-					msg.The("%s misses.", attacker.getName(false));
+					msg.The("%s misses.", attacker.getName((LivingEntity) entity, false));
 				}
 				break;
 			case SUCCESS:

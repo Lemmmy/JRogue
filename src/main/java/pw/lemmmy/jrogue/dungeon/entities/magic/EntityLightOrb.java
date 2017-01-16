@@ -29,7 +29,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return (requiresCapitalisation ? "L" : "l") + "ight orb";
 	}
 	
@@ -41,7 +41,10 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	@Override
 	public void move() {
 		if (--turnsLeft <= 0) {
-			getDungeon().The("%s flashes brightly and then disappears into thin air.", getName(false));
+			getDungeon().The(
+				"%s flashes brightly and then disappears into thin air.",
+				getName(getDungeon().getPlayer(), false)
+			);
 			getLevel().removeEntity(this);
 		}
 	}
@@ -59,9 +62,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		TileType tile = getLevel().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
-			if (isPlayer) {
-				getDungeon().The("%s strikes the side of the wall.", getName(false));
-			}
+			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
 			
 			return;
 		}

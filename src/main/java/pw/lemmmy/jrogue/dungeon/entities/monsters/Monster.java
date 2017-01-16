@@ -75,6 +75,10 @@ public abstract class Monster extends LivingEntity {
 	
 	public abstract List<StatusEffect> getCorpseEffects(LivingEntity victim);
 	
+	public boolean shouldCorpsesRot() {
+		return true;
+	}
+	
 	public abstract int getVisibilityRange();
 	
 	public abstract boolean canMoveDiagonally();

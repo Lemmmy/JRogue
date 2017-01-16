@@ -1,8 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 
 import java.util.Optional;
 
@@ -23,43 +22,12 @@ public class ItemStack {
 		return item;
 	}
 	
-	public String getName(boolean requiresCapitalisation) {
-		String prefix = "";
-
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		if (count > 1) {
-			requiresCapitalisation = false;
+			return String.format("%d %s", count, item.getName(observer, false, true));
+		} else {
+			return item.getName(observer, requiresCapitalisation, false);
 		}
-
-		if (false) { // TODO: If BUC status is known by the player
-			if (item.getBUCStatus().equals(Item.BUCStatus.BLESSED)) {
-				prefix = prefix + (requiresCapitalisation ? "Blessed" : "blessed") + " ";
-				requiresCapitalisation = false;
-			}
-
-			if (item.getBUCStatus().equals(Item.BUCStatus.UNCURSED)) {
-				prefix = prefix + (requiresCapitalisation ? "Uncursed" : "uncursed") + " ";
-				requiresCapitalisation = false;
-			}
-
-			if (item.getBUCStatus().equals(Item.BUCStatus.CURSED)) {
-				prefix = prefix + (requiresCapitalisation ? "Cursed" : "cursed") + " ";
-				requiresCapitalisation = false;
-			}
-		}
-
-		if (item instanceof ItemComestible) {
-			if (((ItemComestible) item).getTurnsEaten() > 0) {
-				prefix = prefix + (requiresCapitalisation ? "Partly eaten" : "partly eaten") + " ";
-				requiresCapitalisation = false;
-			}
-		}
-
-		if (item instanceof ItemWeapon) {
-			prefix = prefix + String.format("+%d ", ((ItemWeapon) item).getToHitBonus());
-			requiresCapitalisation = false; // is this appropriate?
-		}
-
-		return (count > 1 ? count + " " : "") + prefix + item.getName(requiresCapitalisation, count > 1);
 	}
 	
 	public ItemAppearance getAppearance() {
@@ -90,8 +58,8 @@ public class ItemStack {
 		return item.getWeight() * count;
 	}
 	
-	public boolean beginsWithVowel() {
-		return item.beginsWithVowel();
+	public boolean beginsWithVowel(LivingEntity observer) {
+		return item.beginsWithVowel(observer);
 	}
 	
 	public static Optional<ItemStack> createFromJSON(JSONObject serialisedItemStack) {

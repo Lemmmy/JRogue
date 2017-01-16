@@ -1,49 +1,31 @@
 package pw.lemmmy.jrogue.dungeon.entities.player;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.*;
-import pw.lemmmy.jrogue.dungeon.entities.actions.*;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
-import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AStarPathfinder;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
+import pw.lemmmy.jrogue.dungeon.entities.player.visitors.*;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemStack;
-import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
-import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
-import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
-import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
-import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGold;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemProjectileLauncher;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeapon;
-import pw.lemmmy.jrogue.dungeon.items.weapons.ItemWeaponMelee;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
-import pw.lemmmy.jrogue.dungeon.tiles.TileType;
-import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
-import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class Player extends LivingEntity {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -133,6 +115,10 @@ public class Player extends LivingEntity {
 		return energy;
 	}
 	
+	public void setEnergy(int energy) {
+		this.energy = energy;
+	}
+	
 	public int getMaxEnergy() {
 		return maxEnergy;
 	}
@@ -156,6 +142,16 @@ public class Player extends LivingEntity {
 	
 	public Map<Character, Spell> getKnownSpells() {
 		return knownSpells;
+	}
+	
+	public char getAvailableSpellLetter() {
+		for (char letter : Utils.INVENTORY_CHARS) {
+			if (!knownSpells.containsKey(letter)) {
+				return letter;
+			}
+		}
+		
+		return 0;
 	}
 	
 	@Override
@@ -234,7 +230,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
 	}
 	
@@ -282,6 +278,10 @@ public class Player extends LivingEntity {
 	public void godmode() {
 		this.godmode = true;
 	}
+		
+	public AStarPathfinder getPathfinder() {
+		return pathfinder;
+	}
 	
 	@Override
 	public void applyMovementPoints() {
@@ -306,6 +306,7 @@ public class Player extends LivingEntity {
 		
 		updateEnergy();
 		updateNutrition();
+		updateSpells();
 		
 		if (godmode) {
 			setHealth(getMaxHealth());
@@ -359,6 +360,10 @@ public class Player extends LivingEntity {
 		}
 		
 		nutrition--;
+	}
+	
+	private void updateSpells() {
+		knownSpells.values().forEach(Spell::update);
 	}
 	
 	@Override
@@ -480,218 +485,28 @@ public class Player extends LivingEntity {
 		return false;
 	}
 	
+	private void acceptVisitor(PlayerVisitor visitor) {
+		visitor.visit(this);
+	}
+	
 	public void teleport(int x, int y) {
-		setAction(new ActionTeleport(x, y, new EntityAction.NoCallback()));
-		getDungeon().turn();
+		acceptVisitor(new PlayerTeleport(x, y));
 	}
 	
 	public void walk(int dx, int dy) {
-		dx = Math.max(-1, Math.min(1, dx));
-		dy = Math.max(-1, Math.min(1, dy));
-		
-		int newX = getX() + dx;
-		int newY = getY() + dy;
-		
-		Tile tile = getLevel().getTile(newX, newY);
-		
-		if (tile == null) {
-			return;
-		}
-		
-		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
-			// prevent diagonal movement to a door - the player cannot reach the handle
-			return;
-		}
-		
-		List<Entity> destEntities = getLevel().getEntitiesAt(newX, newY);
-		
-		if (destEntities.size() > 0) {
-			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
-			
-			Optional<Entity> ent = destEntities.stream()
-				.filter(e -> e instanceof LivingEntity)
-				.findFirst();
-			
-			if (ent.isPresent()) {
-				if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getRightHand().getItem()).hit(this, (LivingEntity) ent.get());
-				} else if (getLeftHand() != null && getLeftHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) getLeftHand().getItem()).hit(this, (LivingEntity) ent.get());
-				} else {
-					getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
-				}
-			} else {
-				walkAction(tile, newX, newY);
-			}
-		} else {
-			walkAction(tile, newX, newY);
-		} // TODO: Restructure this mess
-		
-		getDungeon().turn();
-	}
-	
-	private void walkAction(Tile tile, int x, int y) {
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			getDungeon().The("door is locked.");
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
-			getDungeon().You("open the door.");
-		}
+		acceptVisitor(new PlayerWalk(dx, dy));
 	}
 	
 	public void travelDirectional() {
-		String msg = "Travel in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				Path pathTaken = new Path();
-				
-				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				for (int i = 0; i < 50; i++) { // max 50 steps in one move
-					Tile destTile = getLevel().getTile(getX() + dx, getY() + dy);
-					
-					if (
-						destTile == null ||
-							i >= 1 && destTile.getType().getSolidity() == TileType.Solidity.WALK_THROUGH ||
-							destTile.getType().getSolidity() == TileType.Solidity.SOLID
-						) {
-						break;
-					}
-					
-					int oldX = getX();
-					int oldY = getY();
-					
-					pathTaken.addStep(destTile);
-					setAction(new ActionMove(getX() + dx, getY() + dy, new EntityAction.NoCallback()));
-					getDungeon().turn();
-					
-					if (oldX == getX() && oldY == getY()) { // we didn't go anywhere, so stop
-						break;
-					}
-					
-					if (i > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
-						break;
-					}
-				}
-				
-				getDungeon().showPath(pathTaken);
-			}
-		}));
+		acceptVisitor(new PlayerTravelDirectional());
 	}
 	
 	public void travelPathfind(int tx, int ty) {
-		Tile destTile = getLevel().getTile(tx, ty);
-		
-		if (destTile == null || !getLevel().isTileDiscovered(tx, ty)) {
-			getDungeon().You("can't travel there.");
-			return;
-		}
-		
-		Path path = pathfinder.findPath(
-			getLevel(),
-			getX(),
-			getY(),
-			tx,
-			ty,
-			50,
-			true,
-			new ArrayList<>()
-		);
-		
-		Path pathTaken = new Path();
-		
-		if (path == null || path.getLength() == 0) {
-			getDungeon().You("can't travel there.");
-			return;
-		}
-		
-		AtomicBoolean stop = new AtomicBoolean(false);
-		AtomicInteger i = new AtomicInteger(0);
-		
-		path.forEach(step -> {
-			i.incrementAndGet();
-			
-			if (stop.get()) { return; }
-			if (getX() == step.getX() && getY() == step.getY()) { return; }
-			
-			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
-				stop.set(true);
-				return;
-			}
-			
-			int oldX = getX();
-			int oldY = getY();
-			
-			pathTaken.addStep(step);
-			setAction(new ActionMove(step.getX(), step.getY(), new EntityAction.NoCallback()));
-			getDungeon().turn();
-			
-			if (oldX == getX() && oldY == getY()) {
-				stop.set(true);
-				return;
-			}
-			
-			if (i.get() > 2 && getLevel().getAdjacentMonsters(getX(), getY()).size() > 0) {
-				stop.set(true);
-			}
-		});
-		
-		getDungeon().showPath(pathTaken);
+		acceptVisitor(new PlayerTravelPathfind(tx, ty));
 	}
 	
 	public void kick() {
-		String msg = "Kick in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				int wisdom = attributes.getAttribute(Attribute.WISDOM);
-				
-				if (wisdom > 5) {
-					if (hasStatusEffect(InjuredFoot.class)) {
-						getDungeon().Your("foot is in no shape for kicking.");
-						return;
-					}
-					
-					if (hasStatusEffect(StrainedLeg.class)) {
-						getDungeon().Your("leg is in no shape for kicking.");
-						return;
-					}
-				}
-				
-				Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				if (getLevel().getEntitiesAt(getX() + dx, getY() + dy).size() > 0) {
-					setAction(new ActionKick(
-						d,
-						getLevel().getEntitiesAt(getX() + dx, getY() + dy).get(0),
-						new EntityAction.NoCallback()
-					));
-				} else {
-					setAction(new ActionKick(d, new EntityAction.NoCallback()));
-				}
-				
-				getDungeon().turn();
-			}
-		}));
+		acceptVisitor(new PlayerKick());
 	}
 	
 	public void castSpell(Spell spell) {
@@ -705,437 +520,44 @@ public class Player extends LivingEntity {
 		}
 	}
 	
-	private boolean canCastSpell(Spell spell) {
+	public boolean canCastSpell(Spell spell) {
 		return energy >= spell.getCastingCost();
 	}
 	
 	private void castSpellNonDirectional(Spell spell) {
-		if (!canCastSpell(spell)) {
-			getDungeon().redYou("don't have enough energy to cast that spell.");
-			return;
-		}
-		
-		nutrition -= spell.getNutritionCost();
-		
-		float successChance = spell.getSuccessChance(this) / 100f;
-		
-		if (RandomUtils.randomFloat() <= successChance) {
-			energy -= spell.getCastingCost();
-			spell.castNonDirectional(this);
-		} else {
-			energy -= Math.floor(spell.getCastingCost() / 2);
-			getDungeon().orangeYou("fail to cast the spell correctly.");
-		}
-		
-		getDungeon().turn();
+		acceptVisitor(new PlayerCastSpellNonDirectional(spell));
 	}
 	
 	private void castSpellDirectional(Spell spell) {
-		if (!canCastSpell(spell)) {
-			getDungeon().redYou("don't have enough energy to cast that spell.");
-			return;
-		}
-		
-		String msg = "Cast in what direction?";
-		
-		getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response) &&
-					spell.canCastAtSelf() && response != '5' && response != '.') {
-					getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				Integer[] d = response == '5' || response == '.' ?
-							  new Integer[]{0, 0} :
-							  Utils.MOVEMENT_CHARS.get(response);
-				int dx = d[0];
-				int dy = d[1];
-				
-				nutrition -= spell.getNutritionCost();
-				energy -= spell.getCastingCost();
-				spell.castDirectional(Player.this, dx, dy);
-				getDungeon().turn();
-			}
-		}));
-	}
-	
-	public enum InventoryUseResult {
-		SUCCESS, NO_CONTAINER, NO_ITEM
-	}
-	
-	public InventoryUseResult useInventoryItem(String promptString,
-											   Predicate<ItemStack> isEligible,
-											   TriConsumer<Character, Container.ContainerEntry, Container> responseCallback,
-											   boolean allowHyphen) {
-		if (!getContainer().isPresent()) {
-			return InventoryUseResult.NO_CONTAINER;
-		}
-		
-		Container inv = getContainer().get();
-		Map<Character, ItemStack> eligibleItems = inv.getItems().entrySet().stream()
-			.filter(e -> isEligible.test(e.getValue()))
-			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		
-		if (eligibleItems.isEmpty()) {
-			return InventoryUseResult.NO_ITEM;
-		}
-		
-		char[] options = ArrayUtils.toPrimitive(eligibleItems.keySet().toArray(new Character[0]));
-		options = Arrays.copyOf(options, options.length + 1);
-		options[options.length - 1] = '-';
-		
-		getDungeon().prompt(new Prompt(promptString, options, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				Optional<Container.ContainerEntry> containerEntry = inv.get(response);
-				
-				if (!allowHyphen && !containerEntry.isPresent()) {
-					getDungeon().log("Invalid item '[YELLOW]%s[]'.", response);
-					return;
-				}
-				
-				Container.ContainerEntry entry = containerEntry.isPresent() ? containerEntry.get() : null;
-				responseCallback.accept(response, entry, inv);
-			}
-		}));
-		
-		return InventoryUseResult.SUCCESS;
-	}
-	
-	public InventoryUseResult useInventoryItem(String promptString,
-											   Predicate<ItemStack> isEligible,
-											   TriConsumer<Character, Container.ContainerEntry, Container> responseCallback) {
-		return useInventoryItem(promptString, isEligible, responseCallback, false);
+		acceptVisitor(new PlayerCastSpellDirectional(spell));
 	}
 	
 	public void eat() {
-		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
-		
-		Optional<Entity> floorFood = floorEntities.stream()
-			/* health and safety note: floor food is dangerous */
-			.filter(e -> e instanceof EntityItem)
-			.filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
-			.findFirst();
-		
-		if (floorFood.isPresent()) {
-			eatFromFloor((EntityItem) floorFood.get());
-		} else {
-			eatFromInventory();
-		}
-	}
-	
-	private void eatFromFloor(EntityItem entity) {
-		ItemStack stack = entity.getItemStack();
-		ItemComestible item = (ItemComestible) entity.getItem();
-		
-		String itemName = item.getName(false, false);
-		String article = item.beginsWithVowel() ? "an" : "a";
-		String promptString = item.isis() ? String.format("There is [YELLOW]%s[] here. Eat it?", itemName) :
-							  String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
-		
-		char[] options = new char[]{'y', 'n'};
-		
-		getDungeon().prompt(new Prompt(promptString, options, true, new Prompt.SimplePromptCallback(getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (response == 'n') {
-					eatFromInventory();
-					return;
-				}
-				
-				ItemComestible itemCopy = (ItemComestible) item.copy();
-				
-				setAction(new ActionEat(
-					itemCopy,
-					(EntityAction.CompleteCallback) ent -> {
-						if (stack.getCount() == 1) {
-							entity.getLevel().removeEntity(entity);
-						} else {
-							stack.subtractCount(1);
-						}
-						
-						if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-							EntityItem newStack = new EntityItem(
-								getDungeon(),
-								getLevel(),
-								getX(),
-								getY(),
-								new ItemStack(itemCopy, 1)
-							);
-							
-							getLevel().addEntity(newStack);
-						}
-					}
-				));
-				
-				getDungeon().turn();
-			}
-		}));
-	}
-	
-	private void eatFromInventory() {
-		String msg = "Eat what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof ItemComestible, (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			ItemComestible item = (ItemComestible) stack.getItem();
-			ItemComestible itemCopy = (ItemComestible) item.copy();
-			
-			setAction(new ActionEat(
-				itemCopy,
-				(EntityAction.CompleteCallback) entity -> {
-					if (stack.getCount() == 1) {
-						inv.remove(ce.getLetter());
-					} else {
-						stack.subtractCount(1);
-					}
-					
-					if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-						inv.add(new ItemStack(itemCopy, 1));
-					}
-				}
-			));
-			
-			getDungeon().turn();
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to eat.");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerEat());
 	}
 	
 	public void quaff() {
-		String msg = "Quaff what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(), (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
-			
-			setAction(new ActionQuaff(quaffable, (EntityAction.CompleteCallback) entity -> {
-				if (stack.getCount() == 1) {
-					inv.remove(ce.getLetter());
-				} else {
-					stack.subtractCount(1);
-				}
-				
-				if (quaffable instanceof ItemPotion) {
-					ItemPotion potion = (ItemPotion) quaffable;
-					
-					ItemPotion emptyPotion = new ItemPotion();
-					emptyPotion.setPotionType(potion.getPotionType());
-					emptyPotion.setBottleType(potion.getBottleType());
-					emptyPotion.setPotionColour(potion.getPotionColour());
-					emptyPotion.setEmpty(true);
-					inv.add(new ItemStack(emptyPotion, 1));
-				}
-			}));
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to quaff.");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerQuaff());
 	}
 	
 	public void consume(ItemComestible item) {
-		if (item.getTurnsRequiredToEat() == 1) {
-			getDungeon().greenYou("eat the %s.", item.getName(false, false));
-			nutrition += item.getNutrition();
-			
-			item.eatPart();
-			return;
-		}
-		
-		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
-			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
-				getDungeon().greenYou("finish eating the %s.", item.getName(false, false));
-				
-				nutrition += Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat());
-				
-				if (item.getStatusEffects(this) != null) {
-					item.getStatusEffects(this).forEach(this::addStatusEffect);
-				}
-			} else {
-				getDungeon().You("eat a part of the %s.", item.getName(false, false));
-				
-				nutrition += Math.floor(item.getNutrition() / item.getTurnsRequiredToEat());
-				
-				if (item.getStatusEffects(this) != null &&
-					getNutritionState() != NutritionState.STARVING &&
-					getNutritionState() != NutritionState.FAINTING &&
-					attributes.getAttribute(Attribute.WISDOM) > 6) {
-					
-					getDungeon().You("feel funny - it might not be a good idea to continue eating.");
-				}
-			}
-		}
-		
-		item.eatPart();
+		acceptVisitor(new PlayerConsume(item));
 	}
 	
 	public void pickup() {
-		List<Entity> floorEntities = getLevel().getEntitiesAt(getX(), getY());
-		
-		for (Entity entity : floorEntities) {
-			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
-				ItemStack stack = ((EntityItem) entity).getItemStack();
-				Item item = stack.getItem();
-				
-				if (item instanceof ItemGold) {
-					giveGold(stack.getCount());
-					getLevel().removeEntity(entity);
-					getDungeon().turn();
-					getDungeon().You("pick up [YELLOW]%s[].", stack.getName(false));
-				} else if (getContainer().isPresent()) {
-					Optional<Container.ContainerEntry> result = getContainer().get().add(stack);
-					
-					if (!result.isPresent()) {
-						getDungeon().You("can't hold any more items.");
-						return;
-					}
-					
-					getLevel().removeEntity(entity);
-					getDungeon().turn();
-					
-					if (item.isis() || stack.getCount() > 1) {
-						getDungeon().You(
-							"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.getName(false),
-							result.get().getLetter()
-						);
-					} else {
-						getDungeon().You(
-							"pick up %s [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.beginsWithVowel() ? "an" : "a", stack.getName(false), result.get().getLetter()
-						);
-					}
-					
-					break;
-				} else {
-					getDungeon().yellowYou("can't hold anything!");
-				}
-			}
-		}
+		acceptVisitor(new PlayerPickup());
 	}
 	
 	public void drop() {
-		String msg = "Drop what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			inv.remove(c);
-			dropItem(stack);
-			
-			if (item.isis() || stack.getCount() > 1) {
-				getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(false), c);
-			} else {
-				getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
-					stack.beginsWithVowel() ? "an" : "a",
-					stack.getName(false),
-					c
-				);
-			}
-			
-			getDungeon().turn();
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-				getDungeon().yellowYou("can't hold anything!");
-				break;
-			case NO_ITEM:
-				getDungeon().yellowYou("don't have any items to drop!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerDrop());
 	}
 	
 	public void loot() {
-		List<Entity> containerEntities = getLevel().getEntitiesAt(getX(), getY()).stream()
-			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
-			.collect(Collectors.toList());
-		
-		if (containerEntities.size() == 0) {
-			getDungeon().log("There is nothing to loot here.");
-			return;
-		}
-		
-		getDungeon().turn();
-		
-		Entity containerEntity = containerEntities.get(0);
-		
-		if (!containerEntity.lootable()) {
-			containerEntity.lootFailedString().ifPresent(s -> getDungeon().log(s));
-			return;
-		}
-		
-		containerEntity.lootSuccessString().ifPresent(s -> getDungeon().log(s));
-		getDungeon().showContainer(containerEntity);
+		acceptVisitor(new PlayerLoot());
 	}
 	
 	public void wield() {
-		String msg = "Wield what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, s -> s.getItem() instanceof Wieldable, (c, ce, inv) -> {
-			if (c == '-') {
-				setLeftHand(null);
-				setRightHand(null);
-				getDungeon().You("unwield everything.");
-				getDungeon().turn();
-				return;
-			}
-			
-			if (ce == null) {
-				getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", c));
-				return;
-			}
-			
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			if (getRightHand() != null && ((Wieldable) getRightHand().getItem()).isTwoHanded()) {
-				setLeftHand(null);
-			}
-			
-			setRightHand(ce);
-			
-			if (((Wieldable) item).isTwoHanded()) {
-				setLeftHand(ce);
-			}
-			
-			String name = stack.getName(false);
-			
-			if (item.isis() || stack.getCount() > 1) {
-				getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
-			} else {
-				getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
-			}
-			
-			getDungeon().turn();
-		}, true);
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				getDungeon().yellowYou("have nothing to wield!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerWield());
 	}
 	
 	public void fire() {
@@ -1143,116 +565,27 @@ public class Player extends LivingEntity {
 	}
 	
 	public void throwItem() {
-		String msg = "Throw what?";
-		
-		InventoryUseResult result = useInventoryItem(msg, is -> true, (c, ce, inv) -> {
-			ItemStack stack = ce.getStack();
-			Item item = stack.getItem();
-			
-			String msg2 = "In what direction?";
-			
-			getDungeon().prompt(new Prompt(msg2, null, true, new Prompt.SimplePromptCallback(getDungeon()) {
-				@Override
-				public void onResponse(char response) {
-					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-						getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-						return;
-					}
-					
-					Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-					int dx = d[0];
-					int dy = d[1];
-					
-					if (
-						item instanceof ItemProjectile &&
-						getRightHand() != null &&
-						getRightHand().getItem() instanceof ItemProjectileLauncher
-					) {
-						ItemProjectileLauncher launcher = (ItemProjectileLauncher) getRightHand().getItem();
-						boolean fired = launcher.fire(Player.this, (ItemProjectile) item, dx, dy);
-						
-						if (fired) {
-							if (stack.getCount() <= 1) {
-								inv.remove(ce.getLetter());
-							} else {
-								stack.subtractCount(1);
-							}
-						}
-					} else {
-						// TODO: regular item throwing
-					}
-					
-					getDungeon().turn();
-				}
-			}));
-		});
-		
-		switch (result) {
-			case NO_CONTAINER:
-				getDungeon().yellowYou("can't hold anything!");
-				break;
-			case NO_ITEM:
-				getDungeon().yellowYou("don't have any items to throw!");
-				break;
-			default:
-				break;
-		}
+		acceptVisitor(new PlayerThrowItem());
 	}
 	
 	public void climbAny() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP &&
-			tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
-			getDungeon().log("[YELLOW]There is nothing to climb here.[]");
-			return;
-		}
-		
-		boolean up = tile.getType() == TileType.TILE_ROOM_STAIRS_UP || tile.getType() == TileType.TILE_ROOM_LADDER_UP;
-		climb(tile, up);
+		acceptVisitor(new PlayerClimbAny());
 	}
 	
 	public void climbUp() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP) {
-			getDungeon().log("[YELLOW]There is nothing to climb up here.[]");
-			return;
-		}
-		
-		climb(tile, true);
+		acceptVisitor(new PlayerClimbUp());
 	}
 	
 	public void climbDown() {
-		Tile tile = getLevel().getTile(getX(), getY());
-		
-		if (tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
-			getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
-			return;
-		}
-		
-		climb(tile, false);
+		acceptVisitor(new PlayerClimbDown());
 	}
 	
-	private void climb(Tile tile, boolean up) {
-		if (!tile.hasState() || !(tile.getState() instanceof TileStateClimbable)) {
-			return;
-		}
-		
-		TileStateClimbable tsc = (TileStateClimbable) tile.getState();
-		
-		if (!tsc.getLinkedLevel().isPresent()) {
-			int depth = getLevel().getDepth() + (up ? 1 : -1);
-			Level level = getDungeon().newLevel(depth, tile);
-			level.processEntityQueues();
-			tsc.setLinkedLevelUUID(level.getUUID());
-			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
-		}
-		
-		if (tsc.getLinkedLevel().isPresent()) {
-			Level level = tsc.getLinkedLevel().get();
-			getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
-		}
+	public void climb(Tile tile, boolean up) {
+		acceptVisitor(new PlayerClimb(tile, up));
+	}
+	
+	public void read() {
+		acceptVisitor(new PlayerRead());
 	}
 	
 	public Hit hitFromMonster(DamageSource damageSource, int damage, LivingEntity attacker) {

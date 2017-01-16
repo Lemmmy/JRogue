@@ -1,16 +1,20 @@
 package pw.lemmmy.jrogue.dungeon.items.comestibles;
 
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 
 public class ItemBread extends ItemComestible {
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "Loa" : "loa") + (plural ? "ves" : "f") + " of bread";
-	}
-	
-	@Override
-	public boolean isis() {
-		return true;
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "Loa" : "loa") + (plural ? "ves" : "f") + " of bread";
+		
+		return s;
 	}
 	
 	@Override

@@ -59,11 +59,15 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		if (victim.getHealth() <= 0) { return; }
 		
 		if (attacker instanceof Player) {
-			attacker.getDungeon().log(attackerString, victim.getName(false));
+			attacker.getDungeon().log(attackerString, victim.getName(attacker, false));
 		} else if (victim instanceof Player) {
-			victim.getDungeon().log(victimString, attacker.getName(false));
+			victim.getDungeon().log(victimString, attacker.getName(victim, false));
 		} else {
-			attacker.getDungeon().log(neitherString, attacker.getName(false), victim.getName(false));
+			attacker.getDungeon().log(
+				neitherString,
+				attacker.getName(victim.getDungeon().getPlayer(), false),
+				victim.getName(victim.getDungeon().getPlayer(), false)
+			);
 		}
 	}
 }

@@ -1,15 +1,17 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class LivingEntity extends EntityTurnBased {
 	private int health;
@@ -24,6 +26,12 @@ public abstract class LivingEntity extends EntityTurnBased {
 	
 	private Container.ContainerEntry leftHand;
 	private Container.ContainerEntry rightHand;
+	
+	/**
+	 * known persistent aspects per item class
+	 * the key is the hashcode of an items list of persistent aspects
+	 */
+	private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
 	
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);
@@ -87,7 +95,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public int getXPForLevel(int level) {
-		return (int) Math.pow(((float) level / 1.75f), 2) * 2 + 10;
+		return (int) Math.pow((float) level / 1.75f, 2) * 2 + 10;
 	}
 	
 	public void addExperience(int experience) {
@@ -124,6 +132,24 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public abstract Size getSize();
+	
+	public Map<Integer, Set<Class<? extends Aspect>>> getKnownAspects() {
+		return knownAspects;
+	}
+	
+	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
+		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectClass);
+	}
+	
+	public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
+		int code = item.getPersistentAspects().hashCode();
+		
+		if (!knownAspects.containsKey(code)) {
+			knownAspects.put(code, new HashSet<>());
+		}
+		
+		knownAspects.get(code).add(aspectClass);
+	}
 	
 	@Override
 	public Optional<Container> getContainer() {
@@ -181,8 +207,17 @@ public abstract class LivingEntity extends EntityTurnBased {
 				obj.put("rightHand", rightHand.getLetter());
 			}
 		}
+		
+		JSONObject serialisedKnownAspects = new JSONObject();
+		knownAspects.forEach((k, v) -> {
+			JSONArray serialisedAspectList = new JSONArray();
+			v.forEach(a -> serialisedAspectList.put(a.getName()));
+			serialisedKnownAspects.put(k.toString(), serialisedAspectList);
+		});
+		obj.put("knownAspects", serialisedKnownAspects);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
@@ -208,6 +243,23 @@ public abstract class LivingEntity extends EntityTurnBased {
 				entryOptional.ifPresent(this::setRightHand);
 			}
 		}
+		
+		JSONObject serialisedKnownAspects = obj.getJSONObject("knownAspects");
+		serialisedKnownAspects.keySet().forEach(k -> {
+			Integer code = Integer.parseInt(k);
+			JSONArray serialisedAspectList = serialisedKnownAspects.getJSONArray(k);
+			
+			Set<Class<? extends Aspect>> aspectSet = new HashSet<>();
+			serialisedAspectList.forEach(c -> {
+				try {
+					aspectSet.add((Class<? extends Aspect>) Class.forName((String) c));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			});
+			
+			knownAspects.put(code, aspectSet);
+		});
 	}
 	
 	@Override
@@ -223,6 +275,10 @@ public abstract class LivingEntity extends EntityTurnBased {
 		if (healingTurns >= getHealingRate()) {
 			heal(1);
 			healingTurns = 0;
+		}
+		
+		if (inventory != null) {
+			inventory.update();
 		}
 	}
 	
@@ -256,6 +312,14 @@ public abstract class LivingEntity extends EntityTurnBased {
 	protected abstract void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
 	
 	public void dropItem(ItemStack item) {
+		if (leftHand != null && leftHand.getItem().equals(item.getItem())) {
+			leftHand = null;
+		}
+		
+		if (rightHand != null && rightHand.getItem().equals(item.getItem())) {
+			rightHand = null;
+		}
+		
 		List<Entity> entities = getLevel().getEntitiesAt(getX(), getY());
 		
 		Optional<Entity> ent = entities.stream()

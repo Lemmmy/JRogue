@@ -28,7 +28,7 @@ public class MonsterFish extends Monster {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Fish" : "fish";
 	}
 	
@@ -99,12 +99,16 @@ public class MonsterFish extends Monster {
 	
 	@Override
 	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		getDungeon().You("kill the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kill the %s!", getName(attacker, false));
+		}
 	}
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().You("kick the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kick the %s!", getName(kicker, false));
+		}
 	}
 	
 	@Override

@@ -15,11 +15,11 @@ public class EntityWeaponRack extends Entity {
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		container = new Container(getName(true));
+		container = new WeaponRackContainer(getName(null, true));
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Weapon rack" : "weapon rack";
 	}
 	
@@ -51,7 +51,7 @@ public class EntityWeaponRack extends Entity {
 	
 	@Override
 	public Optional<String> lootSuccessString() {
-		return Optional.of(String.format("You browse the %s.", getName(false)));
+		return Optional.of(String.format("You browse the %s.", getName(getDungeon().getPlayer(), false)));
 	}
 	
 	@Override
@@ -59,7 +59,9 @@ public class EntityWeaponRack extends Entity {
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
-		getDungeon().log("There is a %s here.", getName(false));
+		if (isPlayer) {
+			getDungeon().log("There is a %s here.", getName(walker, false));
+		}
 	}
 	
 	@Override
@@ -85,7 +87,7 @@ public class EntityWeaponRack extends Entity {
 		
 		if (obj.has("inventory")) {
 			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(serialisedInventory);
+			container = Container.createFromJSON(WeaponRackContainer.class, serialisedInventory);
 		}
 	}
 }

@@ -3,9 +3,11 @@ package pw.lemmmy.jrogue.dungeon.items.valuables;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectGemValue;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ItemGem extends Item {
@@ -14,37 +16,55 @@ public class ItemGem extends Item {
 	
 	public ItemGem() { // unserialisation constructor
 		super();
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	public ItemGem(Level level) { // chest spawning constructor
 		this.gem = RandomUtils.randomFrom(Gem.values());
 		this.worthless = RandomUtils.rollD2();
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	public ItemGem(Gem gem, boolean worthless) {
 		this.gem = gem;
 		this.worthless = worthless;
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
 		String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
 		
-		if (isIdentified()) {
+		if (isAspectKnown(observer, AspectGemValue.class)) {
 			if (worthless) {
 				if (requiresCapitalisation) {
-					return plural ?
-						   "Worthless pieces of " + colour + " glass" :
-						   "Worthless piece of " + colour + " " + "glass";
+					s += plural ?
+						 "Worthless pieces of " + colour + " glass" :
+						 "Worthless piece of " + colour + " " + "glass";
+					
+					return s;
 				} else {
-					return plural ?
-						   "worthless pieces of " + colour + " glass" :
-						   "worthless piece of " + colour + " " + "glass";
+					s += plural ?
+						 "worthless pieces of " + colour + " glass" :
+						 "worthless piece of " + colour + " " + "glass";
+					
+					return s;
 				}
 			} else {
 				String gemName = plural ? gem.getName() : gem.getNamePlural();
 				
-				return requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
+				s += requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
+				
+				return s;
 			}
 		} else {
 			return String.format(

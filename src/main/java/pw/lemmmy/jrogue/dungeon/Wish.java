@@ -8,7 +8,9 @@ import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
+import pw.lemmmy.jrogue.dungeon.entities.magic.EntityAltar;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
@@ -17,6 +19,8 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Material;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
+import pw.lemmmy.jrogue.dungeon.items.magical.ItemSpellbook;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellLightOrb;
 import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemArrow;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.BottleType;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.potions.ItemPotion;
@@ -82,6 +86,11 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
 			dungeon.getLevel().addEntity(
 				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("altar")) {
+			dungeon.getLevel().addEntity(
+				new EntityAltar(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
@@ -153,7 +162,10 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("fox")) {
 			dungeon.getLevel().addEntity(new MonsterFox(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
-		} else if (wish.equalsIgnoreCase("hound")) {
+		} else if (wish.equalsIgnoreCase("lizard")) {
+			dungeon.getLevel().addEntity(new MonsterLizard(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			return true;
+		}  else if (wish.equalsIgnoreCase("hound")) {
 			dungeon.getLevel().addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("hellhound")) {
@@ -234,7 +246,10 @@ public class Wish {
 			potion.setEmpty(false);
 			potion.setPotency(potency);
 			item = potion;
-		} else if (wish.equalsIgnoreCase("bow")) {
+		} else if (wish.equalsIgnoreCase("spellbook")) {
+			item = new ItemSpellbook();
+			((ItemSpellbook) item).setSpell(new SpellLightOrb());
+		}  else if (wish.equalsIgnoreCase("bow")) {
 			item = new ItemBow();
 		} else if (wish.equalsIgnoreCase("arrow")) {
 			item = new ItemArrow();

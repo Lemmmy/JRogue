@@ -8,12 +8,20 @@ import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		if (requiresCapitalisation) {
-			return plural ? "Staves" : "Staff";
-		} else {
-			return plural ? "staves" : "staff";
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
 		}
+			
+		if (requiresCapitalisation) {
+			s += plural ? "Staves" : "Staff";
+		} else {
+			s += plural ? "staves" : "staff";
+		}
+		
+		return s;
 	}
 	
 	@Override

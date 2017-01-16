@@ -1,11 +1,20 @@
 package pw.lemmmy.jrogue.dungeon.items.comestibles;
 
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 
 public class ItemCorn extends ItemComestible {
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
+		
+		return s;
 	}
 	
 	@Override

@@ -2,7 +2,6 @@ package pw.lemmmy.jrogue.dungeon.items.quaffable.potions;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
@@ -63,24 +62,32 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
-		String emptyText = requiresCapitalisation ? "Glass bottle" : "glass bottle";
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
-		if (empty && requiresCapitalisation) {
+		if (!s.isEmpty() && requiresCapitalisation) {
 			requiresCapitalisation = false;
 		}
 		
-		String colourName = "";
-		
-		if (!empty) {
-			colourName = requiresCapitalisation ?
-						 StringUtils.capitalize(getPotionColour().getName()) :
-						 getPotionColour().getName();
+		if (empty) {
+			s += requiresCapitalisation ? "Glass bottle" : "glass bottle";
 			
-			colourName += " ";
+			return s;
+		} else {
+			String colourName = "";
+			
+			if (!empty) {
+				colourName = requiresCapitalisation ?
+							 StringUtils.capitalize(getPotionColour().getName()) :
+							 getPotionColour().getName();
+				
+				colourName += " ";
+			}
+			
+			s += colourName + "potion" + (plural ? "s" : "");
+			
+			return s;
 		}
-		
-		return (empty ? emptyText : colourName + "potion") + (plural ? "s" : "");
 	}
 	
 	@Override
@@ -94,18 +101,18 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public void quaff(Entity entity) {
+	public void quaff(LivingEntity quaffer) {
 		if (empty) {
 			return;
 		}
 		
-		if (entity instanceof LivingEntity) {
-			potionType.getEffect().apply((LivingEntity) entity, potency);
+		if (quaffer instanceof LivingEntity) {
+			potionType.getEffect().apply((LivingEntity) quaffer, potency);
 		}
 	}
 	
 	@Override
-	public boolean canQuaff() {
+	public boolean canQuaff(LivingEntity quaffer) {
 		return !empty;
 	}
 	

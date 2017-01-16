@@ -27,7 +27,7 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Skeleton" : "skeleton";
 	}
 	
@@ -108,7 +108,9 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().You("kick the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kick the %s!", getName(kicker, false));
+		}
 		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
@@ -118,7 +120,9 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		getDungeon().You("kill the %s!", getName(false));
+		if (isPlayer) {
+			getDungeon().You("kill the %s!", getName(attacker, false));
+		}
 	}
 	
 	@Override
@@ -128,10 +132,10 @@ public class MonsterSkeleton extends Monster {
 			DamageSource.SKELETON_HIT,
 			1,
 			(EntityAction.CompleteCallback) entity -> getDungeon().logRandom(
-				String.format("[ORANGE]The %s punches you!", getName(false)),
-				String.format("[ORANGE]The %s hits you!", getName(false)),
-				String.format("[ORANGE]The %s kicks you!", getName(false)),
-				String.format("[ORANGE]The %s headbutts you!", getName(false))
+				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
+				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false)),
+				String.format("[ORANGE]The %s kicks you!", getName(getDungeon().getPlayer(), false)),
+				String.format("[ORANGE]The %s headbutts you!", getName(getDungeon().getPlayer(), false))
 			)
 		));
 	}

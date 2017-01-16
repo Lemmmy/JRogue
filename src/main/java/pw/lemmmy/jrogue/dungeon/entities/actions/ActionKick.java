@@ -55,9 +55,9 @@ public class ActionKick extends EntityAction {
 	private void entityKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		if (kickedEntity.isStatic()) {
 			if (isPlayer) {
-				entity.getDungeon().You("kick the %s!", kickedEntity.getName(false));
+				entity.getDungeon().You("kick the %s!", kickedEntity.getName(kicker, false));
 			} else {
-				entity.getDungeon().The("%s kicks the %s!", kicker.getName(false), kickedEntity.getName(false));
+				entity.getDungeon().The("%s kicks the %s!", kicker.getName(kicker, false), kickedEntity.getName(kicker, false));
 			}
 		}
 		

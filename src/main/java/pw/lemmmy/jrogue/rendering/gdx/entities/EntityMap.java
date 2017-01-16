@@ -12,6 +12,7 @@ public enum EntityMap {
 	APPEARANCE_ICEHOUND(new EntityRendererParticleHound(4, 2, "icehound")),
 	APPEARANCE_SPIDER(new EntityRendererRandom(5, 2, 2)),
 	APPEARANCE_RAT(new EntityRendererRandom(7, 2, 2)),
+	APPEARANCE_LIZARD(new EntityRendererRandom(19, 2, 3)),
 	APPEARANCE_SKELETON(9, 2),
 	APPEARANCE_FISH_RED(new EntityRendererFish(1, 3)),
 	APPEARANCE_FISH_ORANGE(new EntityRendererFish(2, 3)),
@@ -27,6 +28,7 @@ public enum EntityMap {
 	APPEARANCE_CANDLESTICK_EXTINGUISHED(new EntityRendererCandlestick(15, 1)),
 	APPEARANCE_WEAPON_RACK(16, 1),
 	APPEARANCE_WEAPON_RACK_STOCKED(17, 1),
+	APPEARANCE_ALTAR(20, 1),
 	
 	APPEARANCE_ITEM(new EntityRendererItem()),
 	
