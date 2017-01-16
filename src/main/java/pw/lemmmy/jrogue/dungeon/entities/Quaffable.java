@@ -5,5 +5,5 @@ public interface Quaffable {
 	
 	boolean canQuaff(LivingEntity quaffer);
 	
-	String getQuaffConfirmationMessage();
+	String getQuaffConfirmationMessage(LivingEntity quaffer);
 }

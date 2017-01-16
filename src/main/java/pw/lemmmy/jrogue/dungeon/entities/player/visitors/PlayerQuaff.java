@@ -23,7 +23,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 			.filter(e -> ((Quaffable) e).canQuaff(player))
 			.findFirst()
 			.ifPresent(q -> {
-				String msg = ((Quaffable) q).getQuaffConfirmationMessage();
+				String msg = ((Quaffable) q).getQuaffConfirmationMessage(player);
 				
 				player.getDungeon().prompt(new Prompt(msg, new char[] {'y', 'n'}, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
 					@Override

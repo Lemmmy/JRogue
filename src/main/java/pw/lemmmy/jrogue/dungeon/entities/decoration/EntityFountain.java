@@ -69,7 +69,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	public void quaff(LivingEntity quaffer) {
 		// TODO: fountain magic
 		
-		quaffer.getDungeon().You("drink from the fountain.");
+		quaffer.getDungeon().You("drink from the %s.", getName(quaffer, false));
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@Override
-	public String getQuaffConfirmationMessage() {
-		return "Drink from fountain?";
+	public String getQuaffConfirmationMessage(LivingEntity quaffer) {
+		return String.format("Drink from the %s?", getName(quaffer, false));
 	}
 }
