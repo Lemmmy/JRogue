@@ -33,6 +33,10 @@ public abstract class Item implements Serialisable {
 	
 	public abstract float getWeight();
 	
+	public boolean shouldStack() {
+		return true;
+	}
+	
 	public boolean equals(Item other) {
 		return other.getClass() == getClass() &&
 			other.getAppearance() == getAppearance();

@@ -1,16 +1,18 @@
 package pw.lemmmy.jrogue.dungeon.entities.containers;
 
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Wieldable;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.ItemComestible;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,14 +53,16 @@ public class Container implements Serialisable {
 			return Optional.empty();
 		}
 		
-		for (Map.Entry<Character, ItemStack> entry : items.entrySet()) {
-			ItemStack storedStack = entry.getValue();
-			
-			if (item.equals(storedStack.getItem())) {
-				storedStack.addCount(stack.getCount());
-				ContainerEntry newEntry = new ContainerEntry(entry);
-				listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
-				return Optional.of(newEntry);
+		if (stack.getItem().shouldStack()) {
+			for (Map.Entry<Character, ItemStack> entry : items.entrySet()) {
+				ItemStack storedStack = entry.getValue();
+				
+				if (item.equals(storedStack.getItem())) {
+					storedStack.addCount(stack.getCount());
+					ContainerEntry newEntry = new ContainerEntry(entry);
+					listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
+					return Optional.of(newEntry);
+				}
 			}
 		}
 		
@@ -70,17 +74,15 @@ public class Container implements Serialisable {
 	}
 	
 	public boolean canAdd(ItemStack stack) {
-		if (!(stack.getCategory().equals(ItemCategory.WEAPON)) && (getName().equals("Weapon rack"))) {
-			return false;
-		}
-		
-		for (ItemStack storedStack : items.values()) {
-			if (stack.getItem().equals(storedStack.getItem())) {
-				return true;
+		if (stack.getItem().shouldStack()) {
+			for (ItemStack storedStack : items.values()) {
+				if (stack.getItem().equals(storedStack.getItem())) {
+					return true;
+				}
 			}
 		}
 		
-		return getAvailableInventoryLetter() != ' ';
+		return getAvailableInventoryLetter() != 0;
 	}
 	
 	public char getAvailableInventoryLetter() {
@@ -90,7 +92,7 @@ public class Container implements Serialisable {
 			}
 		}
 		
-		return ' ';
+		return 0;
 	}
 	
 	public Optional<ContainerEntry> get(Character letter) {
@@ -147,6 +149,19 @@ public class Container implements Serialisable {
 	}
 	
 	public static Container createFromJSON(JSONObject obj) {
+		return createFromJSON(Container.class, obj);
+	}
+	
+	public static Container createFromJSON(Class<? extends Container> clazz, JSONObject obj) {
+		try {
+			Constructor c = ConstructorUtils.getAccessibleConstructor(clazz, String.class);
+			Container container = (Container) c.newInstance(obj.getString("name"));
+			container.unserialise(obj);
+			return container;
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		
 		Container container = new Container(obj.getString("name"));
 		container.unserialise(obj);
 		return container;
