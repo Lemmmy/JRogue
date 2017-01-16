@@ -12,6 +12,7 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public abstract class Item implements Serialisable {
@@ -38,6 +39,23 @@ public abstract class Item implements Serialisable {
 	}
 	
 	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural);
+	
+	public String getBeatitudePrefix(LivingEntity observer, boolean requiresCapitalisation) {
+		if (!isAspectKnown(observer, AspectBeatitude.class)) {
+			return "";
+		}
+		
+		AtomicReference<String> out = new AtomicReference<>("");
+		
+		getAspect(AspectBeatitude.class).ifPresent(a -> {
+			AspectBeatitude.Beatitude beatitude = ((AspectBeatitude) a).getBeatitude();
+			String s = beatitude.name().toLowerCase();
+			
+			out.set((requiresCapitalisation ? StringUtils.capitalize(s) : s) + " ");
+		});
+		
+		return out.get();
+	}
 	
 	public abstract float getWeight();
 	

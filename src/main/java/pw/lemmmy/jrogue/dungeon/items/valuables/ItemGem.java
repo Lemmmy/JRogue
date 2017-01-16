@@ -29,23 +29,35 @@ public class ItemGem extends Item {
 	
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
 		String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
 		
 		// if (isIdentified()) {
 			if (worthless) {
 				if (requiresCapitalisation) {
-					return plural ?
-						   "Worthless pieces of " + colour + " glass" :
-						   "Worthless piece of " + colour + " " + "glass";
+					s += plural ?
+						 "Worthless pieces of " + colour + " glass" :
+						 "Worthless piece of " + colour + " " + "glass";
+					
+					return s;
 				} else {
-					return plural ?
-						   "worthless pieces of " + colour + " glass" :
-						   "worthless piece of " + colour + " " + "glass";
+					s += plural ?
+						 "worthless pieces of " + colour + " glass" :
+						 "worthless piece of " + colour + " " + "glass";
+					
+					return s;
 				}
 			} else {
 				String gemName = plural ? gem.getName() : gem.getNamePlural();
 				
-				return requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
+				s += requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
+				
+				return s;
 			}
 		/* } else {
 			return String.format(

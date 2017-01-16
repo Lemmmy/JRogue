@@ -8,6 +8,7 @@ import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
+import pw.lemmmy.jrogue.dungeon.entities.magic.EntityAltar;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
@@ -84,6 +85,11 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
 			dungeon.getLevel().addEntity(
 				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
+			);
+			dungeon.turn();
+		} else if (wish.equalsIgnoreCase("altar")) {
+			dungeon.getLevel().addEntity(
+				new EntityAltar(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {

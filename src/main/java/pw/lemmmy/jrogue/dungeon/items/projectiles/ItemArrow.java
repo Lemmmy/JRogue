@@ -9,7 +9,15 @@ import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
 public class ItemArrow extends ItemProjectile {
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "A" : "a") + "rrow" + (plural ? "s" : "");
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "A" : "a") + "rrow" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override

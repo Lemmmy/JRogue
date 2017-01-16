@@ -6,7 +6,15 @@ import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 public class ItemCorn extends ItemComestible {
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
+		
+		return s;
 	}
 	
 	@Override

@@ -27,6 +27,7 @@ public enum EntityMap {
 	APPEARANCE_CANDLESTICK_EXTINGUISHED(new EntityRendererCandlestick(15, 1)),
 	APPEARANCE_WEAPON_RACK(16, 1),
 	APPEARANCE_WEAPON_RACK_STOCKED(17, 1),
+	APPEARANCE_ALTAR(18, 1),
 	
 	APPEARANCE_ITEM(new EntityRendererItem()),
 	

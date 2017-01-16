@@ -9,7 +9,15 @@ import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 public class ItemThermometer extends Item implements Shatterable {
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "Thermometer" : "thermometer") + (plural ? "s" : "");
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "Thermometer" : "thermometer") + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override

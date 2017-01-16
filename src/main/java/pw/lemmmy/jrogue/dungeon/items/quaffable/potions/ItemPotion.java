@@ -64,6 +64,12 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
 		String emptyText = requiresCapitalisation ? "Empty " : "empty ";
 		
 		if (empty && requiresCapitalisation) {
@@ -80,7 +86,9 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 			colourName += " ";
 		}
 		
-		return (empty ? emptyText : "") + colourName + "potion" + (plural ? "s" : "");
+		s += (empty ? emptyText : "") + colourName + "potion" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override

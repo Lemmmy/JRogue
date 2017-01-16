@@ -32,7 +32,15 @@ public class ItemBow extends ItemProjectileLauncher {
 	
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		return (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
+		
+		return s;
 	}
 	
 	@Override
