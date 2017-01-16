@@ -18,6 +18,8 @@
 - Candlesticks as small room decoration
 - Rugs as larger room decoration
 - Added ice levels below dlvl-10 with different monsters
+- Added foxes
+- Added lizards
 
 # Minor changes
 - Completely revamped the entity loop and action system to support multiple speeds better
