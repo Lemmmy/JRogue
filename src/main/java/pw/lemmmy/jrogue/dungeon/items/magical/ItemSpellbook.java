@@ -11,6 +11,7 @@ import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
 import pw.lemmmy.jrogue.dungeon.items.Readable;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectBookContents;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -25,9 +26,15 @@ public class ItemSpellbook extends Item implements Readable {
 	private int timesRead = 0;
 	private int readingProgress = 0;
 	
+	public ItemSpellbook() {
+		super();
+		
+		addAspect(new AspectBookContents());
+	}
+	
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		if (!isIdentified()) {
+		if (!isAspectKnown(AspectBookContents.class)) {
 			return (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
 		}
 		
@@ -55,6 +62,8 @@ public class ItemSpellbook extends Item implements Readable {
 	
 	@Override
 	public void onRead(Player reader) {
+		observeAspect(AspectBookContents.class);
+		
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		AtomicBoolean alreadyKnown = new AtomicBoolean(false);
 		AtomicInteger letter = new AtomicInteger(reader.getAvailableSpellLetter());

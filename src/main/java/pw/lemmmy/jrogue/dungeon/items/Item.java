@@ -71,6 +71,10 @@ public abstract class Item implements Serialisable {
 		return knownAspects.contains(aspectClass);
 	}
 	
+	public void addAspect(Aspect aspect) {
+		aspects.put(aspect.getClass(), aspect);
+	}
+	
 	public void observeAspect(Class<? extends Aspect> aspectClass) {
 		if (!aspects.containsKey(aspectClass)) {
 			return; // can't observe an aspect that doesn't exist!!
