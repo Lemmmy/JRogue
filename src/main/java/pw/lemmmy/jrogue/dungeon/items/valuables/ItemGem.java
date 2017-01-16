@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectGemValue;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class ItemGem extends Item {
@@ -15,16 +16,22 @@ public class ItemGem extends Item {
 	
 	public ItemGem() { // unserialisation constructor
 		super();
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	public ItemGem(Level level) { // chest spawning constructor
 		this.gem = RandomUtils.randomFrom(Gem.values());
 		this.worthless = RandomUtils.rollD2();
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	public ItemGem(Gem gem, boolean worthless) {
 		this.gem = gem;
 		this.worthless = worthless;
+		
+		addAspect(new AspectGemValue());
 	}
 	
 	@Override
@@ -37,7 +44,7 @@ public class ItemGem extends Item {
 			
 		String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
 		
-		// if (isIdentified()) {
+		if (isAspectKnown(observer, AspectGemValue.class)) {
 			if (worthless) {
 				if (requiresCapitalisation) {
 					s += plural ?
@@ -59,13 +66,13 @@ public class ItemGem extends Item {
 				
 				return s;
 			}
-		/* } else {
+		} else {
 			return String.format(
 				"%s gem%s",
 				requiresCapitalisation ? StringUtils.capitalize(colour) : colour,
 				plural ? "s" : ""
 			);
-		} */
+		}
 	}
 	
 	@Override
