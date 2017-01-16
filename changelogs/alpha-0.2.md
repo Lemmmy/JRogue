@@ -20,6 +20,7 @@
 - Added ice levels below dlvl-10 with different monsters
 - Added foxes
 - Added lizards
+- Items now age, and corpses will rot over time. Eating a rotten corpse will result in fatal food poisoning
 
 # Minor changes
 - Completely revamped the entity loop and action system to support multiple speeds better
