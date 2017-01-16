@@ -10,6 +10,7 @@ import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityFountain;
 import pw.lemmmy.jrogue.dungeon.entities.magic.EntityAltar;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.*;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
@@ -161,7 +162,10 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("fox")) {
 			dungeon.getLevel().addEntity(new MonsterFox(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
-		} else if (wish.equalsIgnoreCase("hound")) {
+		} else if (wish.equalsIgnoreCase("lizard")) {
+			dungeon.getLevel().addEntity(new MonsterLizard(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			return true;
+		}  else if (wish.equalsIgnoreCase("hound")) {
 			dungeon.getLevel().addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("hellhound")) {
