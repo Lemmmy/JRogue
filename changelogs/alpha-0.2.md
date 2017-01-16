@@ -3,14 +3,14 @@
 - Added a map to the HUD
 - Skills can now be levelled up
 - New combat system: armour-class and to-hit rolls
-- - Players and monsters with lower armour classes are harder to hit
-- - You can now potentially miss monsters in combat
+ - Players and monsters with lower armour classes are harder to hit
+ - You can now potentially miss monsters in combat
 - New item identity system - you now know almost nothing about an item until you inspect those aspects.
 - Item beatitude (blessed, uncursed and cursed) - BUC status is now an aspect
 - Altars - dropping an item on them reveals item beatitude
 - Magic - there are now spells and spellbooks
-- - Strike spell, a big bolt of force that destroys entities and fragile objects
-- - Light orb, a large ball of light to light up those dim corridors
+ - Strike spell, a big bolt of force that destroys entities and fragile objects
+ - Light orb, a large ball of light to light up those dim corridors
 - Ranged - there are now bows and arrows, and ranged combat
 - Quaffing - you can now drink things including potions, and from fountains
 - Reading - you can now read spellbooks
