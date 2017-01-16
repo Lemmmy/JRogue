@@ -35,8 +35,8 @@ public class PlayerEat extends PlayerItemVisitor {
 		ItemStack stack = entity.getItemStack();
 		ItemComestible item = (ItemComestible) entity.getItem();
 		
-		String itemName = item.getName(false, false);
-		String article = item.beginsWithVowel() ? "an" : "a";
+		String itemName = item.getName(player, false, false);
+		String article = item.beginsWithVowel(player) ? "an" : "a";
 		String msg = item.isis() ? String.format("There is [YELLOW]%s[] here. Eat it?", itemName) :
 							  String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
 		

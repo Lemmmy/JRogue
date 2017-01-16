@@ -15,7 +15,7 @@ public class PlayerConsume implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
 		if (item.getTurnsRequiredToEat() == 1) {
-			player.getDungeon().greenYou("eat the %s.", item.getName(false, false));
+			player.getDungeon().greenYou("eat the %s.", item.getName(player, false, false));
 			player.setNutrition(player.getNutrition() + item.getNutrition());
 			
 			item.eatPart();
@@ -24,7 +24,7 @@ public class PlayerConsume implements PlayerVisitor {
 		
 		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
 			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
-				player.getDungeon().greenYou("finish eating the %s.", item.getName(false, false));
+				player.getDungeon().greenYou("finish eating the %s.", item.getName(player, false, false));
 				
 				player.setNutrition(
 					(int) (player.getNutrition() + Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat()))
@@ -34,7 +34,7 @@ public class PlayerConsume implements PlayerVisitor {
 					item.getStatusEffects(player).forEach(player::addStatusEffect);
 				}
 			} else {
-				player.getDungeon().You("eat a part of the %s.", item.getName(false, false));
+				player.getDungeon().You("eat a part of the %s.", item.getName(player, false, false));
 				
 				player.setNutrition(
 					(int) (player.getNutrition() + Math.floor(item.getNutrition() / item.getTurnsRequiredToEat()))

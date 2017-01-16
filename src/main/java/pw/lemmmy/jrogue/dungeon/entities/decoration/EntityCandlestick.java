@@ -31,7 +31,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Candlestick" : "candlestick";
 	}
 	
@@ -55,7 +55,9 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
-		getDungeon().log("There is a %s here.", getName(false));
+		if (isPlayer) {
+			getDungeon().log("There is a %s here.", getName(walker, false));
+		}
 	}
 	
 	@Override

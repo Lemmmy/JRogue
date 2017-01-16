@@ -19,7 +19,7 @@ public class MonsterFox extends MonsterCanine {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Fox" : "fox";
 	}
 	

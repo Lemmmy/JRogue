@@ -23,12 +23,12 @@ public class EntityChest extends Entity {
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		container = new Container(getName(true));
+		container = new Container(getName(null, true));
 		locked = RandomUtils.rollD2();
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Chest" : "chest";
 	}
 	
@@ -59,12 +59,12 @@ public class EntityChest extends Entity {
 	
 	@Override
 	public Optional<String> lootSuccessString() {
-		return Optional.of(String.format("You open the %s...", getName(false)));
+		return Optional.of(String.format("You open the %s...", getName(getDungeon().getPlayer(), false)));
 	}
 	
 	@Override
 	public Optional<String> lootFailedString() {
-		return Optional.of(String.format("The %s is locked.", getName(false)));
+		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class EntityChest extends Entity {
 			}
 			
 			if (locked && RandomUtils.roll(4) == 1) {
-				getDungeon().greenThe("%s breaks open!", getName(false));
+				getDungeon().greenThe("%s breaks open!", getName(getDungeon().getPlayer(), false));
 				locked = false;
 			}
 		}
@@ -101,7 +101,9 @@ public class EntityChest extends Entity {
 	
 	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {
-		getDungeon().log("There is a %s here.", getName(false));
+		if (isPlayer) {
+			getDungeon().log("There is a %s here.", getName(getDungeon().getPlayer(), false));
+		}
 	}
 	
 	@Override

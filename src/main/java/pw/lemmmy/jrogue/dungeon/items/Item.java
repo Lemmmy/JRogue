@@ -4,17 +4,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Item implements Serialisable {
+	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
+	private List<Class<? extends Aspect>> knownAspects = new ArrayList<>();
+	
 	private int visualID;
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
+		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
 	}
 	
 	public int getVisualID() {
@@ -25,11 +33,11 @@ public abstract class Item implements Serialisable {
 		return false;
 	}
 	
-	public boolean beginsWithVowel() {
-		return StringUtils.startsWithAny(getName(false, false), "a", "e", "i", "o", "u", "8");
+	public boolean beginsWithVowel(LivingEntity observer) {
+		return StringUtils.startsWithAny(getName(observer, false, false), "a", "e", "i", "o", "u", "8");
 	}
 	
-	public abstract String getName(boolean requiresCapitalisation, boolean plural);
+	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural);
 	
 	public abstract float getWeight();
 	
@@ -39,7 +47,36 @@ public abstract class Item implements Serialisable {
 	
 	public boolean equals(Item other) {
 		return other.getClass() == getClass() &&
-			other.getAppearance() == getAppearance();
+			other.getAppearance() == getAppearance() &&
+			other.getAspects() == getAspects();
+	}
+	
+	public Map<Class<? extends Aspect>, Aspect> getAspects() {
+		return aspects;
+	}
+	
+	public List<Class<? extends Aspect>> getKnownAspects() {
+		return knownAspects;
+	}
+	
+	public List<Aspect> getPersistentAspects() {
+		return aspects.values().stream().filter(Aspect::isPersistent).collect(Collectors.toList());
+	}
+	
+	public Optional<Aspect> getAspect(Class<? extends Aspect> aspectClass) {
+		return Optional.ofNullable(aspects.get(aspectClass));
+	}
+	
+	public boolean isAspectKnown(Class<? extends Aspect> aspectClass) {
+		return knownAspects.contains(aspectClass);
+	}
+	
+	public void observeAspect(Class<? extends Aspect> aspectClass) {
+		if (!aspects.containsKey(aspectClass)) {
+			return; // can't observe an aspect that doesn't exist!!
+		}
+		
+		knownAspects.add(aspectClass);
 	}
 	
 	public abstract ItemAppearance getAppearance();

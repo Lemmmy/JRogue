@@ -5,10 +5,13 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
+import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class LivingEntity extends EntityTurnBased {
@@ -24,6 +27,12 @@ public abstract class LivingEntity extends EntityTurnBased {
 	
 	private Container.ContainerEntry leftHand;
 	private Container.ContainerEntry rightHand;
+	
+	/**
+	 * known persistent aspects per item class
+	 * the key is the hashcode of an items list of persistent aspects
+	 */
+	private Map<Integer, Aspect> knownAspects;
 	
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);

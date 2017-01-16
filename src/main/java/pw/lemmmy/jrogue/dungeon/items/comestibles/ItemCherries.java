@@ -1,10 +1,11 @@
 package pw.lemmmy.jrogue.dungeon.items.comestibles;
 
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 
 public class ItemCherries extends ItemComestible {
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		return plural ? (requiresCapitalisation ? "Pairs of cherries" : "pairs of cherries") :
 			   (requiresCapitalisation ? "Pair of cherries" : "pair of cherries");
 	}

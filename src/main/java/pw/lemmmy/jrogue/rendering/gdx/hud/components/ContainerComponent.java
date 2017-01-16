@@ -109,7 +109,7 @@ public class ContainerComponent extends Table {
 				"windowStyleMarkup"
 			)).left().padRight(6);
 			itemTable.add(new Label(
-				"[BLACK]" + itemStack.getName(true) + suffix,
+				"[BLACK]" + itemStack.getName(entity.getDungeon().getPlayer(), true) + suffix,
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();

@@ -41,7 +41,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		String s = plural ? "s" : "";
 		String material = this.material.getName(requiresCapitalisation);
 		

@@ -107,7 +107,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		if (victim instanceof EntityItem && ((EntityItem) victim).getItem() instanceof Shatterable) {
 			getDungeon().The(
 				"%s shatters into a thousand pieces!",
-				((EntityItem) victim).getItem().getName(false, false)
+				((EntityItem) victim).getItem().getName(getDungeon().getPlayer(), false, false)
 			);
 			getLevel().removeEntity(victim);
 		}
@@ -173,7 +173,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	}
 	
 	@Override
-	public abstract String getName(boolean requiresCapitalisation);
+	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation);
 	
 	@Override
 	public abstract EntityAppearance getAppearance();

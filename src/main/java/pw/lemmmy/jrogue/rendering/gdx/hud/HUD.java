@@ -203,7 +203,7 @@ public class HUD implements Dungeon.Listener {
 	private void updatePlayerLine(Player player) {
 		playerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[]",
-			player.getName(true),
+			player.getName(player, true),
 			player.getRole().getName()
 		));
 		

@@ -52,12 +52,17 @@ public class PlayerWield extends PlayerItemVisitor {
 			player.setLeftHand(ce);
 		}
 		
-		String name = stack.getName(false);
+		String name = stack.getName(player, false);
 		
 		if (item.isis() || stack.getCount() > 1) {
 			player.getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
 		} else {
-			player.getDungeon().You("wield %s [YELLOW]%s[] ([YELLOW]%s[]).", stack.beginsWithVowel() ? "an" : "a", name, c);
+			player.getDungeon().You(
+				"wield %s [YELLOW]%s[] ([YELLOW]%s[]).",
+				stack.beginsWithVowel(player) ? "an" : "a",
+				name,
+				c
+			);
 		}
 		
 		player.getDungeon().turn();

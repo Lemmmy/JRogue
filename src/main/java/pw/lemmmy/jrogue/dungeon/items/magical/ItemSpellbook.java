@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Prompt;
+import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -25,7 +26,7 @@ public class ItemSpellbook extends Item implements Readable {
 	private int readingProgress = 0;
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		if (!isIdentified()) {
 			return (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
 		}

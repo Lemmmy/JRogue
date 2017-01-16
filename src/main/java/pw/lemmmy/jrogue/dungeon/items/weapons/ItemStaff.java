@@ -8,7 +8,7 @@ import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		if (requiresCapitalisation) {
 			return plural ? "Staves" : "Staff";
 		} else {

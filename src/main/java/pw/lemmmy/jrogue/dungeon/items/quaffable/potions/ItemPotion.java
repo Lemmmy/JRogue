@@ -63,7 +63,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		String emptyText = requiresCapitalisation ? "Empty " : "empty ";
 		
 		if (empty && requiresCapitalisation) {

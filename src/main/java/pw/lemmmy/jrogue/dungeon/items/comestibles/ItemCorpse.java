@@ -29,9 +29,9 @@ public class ItemCorpse extends ItemComestible {
 	}
 	
 	@Override
-	public String getName(boolean requiresCapitalisation, boolean plural) {
+	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
 		return (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
-			entity.getName(requiresCapitalisation) +
+			entity.getName(observer, requiresCapitalisation) +
 			" corpse" + (plural ? "s" : "");
 	}
 	

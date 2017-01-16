@@ -53,7 +53,7 @@ public abstract class Entity implements Serialisable {
 		return visualID;
 	}
 	
-	public abstract String getName(boolean requiresCapitalisation);
+	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation);
 	
 	public abstract EntityAppearance getAppearance();
 	
