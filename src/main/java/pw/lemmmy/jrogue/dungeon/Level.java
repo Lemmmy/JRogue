@@ -9,7 +9,9 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpawn;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterFox;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterJackal;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
@@ -65,6 +67,19 @@ public class Level {
 			Range.between(3, Integer.MAX_VALUE),
 			Range.between(0, 4),
 			MonsterSkeleton.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(3, 6),
+			Range.between(0, 2),
+			Range.between(2, 5),
+			MonsterFox.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(4, Integer.MAX_VALUE),
+			Range.between(0, 8),
+			MonsterLizard.class
 		));
 	}
 	
