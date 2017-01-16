@@ -6,14 +6,18 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.effects.FoodPoisoning;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ItemCorpse extends ItemComestible {
 	private LivingEntity entity;
@@ -81,11 +85,46 @@ public class ItemCorpse extends ItemComestible {
 	
 	@Override
 	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
+		List<StatusEffect> effects = new ArrayList<>();
+		
 		if (entity instanceof Monster) {
-			return ((Monster) entity).getCorpseEffects(victim);
-		} else {
-			return null;
+			Monster monster = (Monster) entity;
+			
+			effects.addAll(monster.getCorpseEffects(victim));
+			
+			if (getRottenness() > 6) {
+				effects.add(new FoodPoisoning());
+			}
 		}
+		
+		return effects;
+	}
+	
+	public int getRottenness() {
+		if (entity instanceof Monster) {
+			Monster monster = (Monster) entity;
+			
+			if (monster.shouldCorpsesRot()) {
+				AtomicInteger rottenness = new AtomicInteger(getAge() / 15);
+				
+				getAspect(AspectBeatitude.class).ifPresent(a -> {
+					AspectBeatitude ab = (AspectBeatitude) a;
+					
+					switch (ab.getBeatitude()) {
+						case BLESSED:
+							rottenness.addAndGet(-2);
+							break;
+						case CURSED:
+							rottenness.addAndGet(2);
+							break;
+					}
+				});
+				
+				return Math.max(rottenness.get(), 0);
+			}
+		}
+		
+		return 0;
 	}
 	
 	@Override

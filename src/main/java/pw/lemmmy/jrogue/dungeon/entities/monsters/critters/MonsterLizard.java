@@ -66,6 +66,11 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
+	public boolean shouldCorpsesRot() {
+		return false;
+	}
+	
+	@Override
 	public int getBaseArmourClass() {
 		return 5;
 	}
