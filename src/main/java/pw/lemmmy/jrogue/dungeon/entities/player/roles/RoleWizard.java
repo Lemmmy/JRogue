@@ -37,10 +37,6 @@ public class RoleWizard extends Role {
 		staff = new ItemStack(new ItemStaff());
 		itemList.add(staff);
 		
-		ItemApple apple = new ItemApple();
-		apple.getAspect(AspectBeatitude.class).ifPresent(a -> ((AspectBeatitude) a).setBeatitude(AspectBeatitude.Beatitude.CURSED));
-		itemList.add(new ItemStack(apple));
-		
 		return itemList;
 	}
 	
