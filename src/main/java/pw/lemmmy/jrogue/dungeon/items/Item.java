@@ -21,10 +21,25 @@ public abstract class Item implements Serialisable {
 	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	
 	private int visualID;
+	private int age;
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
 		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
+	}
+	
+	public void update() {
+		if (shouldAge()) {
+			age++;
+		}
+	}
+	
+	public boolean shouldAge() {
+		return true;
+	}
+	
+	public int getAge() {
+		return age;
 	}
 	
 	public int getVisualID() {
@@ -141,6 +156,7 @@ public abstract class Item implements Serialisable {
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("visualID", getVisualID());
+		obj.put("age", age);
 		
 		JSONObject serialisedAspects = new JSONObject();
 		aspects.forEach((k, v) -> {
@@ -160,6 +176,7 @@ public abstract class Item implements Serialisable {
 	@Override
 	public void unserialise(JSONObject obj) {
 		visualID = obj.getInt("visualID");
+		age = obj.optInt("age");
 		
 		JSONObject serialisedAspects = obj.getJSONObject("aspects");
 		serialisedAspects.keySet().forEach(aspectClassName -> {

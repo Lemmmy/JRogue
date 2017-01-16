@@ -52,6 +52,13 @@ public class EntityItem extends Entity {
 	}
 	
 	@Override
+	public void update() {
+		super.update();
+		
+		itemStack.getItem().update();
+	}
+	
+	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		int x = getX() + dx;
 		int y = getY() + dy;

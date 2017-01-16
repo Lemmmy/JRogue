@@ -89,6 +89,11 @@ public class ItemCorpse extends ItemComestible {
 	}
 	
 	@Override
+	public boolean shouldStack() {
+		return false;
+	}
+	
+	@Override
 	public boolean equals(Item other) {
 		if (other instanceof ItemCorpse) {
 			return super.equals(other) && ((ItemCorpse) other).getEntity().getClass() == entity.getClass();

@@ -276,6 +276,8 @@ public abstract class LivingEntity extends EntityTurnBased {
 			heal(1);
 			healingTurns = 0;
 		}
+		
+		inventory.update();
 	}
 	
 	public boolean damage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
