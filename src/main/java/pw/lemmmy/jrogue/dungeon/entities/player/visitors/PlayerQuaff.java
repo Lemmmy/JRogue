@@ -3,7 +3,8 @@ package pw.lemmmy.jrogue.dungeon.entities.player.visitors;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.Quaffable;
-import pw.lemmmy.jrogue.dungeon.entities.actions.ActionQuaff;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionQuaffEntity;
+import pw.lemmmy.jrogue.dungeon.entities.actions.ActionQuaffItem;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -48,8 +49,9 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	}
 	
 	private void quaffEntity(Player player, Entity entity) {
-		Quaffable quaffable = (Quaffable) entity;
-		quaffable.quaff(player);
+		player.setAction(new ActionQuaffEntity(entity, null));
+		
+		player.getDungeon().turn();
 	}
 	
 	private void quaffItem(Player player) {
@@ -62,7 +64,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 				ItemStack stack = ce.getStack();
 				ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
 				
-				player.setAction(new ActionQuaff(
+				player.setAction(new ActionQuaffItem(
 					quaffable,
 					(EntityAction.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
 				);
