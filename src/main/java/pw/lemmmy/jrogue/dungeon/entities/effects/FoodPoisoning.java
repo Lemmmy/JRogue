@@ -1,12 +1,18 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
+import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class FoodPoisoning extends StatusEffect {
 	public FoodPoisoning() {
 		super(RandomUtils.random(10, 20));
+	}
+	
+	public FoodPoisoning(Messenger messenger, Entity entity) {
+		super(messenger, entity, RandomUtils.random(10, 20));
 	}
 	
 	@Override

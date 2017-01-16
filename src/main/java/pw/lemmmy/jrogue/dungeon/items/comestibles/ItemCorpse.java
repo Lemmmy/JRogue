@@ -90,10 +90,12 @@ public class ItemCorpse extends ItemComestible {
 		if (entity instanceof Monster) {
 			Monster monster = (Monster) entity;
 			
-			effects.addAll(monster.getCorpseEffects(victim));
+			if (monster.getCorpseEffects(victim) != null) {
+				effects.addAll(monster.getCorpseEffects(victim));
+			}
 			
 			if (getRottenness() > 6) {
-				effects.add(new FoodPoisoning());
+				effects.add(new FoodPoisoning(entity.getDungeon(), entity));
 			}
 		}
 		
