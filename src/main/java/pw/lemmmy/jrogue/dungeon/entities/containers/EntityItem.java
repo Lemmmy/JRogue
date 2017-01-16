@@ -87,6 +87,15 @@ public class EntityItem extends Entity {
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
 	
 	@Override
+	public void onSpawn() {
+		super.onSpawn();
+		
+		getLevel().getEntitiesAt(getX(), getY()).stream()
+			.filter(e -> e != this)
+			.forEach(e -> e.onItemDropped(this));
+	}
+	
+	@Override
 	public boolean canBeWalkedOn() {
 		return true;
 	}

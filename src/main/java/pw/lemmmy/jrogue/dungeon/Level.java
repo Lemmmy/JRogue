@@ -518,6 +518,7 @@ public class Level {
 			Entity entity = iterator.next();
 			entities.add(entity);
 			dungeon.entityAdded(entity);
+			entity.onSpawn();
 			iterator.remove();
 		}
 		
