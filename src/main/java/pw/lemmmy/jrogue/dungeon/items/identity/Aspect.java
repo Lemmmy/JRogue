@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.identity;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
 
 public abstract class Aspect implements Serialisable {
@@ -14,4 +15,10 @@ public abstract class Aspect implements Serialisable {
 	 *   an item's BUC status is non-persistent: it differs between all items
 	 */
 	public abstract boolean isPersistent();
+	
+	@Override
+	public void serialise(JSONObject obj) {}
+	
+	@Override
+	public void unserialise(JSONObject obj) {}
 }

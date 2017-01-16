@@ -31,7 +31,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	 * known persistent aspects per item class
 	 * the key is the hashcode of an items list of persistent aspects
 	 */
-	private Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
+	private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
 	
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);
