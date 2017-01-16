@@ -34,7 +34,7 @@ public class ItemSpellbook extends Item implements Readable {
 	
 	@Override
 	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
-		if (!isAspectKnown(AspectBookContents.class)) {
+		if (!isAspectKnown(, AspectBookContents.class)) {
 			return (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
 		}
 		
@@ -62,7 +62,7 @@ public class ItemSpellbook extends Item implements Readable {
 	
 	@Override
 	public void onRead(Player reader) {
-		observeAspect(AspectBookContents.class);
+		observeAspect(, AspectBookContents.class);
 		
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		AtomicBoolean alreadyKnown = new AtomicBoolean(false);

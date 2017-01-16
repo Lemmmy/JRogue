@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public abstract class Item implements Serialisable {
 	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
-	private List<Class<? extends Aspect>> knownAspects = new ArrayList<>();
+	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	
 	private int visualID;
 	
@@ -55,7 +55,7 @@ public abstract class Item implements Serialisable {
 		return aspects;
 	}
 	
-	public List<Class<? extends Aspect>> getKnownAspects() {
+	public Set<Class<? extends Aspect>> getKnownAspects() {
 		return knownAspects;
 	}
 	
@@ -67,20 +67,28 @@ public abstract class Item implements Serialisable {
 		return Optional.ofNullable(aspects.get(aspectClass));
 	}
 	
-	public boolean isAspectKnown(Class<? extends Aspect> aspectClass) {
-		return knownAspects.contains(aspectClass);
+	public boolean isAspectKnown(LivingEntity observer, Class<? extends Aspect> aspectClass) {
+		if (aspects.get(aspectClass).isPersistent()) {
+			return observer.isAspectKnown(this, aspectClass);
+		} else {
+			return knownAspects.contains(aspectClass);
+		}
 	}
 	
 	public void addAspect(Aspect aspect) {
 		aspects.put(aspect.getClass(), aspect);
 	}
 	
-	public void observeAspect(Class<? extends Aspect> aspectClass) {
+	public void observeAspect(LivingEntity observer, Class<? extends Aspect> aspectClass) {
 		if (!aspects.containsKey(aspectClass)) {
 			return; // can't observe an aspect that doesn't exist!!
 		}
 		
-		knownAspects.add(aspectClass);
+		if (aspects.get(aspectClass).isPersistent()) {
+			observer.observeAspect(this, aspectClass);
+		} else {
+			knownAspects.add(aspectClass);
+		}
 	}
 	
 	public abstract ItemAppearance getAppearance();

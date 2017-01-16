@@ -10,9 +10,7 @@ import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class LivingEntity extends EntityTurnBased {
 	private int health;
@@ -32,7 +30,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 	 * known persistent aspects per item class
 	 * the key is the hashcode of an items list of persistent aspects
 	 */
-	private Map<Integer, Aspect> knownAspects;
+	private Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
 	
 	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);
@@ -133,6 +131,24 @@ public abstract class LivingEntity extends EntityTurnBased {
 	}
 	
 	public abstract Size getSize();
+	
+	public Map<Integer, Set<Class<? extends Aspect>>> getKnownAspects() {
+		return knownAspects;
+	}
+	
+	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
+		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectClass);
+	}
+	
+	public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
+		int code = item.getPersistentAspects().hashCode();
+		
+		if (!knownAspects.containsKey(code)) {
+			knownAspects.put(code, new HashSet<>());
+		}
+		
+		knownAspects.get(code).add(aspectClass);
+	}
 	
 	@Override
 	public Optional<Container> getContainer() {
