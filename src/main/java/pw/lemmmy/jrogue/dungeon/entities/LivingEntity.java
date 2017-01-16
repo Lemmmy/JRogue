@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
@@ -206,8 +207,17 @@ public abstract class LivingEntity extends EntityTurnBased {
 				obj.put("rightHand", rightHand.getLetter());
 			}
 		}
+		
+		JSONObject serialisedKnownAspects = new JSONObject();
+		knownAspects.forEach((k, v) -> {
+			JSONArray serialisedAspectList = new JSONArray();
+			v.forEach(a -> serialisedAspectList.put(a.getName()));
+			serialisedKnownAspects.put(k.toString(), serialisedAspectList);
+		});
+		obj.put("knownAspects", serialisedKnownAspects);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
@@ -233,6 +243,23 @@ public abstract class LivingEntity extends EntityTurnBased {
 				entryOptional.ifPresent(this::setRightHand);
 			}
 		}
+		
+		JSONObject serialisedKnownAspects = obj.getJSONObject("knownAspects");
+		serialisedKnownAspects.keySet().forEach(k -> {
+			Integer code = Integer.parseInt(k);
+			JSONArray serialisedAspectList = serialisedKnownAspects.getJSONArray(k);
+			
+			Set<Class<? extends Aspect>> aspectSet = new HashSet<>();
+			serialisedAspectList.forEach(c -> {
+				try {
+					aspectSet.add((Class<? extends Aspect>) Class.forName((String) c));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			});
+			
+			knownAspects.put(code, aspectSet);
+		});
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
@@ -140,11 +141,55 @@ public abstract class Item implements Serialisable {
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
 		obj.put("visualID", getVisualID());
+		
+		JSONObject serialisedAspects = new JSONObject();
+		aspects.forEach((k, v) -> {
+			JSONObject serialisedAspect = new JSONObject();
+			v.serialise(serialisedAspect);
+			
+			serialisedAspects.put(k.getName(), serialisedAspect);
+		});
+		obj.put("aspects", serialisedAspects);
+		
+		JSONArray serialisedKnownAspects = new JSONArray();
+		knownAspects.forEach(a -> serialisedKnownAspects.put(a.getName()));
+		obj.put("knownAspects", serialisedKnownAspects);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void unserialise(JSONObject obj) {
 		visualID = obj.getInt("visualID");
+		
+		JSONObject serialisedAspects = obj.getJSONObject("aspects");
+		serialisedAspects.keySet().forEach(aspectClassName -> {
+			JSONObject serialisedAspect = serialisedAspects.getJSONObject(aspectClassName);
+			
+			try {
+				Class<? extends Aspect> aspectClass = (Class<? extends Aspect>) Class.forName(aspectClassName);
+				Constructor<? extends Aspect> aspectConstructor = aspectClass.getConstructor();
+				
+				Aspect aspect = aspectConstructor.newInstance();
+				aspect.unserialise(serialisedAspect);
+				aspects.put(aspectClass, aspect);
+			} catch (ClassNotFoundException e) {
+				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
+			} catch (NoSuchMethodException e) {
+				JRogue.getLogger().error("Aspect class {} has no unserialisation constructor", aspectClassName);
+			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName);
+				JRogue.getLogger().error(e);
+			}
+		});
+		
+		obj.getJSONArray("knownAspects").forEach(aspectClassName -> {
+			try {
+				Class<? extends Aspect> aspectClass = (Class<? extends Aspect>) Class.forName((String) aspectClassName);
+				knownAspects.add(aspectClass);
+			} catch (ClassNotFoundException e) {
+				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
+			}
+		});
 	}
 	
 	public Item copy() {
