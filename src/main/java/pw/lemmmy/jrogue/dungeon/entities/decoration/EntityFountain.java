@@ -2,12 +2,9 @@ package pw.lemmmy.jrogue.dungeon.entities.decoration;
 
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
-import pw.lemmmy.jrogue.dungeon.entities.PassiveSoundEmitter;
+import pw.lemmmy.jrogue.dungeon.entities.*;
 
-public class EntityFountain extends Entity implements PassiveSoundEmitter {
+public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
 	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
@@ -66,5 +63,22 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter {
 			"You hear water falling on coins.",
 			"You hear water pattering on coins.",
 		};
+	}
+	
+	@Override
+	public void quaff(LivingEntity quaffer) {
+		// TODO: fountain magic
+		
+		quaffer.getDungeon().You("drink from the fountain.");
+	}
+	
+	@Override
+	public boolean canQuaff(LivingEntity quaffer) {
+		return true;
+	}
+	
+	@Override
+	public String getQuaffConfirmationMessage() {
+		return "Drink from fountain?";
 	}
 }
