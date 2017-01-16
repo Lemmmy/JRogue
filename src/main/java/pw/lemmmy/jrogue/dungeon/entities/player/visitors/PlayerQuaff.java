@@ -58,7 +58,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 		InventoryUseResult result = useInventoryItem(
 			player,
 			msg,
-			s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(), (c, ce, inv) -> {
+			s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(player), (c, ce, inv) -> {
 				ItemStack stack = ce.getStack();
 				ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
 				
