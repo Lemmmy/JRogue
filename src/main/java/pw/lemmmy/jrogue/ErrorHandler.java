@@ -60,7 +60,6 @@ public class ErrorHandler {
 		}
 		
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			Desktop desktop = Desktop.getDesktop();
 			
 			int n = JOptionPane.showOptionDialog(

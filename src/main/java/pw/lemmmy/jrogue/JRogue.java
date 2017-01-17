@@ -9,6 +9,7 @@ import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,6 +42,10 @@ public class JRogue {
 	}
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException ignored) {}
+		
 		System.setProperty(
 			"jrogue.logs",
 			Paths.get(OperatingSystem.get().getAppDataDir().toString(), "jrogue", "logs").toString()
