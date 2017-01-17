@@ -9,7 +9,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.PassiveSoundEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.RoleWizard;
@@ -18,6 +18,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -149,6 +150,7 @@ public class Dungeon implements Messenger {
 	private JSONObject serialise() {
 		JSONObject obj = new JSONObject();
 		
+		obj.put("version", JRogue.VERSION);
 		obj.put("name", getName());
 		obj.put("originalName", getOriginalName());
 		obj.put("turn", getTurn());
@@ -165,6 +167,35 @@ public class Dungeon implements Messenger {
 	
 	private void unserialise(JSONObject obj) {
 		try {
+			String version = obj.optString("version");
+			
+			if (!version.equals(JRogue.VERSION)) {
+				int dialogResult = JOptionPane.showConfirmDialog(
+					null,
+					"This save was made in a different version of " +
+					"JRogue. Would you still like to try and load it?",
+					"JRogue",
+					JOptionPane.YES_NO_CANCEL_OPTION
+				);
+				
+				switch (dialogResult) {
+					case JOptionPane.YES_OPTION:
+						break;
+					case JOptionPane.NO_OPTION:
+						File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+						
+						if (file.exists() && !file.delete()) {
+							JRogue.getLogger().error("Failed to delete save file. Panic!");
+						}
+						
+						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+						System.exit(0);
+					default:
+						System.exit(0);
+						break;
+				}
+			}
+			
 			name = obj.getString("name");
 			originalName = obj.getString("originalName");
 			turn = obj.getInt("turn");
@@ -186,8 +217,8 @@ public class Dungeon implements Messenger {
 					JRogue.getLogger().error("Failed to delete save file. Panic!");
 				}
 				
-				JRogue.getLogger().error("Something went wrong with your save file and Lemmmy is lazy. Please restart" +
-					" JRogue."); // TODO: don't be lazy
+				JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+				System.exit(0);
 				
 				return;
 			}
@@ -399,7 +430,7 @@ public class Dungeon implements Messenger {
 						break;
 					}
 					
-					if (entity instanceof LivingEntity && !((LivingEntity) entity).isAlive()) {
+					if (entity instanceof EntityLiving && !((EntityLiving) entity).isAlive()) {
 						continue;
 					}
 					
@@ -444,7 +475,7 @@ public class Dungeon implements Messenger {
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
-				if (e instanceof LivingEntity && !((LivingEntity) e).isAlive()) {
+				if (e instanceof EntityLiving && !((EntityLiving) e).isAlive()) {
 					return;
 				}
 				

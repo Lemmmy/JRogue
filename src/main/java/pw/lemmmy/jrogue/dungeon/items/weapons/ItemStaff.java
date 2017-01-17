@@ -1,14 +1,14 @@
 package pw.lemmmy.jrogue.dungeon.items.weapons;
 
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.projectiles.ItemProjectile;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
 		if (!s.isEmpty() && requiresCapitalisation) {
@@ -35,10 +35,10 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
+	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {}
 	
 	@Override
-	public boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {
+	public boolean fire(EntityLiving attacker, ItemProjectile projectile, int dx, int dy) {
 		return false;
 	}
 	
@@ -63,7 +63,7 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public void onHit(LivingEntity attacker, LivingEntity victim) {
+	public void onHit(EntityLiving attacker, EntityLiving victim) {
 		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
 	}
 	

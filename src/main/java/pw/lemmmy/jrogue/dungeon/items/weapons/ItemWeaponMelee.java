@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.items.weapons;
 
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -11,7 +11,7 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public abstract class ItemWeaponMelee extends ItemWeapon {
 	@Override
-	public void hit(LivingEntity attacker, LivingEntity victim) {
+	public void hit(EntityLiving attacker, EntityLiving victim) {
 		int baseDamage = calculateDamage(attacker, victim);
 		int damage = baseDamage > 0 ? RandomUtils.roll(baseDamage) : baseDamage;
 		
@@ -28,8 +28,8 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		));
 	}
 	
-	protected int calculateDamage(LivingEntity attacker, LivingEntity victim) {
-		int damage = victim.getSize() == LivingEntity.Size.SMALL ? getSmallDamage() : getLargeDamage();
+	protected int calculateDamage(EntityLiving attacker, EntityLiving victim) {
+		int damage = victim.getSize() == EntityLiving.Size.SMALL ? getSmallDamage() : getLargeDamage();
 		
 		if (attacker instanceof Player) {
 			Player player = (Player) attacker;
@@ -45,7 +45,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 	
 	protected abstract DamageSource getMeleeDamageSource();
 	
-	public abstract void onHit(LivingEntity attacker, LivingEntity victim);
+	public abstract void onHit(EntityLiving attacker, EntityLiving victim);
 	
 	public abstract int getSmallDamage();
 	
@@ -54,8 +54,8 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 	public void hitLog(String attackerString,
 					   String victimString,
 					   String neitherString,
-					   LivingEntity attacker,
-					   LivingEntity victim) {
+					   EntityLiving attacker,
+					   EntityLiving victim) {
 		if (victim.getHealth() <= 0) { return; }
 		
 		if (attacker instanceof Player) {

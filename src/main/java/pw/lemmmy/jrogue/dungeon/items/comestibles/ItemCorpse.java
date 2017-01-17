@@ -5,7 +5,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.FoodPoisoning;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
@@ -20,20 +20,20 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ItemCorpse extends ItemComestible {
-	private LivingEntity entity;
+	private EntityLiving entity;
 	
 	public ItemCorpse() { // unserialisation constructor
 		super();
 	}
 	
-	public ItemCorpse(LivingEntity entity) {
+	public ItemCorpse(EntityLiving entity) {
 		super();
 		
 		this.entity = entity;
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
 		if (!s.isEmpty() && requiresCapitalisation) {
@@ -70,7 +70,7 @@ public class ItemCorpse extends ItemComestible {
 		}
 	}
 	
-	public LivingEntity getEntity() {
+	public EntityLiving getEntity() {
 		return entity;
 	}
 	
@@ -79,12 +79,12 @@ public class ItemCorpse extends ItemComestible {
 		if (entity instanceof Monster) {
 			return ((Monster) entity).getWeight() / 64 + 3;
 		} else {
-			return entity.getSize() == LivingEntity.Size.LARGE ? 5 : 4;
+			return entity.getSize() == EntityLiving.Size.LARGE ? 5 : 4;
 		}
 	}
 	
 	@Override
-	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
+	public List<StatusEffect> getStatusEffects(EntityLiving victim) {
 		List<StatusEffect> effects = new ArrayList<>();
 		
 		if (entity instanceof Monster) {
@@ -173,7 +173,7 @@ public class ItemCorpse extends ItemComestible {
 				int.class
 			);
 			
-			entity = (LivingEntity) entityConstructor.newInstance(null, null, x, y);
+			entity = (EntityLiving) entityConstructor.newInstance(null, null, x, y);
 			entity.unserialise(serialisedEntity);
 		} catch (ClassNotFoundException e) {
 			JRogue.getLogger().error("Unknown entity class {}", entityClassName);

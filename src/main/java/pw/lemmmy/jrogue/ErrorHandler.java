@@ -60,7 +60,6 @@ public class ErrorHandler {
 		}
 		
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			Desktop desktop = Desktop.getDesktop();
 			
 			int n = JOptionPane.showOptionDialog(
@@ -94,6 +93,12 @@ public class ErrorHandler {
 		}
 		
 		StringBuilder sb = new StringBuilder();
+		
+		sb.append(String.format(
+			"**Version:** %s (build %s)\n",
+			JRogue.VERSION,
+			JRogue.BUILD_DATE
+		));
 		
 		sb.append(String.format(
 			"**OS:** %s (%s)\n",

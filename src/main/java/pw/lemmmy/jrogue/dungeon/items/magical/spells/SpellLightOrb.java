@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.magic.EntityLightOrb;
 import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
 import pw.lemmmy.jrogue.dungeon.items.magical.MagicalSchool;
@@ -41,7 +41,7 @@ public class SpellLightOrb extends Spell {
 	}
 	
 	@Override
-	public void castNonDirectional(LivingEntity caster) {
+	public void castNonDirectional(EntityLiving caster) {
 		EntityLightOrb orb = new EntityLightOrb(caster.getDungeon(), caster.getLevel(), caster.getX(), caster.getY());
 		caster.getLevel().addEntity(orb);
 		
@@ -49,7 +49,7 @@ public class SpellLightOrb extends Spell {
 	}
 	
 	@Override
-	public void castDirectional(LivingEntity caster, int dx, int dy) {
+	public void castDirectional(EntityLiving caster, int dx, int dy) {
 		castNonDirectional(caster);
 	}
 }

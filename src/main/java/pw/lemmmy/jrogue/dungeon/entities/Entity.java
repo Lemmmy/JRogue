@@ -54,7 +54,7 @@ public abstract class Entity implements Serialisable {
 		return visualID;
 	}
 	
-	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation);
+	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
 	
 	public abstract EntityAppearance getAppearance();
 	
@@ -258,23 +258,23 @@ public abstract class Entity implements Serialisable {
 		return statusEffects;
 	}
 	
-	public void kick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	public void kick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		onKick(kicker, isPlayer, dx, dy);
 	}
 	
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
+	protected abstract void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy);
 	
-	public void walk(LivingEntity walker, boolean isPlayer) {
+	public void walk(EntityLiving walker, boolean isPlayer) {
 		onWalk(walker, isPlayer);
 	}
 	
-	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
+	protected abstract void onWalk(EntityLiving walker, boolean isPlayer);
 	
-	public void teleport(LivingEntity walker, boolean isPlayer) {
+	public void teleport(EntityLiving walker, boolean isPlayer) {
 		onTeleport(walker, isPlayer);
 	}
 	
-	protected void onTeleport(LivingEntity walker, boolean isPlayer) {}
+	protected void onTeleport(EntityLiving walker, boolean isPlayer) {}
 	
 	public abstract boolean canBeWalkedOn();
 }

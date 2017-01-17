@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.Role;
@@ -43,9 +43,9 @@ public abstract class Spell implements Serialisable {
 	
 	public abstract boolean canCastAtSelf();
 	
-	public abstract void castNonDirectional(LivingEntity caster);
+	public abstract void castNonDirectional(EntityLiving caster);
 	
-	public abstract void castDirectional(LivingEntity caster, int dx, int dy);
+	public abstract void castDirectional(EntityLiving caster, int dx, int dy);
 	
 	public void update() {
 		if (known) {

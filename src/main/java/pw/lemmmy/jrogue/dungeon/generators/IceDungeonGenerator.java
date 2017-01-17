@@ -10,6 +10,11 @@ public class IceDungeonGenerator extends RoomGenerator {
 	}
 	
 	@Override
+	public Climate getClimate() {
+		return Climate.COLD;
+	}
+	
+	@Override
 	public boolean generate() {
 		if (!super.generate()) {
 			return false;

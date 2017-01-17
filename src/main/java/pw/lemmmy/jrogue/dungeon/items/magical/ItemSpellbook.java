@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Prompt;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -33,7 +33,7 @@ public class ItemSpellbook extends Item implements Readable {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
 		if (!s.isEmpty() && requiresCapitalisation) {

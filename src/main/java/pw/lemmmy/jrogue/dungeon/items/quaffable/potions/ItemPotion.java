@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.items.quaffable.potions;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
@@ -62,7 +62,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
 		if (!s.isEmpty() && requiresCapitalisation) {
@@ -95,18 +95,18 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public void quaff(LivingEntity quaffer) {
+	public void quaff(EntityLiving quaffer) {
 		if (empty) {
 			return;
 		}
 		
-		if (quaffer instanceof LivingEntity) {
-			potionType.getEffect().apply((LivingEntity) quaffer, potency);
+		if (quaffer instanceof EntityLiving) {
+			potionType.getEffect().apply((EntityLiving) quaffer, potency);
 		}
 	}
 	
 	@Override
-	public boolean canQuaff(LivingEntity quaffer) {
+	public boolean canQuaff(EntityLiving quaffer) {
 		return !empty;
 	}
 	

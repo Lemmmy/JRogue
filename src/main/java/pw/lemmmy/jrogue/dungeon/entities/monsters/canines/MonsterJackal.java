@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.canines;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class MonsterJackal extends MonsterCanine {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Jackal" : "jackal";
 	}
 	
@@ -25,7 +25,7 @@ public class MonsterJackal extends MonsterCanine {
 	
 	@Override
 	public Size getSize() {
-		return LivingEntity.Size.SMALL;
+		return EntityLiving.Size.SMALL;
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class MonsterJackal extends MonsterCanine {
 	}
 	
 	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		return null;
 	}
 	

@@ -9,13 +9,19 @@ import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.swing.*;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class JRogue {
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
+	
+	public static String VERSION = "unknown";
+	public static String BUILD_DATE = "unknown";
 	
 	private static Logger logger;
 	
@@ -36,13 +42,31 @@ public class JRogue {
 	}
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException ignored) {}
+		
 		System.setProperty(
 			"jrogue.logs",
 			Paths.get(OperatingSystem.get().getAppDataDir().toString(), "jrogue", "logs").toString()
 		);
 		
 		logger = LogManager.getLogger("JRogue");
+		
+		try (
+			InputStream is = JRogue.class.getResourceAsStream("/version.properties");
+		) {
+			Properties versionProperties = new Properties();
+			versionProperties.load(is);
+			
+			VERSION = versionProperties.getProperty("version");
+			BUILD_DATE = versionProperties.getProperty("buildDate");
+		} catch (Exception ignored) {
+			ignored.printStackTrace();
+		}
+		
 		logger.info("---- Game started ----");
+		logger.info("JRogue version {}, built {}", VERSION, BUILD_DATE);
 		
 		Settings settings = new Settings();
 		Options opts = new Options();

@@ -1,6 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.quaffable.potions;
 
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 public class PotionEffectStatus implements PotionEffect {
@@ -11,7 +11,7 @@ public class PotionEffectStatus implements PotionEffect {
 	}
 	
 	@Override
-	public void apply(LivingEntity entity, float potency) {
+	public void apply(EntityLiving entity, float potency) {
 		entity.addStatusEffect(effect);
 	}
 }

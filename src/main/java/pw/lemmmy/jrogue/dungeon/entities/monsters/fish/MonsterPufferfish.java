@@ -4,7 +4,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.Poison;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
@@ -21,7 +21,7 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Pufferfish" : "pufferfish";
 	}
 	
@@ -66,26 +66,12 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().You("kill the %s!", getName(attacker, false));
-		}
-	}
-	
-	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(kicker, false));
-		}
-	}
-	
-	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		List<StatusEffect> effects = new ArrayList<>();
 		effects.add(new Poison());
 		return effects;

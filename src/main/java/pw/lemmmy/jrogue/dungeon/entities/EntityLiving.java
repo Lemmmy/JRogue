@@ -13,7 +13,7 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.*;
 
-public abstract class LivingEntity extends EntityTurnBased {
+public abstract class EntityLiving extends EntityTurnBased {
 	private int health;
 	protected int maxHealth;
 	
@@ -33,11 +33,11 @@ public abstract class LivingEntity extends EntityTurnBased {
 	 */
 	private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
 	
-	public LivingEntity(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
+	public EntityLiving(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);
 	}
 	
-	public LivingEntity(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
+	public EntityLiving(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
 		
 		maxHealth = getBaseMaxHealth();
@@ -282,7 +282,7 @@ public abstract class LivingEntity extends EntityTurnBased {
 		}
 	}
 	
-	public boolean damage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
 		health = Math.max(0, health - damageModifier);
@@ -301,15 +301,15 @@ public abstract class LivingEntity extends EntityTurnBased {
 		return damage;
 	}
 	
-	protected abstract void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
+	protected abstract void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
 	
-	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	public void kill(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		onDie(damageSource, damage, attacker, isPlayer);
 		
 		getLevel().removeEntity(this);
 	}
 	
-	protected abstract void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer);
+	protected abstract void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
 	
 	public void dropItem(ItemStack item) {
 		if (leftHand != null && leftHand.getItem().equals(item.getItem())) {

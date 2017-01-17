@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.comestibles;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
@@ -33,7 +33,7 @@ public abstract class ItemComestible extends Item {
 		turnsEaten++;
 	}
 	
-	public List<StatusEffect> getStatusEffects(LivingEntity victim) {
+	public List<StatusEffect> getStatusEffects(EntityLiving victim) {
 		return null;
 	}
 	

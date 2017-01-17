@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.quaffable.ItemQuaffable;
 
 public class ActionQuaffItem extends EntityAction {
@@ -16,8 +16,8 @@ public class ActionQuaffItem extends EntityAction {
 	@Override
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
-		if (entity instanceof LivingEntity) {
-			quaffable.quaff((LivingEntity) entity);
+		if (entity instanceof EntityLiving) {
+			quaffable.quaff((EntityLiving) entity);
 		}
 		runOnCompleteCallback(entity);
 	}

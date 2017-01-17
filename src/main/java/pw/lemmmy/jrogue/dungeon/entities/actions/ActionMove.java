@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -35,7 +35,7 @@ public class ActionMove extends EntityAction {
 					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
 					unwalkableEnt.getLastY() != unwalkableEnt.getY()
 				) {
-					msg.The("%s beats you to it!", unwalkableEnt.getName((LivingEntity) entity, false));
+					msg.The("%s beats you to it!", unwalkableEnt.getName((EntityLiving) entity, false));
 				}
 			}
 			
@@ -53,7 +53,7 @@ public class ActionMove extends EntityAction {
 		}
 		
 		List<Entity> walkable = entity.getLevel().getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.walk((LivingEntity) entity, entity instanceof Player));
+		walkable.forEach(e -> e.walk((EntityLiving) entity, entity instanceof Player));
 		
 		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)
 			.collect(Collectors.toList());
@@ -64,14 +64,14 @@ public class ActionMove extends EntityAction {
 				ItemStack stack = items.get(0).getItemStack();
 				
 				if (stack.getItem().isis()) {
-					msg.log("There is [YELLOW]%s[] here.", stack.getName((LivingEntity) entity, false));
+					msg.log("There is [YELLOW]%s[] here.", stack.getName((EntityLiving) entity, false));
 				} else {
 					if (stack.getCount() > 1) {
-						msg.log("There are [YELLOW]%s[] here.", stack.getName((LivingEntity) entity, false));
+						msg.log("There are [YELLOW]%s[] here.", stack.getName((EntityLiving) entity, false));
 					} else {
 						msg.log(
 							"There is %s [YELLOW]%s[] here.",
-							stack.beginsWithVowel((LivingEntity) entity) ? "an" : "a", stack.getName((LivingEntity) entity, false)
+							stack.beginsWithVowel((EntityLiving) entity) ? "an" : "a", stack.getName((EntityLiving) entity, false)
 						);
 					}
 				}

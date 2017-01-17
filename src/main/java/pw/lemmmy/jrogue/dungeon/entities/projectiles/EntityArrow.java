@@ -5,7 +5,7 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -17,7 +17,7 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Arrow" : "arrow";
 	}
 	
@@ -37,21 +37,21 @@ public class EntityArrow extends EntityProjectile {
 	
 	@Override
 	public void onHitEntity(Entity victim) {
-		if (victim instanceof LivingEntity) {
+		if (victim instanceof EntityLiving) {
 			Entity source = getSource();
 			
-			if (source != null && source instanceof LivingEntity) {
-				LivingEntity living = (LivingEntity) victim;
+			if (source != null && source instanceof EntityLiving) {
+				EntityLiving living = (EntityLiving) victim;
 				
 				if (source instanceof Player) {
-					source.getDungeon().Your("arrow hits the %s!", living.getName((LivingEntity) source, false));
+					source.getDungeon().Your("arrow hits the %s!", living.getName((EntityLiving) source, false));
 				}
 				
 				if (living instanceof Player) {
 					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(living, false));
 				}
 				
-				living.damage(DamageSource.ARROW, getArrowDamage(), (LivingEntity) source, source instanceof Player);
+				living.damage(DamageSource.ARROW, getArrowDamage(), (EntityLiving) source, source instanceof Player);
 				
 				if (!canPenetrate) {
 					killProjectile();
@@ -74,12 +74,12 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		
 	}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {
 		
 	}
 }

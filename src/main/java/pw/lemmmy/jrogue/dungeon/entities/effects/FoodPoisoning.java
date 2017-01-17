@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.effects;
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class FoodPoisoning extends StatusEffect {
@@ -27,8 +27,8 @@ public class FoodPoisoning extends StatusEffect {
 	
 	@Override
 	public void onEnd() {
-		if (getEntity() instanceof LivingEntity) {
-			LivingEntity living /* well, not anymore */ = (LivingEntity) getEntity();
+		if (getEntity() instanceof EntityLiving) {
+			EntityLiving living /* well, not anymore */ = (EntityLiving) getEntity();
 			
 			living.kill(DamageSource.FOOD_POISONING, living.getHealth(), null, false);
 		}

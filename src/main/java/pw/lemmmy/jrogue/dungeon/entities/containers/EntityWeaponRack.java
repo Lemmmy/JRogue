@@ -5,7 +5,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class EntityWeaponRack extends Entity {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Weapon rack" : "weapon rack";
 	}
 	
@@ -55,10 +55,10 @@ public class EntityWeaponRack extends Entity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {}
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {
 		if (isPlayer) {
 			getDungeon().log("There is a %s here.", getName(walker, false));
 		}

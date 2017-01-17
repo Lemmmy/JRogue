@@ -41,12 +41,13 @@ public class PlayerConsume implements PlayerVisitor {
 				);
 				
 				if (
+					item.getTurnsEaten() == 0 &&
 					item.getStatusEffects(player) != null &&
+					item.getStatusEffects(player).size() >= 1 &&
 					player.getNutritionState() != NutritionState.STARVING &&
 					player.getNutritionState() != NutritionState.FAINTING &&
 					player.getAttributes().getAttribute(Attribute.WISDOM) > 6
 				) {
-					
 					player.getDungeon().You("feel funny - it might not be a good idea to continue eating.");
 				}
 			}

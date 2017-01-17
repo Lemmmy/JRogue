@@ -10,7 +10,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Fountain" : "fountain";
 	}
 	
@@ -30,10 +30,10 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {}
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {
 		if (isPlayer) {
 			getDungeon().log("There is a %s here.", getName(walker, false));
 		}
@@ -66,19 +66,19 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@Override
-	public void quaff(LivingEntity quaffer) {
+	public void quaff(EntityLiving quaffer) {
 		// TODO: fountain magic
 		
 		quaffer.getDungeon().You("drink from the %s.", getName(quaffer, false));
 	}
 	
 	@Override
-	public boolean canQuaff(LivingEntity quaffer) {
+	public boolean canQuaff(EntityLiving quaffer) {
 		return true;
 	}
 	
 	@Override
-	public String getQuaffConfirmationMessage(LivingEntity quaffer) {
+	public String getQuaffConfirmationMessage(EntityLiving quaffer) {
 		return String.format("Drink from the %s?", getName(quaffer, false));
 	}
 }

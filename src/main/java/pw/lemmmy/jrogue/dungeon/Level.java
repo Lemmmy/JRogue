@@ -15,7 +15,12 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldBlue;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldGreen;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldRed;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldYellow;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.dungeon.generators.Climate;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.IceDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
@@ -44,6 +49,30 @@ public class Level {
 	private static final List<MonsterSpawn> MONSTER_SPAWNS = new ArrayList<>();
 	
 	static {
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 10),
+			Range.between(0, 1),
+			MonsterMoldRed.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 10),
+			Range.between(0, 1),
+			MonsterMoldYellow.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(8, 20),
+			Range.between(0, 1),
+			MonsterMoldGreen.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(11, 22),
+			Range.between(0, 3),
+			MonsterMoldBlue.class
+		));
+		
 		MONSTER_SPAWNS.add(new MonsterSpawn(
 			Range.between(1, 10),
 			Range.between(2, 5),
@@ -92,6 +121,8 @@ public class Level {
 	private List<List<Tile>> lightTiles;
 	
 	private Dungeon dungeon;
+	
+	private Climate climate;
 	
 	private int width;
 	private int height;
@@ -155,6 +186,8 @@ public class Level {
 				continue;
 			}
 			
+			climate = generator.getClimate();
+			
 			buildLight(true);
 			
 			gotLevel = true;
@@ -188,6 +221,7 @@ public class Level {
 		obj.put("depth", getDepth());
 		obj.put("spawnX", getSpawnX());
 		obj.put("spawnY", getSpawnY());
+		obj.put("climate", getClimate().name());
 		
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
 		
@@ -301,6 +335,8 @@ public class Level {
 		try {
 			spawnX = obj.getInt("spawnX");
 			spawnY = obj.getInt("spawnY");
+			
+			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
 			
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 			
@@ -468,6 +504,10 @@ public class Level {
 	public void setSpawnPoint(int x, int y) {
 		spawnX = x;
 		spawnY = y;
+	}
+	
+	public Climate getClimate() {
+		return climate;
 	}
 	
 	public List<Entity> getEntities() {
