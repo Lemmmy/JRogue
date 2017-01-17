@@ -20,6 +20,21 @@ public class PlayerClimb implements PlayerVisitor {
 			return;
 		}
 		
+		switch (tile.getType()) {
+			case TILE_ROOM_STAIRS_UP:
+				player.getDungeon().You("ascend the stairs.");
+				break;
+			case TILE_ROOM_STAIRS_DOWN:
+				player.getDungeon().You("descend the stairs.");
+				break;
+			case TILE_ROOM_LADDER_UP:
+				player.getDungeon().You("climb up the ladder.");
+				break;
+			case TILE_ROOM_LADDER_DOWN:
+				player.getDungeon().You("climb down the ladder.");
+				break;
+		}
+		
 		TileStateClimbable tsc = (TileStateClimbable) tile.getState();
 		
 		if (!tsc.getLinkedLevel().isPresent()) {
