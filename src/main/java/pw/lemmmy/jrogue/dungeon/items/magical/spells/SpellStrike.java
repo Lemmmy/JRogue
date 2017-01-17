@@ -58,6 +58,7 @@ public class SpellStrike extends Spell {
 		);
 		strike.setTravelDirection(dx, dy);
 		strike.setTravelRange(3);
+		strike.setSource(caster);
 		caster.getLevel().addEntity(strike);
 	}
 	
