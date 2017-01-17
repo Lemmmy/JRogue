@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -29,7 +29,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return (requiresCapitalisation ? "L" : "l") + "ight orb";
 	}
 	
@@ -55,7 +55,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		int x = getX() + dx;
 		int y = getY() + dy;
 		
@@ -71,7 +71,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {
 		
 	}
 	

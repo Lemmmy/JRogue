@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
 import pw.lemmmy.jrogue.utils.RandomUtils;
@@ -50,13 +50,13 @@ public abstract class Item implements Serialisable {
 		return false;
 	}
 	
-	public boolean beginsWithVowel(LivingEntity observer) {
+	public boolean beginsWithVowel(EntityLiving observer) {
 		return StringUtils.startsWithAny(getName(observer, false, false), "a", "e", "i", "o", "u", "8");
 	}
 	
-	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural);
+	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural);
 	
-	public String getBeatitudePrefix(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getBeatitudePrefix(EntityLiving observer, boolean requiresCapitalisation) {
 		if (!isAspectKnown(observer, AspectBeatitude.class)) {
 			return "";
 		}
@@ -101,7 +101,7 @@ public abstract class Item implements Serialisable {
 		return Optional.ofNullable(aspects.get(aspectClass));
 	}
 	
-	public boolean isAspectKnown(LivingEntity observer, Class<? extends Aspect> aspectClass) {
+	public boolean isAspectKnown(EntityLiving observer, Class<? extends Aspect> aspectClass) {
 		if (aspects.get(aspectClass).isPersistent()) {
 			return observer.isAspectKnown(this, aspectClass);
 		} else {
@@ -113,7 +113,7 @@ public abstract class Item implements Serialisable {
 		aspects.put(aspect.getClass(), aspect);
 	}
 	
-	public void observeAspect(LivingEntity observer, Class<? extends Aspect> aspectClass) {
+	public void observeAspect(EntityLiving observer, Class<? extends Aspect> aspectClass) {
 		if (!aspects.containsKey(aspectClass)) {
 			return; // can't observe an aspect that doesn't exist!!
 		}

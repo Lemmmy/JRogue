@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.canines;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
@@ -37,12 +37,12 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		getDungeon().logRandom("It whimpers.", "It whines.", "It cries.", "It yelps.");
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		if (isPlayer) {
 			getDungeon().You("kick the %s!", getName(kicker, false));
 		}

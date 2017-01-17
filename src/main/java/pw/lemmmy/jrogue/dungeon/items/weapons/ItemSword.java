@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.items.weapons;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.HasMaterial;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.Material;
@@ -41,7 +41,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation, boolean plural) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
 		
 		if (!s.isEmpty() && requiresCapitalisation) {
@@ -77,10 +77,10 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void zap(LivingEntity attacker, LivingEntity victim, int dx, int dy) {}
+	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {}
 	
 	@Override
-	public boolean fire(LivingEntity attacker, ItemProjectile projectile, int dx, int dy) {
+	public boolean fire(EntityLiving attacker, ItemProjectile projectile, int dx, int dy) {
 		return false;
 	}
 	
@@ -100,7 +100,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void onHit(LivingEntity attacker, LivingEntity victim) {
+	public void onHit(EntityLiving attacker, EntityLiving victim) {
 		hitLog("You hit the %s!", "The %s hits you!", "The %s hits the %s!", attacker, victim);
 	}
 	

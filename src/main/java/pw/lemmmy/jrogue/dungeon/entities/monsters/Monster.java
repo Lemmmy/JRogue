@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
@@ -12,7 +12,7 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
 
-public abstract class Monster extends LivingEntity {
+public abstract class Monster extends EntityLiving {
 	private AI ai;
 	
 	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
@@ -43,24 +43,24 @@ public abstract class Monster extends LivingEntity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		if (isPlayer) {
 			getDungeon().You("kick the %s!", getName(kicker, false));
 		}
 	}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		if (isPlayer) {
 			getDungeon().You("kill the %s!", getName(attacker, false));
 		}
 	}
 	
 	@Override
-	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	public void kill(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
 			attacker.addExperience(
 				RandomUtils.roll(RandomUtils.roll(getExperienceLevel()), getExperienceRewarded())
@@ -87,7 +87,7 @@ public abstract class Monster extends LivingEntity {
 	
 	public abstract float getCorpseChance();
 	
-	public abstract List<StatusEffect> getCorpseEffects(LivingEntity victim);
+	public abstract List<StatusEffect> getCorpseEffects(EntityLiving victim);
 	
 	public boolean shouldCorpsesRot() {
 		return true;

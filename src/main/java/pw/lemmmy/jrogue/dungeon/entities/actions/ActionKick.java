@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.actions;
 import pw.lemmmy.jrogue.dungeon.Messenger;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.InjuredFoot;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StrainedLeg;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
@@ -34,25 +34,25 @@ public class ActionKick extends EntityAction {
 		int x = entity.getX() + direction[0];
 		int y = entity.getY() + direction[1];
 		
-		boolean isLivingEntity = entity instanceof LivingEntity;
+		boolean isLivingEntity = entity instanceof EntityLiving;
 		
 		if (!isLivingEntity) {
 			return;
 		}
 		
 		boolean isPlayer = entity instanceof Player;
-		LivingEntity livingEntity = (LivingEntity) entity;
+		EntityLiving entityLiving = (EntityLiving) entity;
 		
 		if (kickedEntity != null) {
-			entityKick(msg, entity, livingEntity, isPlayer, direction[0], direction[1]);
+			entityKick(msg, entity, entityLiving, isPlayer, direction[0], direction[1]);
 		} else {
-			tileKick(msg, entity, livingEntity, isPlayer, x, y);
+			tileKick(msg, entity, entityLiving, isPlayer, x, y);
 		}
 		
 		runOnCompleteCallback(entity);
 	}
 	
-	private void entityKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	private void entityKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		if (kickedEntity.isStatic()) {
 			if (isPlayer) {
 				entity.getDungeon().You("kick the %s!", kickedEntity.getName(kicker, false));
@@ -64,7 +64,7 @@ public class ActionKick extends EntityAction {
 		kickedEntity.kick(kicker, isPlayer, dx, dy);
 	}
 	
-	private void tileKick(Messenger msg, Entity entity, LivingEntity kicker, boolean isPlayer, int x, int y) {
+	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int x, int y) {
 		Tile tile = entity.getLevel().getTile(x, y);
 		TileType tileType = entity.getLevel().getTileType(x, y);
 		

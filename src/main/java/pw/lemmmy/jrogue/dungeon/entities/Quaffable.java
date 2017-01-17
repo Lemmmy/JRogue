@@ -1,9 +1,9 @@
 package pw.lemmmy.jrogue.dungeon.entities;
 
 public interface Quaffable {
-	void quaff(LivingEntity quaffer);
+	void quaff(EntityLiving quaffer);
 	
-	boolean canQuaff(LivingEntity quaffer);
+	boolean canQuaff(EntityLiving quaffer);
 	
-	String getQuaffConfirmationMessage(LivingEntity quaffer);
+	String getQuaffConfirmationMessage(EntityLiving quaffer);
 }

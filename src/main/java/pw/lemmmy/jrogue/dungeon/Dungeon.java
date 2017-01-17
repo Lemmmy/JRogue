@@ -9,7 +9,7 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.PassiveSoundEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.RoleWizard;
@@ -430,7 +430,7 @@ public class Dungeon implements Messenger {
 						break;
 					}
 					
-					if (entity instanceof LivingEntity && !((LivingEntity) entity).isAlive()) {
+					if (entity instanceof EntityLiving && !((EntityLiving) entity).isAlive()) {
 						continue;
 					}
 					
@@ -475,7 +475,7 @@ public class Dungeon implements Messenger {
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
 			.forEach(e -> {
-				if (e instanceof LivingEntity && !((LivingEntity) e).isAlive()) {
+				if (e instanceof EntityLiving && !((EntityLiving) e).isAlive()) {
 					return;
 				}
 				

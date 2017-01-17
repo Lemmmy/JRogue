@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.player.visitors;
 
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -45,14 +45,14 @@ public class PlayerWalk implements PlayerVisitor {
 			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
 			
 			Optional<Entity> ent = destEntities.stream()
-				.filter(e -> e instanceof LivingEntity)
+				.filter(e -> e instanceof EntityLiving)
 				.findFirst();
 			
 			if (ent.isPresent()) {
 				if (player.getRightHand() != null && player.getRightHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) player.getRightHand().getItem()).hit(player, (LivingEntity) ent.get());
+					((ItemWeaponMelee) player.getRightHand().getItem()).hit(player, (EntityLiving) ent.get());
 				} else if (player.getLeftHand() != null && player.getLeftHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) player.getLeftHand().getItem()).hit(player, (LivingEntity) ent.get());
+					((ItemWeaponMelee) player.getLeftHand().getItem()).hit(player, (EntityLiving) ent.get());
 				} else {
 					player.getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
 				}

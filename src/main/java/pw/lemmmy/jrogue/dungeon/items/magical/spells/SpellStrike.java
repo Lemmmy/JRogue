@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.projectiles.EntityStrike;
 import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
@@ -41,12 +41,12 @@ public class SpellStrike extends Spell {
 	}
 	
 	@Override
-	public void castNonDirectional(LivingEntity caster) {
+	public void castNonDirectional(EntityLiving caster) {
 		castDirectional(caster, 0, 0); // cast straight down at the player, dealing splash damage to those around them
 	}
 	
 	@Override
-	public void castDirectional(LivingEntity caster, int dx, int dy) {
+	public void castDirectional(EntityLiving caster, int dx, int dy) {
 		if (dx == 0 && dy == 0) {
 			splash(caster, caster.getX(), caster.getY());
 			return;
@@ -70,10 +70,10 @@ public class SpellStrike extends Spell {
 		return 3;
 	}
 	
-	private void splash(LivingEntity caster, int x, int y) {
+	private void splash(EntityLiving caster, int x, int y) {
 		caster.getLevel().getEntities().stream()
 			.filter(e -> Utils.distance(x, y, e.getX(), e.getY()) <= getSplashRange())
-			.map(e -> (LivingEntity) e)
+			.map(e -> (EntityLiving) e)
 			.forEach(e -> e.damage(DamageSource.STRIKE_SPELL, getDamage(), caster, caster instanceof Player));
 	}
 }

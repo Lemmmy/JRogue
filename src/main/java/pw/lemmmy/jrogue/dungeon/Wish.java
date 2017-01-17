@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon;
 
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityWeaponRack;
@@ -55,8 +55,8 @@ public class Wish {
 			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
 		} else if (wish.equalsIgnoreCase("kill all")) {
 			dungeon.getLevel().getEntities().stream()
-				.filter(e -> e instanceof LivingEntity && !(e instanceof Player))
-				.forEach(e -> ((LivingEntity) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
+				.forEach(e -> ((EntityLiving) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
 			
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {

@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.mold;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.utils.RandomUtils;
@@ -40,7 +40,7 @@ public abstract class MonsterMold extends Monster {
 	}
 	
 	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		return null;
 	}
 	
@@ -85,7 +85,7 @@ public abstract class MonsterMold extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE) {
 			int damageToDeal = RandomUtils.jroll(getExperienceLevel() + 1, 6);
 			

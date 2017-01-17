@@ -4,7 +4,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
@@ -20,7 +20,7 @@ public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Hellhound" : "hellhound";
 	}
 	
@@ -30,7 +30,7 @@ public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		return null; // TODO: Fire
 	}
 	

@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ public class ItemStack {
 		return item;
 	}
 	
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		if (count > 1) {
 			return String.format("%d %s", count, item.getName(observer, false, true));
 		} else {
@@ -58,7 +58,7 @@ public class ItemStack {
 		return item.getWeight() * count;
 	}
 	
-	public boolean beginsWithVowel(LivingEntity observer) {
+	public boolean beginsWithVowel(EntityLiving observer) {
 		return item.beginsWithVowel(observer);
 	}
 	

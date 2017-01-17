@@ -3,7 +3,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.mold;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 
 public class MonsterMoldRed extends MonsterMold {
 	public MonsterMoldRed(Dungeon dungeon, Level level, int x, int y) {
@@ -15,7 +15,7 @@ public class MonsterMoldRed extends MonsterMold {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Red mold" : "red mold";
 	}
 	

@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.effects;
 
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 
 public class Poison extends StatusEffect {
 	public Poison() {
@@ -24,20 +24,20 @@ public class Poison extends StatusEffect {
 	public void turn() {
 		super.turn();
 		
-		if (getEntity() instanceof LivingEntity) {
-			LivingEntity livingEntity = (LivingEntity) getEntity();
+		if (getEntity() instanceof EntityLiving) {
+			EntityLiving entityLiving = (EntityLiving) getEntity();
 			
 			if (
 				(getDamageLimit() == 0 ||
-				 livingEntity.getHealth() > livingEntity.getMaxHealth() - getDamageLimit()) &&
-				getHealthLimit() < livingEntity.getHealth()
+				 entityLiving.getHealth() > entityLiving.getMaxHealth() - getDamageLimit()) &&
+				getHealthLimit() < entityLiving.getHealth()
 			) {
-				livingEntity.damage(getDamageSource(), 1, null, false);
+				entityLiving.damage(getDamageSource(), 1, null, false);
 			}
 			
-			if (getHealthLimit() >= livingEntity.getMaxHealth()) {
+			if (getHealthLimit() >= entityLiving.getMaxHealth()) {
 				// The victim is far too weak to take normal damage and is killed instantaneously
-				livingEntity.kill(getDamageSource(), 1, null, false);
+				entityLiving.kill(getDamageSource(), 1, null, false);
 			}
 		}
 	}

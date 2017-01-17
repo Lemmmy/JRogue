@@ -1,8 +1,8 @@
 package pw.lemmmy.jrogue.dungeon.items.quaffable.potions;
 
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 
 @FunctionalInterface
 public interface PotionEffect {
-	void apply(LivingEntity entity, float potency);
+	void apply(EntityLiving entity, float potency);
 }

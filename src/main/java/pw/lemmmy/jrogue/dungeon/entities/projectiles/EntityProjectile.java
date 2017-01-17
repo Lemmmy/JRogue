@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.Shatterable;
@@ -173,16 +173,16 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	}
 	
 	@Override
-	public abstract String getName(LivingEntity observer, boolean requiresCapitalisation);
+	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
 	
 	@Override
 	public abstract EntityAppearance getAppearance();
 	
 	@Override
-	protected abstract void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy);
+	protected abstract void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy);
 	
 	@Override
-	protected abstract void onWalk(LivingEntity walker, boolean isPlayer);
+	protected abstract void onWalk(EntityLiving walker, boolean isPlayer);
 	
 	@Override
 	public boolean canBeWalkedOn() {

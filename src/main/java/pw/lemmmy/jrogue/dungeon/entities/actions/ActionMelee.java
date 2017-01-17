@@ -5,11 +5,11 @@ import pw.lemmmy.jrogue.dungeon.entities.*;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 
 public class ActionMelee extends EntityAction {
-	private final LivingEntity victim;
+	private final EntityLiving victim;
 	private final DamageSource damageSource;
 	private final int damage;
 	
-	public ActionMelee(LivingEntity victim, DamageSource damageSource, int damage, ActionCallback callback) {
+	public ActionMelee(EntityLiving victim, DamageSource damageSource, int damage, ActionCallback callback) {
 		super(callback);
 		this.victim = victim;
 		this.damageSource = damageSource;
@@ -18,11 +18,11 @@ public class ActionMelee extends EntityAction {
 	
 	@Override
 	public void execute(Entity entity, Messenger msg) {
-		if (!(entity instanceof LivingEntity)) {
+		if (!(entity instanceof EntityLiving)) {
 			return;
 		}
 		
-		LivingEntity attacker = (LivingEntity) entity;
+		EntityLiving attacker = (EntityLiving) entity;
 		boolean isAttackerPlayer = attacker instanceof Player;
 		boolean isVictimPlayer = victim instanceof Player;
 		
@@ -37,16 +37,16 @@ public class ActionMelee extends EntityAction {
 		switch (hit.getHitType()) {
 			case JUST_MISS:
 				if (isAttackerPlayer) {
-					msg.orangeYou("just miss the %s.", victim.getName((LivingEntity) entity, false));
+					msg.orangeYou("just miss the %s.", victim.getName((EntityLiving) entity, false));
 				} else if (isVictimPlayer) {
-					msg.The("%s just misses.", attacker.getName((LivingEntity) entity, false));
+					msg.The("%s just misses.", attacker.getName((EntityLiving) entity, false));
 				}
 				break;
 			case MISS:
 				if (isAttackerPlayer) {
-					msg.orangeYou("miss the %s.", victim.getName((LivingEntity) entity, false));
+					msg.orangeYou("miss the %s.", victim.getName((EntityLiving) entity, false));
 				} else if (isVictimPlayer) {
-					msg.The("%s misses.", attacker.getName((LivingEntity) entity, false));
+					msg.The("%s misses.", attacker.getName((EntityLiving) entity, false));
 				}
 				break;
 			case SUCCESS:

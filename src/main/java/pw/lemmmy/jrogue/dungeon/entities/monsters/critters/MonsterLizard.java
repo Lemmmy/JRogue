@@ -4,7 +4,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LivingEntity;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
@@ -21,7 +21,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Lizard" : "lizard";
 	}
 	
@@ -61,7 +61,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public List<StatusEffect> getCorpseEffects(LivingEntity victim) {
+	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		return null;
 	}
 	
@@ -76,7 +76,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {}
+	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
 	
 	@Override
 	public int getVisibilityRange() {

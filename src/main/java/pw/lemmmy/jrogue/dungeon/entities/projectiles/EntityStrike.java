@@ -18,7 +18,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? "Strike" : "strike";
 	}
 	
@@ -46,10 +46,10 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	public void onHitEntity(Entity victim) {
 		super.onHitEntity(victim);
 		
-		if (victim instanceof LivingEntity) {
-			LivingEntity living = (LivingEntity) victim;
+		if (victim instanceof EntityLiving) {
+			EntityLiving living = (EntityLiving) victim;
 			Entity source = getSource();
-			LivingEntity livingSource = source instanceof LivingEntity ? (LivingEntity) source : null;
+			EntityLiving livingSource = source instanceof EntityLiving ? (EntityLiving) source : null;
 			
 			int roll = RandomUtils.roll(20);
 			
@@ -66,12 +66,12 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		
 	}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {
 		
 	}
 	

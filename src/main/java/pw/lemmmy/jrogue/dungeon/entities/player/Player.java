@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class Player extends LivingEntity {
+public class Player extends EntityLiving {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
 	
 	private String name;
@@ -186,7 +186,7 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public Size getSize() {
-		return LivingEntity.Size.LARGE;
+		return EntityLiving.Size.LARGE;
 	}
 	
 	public Role getRole() {
@@ -230,7 +230,7 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	public String getName(LivingEntity observer, boolean requiresCapitalisation) {
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
 	}
 	
@@ -459,10 +459,10 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {}
+	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		if (damageSource.getDeathString() != null) {
 			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
 		} else {
@@ -473,12 +473,12 @@ public class Player extends LivingEntity {
 	}
 	
 	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
 		getDungeon().orangeYou("step on your own foot.");
 	}
 	
 	@Override
-	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
 	
 	@Override
 	public boolean canBeWalkedOn() {
@@ -588,7 +588,7 @@ public class Player extends LivingEntity {
 		acceptVisitor(new PlayerRead());
 	}
 	
-	public Hit hitFromMonster(DamageSource damageSource, int damage, LivingEntity attacker) {
+	public Hit hitFromMonster(DamageSource damageSource, int damage, EntityLiving attacker) {
 		int target;
 		
 		if (getArmourClass() >= 0) {
@@ -643,7 +643,7 @@ public class Player extends LivingEntity {
 		return size == Size.SMALL ? -1 : 1;
 	}
 	
-	public Hit hitAgainstMonster(DamageSource damageSource, int damage, LivingEntity victim) {
+	public Hit hitAgainstMonster(DamageSource damageSource, int damage, EntityLiving victim) {
 		int roll = RandomUtils.jroll(20);
 		int toHit = 1;
 		
