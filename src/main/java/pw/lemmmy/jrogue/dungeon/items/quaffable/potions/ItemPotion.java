@@ -74,17 +74,11 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 			
 			return s;
 		} else {
-			String colourName = "";
-			
-			if (!empty) {
-				colourName = requiresCapitalisation ?
+			String colourName = requiresCapitalisation ?
 							 StringUtils.capitalize(getPotionColour().getName()) :
 							 getPotionColour().getName();
-				
-				colourName += " ";
-			}
 			
-			s += colourName + "potion" + (plural ? "s" : "");
+			s += colourName + " potion" + (plural ? "s" : "");
 			
 			return s;
 		}
