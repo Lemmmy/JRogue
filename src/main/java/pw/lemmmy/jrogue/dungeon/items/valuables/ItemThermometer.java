@@ -40,6 +40,14 @@ public class ItemThermometer extends Item implements Readable, Shatterable {
 
 	@Override
 	public void onRead(Player reader) {
-		reader.getDungeon().The("mercury fills some of the thermometer.");
+		switch (reader.getLevel().getClimate()) {
+			case COLD:
+				reader.getDungeon().The("mercury is packed into the bottom of the thermometer!");
+				break;
+			case LIMBO:
+			case WARM:
+				reader.getDungeon().The("mercury fills about half of the thermometer.");
+				break;
+		}
 	}
 }
