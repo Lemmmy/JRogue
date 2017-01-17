@@ -43,7 +43,21 @@ public abstract class Monster extends LivingEntity {
 	}
 	
 	@Override
+	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
+		if (isPlayer) {
+			getDungeon().You("kick the %s!", getName(kicker, false));
+		}
+	}
+	
+	@Override
 	protected void onWalk(LivingEntity walker, boolean isPlayer) {}
+	
+	@Override
+	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
+		if (isPlayer) {
+			getDungeon().You("kill the %s!", getName(attacker, false));
+		}
+	}
 	
 	@Override
 	public void kill(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {

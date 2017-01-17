@@ -14,6 +14,7 @@ public enum DamageSource {
 	PLAYER_KICK(DamageType.MELEE),
 	STAFF_BASH(DamageType.MELEE),
 	SKELETON_HIT(DamageType.MELEE),
+	MOLD_RETALIATION(DamageType.MELEE),
 	STRIKE_SPELL(DamageType.MAGIC, "The strike penetrates your body, cutting it into several pieces."),
 	POISON("The poison kills you."),
 	MERCURY("The mercury kills you."),

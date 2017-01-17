@@ -15,6 +15,10 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldBlue;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldGreen;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldRed;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldYellow;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.IceDungeonGenerator;
@@ -44,6 +48,30 @@ public class Level {
 	private static final List<MonsterSpawn> MONSTER_SPAWNS = new ArrayList<>();
 	
 	static {
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 10),
+			Range.between(0, 1),
+			MonsterMoldRed.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(1, 10),
+			Range.between(0, 1),
+			MonsterMoldYellow.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(8, 20),
+			Range.between(0, 1),
+			MonsterMoldGreen.class
+		));
+		
+		MONSTER_SPAWNS.add(new MonsterSpawn(
+			Range.between(11, 22),
+			Range.between(0, 3),
+			MonsterMoldBlue.class
+		));
+		
 		MONSTER_SPAWNS.add(new MonsterSpawn(
 			Range.between(1, 10),
 			Range.between(2, 5),

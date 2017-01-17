@@ -119,13 +119,6 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().You("kill the %s!", getName(attacker, false));
-		}
-	}
-	
-	@Override
 	public void meleeAttackPlayer() {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),

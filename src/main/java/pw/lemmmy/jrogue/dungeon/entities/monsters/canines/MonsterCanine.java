@@ -42,13 +42,6 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().You("kill the %s!", getName(attacker, false));
-		}
-	}
-	
-	@Override
 	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
 		if (isPlayer) {
 			getDungeon().You("kick the %s!", getName(kicker, false));

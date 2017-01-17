@@ -79,20 +79,6 @@ public class MonsterLizard extends Monster {
 	protected void onDamage(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {}
 	
 	@Override
-	protected void onDie(DamageSource damageSource, int damage, LivingEntity attacker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().You("kill the %s!", getName(attacker, false));
-		}
-	}
-	
-	@Override
-	protected void onKick(LivingEntity kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
-			getDungeon().You("step on the %s!", getName(kicker, false));
-		}
-	}
-	
-	@Override
 	public int getVisibilityRange() {
 		return 10;
 	}
