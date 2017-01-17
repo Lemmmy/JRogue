@@ -96,6 +96,12 @@ public class ErrorHandler {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(String.format(
+			"**Version:** %s (build %s)\n",
+			JRogue.VERSION,
+			JRogue.BUILD_DATE
+		));
+		
+		sb.append(String.format(
 			"**OS:** %s (%s)\n",
 			System.getProperty("os.name"),
 			System.getProperty("os.arch")
