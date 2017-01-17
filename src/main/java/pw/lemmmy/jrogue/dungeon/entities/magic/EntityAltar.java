@@ -30,7 +30,9 @@ public class EntityAltar extends Entity {
 	
 	@Override
 	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		
+		if (isPlayer) {
+			getDungeon().log("There is an altar here.", getName(walker, false));
+		}
 	}
 	
 	@Override
