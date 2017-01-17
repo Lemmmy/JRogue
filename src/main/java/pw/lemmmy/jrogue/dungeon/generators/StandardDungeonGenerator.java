@@ -28,6 +28,11 @@ public class StandardDungeonGenerator extends RoomGenerator {
 	}
 	
 	@Override
+	public Climate getClimate() {
+		return Climate.WARM;
+	}
+	
+	@Override
 	public boolean generate() {
 		if (!super.generate()) {
 			return false;

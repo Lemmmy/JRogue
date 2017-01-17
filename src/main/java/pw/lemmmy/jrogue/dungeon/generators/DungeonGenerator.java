@@ -37,6 +37,8 @@ public abstract class DungeonGenerator {
 		this.sourceTile = sourceTile;
 	}
 	
+	public abstract Climate getClimate();
+	
 	public abstract boolean generate();
 	
 	protected int nextInt(int min, int max) {
