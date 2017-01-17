@@ -40,6 +40,7 @@
 - Fixed many container bugs related to items in the left and right hands
 - Lighting is built at proper times now
 - Renamed many items with strange names e.g. `corn on the cob` → `ear of corn`, `bread` → `loaf of bread`
+- Renamed empty potions to glass bottles
 - Entity depths are better now
 
 # Code
