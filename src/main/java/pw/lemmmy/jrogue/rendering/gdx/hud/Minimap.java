@@ -29,7 +29,8 @@ public class Minimap implements Dungeon.Listener {
 	
 	private static final Color PLAYER_ICON_COLOUR = new Color(0xffffffff);
 	private static final Color ENTITY_ICON_COLOUR = new Color(0xffd200ff);
-	private static final Color MONSTER_ICON_COLOUR = new Color(0xd50808ff);
+	private static final Color NON_HOSTILE_MONSTER_ICON_COLOUR = new Color(0x0894d5ff);
+	private static final Color HOSTILE_MONSTER_ICON_COLOUR = new Color(0xd50808ff);
 	
 	private static final float INVISIBLE_ALPHA = -0.15f;
 	
@@ -168,9 +169,14 @@ public class Minimap implements Dungeon.Listener {
 				!dungeon.getLevel().isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> {
-				drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), MONSTER_ICON_COLOUR);
-			});
+			.map(e -> (Monster) e)
+			.forEach(m -> drawIcon(
+				iconPoint,
+				m.getLastSeenX(),
+				m.getLastSeenY(),
+				m.isHostile() ? HOSTILE_MONSTER_ICON_COLOUR :
+								NON_HOSTILE_MONSTER_ICON_COLOUR
+			));
 	}
 	
 	private void drawPlayerIcon() {
