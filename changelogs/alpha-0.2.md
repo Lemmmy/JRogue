@@ -18,6 +18,7 @@
 - Candlesticks as small room decoration
 - Rugs as larger room decoration
 - Added ice levels below dlvl-10 with different monsters
+- Added thermometers
 - Added foxes
 - Added lizards
 - Added mold (red, yellow, green and blue, no effects yet)
