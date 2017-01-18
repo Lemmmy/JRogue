@@ -16,9 +16,11 @@ public class FeatureAltar extends SpecialRoomFeature {
 		EntityAltar altar = new EntityAltar(room.getLevel().getDungeon(), room.getLevel(), altarX, altarY);
 		room.getLevel().addEntity(altar);
 		
-		for (int y = altarY - 1; y < altarY + 1; y++) {
-			for (int x = altarX - 1; x < altarX + 1; x++) {
-				room.getLevel().setTileType(x, y, TileType.TILE_ROOM_RUG);
+		for (int y = altarY - 1; y < altarY + 2; y++) {
+			for (int x = altarX - 1; x < altarX + 2; x++) {
+				if (room.getLevel().getTileType(x, y).isFloorTile()) {
+					room.getLevel().setTileType(x, y, TileType.TILE_ROOM_RUG);
+				}
 			}
 		}
 	}
