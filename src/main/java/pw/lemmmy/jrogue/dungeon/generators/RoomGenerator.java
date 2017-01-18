@@ -54,8 +54,8 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	private static final WeightedCollection<Integer> PROBABILITY_SPECIAL_FEATURE_COUNT = new WeightedCollection<>();
 	
 	static {
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(4, 0);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(5, 1);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(5, 0);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(3, 1);
 		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 2);
 		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 3);
 	}
@@ -64,8 +64,8 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		= new WeightedCollection<>();
 	
 	static {
-		PROBABILITY_SPECIAL_FEATURES.add(10, FeatureFountain.class);
-		PROBABILITY_SPECIAL_FEATURES.add(2, FeatureChest.class);
+		PROBABILITY_SPECIAL_FEATURES.add(15, FeatureFountain.class);
+		PROBABILITY_SPECIAL_FEATURES.add(4, FeatureChest.class);
 		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureAltar.class);
 	}
 	
