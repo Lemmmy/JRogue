@@ -5,8 +5,10 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomBasic;
-import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomFountain;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.RoomWater;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.features.FeatureAltar;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.features.FeatureFountain;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.features.SpecialRoomFeature;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
@@ -15,6 +17,8 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,8 +26,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	private static final WeightedCollection<Class<? extends Room>> ROOM_TYPES = new WeightedCollection<>();
 	
 	static {
-		ROOM_TYPES.add(40, RoomBasic.class);
-		ROOM_TYPES.add(4, RoomFountain.class);
+		ROOM_TYPES.add(49, RoomBasic.class);
 		ROOM_TYPES.add(1, RoomWater.class);
 	}
 	
@@ -46,6 +49,23 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	private static final float CORRIDOR_LINE_SLOPE = 0.2f;
 	
 	private static final double PROBABILITY_GOLD_DROP = 0.08;
+	
+	private static final WeightedCollection<Integer> PROBABILITY_SPECIAL_FEATURE_COUNT = new WeightedCollection<>();
+	
+	static {
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 0);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(3, 1);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 2);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 3);
+	}
+	
+	private static final WeightedCollection<Class<? extends SpecialRoomFeature>> PROBABILITY_SPECIAL_FEATURES
+		= new WeightedCollection<>();
+	
+	static {
+		PROBABILITY_SPECIAL_FEATURES.add(9, FeatureFountain.class);
+		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureAltar.class);
+	}
 	
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
@@ -89,12 +109,12 @@ public abstract class RoomGenerator extends DungeonGenerator {
 				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
 				int newRoomHeight = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
 				
-				int newRoomX = roomX + (direction[0] * roomWidth) +
-					(direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X)) +
-					(direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X));
-				int newRoomY = roomY + (direction[1] * roomHeight) +
-					(direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y)) +
-					(direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y));
+				int newRoomX = roomX + direction[0] * roomWidth +
+					direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X) +
+					direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X);
+				int newRoomY = roomY + direction[1] * roomHeight +
+					direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y) +
+					direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y);
 				
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
@@ -227,13 +247,26 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	
 	private void addRoomFeatures() {
 		rooms.forEach(Room::addFeatures);
+		
+		int featureCount = PROBABILITY_SPECIAL_FEATURE_COUNT.next();
+		
+		for (int i = 0; i < featureCount; i++) {
+			try {
+				Class<? extends SpecialRoomFeature> featureClass = PROBABILITY_SPECIAL_FEATURES.next();
+				Constructor featureConstructor = featureClass.getConstructor();
+				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
+				feature.generate(RandomUtils.randomFrom(rooms));
+			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void addRandomDrops() {
 		rooms.forEach(r -> {
 			if (rand.nextDouble() < PROBABILITY_GOLD_DROP) {
-				int x = rand.nextInt(r.getRoomWidth() - 2) + r.getRoomX() + 1;
-				int y = rand.nextInt(r.getRoomHeight() - 2) + r.getRoomY() + 1;
+				int x = rand.nextInt(r.getWidth() - 2) + r.getRoomX() + 1;
+				int y = rand.nextInt(r.getHeight() - 2) + r.getRoomY() + 1;
 				
 				QuickSpawn.spawnGold(level, x, y, RandomUtils.roll(Math.abs(level.getDepth()) + 2, 6));
 			}
@@ -255,8 +288,8 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		
 		Room spawnRoom = RandomUtils.randomFrom(temp2);
 		
-		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getRoomWidth() - 2);
-		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getRoomHeight() - 2);
+		int stairX = nextInt(spawnRoom.getRoomX() + 2, spawnRoom.getRoomX() + spawnRoom.getWidth() - 2);
+		int stairY = nextInt(spawnRoom.getRoomY() + 2, spawnRoom.getRoomY() + spawnRoom.getHeight() - 2);
 		
 		if (sourceTile != null) {
 			Tile spawnTile = level.getTile(stairX, stairY);
@@ -305,11 +338,11 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		
 		int stairX = nextInt(
 			nextStairsRoom.getRoomX() + 2,
-			nextStairsRoom.getRoomX() + nextStairsRoom.getRoomWidth() - 2
+			nextStairsRoom.getRoomX() + nextStairsRoom.getWidth() - 2
 		);
 		int stairY = nextInt(
 			nextStairsRoom.getRoomY() + 2,
-			nextStairsRoom.getRoomY() + nextStairsRoom.getRoomHeight() - 2
+			nextStairsRoom.getRoomY() + nextStairsRoom.getHeight() - 2
 		);
 		
 		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);

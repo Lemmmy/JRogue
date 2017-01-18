@@ -40,10 +40,10 @@ public abstract class Room {
 	}
 	
 	public int getCenterX() {
-		return getRoomX() + (int) Math.floor(getRoomWidth() / 2);
+		return getRoomX() + (int) Math.floor(getWidth() / 2);
 	}
 	
-	public int getRoomWidth() {
+	public int getWidth() {
 		return roomWidth;
 	}
 	
@@ -52,10 +52,10 @@ public abstract class Room {
 	}
 	
 	public int getCenterY() {
-		return getRoomY() + (int) Math.floor(getRoomHeight() / 2);
+		return getRoomY() + (int) Math.floor(getHeight() / 2);
 	}
 	
-	public int getRoomHeight() {
+	public int getHeight() {
 		return roomHeight;
 	}
 	

@@ -159,62 +159,62 @@ public abstract class DungeonGenerator {
 		int dy = Math.abs(b.getCenterY() - a.getCenterY());
 		
 		if (dx > dy) {
-			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getRoomX() + a.getRoomWidth() >= b.getRoomX() || b
-				.getRoomX() + b.getRoomWidth() <= a.getRoomX()) {
-				if (b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
+			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getRoomX() + a.getWidth() >= b.getRoomX() || b
+				.getRoomX() + b.getWidth() <= a.getRoomX()) {
+				if (b.getRoomX() + b.getWidth() > a.getRoomX() + a.getWidth()) {
 					return new ConnectionPoint(
-						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
-						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
+						a.getRoomX() + a.getWidth() - 1, a.getCenterY(),
+						b.getCenterX(), b.getRoomY() + b.getHeight() - 1,
 						Orientation.HORIZONTAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
-						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
+						b.getRoomX() + b.getWidth() - 1, b.getCenterY(),
+						a.getCenterX(), a.getRoomY() + a.getHeight() - 1,
 						Orientation.HORIZONTAL
 					);
 				}
 			} else {
-				if (b.getRoomX() > a.getRoomX() || b.getRoomX() + b.getRoomWidth() > a.getRoomX() + a.getRoomWidth()) {
+				if (b.getRoomX() > a.getRoomX() || b.getRoomX() + b.getWidth() > a.getRoomX() + a.getWidth()) {
 					return new ConnectionPoint(
-						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
+						a.getRoomX() + a.getWidth() - 1, a.getCenterY(),
 						b.getRoomX(), b.getCenterY(),
 						Orientation.HORIZONTAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
+						b.getRoomX() + b.getWidth() - 1, b.getCenterY(),
 						a.getRoomX(), a.getCenterY(),
 						Orientation.HORIZONTAL
 					);
 				}
 			}
 		} else {
-			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getRoomHeight() == b
-				.getRoomY() || b.getRoomY() + b.getRoomHeight() == a.getRoomY()) {
-				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
+			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getHeight() == b
+				.getRoomY() || b.getRoomY() + b.getHeight() == a.getRoomY()) {
+				if (b.getRoomY() + b.getHeight() > a.getRoomY() + a.getHeight()) {
 					return new ConnectionPoint(
-						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
-						b.getRoomX() + b.getRoomWidth() - 1, b.getCenterY(),
+						a.getCenterX(), a.getRoomY() + a.getHeight() - 1,
+						b.getRoomX() + b.getWidth() - 1, b.getCenterY(),
 						Orientation.VERTICAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
-						a.getRoomX() + a.getRoomWidth() - 1, a.getCenterY(),
+						b.getCenterX(), b.getRoomY() + b.getHeight() - 1,
+						a.getRoomX() + a.getWidth() - 1, a.getCenterY(),
 						Orientation.VERTICAL
 					);
 				}
 			} else {
-				if (b.getRoomY() + b.getRoomHeight() > a.getRoomY() + a.getRoomHeight()) {
+				if (b.getRoomY() + b.getHeight() > a.getRoomY() + a.getHeight()) {
 					return new ConnectionPoint(
-						a.getCenterX(), a.getRoomY() + a.getRoomHeight() - 1,
+						a.getCenterX(), a.getRoomY() + a.getHeight() - 1,
 						b.getCenterX(), b.getRoomY(),
 						Orientation.VERTICAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getCenterX(), b.getRoomY() + b.getRoomHeight() - 1,
+						b.getCenterX(), b.getRoomY() + b.getHeight() - 1,
 						a.getCenterX(), a.getRoomY(),
 						Orientation.VERTICAL
 					);

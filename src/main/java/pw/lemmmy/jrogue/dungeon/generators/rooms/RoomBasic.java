@@ -63,13 +63,13 @@ public class RoomBasic extends Room {
 	
 	@Override
 	public void build(DungeonGenerator generator) {
-		for (int y = getRoomY(); y < getRoomY() + getRoomHeight(); y++) {
-			for (int x = getRoomX(); x < getRoomX() + getRoomWidth(); x++) {
-				boolean wall = x == getRoomX() || x == getRoomX() + getRoomWidth() - 1 ||
-					y == getRoomY() || y == getRoomY() + getRoomHeight() - 1;
+		for (int y = getRoomY(); y < getRoomY() + getHeight(); y++) {
+			for (int x = getRoomX(); x < getRoomX() + getWidth(); x++) {
+				boolean wall = x == getRoomX() || x == getRoomX() + getWidth() - 1 ||
+					y == getRoomY() || y == getRoomY() + getHeight() - 1;
 				
 				if (wall) {
-					if (x > getRoomX() && x < getRoomX() + getRoomWidth() - 1 && x % 4 == 0) {
+					if (x > getRoomX() && x < getRoomX() + getWidth() - 1 && x % 4 == 0) {
 						getLevel().setTileType(x, y, generator.getTorchTileType());
 					} else {
 						getLevel().setTileType(x, y, getWallType());
@@ -89,8 +89,8 @@ public class RoomBasic extends Room {
 	}
 	
 	private void addRandomChest() {
-		int chestX = rand.nextInt(getRoomWidth() - 2) + getRoomX() + 1;
-		int chestY = rand.nextInt(getRoomHeight() - 2) + getRoomY() + 1;
+		int chestX = rand.nextInt(getWidth() - 2) + getRoomX() + 1;
+		int chestY = rand.nextInt(getHeight() - 2) + getRoomY() + 1;
 		
 		EntityChest chest = new EntityChest(getLevel().getDungeon(), getLevel(), chestX, chestY);
 		populateChest(chest);
