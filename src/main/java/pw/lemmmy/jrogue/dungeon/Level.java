@@ -361,6 +361,8 @@ public class Level {
 			JRogue.getLogger().error("Error loading level:");
 			JRogue.getLogger().error(e);
 		}
+		
+		dungeon.entityAdded(dungeon.getPlayer());
 	}
 	
 	private void unserialiseTiles(byte[] bytes) {
