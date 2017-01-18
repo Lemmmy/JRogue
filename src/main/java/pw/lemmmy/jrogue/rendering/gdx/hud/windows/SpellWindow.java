@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
-import pw.lemmmy.jrogue.rendering.gdx.hud.components.SpellComponent;
+import pw.lemmmy.jrogue.rendering.gdx.hud.windows.components.SpellComponent;
 
 public class SpellWindow extends PopupWindow {
 	private Player player;
