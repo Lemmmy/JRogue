@@ -201,6 +201,7 @@ public class GameInputProcessor implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		if (renderer.getWindows().size() > 0) { return false; }
+		if (character == 0) { return false; }
 		
 		if (dontHandleNext) {
 			dontHandleNext = false;
