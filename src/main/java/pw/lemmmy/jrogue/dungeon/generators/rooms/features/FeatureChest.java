@@ -9,6 +9,7 @@ import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
+import pw.lemmmy.jrogue.dungeon.items.SpecialChestSpawn;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
 import pw.lemmmy.jrogue.dungeon.items.magical.ItemSpellbook;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGem;
@@ -85,11 +86,11 @@ public class FeatureChest extends SpecialRoomFeature {
 			ItemGroup group = ITEM_GROUPS.next();
 			Class<? extends Item> itemClass = group.getRandomItem();
 			
-			populateChestItem(room, container, itemClass);
+			populateChestItem(room, chest, container, itemClass);
 		}
 	}
 	
-	private void populateChestItem(Room room, Container container, Class<? extends Item> itemClass) {
+	private void populateChestItem(Room room, EntityChest chest, Container container, Class<? extends Item> itemClass) {
 		Constructor<? extends Item> constructor = ConstructorUtils.getAccessibleConstructor(itemClass, Level.class);
 		Item item;
 		
@@ -111,8 +112,12 @@ public class FeatureChest extends SpecialRoomFeature {
 			}
 		}
 		
-		ItemStack stack = new ItemStack(item, 1);
-		container.add(stack);
+		if (item instanceof SpecialChestSpawn) {
+			((SpecialChestSpawn) item).onSpawnInChest(chest, container);
+		} else {
+			ItemStack stack = new ItemStack(item, 1);
+			container.add(stack);
+		}
 	}
 		
 	protected static class ItemGroup {
