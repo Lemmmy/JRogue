@@ -9,6 +9,7 @@ import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.utils.Persisting;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Entity implements Serialisable {
+public abstract class Entity implements Serialisable, Persisting {
 	private int x;
 	private int y;
 	
@@ -192,6 +193,8 @@ public abstract class Entity implements Serialisable {
 			e.serialise(serialisedStatusEffect);
 			obj.append("statusEffects", serialisedStatusEffect);
 		});
+
+		serialisePersistence(obj);
 	}
 	
 	@Override
@@ -209,6 +212,8 @@ public abstract class Entity implements Serialisable {
 			serialisedStatusEffects.forEach(serialisedStatusEffect ->
 				unserialiseStatusEffect((JSONObject) serialisedStatusEffect));
 		}
+
+		unserialisePersistence(obj);
 	}
 	
 	@SuppressWarnings("unchecked")
