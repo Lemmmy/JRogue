@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
@@ -28,7 +29,7 @@ public abstract class Item implements Serialisable {
 		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
 	}
 	
-	public void update() {
+	public void update(Entity owner) {
 		if (shouldAge()) {
 			age++;
 		}

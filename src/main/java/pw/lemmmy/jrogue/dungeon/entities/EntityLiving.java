@@ -278,7 +278,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 		}
 		
 		if (inventory != null) {
-			inventory.update();
+			inventory.update(this);
 		}
 	}
 	
