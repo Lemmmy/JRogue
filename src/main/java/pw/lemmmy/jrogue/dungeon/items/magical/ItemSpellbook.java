@@ -273,7 +273,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 			ItemStack stack = new ItemStack(this, 1);
 			container.add(stack);
 		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("iaugjhghaeruirgarefgyhwergberhh");
+			JRogue.getLogger().error("iaugjhghaeruirgarefgyhwergb(4-	erhh");
 			e.printStackTrace();
 		}
 	}
