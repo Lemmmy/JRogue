@@ -55,3 +55,4 @@
 - Completely refactored level generators so that many generators can share similar systems (e.g. rooms)
 - Removed stupid Optional fields
 - Levels have a climate option now
+- Serialised objects now also have a dynamic layer of persistence, ready for extremely case-specific serialised fields, and also mods
