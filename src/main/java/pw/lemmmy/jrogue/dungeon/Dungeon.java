@@ -16,7 +16,9 @@ import pw.lemmmy.jrogue.dungeon.entities.player.roles.RoleWizard;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
+import pw.lemmmy.jrogue.utils.Persisting;
 import pw.lemmmy.jrogue.utils.RandomUtils;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 import javax.swing.*;
 import java.io.*;
@@ -28,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class Dungeon implements Messenger {
+public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static final int NORMAL_SPEED = 12;
 	
 	private static final int LEVEL_WIDTH = 90;
@@ -65,7 +67,9 @@ public class Dungeon implements Messenger {
 	private Settings settings;
 	
 	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
-	
+
+	private final JSONObject persistence = new JSONObject();
+
 	public Dungeon(Settings settings) {
 		this.settings = settings;
 		
@@ -116,7 +120,8 @@ public class Dungeon implements Messenger {
 			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
 		) {
-			JSONObject serialisedDungeon = serialise();
+			JSONObject serialisedDungeon = new JSONObject();
+			serialise(serialisedDungeon);
 			writer.append(serialisedDungeon.toString());
 		} catch (Exception e) {
 			ErrorHandler.error("Error saving dungeon", e);
@@ -146,10 +151,9 @@ public class Dungeon implements Messenger {
 		dungeon.generateLevel();
 		return dungeon;
 	}
-	
-	private JSONObject serialise() {
-		JSONObject obj = new JSONObject();
-		
+
+	@Override
+	public void serialise(JSONObject obj) {
 		obj.put("version", JRogue.VERSION);
 		obj.put("name", getName());
 		obj.put("originalName", getOriginalName());
@@ -159,13 +163,18 @@ public class Dungeon implements Messenger {
 		obj.put("monsterSpawnCounter", monsterSpawnCounter);
 		
 		JSONObject serialisedLevels = new JSONObject();
-		levels.forEach((uuid, level) -> serialisedLevels.put(uuid.toString(), level.serialise()));
+		levels.forEach((uuid, level) -> {
+			JSONObject j = new JSONObject();
+			level.serialise(j);
+			serialisedLevels.put(uuid.toString(), j);
+		});
 		obj.put("levels", serialisedLevels);
-		
-		return obj;
+
+		serialisePersistence(obj);
 	}
-	
-	private void unserialise(JSONObject obj) {
+
+	@Override
+	public void unserialise(JSONObject obj) {
 		try {
 			String version = obj.optString("version");
 			
@@ -231,6 +240,8 @@ public class Dungeon implements Messenger {
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);
 		}
+
+		unserialisePersistence(obj);
 	}
 	
 	public void deleteSave() {
@@ -571,7 +582,12 @@ public class Dungeon implements Messenger {
 	public void entityRemoved(Entity entity) {
 		listeners.forEach(l -> l.onEntityRemoved(entity));
 	}
-	
+
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
+	}
+
 	public interface Listener {
 		default void onLevelChange(Level level) {}
 		

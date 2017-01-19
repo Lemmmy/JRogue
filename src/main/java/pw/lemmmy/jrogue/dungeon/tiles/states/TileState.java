@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.tiles.states;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 
 public abstract class TileState implements Serialisable {

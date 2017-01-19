@@ -3,8 +3,8 @@ package pw.lemmmy.jrogue.dungeon.entities.effects;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.BlankMessenger;
 import pw.lemmmy.jrogue.dungeon.Messenger;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 public abstract class StatusEffect implements Serialisable {
 	private Messenger messenger;

@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;

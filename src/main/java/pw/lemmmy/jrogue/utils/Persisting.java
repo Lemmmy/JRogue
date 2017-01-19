@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.utils;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
 
 public interface Persisting {
     JSONObject getPersistence();
@@ -11,8 +10,12 @@ public interface Persisting {
     }
 
     default void unserialisePersistence(JSONObject obj) {
-        for (String key : obj.getJSONObject("persistence").keySet()) {
-            getPersistence().put(key, obj.get(key));
+        JSONObject p = obj.optJSONObject("persistence");
+
+        if (p != null) {
+            for (String key : p.keySet()) {
+                getPersistence().put(key, obj.get(key));
+            }
         }
     }
 }

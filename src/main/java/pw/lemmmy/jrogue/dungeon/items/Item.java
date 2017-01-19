@@ -4,10 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
+import pw.lemmmy.jrogue.utils.Persisting;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
@@ -16,12 +17,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public abstract class Item implements Serialisable {
+public abstract class Item implements Serialisable, Persisting {
 	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
 	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	
 	private int visualID;
 	private int age;
+
+	private final JSONObject persistence = new JSONObject();
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
@@ -170,6 +173,8 @@ public abstract class Item implements Serialisable {
 		JSONArray serialisedKnownAspects = new JSONArray();
 		knownAspects.forEach(a -> serialisedKnownAspects.put(a.getName()));
 		obj.put("knownAspects", serialisedKnownAspects);
+
+		serialisePersistence(obj);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -207,6 +212,8 @@ public abstract class Item implements Serialisable {
 				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
 			}
 		});
+
+		unserialisePersistence(obj);
 	}
 	
 	public Item copy() {
@@ -217,5 +224,10 @@ public abstract class Item implements Serialisable {
 		
 		Optional<Item> itemOptional = createFromJSON(serialisedItem);
 		return itemOptional.isPresent() ? itemOptional.get() : null;
+	}
+
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
 	}
 }

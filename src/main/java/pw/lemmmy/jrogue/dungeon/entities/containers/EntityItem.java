@@ -17,6 +17,8 @@ import java.util.Optional;
 
 public class EntityItem extends Entity {
 	private ItemStack itemStack;
+
+	private final JSONObject persistence = new JSONObject();
 	
 	public EntityItem(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -122,5 +124,10 @@ public class EntityItem extends Entity {
 		
 		Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(obj.getJSONObject("itemStack"));
 		itemStackOptional.ifPresent(i -> itemStack = i);
+	}
+
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
 	}
 }

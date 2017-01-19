@@ -2,7 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.containers;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;

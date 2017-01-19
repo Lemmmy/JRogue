@@ -27,9 +27,8 @@ import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
+import pw.lemmmy.jrogue.utils.*;
 import pw.lemmmy.jrogue.utils.Point;
-import pw.lemmmy.jrogue.utils.RandomUtils;
-import pw.lemmmy.jrogue.utils.Utils;
 
 import java.awt.*;
 import java.io.*;
@@ -40,7 +39,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Level {
+public class Level implements Serialisable, Persisting {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -212,10 +211,9 @@ public class Level {
 		
 		return Optional.empty();
 	}
-	
-	public JSONObject serialise() {
-		JSONObject obj = new JSONObject();
-		
+
+	@Override
+	public void serialise(JSONObject obj) {
 		obj.put("width", getWidth());
 		obj.put("height", getHeight());
 		obj.put("depth", getDepth());
@@ -249,8 +247,8 @@ public class Level {
 			e.serialise(serialisedEntity);
 			obj.append("entities", serialisedEntity);
 		});
-		
-		return obj;
+
+		serialisePersistence(obj);
 	}
 	
 	private Optional<byte[]> serialiseTiles() {
@@ -328,7 +326,8 @@ public class Level {
 		
 		return Optional.empty();
 	}
-	
+
+	@Override
 	public void unserialise(JSONObject obj) {
 		initialise();
 		
@@ -363,6 +362,8 @@ public class Level {
 		}
 		
 		dungeon.entityAdded(dungeon.getPlayer());
+
+		unserialisePersistence(obj);
 	}
 	
 	private void unserialiseTiles(byte[] bytes) {
@@ -998,5 +999,9 @@ public class Level {
 			255
 		);
 	}
-	
+
+	@Override
+	public JSONObject getPersistence() {
+		return null;
+	}
 }

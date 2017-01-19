@@ -48,6 +48,8 @@ public class Player extends EntityLiving {
 	private int gold = 0;
 	
 	private boolean godmode = false;
+
+	private final JSONObject persistence = new JSONObject();
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -696,5 +698,10 @@ public class Player extends EntityLiving {
 	public void swapHands() {
 		super.swapHands();
 		getDungeon().You("swap your weapons.");
+	}
+
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
 	}
 }
