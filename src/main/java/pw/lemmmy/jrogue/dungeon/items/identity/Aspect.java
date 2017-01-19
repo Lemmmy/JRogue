@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.items.identity;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();
