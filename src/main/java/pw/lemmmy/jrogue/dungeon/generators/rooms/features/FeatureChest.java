@@ -10,7 +10,9 @@ import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemStack;
 import pw.lemmmy.jrogue.dungeon.items.comestibles.*;
+import pw.lemmmy.jrogue.dungeon.items.magical.ItemSpellbook;
 import pw.lemmmy.jrogue.dungeon.items.valuables.ItemGem;
+import pw.lemmmy.jrogue.dungeon.items.valuables.ItemThermometer;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemDagger;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemLongsword;
 import pw.lemmmy.jrogue.dungeon.items.weapons.ItemShortsword;
@@ -28,7 +30,7 @@ public class FeatureChest extends SpecialRoomFeature {
 	
 	static {
 		// FOOD
-		ITEM_GROUPS.add(15, new ItemGroup(
+		ITEM_GROUPS.add(30, new ItemGroup(
 			ItemApple.class,
 			ItemBanana.class,
 			ItemBread.class,
@@ -40,15 +42,21 @@ public class FeatureChest extends SpecialRoomFeature {
 		));
 		
 		// WEAPONS
-		ITEM_GROUPS.add(3, new ItemGroup(
+		ITEM_GROUPS.add(6, new ItemGroup(
 			ItemDagger.class,
 			ItemShortsword.class,
 			ItemLongsword.class
 		));
 		
 		// GEMS
-		ITEM_GROUPS.add(2, new ItemGroup(
+		ITEM_GROUPS.add(4, new ItemGroup(
 			ItemGem.class
+		));
+		
+		// MISC
+		ITEM_GROUPS.add(1, new ItemGroup(
+			ItemThermometer.class,
+			ItemSpellbook.class
 		));
 	}
 	
