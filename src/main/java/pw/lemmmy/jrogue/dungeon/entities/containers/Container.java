@@ -140,8 +140,8 @@ public class Container implements Serialisable {
 		items.remove(character);
 	}
 	
-	public void update() {
-		items.values().forEach(s -> s.getItem().update());
+	public void update(Entity owner) {
+		items.values().forEach(s -> s.getItem().update(owner));
 	}
 	
 	public void addListener(ContainerListener listener) {

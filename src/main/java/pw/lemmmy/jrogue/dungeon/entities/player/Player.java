@@ -309,7 +309,6 @@ public class Player extends EntityLiving {
 		updateEnergy();
 		updateNutrition();
 		updateSpells();
-		updateRottenFood();
 		
 		if (godmode) {
 			setHealth(getMaxHealth());
@@ -367,10 +366,6 @@ public class Player extends EntityLiving {
 	
 	private void updateSpells() {
 		knownSpells.values().forEach(Spell::update);
-	}
-	
-	private void updateRottenFood() {
-		// look for rotten food in the inventory and tell the user something stinks
 	}
 	
 	@Override

@@ -57,7 +57,7 @@ public class EntityItem extends Entity {
 	public void update() {
 		super.update();
 		
-		itemStack.getItem().update();
+		itemStack.getItem().update(this);
 	}
 	
 	@Override

@@ -31,7 +31,7 @@ public abstract class Item implements Serialisable, Persisting {
 		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
 	}
 	
-	public void update() {
+	public void update(Entity owner) {
 		if (shouldAge()) {
 			age++;
 		}
