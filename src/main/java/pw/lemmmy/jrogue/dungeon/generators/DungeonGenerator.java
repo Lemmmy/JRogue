@@ -190,7 +190,7 @@ public abstract class DungeonGenerator {
 				}
 			}
 		} else {
-			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getHeight() == b
+			if (dy <= 5 || b.getCenterX() - a.getCenterX() < 0 || a.getRoomY() + a.getHeight() == b
 				.getRoomY() || b.getRoomY() + b.getHeight() == a.getRoomY()) {
 				if (b.getRoomY() + b.getHeight() > a.getRoomY() + a.getHeight()) {
 					return new ConnectionPoint(
