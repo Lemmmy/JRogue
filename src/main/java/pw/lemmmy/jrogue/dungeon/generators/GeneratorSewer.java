@@ -24,7 +24,7 @@ public class GeneratorSewer extends GeneratorRooms {
 	
 	@Override
 	public Class<? extends DungeonGenerator> getNextGenerator() {
-		if (level.getDepth() >= 7) {
+		if (level.getDepth() <= -7) {
 			return GeneratorStandard.class;
 		} else {
 			return GeneratorSewer.class;

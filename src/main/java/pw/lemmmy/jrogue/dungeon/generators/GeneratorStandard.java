@@ -23,7 +23,7 @@ public class GeneratorStandard extends GeneratorRooms {
 	private static final int MIN_FISH_SWARMS = 10;
 	private static final int MAX_FISH_SWARMS = 25;
 	
-	private static final int SEWER_START_DEPTH = 3;
+	private static final int SEWER_START_DEPTH = -3;
 	
 	private OpenSimplexNoise simplexNoise;
 	
@@ -33,7 +33,7 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	@Override
 	public Class<? extends DungeonGenerator> getNextGenerator() {
-		if (level.getDepth() >= 10) {
+		if (level.getDepth() <= -10) {
 			return GeneratorIce.class;
 		} else {
 			return GeneratorStandard.class;
