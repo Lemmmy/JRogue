@@ -16,6 +16,11 @@ public class GeneratorIce extends GeneratorRooms {
 	}
 	
 	@Override
+	public Class<? extends DungeonGenerator> getNextGenerator() {
+		return GeneratorIce.class;
+	}
+	
+	@Override
 	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
 		return MonsterSpawningStrategy.ICE;
 	}

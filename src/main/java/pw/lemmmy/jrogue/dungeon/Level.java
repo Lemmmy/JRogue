@@ -88,30 +88,29 @@ public class Level implements Serialisable, Persisting {
 		entityRemoveQueue = new ArrayList<>();
 	}
 	
-	protected void generate(Tile sourceTile) {
+	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
 		do {
 			initialise();
 			
-			DungeonGenerator generator;
-			
-			if (depth < -10) {
-				generator = new GeneratorIce(this, sourceTile);
-			} else {
-				generator = new GeneratorStandard(this, sourceTile);
+			try {
+				Constructor generatorConstructor = generatorClass.getConstructor(Level.class, Tile.class);
+				DungeonGenerator generator = (DungeonGenerator) generatorConstructor.newInstance(this, sourceTile);
+				
+				if (!generator.generate()) {
+					continue;
+				}
+				
+				climate = generator.getClimate();
+				monsterSpawningStrategy = generator.getMonsterSpawningStrategy();
+				
+				buildLight(true);
+				
+				gotLevel = true;
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+				e.printStackTrace();
 			}
-			
-			if (!generator.generate()) {
-				continue;
-			}
-			
-			climate = generator.getClimate();
-			monsterSpawningStrategy = generator.getMonsterSpawningStrategy();
-			
-			buildLight(true);
-			
-			gotLevel = true;
 		} while (!gotLevel);
 		
 		spawnMonsters();

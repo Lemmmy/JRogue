@@ -13,7 +13,9 @@ import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.PassiveSoundEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.player.roles.RoleWizard;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonNameGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.GeneratorStandard;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 import pw.lemmmy.jrogue.utils.Persisting;
@@ -87,7 +89,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null);
+		level.generate(null, GeneratorStandard.class);
 		
 		if (player == null) {
 			player = new Player(
@@ -252,10 +254,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 	}
 	
-	public Level newLevel(int depth, Tile sourceTile) {
+	public Level newLevel(int depth, Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
 		levels.put(level.getUUID(), level);
-		level.generate(sourceTile);
+		level.generate(sourceTile, generatorClass);
 		return level;
 	}
 	

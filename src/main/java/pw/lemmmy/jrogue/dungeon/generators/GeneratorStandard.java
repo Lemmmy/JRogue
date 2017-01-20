@@ -3,8 +3,10 @@ package pw.lemmmy.jrogue.dungeon.generators;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterPufferfish;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
@@ -21,10 +23,21 @@ public class GeneratorStandard extends GeneratorRooms {
 	private static final int MIN_FISH_SWARMS = 10;
 	private static final int MAX_FISH_SWARMS = 25;
 	
+	private static final int SEWER_START_DEPTH = 3;
+	
 	private OpenSimplexNoise simplexNoise;
 	
 	public GeneratorStandard(Level level, Tile sourceTile) {
 		super(level, sourceTile);
+	}
+	
+	@Override
+	public Class<? extends DungeonGenerator> getNextGenerator() {
+		if (level.getDepth() >= 10) {
+			return GeneratorIce.class;
+		} else {
+			return GeneratorStandard.class;
+		}
 	}
 	
 	@Override
@@ -47,6 +60,10 @@ public class GeneratorStandard extends GeneratorRooms {
 		
 		addWaterBodies();
 		spawnFish();
+		
+		if (level.getDepth() == SEWER_START_DEPTH) {
+			addSewerStart();
+		}
 		
 		return verify();
 	}
@@ -129,6 +146,21 @@ public class GeneratorStandard extends GeneratorRooms {
 					}
 				}
 			}
+		}
+	}
+	
+	private void addSewerStart() {
+		Room room = RandomUtils.randomFrom(rooms);
+		
+		int ladderX = rand.nextInt(room.getWidth() - 2) + room.getRoomX() + 1;
+		int ladderY = rand.nextInt(room.getHeight() - 2) + room.getRoomY() + 1;
+		
+		Tile ladderTile = level.getTile(ladderX, ladderY);
+		ladderTile.setType(TileType.TILE_ROOM_LADDER_DOWN);
+		
+		if (ladderTile.getState() instanceof TileStateClimbable) {
+			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();
+			tsc.setDestGenerator(GeneratorSewer.class);
 		}
 	}
 }
