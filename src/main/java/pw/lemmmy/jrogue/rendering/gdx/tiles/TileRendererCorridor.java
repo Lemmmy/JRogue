@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
-public class TileRendererCorridor extends TileRendererBlob {
+public class TileRendererCorridor extends TileRendererBlob8 {
 	private TextureRegion corridor;
 	private TextureRegion empty;
 	

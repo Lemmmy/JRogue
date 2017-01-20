@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 import java.util.Arrays;
 
-public abstract class TileRendererBlob extends TileRenderer {
+public abstract class TileRendererBlob8 extends TileRenderer {
 	protected static final int BLOB_SHEET_WIDTH = 8;
 	protected static final int BLOB_SHEET_HEIGHT = 6;
 	
@@ -30,11 +30,11 @@ public abstract class TileRendererBlob extends TileRenderer {
 	
 	protected TextureRegion[] images = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 	
-	public TileRendererBlob() {
+	public TileRendererBlob8() {
 		this(0, 0);
 	}
 	
-	public TileRendererBlob(int blobOffsetX, int blobOffsetY) {
+	public TileRendererBlob8(int blobOffsetX, int blobOffsetY) {
 		loadBlob(images, blobOffsetX, blobOffsetY);
 	}
 	

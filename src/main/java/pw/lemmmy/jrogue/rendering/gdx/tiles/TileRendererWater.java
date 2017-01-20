@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
-public class TileRendererWater extends TileRendererBlob {
+public class TileRendererWater extends TileRendererBlob8 {
 	private TextureRegion water;
 	private TextureRegion floor;
 	
