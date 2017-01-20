@@ -32,12 +32,10 @@ public class TileRendererWall extends TileRenderer {
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 		boolean top = adjacentTiles[2].isInnerRoomTile();
 		
-		if (h && !v) {
-			if (top && x % 2 == 0) {
-				drawTile(batch, wallHPillar, x, y);
-			} else {
-				drawTile(batch, wallH, x, y);
-			}
+		if (top && x % 2 == 0) {
+			drawTile(batch, wallHPillar, x, y);
+		} else if (h && !v) {
+			drawTile(batch, wallH, x, y);
 		} else if (!h && v) {
 			drawTile(batch, wallV, x, y);
 		} else {
