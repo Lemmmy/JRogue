@@ -71,6 +71,8 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
+	protected List<Room> rooms = new ArrayList<>();
+	
 	private Tile startTile;
 	private Tile endTile;
 	
@@ -373,5 +375,49 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		}
 		
 		return path != null;
+	}
+	
+	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
+		// the offsets are to prevent rooms directly touching each other
+		
+		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
+			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
+				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
+		try {
+			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
+				Level.class, int.class, int.class, int.class, int.class
+			);
+			
+			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
+			room.build(this);
+			
+			rooms.add(room);
+			return room;
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			JRogue.getLogger().error("Error building rooms", e);
+		}
+		
+		return null;
+	}
+	
+	public TileType getWallTileType() {
+		return TileType.TILE_ROOM_WALL;
+	}
+	
+	public TileType getFloorTileType() {
+		return TileType.TILE_ROOM_FLOOR;
+	}
+	
+	public TileType getTorchTileType() {
+		return TileType.TILE_ROOM_TORCH_FIRE;
 	}
 }
