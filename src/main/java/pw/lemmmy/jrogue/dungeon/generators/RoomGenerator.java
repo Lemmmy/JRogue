@@ -198,7 +198,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		}
 	}
 	
-	private void buildLCorridor(ConnectionPoint point) {
+	protected void buildLCorridor(ConnectionPoint point) {
 		int ax = point.getAX();
 		int ay = point.getAY();
 		
@@ -220,7 +220,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		buildLine(bx, ay, bx, by, tile, true, true);
 	}
 	
-	private void buildSCorridor(ConnectionPoint point) {
+	protected void buildSCorridor(ConnectionPoint point) {
 		int ax = point.getAX();
 		int ay = point.getAY();
 		

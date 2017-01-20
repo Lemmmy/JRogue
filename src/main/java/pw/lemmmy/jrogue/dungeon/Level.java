@@ -20,10 +20,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldGreen;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldRed;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldYellow;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.generators.Climate;
-import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
-import pw.lemmmy.jrogue.dungeon.generators.IceDungeonGenerator;
-import pw.lemmmy.jrogue.dungeon.generators.StandardDungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.*;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
@@ -180,6 +177,8 @@ public class Level implements Serialisable, Persisting {
 			} else {
 				generator = new StandardDungeonGenerator(this, sourceTile);
 			}
+			
+			generator = new SewerDungeonGenerator(this, sourceTile);
 			
 			if (!generator.generate()) {
 				continue;
