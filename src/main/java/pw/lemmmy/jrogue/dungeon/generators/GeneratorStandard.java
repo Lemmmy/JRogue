@@ -33,6 +33,11 @@ public class GeneratorStandard extends GeneratorRooms {
 	}
 	
 	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.STANDARD;
+	}
+	
+	@Override
 	public boolean generate() {
 		if (!super.generate()) {
 			return false;

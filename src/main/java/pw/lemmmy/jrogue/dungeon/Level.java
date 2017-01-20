@@ -1,6 +1,5 @@
 package pw.lemmmy.jrogue.dungeon;
 
-import org.apache.commons.lang3.Range;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,16 +8,6 @@ import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpawn;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterFox;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterJackal;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldBlue;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldGreen;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldRed;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldYellow;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.generators.*;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
@@ -42,72 +31,6 @@ public class Level implements Serialisable, Persisting {
 	
 	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 	
-	private static final List<MonsterSpawn> MONSTER_SPAWNS = new ArrayList<>();
-	
-	static {
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(1, 10),
-			Range.between(0, 1),
-			MonsterMoldRed.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(1, 10),
-			Range.between(0, 1),
-			MonsterMoldYellow.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(8, 20),
-			Range.between(0, 1),
-			MonsterMoldGreen.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(11, 22),
-			Range.between(0, 3),
-			MonsterMoldBlue.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(1, 10),
-			Range.between(2, 5),
-			Range.between(1, 3),
-			MonsterJackal.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(1, 3),
-			Range.between(4, 8),
-			MonsterSpider.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(1, 4),
-			Range.between(2, 6),
-			MonsterRat.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(3, Integer.MAX_VALUE),
-			Range.between(0, 4),
-			MonsterSkeleton.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(3, 6),
-			Range.between(0, 2),
-			Range.between(2, 5),
-			MonsterFox.class
-		));
-		
-		MONSTER_SPAWNS.add(new MonsterSpawn(
-			Range.between(4, Integer.MAX_VALUE),
-			Range.between(0, 8),
-			MonsterLizard.class
-		));
-	}
-	
 	private UUID uuid;
 	
 	private Tile[] tiles;
@@ -119,6 +42,7 @@ public class Level implements Serialisable, Persisting {
 	private Dungeon dungeon;
 	
 	private Climate climate;
+	private MonsterSpawningStrategy monsterSpawningStrategy;
 	
 	private int width;
 	private int height;
@@ -171,20 +95,19 @@ public class Level implements Serialisable, Persisting {
 			initialise();
 			
 			DungeonGenerator generator;
-			/*
+			
 			if (depth < -10) {
 				generator = new GeneratorIce(this, sourceTile);
 			} else {
 				generator = new GeneratorStandard(this, sourceTile);
-			}*/
-			
-			generator = new GeneratorSewer(this, sourceTile);
+			}
 			
 			if (!generator.generate()) {
 				continue;
 			}
 			
 			climate = generator.getClimate();
+			monsterSpawningStrategy = generator.getMonsterSpawningStrategy();
 			
 			buildLight(true);
 			
@@ -219,6 +142,7 @@ public class Level implements Serialisable, Persisting {
 		obj.put("spawnX", getSpawnX());
 		obj.put("spawnY", getSpawnY());
 		obj.put("climate", getClimate().name());
+		obj.put("monsterSpawningStrategy", getMonsterSpawningStrategy().name());
 		
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
 		
@@ -335,6 +259,10 @@ public class Level implements Serialisable, Persisting {
 			spawnY = obj.getInt("spawnY");
 			
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
+			monsterSpawningStrategy = MonsterSpawningStrategy.valueOf(obj.optString(
+				"monsterSpawningStrategy",
+				MonsterSpawningStrategy.STANDARD.name()
+			));
 			
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 			
@@ -512,6 +440,10 @@ public class Level implements Serialisable, Persisting {
 		return climate;
 	}
 	
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return monsterSpawningStrategy;
+	}
+	
 	public List<Entity> getEntities() {
 		return entities;
 	}
@@ -588,7 +520,7 @@ public class Level implements Serialisable, Persisting {
 	}
 	
 	private void spawnMonsters() {
-		MONSTER_SPAWNS.stream()
+		monsterSpawningStrategy.getSpawns().stream()
 			.filter(s -> s.getLevelRange().contains(Math.abs(depth)))
 			.forEach(s -> {
 				int count = RandomUtils.jrandom(s.getRangePerLevel());
@@ -610,7 +542,7 @@ public class Level implements Serialisable, Persisting {
 		Point point = getMonsterSpawnPointAwayFromPlayer();
 		
 		if (point != null) {
-			List<MonsterSpawn> possibleMonsterSpawns = MONSTER_SPAWNS.stream()
+			List<MonsterSpawn> possibleMonsterSpawns = monsterSpawningStrategy.getSpawns().stream()
 				.filter(s -> s.getLevelRange().contains(Math.abs(depth)))
 				.collect(Collectors.toList());
 			

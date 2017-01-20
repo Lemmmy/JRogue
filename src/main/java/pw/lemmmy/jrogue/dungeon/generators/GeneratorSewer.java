@@ -53,6 +53,11 @@ public class GeneratorSewer extends GeneratorRooms {
 	}
 	
 	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.SEWER;
+	}
+	
+	@Override
 	public TileType getWallTileType() {
 		return TileType.TILE_SEWER_WALL;
 	}

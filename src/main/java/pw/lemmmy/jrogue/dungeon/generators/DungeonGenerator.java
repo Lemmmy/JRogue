@@ -32,6 +32,8 @@ public abstract class DungeonGenerator {
 	
 	public abstract Climate getClimate();
 	
+	public abstract MonsterSpawningStrategy getMonsterSpawningStrategy();
+	
 	public abstract boolean generate();
 	
 	protected int nextInt(int min, int max) {
