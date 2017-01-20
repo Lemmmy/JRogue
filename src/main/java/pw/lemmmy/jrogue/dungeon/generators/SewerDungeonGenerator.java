@@ -3,8 +3,14 @@ package pw.lemmmy.jrogue.dungeon.generators;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 
 public class SewerDungeonGenerator extends RoomGenerator {
+	private static final double THRESHOLD_WATER_NOISE = 0.3;
+	private static final double SCALE_WATER_NOISE = 0.3;
+	
+	private OpenSimplexNoise simplexNoise;
+	
 	public SewerDungeonGenerator(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
@@ -15,7 +21,23 @@ public class SewerDungeonGenerator extends RoomGenerator {
 			return false;
 		}
 		
+		simplexNoise = new OpenSimplexNoise(rand.nextLong());
+		
+		addWaterBodies();
+		
 		return verify();
+	}
+	
+	private void addWaterBodies() {
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
+				
+				if (noise > THRESHOLD_WATER_NOISE && level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
+					level.setTileType(x, y, TileType.TILE_ROOM_SEWER_WATER);
+				}
+			}
+		}
 	}
 	
 	@Override
