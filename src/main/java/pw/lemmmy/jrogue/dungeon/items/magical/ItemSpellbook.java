@@ -5,22 +5,33 @@ import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
+import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
+import pw.lemmmy.jrogue.dungeon.entities.containers.EntityChest;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
-import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.Readable;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBookContents;
 import pw.lemmmy.jrogue.dungeon.items.magical.spells.Spell;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellLightOrb;
+import pw.lemmmy.jrogue.dungeon.items.magical.spells.SpellStrike;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public class ItemSpellbook extends Item implements Readable {
+public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
+	private static final Map<Integer, Class<? extends Spell>> spellLevelMap = new HashMap<>();
+	
+	static {
+		spellLevelMap.put(0, SpellLightOrb.class);
+		spellLevelMap.put(0, SpellStrike.class);
+	}
+	
 	private Spell spell;
 	
 	private int timesRead = 0;
@@ -235,5 +246,35 @@ public class ItemSpellbook extends Item implements Readable {
 		int level = spell.getLevel();
 		
 		return (intelligence + 4 + experience / 2 - 2 * level) / 30;
+	}
+	
+	@Override
+	public void onSpawnInChest(EntityChest chest, Container container) {
+		// assign a random spell based on the player level when the level is generated
+		// spells that the player already knows won't spawn
+		
+		Player player = chest.getDungeon().getPlayer();
+		
+		List<Class<? extends Spell>> spells = spellLevelMap.entrySet().stream()
+			.filter(e -> e.getKey() <= player.getExperienceLevel())
+			.filter(e -> player.getKnownSpells().values().stream()
+							.noneMatch(s -> s.getClass().equals(e.getValue())))
+			.map(Map.Entry::getValue)
+			.collect(Collectors.toList());
+		
+		if (spells.size() == 0) {
+			return;
+		}
+		
+		try {
+			Class<? extends Spell> spellClass = RandomUtils.randomFrom(spells);
+			Constructor spellConstructor = spellClass.getConstructor();
+			spell = (Spell) spellConstructor.newInstance();
+			ItemStack stack = new ItemStack(this, 1);
+			container.add(stack);
+		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("iaugjhghaeruirgarefgyhwergb(4-	erhh");
+			e.printStackTrace();
+		}
 	}
 }

@@ -18,6 +18,7 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
@@ -462,8 +463,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			
 			if (!shouldDrawParticles) {
 				effect.getPooledEffect().free();
-				iterator.remove();
-				return;
+				continue;
 			}
 			
 			if (effect.shouldDrawOver() != over) { continue; }
@@ -477,13 +477,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			
 			effect.getPooledEffect().update(delta * deltaMultiplier);
 			
-			if (dungeon.getLevel().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY()) ||
-				!effect.getRenderer().shouldDrawParticles(
-					dungeon,
-					effect.getEntity(),
-					effect.getEntity().getX(),
-					effect.getEntity().getY()
-				)) {
+			if (dungeon.getLevel().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 			

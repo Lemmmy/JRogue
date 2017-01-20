@@ -5,11 +5,12 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
 import pw.lemmmy.jrogue.dungeon.entities.containers.EntityItem;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
+import pw.lemmmy.jrogue.utils.Persisting;
 import pw.lemmmy.jrogue.utils.RandomUtils;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class Entity implements Serialisable {
+public abstract class Entity implements Serialisable, Persisting {
 	private int x;
 	private int y;
 	
@@ -36,6 +37,8 @@ public abstract class Entity implements Serialisable {
 	private Level level;
 	
 	private List<StatusEffect> statusEffects = new ArrayList<>();
+
+	private final JSONObject persistence = new JSONObject();
 	
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
 		this.dungeon = dungeon;
@@ -192,6 +195,8 @@ public abstract class Entity implements Serialisable {
 			e.serialise(serialisedStatusEffect);
 			obj.append("statusEffects", serialisedStatusEffect);
 		});
+
+		serialisePersistence(obj);
 	}
 	
 	@Override
@@ -209,6 +214,8 @@ public abstract class Entity implements Serialisable {
 			serialisedStatusEffects.forEach(serialisedStatusEffect ->
 				unserialiseStatusEffect((JSONObject) serialisedStatusEffect));
 		}
+
+		unserialisePersistence(obj);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -277,4 +284,9 @@ public abstract class Entity implements Serialisable {
 	protected void onTeleport(EntityLiving walker, boolean isPlayer) {}
 	
 	public abstract boolean canBeWalkedOn();
+
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
+	}
 }

@@ -1,4 +1,4 @@
-package pw.lemmmy.jrogue.dungeon;
+package pw.lemmmy.jrogue.utils;
 
 import org.json.JSONObject;
 

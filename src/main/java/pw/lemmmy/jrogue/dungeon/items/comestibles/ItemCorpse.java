@@ -9,9 +9,11 @@ import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.FoodPoisoning;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
+import pw.lemmmy.jrogue.dungeon.items.identity.AspectRottenness;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -24,12 +26,31 @@ public class ItemCorpse extends ItemComestible {
 	
 	public ItemCorpse() { // unserialisation constructor
 		super();
+		
+		addAspect(new AspectRottenness());
 	}
 	
 	public ItemCorpse(EntityLiving entity) {
 		super();
 		
 		this.entity = entity;
+		
+		addAspect(new AspectRottenness());
+	}
+	
+	@Override
+	public void update(Entity owner) {
+		super.update(owner);
+		
+		if (
+			owner instanceof Player &&
+			!isAspectKnown((EntityLiving) owner, AspectRottenness.class) &&
+			getRottenness() > 7
+		) {
+			observeAspect((EntityLiving) owner, AspectRottenness.class);
+			
+			owner.getDungeon().log("Something in your inventory really stinks...");
+		}
 	}
 	
 	@Override
@@ -40,8 +61,13 @@ public class ItemCorpse extends ItemComestible {
 			requiresCapitalisation = false;
 		}
 		
-		s += (getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "") +
-			entity.getName(observer, requiresCapitalisation) +
+		s += getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "";
+		
+		if (getRottenness() > 7 && isAspectKnown(observer, AspectRottenness.class)) {
+			s += "rotten ";
+		}
+		
+		s += entity.getName(observer, requiresCapitalisation) +
 			" corpse" + (plural ? "s" : "");
 		
 		return s;
@@ -94,7 +120,7 @@ public class ItemCorpse extends ItemComestible {
 				effects.addAll(monster.getCorpseEffects(victim));
 			}
 			
-			if (getRottenness() > 6) {
+			if (getRottenness() > 7) {
 				effects.add(new FoodPoisoning(entity.getDungeon(), entity));
 			}
 		}

@@ -3,6 +3,7 @@
 .gradle/
 out/
 build/
+classes/
 bin/
 .settings/
 .project

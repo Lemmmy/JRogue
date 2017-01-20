@@ -3,10 +3,15 @@ package pw.lemmmy.jrogue.dungeon.entities.decoration;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.*;
+import pw.lemmmy.jrogue.dungeon.generators.Climate;
 
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
 	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+	}
+	
+	public boolean isFrozen() {
+		return getLevel().getClimate() == Climate.COLD;
 	}
 	
 	@Override
@@ -16,7 +21,8 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	
 	@Override
 	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_FOUNTAIN;
+		return isFrozen() ? EntityAppearance.APPEARANCE_FOUNTAIN_FROZEN :
+			   			    EntityAppearance.APPEARANCE_FOUNTAIN;
 	}
 	
 	@Override
@@ -74,7 +80,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	
 	@Override
 	public boolean canQuaff(EntityLiving quaffer) {
-		return true;
+		return !isFrozen();
 	}
 	
 	@Override

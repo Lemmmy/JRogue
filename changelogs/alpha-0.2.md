@@ -18,6 +18,8 @@
 - Candlesticks as small room decoration
 - Rugs as larger room decoration
 - Added ice levels below dlvl-10 with different monsters
+- Added frozen fountains
+- Added thermometers
 - Added foxes
 - Added lizards
 - Added mold (red, yellow, green and blue, no effects yet)
@@ -53,3 +55,4 @@
 - Completely refactored level generators so that many generators can share similar systems (e.g. rooms)
 - Removed stupid Optional fields
 - Levels have a climate option now
+- Serialised objects now also have a dynamic layer of persistence, ready for extremely case-specific serialised fields, and also mods
