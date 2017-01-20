@@ -4,8 +4,8 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
-public class IceDungeonGenerator extends RoomGenerator {
-	public IceDungeonGenerator(Level level, Tile sourceTile) {
+public class GeneratorIce extends GeneratorRooms {
+	public GeneratorIce(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	

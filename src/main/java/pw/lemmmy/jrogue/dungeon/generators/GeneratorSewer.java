@@ -6,7 +6,7 @@ import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 
-public class SewerDungeonGenerator extends RoomGenerator {
+public class GeneratorSewer extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.1;
 	private static final double SCALE_WATER_NOISE = 0.3;
 	
@@ -18,7 +18,7 @@ public class SewerDungeonGenerator extends RoomGenerator {
 		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureSewerDrain.class);
 	}
 	
-	public SewerDungeonGenerator(Level level, Tile sourceTile) {
+	public GeneratorSewer(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	

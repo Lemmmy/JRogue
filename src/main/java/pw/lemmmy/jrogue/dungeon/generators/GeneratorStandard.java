@@ -11,7 +11,7 @@ import pw.lemmmy.jrogue.utils.RandomUtils;
 import java.util.Arrays;
 import java.util.List;
 
-public class StandardDungeonGenerator extends RoomGenerator {
+public class GeneratorStandard extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.2;
 	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
 	private static final double SCALE_WATER_NOISE = 0.2;
@@ -23,7 +23,7 @@ public class StandardDungeonGenerator extends RoomGenerator {
 	
 	private OpenSimplexNoise simplexNoise;
 	
-	public StandardDungeonGenerator(Level level, Tile sourceTile) {
+	public GeneratorStandard(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	

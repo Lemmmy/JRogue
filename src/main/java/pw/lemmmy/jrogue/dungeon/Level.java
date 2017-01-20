@@ -173,12 +173,12 @@ public class Level implements Serialisable, Persisting {
 			DungeonGenerator generator;
 			/*
 			if (depth < -10) {
-				generator = new IceDungeonGenerator(this, sourceTile);
+				generator = new GeneratorIce(this, sourceTile);
 			} else {
-				generator = new StandardDungeonGenerator(this, sourceTile);
+				generator = new GeneratorStandard(this, sourceTile);
 			}*/
 			
-			generator = new SewerDungeonGenerator(this, sourceTile);
+			generator = new GeneratorSewer(this, sourceTile);
 			
 			if (!generator.generate()) {
 				continue;

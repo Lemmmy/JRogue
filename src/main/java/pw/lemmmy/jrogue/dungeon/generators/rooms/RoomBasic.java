@@ -1,7 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import pw.lemmmy.jrogue.dungeon.Level;
-import pw.lemmmy.jrogue.dungeon.generators.RoomGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.GeneratorRooms;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 public class RoomBasic extends Room {
@@ -10,7 +10,7 @@ public class RoomBasic extends Room {
 	}
 	
 	@Override
-	public void build(RoomGenerator generator) {
+	public void build(GeneratorRooms generator) {
 		for (int y = getRoomY(); y < getRoomY() + getHeight(); y++) {
 			for (int x = getRoomX(); x < getRoomX() + getWidth(); x++) {
 				boolean wall = x == getRoomX() || x == getRoomX() + getWidth() - 1 ||
@@ -32,7 +32,7 @@ public class RoomBasic extends Room {
 	@Override
 	public void addFeatures() {}
 	
-	protected TileType getWallTileType(RoomGenerator generator) {
+	protected TileType getWallTileType(GeneratorRooms generator) {
 		if (generator == null) {
 			return TileType.TILE_ROOM_WALL;
 		}
@@ -40,7 +40,7 @@ public class RoomBasic extends Room {
 		return generator.getWallTileType();
 	}
 	
-	protected TileType getFloorTileType(RoomGenerator generator) {
+	protected TileType getFloorTileType(GeneratorRooms generator) {
 		if (generator == null) {
 			return TileType.TILE_ROOM_FLOOR;
 		}
@@ -48,7 +48,7 @@ public class RoomBasic extends Room {
 		return generator.getFloorTileType();
 	}
 	
-	protected TileType getTorchTileType(RoomGenerator generator) {
+	protected TileType getTorchTileType(GeneratorRooms generator) {
 		if (generator == null) {
 			return TileType.TILE_ROOM_TORCH_FIRE;
 		}

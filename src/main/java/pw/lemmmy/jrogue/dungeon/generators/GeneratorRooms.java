@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class RoomGenerator extends DungeonGenerator {
+public abstract class GeneratorRooms extends DungeonGenerator {
 	private static final WeightedCollection<Class<? extends Room>> ROOM_TYPES = new WeightedCollection<>();
 	
 	static {
@@ -76,7 +76,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	private Tile startTile;
 	private Tile endTile;
 	
-	public RoomGenerator(Level level, Tile sourceTile) {
+	public GeneratorRooms(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	
