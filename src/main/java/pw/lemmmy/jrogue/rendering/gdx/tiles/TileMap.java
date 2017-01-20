@@ -35,6 +35,8 @@ public enum TileMap {
 	
 	TILE_SEWER_WALL(new TileRendererSewerWall()),
 	TILE_SEWER_WATER(new TileRendererWater(13, 1, 8, 0, false, TileType.TILE_SEWER_WATER)),
+	TILE_SEWER_DRAIN_EMPTY(14, 1),
+	TILE_SEWER_DRAIN(new TileRendererSewerDrain()),
 	
 	TILE_CORRIDOR(new TileRendererCorridor());
 	

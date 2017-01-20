@@ -21,4 +21,9 @@ public class WeightedCollection<E> {
 		int value = rand.nextInt(total) + 1;
 		return map.ceilingEntry(value).getValue();
 	}
+	
+	public void clear() {
+		total = 0;
+		map.clear();
+	}
 }

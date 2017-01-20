@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.features.FeatureSewerDrain;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
@@ -10,6 +11,12 @@ public class SewerDungeonGenerator extends RoomGenerator {
 	private static final double SCALE_WATER_NOISE = 0.3;
 	
 	private OpenSimplexNoise simplexNoise;
+	
+	static {
+		PROBABILITY_SPECIAL_FEATURES.clear();
+		
+		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureSewerDrain.class);
+	}
 	
 	public SewerDungeonGenerator(Level level, Tile sourceTile) {
 		super(level, sourceTile);
@@ -52,6 +59,6 @@ public class SewerDungeonGenerator extends RoomGenerator {
 	
 	@Override
 	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_WALL;
+		return TileType.TILE_SEWER_WALL;
 	}
 }
