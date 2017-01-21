@@ -30,8 +30,13 @@ public enum TileMap {
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
 	TILE_ROOM_STAIRS_DOWN(new TileRendererStairs(TileRendererStairs.StairDirection.DOWN, 10, 0)),
 	
-	TILE_ROOM_LADDER_UP(11, 0),
-	TILE_ROOM_LADDER_DOWN(12, 0),
+	TILE_ROOM_LADDER_UP(12, 0),
+	TILE_ROOM_LADDER_DOWN(11, 0),
+	
+	TILE_SEWER_WALL(new TileRendererSewerWall()),
+	TILE_SEWER_WATER(new TileRendererWater(13, 1, 8, 0, false, TileType.TILE_SEWER_WATER)),
+	TILE_SEWER_DRAIN_EMPTY(14, 1),
+	TILE_SEWER_DRAIN(new TileRendererSewerDrain()),
 	
 	TILE_CORRIDOR(new TileRendererCorridor());
 	

@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class RoomGenerator extends DungeonGenerator {
+public abstract class GeneratorRooms extends DungeonGenerator {
 	private static final WeightedCollection<Class<? extends Room>> ROOM_TYPES = new WeightedCollection<>();
 	
 	static {
@@ -51,7 +51,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	
 	private static final double PROBABILITY_GOLD_DROP = 0.08;
 	
-	private static final WeightedCollection<Integer> PROBABILITY_SPECIAL_FEATURE_COUNT = new WeightedCollection<>();
+	protected static final WeightedCollection<Integer> PROBABILITY_SPECIAL_FEATURE_COUNT = new WeightedCollection<>();
 	
 	static {
 		PROBABILITY_SPECIAL_FEATURE_COUNT.add(3, 0);
@@ -60,7 +60,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 3);
 	}
 	
-	private static final WeightedCollection<Class<? extends SpecialRoomFeature>> PROBABILITY_SPECIAL_FEATURES
+	protected static final WeightedCollection<Class<? extends SpecialRoomFeature>> PROBABILITY_SPECIAL_FEATURES
 		= new WeightedCollection<>();
 	
 	static {
@@ -71,11 +71,23 @@ public abstract class RoomGenerator extends DungeonGenerator {
 	
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
+	protected List<Room> rooms = new ArrayList<>();
+	
 	private Tile startTile;
 	private Tile endTile;
 	
-	public RoomGenerator(Level level, Tile sourceTile) {
+	public GeneratorRooms(Level level, Tile sourceTile) {
 		super(level, sourceTile);
+	}
+	
+	public abstract Class<? extends DungeonGenerator> getNextGenerator();
+	
+	public TileType getDownstairsTileType() {
+		return TileType.TILE_ROOM_STAIRS_DOWN;
+	}
+	
+	public TileType getUpstairsTileType() {
+		return TileType.TILE_ROOM_STAIRS_UP;
 	}
 	
 	@Override
@@ -198,7 +210,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		}
 	}
 	
-	private void buildLCorridor(ConnectionPoint point) {
+	protected void buildLCorridor(ConnectionPoint point) {
 		int ax = point.getAX();
 		int ay = point.getAY();
 		
@@ -220,7 +232,7 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		buildLine(bx, ay, bx, by, tile, true, true);
 	}
 	
-	private void buildSCorridor(ConnectionPoint point) {
+	protected void buildSCorridor(ConnectionPoint point) {
 		int ax = point.getAX();
 		int ay = point.getAY();
 		
@@ -295,10 +307,10 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		
 		if (sourceTile != null) {
 			Tile spawnTile = level.getTile(stairX, stairY);
-			spawnTile.setType(TileType.TILE_ROOM_STAIRS_UP);
+			spawnTile.setType(getUpstairsTileType());
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
-				spawnTile.setType(TileType.TILE_ROOM_STAIRS_DOWN);
+				spawnTile.setType(getDownstairsTileType());
 			}
 			
 			if (spawnTile.getState() instanceof TileStateClimbable) {
@@ -347,10 +359,17 @@ public abstract class RoomGenerator extends DungeonGenerator {
 			nextStairsRoom.getRoomY() + nextStairsRoom.getHeight() - 2
 		);
 		
-		level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_DOWN);
+		level.setTileType(stairX, stairY, getDownstairsTileType());
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.setTileType(stairX, stairY, TileType.TILE_ROOM_STAIRS_UP);
+			level.setTileType(stairX, stairY, getUpstairsTileType());
+		}
+		
+		Tile stairTile = level.getTile(stairX, stairY);
+		
+		if (stairTile.getState() instanceof TileStateClimbable) {
+			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
+			tsc.setDestGenerator(getNextGenerator());
 		}
 		
 		endTile = level.getTile(stairX, stairY);
@@ -373,5 +392,49 @@ public abstract class RoomGenerator extends DungeonGenerator {
 		}
 		
 		return path != null;
+	}
+	
+	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
+		// the offsets are to prevent rooms directly touching each other
+		
+		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
+			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
+				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
+		try {
+			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
+				Level.class, int.class, int.class, int.class, int.class
+			);
+			
+			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
+			room.build(this);
+			
+			rooms.add(room);
+			return room;
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			JRogue.getLogger().error("Error building rooms", e);
+		}
+		
+		return null;
+	}
+	
+	public TileType getWallTileType() {
+		return TileType.TILE_ROOM_WALL;
+	}
+	
+	public TileType getFloorTileType() {
+		return TileType.TILE_ROOM_FLOOR;
+	}
+	
+	public TileType getTorchTileType() {
+		return TileType.TILE_ROOM_TORCH_FIRE;
 	}
 }

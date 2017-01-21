@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.generators.GeneratorRooms;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
 public class RoomWater extends RoomBasic {
@@ -9,7 +10,7 @@ public class RoomWater extends RoomBasic {
 	}
 	
 	@Override
-	protected TileType getFloorType() {
+	protected TileType getFloorTileType(GeneratorRooms generator) {
 		return TileType.TILE_ROOM_WATER;
 	}
 }

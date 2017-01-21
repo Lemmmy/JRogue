@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
-import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
@@ -9,10 +8,6 @@ import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Utils;
 import pw.lemmmy.jrogue.utils.WeightedCollection;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public abstract class DungeonGenerator {
@@ -23,8 +18,6 @@ public abstract class DungeonGenerator {
 		DOOR_TYPES.add(4, TileType.TILE_ROOM_DOOR_CLOSED);
 		DOOR_TYPES.add(6, TileType.TILE_ROOM_DOOR_OPEN);
 	}
-	
-	protected List<Room> rooms = new ArrayList<>();
 	
 	protected Level level;
 	protected Tile sourceTile;
@@ -39,44 +32,12 @@ public abstract class DungeonGenerator {
 	
 	public abstract Climate getClimate();
 	
+	public abstract MonsterSpawningStrategy getMonsterSpawningStrategy();
+	
 	public abstract boolean generate();
 	
 	protected int nextInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
-	}
-	
-	public abstract TileType getTorchTileType();
-	
-	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
-		// the offsets are to prevent rooms directly touching each other
-		
-		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
-			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
-					return false;
-				}
-			}
-		}
-		
-		return true;
-	}
-	
-	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
-		try {
-			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
-				Level.class, int.class, int.class, int.class, int.class
-			);
-			
-			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
-			room.build(this);
-			
-			rooms.add(room);
-			return room;
-		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			JRogue.getLogger().error("Error building rooms", e);
-		}
-		
-		return null;
 	}
 	
 	protected void buildLine(int startX,
@@ -190,7 +151,7 @@ public abstract class DungeonGenerator {
 				}
 			}
 		} else {
-			if (dy <= 5 || (b.getCenterX() - a.getCenterX() < 0) || a.getRoomY() + a.getHeight() == b
+			if (dy <= 5 || b.getCenterX() - a.getCenterX() < 0 || a.getRoomY() + a.getHeight() == b
 				.getRoomY() || b.getRoomY() + b.getHeight() == a.getRoomY()) {
 				if (b.getRoomY() + b.getHeight() > a.getRoomY() + a.getHeight()) {
 					return new ConnectionPoint(

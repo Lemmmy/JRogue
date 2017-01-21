@@ -43,6 +43,11 @@ public enum TileType {
 	TILE_ROOM_LADDER_UP(23, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
 	TILE_ROOM_LADDER_DOWN(24, INNER_ROOM, Solidity.WALK_ON, TileStateClimbable.class),
 	
+	TILE_SEWER_WALL(28, WALL, Solidity.SOLID),
+	TILE_SEWER_WATER(27, WATER | INNER_ROOM, Solidity.WATER),
+	TILE_SEWER_DRAIN_EMPTY(29, WALL, Solidity.SOLID),
+	TILE_SEWER_DRAIN(30, WALL, Solidity.SOLID),
+	
 	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON, Color.BLACK, 0, 20);
 	
 	private short id;

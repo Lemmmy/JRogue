@@ -3,15 +3,17 @@ package pw.lemmmy.jrogue.dungeon.generators;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterFish;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.fish.MonsterPufferfish;
+import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.dungeon.tiles.states.TileStateClimbable;
 import pw.lemmmy.jrogue.utils.OpenSimplexNoise;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class StandardDungeonGenerator extends RoomGenerator {
+public class GeneratorStandard extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.2;
 	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
 	private static final double SCALE_WATER_NOISE = 0.2;
@@ -21,15 +23,28 @@ public class StandardDungeonGenerator extends RoomGenerator {
 	private static final int MIN_FISH_SWARMS = 10;
 	private static final int MAX_FISH_SWARMS = 25;
 	
+	private static final int SEWER_START_DEPTH = -3;
+	
 	private OpenSimplexNoise simplexNoise;
 	
-	public StandardDungeonGenerator(Level level, Tile sourceTile) {
+	public GeneratorStandard(Level level, Tile sourceTile) {
 		super(level, sourceTile);
+	}
+	
+	@Override
+	public Class<? extends DungeonGenerator> getNextGenerator() {
+		return level.getDepth() <= -10 ? GeneratorIce.class :
+			   GeneratorStandard.class;
 	}
 	
 	@Override
 	public Climate getClimate() {
 		return Climate.WARM;
+	}
+	
+	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.STANDARD;
 	}
 	
 	@Override
@@ -42,6 +57,10 @@ public class StandardDungeonGenerator extends RoomGenerator {
 		
 		addWaterBodies();
 		spawnFish();
+		
+		if (level.getDepth() == SEWER_START_DEPTH) {
+			addSewerStart();
+		}
 		
 		return verify();
 	}
@@ -124,6 +143,21 @@ public class StandardDungeonGenerator extends RoomGenerator {
 					}
 				}
 			}
+		}
+	}
+	
+	private void addSewerStart() {
+		Room room = RandomUtils.randomFrom(rooms);
+		
+		int ladderX = rand.nextInt(room.getWidth() - 2) + room.getRoomX() + 1;
+		int ladderY = rand.nextInt(room.getHeight() - 2) + room.getRoomY() + 1;
+		
+		Tile ladderTile = level.getTile(ladderX, ladderY);
+		ladderTile.setType(TileType.TILE_ROOM_LADDER_DOWN);
+		
+		if (ladderTile.getState() instanceof TileStateClimbable) {
+			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();
+			tsc.setDestGenerator(GeneratorSewer.class);
 		}
 	}
 }

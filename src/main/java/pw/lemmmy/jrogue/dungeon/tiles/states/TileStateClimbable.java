@@ -2,6 +2,8 @@ package pw.lemmmy.jrogue.dungeon.tiles.states;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.GeneratorStandard;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 
 import java.util.Optional;
@@ -11,6 +13,7 @@ public class TileStateClimbable extends TileState {
 	private Optional<UUID> linkedLevelUUID = Optional.empty();
 	private int destX = 0;
 	private int destY = 0;
+	private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
 	
 	public TileStateClimbable(Tile tile) {
 		super(tile);
@@ -25,8 +28,13 @@ public class TileStateClimbable extends TileState {
 			obj.put("destX", destX);
 			obj.put("destY", destY);
 		});
+		
+		if (generatorClass != null) {
+			obj.put("generatorClass", generatorClass.getName());
+		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
@@ -35,6 +43,14 @@ public class TileStateClimbable extends TileState {
 			linkedLevelUUID = Optional.of(UUID.fromString(obj.getString("uuid")));
 			destX = obj.getInt("destX");
 			destY = obj.getInt("destY");
+		}
+		
+		try {
+			generatorClass = (Class<? extends DungeonGenerator>) Class.forName(
+				obj.optString("generatorClass", GeneratorStandard.class.getName())
+			);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -61,5 +77,13 @@ public class TileStateClimbable extends TileState {
 	public void setDestPosition(int x, int y) {
 		destX = x;
 		destY = y;
+	}
+	
+	public Class<? extends DungeonGenerator> getGeneratorClass() {
+		return generatorClass;
+	}
+	
+	public void setDestGenerator(Class<? extends DungeonGenerator> generatorClass) {
+		this.generatorClass = generatorClass;
 	}
 }

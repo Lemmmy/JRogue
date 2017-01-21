@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.generators.rooms;
 
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.GeneratorRooms;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public abstract class Room {
 		this.isSpawn = true;
 	}
 	
-	public abstract void build(DungeonGenerator generator);
+	public abstract void build(GeneratorRooms generator);
 	
 	public abstract void addFeatures();
 }

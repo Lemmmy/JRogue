@@ -18,6 +18,7 @@
 - Candlesticks as small room decoration
 - Rugs as larger room decoration
 - Added ice levels below dlvl-10 with different monsters
+- Added sewer levels, with a ladder at dlvl-3
 - Added frozen fountains
 - Added thermometers
 - Added foxes

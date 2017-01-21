@@ -1,17 +1,28 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
 import pw.lemmmy.jrogue.dungeon.Level;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 
-public class IceDungeonGenerator extends RoomGenerator {
-	public IceDungeonGenerator(Level level, Tile sourceTile) {
+public class GeneratorIce extends GeneratorRooms {
+	public GeneratorIce(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
 	
 	@Override
 	public Climate getClimate() {
 		return Climate.COLD;
+	}
+	
+	@Override
+	public Class<? extends DungeonGenerator> getNextGenerator() {
+		return GeneratorIce.class;
+	}
+	
+	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.ICE;
 	}
 	
 	@Override
