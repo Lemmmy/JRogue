@@ -6,7 +6,9 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class Settings {
 	@Setting(comment="The name of the player as it appears in the game.")
-	private String playerName = System.getProperty("user.name");
+	private String playerName = System.getProperty("user.name").length() > 20 ?
+								System.getProperty("user.name").substring(0, 20) :
+								System.getProperty("user.name");
 
 	@Setting(comment="The width of the game window.")
 	private int screenWidth = 800;
