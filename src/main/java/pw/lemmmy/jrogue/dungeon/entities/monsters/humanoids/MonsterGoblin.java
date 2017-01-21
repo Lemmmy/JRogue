@@ -26,6 +26,10 @@ public class MonsterGoblin extends Monster {
 	public MonsterGoblin(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
+		if (dungeon == null) {
+			return;
+		}
+		
 		setAI(new StatefulAI(this));
 		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
 		
