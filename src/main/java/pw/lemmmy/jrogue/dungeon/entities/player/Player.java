@@ -468,7 +468,7 @@ public class Player extends EntityLiving {
 		if (damageSource.getDeathString() != null) {
 			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
 		} else {
-			getDungeon().redYou("die");
+			getDungeon().redYou("die.");
 		}
 		
 		getDungeon().deleteSave();
