@@ -18,7 +18,6 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;
@@ -559,7 +558,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void dispose() {
 		super.dispose();
 		
-		if (settings.autosave() && !dontSave && dungeon.getPlayer().isAlive()) {
+		if (settings.shouldAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
 			dungeon.save();
 		}
 		
