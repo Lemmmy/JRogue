@@ -114,9 +114,7 @@ public abstract class AI implements Serialisable {
 	public void unserialise(JSONObject obj) {
 		
 	}
-	
-	
-	
+		
 	@SuppressWarnings("unchecked")
 	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
 		String aiClassName = serialisedAI.getString("class");

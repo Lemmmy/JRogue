@@ -120,7 +120,7 @@ public abstract class Monster extends EntityLiving {
 		
 		JSONObject serialisedAI = new JSONObject();
 		ai.serialise(serialisedAI);
-		obj.put("ai", ai);
+		obj.put("ai", serialisedAI);
 	}
 	
 	@Override
