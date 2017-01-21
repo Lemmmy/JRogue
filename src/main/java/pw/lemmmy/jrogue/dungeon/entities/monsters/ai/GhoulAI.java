@@ -17,7 +17,7 @@ public class GhoulAI extends AI {
 	private Random random = new Random();
 	
 	private float moveProbability = 0.25f;
-	private float attackProbability = 0.5f;
+	private float attackProbability = 0.25f;
 	
 	private int turnsSinceLastAttack = 0;
 	private int attackCooldownDuration = 2;
