@@ -1,17 +1,19 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
+import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AI {
+public abstract class AI implements Serialisable {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
 	
 	private Monster monster;
@@ -26,57 +28,57 @@ public abstract class AI {
 		avoidTiles.add(tileType);
 	}
 	
-	protected boolean canMoveTo(int x, int y) {
+	public boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 			y < 0 || y > monster.getLevel().getHeight()) &&
 			monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 	
-	protected boolean canMoveTowardsPlayer() {
+	public boolean canMoveTowardsPlayer() {
 		return distanceFromPlayer() < monster.getVisibilityRange();
 	}
 	
-	protected float distanceFromPlayer() {
+	public float distanceFromPlayer() {
 		return Utils.distance(
 			(float) monster.getX(), (float) monster.getY(),
 			(float) monster.getDungeon().getPlayer().getX(), (float) monster.getDungeon().getPlayer().getY()
 		);
 	}
 	
-	protected boolean canMeleeAttackPlayer() {
+	public boolean canMeleeAttackPlayer() {
 		return monster.canMeleeAttack() && isAdjacentToPlayer();
 	}
 	
-	protected boolean isAdjacentToPlayer() {
+	public boolean isAdjacentToPlayer() {
 		Player player = monster.getDungeon().getPlayer();
 		
-		return ((player.getX() == monster.getX() ||
+		return (player.getX() == monster.getX() ||
 			player.getX() == monster.getX() - 1 ||
 			player.getX() == monster.getX() + 1) &&
 			(player.getY() == monster.getY() ||
-				player.getY() == monster.getY() - 1 ||
-				player.getY() == monster.getY() + 1));
+			player.getY() == monster.getY() - 1 ||
+			player.getY() == monster.getY() + 1);
 	}
 	
-	protected void meleeAttackPlayer() {
+	public void meleeAttackPlayer() {
 		monster.meleeAttackPlayer();
 	}
 	
-	protected void rangedAttackPlayer() {
+	public void rangedAttackPlayer() {
 		monster.meleeAttackPlayer();
 	}
 	
-	protected void magicAttackPlayer() {
+	public void magicAttackPlayer() {
 		monster.meleeAttackPlayer();
 	}
 	
-	protected void moveTowardsPlayer() {
+	public void moveTowardsPlayer() {
 		Player player = monster.getDungeon().getPlayer();
 		
 		moveTowards(player.getX(), player.getY());
 	}
 	
-	protected void moveTowards(int destX, int destY) {
+	public void moveTowards(int destX, int destY) {
 		Path path = pathfinder.findPath(
 			getMonster().getLevel(),
 			getMonster().getX(),
@@ -99,4 +101,14 @@ public abstract class AI {
 	}
 	
 	public abstract void update();
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		
+	}
 }
