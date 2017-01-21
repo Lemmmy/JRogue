@@ -23,6 +23,7 @@
 - Added thermometers
 - Added foxes
 - Added lizards
+- Added goblins
 - Added mold (red, yellow, green and blue, no effects yet)
 - Items now age, and corpses will rot over time. Eating a rotten corpse will result in fatal food poisoning
 
@@ -34,6 +35,7 @@
 - Corridors are now darker
 - Kicking shatterable items causes them to be destroyed
 - Better strength-based entity kicking chances
+- Added stateful AI
 
 # Bugfixes
 - **All** generated dungeons are now completable - a pathfinder makes its way through the level before presenting it to you
@@ -47,6 +49,7 @@
 - Renamed empty potions to glass bottles
 - Entity depths are better now
 - Bad food warning only appears on the first eat
+- Monsters now move every turn
 
 # Code
 - Moved everything into smaller categorised packages
