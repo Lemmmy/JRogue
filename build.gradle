@@ -56,6 +56,8 @@ dependencies {
 	compile "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.4"
 	compile "com.badlogicgames.gdx:gdx-platform:1.9.4:natives-desktop"
 	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.4:natives-desktop"
+
+	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 }
 
 task fatJar(type: Jar) {
