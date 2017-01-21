@@ -48,7 +48,7 @@ public enum TileType {
 	TILE_SEWER_DRAIN_EMPTY(29, WALL, Solidity.SOLID),
 	TILE_SEWER_DRAIN(30, WALL, Solidity.SOLID),
 	
-	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON, Color.BLACK, 0, 20);
+	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON);
 	
 	private short id;
 	private int flags;
