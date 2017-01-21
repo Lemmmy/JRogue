@@ -30,7 +30,7 @@ public class ItemShortsword extends ItemSword {
 	}
 	
 	@Override
-	protected DamageSource getMeleeDamageSource() {
+	public DamageSource getMeleeDamageSource() {
 		return DamageSource.SHORTSWORD;
 	}
 	

@@ -95,7 +95,7 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return 10;
 	}
 	
 	@Override

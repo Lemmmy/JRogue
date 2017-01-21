@@ -30,7 +30,7 @@ public class ItemLongsword extends ItemSword {
 	}
 	
 	@Override
-	protected DamageSource getMeleeDamageSource() {
+	public DamageSource getMeleeDamageSource() {
 		return DamageSource.LONGSWORD;
 	}
 	

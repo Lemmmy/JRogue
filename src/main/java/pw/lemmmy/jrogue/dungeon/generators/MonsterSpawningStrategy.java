@@ -7,6 +7,7 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.canines.MonsterJackal;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterLizard;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterRat;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.critters.MonsterSpider;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldBlue;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.mold.MonsterMoldGreen;
@@ -28,6 +29,18 @@ public enum MonsterSpawningStrategy {
 			Range.between(1, 10),
 			Range.between(0, 1),
 			MonsterMoldYellow.class
+		),
+		
+		new MonsterSpawn(
+			Range.between(1, 2),
+			Range.between(0, 1),
+			MonsterGoblin.class
+		),
+		
+		new MonsterSpawn(
+			Range.between(4, 8),
+			Range.between(0, 3),
+			MonsterGoblin.class
 		),
 		
 		new MonsterSpawn(
@@ -114,6 +127,12 @@ public enum MonsterSpawningStrategy {
 			Range.between(4, 7),
 			Range.between(1, 5),
 			MonsterRat.class
+		),
+		
+		new MonsterSpawn(
+			Range.between(1, Integer.MAX_VALUE),
+			Range.between(0, 4),
+			MonsterGoblin.class
 		)
 	);
 	

@@ -43,7 +43,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		return damage;
 	}
 	
-	protected abstract DamageSource getMeleeDamageSource();
+	public abstract DamageSource getMeleeDamageSource();
 	
 	public abstract void onHit(EntityLiving attacker, EntityLiving victim);
 	

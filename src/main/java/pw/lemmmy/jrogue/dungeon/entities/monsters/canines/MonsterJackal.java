@@ -30,7 +30,7 @@ public class MonsterJackal extends MonsterCanine {
 	
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return 8;
 	}
 	
 	@Override
