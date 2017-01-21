@@ -61,11 +61,11 @@ public class AIState implements Serialisable {
 			state.unserialise(serialisedState);
 			return state;
 		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown item class {}", stateClassName);
+			JRogue.getLogger().error("Unknown AIState class {}", stateClassName);
 		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Item class {} has no unserialisation constructor", stateClassName);
+			JRogue.getLogger().error("AIState class {} has no unserialisation constructor", stateClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading item class {}", stateClassName);
+			JRogue.getLogger().error("Error loading AIState class {}", stateClassName);
 			JRogue.getLogger().error(e);
 		}
 		

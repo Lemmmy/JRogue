@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.DamageSource;
@@ -111,5 +112,21 @@ public abstract class Monster extends EntityLiving {
 	
 	public int getExperienceRewarded() {
 		return getSize() == Size.SMALL ? RandomUtils.roll(1, 2) : RandomUtils.roll(2, 2);
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		JSONObject serialisedAI = new JSONObject();
+		ai.serialise(serialisedAI);
+		obj.put("ai", ai);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
 	}
 }

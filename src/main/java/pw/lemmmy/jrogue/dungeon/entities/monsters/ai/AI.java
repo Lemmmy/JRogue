@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
@@ -10,6 +11,8 @@ import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.utils.Utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,11 +107,36 @@ public abstract class AI implements Serialisable {
 	
 	@Override
 	public void serialise(JSONObject obj) {
-		
+		obj.put("class", getClass().getName());
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
 		
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
+		String aiClassName = serialisedAI.getString("class");
+		
+		try {
+			Class<? extends AI> aiClass = (Class<? extends AI>) Class.forName(aiClassName);
+			Constructor<? extends AI> aiConstructor = aiClass.getConstructor(Monster.class);
+			
+			AI ai = aiConstructor.newInstance(monster);
+			ai.unserialise(serialisedAI);
+			return ai;
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown AI class {}", aiClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading AI class {}", aiClassName);
+			JRogue.getLogger().error(e);
+		}
+		
+		return null;
 	}
 }
