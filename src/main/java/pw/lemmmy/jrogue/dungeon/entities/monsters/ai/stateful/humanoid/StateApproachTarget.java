@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.humanoid;
 
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.AIState;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import pw.lemmmy.jrogue.utils.RandomUtils;
 
 public class StateApproachTarget extends AIState {
 	public StateApproachTarget(StatefulAI ai, int duration) {
@@ -13,7 +14,7 @@ public class StateApproachTarget extends AIState {
 		super.update();
 		
 		if (getAI().getCurrentTarget() == null || !getAI().canSeeTarget()) {
-			getAI().setCurrentState(null); // TODO: search state
+			getAI().setCurrentState(new StateSearch(getAI(), RandomUtils.random(4, 7)));
 			return;
 		}
 		

@@ -38,6 +38,8 @@ public class StatefulAI extends AI {
 		if (currentState != null && currentState.getDuration() > 0 && currentState.getTurnsTaken() <= 0) {
 			currentState = null;
 		}
+		
+		updateTargetVisibility();
 	}
 	
 	public AIState getDefaultState() {
