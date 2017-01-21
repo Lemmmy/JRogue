@@ -33,11 +33,8 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	@Override
 	public Class<? extends DungeonGenerator> getNextGenerator() {
-		if (level.getDepth() <= -10) {
-			return GeneratorIce.class;
-		} else {
-			return GeneratorStandard.class;
-		}
+		return level.getDepth() <= -10 ? GeneratorIce.class :
+			   GeneratorStandard.class;
 	}
 	
 	@Override
