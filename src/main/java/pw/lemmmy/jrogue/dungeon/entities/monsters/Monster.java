@@ -104,11 +104,11 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract boolean canMagicAttack();
 	
-	public void meleeAttackPlayer() {}
+	public void meleeAttack(EntityLiving victim) {}
 	
-	public void rangedAttackPlayer() {}
+	public void rangedAttack(EntityLiving victim) {}
 	
-	public void magicAttackPlayer() {}
+	public void magicAttack(EntityLiving victim) {}
 	
 	public int getExperienceRewarded() {
 		return getSize() == Size.SMALL ? RandomUtils.roll(1, 2) : RandomUtils.roll(2, 2);

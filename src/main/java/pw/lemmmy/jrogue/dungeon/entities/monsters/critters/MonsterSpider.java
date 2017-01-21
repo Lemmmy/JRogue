@@ -128,7 +128,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public void meleeAttackPlayer() {
+	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
 			DamageSource.SPIDER_BITE,

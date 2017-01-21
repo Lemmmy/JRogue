@@ -23,13 +23,19 @@ public class StateMeleeAttackTarget extends AIState {
 			return;
 		}
 		
-		if (getAI().canMeleeAttackPlayer()) {
-			getAI().meleeAttackPlayer();
+		if (getAI().canMeleeAttack(getAI().getCurrentTarget())) {
+			getAI().meleeAttack(getAI().getCurrentTarget());
 		} else if (RandomUtils.rollD2()) {
+			// use this turn to move
+			
 			int destX = getAI().getCurrentTarget().getX();
 			int destY = getAI().getCurrentTarget().getY();
 			
 			getAI().moveTowards(destX, destY);
+		} else {
+			// move next turn
+			
+			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
 		}
 	}
 }

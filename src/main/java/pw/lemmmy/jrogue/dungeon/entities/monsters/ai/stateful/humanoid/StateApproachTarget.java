@@ -23,8 +23,8 @@ public class StateApproachTarget extends AIState {
 			return;
 		}
 				
-		if (getAI().canMeleeAttackPlayer()) {
-			getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 2));
+		if (getAI().canMeleeAttack(getAI().getCurrentTarget())) {
+			getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 3));
 		} else {
 			int destX = getAI().getCurrentTarget().getX();
 			int destY = getAI().getCurrentTarget().getY();

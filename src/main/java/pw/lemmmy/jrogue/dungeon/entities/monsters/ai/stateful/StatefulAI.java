@@ -35,7 +35,11 @@ public class StatefulAI extends AI {
 			currentState.update();
 		}
 				
-		if (currentState != null && currentState.getDuration() > 0 && currentState.getTurnsTaken() <= 0) {
+		if (
+			currentState != null &&
+			currentState.getDuration() > 0 &&
+			currentState.getTurnsTaken() >= currentState.getDuration()
+		) {
 			currentState = null;
 		}
 		

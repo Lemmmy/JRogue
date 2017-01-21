@@ -2,11 +2,11 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.Serialisable;
@@ -49,31 +49,51 @@ public abstract class AI implements Serialisable {
 		);
 	}
 	
+	public boolean canMeleeAttack(EntityLiving target) {
+		return monster.canMeleeAttack() && isAdjacentTo(target);
+	}
+	
 	public boolean canMeleeAttackPlayer() {
-		return monster.canMeleeAttack() && isAdjacentToPlayer();
+		return canMeleeAttack(monster.getDungeon().getPlayer());
+	}
+	
+	public boolean isAdjacentTo(EntityLiving target) {
+		return (target.getX() == monster.getX() ||
+			target.getX() == monster.getX() - 1 ||
+			target.getX() == monster.getX() + 1) &&
+			(target.getY() == monster.getY() ||
+			target.getY() == monster.getY() - 1 ||
+			target.getY() == monster.getY() + 1);
 	}
 	
 	public boolean isAdjacentToPlayer() {
 		Player player = monster.getDungeon().getPlayer();
 		
-		return (player.getX() == monster.getX() ||
-			player.getX() == monster.getX() - 1 ||
-			player.getX() == monster.getX() + 1) &&
-			(player.getY() == monster.getY() ||
-			player.getY() == monster.getY() - 1 ||
-			player.getY() == monster.getY() + 1);
+		return isAdjacentTo(player);
+	}
+	
+	public void meleeAttack(EntityLiving target) {
+		monster.meleeAttack(target);
+	}
+	
+	public void rangedAttack(EntityLiving target) {
+		monster.rangedAttack(target);
+	}
+	
+	public void magicAttack(EntityLiving target) {
+		monster.magicAttack(target);
 	}
 	
 	public void meleeAttackPlayer() {
-		monster.meleeAttackPlayer();
+		meleeAttack(monster.getDungeon().getPlayer());
 	}
 	
 	public void rangedAttackPlayer() {
-		monster.meleeAttackPlayer();
+		rangedAttack(monster.getDungeon().getPlayer());
 	}
 	
 	public void magicAttackPlayer() {
-		monster.meleeAttackPlayer();
+		magicAttack(monster.getDungeon().getPlayer());
 	}
 	
 	public void moveTowardsPlayer() {
