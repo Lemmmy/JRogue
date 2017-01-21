@@ -304,6 +304,9 @@ public abstract class EntityLiving extends EntityTurnBased {
 	protected abstract void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
 	
 	public void kill(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+		health = 0;
+		healingTurns = 0;
+		
 		onDie(damageSource, damage, attacker, isPlayer);
 		
 		getLevel().removeEntity(this);
