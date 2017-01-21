@@ -447,6 +447,14 @@ public class Level implements Serialisable, Persisting {
 		return entities.values();
 	}
 	
+	public Entity getEntityByUUID(UUID uuid) {
+		return entities.get(uuid);
+	}
+	
+	public Entity getEntityByUUID(String uuid) {
+		return entities.get(UUID.fromString(uuid));
+	}
+	
 	public List<Entity> getEntitiesAt(int x, int y) {
 		return entities.values().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)

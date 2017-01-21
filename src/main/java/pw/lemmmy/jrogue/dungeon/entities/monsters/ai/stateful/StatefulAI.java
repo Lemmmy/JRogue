@@ -138,10 +138,35 @@ public class StatefulAI extends AI {
 	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
+		
+		JSONObject serialisedDefaultState = new JSONObject();
+		defaultState.serialise(serialisedDefaultState);
+		obj.put("defaultState", serialisedDefaultState);
+		
+		JSONObject serialisedCurrentState = new JSONObject();
+		currentState.serialise(serialisedCurrentState);
+		obj.put("currentState", serialisedCurrentState);
+		
+		obj.put("currentTarget", currentTarget.getUUID().toString());
+		obj.put("targetLastX", targetLastX);
+		obj.put("targetLastY", targetLastY);
+		
+		obj.put("shouldTargetPlayer", shouldTargetPlayer);
+		obj.put("visibilityRange", visibilityRange);
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
+		
+		defaultState = AIState.createFromJSON(obj.getJSONObject("defaultState"), this);
+		currentState = AIState.createFromJSON(obj.getJSONObject("currentState"), this);
+		
+		currentTarget = (EntityLiving) getMonster().getLevel().getEntityByUUID(obj.optString("currentTarget"));
+		targetLastX = obj.optInt("targetLastX");
+		targetLastY = obj.optInt("targetLastY");
+		
+		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
+		visibilityRange = obj.optInt("visibilityRange");
 	}
 }
