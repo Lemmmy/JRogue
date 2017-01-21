@@ -26,6 +26,9 @@ public class Settings {
 	@Setting(comment="Whether to autosave the game.")
 	private boolean autosave = true;
 	
+	@Setting(comment="[Debug] Show AI information.")
+	private boolean showAIDebug = false;
+	
 	public String getPlayerName() {
 		if (playerName == null) {
 			setPlayerName(System.getProperty("user.name"));
@@ -98,5 +101,13 @@ public class Settings {
 
 	public void setMinimapTileHeight(int minimapTileHeight) {
 		this.minimapTileHeight = minimapTileHeight;
+	}
+	
+	public boolean shouldShowAIDebug() {
+		return showAIDebug;
+	}
+	
+	public void setShowAIDebug(boolean showAIDebug) {
+		this.showAIDebug = showAIDebug;
 	}
 }

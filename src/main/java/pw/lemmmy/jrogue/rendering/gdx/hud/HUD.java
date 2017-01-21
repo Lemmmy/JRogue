@@ -197,7 +197,9 @@ public class HUD implements Dungeon.Listener {
 		updateBrightness(player);
 		updateStatusEffects(player);
 		
-		showEntityAIStates();
+		if (settings.shouldShowAIDebug()) {
+			showEntityAIStates();
+		}
 		
 		healthLastTurn = player.getHealth();
 		energyLastTurn = player.getEnergy();
