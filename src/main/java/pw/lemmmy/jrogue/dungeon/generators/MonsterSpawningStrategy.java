@@ -31,7 +31,14 @@ public enum MonsterSpawningStrategy {
 		),
 		
 		new MonsterSpawn(
-			Range.between(1, 10),
+			Range.between(1, 2),
+			Range.between(1, 3),
+			Range.between(1, 2),
+			MonsterJackal.class
+		),
+		
+		new MonsterSpawn(
+			Range.between(3, 10),
 			Range.between(2, 5),
 			Range.between(1, 3),
 			MonsterJackal.class
