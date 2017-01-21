@@ -92,7 +92,7 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public int getMaxHealth() {
-		return 10 + getConstitutionBonus();
+		return 5 * (2 + getExperienceLevel()) + getConstitutionBonus();
 	}
 	
 	public int getConstitutionBonus() {
