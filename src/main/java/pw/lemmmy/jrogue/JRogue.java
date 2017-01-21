@@ -1,5 +1,10 @@
 package pw.lemmmy.jrogue;
 
+import com.google.common.reflect.TypeToken;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +13,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
+import pw.lemmmy.jrogue.utils.Path;
 
 import javax.swing.*;
 import java.io.*;
@@ -67,8 +73,7 @@ public class JRogue {
 		
 		logger.info("---- Game started ----");
 		logger.info("JRogue version {}, built {}", VERSION, BUILD_DATE);
-		
-		Settings settings = new Settings();
+
 		Options opts = new Options();
 		
 		opts.addOption("h", "help", false, "Shows the help information");
@@ -93,13 +98,18 @@ public class JRogue {
 		
 		String homeDirectory = System.getProperty("user.home");
 		File configFile = Paths.get(homeDirectory, CONFIG_FILE_NAME).toFile();
-		
-		if (configFile.exists()) {
-			loadConfig(configFile, settings);
-		}
-		
+
+		Settings settings = null;
+
 		if (cmd.hasOption("config")) {
-			loadConfig(new File(cmd.getOptionValue("config")), settings);
+			settings = loadConfig(new File(cmd.getOptionValue("config")));
+		} else {
+			settings = loadConfig(configFile);
+		}
+
+		if (settings == null) {
+			JRogue.getLogger().error("Failed to load or create settings, using defaults");
+			settings = new Settings();
 		}
 		
 		if (cmd.hasOption("name")) {
@@ -116,73 +126,34 @@ public class JRogue {
 		
 		new JRogue(settings);
 	}
-	
-	public static void loadConfig(File file, Settings settings) {
-		JRogue.getLogger().debug("Loading config file {}", file.getAbsolutePath());
-		
+
+	private static Settings loadConfig(File configFile) {
+		ConfigurationLoader<CommentedConfigurationNode> loader =
+				HoconConfigurationLoader.builder()
+										.setFile(configFile)
+										.build();
+
+		CommentedConfigurationNode root = null;
+		Settings settings = null;
+
 		try {
-			Ini ini = new Ini();
-			ini.load(new FileReader(file));
-			
-			parseConfig(ini, settings);
-		} catch (IOException e) {
-			JRogue.getLogger().error("Error loading config file {}:", file.getAbsolutePath());
-			JRogue.getLogger().error(e);
+			root = loader.load();
+
+			if (root.getNode("settings").isVirtual()) {
+				root.getNode("settings").setValue(TypeToken.of(Settings.class), new Settings());
+				loader.save(root);
+			}
+
+			settings = root.getNode("settings").getValue(TypeToken.of(Settings.class));
+		} catch (IOException | ObjectMappingException e) {
+			getLogger().error("Error while loading config", e);
+			return null;
 		}
+
+		return settings;
 	}
 	
 	public static Logger getLogger() {
 		return logger;
-	}
-	
-	public static void parseConfig(Ini ini, Settings settings) {
-		if (ini.get("Player") != null) {
-			Ini.Section playerSection = ini.get("Player");
-			
-			if (playerSection.get("name") != null) {
-				settings.setPlayerName(playerSection.get("name"));
-			}
-		}
-		
-		if (ini.get("Display") != null) {
-			Ini.Section displaySection = ini.get("Display");
-			
-			if (displaySection.get("screenWidth") != null) {
-				settings.setScreenWidth(Integer.parseInt(displaySection.get("screenWidth")));
-			}
-			
-			if (displaySection.get("screenHeight") != null) {
-				settings.setScreenHeight(Integer.parseInt(displaySection.get("screenHeight")));
-			}
-			
-			if (displaySection.get("logSize") != null) {
-				settings.setLogSize(Integer.parseInt(displaySection.get("logSize")));
-			}
-			
-			if (displaySection.get("hudScale") != null) {
-				settings.setHUDScale(Float.parseFloat(displaySection.get("hudScale")));
-			}
-			
-			if (displaySection.get("minimapTileWidth") != null) {
-				settings.setMinimapTileWidth(Integer.parseInt(displaySection.get("minimapTileWidth")));
-			}
-			
-			if (displaySection.get("minimapTileHeight") != null) {
-				settings.setMinimapTileHeight(Integer.parseInt(displaySection.get("minimapTileHeight")));
-			}
-			
-			if (displaySection.get("minimapTileScale") != null) {
-				settings.setMinimapTileWidth(Integer.parseInt(displaySection.get("minimapTileScale")));
-				settings.setMinimapTileHeight(Integer.parseInt(displaySection.get("minimapTileScale")));
-			}
-		}
-		
-		if (ini.get("Game") != null) {
-			Ini.Section gameSection = ini.get("Game");
-			
-			if (gameSection.get("autosave") != null) {
-				settings.setAutosave(Boolean.parseBoolean(gameSection.get("autosave")));
-			}
-		}
 	}
 }
