@@ -12,7 +12,6 @@ import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;

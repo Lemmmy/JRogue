@@ -4,9 +4,9 @@ import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
+import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.EntityTurnBased;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
-import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 

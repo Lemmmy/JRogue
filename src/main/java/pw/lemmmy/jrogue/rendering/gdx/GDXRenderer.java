@@ -18,7 +18,6 @@ import pw.lemmmy.jrogue.Settings;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.rendering.Renderer;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityMap;
 import pw.lemmmy.jrogue.rendering.gdx.entities.EntityPooledEffect;

@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;

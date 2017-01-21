@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.generators.rooms.features;
 
 import com.github.alexeyr.pcg.Pcg32;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.decoration.EntityCandlestick;
 import pw.lemmmy.jrogue.dungeon.entities.magic.EntityAltar;
 import pw.lemmmy.jrogue.dungeon.generators.rooms.Room;

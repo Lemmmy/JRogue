@@ -10,10 +10,10 @@ import pw.lemmmy.jrogue.rendering.gdx.GDXRenderer;
 import pw.lemmmy.jrogue.utils.OperatingSystem;
 
 import javax.swing.*;
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Properties;
 

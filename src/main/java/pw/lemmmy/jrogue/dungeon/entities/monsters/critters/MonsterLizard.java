@@ -10,6 +10,7 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+
 import java.util.List;
 
 public class MonsterLizard extends Monster {
