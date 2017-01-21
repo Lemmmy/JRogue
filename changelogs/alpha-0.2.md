@@ -1,4 +1,5 @@
 # Gameplay
+- New settings system
 - HUD completely redesigned to show more information in a better way
 - Added a map to the HUD
 - Skills can now be levelled up
