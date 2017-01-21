@@ -1,7 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
+import pw.lemmmy.jrogue.utils.MultiLineNoPrefixToStringStyle;
 import pw.lemmmy.jrogue.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
@@ -70,5 +73,13 @@ public class AIState implements Serialisable {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("duration", duration)
+			.append("turnsTaken", turnsTaken)
+			.toString();
 	}
 }

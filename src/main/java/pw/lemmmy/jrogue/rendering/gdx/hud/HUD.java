@@ -212,8 +212,7 @@ public class HUD implements Dungeon.Listener {
 		dungeon.getLevel().getEntities().stream()
 			.filter(Monster.class::isInstance)
 			.map(e -> (Monster) e)
-			.filter(m -> m.getAI() instanceof StatefulAI)
-			.filter(m -> ((StatefulAI) m.getAI()).getCurrentState() != null)
+			.filter(m -> !m.getAI().toString().isEmpty())
 			.forEach(m -> {
 				int x = m.getX();
 				int y = m.getY();
@@ -227,7 +226,7 @@ public class HUD implements Dungeon.Listener {
 				Table stateTable = new Table(skin);
 				stateTable.setBackground("blackTransparent");
 				
-				stateTable.add(new Label(((StatefulAI) m.getAI()).getCurrentState().getClass().getSimpleName(), skin));
+				stateTable.add(new Label(m.getAI().toString(), skin));
 				
 				stage.getRoot().addActor(stateTable);
 				stateTable.pad(4);

@@ -167,4 +167,8 @@ public abstract class AI implements Serialisable {
 		
 		return null;
 	}
+	
+	public String toString() {
+		return "";
+	}
 }

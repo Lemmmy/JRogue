@@ -1,10 +1,13 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.AI;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
+import pw.lemmmy.jrogue.utils.MultiLineNoPrefixToStringStyle;
 import pw.lemmmy.jrogue.utils.Utils;
 
 public class StatefulAI extends AI {
@@ -174,5 +177,13 @@ public class StatefulAI extends AI {
 		
 		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
 		visibilityRange = obj.optInt("visibilityRange");
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.appendToString(currentState.toString())
+			.append("currentTarget", currentTarget.getClass().getSimpleName())
+			.toString();
 	}
 }
