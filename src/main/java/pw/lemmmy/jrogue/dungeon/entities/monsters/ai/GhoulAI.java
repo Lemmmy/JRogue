@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.entities.monsters.ai;
 
+import org.json.JSONObject;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 
 import java.util.Random;
@@ -16,6 +17,8 @@ public class GhoulAI extends AI {
 	private float moveProbability = 0.25f;
 	private float attackProbability = 0.7f;
 	
+	private int turnsSinceLastAttack = 0;
+	
 	public GhoulAI(Monster monster) {
 		super(monster);
 	}
@@ -30,10 +33,30 @@ public class GhoulAI extends AI {
 	
 	@Override
 	public void update() {
-		if (canMeleeAttackPlayer() && random.nextFloat() < attackProbability) {
+		if (canMeleeAttackPlayer() && random.nextFloat() < attackProbability && ++turnsSinceLastAttack >= 1) {
 			meleeAttackPlayer();
+			
+			turnsSinceLastAttack = 0;
 		} else if (canMoveTowardsPlayer() && (random.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
 			moveTowardsPlayer();
 		}
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		obj.put("moveProbability", moveProbability);
+		obj.put("attackProbability", attackProbability);
+		obj.put("turnsSinceLastAttack", turnsSinceLastAttack);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		moveProbability = (float) obj.optDouble("moveProbability");
+		attackProbability = (float) obj.optDouble("attackProbability");
+		turnsSinceLastAttack = obj.optInt("turnsSinceLastAttack");
 	}
 }
