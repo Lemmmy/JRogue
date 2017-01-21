@@ -13,6 +13,15 @@ public class GeneratorSewer extends GeneratorRooms {
 	private OpenSimplexNoise simplexNoise;
 	
 	static {
+		PROBABILITY_SPECIAL_FEATURE_COUNT.clear();
+		
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 1);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 2);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(4, 3);
+		PROBABILITY_SPECIAL_FEATURE_COUNT.add(5, 4);
+	}
+	
+	static {
 		PROBABILITY_SPECIAL_FEATURES.clear();
 		
 		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureSewerDrain.class);
