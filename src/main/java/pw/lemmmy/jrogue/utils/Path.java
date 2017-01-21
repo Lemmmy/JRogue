@@ -19,6 +19,10 @@ public class Path implements Iterable<Tile> {
 		return steps.get(index);
 	}
 	
+	public List<Tile> getSteps() {
+		return steps;
+	}
+	
 	public boolean[] getAdjacentSteps(int x, int y) {
 		boolean[] adjacentSteps = new boolean[Utils.DIRECTIONS.length];
 		

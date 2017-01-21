@@ -6,6 +6,7 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMove;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.utils.Path;
 import pw.lemmmy.jrogue.utils.Serialisable;
@@ -82,10 +83,13 @@ public abstract class AI implements Serialisable {
 	}
 	
 	public void moveTowards(int destX, int destY) {
+		int sourceX = getMonster().getX();
+		int sourceY = getMonster().getY();
+		
 		Path path = pathfinder.findPath(
 			getMonster().getLevel(),
-			getMonster().getX(),
-			getMonster().getY(),
+			sourceX,
+			sourceY,
 			destX,
 			destY,
 			getMonster().getVisibilityRange(),
@@ -94,8 +98,14 @@ public abstract class AI implements Serialisable {
 		);
 		
 		if (path != null) {
-			getMonster().setAction(
-				new ActionMove(path.getStep(1).getX(), path.getStep(1).getY(), new EntityAction.NoCallback()));
+			path.getSteps().stream()
+				.filter(t -> t.getX() != sourceX || t.getY() != sourceY)
+				.findFirst()
+				.ifPresent(t -> getMonster().setAction(new ActionMove(
+					t.getX(),
+					t.getY(),
+					new EntityAction.NoCallback()
+				)));
 		}
 	}
 	

@@ -305,6 +305,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		minimap.resize();
 	}
 	
+	public void updateCamera() {
+		if (dungeon.getPlayer() != null) {
+			camera.position.x = dungeon.getPlayer().getX() * TileMap.TILE_WIDTH + TileMap.TILE_WIDTH / 2;
+			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
+		}
+		
+		camera.update();
+	}
+	
 	@Override
 	public void render() {
 		super.render();
@@ -317,12 +326,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		float delta = Gdx.graphics.getDeltaTime();
 		
-		if (dungeon.getPlayer() != null) {
-			camera.position.x = dungeon.getPlayer().getX() * TileMap.TILE_WIDTH + TileMap.TILE_WIDTH / 2;
-			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
-		}
-		
-		camera.update();
+		updateCamera();
 		
 		batch.setProjectionMatrix(camera.combined);
 		lightBatch.setProjectionMatrix(camera.combined);

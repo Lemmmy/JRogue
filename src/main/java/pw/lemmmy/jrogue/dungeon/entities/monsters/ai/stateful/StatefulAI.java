@@ -17,7 +17,7 @@ public class StatefulAI extends AI {
 	private boolean shouldTargetPlayer = true;
 	private int visibilityRange = 15;
 	
-	public StatefulAI(Monster monster, AIState defaultState) {
+	public StatefulAI(Monster monster) {
 		super(monster);
 	}
 	
@@ -33,10 +33,10 @@ public class StatefulAI extends AI {
 		
 		if (currentState != null) {
 			currentState.update();
-			
-			if (currentState.getDuration() > 0 && currentState.getTurnsTaken() <= 0) {
-				currentState = null;
-			}
+		}
+				
+		if (currentState != null && currentState.getDuration() > 0 && currentState.getTurnsTaken() <= 0) {
+			currentState = null;
 		}
 	}
 	
