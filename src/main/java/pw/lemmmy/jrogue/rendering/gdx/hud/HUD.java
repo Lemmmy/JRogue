@@ -212,6 +212,8 @@ public class HUD implements Dungeon.Listener {
 		dungeon.getLevel().getEntities().stream()
 			.filter(Monster.class::isInstance)
 			.map(e -> (Monster) e)
+			.filter(m -> m.getAI() != null)
+			.filter(m -> m.getAI().toString() != null)
 			.filter(m -> !m.getAI().toString().isEmpty())
 			.forEach(m -> {
 				int x = m.getX();
