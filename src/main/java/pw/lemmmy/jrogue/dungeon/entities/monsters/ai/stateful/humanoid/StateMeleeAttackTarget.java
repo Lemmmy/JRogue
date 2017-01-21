@@ -4,8 +4,8 @@ import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.AIState;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
-public class StateApproachTarget extends AIState {
-	public StateApproachTarget(StatefulAI ai, int duration) {
+public class StateMeleeAttackTarget extends AIState {
+	public StateMeleeAttackTarget(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}
 	
@@ -22,10 +22,10 @@ public class StateApproachTarget extends AIState {
 			getAI().setCurrentState(new StateSearch(getAI(), RandomUtils.random(4, 7)));
 			return;
 		}
-				
+		
 		if (getAI().canMeleeAttackPlayer()) {
-			getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 2));
-		} else {
+			getAI().meleeAttackPlayer();
+		} else if (RandomUtils.rollD2()) {
 			int destX = getAI().getCurrentTarget().getX();
 			int destY = getAI().getCurrentTarget().getY();
 			
