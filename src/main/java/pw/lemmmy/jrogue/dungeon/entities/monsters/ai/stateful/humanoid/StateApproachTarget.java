@@ -19,12 +19,17 @@ public class StateApproachTarget extends AIState {
 		}
 		
 		if (!getAI().canSeeTarget()) {
-			getAI().setCurrentState(new StateSearch(getAI(), RandomUtils.random(4, 7)));
+			int minSearchDuration = getAI().getMonster().getPersistence().optInt("minSearchDuration", 4);
+			int maxSearchDuration = getAI().getMonster().getPersistence().optInt("maxSearchDuration", 7);
+			
+			getAI().setCurrentState(new StateSearch(getAI(), RandomUtils.random(minSearchDuration, maxSearchDuration)));
 			return;
 		}
 				
 		if (getAI().canMeleeAttack(getAI().getCurrentTarget())) {
-			getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 3));
+			int meleeAttackDuration = getAI().getMonster().getPersistence().optInt("meleeAttackDuration", 3);
+			
+			getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), meleeAttackDuration));
 		} else {
 			int destX = getAI().getCurrentTarget().getX();
 			int destY = getAI().getCurrentTarget().getY();
