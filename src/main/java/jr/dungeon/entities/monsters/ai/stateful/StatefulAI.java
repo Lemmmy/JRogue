@@ -25,6 +25,10 @@ public class StatefulAI extends AI {
 	
 	@Override
 	public void update() {
+		if (getMonster() == null) {
+			return;
+		}
+		
 		if (shouldTargetPlayer && currentTarget == null) {
 			currentTarget = getMonster().getDungeon().getPlayer();
 		}
@@ -147,6 +151,10 @@ public class StatefulAI extends AI {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
+		if (getMonster() == null) {
+			return;
+		}
+		
 		JSONObject serialisedDefaultState = new JSONObject();
 		defaultState.serialise(serialisedDefaultState);
 		obj.put("defaultState", serialisedDefaultState);
@@ -167,12 +175,18 @@ public class StatefulAI extends AI {
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 		
+		if (getMonster() == null) {
+			return;
+		}
+		
 		defaultState = AIState.createFromJSON(obj.getJSONObject("defaultState"), this);
 		currentState = AIState.createFromJSON(obj.getJSONObject("currentState"), this);
 		
-		currentTarget = (EntityLiving) getMonster().getLevel().getEntityByUUID(obj.optString("currentTarget"));
-		targetLastX = obj.optInt("targetLastX");
-		targetLastY = obj.optInt("targetLastY");
+		if (obj.has("currentTarget")) {
+			currentTarget = (EntityLiving) getMonster().getLevel().getEntityByUUID(obj.optString("currentTarget"));
+			targetLastX = obj.optInt("targetLastX");
+			targetLastY = obj.optInt("targetLastY");
+		}
 		
 		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
 		visibilityRange = obj.optInt("visibilityRange");
