@@ -25,7 +25,10 @@
 - Added foxes
 - Added lizards
 - Added goblins
+- Added zombies
 - Added mold (red, yellow, green and blue, no effects yet)
+- Added gravestones
+- Added graveyards
 - Items now age, and corpses will rot over time. Eating a rotten corpse will result in fatal food poisoning
 
 # Minor changes
@@ -53,6 +56,7 @@
 - Monsters now move every turn
 
 # Code
+- Changed the root package to `jr`
 - Moved everything into smaller categorised packages
 - Greatly reduced the size of the Player class by moving all their methods into visitors (OOP visitor pattern)
 - Pressure washed many classes including Prompt and Container

@@ -1,0 +1,189 @@
+package jr.dungeon.items.valuables;
+
+import jr.dungeon.entities.EntityLiving;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import jr.dungeon.Level;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.ItemCategory;
+import jr.dungeon.items.identity.AspectGemValue;
+import jr.utils.RandomUtils;
+
+public class ItemGem extends Item {
+	private Gem gem;
+	private boolean worthless = false;
+	
+	public ItemGem() { // unserialisation constructor
+		super();
+		
+		addAspect(new AspectGemValue());
+	}
+	
+	public ItemGem(Level level) { // chest spawning constructor
+		this.gem = RandomUtils.randomFrom(Gem.values());
+		this.worthless = RandomUtils.rollD2();
+		
+		addAspect(new AspectGemValue());
+	}
+	
+	public ItemGem(Gem gem, boolean worthless) {
+		this.gem = gem;
+		this.worthless = worthless;
+		
+		addAspect(new AspectGemValue());
+	}
+	
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
+		String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
+		
+		if (isAspectKnown(observer, AspectGemValue.class)) {
+			if (worthless) {
+				if (requiresCapitalisation) {
+					s += plural ?
+						 "Worthless pieces of " + colour + " glass" :
+						 "Worthless piece of " + colour + " " + "glass";
+					
+					return s;
+				} else {
+					s += plural ?
+						 "worthless pieces of " + colour + " glass" :
+						 "worthless piece of " + colour + " " + "glass";
+					
+					return s;
+				}
+			} else {
+				String gemName = plural ? gem.getName() : gem.getNamePlural();
+				
+				s += requiresCapitalisation ? StringUtils.capitalize(gemName) : gemName;
+				
+				return s;
+			}
+		} else {
+			return String.format(
+				"%s gem%s",
+				requiresCapitalisation ? StringUtils.capitalize(colour) : colour,
+				plural ? "s" : ""
+			);
+		}
+	}
+	
+	@Override
+	public float getWeight() {
+		return 1;
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return gem.getAppearance();
+	}
+	
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.GEM;
+	}
+	
+	public Gem getGem() {
+		return gem;
+	}
+	
+	public boolean isWorthless() {
+		return worthless;
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		obj.put("gem", gem.name());
+		obj.put("worthless", worthless);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		worthless = obj.getBoolean("worthless");
+		gem = Gem.valueOf(obj.getString("gem"));
+	}
+	
+	public enum Gem {
+		// TODO: Gem values
+		
+		RED_GARNET(ItemAppearance.APPEARANCE_GEM_RED),
+		RUBY(ItemAppearance.APPEARANCE_GEM_RED),
+		
+		GOLDEN_SAPPHIRE(ItemAppearance.APPEARANCE_GEM_ORANGE),
+		TOPAZ(ItemAppearance.APPEARANCE_GEM_ORANGE, "topaz", "topazes"),
+		
+		CITRINE(ItemAppearance.APPEARANCE_GEM_YELLOW),
+		YELLOW_DIAMOND(ItemAppearance.APPEARANCE_GEM_YELLOW),
+		YELLOW_TOPAZ(ItemAppearance.APPEARANCE_GEM_YELLOW, "yellow topaz", "yellow topazes"),
+		
+		GREEN_AMETHYST(ItemAppearance.APPEARANCE_GEM_LIME),
+		PERIDOT(ItemAppearance.APPEARANCE_GEM_LIME),
+		
+		EMERALD(ItemAppearance.APPEARANCE_GEM_GREEN),
+		JADE(ItemAppearance.APPEARANCE_GEM_GREEN),
+		GREEN_GARNET(ItemAppearance.APPEARANCE_GEM_GREEN),
+		
+		APATITE(ItemAppearance.APPEARANCE_GEM_CYAN),
+		AQUAMARINE(ItemAppearance.APPEARANCE_GEM_CYAN),
+		BLUE_DIAMOND(ItemAppearance.APPEARANCE_GEM_CYAN),
+		SKY_BLUE_TOPAZ(ItemAppearance.APPEARANCE_GEM_CYAN, "sky blue topaz", "sky blue topazes"),
+		
+		BLUE_APATITE(ItemAppearance.APPEARANCE_GEM_BLUE),
+		LAPIS_LAZULI(ItemAppearance.APPEARANCE_GEM_BLUE),
+		SAPPHIRE(ItemAppearance.APPEARANCE_GEM_BLUE),
+		
+		ALEXANDRITE(ItemAppearance.APPEARANCE_GEM_PURPLE),
+		AMETHYST(ItemAppearance.APPEARANCE_GEM_PURPLE),
+		TANZANITE(ItemAppearance.APPEARANCE_GEM_PURPLE),
+		
+		DIAMOND(ItemAppearance.APPEARANCE_GEM_WHITE),
+		QUARTZ(ItemAppearance.APPEARANCE_GEM_WHITE, "quartz", "quartzes"),
+		WHITE_TOPAZ(ItemAppearance.APPEARANCE_GEM_WHITE),
+		WHITE_SAPPHIRE(ItemAppearance.APPEARANCE_GEM_WHITE),
+		
+		BLACK_DIAMOND(ItemAppearance.APPEARANCE_GEM_BLACK),
+		BLACK_ONYX(ItemAppearance.APPEARANCE_GEM_BLACK, "onyx", "onyxes"),
+		DIOPSIDE(ItemAppearance.APPEARANCE_GEM_BLACK),
+		HEMATITE(ItemAppearance.APPEARANCE_GEM_BLACK),
+		SPINEL(ItemAppearance.APPEARANCE_GEM_BLACK);
+		
+		private ItemAppearance appearance;
+		private String name;
+		private String namePlural;
+		
+		Gem(ItemAppearance appearance) {
+			this.appearance = appearance;
+			name = name().toLowerCase().replace("_", "");
+			namePlural = name + "s";
+		}
+		
+		Gem(ItemAppearance appearance, String name, String namePlural) {
+			this.appearance = appearance;
+			this.name = name;
+			this.namePlural = namePlural;
+		}
+		
+		public ItemAppearance getAppearance() {
+			return appearance;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public String getNamePlural() {
+			return namePlural;
+		}
+	}
+}

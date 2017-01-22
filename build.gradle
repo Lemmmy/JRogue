@@ -13,7 +13,7 @@ apply plugin: "eclipse"
 apply plugin: "application"
 
 archivesBaseName = "JRogue"
-mainClassName = "pw.lemmmy.jrogue.JRogue"
+mainClassName = "jr.JRogue"
 version = "alpha-0.2"
 
 sourceCompatibility = 1.8
