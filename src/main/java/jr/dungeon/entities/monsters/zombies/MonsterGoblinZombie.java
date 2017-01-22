@@ -41,12 +41,12 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	
 	@Override
 	public int getWeight() {
-		return 0;
+		return 400;
 	}
 	
 	@Override
 	public int getNutrition() {
-		return 0;
+		return 25;
 	}
 	
 	@Override
