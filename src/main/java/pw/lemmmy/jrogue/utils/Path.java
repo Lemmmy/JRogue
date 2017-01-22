@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Path implements Iterable<Tile> {
-	private List<Tile> steps = Collections.unmodifiableList(new ArrayList<>());
+	private List<Tile> steps = new ArrayList<>();
 	
 	public int getLength() {
 		return steps.size();
@@ -69,5 +69,9 @@ public class Path implements Iterable<Tile> {
 	@Override
 	public Spliterator<Tile> spliterator() {
 		return steps.spliterator();
+	}
+	
+	public void lock() {
+		steps = Collections.unmodifiableList(steps);
 	}
 }

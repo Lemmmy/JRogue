@@ -41,7 +41,7 @@ public class AStarPathfinder {
 		
 		int maxDepth = 0;
 		
-		while ((maxDepth < maxSearchDistance) && (open.size() != 0)) {
+		while (maxDepth < maxSearchDistance && open.size() != 0) {
 			Node current = open.get(0);
 			
 			if (current == nodes[width * ty + tx]) {
@@ -104,6 +104,8 @@ public class AStarPathfinder {
 		}
 		
 		path.prependStep(level.getTile(sx, sy));
+		
+		path.lock();
 		
 		return path;
 	}
