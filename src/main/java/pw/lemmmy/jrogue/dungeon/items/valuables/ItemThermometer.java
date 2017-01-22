@@ -1,13 +1,9 @@
 package pw.lemmmy.jrogue.dungeon.items.valuables;
 
-import pw.lemmmy.jrogue.dungeon.Dungeon;
-import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
-import pw.lemmmy.jrogue.dungeon.items.Item;
-import pw.lemmmy.jrogue.dungeon.items.ItemAppearance;
-import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
+import pw.lemmmy.jrogue.dungeon.entities.player.Player;
+import pw.lemmmy.jrogue.dungeon.items.*;
 import pw.lemmmy.jrogue.dungeon.items.Readable;
-import pw.lemmmy.jrogue.dungeon.items.Shatterable;
 
 public class ItemThermometer extends Item implements Readable, Shatterable {
 	@Override

@@ -9,7 +9,8 @@ import pw.lemmmy.jrogue.dungeon.entities.actions.ActionMelee;
 import pw.lemmmy.jrogue.dungeon.entities.actions.EntityAction;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
-import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.GhoulAI;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import pw.lemmmy.jrogue.utils.RandomUtils;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class MonsterSkeleton extends Monster {
 	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		setAI(new GhoulAI(this));
+		setAI(new StatefulAI(this));
+		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
 	}
 	
 	@Override
@@ -93,7 +95,7 @@ public class MonsterSkeleton extends Monster {
 	
 	@Override
 	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED;
+		return 10;
 	}
 	
 	@Override
@@ -119,7 +121,7 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	public void meleeAttackPlayer() {
+	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
 			DamageSource.SKELETON_HIT,

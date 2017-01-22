@@ -6,7 +6,9 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class Settings {
 	@Setting(comment="The name of the player as it appears in the game.")
-	private String playerName = System.getProperty("user.name");
+	private String playerName = System.getProperty("user.name").length() > 20 ?
+								System.getProperty("user.name").substring(0, 20) :
+								System.getProperty("user.name");
 
 	@Setting(comment="The width of the game window.")
 	private int screenWidth = 800;
@@ -25,6 +27,9 @@ public class Settings {
 
 	@Setting(comment="Whether to autosave the game.")
 	private boolean autosave = true;
+	
+	@Setting(comment="[Debug] Show AI information.")
+	private boolean showAIDebug = false;
 	
 	public String getPlayerName() {
 		if (playerName == null) {
@@ -98,5 +103,13 @@ public class Settings {
 
 	public void setMinimapTileHeight(int minimapTileHeight) {
 		this.minimapTileHeight = minimapTileHeight;
+	}
+	
+	public boolean shouldShowAIDebug() {
+		return showAIDebug;
+	}
+	
+	public void setShowAIDebug(boolean showAIDebug) {
+		this.showAIDebug = showAIDebug;
 	}
 }

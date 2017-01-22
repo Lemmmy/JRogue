@@ -5,12 +5,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
-import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.items.identity.Aspect;
 import pw.lemmmy.jrogue.dungeon.items.identity.AspectBeatitude;
 import pw.lemmmy.jrogue.utils.Persisting;
 import pw.lemmmy.jrogue.utils.RandomUtils;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

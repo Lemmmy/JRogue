@@ -1,13 +1,10 @@
 package pw.lemmmy.jrogue.dungeon.items.comestibles;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
-import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
 import pw.lemmmy.jrogue.dungeon.items.ItemCategory;
-import pw.lemmmy.jrogue.dungeon.items.identity.AspectRottenness;
 
 import java.util.List;
 

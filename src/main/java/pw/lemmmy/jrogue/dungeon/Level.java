@@ -9,7 +9,9 @@ import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.monsters.MonsterSpawn;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
-import pw.lemmmy.jrogue.dungeon.generators.*;
+import pw.lemmmy.jrogue.dungeon.generators.Climate;
+import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
+import pw.lemmmy.jrogue.dungeon.generators.MonsterSpawningStrategy;
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
 import pw.lemmmy.jrogue.dungeon.tiles.states.TileState;
@@ -51,10 +53,10 @@ public class Level implements Serialisable, Persisting {
 	private int spawnX;
 	private int spawnY;
 	
-	private List<Entity> entities;
+	private Map<UUID, Entity> entities;
 	
-	private List<Entity> entityAddQueue = new ArrayList<>();
-	private List<Entity> entityRemoveQueue = new ArrayList<>();
+	private List<Entity> entityAddQueue;
+	private List<Entity> entityRemoveQueue;
 	
 	public Level(Dungeon dungeon, int width, int height, int depth) {
 		this(UUID.randomUUID(), dungeon, width, height, depth);
@@ -83,7 +85,7 @@ public class Level implements Serialisable, Persisting {
 		Arrays.fill(discoveredTiles, false);
 		Arrays.fill(visibleTiles, false);
 		
-		entities = new ArrayList<>();
+		entities = new HashMap<>();
 		entityAddQueue = new ArrayList<>();
 		entityRemoveQueue = new ArrayList<>();
 	}
@@ -164,7 +166,7 @@ public class Level implements Serialisable, Persisting {
 			}
 		});
 		
-		entities.forEach(e -> {
+		entities.values().forEach(e -> {
 			JSONObject serialisedEntity = new JSONObject();
 			e.serialise(serialisedEntity);
 			obj.append("entities", serialisedEntity);
@@ -443,24 +445,32 @@ public class Level implements Serialisable, Persisting {
 		return monsterSpawningStrategy;
 	}
 	
-	public List<Entity> getEntities() {
-		return entities;
+	public Collection<Entity> getEntities() {
+		return entities.values();
+	}
+	
+	public Entity getEntityByUUID(UUID uuid) {
+		return entities.get(uuid);
+	}
+	
+	public Entity getEntityByUUID(String uuid) {
+		return entities.get(UUID.fromString(uuid));
 	}
 	
 	public List<Entity> getEntitiesAt(int x, int y) {
-		return entities.stream()
+		return entities.values().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)
 			.collect(Collectors.toList());
 	}
 	
 	public List<Entity> getMonsters() {
-		return entities.stream()
+		return entities.values().stream()
 			.filter(Monster.class::isInstance)
 			.collect(Collectors.toList());
 	}
 	
 	public List<Entity> getHostileMonsters() {
-		return entities.stream()
+		return entities.values().stream()
 			.filter(Monster.class::isInstance)
 			.filter(e -> ((Monster) e).isHostile())
 			.collect(Collectors.toList());
@@ -481,13 +491,13 @@ public class Level implements Serialisable, Persisting {
 	}
 	
 	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
-		return entities.stream()
+		return entities.values().stream()
 			.filter(e -> e.getX() == x && e.getY() == y && !e.canBeWalkedOn())
 			.collect(Collectors.toList());
 	}
 	
 	public List<Entity> getWalkableEntitiesAt(int x, int y) {
-		return entities.stream()
+		return entities.values().stream()
 			.filter(e -> e.getX() == x && e.getY() == y && e.canBeWalkedOn())
 			.collect(Collectors.toList());
 	}
@@ -504,7 +514,7 @@ public class Level implements Serialisable, Persisting {
 	public void processEntityQueues() {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
-			entities.add(entity);
+			entities.put(entity.getUUID(), entity);
 			dungeon.entityAdded(entity);
 			entity.onSpawn();
 			iterator.remove();
@@ -512,7 +522,7 @@ public class Level implements Serialisable, Persisting {
 		
 		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
-			entities.remove(entity);
+			entities.remove(entity.getUUID());
 			dungeon.entityRemoved(entity);
 			iterator.remove();
 		}
@@ -719,10 +729,12 @@ public class Level implements Serialisable, Persisting {
 		
 		visibleTiles[y * width + x] = true;
 		
-		entities.stream().filter(e -> e.getX() == x && e.getY() == y).forEach(e -> {
-			e.setLastSeenX(x);
-			e.setLastSeenY(y);
-		});
+		entities.values().stream()
+			.filter(e -> e.getX() == x && e.getY() == y)
+			.forEach(e -> {
+				e.setLastSeenX(x);
+				e.setLastSeenY(y);
+			});
 	}
 	
 	public void updateSight(Player player) {
@@ -804,7 +816,7 @@ public class Level implements Serialisable, Persisting {
 			lightTiles.get(index).add(tile);
 		}
 		
-		Stream.concat(entities.stream(), entityAddQueue.stream())
+		Stream.concat(entities.values().stream(), entityAddQueue.stream())
 			.filter(e -> e instanceof LightEmitter)
 			.forEach(e -> {
 				LightEmitter lightEmitter = (LightEmitter) e;

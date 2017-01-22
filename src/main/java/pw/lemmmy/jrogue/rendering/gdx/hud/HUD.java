@@ -11,6 +11,7 @@ import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.Prompt;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
+import pw.lemmmy.jrogue.dungeon.entities.monsters.Monster;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.tiles.TileType;
@@ -196,8 +197,46 @@ public class HUD implements Dungeon.Listener {
 		updateBrightness(player);
 		updateStatusEffects(player);
 		
+		if (settings.shouldShowAIDebug()) {
+			showEntityAIStates();
+		}
+		
 		healthLastTurn = player.getHealth();
 		energyLastTurn = player.getEnergy();
+	}
+	
+	private void showEntityAIStates() {
+		if (!dungeon.getPlayer().isDebugger()) {
+			return;
+		}
+		
+		dungeon.getLevel().getEntities().stream()
+			.filter(Monster.class::isInstance)
+			.map(e -> (Monster) e)
+			.filter(m -> m.getAI() != null)
+			.filter(m -> m.getAI().toString() != null)
+			.filter(m -> !m.getAI().toString().isEmpty())
+			.forEach(m -> {
+				int x = m.getX();
+				int y = m.getY();
+				
+				renderer.updateCamera();
+				
+				Vector3 pos = renderer.getCamera().project(
+					new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
+				);
+				
+				Table stateTable = new Table(skin);
+				stateTable.setBackground("blackTransparent");
+				
+				stateTable.add(new Label(m.getAI().toString(), skin));
+				
+				stage.getRoot().addActor(stateTable);
+				stateTable.pad(4);
+				stateTable.pack();
+				stateTable.setPosition((int) pos.x - (int) (stateTable.getWidth() / 2), (int) pos.y);
+				singleTurnActors.add(stateTable);
+			});
 	}
 	
 	private void updatePlayerLine(Player player) {

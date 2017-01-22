@@ -2,10 +2,7 @@ package pw.lemmmy.jrogue.utils;
 
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Path implements Iterable<Tile> {
@@ -17,6 +14,10 @@ public class Path implements Iterable<Tile> {
 	
 	public Tile getStep(int index) {
 		return steps.get(index);
+	}
+	
+	public List<Tile> getSteps() {
+		return steps;
 	}
 	
 	public boolean[] getAdjacentSteps(int x, int y) {
@@ -68,5 +69,9 @@ public class Path implements Iterable<Tile> {
 	@Override
 	public Spliterator<Tile> spliterator() {
 		return steps.spliterator();
+	}
+	
+	public void lock() {
+		steps = Collections.unmodifiableList(steps);
 	}
 }

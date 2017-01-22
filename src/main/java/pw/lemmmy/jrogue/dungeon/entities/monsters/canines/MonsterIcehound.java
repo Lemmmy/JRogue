@@ -3,8 +3,8 @@ package pw.lemmmy.jrogue.dungeon.entities.monsters.canines;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.EntityAppearance;
-import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
+import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
 import pw.lemmmy.jrogue.dungeon.entities.effects.StatusEffect;
 
 import java.awt.*;

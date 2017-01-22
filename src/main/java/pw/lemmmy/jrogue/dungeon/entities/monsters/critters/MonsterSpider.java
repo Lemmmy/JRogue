@@ -24,7 +24,7 @@ public class MonsterSpider extends Monster {
 	public MonsterSpider(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(4);
+		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
 		
 		setAI(new GhoulAI(this));
 		getAI().addAvoidTile(TileType.TILE_GROUND_WATER);
@@ -128,7 +128,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public void meleeAttackPlayer() {
+	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
 			DamageSource.SPIDER_BITE,

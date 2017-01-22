@@ -1,7 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.items.magical.spells;
 
 import org.json.JSONObject;
-import pw.lemmmy.jrogue.utils.Serialisable;
 import pw.lemmmy.jrogue.dungeon.entities.EntityLiving;
 import pw.lemmmy.jrogue.dungeon.entities.player.Attribute;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
@@ -10,6 +9,7 @@ import pw.lemmmy.jrogue.dungeon.entities.skills.Skill;
 import pw.lemmmy.jrogue.dungeon.entities.skills.SkillLevel;
 import pw.lemmmy.jrogue.dungeon.items.magical.DirectionType;
 import pw.lemmmy.jrogue.dungeon.items.magical.MagicalSchool;
+import pw.lemmmy.jrogue.utils.Serialisable;
 
 public abstract class Spell implements Serialisable {
 	private int knowledgeTimeout = 20000;

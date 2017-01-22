@@ -14,12 +14,11 @@ import pw.lemmmy.jrogue.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Entity implements Serialisable, Persisting {
+	private UUID uuid;
+	
 	private int x;
 	private int y;
 	
@@ -41,8 +40,11 @@ public abstract class Entity implements Serialisable, Persisting {
 	private final JSONObject persistence = new JSONObject();
 	
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
+		this.uuid = UUID.randomUUID();
+		
 		this.dungeon = dungeon;
 		this.level = level;
+		
 		this.x = x;
 		this.y = y;
 		this.lastX = x;
@@ -51,6 +53,10 @@ public abstract class Entity implements Serialisable, Persisting {
 		this.lastSeenY = y;
 		
 		this.visualID = RandomUtils.random(1000);
+	}
+	
+	public UUID getUUID() {
+		return uuid;
 	}
 	
 	public int getVisualID() {
@@ -182,6 +188,7 @@ public abstract class Entity implements Serialisable, Persisting {
 	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
+		obj.put("uuid", getUUID().toString());
 		obj.put("x", getX());
 		obj.put("y", getY());
 		obj.put("lastX", getLastX());
@@ -201,6 +208,7 @@ public abstract class Entity implements Serialisable, Persisting {
 	
 	@Override
 	public void unserialise(JSONObject obj) {
+		uuid = UUID.fromString(obj.getString("uuid"));
 		x = obj.getInt("x");
 		y = obj.getInt("y");
 		lastX = obj.getInt("lastX");
