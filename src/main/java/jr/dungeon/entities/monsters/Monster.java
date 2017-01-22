@@ -118,9 +118,11 @@ public abstract class Monster extends EntityLiving {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
-		JSONObject serialisedAI = new JSONObject();
-		ai.serialise(serialisedAI);
-		obj.put("ai", serialisedAI);
+		if (ai != null) {
+			JSONObject serialisedAI = new JSONObject();
+			ai.serialise(serialisedAI);
+			obj.put("ai", serialisedAI);
+		}
 	}
 	
 	@Override
