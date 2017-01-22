@@ -2,14 +2,11 @@ package pw.lemmmy.jrogue.utils;
 
 import pw.lemmmy.jrogue.dungeon.tiles.Tile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Path implements Iterable<Tile> {
-	private List<Tile> steps = new ArrayList<>();
+	private List<Tile> steps = Collections.unmodifiableList(new ArrayList<>());
 	
 	public int getLength() {
 		return steps.size();
