@@ -378,12 +378,11 @@ public class Level implements Serialisable, Persisting {
 				getDungeon().setPlayer((Player) entity);
 			}
 		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown entity class {}", entityClassName);
+			ErrorHandler.error("Unknown entity class " + entityClassName, e);
 		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Entity class {} has no unserialisation constructor", entityClassName);
+			ErrorHandler.error("Entity class has no unserialisation constructor " + entityClassName, e);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading entity class {}", entityClassName);
-			JRogue.getLogger().error(e);
+			ErrorHandler.error("Error loading entity class " + entityClassName, e);
 		}
 	}
 	

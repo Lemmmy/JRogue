@@ -1,5 +1,6 @@
 package jr.dungeon.items.comestibles;
 
+import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -202,12 +203,11 @@ public class ItemCorpse extends ItemComestible {
 			entity = (EntityLiving) entityConstructor.newInstance(null, null, x, y);
 			entity.unserialise(serialisedEntity);
 		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown entity class {}", entityClassName);
+			ErrorHandler.error("Unknown entity class " + entityClassName, e);
 		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Entity class {} has no unserialisation constructor", entityClassName);
+			ErrorHandler.error("Entity class has no unserialisation constructor " + entityClassName, e);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading entity class {}", entityClassName);
-			JRogue.getLogger().error(e);
+			ErrorHandler.error("Error loading entity class " + entityClassName, e);
 		}
 	}
 }
