@@ -155,17 +155,23 @@ public class StatefulAI extends AI {
 			return;
 		}
 		
-		JSONObject serialisedDefaultState = new JSONObject();
-		defaultState.serialise(serialisedDefaultState);
-		obj.put("defaultState", serialisedDefaultState);
+		if (defaultState != null) {
+			JSONObject serialisedDefaultState = new JSONObject();
+			defaultState.serialise(serialisedDefaultState);
+			obj.put("defaultState", serialisedDefaultState);
+		}
 		
-		JSONObject serialisedCurrentState = new JSONObject();
-		currentState.serialise(serialisedCurrentState);
-		obj.put("currentState", serialisedCurrentState);
+		if (currentState != null) {
+			JSONObject serialisedCurrentState = new JSONObject();
+			currentState.serialise(serialisedCurrentState);
+			obj.put("currentState", serialisedCurrentState);
+		}
 		
-		obj.put("currentTarget", currentTarget.getUUID().toString());
-		obj.put("targetLastX", targetLastX);
-		obj.put("targetLastY", targetLastY);
+		if (currentTarget != null) {
+			obj.put("currentTarget", currentTarget.getUUID().toString());
+			obj.put("targetLastX", targetLastX);
+			obj.put("targetLastY", targetLastY);
+		}
 		
 		obj.put("shouldTargetPlayer", shouldTargetPlayer);
 		obj.put("visibilityRange", visibilityRange);
