@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.dungeon.Dungeon;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.containers.Container;
@@ -254,7 +255,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 				try {
 					aspectSet.add((Class<? extends Aspect>) Class.forName((String) c));
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					ErrorHandler.error("Error unserialising EntityLiving", e);
 				}
 			});
 			

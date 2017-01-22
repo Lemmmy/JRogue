@@ -67,9 +67,7 @@ public class JRogue {
 			
 			VERSION = versionProperties.getProperty("version");
 			BUILD_DATE = versionProperties.getProperty("buildDate");
-		} catch (Exception ignored) {
-			ignored.printStackTrace();
-		}
+		} catch (Exception ignored) {}
 		
 		logger.info("---- Game started ----");
 		logger.info("JRogue version {}, built {}", VERSION, BUILD_DATE);

@@ -1,6 +1,7 @@
 package pw.lemmmy.jrogue.dungeon.tiles.states;
 
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.generators.DungeonGenerator;
 import pw.lemmmy.jrogue.dungeon.generators.GeneratorStandard;
@@ -50,7 +51,7 @@ public class TileStateClimbable extends TileState {
 				obj.optString("generatorClass", GeneratorStandard.class.getName())
 			);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			ErrorHandler.error("Error unserialising TileStateClimbable (generatorClass)", e);
 		}
 	}
 	

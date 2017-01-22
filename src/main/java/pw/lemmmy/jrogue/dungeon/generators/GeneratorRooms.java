@@ -1,5 +1,6 @@
 package pw.lemmmy.jrogue.dungeon.generators;
 
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.Level;
 import pw.lemmmy.jrogue.dungeon.entities.QuickSpawn;
@@ -271,7 +272,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
 				feature.generate(RandomUtils.randomFrom(rooms));
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				e.printStackTrace();
+				ErrorHandler.error("Error adding room features", e);
 			}
 		}
 	}

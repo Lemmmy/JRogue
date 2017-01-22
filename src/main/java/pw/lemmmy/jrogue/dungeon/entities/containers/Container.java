@@ -2,6 +2,7 @@ package pw.lemmmy.jrogue.dungeon.entities.containers;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.player.Player;
 import pw.lemmmy.jrogue.dungeon.items.Item;
@@ -164,7 +165,7 @@ public class Container implements Serialisable {
 			container.unserialise(obj);
 			return container;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
+			ErrorHandler.error("Error unserialising Container", e);
 		}
 		
 		Container container = new Container(obj.getString("name"));

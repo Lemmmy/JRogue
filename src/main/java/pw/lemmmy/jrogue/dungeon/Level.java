@@ -3,6 +3,7 @@ package pw.lemmmy.jrogue.dungeon;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pw.lemmmy.jrogue.ErrorHandler;
 import pw.lemmmy.jrogue.JRogue;
 import pw.lemmmy.jrogue.dungeon.entities.Entity;
 import pw.lemmmy.jrogue.dungeon.entities.LightEmitter;
@@ -111,7 +112,7 @@ public class Level implements Serialisable, Persisting {
 				
 				gotLevel = true;
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-				e.printStackTrace();
+				ErrorHandler.error("Error generating level", e);
 			}
 		} while (!gotLevel);
 		
