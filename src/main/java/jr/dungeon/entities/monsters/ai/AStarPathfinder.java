@@ -3,6 +3,7 @@ package jr.dungeon.entities.monsters.ai;
 import jr.dungeon.Level;
 import jr.utils.Path;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,11 +119,8 @@ public class AStarPathfinder {
 			!avoidTiles.contains(level.getTileType(x, y));
 	}
 	
-	public float getHeuristicCost(int x, int y, int tx, int ty) {
-		float dx = Math.abs(tx - x);
-		float dy = Math.abs(ty - y);
-		
-		return (dx + dy) + Math.min(dx, dy);
+	public float getHeuristicCost(int ax, int ay, int bx, int by) {
+		return Utils.chebyshevDistance(ax, ay, bx, by);
 	}
 	
 	public class Node implements Comparable<Node> {
