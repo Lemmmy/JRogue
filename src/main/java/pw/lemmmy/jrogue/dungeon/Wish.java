@@ -95,6 +95,8 @@ public class Wish {
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
 			player.getLevel().setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_RUG);
+		} else if (wish.equalsIgnoreCase("dirt")) {
+			player.getLevel().setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_DIRT);
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
 		} else if (wishItems(dungeon, player, wish)) {

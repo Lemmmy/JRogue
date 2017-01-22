@@ -22,6 +22,7 @@ public enum TileMap {
 	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0)),
 	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, TileType.TILE_ROOM_PUDDLE)),
 	TILE_ROOM_RUG(new TileRendererRug(0, 2, 8, 0, false, TileType.TILE_ROOM_RUG)),
+	TILE_ROOM_DIRT(new TileRendererDirt(4, 2, 8, 0, TileType.TILE_ROOM_DIRT)),
 	TILE_ROOM_DOOR_LOCKED(new TileRendererDoor(TileRendererDoor.DoorState.LOCKED)),
 	TILE_ROOM_DOOR_CLOSED(new TileRendererDoor(TileRendererDoor.DoorState.CLOSED)),
 	TILE_ROOM_DOOR_OPEN(new TileRendererDoor(TileRendererDoor.DoorState.OPEN)),
