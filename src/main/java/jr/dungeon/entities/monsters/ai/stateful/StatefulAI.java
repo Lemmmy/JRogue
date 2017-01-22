@@ -175,7 +175,7 @@ public class StatefulAI extends AI {
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 		
-		if (getMonster() == null) {
+		if (getMonster() == null || getMonster().getLevel() == null) {
 			return;
 		}
 		
