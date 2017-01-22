@@ -181,7 +181,7 @@ public class StatefulAI extends AI {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append(currentState.toString())
+			.append(currentState == null ? "no state" : currentState.toString())
 			.append("currentTarget", currentTarget.getClass().getSimpleName())
 			.toString();
 	}
