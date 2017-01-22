@@ -58,12 +58,12 @@ public abstract class AI implements Serialisable {
 	}
 	
 	public boolean isAdjacentTo(EntityLiving target) {
-		return (target.getX() == monster.getX() ||
-			target.getX() == monster.getX() - 1 ||
-			target.getX() == monster.getX() + 1) &&
-			(target.getY() == monster.getY() ||
-			target.getY() == monster.getY() - 1 ||
-			target.getY() == monster.getY() + 1);
+		int ax = target.getX();
+		int ay = target.getY();
+		int bx = monster.getX();
+		int by = monster.getY();
+		
+		return Utils.chebyshevDistance(ax, ay, bx, by) <= 1;
 	}
 	
 	public boolean isAdjacentToPlayer() {

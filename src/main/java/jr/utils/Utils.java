@@ -59,6 +59,13 @@ public class Utils {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 	
+	public static int chebyshevDistance(int ax, int ay, int bx, int by) {
+		int dx = Math.abs(ax - bx);
+		int dy = Math.abs(ay - by);
+		
+		return Math.max(dy, dx);
+	}
+	
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {
 		return new com.badlogic.gdx.graphics.Color(
 			(float) colour.getRed() / 255.0f,
