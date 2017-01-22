@@ -115,7 +115,7 @@ public class StatefulAI extends AI {
 		float diffX = endX - startX;
 		float diffY = endY - startY;
 		
-		float dist = Math.abs(diffX) + Math.abs(diffY);
+		float dist = Math.abs(diffX + diffY);
 		
 		float dx = diffX / dist;
 		float dy = diffY / dist;
