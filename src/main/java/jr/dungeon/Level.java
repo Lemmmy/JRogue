@@ -717,6 +717,10 @@ public class Level implements Serialisable, Persisting {
 		discoveredTiles[width * y + x] = true;
 	}
 	
+	public boolean isTileVisible(int x, int y) {
+		return !isTileInvisible(x, y);
+	}
+	
 	public boolean isTileInvisible(int x, int y) {
 		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[width * y + x];
 	}
