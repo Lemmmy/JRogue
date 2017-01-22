@@ -30,8 +30,9 @@ public class MonsterGoblin extends Monster {
 			return;
 		}
 		
-		setAI(new StatefulAI(this));
-		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 		
 		setInventoryContainer(new Container("Inventory"));
 		

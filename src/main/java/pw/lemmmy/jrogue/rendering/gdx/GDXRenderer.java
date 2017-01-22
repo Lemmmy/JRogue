@@ -306,7 +306,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	public void updateCamera() {
 		if (dungeon.getPlayer() != null) {
-			camera.position.x = dungeon.getPlayer().getX() * TileMap.TILE_WIDTH + TileMap.TILE_WIDTH / 2;
+			camera.position.x = (dungeon.getPlayer().getX() + 0.5f) * TileMap.TILE_WIDTH;
 			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
 		}
 		
