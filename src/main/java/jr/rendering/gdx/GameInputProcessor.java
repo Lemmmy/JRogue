@@ -41,7 +41,7 @@ public class GameInputProcessor implements InputProcessor {
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
 				dungeon.getPlayer().kick();
-				return true;
+				return false; // this shouldn't be false but it should be because id ont fucking know
 			}
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.T) {
