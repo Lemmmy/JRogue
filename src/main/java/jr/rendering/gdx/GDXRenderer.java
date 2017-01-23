@@ -3,8 +3,8 @@ package jr.rendering.gdx;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -48,7 +48,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Color.RED
 	);
 	
-	private LwjglApplication application;
+	private Lwjgl3Application application;
 	
 	private HUD hud;
 	private Minimap minimap;
@@ -82,11 +82,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
 		
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = settings.getScreenWidth();
-		config.height = settings.getScreenHeight();
-		config.forceExit = false;
-		application = new LwjglApplication(this, config);
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+		config.setResizable(true);
+		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+		
+		application = new Lwjgl3Application(this, config);
 	}
 	
 	@Override
