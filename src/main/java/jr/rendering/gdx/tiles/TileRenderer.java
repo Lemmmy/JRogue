@@ -68,10 +68,10 @@ public abstract class TileRenderer {
 		
 		batch.rect(
 			lx, ly, width, height,
-			Utils.awtColourToGdx(ctl),
-			Utils.awtColourToGdx(ctr),
-			Utils.awtColourToGdx(cbr),
-			Utils.awtColourToGdx(cbl)
+			Utils.awtColourToGdx(ctl, 0),
+			Utils.awtColourToGdx(ctr, 1),
+			Utils.awtColourToGdx(cbr, 2),
+			Utils.awtColourToGdx(cbl, 3)
 		);
 	}
 	

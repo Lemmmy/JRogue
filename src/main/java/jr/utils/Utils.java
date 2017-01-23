@@ -2,6 +2,7 @@ package jr.utils;
 
 import com.badlogic.gdx.Input;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ public class Utils {
 	public static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
 	public static final Map<Character, Integer[]> MOVEMENT_CHARS = new HashMap<>();
 	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	
+	private static final Map<Integer, com.badlogic.gdx.graphics.Color> DUMMY_COLOURS = new HashMap<>();
 	
 	static {
 		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new Integer[]{-1, 1});
@@ -66,12 +69,29 @@ public class Utils {
 		return Math.max(dy, dx);
 	}
 	
-	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour) {
-		return new com.badlogic.gdx.graphics.Color(
-			(float) colour.getRed() / 255.0f,
-			(float) colour.getGreen() / 255.0f,
-			(float) colour.getBlue() / 255.0f,
-			(float) colour.getAlpha() / 255.0f
-		);
+	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour, int dummyID) {
+		if (DUMMY_COLOURS.containsKey(dummyID)) {
+			com.badlogic.gdx.graphics.Color c = DUMMY_COLOURS.get(dummyID);
+			
+			c.set(
+				(float) colour.getRed() / 255.0f,
+				(float) colour.getGreen() / 255.0f,
+				(float) colour.getBlue() / 255.0f,
+				(float) colour.getAlpha() / 255.0f
+			);
+			
+			return c;
+		} else {
+			com.badlogic.gdx.graphics.Color c = new com.badlogic.gdx.graphics.Color(
+				(float) colour.getRed() / 255.0f,
+				(float) colour.getGreen() / 255.0f,
+				(float) colour.getBlue() / 255.0f,
+				(float) colour.getAlpha() / 255.0f
+			);
+			
+			DUMMY_COLOURS.put(dummyID, c);
+			
+			return c;
+		}
 	}
 }
