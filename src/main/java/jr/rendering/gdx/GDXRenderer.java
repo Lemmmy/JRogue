@@ -86,11 +86,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		config.setResizable(true);
 		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
 		
-		application = new Lwjgl3Application(this, config);
+		new Lwjgl3Application(this, config);
 	}
 	
 	@Override
 	public void create() {
+		application = (Lwjgl3Application) Gdx.app;
+		
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
 			ErrorHandler.error(null, throwable);
 			Gdx.app.exit();
@@ -283,9 +285,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onQuit() {
 		dontSave = true;
 		
-		if (application != null) {
-			application.exit();
-		}
+		application.exit();
 	}
 	
 	@Override
