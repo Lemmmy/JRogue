@@ -32,6 +32,7 @@
 - Items now age, and corpses will rot over time. Eating a rotten corpse will result in fatal food poisoning
 
 # Minor changes
+- Made the renderer use LWJGL 3 instead of LWJGL 2
 - Completely revamped the entity loop and action system to support multiple speeds better
 - Changed monster spawning so that they now spawn in level ranges
 - Some monsters (e.g. Jackals) now spawn in packs
