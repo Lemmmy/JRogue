@@ -65,7 +65,11 @@ public class ItemCorpse extends ItemComestible {
 		s += getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "";
 		
 		if (getRottenness() > 7 && isAspectKnown(observer, AspectRottenness.class)) {
-			s += "rotten ";
+			s += requiresCapitalisation ? "Rotten " : "rotten ";
+			
+			if (!s.isEmpty() && requiresCapitalisation) {
+				requiresCapitalisation = false;
+			}
 		}
 		
 		s += entity.getName(observer, requiresCapitalisation) +
