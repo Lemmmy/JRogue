@@ -282,7 +282,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onQuit() {
 		dontSave = true;
-		application.exit();
+		
+		if (application != null) {
+			application.exit();
+		}
 	}
 	
 	@Override
