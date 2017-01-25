@@ -93,14 +93,14 @@ public class MonsterSpawner implements Serialisable {
 				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 			
 			Entity monster = constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY());
-			level.entityStore.addEntity(monster);
+			level.getEntityStore().addEntity(monster);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			JRogue.getLogger().error("Error spawning monsters", e);
 		}
 	}
 	
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
-		List<Tile> validTiles = Arrays.stream(level.tileStore.getTiles())
+		List<Tile> validTiles = Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
@@ -116,7 +116,7 @@ public class MonsterSpawner implements Serialisable {
 	}
 	
 	private jr.utils.Point getMonsterSpawnPoint() {
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
@@ -130,12 +130,12 @@ public class MonsterSpawner implements Serialisable {
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !level.tileStore.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
+			.filter(t -> !level.getTileStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
 			.filter(t -> Utils.distance(
 				t.getX(),
 				t.getY(),

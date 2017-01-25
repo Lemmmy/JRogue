@@ -175,7 +175,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().tileStore.getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() == null) {
 					continue;
@@ -363,12 +363,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void drawMap(boolean allRevealed, boolean extra) {
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!allRevealed && !dungeon.getLevel().tileStore.isTileDiscovered(x, y)) {
+				if (!allRevealed && !dungeon.getLevel().getTileStore().isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().tileStore.getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					if (extra) {
@@ -387,7 +387,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			
 			effect.getPooledEffect().update(delta * 0.25f);
 			
-			if (!dungeon.getLevel().tileStore.isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!dungeon.getLevel().getTileStore().isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
 			}
 			
@@ -483,7 +483,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			
 			effect.getPooledEffect().update(delta * deltaMultiplier);
 			
-			if (dungeon.getLevel().tileStore
+			if (dungeon.getLevel().getTileStore()
 				.isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
@@ -498,10 +498,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	private void drawEntities(boolean allRevealed) {
-		dungeon.getLevel().entityStore.getEntities().stream()
+		dungeon.getLevel().getEntityStore().getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!allRevealed && !e.isStatic() && dungeon.getLevel().tileStore
+				if (!allRevealed && !e.isStatic() && dungeon.getLevel().getTileStore()
 					.isTileInvisible(e.getX(), e.getY())) {
 					return;
 				}
@@ -522,7 +522,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().tileStore.getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
@@ -550,7 +550,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
 			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().tileStore.getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);

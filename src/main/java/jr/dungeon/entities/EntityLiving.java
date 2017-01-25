@@ -310,7 +310,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 		
 		onDie(damageSource, damage, attacker, isPlayer);
 		
-		getLevel().entityStore.removeEntity(this);
+		getLevel().getEntityStore().removeEntity(this);
 	}
 	
 	protected abstract void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
@@ -324,7 +324,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 			rightHand = null;
 		}
 		
-		List<Entity> entities = getLevel().entityStore.getEntitiesAt(getX(), getY());
+		List<Entity> entities = getLevel().getEntityStore().getEntitiesAt(getX(), getY());
 		
 		Optional<Entity> ent = entities.stream()
 			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
@@ -335,7 +335,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 			entItem.getItemStack().addCount(item.getCount());
 		} else {
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
-			getLevel().entityStore.addEntity(entityItem);
+			getLevel().getEntityStore().addEntity(entityItem);
 		}
 	}
 	

@@ -22,7 +22,7 @@ public class ActionTeleport extends EntityAction {
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		
-		Tile tile = entity.getLevel().tileStore.getTile(x, y);
+		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
 		
 		if (tile == null) {
 			runOnCompleteCallback(entity);
@@ -37,7 +37,7 @@ public class ActionTeleport extends EntityAction {
 			}
 		}
 		
-		List<Entity> walkable = entity.getLevel().entityStore.getWalkableEntitiesAt(x, y);
+		List<Entity> walkable = entity.getLevel().getEntityStore().getWalkableEntitiesAt(x, y);
 		walkable.forEach(e -> e.teleport((EntityLiving) entity, entity instanceof Player));
 		
 		runOnCompleteCallback(entity);

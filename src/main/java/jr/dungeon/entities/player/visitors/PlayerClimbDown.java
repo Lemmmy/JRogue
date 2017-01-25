@@ -7,7 +7,7 @@ import jr.dungeon.tiles.TileType;
 public class PlayerClimbDown implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		Tile tile = player.getLevel().tileStore.getTile(player.getX(), player.getY());
+		Tile tile = player.getLevel().getTileStore().getTile(player.getX(), player.getY());
 		
 		if (tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {
 			player.getDungeon().log("[YELLOW]There is nothing to climb down here.[]");

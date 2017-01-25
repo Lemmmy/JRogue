@@ -20,7 +20,7 @@ public class QuickSpawn {
 			x, y, new ItemStack(new ItemGold(), amount)
 		);
 		
-		level.entityStore.addEntity(entity);
+		level.getEntityStore().addEntity(entity);
 	}
 	
 	public static void spawnClass(Class<? extends Entity> entityClass, Level level, int x, int y) {
@@ -35,7 +35,7 @@ public class QuickSpawn {
 				x, y
 			);
 			
-			level.entityStore.addEntity(entity);
+			level.getEntityStore().addEntity(entity);
 		} catch (Exception e) {
 			ErrorHandler.error("Error spawning entity", e);
 		}

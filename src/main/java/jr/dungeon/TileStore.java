@@ -373,7 +373,7 @@ public class TileStore implements Serialisable, Closeable {
 		
 		visibleTiles[y * width + x] = true;
 		
-		level.entityStore.getEntities().stream()
+		level.getEntityStore().getEntities().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)
 			.forEach(e -> {
 				e.setLastSeenX(x);

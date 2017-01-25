@@ -51,10 +51,10 @@ public class RoomGraveyard extends RoomBasic {
 		int y = rand.nextInt(getHeight() - 2) + getY() + 1;
 		
 		if (
-			getLevel().tileStore.getTileType(x, y).isFloorTile() &&
-			getLevel().entityStore.getEntitiesAt(x, y).size() == 0
+			getLevel().getTileStore().getTileType(x, y).isFloorTile() &&
+			getLevel().getEntityStore().getEntitiesAt(x, y).size() == 0
 		) {
-			getLevel().entityStore.addEntity(new EntityGravestone(getLevel().getDungeon(), getLevel(), x, y));
+			getLevel().getEntityStore().addEntity(new EntityGravestone(getLevel().getDungeon(), getLevel(), x, y));
 			
 			if (RandomUtils.rollD2()) {
 				int zombieCount = RandomUtils.random(MIN_ZOMBIES, MAX_ZOMBIES);

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class PlayerLoot implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> containerEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
+		List<Entity> containerEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
 			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
 			.collect(Collectors.toList());
 		

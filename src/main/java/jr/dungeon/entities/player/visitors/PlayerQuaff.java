@@ -19,7 +19,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	public void visit(Player player) {
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		
-		player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
+		player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
 			.filter(Quaffable.class::isInstance)
 			.filter(e -> ((Quaffable) e).canQuaff(player))
 			.findFirst()

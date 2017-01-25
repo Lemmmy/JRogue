@@ -54,7 +54,7 @@ public class Wish {
 		if (wish.equalsIgnoreCase("death")) {
 			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
 		} else if (wish.equalsIgnoreCase("kill all")) {
-			dungeon.getLevel().entityStore.getEntities().stream()
+			dungeon.getLevel().getEntityStore().getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.forEach(e -> ((EntityLiving) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
 			
@@ -62,42 +62,42 @@ public class Wish {
 		} else if (wish.equalsIgnoreCase("nutrition")) {
 			player.setNutrition(1000);
 		} else if (wish.equalsIgnoreCase("downstairs")) {
-			Arrays.stream(player.getLevel().tileStore.getTiles())
+			Arrays.stream(player.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
 				.ifPresent(t -> player.teleport(t.getX(), t.getY()));
 		} else if (wish.equalsIgnoreCase("godmode")) {
 			player.godmode();
 		} else if (wish.equalsIgnoreCase("chest")) {
-			dungeon.getLevel().entityStore.addEntity(
+			dungeon.getLevel().getEntityStore().addEntity(
 				new EntityChest(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("fountain")) {
-			dungeon.getLevel().entityStore.addEntity(
+			dungeon.getLevel().getEntityStore().addEntity(
 				new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("candlestick")) {
-			dungeon.getLevel().entityStore.addEntity(
+			dungeon.getLevel().getEntityStore().addEntity(
 				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("weapon rack")) {
-			dungeon.getLevel().entityStore.addEntity(
+			dungeon.getLevel().getEntityStore().addEntity(
 				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("altar")) {
-			dungeon.getLevel().entityStore.addEntity(
+			dungeon.getLevel().getEntityStore().addEntity(
 				new EntityAltar(dungeon, dungeon.getLevel(), player.getX(), player.getY())
 			);
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("rug")) {
-			player.getLevel().tileStore
+			player.getLevel().getTileStore()
 				.setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_RUG);
 		} else if (wish.equalsIgnoreCase("dirt")) {
-			player.getLevel().tileStore
+			player.getLevel().getTileStore()
 				.setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_DIRT);
 		} else if (wishMonsters(dungeon, player, wish)) {
 			dungeon.turn();
@@ -134,7 +134,7 @@ public class Wish {
 			if (wishGoldDroppedMatcher.find()) {
 				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
 				
-				dungeon.getLevel().entityStore.addEntity(new EntityItem(dungeon, dungeon.getLevel(),
+				dungeon.getLevel().getEntityStore().addEntity(new EntityItem(dungeon, dungeon.getLevel(),
 					player.getX(),
 					player.getY(),
 					new ItemStack(
@@ -161,36 +161,39 @@ public class Wish {
 	
 	private static boolean wishMonsters(Dungeon dungeon, Player player, String wish) {
 		if (wish.equalsIgnoreCase("jackal")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterJackal(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("fox")) {
-			dungeon.getLevel().entityStore.addEntity(new MonsterFox(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel().getEntityStore()
+				.addEntity(new MonsterFox(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("lizard")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterLizard(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		}  else if (wish.equalsIgnoreCase("hound")) {
-			dungeon.getLevel().entityStore.addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel().getEntityStore()
+				.addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("hellhound")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("icehound")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("spider")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterSpider(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("rat")) {
-			dungeon.getLevel().entityStore.addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
+			dungeon.getLevel().getEntityStore()
+				.addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		} else if (wish.equalsIgnoreCase("skeleton")) {
-			dungeon.getLevel().entityStore
+			dungeon.getLevel().getEntityStore()
 				.addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
 			return true;
 		}

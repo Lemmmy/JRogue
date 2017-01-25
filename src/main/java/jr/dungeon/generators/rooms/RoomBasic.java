@@ -18,12 +18,12 @@ public class RoomBasic extends Room {
 				
 				if (wall) {
 					if (x > getX() && x < getX() + getWidth() - 1 && x % 4 == 0) {
-						getLevel().tileStore.setTileType(x, y, getTorchTileType(generator));
+						getLevel().getTileStore().setTileType(x, y, getTorchTileType(generator));
 					} else {
-						getLevel().tileStore.setTileType(x, y, getWallTileType(generator));
+						getLevel().getTileStore().setTileType(x, y, getWallTileType(generator));
 					}
 				} else {
-					getLevel().tileStore.setTileType(x, y, getFloorTileType(generator));
+					getLevel().getTileStore().setTileType(x, y, getFloorTileType(generator));
 				}
 			}
 		}
