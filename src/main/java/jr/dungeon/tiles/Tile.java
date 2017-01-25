@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Pool;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
+import jr.utils.Gradient;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
@@ -37,6 +38,10 @@ public class Tile implements Pool.Poolable {
 		Tile tile = tilePool.obtain();
 		tile.init(level, type, x, y);
 		return tile;
+	}
+
+	public static void free(Tile tile) {
+		tilePool.free(tile);
 	}
 
 	@Override

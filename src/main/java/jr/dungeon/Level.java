@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Level implements Serialisable, Persisting {
+public class Level implements Serialisable, Persisting, Closeable {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -948,5 +948,12 @@ public class Level implements Serialisable, Persisting {
 	@Override
 	public JSONObject getPersistence() {
 		return null;
+	}
+
+	@Override
+	public void close() {
+		for (Tile t : tiles) {
+			Tile.free(t);
+		}
 	}
 }

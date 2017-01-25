@@ -126,7 +126,8 @@ public class Minimap implements Dungeon.Listener {
 		
 		Gradient gradient = Gradient.getGradient(colour, Utils.awtColourToGdx(tile.getLightColour(), 1));
 		Color newColour = gradient.getColourAtPoint(0.5f);
-		
+		Gradient.free(gradient);
+
 		mapBatch.setColor(newColour.r, newColour.g, newColour.b, isVisible ? colour.a : colour.a / 3f);
 		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
 	}

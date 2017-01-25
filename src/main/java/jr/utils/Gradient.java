@@ -24,6 +24,10 @@ public class Gradient implements Pool.Poolable {
 		return g;
 	}
 
+	public static void free(Gradient gradient) {
+		gradientPool.free(gradient);
+	}
+
 	private void init(Color start, Color end) {
 		this.start = start;
 		this.end = end;
