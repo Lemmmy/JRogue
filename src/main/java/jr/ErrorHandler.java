@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ErrorHandler {
-	private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue/issues/new?title=%s&body=%s";
+	private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue-issues/issues/new?title=%s&body=%s";
 	
 	private static final JTextArea textArea = new JTextArea(7, 30);
 	
