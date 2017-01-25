@@ -43,6 +43,6 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
-		return entity.getLevel().getTileType(x, y).isWater();
+		return entity.getLevel().tileStore.getTileType(x, y).isWater();
 	}
 }

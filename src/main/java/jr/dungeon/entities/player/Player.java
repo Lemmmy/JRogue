@@ -262,7 +262,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getLightLevel() {
-		return getLevel().getTile(getX(), getY()).getLightIntensity();
+		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
 	}
 	
 	public int getCorridorVisibilityRange() {

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class PlayerPickup implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().getEntitiesAt(player.getX(), player.getY());
+		List<Entity> floorEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY());
 		
 		for (Entity entity : floorEntities) {
 			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
@@ -23,7 +23,7 @@ public class PlayerPickup implements PlayerVisitor {
 				
 				if (item instanceof ItemGold) {
 					player.giveGold(stack.getCount());
-					player.getLevel().removeEntity(entity);
+					player.getLevel().entityStore.removeEntity(entity);
 					player.getDungeon().turn();
 					player.getDungeon().You("pick up [YELLOW]%s[].", stack.getName(player, false));
 				} else if (player.getContainer().isPresent()) {
@@ -34,7 +34,7 @@ public class PlayerPickup implements PlayerVisitor {
 						return;
 					}
 					
-					player.getLevel().removeEntity(entity);
+					player.getLevel().entityStore.removeEntity(entity);
 					player.getDungeon().turn();
 					
 					if (item.isis() || stack.getCount() > 1) {

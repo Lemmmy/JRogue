@@ -78,12 +78,25 @@ public class EntityStore implements Serialisable {
 		}
 	}
 	
-	public Collection<Entity> getEntities() {
-		return entities.values();
+	public void processEntityQueues() {
+		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
+			Entity entity = iterator.next();
+			entities.put(entity.getUUID(), entity);
+			dungeon.entityAdded(entity);
+			entity.onSpawn();
+			iterator.remove();
+		}
+		
+		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
+			Entity entity = iterator.next();
+			entities.remove(entity.getUUID());
+			dungeon.entityRemoved(entity);
+			iterator.remove();
+		}
 	}
 	
-	public Map<UUID, Entity> getEntityMap() {
-		return entities;
+	public Collection<Entity> getEntities() {
+		return entities.values();
 	}
 	
 	public List<Entity> getEntityAddQueue() {
@@ -154,31 +167,5 @@ public class EntityStore implements Serialisable {
 	public boolean removeEntity(Entity entity) {
 		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
-	}
-	
-	public void processEntityQueues() {
-		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
-			Entity entity = iterator.next();
-			entities.put(entity.getUUID(), entity);
-			dungeon.entityAdded(entity);
-			entity.onSpawn();
-			iterator.remove();
-		}
-		
-		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
-			Entity entity = iterator.next();
-			entities.remove(entity.getUUID());
-			dungeon.entityRemoved(entity);
-			iterator.remove();
-		}
-	}
-	
-	public void seeTile(int x, int y) {
-		entities.values().stream()
-			.filter(e -> e.getX() == x && e.getY() == y)
-			.forEach(e -> {
-				e.setLastSeenX(x);
-				e.setLastSeenY(y);
-			});
 	}
 }

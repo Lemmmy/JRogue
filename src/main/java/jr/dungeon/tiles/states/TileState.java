@@ -1,6 +1,8 @@
 package jr.dungeon.tiles.states;
 
+import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
 import org.json.JSONObject;
 import jr.utils.Serialisable;
 

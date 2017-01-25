@@ -17,7 +17,7 @@ public class AStarPathfinder {
 						 int maxSearchDistance,
 						 boolean allowDiagonalMovement,
 						 List<TileType> avoidTiles) {
-		if (level.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
+		if (level.tileStore.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}
 		
@@ -100,11 +100,11 @@ public class AStarPathfinder {
 		Node target = nodes[width * ty + tx];
 		
 		while (target != nodes[width * sy + sx]) {
-			path.prependStep(level.getTile(target.x, target.y));
+			path.prependStep(level.tileStore.getTile(target.x, target.y));
 			target = target.parent;
 		}
 		
-		path.prependStep(level.getTile(sx, sy));
+		path.prependStep(level.tileStore.getTile(sx, sy));
 		
 		path.lock();
 		
@@ -114,9 +114,9 @@ public class AStarPathfinder {
 	public boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
 		return !(x < 0 || x >= level.getWidth() ||
 			y < 0 || y >= level.getHeight()) &&
-			level.getTile(x, y) != null &&
-			level.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
-			!avoidTiles.contains(level.getTileType(x, y));
+			level.tileStore.getTile(x, y) != null &&
+			level.tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
+			!avoidTiles.contains(level.tileStore.getTileType(x, y));
 	}
 	
 	public float getHeuristicCost(int ax, int ay, int bx, int by) {

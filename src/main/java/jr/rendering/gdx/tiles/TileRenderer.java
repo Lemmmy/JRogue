@@ -53,15 +53,15 @@ public abstract class TileRenderer {
 		Color cbr = Color.BLACK;
 		Color cbl = Color.BLACK;
 		
-		Tile tl = dungeon.getLevel().getTile(x, y);
-		Tile tr = dungeon.getLevel().getTile(x + 1, y);
-		Tile br = dungeon.getLevel().getTile(x + 1, y + 1);
-		Tile bl = dungeon.getLevel().getTile(x, y + 1);
+		Tile tl = dungeon.getLevel().tileStore.getTile(x, y);
+		Tile tr = dungeon.getLevel().tileStore.getTile(x + 1, y);
+		Tile br = dungeon.getLevel().tileStore.getTile(x + 1, y + 1);
+		Tile bl = dungeon.getLevel().tileStore.getTile(x, y + 1);
 		
-		if (tl != null && dungeon.getLevel().isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
-		if (tr != null && dungeon.getLevel().isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
-		if (br != null && dungeon.getLevel().isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
-		if (bl != null && dungeon.getLevel().isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
+		if (tl != null && dungeon.getLevel().tileStore.isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
+		if (tr != null && dungeon.getLevel().tileStore.isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
+		if (br != null && dungeon.getLevel().tileStore.isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
+		if (bl != null && dungeon.getLevel().tileStore.isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
 		
 		float lx = (x + 0.5f) * width;
 		float ly = (y + 0.5f) * height;
@@ -79,8 +79,8 @@ public abstract class TileRenderer {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 		
-		if (dungeon.getLevel().isTileInvisible(x, y)) {
-			if (dungeon.getLevel().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
+		if (dungeon.getLevel().tileStore.isTileInvisible(x, y)) {
+			if (dungeon.getLevel().tileStore.getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {
 				batch.draw(dim, x * width, y * height, width, height);

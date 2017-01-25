@@ -173,7 +173,7 @@ public class TileStore implements Serialisable, Closeable {
 		JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
 		serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
 	}
-		
+	
 	private void unserialiseTiles(byte[] bytes) {
 		try (
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
@@ -267,16 +267,13 @@ public class TileStore implements Serialisable, Closeable {
 	public int getHeight() {
 		return height;
 	}
+	
 	public Tile[] getTiles() {
 		return tiles;
 	}
 	
 	public Boolean[] getDiscoveredTiles() {
 		return discoveredTiles;
-	}
-	
-	public Boolean[] getVisibleTiles() {
-		return visibleTiles;
 	}
 	
 	public Tile getTile(int x, int y) {
@@ -357,6 +354,10 @@ public class TileStore implements Serialisable, Closeable {
 		discoveredTiles[width * y + x] = true;
 	}
 	
+	public Boolean[] getVisibleTiles() {
+		return visibleTiles;
+	}
+	
 	public boolean isTileVisible(int x, int y) {
 		return !isTileInvisible(x, y);
 	}
@@ -372,7 +373,12 @@ public class TileStore implements Serialisable, Closeable {
 		
 		visibleTiles[y * width + x] = true;
 		
-		level.getEntityStore().seeTile(x, y);
+		level.entityStore.getEntities().stream()
+			.filter(e -> e.getX() == x && e.getY() == y)
+			.forEach(e -> {
+				e.setLastSeenX(x);
+				e.setLastSeenY(y);
+			});
 	}
 	
 	public void updateSight(Player player) {

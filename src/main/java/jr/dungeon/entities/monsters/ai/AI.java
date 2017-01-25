@@ -35,7 +35,7 @@ public abstract class AI implements Serialisable {
 	public boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 			y < 0 || y > monster.getLevel().getHeight()) &&
-			monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+			monster.getLevel().tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 	
 	public boolean canMoveTowardsPlayer() {

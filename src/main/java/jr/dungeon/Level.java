@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Level implements Serialisable, Persisting, Closeable {
+	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
+	private static final int LIGHT_ABSOLUTE = 80;
+	
 	private UUID uuid;
 	
 	private Dungeon dungeon;
@@ -33,11 +36,9 @@ public class Level implements Serialisable, Persisting, Closeable {
 	private int spawnX;
 	private int spawnY;
 	
-	private TileStore tileStore;
-	private EntityStore entityStore;
-	private MonsterSpawner monsterSpawner;
-	
-	private JSONObject persistence;
+	public TileStore tileStore;
+	public EntityStore entityStore;
+	public MonsterSpawner monsterSpawner;
 	
 	public Level(Dungeon dungeon, int width, int height, int depth) {
 		this(UUID.randomUUID(), dungeon, width, height, depth);
@@ -117,7 +118,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
 		monsterSpawner.serialise(obj);
-
+		
 		serialisePersistence(obj);
 	}
 
@@ -131,7 +132,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 			
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
 			
-			tileStore.unserialise(obj);
+			tileStore.serialise(obj);
 			entityStore.unserialise(obj);
 			monsterSpawner.unserialise(obj);
 		} catch (JSONException e) {
@@ -143,7 +144,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 
 		unserialisePersistence(obj);
 	}
-	
+		
 	public UUID getUUID() {
 		return uuid;
 	}
@@ -171,18 +172,6 @@ public class Level implements Serialisable, Persisting, Closeable {
 	
 	public Climate getClimate() {
 		return climate;
-	}
-	
-	public TileStore getTileStore() {
-		return tileStore;
-	}
-	
-	public EntityStore getEntityStore() {
-		return entityStore;
-	}
-	
-	public MonsterSpawner getMonsterSpawner() {
-		return monsterSpawner;
 	}
 	
 	public int getWidth() {
@@ -236,7 +225,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 				
 				Tile tile = Tile.getTile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
 				
-				if (!isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+				if (!tileStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour());
 					tile.setLightIntensity(lightEmitter.getLightIntensity());
 				}
@@ -266,7 +255,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 		}
 		
 		Arrays.stream(tiles)
-			.filter(t -> !isTileInvisible(t.getX(), t.getY()))
+			.filter(t -> !tileStore.isTileInvisible(t.getX(), t.getY()))
 			.forEach(Tile::resetLight);
 	}
 	
@@ -282,10 +271,10 @@ public class Level implements Serialisable, Persisting, Closeable {
 		
 		Color colour = reapplyIntensity(tile.getLightColour(), tile.getLightIntensity(), intensity);
 		
-		if (x > 0) { setIntensity(getTile(x - 1, y), intensity, colour, isInitial); }
-		if (x < getWidth() - 1) { setIntensity(getTile(x + 1, y), intensity, colour, isInitial); }
-		if (y > 0) { setIntensity(getTile(x, y - 1), intensity, colour, isInitial); }
-		if (y < getHeight() - 1) { setIntensity(getTile(x, y + 1), intensity, colour, isInitial); }
+		if (x > 0) { setIntensity(tileStore.getTile(x - 1, y), intensity, colour, isInitial); }
+		if (x < getWidth() - 1) { setIntensity(tileStore.getTile(x + 1, y), intensity, colour, isInitial); }
+		if (y > 0) { setIntensity(tileStore.getTile(x, y - 1), intensity, colour, isInitial); }
+		if (y < getHeight() - 1) { setIntensity(tileStore.getTile(x, y + 1), intensity, colour, isInitial); }
 		
 		colour = new Color(
 			(int) (colour.getRed() * 0.9f),
@@ -294,11 +283,11 @@ public class Level implements Serialisable, Persisting, Closeable {
 			colour.getAlpha()
 		);
 		
-		if (x > 0 && y < getWidth() - 1) { setIntensity(getTile(x - 1, y + 1), intensity, colour, isInitial); }
-		if (x < getWidth() - 1 && y > 0) { setIntensity(getTile(x + 1, y - 1), intensity, colour, isInitial); }
-		if (x > 0 && y < 0) { setIntensity(getTile(x - 1, y - 1), intensity, colour, isInitial); }
+		if (x > 0 && y < getWidth() - 1) { setIntensity(tileStore.getTile(x - 1, y + 1), intensity, colour, isInitial); }
+		if (x < getWidth() - 1 && y > 0) { setIntensity(tileStore.getTile(x + 1, y - 1), intensity, colour, isInitial); }
+		if (x > 0 && y < 0) { setIntensity(tileStore.getTile(x - 1, y - 1), intensity, colour, isInitial); }
 		if (x < getWidth() - 1 && y < getHeight() - 1) {
-			setIntensity(getTile(x + 1, y + 1), intensity, colour, isInitial);
+			setIntensity(tileStore.getTile(x + 1, y + 1), intensity, colour, isInitial);
 		}
 	}
 	
@@ -317,7 +306,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 	}
 	
 	public void setIntensity(Tile tile, int intensity, Color colour, boolean isInitial) {
-		if (tile == null || isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+		if (tile == null || tileStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 			return;
 		}
 		

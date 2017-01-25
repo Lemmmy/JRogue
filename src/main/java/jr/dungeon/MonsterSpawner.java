@@ -8,6 +8,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.generators.MonsterSpawningStrategy;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
@@ -86,23 +87,23 @@ public class MonsterSpawner implements Serialisable {
 		}
 	}
 	
-	private void spawnMonsterAtPoint(Class<? extends Monster> monsterClass, jr.utils.Point point) {
+	void spawnMonsterAtPoint(Class<? extends Monster> monsterClass, Point point) {
 		try {
 			Constructor<? extends Monster> constructor = monsterClass
 				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 			
-			Entity monster = constructor.newInstance(dungeon, this, point.getX(), point.getY());
-			level.getEntityStore().addEntity(monster);
+			Entity monster = constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY());
+			level.entityStore.addEntity(monster);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			JRogue.getLogger().error("Error spawning monsters", e);
 		}
 	}
 	
-	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, jr.utils.Point point, int amount) {
-		List<Tile> validTiles = Arrays.stream(level.getTileStore().getTiles())
+	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
+		List<Tile> validTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
-					t.getType() == TileType.TILE_CORRIDOR
+				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.sorted(Comparator.comparingInt(a -> Utils.distance(
 				point.getX(), point.getY(),
@@ -110,14 +111,15 @@ public class MonsterSpawner implements Serialisable {
 			)))
 			.collect(Collectors.toList());
 		
-		validTiles.subList(0, amount).forEach(t -> spawnMonsterAtPoint(monsterClass, new jr.utils.Point(t.getX(), t.getY())));
+		validTiles.subList(0, amount).forEach(t ->
+			spawnMonsterAtPoint(monsterClass, new jr.utils.Point(t.getX(), t.getY())));
 	}
 	
 	private jr.utils.Point getMonsterSpawnPoint() {
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
-					t.getType() == TileType.TILE_CORRIDOR
+				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
 		);
@@ -128,12 +130,12 @@ public class MonsterSpawner implements Serialisable {
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
-					t.getType() == TileType.TILE_CORRIDOR
+				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !level.getTileStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
+			.filter(t -> !level.tileStore.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
 			.filter(t -> Utils.distance(
 				t.getX(),
 				t.getY(),
