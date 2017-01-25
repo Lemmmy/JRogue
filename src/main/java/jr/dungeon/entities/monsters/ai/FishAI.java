@@ -28,7 +28,8 @@ public class FishAI extends AI {
 		}
 		
 		if (random.nextFloat() < moveProbability) {
-			Tile[] tiles = getMonster().getLevel().getAdjacentTiles(getMonster().getX(), getMonster().getY());
+			Tile[] tiles = getMonster().getLevel().tileStore
+				.getAdjacentTiles(getMonster().getX(), getMonster().getY());
 			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t
 				.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
 			

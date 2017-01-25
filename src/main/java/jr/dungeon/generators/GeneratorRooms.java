@@ -309,7 +309,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		int stairY = nextInt(spawnRoom.getY() + 2, spawnRoom.getY() + spawnRoom.getHeight() - 2);
 		
 		if (sourceTile != null) {
-			Tile spawnTile = level.getTile(stairX, stairY);
+			Tile spawnTile = level.tileStore.getTile(stairX, stairY);
 			spawnTile.setType(getUpstairsTileType());
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
@@ -324,7 +324,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		}
 		
 		spawnRoom.setSpawn();
-		startTile = level.getTile(stairX, stairY);
+		startTile = level.tileStore.getTile(stairX, stairY);
 		level.setSpawnPoint(stairX, stairY);
 		
 		return true;
@@ -362,20 +362,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			nextStairsRoom.getY() + nextStairsRoom.getHeight() - 2
 		);
 		
-		level.setTileType(stairX, stairY, getDownstairsTileType());
+		level.tileStore.setTileType(stairX, stairY, getDownstairsTileType());
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.setTileType(stairX, stairY, getUpstairsTileType());
+			level.tileStore.setTileType(stairX, stairY, getUpstairsTileType());
 		}
 		
-		Tile stairTile = level.getTile(stairX, stairY);
+		Tile stairTile = level.tileStore.getTile(stairX, stairY);
 		
 		if (stairTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
 			tsc.setDestGenerator(getNextGenerator());
 		}
 		
-		endTile = level.getTile(stairX, stairY);
+		endTile = level.tileStore.getTile(stairX, stairY);
 	}
 	
 	protected boolean verify() {
@@ -402,7 +402,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
 			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
+				if (level.tileStore.getTileType(x, y) == null || !level.tileStore.getTileType(x, y).isBuildable()) {
 					return false;
 				}
 			}

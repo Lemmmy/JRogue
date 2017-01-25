@@ -10,7 +10,7 @@ public class PlayerRead extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
 		Optional<jr.dungeon.entities.interfaces.Readable> or =
-			player.getLevel().getEntitiesAt(player.getX(), player.getY()).stream()
+			player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
 			.filter(jr.dungeon.entities.interfaces.Readable.class::isInstance)
 			.map(e -> (jr.dungeon.entities.interfaces.Readable) e)
 			.filter(r -> r.canRead(player))

@@ -210,7 +210,7 @@ public class HUD implements Dungeon.Listener {
 			return;
 		}
 		
-		dungeon.getLevel().getEntities().stream()
+		dungeon.getLevel().entityStore.getEntities().stream()
 			.filter(Monster.class::isInstance)
 			.map(e -> (Monster) e)
 			.filter(m -> m.getAI() != null)
@@ -312,7 +312,7 @@ public class HUD implements Dungeon.Listener {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 		
-		int sheetX = player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
+		int sheetX = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 		
 		brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", sheetX, 2, 16, 16, false)));
 		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));

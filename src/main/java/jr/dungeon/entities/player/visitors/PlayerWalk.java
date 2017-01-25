@@ -28,7 +28,7 @@ public class PlayerWalk implements PlayerVisitor {
 		int newX = player.getX() + dx;
 		int newY = player.getY() + dy;
 		
-		Tile tile = player.getLevel().getTile(newX, newY);
+		Tile tile = player.getLevel().tileStore.getTile(newX, newY);
 		
 		if (tile == null) {
 			return;
@@ -39,7 +39,7 @@ public class PlayerWalk implements PlayerVisitor {
 			return;
 		}
 		
-		List<Entity> destEntities = player.getLevel().getEntitiesAt(newX, newY);
+		List<Entity> destEntities = player.getLevel().entityStore.getEntitiesAt(newX, newY);
 		
 		if (destEntities.size() > 0) {
 			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)

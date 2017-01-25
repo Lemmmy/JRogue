@@ -17,12 +17,12 @@ public class FeatureAltar extends SpecialRoomFeature {
 		int altarY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		EntityAltar altar = new EntityAltar(room.getLevel().getDungeon(), room.getLevel(), altarX, altarY);
-		room.getLevel().addEntity(altar);
+		room.getLevel().entityStore.addEntity(altar);
 		
 		for (int y = altarY - 1; y < altarY + 2; y++) {
 			for (int x = altarX - 1; x < altarX + 2; x++) {
-				if (room.getLevel().getTileType(x, y).isFloorTile()) {
-					room.getLevel().setTileType(x, y, TileType.TILE_ROOM_RUG);
+				if (room.getLevel().tileStore.getTileType(x, y).isFloorTile()) {
+					room.getLevel().tileStore.setTileType(x, y, TileType.TILE_ROOM_RUG);
 				}
 			}
 		}
@@ -31,16 +31,16 @@ public class FeatureAltar extends SpecialRoomFeature {
 			int x = altarX - 1;
 			int y = altarY;
 			
-			if (room.getLevel().getTileType(x, y).isFloorTile()) {
+			if (room.getLevel().tileStore.getTileType(x, y).isFloorTile()) {
 				EntityCandlestick cs1 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
-				room.getLevel().addEntity(cs1);
+				room.getLevel().entityStore.addEntity(cs1);
 			}
 			
 			x = altarX + 1;
 			
-			if (room.getLevel().getTileType(x, y).isFloorTile()) {
+			if (room.getLevel().tileStore.getTileType(x, y).isFloorTile()) {
 				EntityCandlestick cs2 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
-				room.getLevel().addEntity(cs2);
+				room.getLevel().entityStore.addEntity(cs2);
 			}
 		}
 	}

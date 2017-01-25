@@ -21,9 +21,9 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 	
 	@Override
 	public void visit(Player player) {
-		Tile destTile = player.getLevel().getTile(tx, ty);
+		Tile destTile = player.getLevel().tileStore.getTile(tx, ty);
 		
-		if (destTile == null || !player.getLevel().isTileDiscovered(tx, ty)) {
+		if (destTile == null || !player.getLevel().tileStore.isTileDiscovered(tx, ty)) {
 			player.getDungeon().You("can't travel there.");
 			return;
 		}
@@ -72,7 +72,8 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 				return;
 			}
 			
-			if (i.get() > 2 && player.getLevel().getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
+			if (i.get() > 2 && player.getLevel().entityStore
+				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
 				stop.set(true);
 			}
 		});

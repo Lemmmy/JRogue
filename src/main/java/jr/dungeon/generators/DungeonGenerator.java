@@ -59,8 +59,8 @@ public abstract class DungeonGenerator {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (level.getTileType(x, y).isBuildable()) {
-				level.setTileType(x, y, tile);
+			if (level.tileStore.getTileType(x, y).isBuildable()) {
+				level.tileStore.setTileType(x, y, tile);
 			} else if (buildDoors && canPlaceDoor(x, y)) {
 				safePlaceDoor(x, y);
 			}
@@ -68,8 +68,8 @@ public abstract class DungeonGenerator {
 	}
 	
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTileType(x, y).isWallTile()) {
-			TileType[] adjacentTiles = level.getAdjacentTileTypes(x, y);
+		if (level.tileStore.getTileType(x, y).isWallTile()) {
+			TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(x, y);
 			
 			for (TileType tile : adjacentTiles) {
 				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
@@ -84,16 +84,16 @@ public abstract class DungeonGenerator {
 	}
 	
 	protected void safePlaceDoor(int x, int y) {
-		level.setTileType(x, y, DOOR_TYPES.next());
+		level.tileStore.setTileType(x, y, DOOR_TYPES.next());
 		
 		for (int[] direction : Utils.DIRECTIONS) {
 			int nx = x + direction[0];
 			int ny = y + direction[1];
 			
-			TileType t = level.getTileType(nx, ny);
+			TileType t = level.tileStore.getTileType(nx, ny);
 			
 			if (t == TileType.TILE_GROUND) {
-				level.setTileType(nx, ny, TileType.TILE_CORRIDOR);
+				level.tileStore.setTileType(nx, ny, TileType.TILE_CORRIDOR);
 			}
 		}
 	}
@@ -112,7 +112,7 @@ public abstract class DungeonGenerator {
 	}
 	
 	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.getAdjacentTileTypes(x, y));
+		return getWallOrientation(level.tileStore.getAdjacentTileTypes(x, y));
 	}
 	
 	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
