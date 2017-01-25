@@ -124,7 +124,7 @@ public class Minimap implements Dungeon.Listener {
 			colour = DOOR_COLOUR;
 		}
 		
-		Gradient gradient = new Gradient(colour, Utils.awtColourToGdx(tile.getLightColour(), 1));
+		Gradient gradient = Gradient.getGradient(colour, Utils.awtColourToGdx(tile.getLightColour(), 1));
 		Color newColour = gradient.getColourAtPoint(0.5f);
 		
 		mapBatch.setColor(newColour.r, newColour.g, newColour.b, isVisible ? colour.a : colour.a / 3f);
