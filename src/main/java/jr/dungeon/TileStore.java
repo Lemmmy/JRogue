@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
-public class TileStore implements Serialisable {
+public class TileStore implements Serialisable, Closeable {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -47,7 +47,7 @@ public class TileStore implements Serialisable {
 		visibleTiles = new Boolean[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
-			tiles[i] = new Tile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
+			tiles[i] = Tile.getTile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
 		}
 		
 		Arrays.fill(discoveredTiles, false);
@@ -419,5 +419,12 @@ public class TileStore implements Serialisable {
 	public void seeAll() {
 		Arrays.fill(visibleTiles, true);
 		Arrays.fill(discoveredTiles, true);
+	}
+	
+	@Override
+	public void close() {
+		for (Tile t : tiles) {
+			Tile.free(t);
+		}
 	}
 }

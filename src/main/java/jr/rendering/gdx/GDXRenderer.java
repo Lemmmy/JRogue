@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
 	
-	private static final Gradient PATH_GRADIENT = new Gradient(
+	private static final Gradient PATH_GRADIENT = Gradient.getGradient(
 		Color.GREEN,
 		Color.RED
 	);
