@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MonsterSpawner implements Serialisable {
+	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
+	
 	private MonsterSpawningStrategy monsterSpawningStrategy;
 	
 	private Dungeon dungeon;
@@ -97,7 +99,7 @@ public class MonsterSpawner implements Serialisable {
 	}
 	
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, jr.utils.Point point, int amount) {
-		List<Tile> validTiles = Arrays.stream(tiles)
+		List<Tile> validTiles = Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 					t.getType() == TileType.TILE_CORRIDOR
@@ -112,7 +114,7 @@ public class MonsterSpawner implements Serialisable {
 	}
 	
 	private jr.utils.Point getMonsterSpawnPoint() {
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 					t.getType() == TileType.TILE_CORRIDOR
@@ -126,12 +128,12 @@ public class MonsterSpawner implements Serialisable {
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(tiles)
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 					t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !visibleTiles[width * t.getY() + t.getX()])
+			.filter(t -> !level.getTileStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
 			.filter(t -> Utils.distance(
 				t.getX(),
 				t.getY(),

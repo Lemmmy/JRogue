@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Level implements Serialisable, Persisting, Closeable {
-	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
-	
 	private UUID uuid;
 	
 	private Dungeon dungeon;
