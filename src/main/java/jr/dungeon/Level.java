@@ -79,7 +79,7 @@ public class Level implements Serialisable, Persisting {
 		visibleTiles = new Boolean[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
-			tiles[i] = new Tile(this, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
+			tiles[i] = Tile.getTile(this, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
 		}
 		
 		Arrays.fill(discoveredTiles, false);
@@ -827,7 +827,7 @@ public class Level implements Serialisable, Persisting {
 				
 				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 				
-				Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
+				Tile tile = Tile.getTile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
 				
 				if (!isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour());
