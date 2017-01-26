@@ -14,7 +14,7 @@ apply plugin: "application"
 
 archivesBaseName = "JRogue"
 mainClassName = "jr.JRogue"
-version = "alpha-0.2"
+version = "alpha-0.3"
 
 sourceCompatibility = 1.8
 
