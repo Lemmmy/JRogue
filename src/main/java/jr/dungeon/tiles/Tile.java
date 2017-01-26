@@ -1,5 +1,6 @@
 package jr.dungeon.tiles;
 
+import com.badlogic.gdx.utils.Pool;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
@@ -8,7 +9,14 @@ import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class Tile {
+public class Tile implements Pool.Poolable {
+	private static final Pool<Tile> tilePool = new Pool<Tile>() {
+		@Override
+		protected Tile newObject() {
+			return new Tile();
+		}
+	};
+
 	public int x;
 	public int y;
 	
@@ -20,8 +28,34 @@ public class Tile {
 	private int absorb;
 	
 	private Level level;
+
+	private Tile() {
+		reset();
+	}
+
+	public static Tile getTile(Level level, TileType type, int x, int y) {
+		Tile tile = tilePool.obtain();
+		tile.init(level, type, x, y);
+		return tile;
+	}
+
+	public static void free(Tile tile) {
+		tilePool.free(tile);
+	}
+
+	@Override
+	public void reset() {
+		this.x = 0;
+		this.y = 0;
+		this.type = null;
+		this.state = null;
+		this.light = null;
+		this.lightIntensity = 0;
+		this.absorb = 0;
+		this.level = null;
+	}
 	
-	public Tile(Level level, TileType type, int x, int y) {
+	private void init(Level level, TileType type, int x, int y) {
 		this.level = level;
 		this.type = type;
 		
@@ -39,11 +73,11 @@ public class Tile {
 		absorb = type.getAbsorb();
 		
 		if (light == null) {
-			light = level.getAmbientLight();
-			lightIntensity = level.getAmbientLightIntensity();
+			light = level.getLightStore().getAmbientLight();
+			lightIntensity = level.getLightStore().getAmbientLightIntensity();
 		}
 		
-		light = level.applyIntensity(light, lightIntensity);
+		light = level.getLightStore().applyIntensity(light, lightIntensity);
 	}
 	
 	private void initialiseState() {

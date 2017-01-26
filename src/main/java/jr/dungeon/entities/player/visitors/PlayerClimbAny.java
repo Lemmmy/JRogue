@@ -7,7 +7,7 @@ import jr.dungeon.tiles.TileType;
 public class PlayerClimbAny implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		Tile tile = player.getLevel().getTile(player.getX(), player.getY());
+		Tile tile = player.getLevel().getTileStore().getTile(player.getX(), player.getY());
 		
 		if (tile.getType() != TileType.TILE_ROOM_STAIRS_UP && tile.getType() != TileType.TILE_ROOM_LADDER_UP &&
 			tile.getType() != TileType.TILE_ROOM_STAIRS_DOWN && tile.getType() != TileType.TILE_ROOM_LADDER_DOWN) {

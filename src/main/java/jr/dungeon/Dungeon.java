@@ -83,7 +83,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		this.name = this.originalName;
 		
 		if (level != null) {
-			level.removeEntity(player);
+			level.getEntityStore().removeEntity(player);
 		} else {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 			levels.put(level.getUUID(), level);
@@ -105,7 +105,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 		
 		player.setLevel(level);
-		level.addEntity(player);
+		level.getEntityStore().addEntity(player);
 		
 		listeners.forEach(l -> l.onLevelChange(level));
 	}
@@ -233,12 +233,16 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 				
 				return;
 			}
-			
+
+			if (level != null) {
+				level.close();
+			}
+
 			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 			
-			level.buildLight(true);
-			level.updateSight(player);
+			level.getLightStore().buildLight(true);
+			level.getVisibilityStore().updateSight(player);
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);
 		}
@@ -262,14 +266,18 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public void changeLevel(Level level, int x, int y) {
+		if (this.level != null) {
+			this.level.close();
+		}
+
 		this.level = level;
 		
-		getPlayer().getLevel().removeEntity(player);
-		getPlayer().getLevel().processEntityQueues();
+		getPlayer().getLevel().getEntityStore().removeEntity(player);
+		getPlayer().getLevel().getEntityStore().processEntityQueues();
 		
 		getPlayer().setLevel(level);
-		level.addEntity(player);
-		level.processEntityQueues();
+		level.getEntityStore().addEntity(player);
+		level.getEntityStore().processEntityQueues();
 		
 		getPlayer().setPosition(x, y);
 		
@@ -277,7 +285,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		listeners.forEach(l -> l.onLevelChange(level));
 		
-		level.getEntities().forEach(e -> listeners.forEach(l -> l.onEntityAdded(e)));
+		level.getEntityStore().getEntities().forEach(e -> listeners.forEach(l -> l.onEntityAdded(e)));
 	}
 	
 	public void quit() {
@@ -349,7 +357,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		} else {
 			listeners.forEach(l -> l.onBeforeTurn(turn));
 			log("Welcome back to [CYAN]%s[].", this.name);
-			level.processEntityQueues();
+			level.getEntityStore().processEntityQueues();
 			listeners.forEach(l -> l.onTurn(turn));
 		}
 	}
@@ -418,7 +426,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 		
 		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
-		level.processEntityQueues();
+		level.getEntityStore().processEntityQueues();
 		
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 		
@@ -438,7 +446,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			} while (entitiesCanMove);
 			
 			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
-				for (Entity entity : level.getEntities()) {
+				for (Entity entity : level.getEntityStore().getEntities()) {
 					if (!player.isAlive()) {
 						break;
 					}
@@ -472,10 +480,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			return;
 		}
 		
-		level.processEntityQueues();
+		level.getEntityStore().processEntityQueues();
 		
-		level.updateSight(player);
-		level.buildLight(false);
+		level.getVisibilityStore().updateSight(player);
+		level.getLightStore().buildLight(false);
 		
 		listeners.forEach(l -> l.onTurn(turn));
 	}
@@ -483,7 +491,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private boolean moveEntities() {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
-		level.getEntities().stream()
+		level.getEntityStore().getEntities().stream()
 			.filter(e -> e instanceof EntityTurnBased)
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
@@ -513,17 +521,17 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 		
 		if (
-			level.getHostileMonsters().size() < Math.abs(level.getDepth() * 2 + 10) &&
+			level.getEntityStore().getHostileMonsters().size() < Math.abs(level.getDepth() * 2 + 10) &&
 				--monsterSpawnCounter <= 0
 			) {
-			level.spawnNewMonsters();
+			level.getMonsterSpawner().spawnNewMonsters();
 			
 			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
 	}
 	
 	private void emitPassiveSounds() {
-		List<Entity> emitters = level.getEntities().stream()
+		List<Entity> emitters = level.getEntityStore().getEntities().stream()
 			.filter(e -> e instanceof PassiveSoundEmitter)
 			.collect(Collectors.toList());
 		

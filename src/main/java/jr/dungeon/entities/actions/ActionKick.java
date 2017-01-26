@@ -65,8 +65,8 @@ public class ActionKick extends EntityAction {
 	}
 	
 	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int x, int y) {
-		Tile tile = entity.getLevel().getTile(x, y);
-		TileType tileType = entity.getLevel().getTileType(x, y);
+		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
+		TileType tileType = entity.getLevel().getTileStore().getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {

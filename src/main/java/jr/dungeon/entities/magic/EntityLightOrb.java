@@ -45,7 +45,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 				"%s flashes brightly and then disappears into thin air.",
 				getName(getDungeon().getPlayer(), false)
 			);
-			getLevel().removeEntity(this);
+			getLevel().getEntityStore().removeEntity(this);
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		int x = getX() + dx;
 		int y = getY() + dy;
 		
-		TileType tile = getLevel().getTileType(x, y);
+		TileType tile = getLevel().getTileStore().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
