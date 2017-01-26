@@ -62,7 +62,7 @@ public class EntityStore implements Serialisable {
 				int.class
 			);
 			
-			Entity entity = entityConstructor.newInstance(dungeon, this, x, y);
+			Entity entity = entityConstructor.newInstance(dungeon, level, x, y);
 			entity.unserialise(serialisedEntity);
 			addEntity(entity);
 			
