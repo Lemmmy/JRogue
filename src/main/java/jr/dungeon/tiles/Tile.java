@@ -35,7 +35,7 @@ public class Tile implements Pool.Poolable {
 
 	public static Tile getTile(Level level, TileType type, int x, int y) {
 		Tile tile = tilePool.obtain();
-		tile.init(level, type, x, y);
+		tile.initialise(level, type, x, y);
 		return tile;
 	}
 
@@ -55,14 +55,12 @@ public class Tile implements Pool.Poolable {
 		this.level = null;
 	}
 	
-	private void init(Level level, TileType type, int x, int y) {
+	private void initialise(Level level, TileType type, int x, int y) {
 		this.level = level;
 		this.type = type;
 		
 		this.x = x;
 		this.y = y;
-		
-		resetLight();
 		
 		initialiseState();
 	}
