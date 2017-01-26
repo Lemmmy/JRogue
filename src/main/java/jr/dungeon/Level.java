@@ -117,8 +117,9 @@ public class Level implements Serialisable, Persisting, Closeable {
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
-		getLightStore().serialise(obj);
-		getMonsterSpawner().serialise(obj);
+		lightStore.serialise(obj);
+		visibilityStore.serialise(obj);
+		monsterSpawner.serialise(obj);
 		
 		serialisePersistence(obj);
 	}
@@ -135,8 +136,9 @@ public class Level implements Serialisable, Persisting, Closeable {
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
-			getLightStore().unserialise(obj);
-			getMonsterSpawner().unserialise(obj);
+			lightStore.unserialise(obj);
+			visibilityStore.unserialise(obj);
+			monsterSpawner.unserialise(obj);
 		} catch (JSONException e) {
 			JRogue.getLogger().error("Error loading level:");
 			JRogue.getLogger().error(e);
