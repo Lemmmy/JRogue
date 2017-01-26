@@ -4,7 +4,6 @@ import com.badlogic.gdx.utils.Pool;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
-import jr.utils.Gradient;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
@@ -74,11 +73,11 @@ public class Tile implements Pool.Poolable {
 		absorb = type.getAbsorb();
 		
 		if (light == null) {
-			light = level.getAmbientLight();
-			lightIntensity = level.getAmbientLightIntensity();
+			light = level.getLightStore().getAmbientLight();
+			lightIntensity = level.getLightStore().getAmbientLightIntensity();
 		}
 		
-		light = level.applyIntensity(light, lightIntensity);
+		light = level.getLightStore().applyIntensity(light, lightIntensity);
 	}
 	
 	private void initialiseState() {

@@ -72,11 +72,11 @@ public class EntityItem extends Entity {
 				kicker.addStatusEffect(new MercuryPoisoning());
 			}
 			
-			getLevel().removeEntity(this);
+			getLevel().getEntityStore().removeEntity(this);
 			return;
 		}
 		
-		TileType tile = getLevel().getTileType(x, y);
+		TileType tile = getLevel().getTileStore().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
@@ -99,7 +99,7 @@ public class EntityItem extends Entity {
 	public void onSpawn() {
 		super.onSpawn();
 		
-		getLevel().getEntitiesAt(getX(), getY()).stream()
+		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 			.filter(e -> e != this)
 			.forEach(e -> e.onItemDropped(this));
 	}

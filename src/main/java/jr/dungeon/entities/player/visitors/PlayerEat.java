@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PlayerEat extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().getEntitiesAt(player.getX(), player.getY());
+		List<Entity> floorEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY());
 		
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
@@ -67,7 +67,7 @@ public class PlayerEat extends PlayerItemVisitor {
 									  EntityItem entity,
 									  Player player) {
 		if (stack.getCount() == 1) {
-			entity.getLevel().removeEntity(entity);
+			entity.getLevel().getEntityStore().removeEntity(entity);
 		} else {
 			stack.subtractCount(1);
 		}
@@ -81,7 +81,7 @@ public class PlayerEat extends PlayerItemVisitor {
 				new ItemStack(itemCopy, 1)
 			);
 			
-			player.getLevel().addEntity(newStack);
+			player.getLevel().getEntityStore().addEntity(newStack);
 		}
 	}
 	
