@@ -54,9 +54,11 @@ public class Level implements Serialisable, Persisting, Closeable {
 	private void initialise() {
 		tileStore = new TileStore(this);
 		entityStore = new EntityStore(this);
-		lightStore = new LightStore(this);
 		visibilityStore = new VisibilityStore(this);
+		lightStore = new LightStore(this);
 		monsterSpawner = new MonsterSpawner(this);
+		
+		lightStore.initialiseLight();
 		
 		persistence = new JSONObject();
 	}
