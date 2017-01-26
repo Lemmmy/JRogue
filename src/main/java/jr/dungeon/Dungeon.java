@@ -241,7 +241,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 			
-			level.buildLight(true);
+			level.getLighting().buildLight(true);
 			level.getTileStore().updateSight(player);
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);
@@ -483,7 +483,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getEntityStore().processEntityQueues();
 		
 		level.getTileStore().updateSight(player);
-		level.buildLight(false);
+		level.getLighting().buildLight(false);
 		
 		listeners.forEach(l -> l.onTurn(turn));
 	}

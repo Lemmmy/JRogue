@@ -28,7 +28,6 @@ public class TileStore implements Serialisable, Closeable {
 	
 	private Boolean[] discoveredTiles;
 	private Boolean[] visibleTiles;
-	private List<List<Tile>> lightTiles;
 	
 	private int width;
 	private int height;
@@ -39,9 +38,7 @@ public class TileStore implements Serialisable, Closeable {
 		
 		this.width = level.getWidth();
 		this.height = level.getHeight();
-	}
-	
-	public void initialise() {
+		
 		tiles = new Tile[width * height];
 		discoveredTiles = new Boolean[width * height];
 		visibleTiles = new Boolean[width * height];
@@ -57,8 +54,6 @@ public class TileStore implements Serialisable, Closeable {
 	@Override
 	public void serialise(JSONObject obj) {
 		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
-		
-		serialiseLights().ifPresent(bytes -> obj.put("lights", new String(Base64.getEncoder().encode(bytes))));
 		
 		serialiseBooleanArray(visibleTiles)
 			.ifPresent(bytes -> obj.put("visibleTiles", new String(Base64.getEncoder().encode(bytes))));
@@ -86,32 +81,6 @@ public class TileStore implements Serialisable, Closeable {
 			Arrays.stream(tiles).forEach(t -> {
 				try {
 					dos.writeShort(t.getType().getID());
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error saving level:");
-					JRogue.getLogger().error(e);
-				}
-			});
-			
-			dos.flush();
-			
-			return Optional.of(bos.toByteArray());
-		} catch (IOException e) {
-			JRogue.getLogger().error("Error saving level:");
-			JRogue.getLogger().error(e);
-		}
-		
-		return Optional.empty();
-	}
-	
-	private Optional<byte[]> serialiseLights() {
-		try (
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			DataOutputStream dos = new DataOutputStream(bos)
-		) {
-			Arrays.stream(tiles).forEach(t -> {
-				try {
-					dos.writeInt(t.getLightColour().getRGB());
-					dos.writeByte(t.getLightIntensity());
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error saving level:");
 					JRogue.getLogger().error(e);
@@ -158,8 +127,6 @@ public class TileStore implements Serialisable, Closeable {
 	public void unserialise(JSONObject obj) {
 		unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 		
-		unserialiseLights(Base64.getDecoder().decode(obj.getString("lights")));
-		
 		visibleTiles = unserialiseBooleanArray(
 			Base64.getDecoder().decode(obj.getString("visibleTiles")),
 			width * height
@@ -184,28 +151,6 @@ public class TileStore implements Serialisable, Closeable {
 					short id = dis.readShort();
 					TileType type = TileType.fromID(id);
 					t.setType(type);
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level:");
-					JRogue.getLogger().error(e);
-				}
-			});
-		} catch (IOException e) {
-			JRogue.getLogger().error("Error loading level:");
-			JRogue.getLogger().error(e);
-		}
-	}
-	
-	private void unserialiseLights(byte[] bytes) {
-		try (
-			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-			DataInputStream dis = new DataInputStream(bis)
-		) {
-			Arrays.stream(tiles).forEach(t -> {
-				try {
-					int colourInt = dis.readInt();
-					int intensity = dis.readByte();
-					t.setLightColour(new Color(colourInt));
-					t.setLightIntensity(intensity);
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error loading level:");
 					JRogue.getLogger().error(e);
