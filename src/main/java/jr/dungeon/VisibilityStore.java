@@ -123,10 +123,12 @@ public class VisibilityStore implements Serialisable {
 				discoverTile(dx, dy);
 				seeTile(dx, dy);
 				
-				if (dx < 0 || dy < 0 || dx >= width || dy >= height ||
+				if (
+					dx < 0 || dy < 0 || dx >= width || dy >= height ||
 					type.getSolidity() == TileType.Solidity.SOLID ||
 					!(dx == player.getX() && dy == player.getY()) && type.isSemiTransparent() ||
-					breakNext) {
+					breakNext
+				) {
 					break;
 				}
 				

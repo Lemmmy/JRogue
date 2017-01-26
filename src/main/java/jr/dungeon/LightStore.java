@@ -25,6 +25,8 @@ public class LightStore implements Serialisable {
 	public LightStore(Level level) {
 		this.dungeon = level.getDungeon();
 		this.level = level;
+		
+		resetLight();
 	}
 	
 	@Override
@@ -38,6 +40,8 @@ public class LightStore implements Serialisable {
 			DataOutputStream dos = new DataOutputStream(bos)
 		) {
 			Arrays.stream(level.getTileStore().getTiles()).forEach(t -> {
+				System.out.println(t);
+				
 				try {
 					dos.writeInt(t.getLightColour().getRGB());
 					dos.writeByte(t.getLightIntensity());
