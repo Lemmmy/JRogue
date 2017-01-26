@@ -31,17 +31,13 @@ public class JRogue {
 	public jr.rendering.Renderer renderer;
 	
 	public JRogue(Settings settings) {
-		if (settings.getPlayerName().equalsIgnoreCase("debugger")) {
+		try {
 			start(settings);
-		} else {
-			try {
-				start(settings);
-			} catch (Exception e) {
-				ErrorHandler.error(null, e);
-				
-				if (renderer != null) {
-					renderer.panic();
-				}
+		} catch (Exception e) {
+			ErrorHandler.error(null, e);
+			
+			if (renderer != null) {
+				renderer.panic();
 			}
 		}
 	}
