@@ -21,7 +21,6 @@ public class TileStore implements Serialisable, Closeable {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
-	private Dungeon dungeon;
 	private Level level;
 	
 	private Tile[] tiles;
@@ -33,7 +32,6 @@ public class TileStore implements Serialisable, Closeable {
 	private int height;
 	
 	public TileStore(Level level) {
-		this.dungeon = level.getDungeon();
 		this.level = level;
 		
 		this.width = level.getWidth();
