@@ -31,6 +31,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 	private TileStore tileStore;
 	private EntityStore entityStore;
 	private LightStore lightStore;
+	private VisibilityStore visibilityStore;
 	private MonsterSpawner monsterSpawner;
 	
 	private JSONObject persistence;
@@ -54,6 +55,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 		tileStore = new TileStore(this);
 		entityStore = new EntityStore(this);
 		lightStore = new LightStore(this);
+		visibilityStore = new VisibilityStore(this);
 		monsterSpawner = new MonsterSpawner(this);
 		
 		persistence = new JSONObject();
@@ -184,6 +186,10 @@ public class Level implements Serialisable, Persisting, Closeable {
 	
 	public LightStore getLightStore() {
 		return lightStore;
+	}
+	
+	public VisibilityStore getVisibilityStore() {
+		return visibilityStore;
 	}
 	
 	public MonsterSpawner getMonsterSpawner() {

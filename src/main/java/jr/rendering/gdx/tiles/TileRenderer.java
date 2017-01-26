@@ -58,10 +58,10 @@ public abstract class TileRenderer {
 		Tile br = dungeon.getLevel().getTileStore().getTile(x + 1, y + 1);
 		Tile bl = dungeon.getLevel().getTileStore().getTile(x, y + 1);
 		
-		if (tl != null && dungeon.getLevel().getTileStore().isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
-		if (tr != null && dungeon.getLevel().getTileStore().isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
-		if (br != null && dungeon.getLevel().getTileStore().isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
-		if (bl != null && dungeon.getLevel().getTileStore().isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
+		if (tl != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
+		if (tr != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
+		if (br != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
+		if (bl != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
 		
 		float lx = (x + 0.5f) * width;
 		float ly = (y + 0.5f) * height;
@@ -79,7 +79,7 @@ public abstract class TileRenderer {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 		
-		if (dungeon.getLevel().getTileStore().isTileInvisible(x, y)) {
+		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(x, y)) {
 			if (dungeon.getLevel().getTileStore().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {

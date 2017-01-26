@@ -136,7 +136,7 @@ public class MonsterSpawner implements Serialisable {
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !level.getTileStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
+			.filter(t -> !level.getVisibilityStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
 			.filter(t -> Utils.distance(
 				t.getX(),
 				t.getY(),

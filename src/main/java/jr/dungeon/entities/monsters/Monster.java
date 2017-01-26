@@ -60,8 +60,10 @@ public abstract class Monster extends EntityLiving {
 	@Override
 	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
 		if (isPlayer) {
-			if (attacker.getLevel() == getLevel() && attacker.getLevel().getTileStore()
-				.isTileVisible(getX(), getY())) {
+			if (
+				attacker.getLevel() == getLevel() &&
+				attacker.getLevel().getVisibilityStore().isTileVisible(getX(), getY())
+			) {
 				getDungeon().You("kill the %s!", getName(attacker, false));
 			} else {
 				getDungeon().You("kill it!");

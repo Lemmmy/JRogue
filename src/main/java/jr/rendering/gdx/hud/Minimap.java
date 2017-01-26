@@ -106,9 +106,9 @@ public class Minimap implements Dungeon.Listener {
 	
 	private void drawMap() {
 		for (Tile tile : dungeon.getLevel().getTileStore().getTiles()) {
-			boolean discovered = dungeon.getLevel().getTileStore()
+			boolean discovered = dungeon.getLevel().getVisibilityStore()
 				.isTileDiscovered(tile.getX(), tile.getY());
-			boolean visible = !dungeon.getLevel().getTileStore()
+			boolean visible = !dungeon.getLevel().getVisibilityStore()
 				.isTileInvisible(tile.getX(), tile.getY());
 			
 			if (discovered) {
@@ -144,12 +144,12 @@ public class Minimap implements Dungeon.Listener {
 	private void drawStairIcons() {
 		Arrays.stream(dungeon.getLevel().getTileStore().getTiles())
 			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP || t.getType() == TileType.TILE_ROOM_LADDER_UP)
-			.filter(t -> dungeon.getLevel().getTileStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> dungeon.getLevel().getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
 		
 		Arrays.stream(dungeon.getLevel().getTileStore().getTiles())
 			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN || t.getType() == TileType.TILE_ROOM_LADDER_DOWN)
-			.filter(t -> dungeon.getLevel().getTileStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> dungeon.getLevel().getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
 	}
 	
@@ -158,9 +158,9 @@ public class Minimap implements Dungeon.Listener {
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
 			.filter(
-				e -> e.isStatic() && dungeon.getLevel().getTileStore()
+				e -> e.isStatic() && dungeon.getLevel().getVisibilityStore()
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!dungeon.getLevel().getTileStore().isTileInvisible(e.getX(), e.getY())
+				!dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
@@ -169,9 +169,9 @@ public class Minimap implements Dungeon.Listener {
 	private void drawMonsterIcons() {
 		dungeon.getLevel().getEntityStore().getMonsters().stream()
 			.filter(
-				e -> e.isStatic() && dungeon.getLevel().getTileStore()
+				e -> e.isStatic() && dungeon.getLevel().getVisibilityStore()
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!dungeon.getLevel().getTileStore().isTileInvisible(e.getX(), e.getY())
+				!dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.map(e -> (Monster) e)

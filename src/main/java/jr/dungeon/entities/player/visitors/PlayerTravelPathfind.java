@@ -23,7 +23,7 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 	public void visit(Player player) {
 		Tile destTile = player.getLevel().getTileStore().getTile(tx, ty);
 		
-		if (destTile == null || !player.getLevel().getTileStore().isTileDiscovered(tx, ty)) {
+		if (destTile == null || !player.getLevel().getVisibilityStore().isTileDiscovered(tx, ty)) {
 			player.getDungeon().You("can't travel there.");
 			return;
 		}
