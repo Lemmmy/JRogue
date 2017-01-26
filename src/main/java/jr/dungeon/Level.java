@@ -30,7 +30,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 	
 	private TileStore tileStore;
 	private EntityStore entityStore;
-	private Lighting lighting;
+	private LightStore lightStore;
 	private MonsterSpawner monsterSpawner;
 	
 	private JSONObject persistence;
@@ -53,7 +53,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 	private void initialise() {
 		tileStore = new TileStore(this);
 		entityStore = new EntityStore(this);
-		lighting = new Lighting(this);
+		lightStore = new LightStore(this);
 		monsterSpawner = new MonsterSpawner(this);
 		
 		persistence = new JSONObject();
@@ -76,7 +76,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 				climate = generator.getClimate();
 				getMonsterSpawner().setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
 				
-				getLighting().buildLight(true);
+				getLightStore().buildLight(true);
 				
 				gotLevel = true;
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -115,7 +115,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
-		getLighting().serialise(obj);
+		getLightStore().serialise(obj);
 		getMonsterSpawner().serialise(obj);
 		
 		serialisePersistence(obj);
@@ -133,7 +133,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
-			getLighting().unserialise(obj);
+			getLightStore().unserialise(obj);
 			getMonsterSpawner().unserialise(obj);
 		} catch (JSONException e) {
 			JRogue.getLogger().error("Error loading level:");
@@ -182,8 +182,8 @@ public class Level implements Serialisable, Persisting, Closeable {
 		return entityStore;
 	}
 	
-	public Lighting getLighting() {
-		return lighting;
+	public LightStore getLightStore() {
+		return lightStore;
 	}
 	
 	public MonsterSpawner getMonsterSpawner() {

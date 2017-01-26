@@ -73,11 +73,11 @@ public class Tile implements Pool.Poolable {
 		absorb = type.getAbsorb();
 		
 		if (light == null) {
-			light = level.getLighting().getAmbientLight();
-			lightIntensity = level.getLighting().getAmbientLightIntensity();
+			light = level.getLightStore().getAmbientLight();
+			lightIntensity = level.getLightStore().getAmbientLightIntensity();
 		}
 		
-		light = level.getLighting().applyIntensity(light, lightIntensity);
+		light = level.getLightStore().applyIntensity(light, lightIntensity);
 	}
 	
 	private void initialiseState() {

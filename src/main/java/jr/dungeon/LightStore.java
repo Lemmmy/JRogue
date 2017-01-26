@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Lighting implements Serialisable {
+public class LightStore implements Serialisable {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -22,7 +22,7 @@ public class Lighting implements Serialisable {
 	
 	private List<List<Tile>> lightTiles;
 	
-	public Lighting(Level level) {
+	public LightStore(Level level) {
 		this.dungeon = level.getDungeon();
 		this.level = level;
 	}
