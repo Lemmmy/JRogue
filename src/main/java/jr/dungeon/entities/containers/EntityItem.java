@@ -6,6 +6,10 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.MercuryPoisoning;
+import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
@@ -60,16 +64,16 @@ public class EntityItem extends Entity {
 		itemStack.getItem().update(this);
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		int x = getX() + dx;
-		int y = getY() + dy;
+	@DungeonEventHandler(selfOnly = true)
+	protected void onKick(EntityKickedEvent e) {
+		int x = getX() + e.getDeltaX();
+		int y = getY() + e.getDeltaY();
 		
 		if (getItem() instanceof Shatterable) {
 			getDungeon().The("%s shatters into a thousand pieces!", getName(getDungeon().getPlayer(), false));
 			
 			if (getItem() instanceof ItemThermometer) {
-				kicker.addStatusEffect(new MercuryPoisoning());
+				e.getKicker().addStatusEffect(new MercuryPoisoning());
 			}
 			
 			getLevel().getEntityStore().removeEntity(this);
@@ -92,16 +96,11 @@ public class EntityItem extends Entity {
 		return itemStack.getName(observer, requiresCapitalisation);
 	}
 	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
-	
-	@Override
-	public void onSpawn() {
-		super.onSpawn();
-		
+	@DungeonEventHandler(selfOnly = true)
+	public void onSpawn(EntityAddedEvent event) {
 		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 			.filter(e -> e != this)
-			.forEach(e -> e.onItemDropped(this));
+			.forEach(e -> getDungeon().triggerEvent(new EntityItemDroppedOnEvent(e, this)));
 	}
 	
 	@Override

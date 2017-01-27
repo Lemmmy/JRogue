@@ -61,23 +61,13 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 			if (roll < 10 + living.getArmourClass()) {
 				int damage = RandomUtils.roll(2, 12);
 				
-				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
+				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource);
 			}
 		}
 		
 		if (victim instanceof Extinguishable) {
 			((Extinguishable) victim).extinguish();
 		}
-	}
-	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		
-	}
-	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		
 	}
 	
 	@Override

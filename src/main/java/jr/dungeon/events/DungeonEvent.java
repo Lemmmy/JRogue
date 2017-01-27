@@ -10,4 +10,8 @@ public abstract class DungeonEvent {
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
+	
+	public boolean isSelf(Object other) {
+		return false;
+	}
 }

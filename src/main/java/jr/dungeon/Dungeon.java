@@ -7,6 +7,7 @@ import jr.Settings;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
+import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.roles.RoleWizard;
@@ -574,7 +575,16 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEvent event) {
-		listeners.forEach(listener -> Arrays.stream(listener.getClass().getMethods())
+		listeners.forEach(l -> triggerEvent(l, event));
+		
+		if (level != null) {
+			level.getEntityStore().getEntities().forEach(e -> triggerEvent(e, event));
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void triggerEvent(DungeonEventListener listener, DungeonEvent event) {
+		Arrays.stream(listener.getClass().getMethods())
 			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
 			.filter(m -> m.getParameterCount() == 1)
 			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
@@ -583,11 +593,15 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 					return;
 				}
 				
+				if (m.getAnnotation(DungeonEventHandler.class).selfOnly() && !event.isSelf(listener)) {
+					return;
+				}
+				
 				try {
 					m.invoke(listener, event);
 				} catch (IllegalAccessException | InvocationTargetException e) {
 					ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
 				}
-			}));
+			});
 	}
 }

@@ -61,7 +61,7 @@ public class ActionKick extends EntityAction {
 			}
 		}
 		
-		kickedEntity.kick(kicker, isPlayer, dx, dy);
+		kickedEntity.kick(kicker, dx, dy);
 	}
 	
 	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int x, int y) {
@@ -87,7 +87,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker, isPlayer);
+				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker);
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
@@ -143,7 +143,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker, isPlayer);
+				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker);
 				kicker.addStatusEffect(new InjuredFoot(entity.getDungeon(), kicker, RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {

@@ -1,12 +1,16 @@
-package jr.dungeon.events;
+package jr.dungeon.entities.events;
 
 import jr.dungeon.entities.Entity;
+import jr.dungeon.events.DungeonEvent;
 
-public class EntityAttackedEvent extends DungeonEvent {
+/**
+ * FOR DEBUG PURPOSES ONLY
+ */
+public class EntityAttackedToHitRollEvent extends DungeonEvent {
 	private Entity entity;
 	private int x, y, roll, toHit;
 	
-	public EntityAttackedEvent(Entity entity, int x, int y, int roll, int toHit) {
+	public EntityAttackedToHitRollEvent(Entity entity, int x, int y, int roll, int toHit) {
 		this.entity = entity;
 		this.x = x;
 		this.y = y;

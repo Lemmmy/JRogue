@@ -5,6 +5,9 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.utils.RandomUtils;
@@ -67,9 +70,9 @@ public class EntityChest extends Entity {
 		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
+	@DungeonEventHandler
+	protected void onKick(EntityKickedEvent e) {
+		if (e.isKickerPlayer()) {
 			boolean somethingShattered = false;
 			
 			List<Map.Entry<Character, ItemStack>> shatterableItems = container.getItems().entrySet().stream()
@@ -93,16 +96,16 @@ public class EntityChest extends Entity {
 			}
 			
 			if (locked && RandomUtils.roll(4) == 1) {
-				getDungeon().greenThe("%s breaks open!", getName(getDungeon().getPlayer(), false));
+				getDungeon().greenThe("%s breaks open!", getName(e.getKicker(), false));
 				locked = false;
 			}
 		}
 	}
 	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().log("There is a %s here.", getName(getDungeon().getPlayer(), false));
+	@DungeonEventHandler
+	protected void onWalk(EntityWalkedOnEvent e) {
+		if (e.isWalkerPlayer()) {
+			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}
 	}
 	

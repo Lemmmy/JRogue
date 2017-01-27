@@ -30,7 +30,7 @@ public class FoodPoisoning extends StatusEffect {
 		if (getEntity() instanceof EntityLiving) {
 			EntityLiving living /* well, not anymore */ = (EntityLiving) getEntity();
 			
-			living.kill(DamageSource.FOOD_POISONING, living.getHealth(), null, false);
+			living.kill(DamageSource.FOOD_POISONING, living.getHealth(), null);
 		}
 	}
 }

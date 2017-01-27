@@ -9,6 +9,7 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -356,7 +357,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityAttacked(EntityAttackedEvent e) {
+	public void onEntityAttacked(EntityAttackedToHitRollEvent e) {
 		Entity entity = e.getEntity();
 		int x = e.getX();
 		int y = e.getY();

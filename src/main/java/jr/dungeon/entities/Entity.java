@@ -6,7 +6,11 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.events.EntityMovedEvent;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityMovedEvent;
+import jr.dungeon.entities.events.EntityTeleportedToEvent;
+import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
@@ -17,7 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public abstract class Entity implements Serialisable, Persisting {
+public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
 	private UUID uuid;
 	
 	private int x;
@@ -182,10 +186,6 @@ public abstract class Entity implements Serialisable, Persisting {
 		}
 	}
 	
-	public void onSpawn() {}
-	
-	public void onItemDropped(EntityItem entityItem) {}
-	
 	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
@@ -274,23 +274,17 @@ public abstract class Entity implements Serialisable, Persisting {
 		return statusEffects;
 	}
 	
-	public void kick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		onKick(kicker, isPlayer, dx, dy);
+	public void kick(EntityLiving kicker, int dx, int dy) {
+		getDungeon().triggerEvent(new EntityKickedEvent(this, kicker, dx, dy));
 	}
 	
-	protected abstract void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy);
-	
-	public void walk(EntityLiving walker, boolean isPlayer) {
-		onWalk(walker, isPlayer);
+	public void walk(EntityLiving walker) {
+		getDungeon().triggerEvent(new EntityWalkedOnEvent(this, walker));
 	}
 	
-	protected abstract void onWalk(EntityLiving walker, boolean isPlayer);
-	
-	public void teleport(EntityLiving walker, boolean isPlayer) {
-		onTeleport(walker, isPlayer);
+	public void teleport(EntityLiving teleporter) {
+		getDungeon().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
-	
-	protected void onTeleport(EntityLiving walker, boolean isPlayer) {}
 	
 	public abstract boolean canBeWalkedOn();
 

@@ -74,6 +74,6 @@ public class SpellStrike extends Spell {
 		caster.getLevel().getEntityStore().getEntities().stream()
 			.filter(e -> Utils.distance(x, y, e.getX(), e.getY()) <= getSplashRange())
 			.map(e -> (EntityLiving) e)
-			.forEach(e -> e.damage(DamageSource.STRIKE_SPELL, getDamage(), caster, caster instanceof Player));
+			.forEach(e -> e.damage(DamageSource.STRIKE_SPELL, getDamage(), caster));
 	}
 }

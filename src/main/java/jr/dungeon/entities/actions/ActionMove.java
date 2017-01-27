@@ -53,7 +53,7 @@ public class ActionMove extends EntityAction {
 		}
 		
 		List<Entity> walkable = entity.getLevel().getEntityStore().getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.walk((EntityLiving) entity, entity instanceof Player));
+		walkable.forEach(e -> e.walk((EntityLiving) entity));
 		
 		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)
 			.collect(Collectors.toList());

@@ -5,7 +5,9 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
+import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
@@ -54,10 +56,10 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		int x = getX() + dx;
-		int y = getY() + dy;
+	@DungeonEventHandler
+	protected void onKick(EntityKickedEvent e) {
+		int x = getX() + e.getDeltaY();
+		int y = getY() + e.getDeltaY();
 		
 		TileType tile = getLevel().getTileStore().getTileType(x, y);
 		
@@ -68,11 +70,6 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		}
 		
 		setPosition(x, y);
-	}
-	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		
 	}
 	
 	@Override

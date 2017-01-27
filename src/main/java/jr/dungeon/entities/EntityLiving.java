@@ -5,6 +5,9 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
+import jr.dungeon.entities.events.EntityDamagedEvent;
+import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
@@ -109,12 +112,10 @@ public abstract class EntityLiving extends EntityTurnBased {
 				
 				xpForLevel = getXPForLevel(experienceLevel);
 				
-				onLevelUp();
+				getDungeon().triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
 			}
 		}
 	}
-	
-	public void onLevelUp() {}
 	
 	public abstract int getMovementSpeed();
 	
@@ -283,16 +284,16 @@ public abstract class EntityLiving extends EntityTurnBased {
 		}
 	}
 	
-	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
 		health = Math.max(0, health - damageModifier);
 		healingTurns = 0;
 		
-		onDamage(damageSource, damage, attacker, isPlayer);
+		getDungeon().triggerEvent(new EntityDamagedEvent(this, attacker, damageSource, damage));
 		
 		if (health <= 0) {
-			kill(damageSource, damage, attacker, isPlayer);
+			kill(damageSource, damage, attacker);
 		}
 		
 		return health <= 0;
@@ -302,18 +303,14 @@ public abstract class EntityLiving extends EntityTurnBased {
 		return damage;
 	}
 	
-	protected abstract void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
-	
-	public void kill(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+	public void kill(DamageSource damageSource, int damage, EntityLiving attacker) {
 		health = 0;
 		healingTurns = 0;
 		
-		onDie(damageSource, damage, attacker, isPlayer);
+		getDungeon().triggerEvent(new EntityDeathEvent(this, attacker, damageSource, damage));
 		
 		getLevel().getEntityStore().removeEntity(this);
 	}
-	
-	protected abstract void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer);
 	
 	public void dropItem(ItemStack item) {
 		if (leftHand != null && leftHand.getItem().equals(item.getItem())) {

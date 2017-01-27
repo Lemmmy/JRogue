@@ -6,8 +6,10 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
+import jr.dungeon.events.DungeonEventHandler;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -92,8 +94,8 @@ public class MonsterFish extends Monster {
 		return 10;
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+	@DungeonEventHandler(selfOnly = true)
+	protected void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 	

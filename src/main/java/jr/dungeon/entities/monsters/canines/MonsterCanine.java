@@ -8,10 +8,13 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.events.EntityDamagedEvent;
+import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.utils.RandomUtils;
 
 public abstract class MonsterCanine extends Monster {
@@ -36,28 +39,28 @@ public abstract class MonsterCanine extends Monster {
 		return 7;
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+	@DungeonEventHandler(selfOnly = true)
+	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom("It whimpers.", "It whines.", "It cries.", "It yelps.");
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(kicker, false));
+	@DungeonEventHandler(selfOnly = true)
+	public void onKick(EntityKickedEvent e) {
+		if (e.isKickerPlayer()) {
+			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
 		
 		int dodgeChance = 5;
 		
-		if (isPlayer) {
-			Player player = (Player) kicker;
+		if (e.isKickerPlayer()) {
+			Player player = (Player) e.getKicker();
 			int agility = player.getAttributes().getAttribute(Attribute.AGILITY);
 			dodgeChance = (int) Math.ceil(agility / 3);
 		}
 		
 		if (RandomUtils.roll(1, dodgeChance) == 1) {
-			if (isPlayer) {
-				getDungeon().orangeThe("%s dodges your kick!", getName(kicker, false));
+			if (e.isKickerPlayer()) {
+				getDungeon().orangeThe("%s dodges your kick!", getName(e.getKicker(), false));
 			}
 			
 			return;
@@ -65,42 +68,42 @@ public abstract class MonsterCanine extends Monster {
 				
 		int damageChance = 2;
 		
-		if (isPlayer) {
-			Player player = (Player) kicker;
+		if (e.isKickerPlayer()) {
+			Player player = (Player) e.getKicker();
 			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
 			damageChance = (int) Math.ceil(strength / 6) + 1;
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
+			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
 		}
 		
 		if (isAlive()) {
 			if (RandomUtils.roll(1, 5) == 1) {
-				if (isPlayer) {
-					getDungeon().orangeThe("%s bites your foot!", getName(kicker, false));
+				if (e.isKickerPlayer()) {
+					getDungeon().orangeThe("%s bites your foot!", getName(e.getKicker(), false));
 				}
 				
 				if (RandomUtils.roll(1, 4) == 1) {
-					if (isPlayer) {
+					if (e.isKickerPlayer()) {
 						getDungeon().redThe("bite was pretty deep!");
 					}
 					
-					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
-					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, RandomUtils.roll(3, 6)));
+					e.getKicker().damage(DamageSource.KICK_REVENGE, 1, e.getKicker());
+					e.getKicker().addStatusEffect(new InjuredFoot(getDungeon(), e.getKicker(), RandomUtils.roll(3, 6)));
 				}
 			} else if (RandomUtils.roll(1, 5) == 1) {
-				if (isPlayer) {
-					getDungeon().orangeThe("%s yanks your leg!", getName(kicker, false));
+				if (e.isKickerPlayer()) {
+					getDungeon().orangeThe("%s yanks your leg!", getName(e.getKicker(), false));
 				}
 				
 				if (RandomUtils.roll(1, 4) == 1) {
-					if (isPlayer) {
+					if (e.isKickerPlayer()) {
 						getDungeon().log("[RED]It strains your leg!");
 					}
 					
-					kicker.damage(DamageSource.KICK_REVENGE, 1, kicker, isPlayer);
-					kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
+					e.getKicker().damage(DamageSource.KICK_REVENGE, 1, e.getKicker());
+					e.getKicker().addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 				}
 			}
 		}

@@ -2,10 +2,10 @@ package jr.dungeon;
 
 import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.EntityAddedEvent;
-import jr.dungeon.events.EntityRemovedEvent;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import org.json.JSONArray;
@@ -85,7 +85,6 @@ public class EntityStore implements Serialisable {
 			Entity entity = iterator.next();
 			entities.put(entity.getUUID(), entity);
 			dungeon.triggerEvent(new EntityAddedEvent(entity));
-			entity.onSpawn();
 			iterator.remove();
 		}
 		

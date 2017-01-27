@@ -52,11 +52,11 @@ public class Wish {
 		wish = wish.toLowerCase();
 		
 		if (wish.equalsIgnoreCase("death")) {
-			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
+			player.kill(DamageSource.WISH_FOR_DEATH, 0, null);
 		} else if (wish.equalsIgnoreCase("kill all")) {
 			dungeon.getLevel().getEntityStore().getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
-				.forEach(e -> ((EntityLiving) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+				.forEach(e -> ((EntityLiving) e).kill(DamageSource.WISH_FOR_DEATH, 0, null));
 			
 			dungeon.turn();
 		} else if (wish.equalsIgnoreCase("nutrition")) {

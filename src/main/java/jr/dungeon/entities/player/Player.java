@@ -7,12 +7,15 @@ import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
+import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.visitors.*;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
-import jr.dungeon.events.EntityAttackedEvent;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
@@ -291,8 +294,8 @@ public class Player extends EntityLiving {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@Override
-	public void onLevelUp() {
+	@DungeonEventHandler(selfOnly = true)
+	public void onLevelUp(EntityLevelledUpEvent event) {
 		levelUpEnergy();
 		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
@@ -359,7 +362,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(DamageSource.CHOKING, 1, this, true);
+			damage(DamageSource.CHOKING, 1, this);
 		}
 		
 		nutrition--;
@@ -461,27 +464,16 @@ public class Player extends EntityLiving {
 		});
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
-	
-	@Override
-	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
-		if (damageSource.getDeathString() != null) {
-			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
+	@DungeonEventHandler(selfOnly = true)
+	protected void onDie(EntityDeathEvent e) {
+		if (e.getDamageSource().getDeathString() != null) {
+			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
 		} else {
 			getDungeon().redYou("die.");
 		}
 		
 		getDungeon().deleteSave();
 	}
-	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().orangeYou("step on your own foot.");
-	}
-	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
 	
 	@Override
 	public boolean canBeWalkedOn() {
@@ -686,7 +678,7 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().triggerEvent(new EntityAttackedEvent(victim, victim.getX(), victim.getY(), roll, toHit));
+		getDungeon().triggerEvent(new EntityAttackedToHitRollEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

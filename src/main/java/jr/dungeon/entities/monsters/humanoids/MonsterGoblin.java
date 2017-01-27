@@ -9,9 +9,12 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityDamagedEvent;
+import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
@@ -133,8 +136,8 @@ public class MonsterGoblin extends Monster {
 		));
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
+	@DungeonEventHandler(selfOnly = true)
+	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom(
 			"It yelps.",
 			"It yells.",
@@ -143,10 +146,8 @@ public class MonsterGoblin extends Monster {
 		);
 	}
 	
-	@Override
-	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
-		super.onDie(damageSource, damage, attacker, isPlayer);
-		
+	@DungeonEventHandler(selfOnly = true)
+	public void onDie(EntityDeathEvent e) {
 		if (getRightHand() != null && RandomUtils.randomFloat() < DAGGER_DROP_CHANCE) {
 			dropItem(getRightHand().getStack());
 		}

@@ -1,6 +1,7 @@
-package jr.dungeon.events;
+package jr.dungeon.entities.events;
 
 import jr.dungeon.entities.Entity;
+import jr.dungeon.events.DungeonEvent;
 
 public class EntityMovedEvent extends DungeonEvent {
 	private Entity entity;
@@ -32,5 +33,10 @@ public class EntityMovedEvent extends DungeonEvent {
 	
 	public int getNewY() {
 		return newY;
+	}
+	
+	@Override
+	public boolean isSelf(Object other) {
+		return other.equals(entity);
 	}
 }

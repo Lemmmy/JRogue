@@ -2,7 +2,7 @@ package jr.dungeon;
 
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.dungeon.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
