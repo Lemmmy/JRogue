@@ -21,7 +21,6 @@ import jr.rendering.gdx.components.LightingComponent;
 import jr.rendering.gdx.components.MinimapComponent;
 import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.components.hud.HUDComponent;
-import jr.rendering.gdx.components.hud.windows.*;
 import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
 import jr.rendering.gdx.entities.EntityRenderer;
@@ -62,8 +61,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private MinimapComponent minimapComponent;
 	private LevelComponent levelComponent;
 	private LightingComponent lightingComponent;
-	
-	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
 	
@@ -302,12 +299,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void render() {
 		super.render();
-		
-		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
-			Runnable r = iterator.next();
-			r.run();
-			iterator.remove();
-		}
 		
 		float delta = Gdx.graphics.getDeltaTime();
 		
