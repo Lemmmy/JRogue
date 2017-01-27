@@ -12,10 +12,10 @@ public class EntityRendererParticleHound extends EntityRenderer {
 	protected TextureRegion image;
 	
 	public EntityRendererParticleHound(int sheetX, int sheetY, String particleName) {
-		image = getImageFromSheet("entities.png", sheetX, sheetY);
+		image = getImageFromSheet("textures/entities.png", sheetX, sheetY);
 		
 		ParticleEffect effect = new ParticleEffect();
-		effect.load(Gdx.files.internal(particleName + ".particle"), Gdx.files.internal(""));
+		effect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(effect, 100, 500);
 	}

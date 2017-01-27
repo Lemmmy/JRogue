@@ -16,13 +16,13 @@ public class EntityRendererPlayer extends EntityRenderer {
 	private TextureRegion playerHighlight;
 	
 	public EntityRendererPlayer(int sheetX, int sheetY) {
-		playerJustyn = getImageFromSheet("entities.png", 0, 1);
-		playerWizard = getImageFromSheet("entities.png", 1, 0);
+		playerJustyn = getImageFromSheet("textures/entities.png", 0, 1);
+		playerWizard = getImageFromSheet("textures/entities.png", 1, 0);
 		
-		playerHighlight = getImageFromSheet("tiles.png", 8, 1);
+		playerHighlight = getImageFromSheet("textures/tiles.png", 8, 1);
 		
 		ParticleEffect waterStepEffect = new ParticleEffect();
-		waterStepEffect.load(Gdx.files.internal("water_step.particle"), Gdx.files.internal(""));
+		waterStepEffect.load(Gdx.files.internal("particles/water_step.particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(waterStepEffect, 0, 250);
 	}

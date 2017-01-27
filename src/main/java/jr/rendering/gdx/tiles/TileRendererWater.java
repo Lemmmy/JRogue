@@ -32,8 +32,8 @@ public class TileRendererWater extends TileRendererBlob8 {
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		water = getImageFromSheet("tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("tiles.png", floorSheetX, floorSheetY);
+		water = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
 		
 		loadBlob(overlayImages, 2, 0);
 	}

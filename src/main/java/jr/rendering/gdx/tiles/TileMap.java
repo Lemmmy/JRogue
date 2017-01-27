@@ -51,7 +51,7 @@ public enum TileMap {
 	}
 	
 	TileMap(int sheetX, int sheetY) {
-		this("tiles.png", sheetX, sheetY);
+		this("textures/tiles.png", sheetX, sheetY);
 	}
 	
 	TileMap(String sheetName, int sheetX, int sheetY) {

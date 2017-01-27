@@ -10,8 +10,8 @@ public class TileRendererSewerDrain extends TileRenderer {
 	
 	public TileRendererSewerDrain() {
 		if (drain == null || water == null) {
-			drain = getImageFromSheet("tiles.png", 15, 1);
-			water = getImageFromSheet("tiles.png", 15, 2);
+			drain = getImageFromSheet("textures/tiles.png", 15, 1);
+			water = getImageFromSheet("textures/tiles.png", 15, 2);
 		}
 	}
 	
