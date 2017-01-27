@@ -181,17 +181,20 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onLevelChange(Level level) {
 		entityPooledEffects.clear();
 		lastPath = null;
+		rendererComponents.forEach(r -> r.onLevelChange(level));
 	}
 	
 	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
 		lastPath = null;
+		rendererComponents.forEach(r -> r.onTurn(turn));
 	}
 	
 	@Override
 	public void onPathShow(Path path) {
 		lastPath = path;
+		rendererComponents.forEach(r -> r.onPathShow(path));
 	}
 	
 	@Override
@@ -226,6 +229,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			effect
 		);
 		entityPooledEffects.add(entityPooledEffect);
+
+		rendererComponents.forEach(r -> r.onEntityAdded(entity));
 	}
 	
 	@Override
@@ -250,22 +255,26 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				);
 			}
 		}
+
+		rendererComponents.forEach(r -> r.onEntityMoved(entity, lastX, lastY, newX, newY));
 	}
 	
 	@Override
 	public void onEntityRemoved(Entity entity) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+		rendererComponents.forEach(r -> r.onEntityRemoved(entity));
 	}
 	
 	@Override
 	public void onQuit() {
 		dontSave = true;
-		
+		rendererComponents.forEach(Dungeon.Listener::onQuit);
 		application.exit();
 	}
 	
 	@Override
 	public void onSaveAndQuit() {
+		rendererComponents.forEach(Dungeon.Listener::onSaveAndQuit);
 		application.exit();
 	}
 	
