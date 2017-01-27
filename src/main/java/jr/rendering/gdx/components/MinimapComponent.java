@@ -116,7 +116,7 @@ public class MinimapComponent extends RendererComponent {
 	
 	@Override
 	public int getZIndex() {
-		return 75;
+		return 125;
 	}
 	
 	private void drawMap() {

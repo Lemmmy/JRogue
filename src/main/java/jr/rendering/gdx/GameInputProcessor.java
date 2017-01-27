@@ -121,27 +121,6 @@ public class GameInputProcessor implements InputProcessor {
 			} else if (keycode == Input.Keys.W) {
 				renderer.getHUDComponent().showWishWindow();
 				return true;
-			} else if (keycode == Input.Keys.S) {
-				Pixmap snapshot = renderer.takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("java.io.tmpdir"))
-					.resolve("jrogue_level_snap.png")
-					.toString();
-				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
-				snapshot.dispose();
-				
-				return true;
-			} else if (keycode == Input.Keys.R) {
-				dungeon.wish("downstairs");
-				dungeon.getPlayer().climbAny();
-				
-				Pixmap snapshot = renderer.takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("java.io.tmpdir"))
-					.resolve("jrogue_level_snap.png")
-					.toString();
-				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
-				snapshot.dispose();
-				
-				return true;
 			}
 		}
 		
