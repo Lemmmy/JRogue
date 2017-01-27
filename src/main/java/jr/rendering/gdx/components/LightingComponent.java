@@ -35,7 +35,8 @@ public class LightingComponent extends RendererComponent {
 	public void render(float dt) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		
+
+		lightBatch.setProjectionMatrix(renderer.getCombinedTransform());
 		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 		
 		for (int y = 0; y < level.getHeight(); y++) {
@@ -63,7 +64,8 @@ public class LightingComponent extends RendererComponent {
 		TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, -1);
 		
 		lightBatch.end();
-		
+
+		lightSpriteBatch.setProjectionMatrix(renderer.getCombinedTransform());
 		lightSpriteBatch.begin();
 		
 		for (int y = 0; y < level.getHeight(); y++) {

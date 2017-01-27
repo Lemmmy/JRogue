@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Matrix4;
 import jr.ErrorHandler;
 import jr.Settings;
 import jr.dungeon.Dungeon;
@@ -135,7 +136,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		rendererComponents.add(hudComponent);
 		rendererComponents.add(minimapComponent);
-		// rendererComponents.add(lightingComponent);
+		rendererComponents.add(lightingComponent);
 		rendererComponents.add(levelComponent);
 		
 		// add mod components
@@ -382,6 +383,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		});
 		
 		mainBatch.setColor(oldColour);
+	}
+
+	public Matrix4 getCombinedTransform() {
+		return camera.combined;
 	}
 	
 	private void drawEntityParticles(float delta, boolean over) {
