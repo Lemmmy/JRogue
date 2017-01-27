@@ -541,7 +541,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public void wish(String wish) {
-		//Wishes.wish(this, wish);
 		Wishes.get().makeWish(this, wish);
 	}
 	

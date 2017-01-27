@@ -56,15 +56,17 @@ public class Wishes {
 	private Wishes() {
 		// Basic wishes
 		registerWish("death", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
-		registerWish("kill\\s+all", (d, p, a) -> d.getLevel().getEntityStore().getEntities().stream()
-													.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
-													.map(e -> (EntityLiving) e)
-													.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null, false)));
+		registerWish("kill\\s+all", (d, p, a) ->
+			d.getLevel().getEntityStore().getEntities().stream()
+				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
+				.map(e -> (EntityLiving) e)
+				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null, false)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
-		registerWish("downstairs", (d, p, a) -> Arrays.stream(p.getLevel().getTileStore().getTiles())
-													.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
-													.findFirst()
-													.ifPresent(t -> p.teleport(t.getX(), t.getY())));
+		registerWish("downstairs", (d, p, a) ->
+			Arrays.stream(p.getLevel().getTileStore().getTiles())
+				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
+				.findFirst()
+				.ifPresent(t -> p.teleport(t.getX(), t.getY())));
 		registerWish("godmode", (d, p, a) -> p.godmode());
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
