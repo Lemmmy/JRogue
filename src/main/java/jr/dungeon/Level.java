@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Level implements Serialisable, Persisting, Closeable {
+public class Level implements Serialisable, Persisting {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -79,7 +79,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 		visibleTiles = new Boolean[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
-			tiles[i] = Tile.getTile(this, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
+			tiles[i] = new Tile(this, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
 		}
 		
 		Arrays.fill(discoveredTiles, false);
@@ -827,7 +827,7 @@ public class Level implements Serialisable, Persisting, Closeable {
 				
 				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 				
-				Tile tile = Tile.getTile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
+				Tile tile = new Tile(this, TileType.TILE_DUMMY, e.getX(), e.getY());
 				
 				if (!isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour());
@@ -948,12 +948,5 @@ public class Level implements Serialisable, Persisting, Closeable {
 	@Override
 	public JSONObject getPersistence() {
 		return null;
-	}
-
-	@Override
-	public void close() {
-		for (Tile t : tiles) {
-			Tile.free(t);
-		}
 	}
 }

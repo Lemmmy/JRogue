@@ -234,10 +234,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 				return;
 			}
 
-			if (level != null) {
-				level.close();
-			}
-
 			level = player.getLevel();
 			listeners.forEach(l -> l.onLevelChange(level));
 			
@@ -266,10 +262,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public void changeLevel(Level level, int x, int y) {
-		if (this.level != null) {
-			this.level.close();
-		}
-
 		this.level = level;
 		
 		getPlayer().getLevel().removeEntity(player);
