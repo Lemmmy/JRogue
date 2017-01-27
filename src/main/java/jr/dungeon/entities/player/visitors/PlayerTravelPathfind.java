@@ -2,6 +2,7 @@ package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Path;
 import jr.dungeon.entities.actions.EntityAction;
@@ -78,6 +79,6 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			}
 		});
 		
-		player.getDungeon().showPath(pathTaken);
+		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

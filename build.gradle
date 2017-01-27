@@ -50,6 +50,7 @@ dependencies {
 	compile group: "com.github.alexeyr.pcg", name: "pcg", version: "0.9.1"
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.1"
 	compile group: "org.json", name: "json", version: "20160810"
+	compile group: "org.reflections", name: "reflections", version: "0.9.10"
 
 	compile "com.badlogicgames.gdx:gdx:1.9.5"
 	compile "com.badlogicgames.gdx:gdx-freetype:1.9.5"

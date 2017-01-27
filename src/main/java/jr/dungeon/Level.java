@@ -1,6 +1,7 @@
 package jr.dungeon;
 
 import jr.JRogue;
+import jr.dungeon.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
@@ -145,7 +146,7 @@ public class Level implements Serialisable, Persisting {
 			JRogue.getLogger().error(e);
 		}
 		
-		dungeon.entityAdded(dungeon.getPlayer());
+		dungeon.triggerEvent(new EntityAddedEvent(dungeon.getPlayer()));
 
 		unserialisePersistence(obj);
 	}

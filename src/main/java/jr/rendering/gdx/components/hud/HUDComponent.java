@@ -7,12 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.*;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.RendererComponent;
@@ -39,15 +39,16 @@ public class HUDComponent extends RendererComponent {
 	private Label effectsLabel;
 	private HorizontalGroup brightness;
 	
-	private List<Actor> singleTurnActors = new ArrayList<>();
-	private List<Runnable> nextFrameDeferred = new ArrayList<>();
-	
 	private int healthLastTurn;
 	private int energyLastTurn;
 	
-	private List<LogEntry> log = new ArrayList<>();
+	private Player player;
 	
+	private List<LogEntry> log = new ArrayList<>();
 	private List<PopupWindow> windows = new ArrayList<>();
+	
+	private List<Actor> singleTurnActors = new ArrayList<>();
+	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	public HUDComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -197,19 +198,25 @@ public class HUDComponent extends RendererComponent {
 		skin.dispose();
 	}
 	
-	@Override
-	public void onLevelChange(Level level) {
+	@DungeonEventHandler
+	public void onLevelChange(LevelChangeEvent e) {
 		if (dungeon.getPlayer() != null) {
-			healthLastTurn = dungeon.getPlayer().getHealth();
-			energyLastTurn = dungeon.getPlayer().getEnergy();
-			updatePlayerLine(dungeon.getPlayer());
+			player = dungeon.getPlayer();
+			
+			healthLastTurn = player.getHealth();
+			energyLastTurn = player.getEnergy();
+			updatePlayerLine(player);
 		}
 	}
 	
-	@Override
-	public void onTurn(long turn) {
-		Player player = dungeon.getPlayer();
-		
+	@DungeonEventHandler
+	public void onBeforeTurn(BeforeTurnEvent e) {
+		singleTurnActors.forEach(Actor::remove);
+		singleTurnActors.clear();
+	}
+	
+	@DungeonEventHandler
+	public void onTurn(TurnEvent e) {
 		updatePlayerLine(player);
 		updateAttributes(player);
 		updateBrightness(player);
@@ -224,7 +231,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	private void showEntityAIStates() {
-		if (!dungeon.getPlayer().isDebugger()) {
+		if (!player.isDebugger()) {
 			return;
 		}
 		
@@ -348,15 +355,15 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@Override
-	public void onBeforeTurn(long turn) {
-		singleTurnActors.forEach(Actor::remove);
-		singleTurnActors.clear();
-	}
-	
-	@Override
-	public void onEntityAttacked(Entity entity, int x, int y, int roll, int toHit) {
-		if (!dungeon.getPlayer().isDebugger()) {
+	@DungeonEventHandler
+	public void onEntityAttacked(EntityAttackedEvent e) {
+		Entity entity = e.getEntity();
+		int x = e.getX();
+		int y = e.getY();
+		int roll = e.getRoll();
+		int toHit = e.getToHit();
+			
+		if (!player.isDebugger()) {
 			return;
 		}
 		
@@ -382,8 +389,9 @@ public class HUDComponent extends RendererComponent {
 		singleTurnActors.add(attackStatTable);
 	}
 	
-	@Override
-	public void onLog(String entry) {
+	@DungeonEventHandler
+	public void onLog(LogEvent event) {
+		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
 		
 		log.add(new LogEntry(dungeon.getTurn(), entry));
@@ -393,8 +401,8 @@ public class HUDComponent extends RendererComponent {
 		int logSize = Math.min(settings.getLogSize(), log.size());
 		
 		for (int i = 0; i < logSize; i++) {
-			LogEntry e = log.get(log.size() - (logSize - i));
-			String text = e.getTurn() != dungeon.getTurn() ? "[#CCCCCCEE]" + e.getText() : e.getText();
+			LogEntry logEntry = log.get(log.size() - (logSize - i));
+			String text = logEntry.getTurn() != dungeon.getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
 			
 			Label newEntry = new Label(text, skin, "default");
 			gameLog.add(newEntry).left().growX();
@@ -402,8 +410,10 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@Override
-	public void onPrompt(Prompt prompt) {
+	@DungeonEventHandler
+	public void onPrompt(PromptEvent e) {
+		Prompt prompt = e.getPrompt();
+		
 		if (prompt == null) {
 			promptLabel.setText("");
 		} else {
@@ -434,8 +444,10 @@ public class HUDComponent extends RendererComponent {
 		return windows;
 	}
 	
-	@Override
-	public void onContainerShow(Entity containerEntity) {
+	@DungeonEventHandler
+	public void onContainerShow(ContainerShowEvent e) {
+		Entity containerEntity = e.getContainerEntity();
+		
 		nextFrameDeferred
 			.add(() -> new ContainerWindow(renderer, stage, skin, containerEntity)
 				.show());
@@ -449,7 +461,7 @@ public class HUDComponent extends RendererComponent {
 	
 	public void showInventoryWindow() {
 		nextFrameDeferred
-			.add(() -> new PlayerWindow(renderer, stage, skin, dungeon.getPlayer())
+			.add(() -> new PlayerWindow(renderer, stage, skin, player)
 				.show());
 	}
 	
@@ -461,7 +473,7 @@ public class HUDComponent extends RendererComponent {
 	
 	public void showSpellWindow() {
 		nextFrameDeferred
-			.add(() -> new SpellWindow(renderer, stage, skin, dungeon.getPlayer())
+			.add(() -> new SpellWindow(renderer, stage, skin, player)
 				.show());
 	}
 	

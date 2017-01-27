@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import jr.ErrorHandler;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.events.*;
 import jr.rendering.Renderer;
 import jr.rendering.gdx.components.*;
 import jr.rendering.gdx.components.EntityComponent;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
+public class GDXRenderer extends ApplicationAdapter implements Renderer, DungeonEventListener {
 	private static final String WINDOW_TITLE = "JRogue";
 	
 	private Lwjgl3Application application;
@@ -84,8 +85,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		initialiseRendererComponents();
 		initialiseInputMultiplexer();
 		
-		onLevelChange(dungeon.getLevel());
-		rendererComponents.forEach(r -> r.onLevelChange(dungeon.getLevel()));
 		dungeon.start();
 	}
 	
@@ -121,8 +120,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
 		
 		rendererComponents.forEach(r -> r.setCamera(camera));
-		rendererComponents.forEach(RendererComponent::initialise);
 		rendererComponents.forEach(r -> dungeon.addListener(r));
+		rendererComponents.forEach(RendererComponent::initialise);
 	}
 	
 	private void initialiseInputMultiplexer() {
@@ -208,19 +207,19 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		LogManager.shutdown();
 	}
 	
-	@Override
-	public void onTurn(long turn) {
+	@DungeonEventHandler
+	public void onTurn(TurnEvent e) {
 		updateWindowTitle();
 	}
 	
-	@Override
-	public void onQuit() {
+	@DungeonEventHandler
+	public void onQuit(QuitEvent e) {
 		dontSave = true;
 		application.exit();
 	}
 	
-	@Override
-	public void onSaveAndQuit() {
+	@DungeonEventHandler
+	public void onSaveAndQuit(SaveAndQuitEvent e) {
 		application.exit();
 	}
 	

@@ -3,6 +3,8 @@ package jr.dungeon.entities.player;
 import jr.JRogue;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.visitors.*;
+import jr.dungeon.events.EntityAttackedEvent;
+import jr.dungeon.events.EntityMovedEvent;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.tiles.Tile;
 import org.apache.commons.lang3.StringUtils;
@@ -685,7 +687,7 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().entityAttacked(victim, victim.getX(), victim.getY(), roll, toHit);
+		getDungeon().triggerEvent(new EntityAttackedEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

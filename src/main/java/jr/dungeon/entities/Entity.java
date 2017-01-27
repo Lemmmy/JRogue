@@ -6,6 +6,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.events.EntityMovedEvent;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
@@ -73,7 +74,7 @@ public abstract class Entity implements Serialisable, Persisting {
 		setX(x);
 		setY(y);
 		
-		dungeon.entityMoved(this, getLastX(), getLastY(), x, y);
+		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
 	}
 	
 	public int getX() {

@@ -44,7 +44,7 @@
 
 # Bugfixes
 - **All** generated dungeons are now completable - a pathfinder makes its way through the level before presenting it to you
-- Events that had nothing to do with the player would still log as message as if they did
+- Events that had nothing to do with the player would still entry as message as if they did
 - Lighting is now serialised as the player remembers it
 - Items now properly stack, and can also be non-stackable
 - You can no longer move diagonally through doors

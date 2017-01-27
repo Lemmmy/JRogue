@@ -4,6 +4,7 @@ import jr.dungeon.Prompt;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Path;
 import jr.dungeon.tiles.TileType;
@@ -63,6 +64,6 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 			}
 		}
 		
-		player.getDungeon().showPath(pathTaken);
+		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

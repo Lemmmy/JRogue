@@ -6,6 +6,7 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.events.*;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.entities.EntityMap;
@@ -108,15 +109,16 @@ public class EntityComponent extends RendererComponent {
 		
 	}
 	
-	@Override
-	public void onLevelChange(Level level) {
-		this.level = level;
+	@DungeonEventHandler
+	public void onLevelChange(LevelChangeEvent e) {
+		this.level = e.getLevel();
 		
 		entityPooledEffects.clear();
 	}
 	
-	@Override
-	public void onEntityAdded(Entity entity) {
+	@DungeonEventHandler
+	public void onEntityAdded(EntityAddedEvent e) {
+		Entity entity = e.getEntity();
 		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 		
 		if (em.getRenderer() == null) {
@@ -149,8 +151,10 @@ public class EntityComponent extends RendererComponent {
 		entityPooledEffects.add(entityPooledEffect);
 	}
 	
-	@Override
-	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
+	@DungeonEventHandler
+	public void onEntityMoved(EntityMovedEvent event) {
+		Entity entity = event.getEntity();
+		
 		for (EntityPooledEffect e : entityPooledEffects) {
 			if (e.getEntity() == entity) {
 				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
@@ -173,8 +177,10 @@ public class EntityComponent extends RendererComponent {
 		}
 	}
 	
-	@Override
-	public void onEntityRemoved(Entity entity) {
+	@DungeonEventHandler
+	public void onEntityRemoved(EntityRemovedEvent event) {
+		Entity entity = event.getEntity();
+		
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
 	}
 	

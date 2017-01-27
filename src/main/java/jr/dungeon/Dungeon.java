@@ -8,6 +8,7 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.roles.RoleWizard;
+import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
@@ -21,9 +22,12 @@ import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.utils.Serialisable;
+import org.reflections.ReflectionUtils;
 
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,7 +46,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
-	private final List<Listener> listeners = new ArrayList<>();
+	private final List<DungeonEventListener> listeners = new ArrayList<>();
 	
 	private Pcg32 rand = new Pcg32();
 	
@@ -107,7 +111,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		player.setLevel(level);
 		level.getEntityStore().addEntity(player);
 		
-		listeners.forEach(l -> l.onLevelChange(level));
+		triggerEvent(new LevelChangeEvent(level));
 	}
 	
 	public void save() {
@@ -235,7 +239,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 
 			level = player.getLevel();
-			listeners.forEach(l -> l.onLevelChange(level));
+			triggerEvent(new LevelChangeEvent(level));
 			
 			level.getLightStore().buildLight(true);
 			level.getVisibilityStore().updateSight(player);
@@ -275,9 +279,9 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		turn();
 		
-		listeners.forEach(l -> l.onLevelChange(level));
+		triggerEvent(new LevelChangeEvent(level));
 		
-		level.getEntityStore().getEntities().forEach(e -> listeners.forEach(l -> l.onEntityAdded(e)));
+		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e)));
 	}
 	
 	public void quit() {
@@ -297,7 +301,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 						JRogue.getLogger().error("Failed to delete save file. Panic!"); // fuck you
 					}
 					
-					listeners.forEach(Listener::onQuit);
+					triggerEvent(new QuitEvent());
 				}
 			}
 		}));
@@ -315,17 +319,17 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			public void onResponse(char response) {
 				if (response == 'y' && player.isAlive()) {
 					save();
-					listeners.forEach(Listener::onSaveAndQuit);
+					triggerEvent(new SaveAndQuitEvent());
 				}
 			}
 		}));
 	}
 	
-	public void addListener(Listener listener) {
+	public void addListener(DungeonEventListener listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeListener(Listener listener) {
+	public void removeListener(DungeonEventListener listener) {
 		listeners.remove(listener);
 	}
 	
@@ -343,35 +347,39 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public void start() {
+		triggerEvent(new LevelChangeEvent(level));
+		
 		if (turn <= 0) {
 			You("drop down into [CYAN]%s[].", this.name);
 			turn();
 		} else {
-			listeners.forEach(l -> l.onBeforeTurn(turn));
+			triggerEvent(new BeforeTurnEvent(turn));
 			log("Welcome back to [CYAN]%s[].", this.name);
 			level.getEntityStore().processEntityQueues();
-			listeners.forEach(l -> l.onTurn(turn));
+			triggerEvent(new TurnEvent(turn));
 		}
 	}
 	
 	public void log(String s, Object... objects) {
 		String logString = String.format(s, objects);
-		logString = logString.replaceAll("\\[]", "\u001b[0m");
-		logString = logString.replaceAll("\\[RED]", "\u001b[31m");
-		logString = logString.replaceAll("\\[ORANGE]", "\u001b[31m");
-		logString = logString.replaceAll("\\[YELLOW]", "\u001b[33m");
-		logString = logString.replaceAll("\\[GREEN]", "\u001b[32m");
-		logString = logString.replaceAll("\\[BLUE]", "\u001b[34m");
-		logString = logString.replaceAll("\\[CYAN]", "\u001b[36m");
-		logString = logString + "\u001b[0m";
-		JRogue.getLogger().log(gameLogLevel, logString);
 		
-		listeners.forEach(l -> l.onLog(String.format(s, objects)));
+		String printedLogString = logString;
+		printedLogString = printedLogString.replaceAll("\\[]", "\u001b[0m");
+		printedLogString = printedLogString.replaceAll("\\[RED]", "\u001b[31m");
+		printedLogString = printedLogString.replaceAll("\\[ORANGE]", "\u001b[31m");
+		printedLogString = printedLogString.replaceAll("\\[YELLOW]", "\u001b[33m");
+		printedLogString = printedLogString.replaceAll("\\[GREEN]", "\u001b[32m");
+		printedLogString = printedLogString.replaceAll("\\[BLUE]", "\u001b[34m");
+		printedLogString = printedLogString.replaceAll("\\[CYAN]", "\u001b[36m");
+		printedLogString = printedLogString + "\u001b[0m";
+		JRogue.getLogger().log(gameLogLevel, printedLogString);
+		
+		triggerEvent(new LogEvent(logString));
 	}
 	
 	public void prompt(Prompt prompt) {
 		this.prompt = prompt;
-		listeners.forEach(l -> l.onPrompt(prompt));
+		triggerEvent(new PromptEvent(prompt));
 	}
 	
 	public void promptRespond(char response) {
@@ -381,7 +389,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			
 			if (prompt == this.prompt) {
 				this.prompt = null;
-				listeners.forEach(l -> l.onPrompt(null));
+				triggerEvent(new PromptEvent(null));
 			}
 		}
 	}
@@ -392,7 +400,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			this.prompt = null;
 			prompt.escape();
 			
-			listeners.forEach(l -> l.onPrompt(null));
+			triggerEvent(new PromptEvent(null));
 		}
 	}
 	
@@ -404,20 +412,12 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		return prompt != null && prompt.isEscapable();
 	}
 	
-	public void showContainer(Entity containerEntity) {
-		listeners.forEach(l -> l.onContainerShow(containerEntity));
-	}
-	
-	public void showPath(jr.utils.Path path) {
-		listeners.forEach(l -> l.onPathShow(path));
-	}
-	
 	public void turn() {
 		if (!player.isAlive()) {
 			return;
 		}
 		
-		listeners.forEach(l -> l.onBeforeTurn(turn + 1));
+		triggerEvent(new BeforeTurnEvent(turn + 1));
 		level.getEntityStore().processEntityQueues();
 		
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
@@ -477,7 +477,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getVisibilityStore().updateSight(player);
 		level.getLightStore().buildLight(false);
 		
-		listeners.forEach(l -> l.onTurn(turn));
+		triggerEvent(new TurnEvent(turn));
 	}
 	
 	private boolean moveEntities() {
@@ -568,56 +568,30 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public void setTurn(long turn) {
 		this.turn = turn;
 	}
-	
-	public void entityAdded(Entity entity) {
-		listeners.forEach(l -> l.onEntityAdded(entity));
-	}
-	
-	public void entityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
-		listeners.forEach(l -> l.onEntityMoved(entity, lastX, lastY, newX, newY));
-	}
-	
-	public void entityAttacked(Entity entity, int x, int y, int roll, int toHit) {
-		listeners.forEach(l -> l.onEntityAttacked(entity, x, y, roll, toHit));
-	}
-	
-	public void entityRemoved(Entity entity) {
-		listeners.forEach(l -> l.onEntityRemoved(entity));
-	}
 
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
 	}
-
-	public interface Listener {
-		default void onLevelChange(Level level) {}
-		
-		default void onBeforeTurn(long turn) {}
-		
-		default void onTurn(long turn) {}
-		
-		default void onLog(String log) {}
-		
-		default void onPrompt(Prompt prompt) {}
-		
-		default void onContainerShow(Entity containerEntity) {}
-		
-		default void onPathShow(jr.utils.Path path) {}
-		
-		default void onEntityAdded(Entity entity) {}
-		
-		default void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {}
-		
-		/**
-		 * Used for attack popups in advanced mode
-		 **/
-		default void onEntityAttacked(Entity entity, int x, int y, int roll, int toHit) {}
-		
-		default void onEntityRemoved(Entity entity) {}
-		
-		default void onQuit() {}
-		
-		default void onSaveAndQuit() {}
+	
+	@SuppressWarnings("unchecked")
+	public void triggerEvent(DungeonEvent event) {
+		listeners.forEach(listener -> {
+			Arrays.stream(listener.getClass().getMethods())
+				.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
+				.filter(m -> m.getParameterCount() == 1)
+				.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
+				.forEach(m -> {
+					if (event.isCancelled()) {
+						return;
+					}
+					
+					try {
+						m.invoke(listener, event);
+					} catch (IllegalAccessException | InvocationTargetException e) {
+						ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
+					}
+				});
+		});
 	}
 }

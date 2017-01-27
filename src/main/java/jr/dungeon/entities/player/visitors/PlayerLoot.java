@@ -2,6 +2,7 @@ package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.events.ContainerShowEvent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,6 @@ public class PlayerLoot implements PlayerVisitor {
 		}
 		
 		containerEntity.lootSuccessString().ifPresent(s -> player.getDungeon().log(s));
-		player.getDungeon().showContainer(containerEntity);
+		player.getDungeon().triggerEvent(new ContainerShowEvent(containerEntity));
 	}
 }

@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.LevelChangeEvent;
+import jr.dungeon.events.PathShowEvent;
+import jr.dungeon.events.TurnEvent;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.ImageLoader;
@@ -50,19 +53,19 @@ public class PathComponent extends RendererComponent {
 		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 16, 0);
 	}
 	
-	@Override
-	public void onLevelChange(Level level) {
+	@DungeonEventHandler
+	public void onLevelChange(LevelChangeEvent e) {
 		lastPath = null;
 	}
 	
-	@Override
-	public void onTurn(long turn) {
+	@DungeonEventHandler
+	public void onTurn(TurnEvent e) {
 		lastPath = null;
 	}
 	
-	@Override
-	public void onPathShow(Path path) {
-		lastPath = path;
+	@DungeonEventHandler
+	public void onPathShow(PathShowEvent e) {
+		lastPath = e.getPath();
 	}
 	
 	@Override
