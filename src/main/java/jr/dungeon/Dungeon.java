@@ -576,22 +576,20 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEvent event) {
-		listeners.forEach(listener -> {
-			Arrays.stream(listener.getClass().getMethods())
-				.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
-				.filter(m -> m.getParameterCount() == 1)
-				.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
-				.forEach(m -> {
-					if (event.isCancelled()) {
-						return;
-					}
-					
-					try {
-						m.invoke(listener, event);
-					} catch (IllegalAccessException | InvocationTargetException e) {
-						ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
-					}
-				});
-		});
+		listeners.forEach(listener -> Arrays.stream(listener.getClass().getMethods())
+			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
+			.filter(m -> m.getParameterCount() == 1)
+			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
+			.forEach(m -> {
+				if (event.isCancelled()) {
+					return;
+				}
+				
+				try {
+					m.invoke(listener, event);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
+				}
+			}));
 	}
 }
