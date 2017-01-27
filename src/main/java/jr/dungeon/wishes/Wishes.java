@@ -17,17 +17,10 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
-import jr.dungeon.items.comestibles.*;
-import jr.dungeon.items.magical.ItemSpellbook;
-import jr.dungeon.items.magical.spells.SpellLightOrb;
-import jr.dungeon.items.projectiles.ItemArrow;
-import jr.dungeon.items.quaffable.potions.BottleType;
-import jr.dungeon.items.quaffable.potions.ItemPotion;
-import jr.dungeon.items.quaffable.potions.PotionType;
-import jr.dungeon.items.valuables.ItemThermometer;
-import jr.dungeon.items.weapons.*;
+import jr.dungeon.items.weapons.ItemDagger;
+import jr.dungeon.items.weapons.ItemLongsword;
+import jr.dungeon.items.weapons.ItemShortsword;
 import jr.dungeon.tiles.TileType;
-import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
@@ -38,11 +31,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Wishes {
-	private static final Pattern wishDRoll = Pattern.compile("^roll (\\d+)?d(\\d+)(?:\\+(\\d+))?");
-	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
-	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
-	private static final Pattern wishSword = Pattern
-		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
+	private static final String wishDRoll = "roll (\\d+)?d(\\d+)(?:\\+(\\d+))?";
+	private static final String wishGold = "(\\d+) gold";
+	private static final String wishGoldDropped = "drop(?:ed)? (\\d+) gold";
+	private static final String wishSword =
+		"(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)";
 
 	private final Set<Pair<Pattern, Wish>> wishes = new HashSet<>();
 
@@ -87,6 +80,28 @@ public class Wishes {
 		registerWish("spider", new WishSpawn<>(MonsterSpider.class));
 		registerWish("rat", new WishSpawn<>(MonsterRat.class));
 		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
+
+		// Items
+		registerWish(wishSword, (d, p, a) -> {
+			if (a.length < 2) return;
+
+			Material m = Material.valueOf(a[0].toUpperCase());
+			String type = a[1];
+
+			Item item = null;
+
+			switch (type.toLowerCase()) {
+				case "shortsword": item = new ItemShortsword(m); break;
+				case "longsword": item = new ItemLongsword(m); break;
+				case "dagger": item = new ItemDagger(m); break;
+				default: break;
+			}
+
+			if (item != null && p.getContainer().isPresent()) {
+				p.getContainer().get().add(new ItemStack(item));
+				d.turn();
+			}
+		});
 	}
 
 	public void registerWish(Pattern pattern, Wish wish) {
@@ -97,7 +112,8 @@ public class Wishes {
 		registerWish(Pattern.compile("^" + pattern + "$"), wish);
 	}
 
-	public boolean makeWish(Dungeon dungeon, String wish) {
+	public boolean makeWish(Dungeon dungeon, String _wish) {
+		final String wish = _wish.toLowerCase();
 		final Player player = dungeon.getPlayer();
 
 		if (player == null || !player.isDebugger()) {
@@ -135,80 +151,5 @@ public class Wishes {
 
 			return false;
 		}
-	}
-
-	private static boolean wishItems(Dungeon dungeon, Player player, String wish) {
-		Matcher wishSwordMatcher = wishSword.matcher(wish);
-		
-		if (wishSwordMatcher.find()) {
-			Material material = Material.valueOf(wishSwordMatcher.group(1).toUpperCase());
-			String type = wishSwordMatcher.group(2);
-			
-			Item item = null;
-			
-			if (type.equalsIgnoreCase("shortsword")) {
-				item = new ItemShortsword(material);
-			} else if (type.equalsIgnoreCase("longsword")) {
-				item = new ItemLongsword(material);
-			} else if (type.equalsIgnoreCase("dagger")) {
-				item = new ItemDagger(material);
-			}
-			
-			if (item != null && player.getContainer().isPresent()) {
-				player.getContainer().get().add(new ItemStack(item));
-				
-				return true;
-			}
-		}
-		
-		Item item = null;
-		
-		if (wish.equalsIgnoreCase("bread")) {
-			item = new ItemBread();
-		} else if (wish.equalsIgnoreCase("apple")) {
-			item = new ItemApple();
-		} else if (wish.equalsIgnoreCase("orange")) {
-			item = new ItemOrange();
-		} else if (wish.equalsIgnoreCase("lemon")) {
-			item = new ItemLemon();
-		} else if (wish.equalsIgnoreCase("banana")) {
-			item = new ItemBanana();
-		} else if (wish.equalsIgnoreCase("carrot")) {
-			item = new ItemCarrot();
-		} else if (wish.equalsIgnoreCase("cherries")) {
-			item = new ItemCherries();
-		} else if (wish.equalsIgnoreCase("corn")) {
-			item = new ItemCorn();
-		} else if (wish.equalsIgnoreCase("staff")) {
-			item = new ItemStaff();
-		} else if (wish.equalsIgnoreCase("potion")) {
-			BottleType bottle = RandomUtils.randomFrom(BottleType.values());
-			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
-			float potency = RandomUtils.randomFloat(6f);
-			
-			ItemPotion potion = new ItemPotion();
-			potion.setBottleType(bottle);
-			potion.setPotionType(potionType);
-			potion.setEmpty(false);
-			potion.setPotency(potency);
-			item = potion;
-		} else if (wish.equalsIgnoreCase("spellbook")) {
-			item = new ItemSpellbook();
-			((ItemSpellbook) item).setSpell(new SpellLightOrb());
-		}  else if (wish.equalsIgnoreCase("bow")) {
-			item = new ItemBow();
-		} else if (wish.equalsIgnoreCase("arrow")) {
-			item = new ItemArrow();
-		} else if (wish.equalsIgnoreCase("thermometer")) {
-			item = new ItemThermometer();
-		}
-		
-		if (item != null && player.getContainer().isPresent()) {
-			player.getContainer().get().add(new ItemStack(item));
-			
-			return true;
-		}
-		
-		return false;
 	}
 }
