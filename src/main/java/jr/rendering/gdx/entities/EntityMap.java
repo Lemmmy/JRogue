@@ -40,8 +40,8 @@ public enum EntityMap {
 	
 	APPEARANCE_ITEM(new EntityRendererItem()),
 	
-	APPEARANCE_ARROW(new EntityRendererProjectile("entities.png", 1, 4)),
-	APPEARANCE_STRIKE(new EntityRendererProjectile("entities.png", 0, 4)),
+	APPEARANCE_ARROW(new EntityRendererProjectile("textures/entities.png", 1, 4)),
+	APPEARANCE_STRIKE(new EntityRendererProjectile("textures/entities.png", 0, 4)),
 	
 	APPEARANCE_LIGHT_ORB(2, 4);
 	
@@ -55,7 +55,7 @@ public enum EntityMap {
 	}
 	
 	EntityMap(int sheetX, int sheetY) {
-		this("entities.png", sheetX, sheetY);
+		this("textures/entities.png", sheetX, sheetY);
 	}
 	
 	EntityMap(String sheetName, int sheetX, int sheetY) {

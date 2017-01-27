@@ -15,12 +15,12 @@ public class TileRendererWall extends TileRenderer {
 	
 	public TileRendererWall() {
 		if (wallH == null || wallV == null || wallCT == null || wallCB == null) {
-			wallH = getImageFromSheet("tiles.png", 1, 0);
-			wallHPillar = getImageFromSheet("tiles.png", 11, 1);
-			wallHPillarExtra = getImageFromSheet("tiles.png", 12, 1);
-			wallV = getImageFromSheet("tiles.png", 0, 0);
-			wallCT = getImageFromSheet("tiles.png", 2, 0);
-			wallCB = getImageFromSheet("tiles.png", 3, 0);
+			wallH = getImageFromSheet("textures/tiles.png", 1, 0);
+			wallHPillar = getImageFromSheet("textures/tiles.png", 11, 1);
+			wallHPillarExtra = getImageFromSheet("textures/tiles.png", 12, 1);
+			wallV = getImageFromSheet("textures/tiles.png", 0, 0);
+			wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
+			wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
 		}
 	}
 	

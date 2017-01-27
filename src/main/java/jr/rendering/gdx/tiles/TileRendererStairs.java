@@ -13,11 +13,11 @@ public class TileRendererStairs extends TileRenderer {
 	
 	public TileRendererStairs(StairDirection direction, int sheetX, int sheetY) {
 		if (up == null || down == null) {
-			up = getImageFromSheet("tiles.png", 13, 0);
-			down = getImageFromSheet("tiles.png", 14, 0);
+			up = getImageFromSheet("textures/tiles.png", 13, 0);
+			down = getImageFromSheet("textures/tiles.png", 14, 0);
 		}
 		
-		image = getImageFromSheet("tiles.png", sheetX, sheetY);
+		image = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
 		
 		this.direction = direction;
 	}

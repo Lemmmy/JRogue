@@ -17,8 +17,8 @@ public abstract class TileRenderer {
 	private static TextureRegion dimLight;
 	
 	static {
-		dim = getImageFromSheet("tiles.png", 9, 1);
-		dimLight = getImageFromSheet("tiles.png", 10, 1);
+		dim = getImageFromSheet("textures/tiles.png", 9, 1);
+		dimLight = getImageFromSheet("textures/tiles.png", 10, 1);
 	}
 	
 	protected ParticleEffectPool effectPool;
