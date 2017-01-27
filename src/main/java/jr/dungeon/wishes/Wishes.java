@@ -1,11 +1,9 @@
 package jr.dungeon.wishes;
 
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityChest;
-import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityFountain;
@@ -26,7 +24,6 @@ import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.quaffable.potions.BottleType;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
 import jr.dungeon.items.quaffable.potions.PotionType;
-import jr.dungeon.items.valuables.ItemGold;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.*;
 import jr.dungeon.tiles.TileType;
@@ -60,16 +57,36 @@ public class Wishes {
 	}
 
 	private Wishes() {
-		registerWish("^death$", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
-		registerWish("^kill\\s+all$", (d, p, a) -> d.getLevel().getEntityStore().getEntities().stream()
+		// Basic wishes
+		registerWish("death", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+		registerWish("kill\\s+all", (d, p, a) -> d.getLevel().getEntityStore().getEntities().stream()
 													.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 													.map(e -> (EntityLiving) e)
 													.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null, false)));
-		registerWish("^nutrition$", (d, p, a) -> p.setNutrition(1000));
-		registerWish("^downstairs$", (d, p, a) -> Arrays.stream(p.getLevel().getTileStore().getTiles())
+		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
+		registerWish("downstairs", (d, p, a) -> Arrays.stream(p.getLevel().getTileStore().getTiles())
 													.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 													.findFirst()
 													.ifPresent(t -> p.teleport(t.getX(), t.getY())));
+		registerWish("godmode", (d, p, a) -> p.godmode());
+		registerWish("chest", new WishSpawn<>(EntityChest.class));
+		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
+		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
+		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
+		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
+		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
+
+		// Monsters
+		registerWish("jackal", new WishSpawn<>(MonsterJackal.class));
+		registerWish("fox", new WishSpawn<>(MonsterFox.class));
+		registerWish("lizard", new WishSpawn<>(MonsterLizard.class));
+		registerWish("hound", new WishSpawn<>(MonsterHound.class));
+		registerWish("hellhound", new WishSpawn<>(MonsterHellhound.class));
+		registerWish("icehound", new WishSpawn<>(MonsterIcehound.class));
+		registerWish("spider", new WishSpawn<>(MonsterSpider.class));
+		registerWish("rat", new WishSpawn<>(MonsterRat.class));
+		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
 	}
 
 	public void registerWish(Pattern pattern, Wish wish) {
@@ -77,7 +94,7 @@ public class Wishes {
 	}
 
 	public void registerWish(String pattern, Wish wish) {
-		registerWish(Pattern.compile(pattern), wish);
+		registerWish(Pattern.compile("^" + pattern + "$"), wish);
 	}
 
 	public boolean makeWish(Dungeon dungeon, String wish) {
@@ -120,150 +137,6 @@ public class Wishes {
 		}
 	}
 
-	public static void wish(Dungeon dungeon, String wish) {
-		Player player = dungeon.getPlayer();
-		
-		if (player.isDebugger()) {
-			JRogue.getLogger().debug("Player wished for '{}'", wish);
-		}
-		
-		wish = wish.toLowerCase();
-
-		if (wish.equalsIgnoreCase("godmode")) {
-			player.godmode();
-		} else if (wish.equalsIgnoreCase("chest")) {
-			dungeon.getLevel().getEntityStore().addEntity(
-				new EntityChest(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-			);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("fountain")) {
-			dungeon.getLevel().getEntityStore().addEntity(
-				new EntityFountain(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-			);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("candlestick")) {
-			dungeon.getLevel().getEntityStore().addEntity(
-				new EntityCandlestick(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-			);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("weapon rack")) {
-			dungeon.getLevel().getEntityStore().addEntity(
-				new EntityWeaponRack(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-			);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("altar")) {
-			dungeon.getLevel().getEntityStore().addEntity(
-				new EntityAltar(dungeon, dungeon.getLevel(), player.getX(), player.getY())
-			);
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("rug")) {
-			player.getLevel().getTileStore()
-				.setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_RUG);
-		} else if (wish.equalsIgnoreCase("dirt")) {
-			player.getLevel().getTileStore()
-				.setTileType(player.getX(), player.getY(), TileType.TILE_ROOM_DIRT);
-		} else if (wishMonsters(dungeon, player, wish)) {
-			dungeon.turn();
-		} else if (wishItems(dungeon, player, wish)) {
-			dungeon.turn();
-		} else {
-			Matcher wishDRollMatcher = wishDRoll.matcher(wish);
-			
-			if (wishDRollMatcher.find()) {
-				String a = wishDRollMatcher.group(1);
-				
-				if (a == null) {
-					a = "1";
-				}
-				
-				String x = wishDRollMatcher.group(2);
-				
-				String b = wishDRollMatcher.group(3);
-				
-				if (b == null) {
-					b = "0";
-				}
-				
-				int ia = Integer.parseInt(a);
-				int ix = Integer.parseInt(x);
-				int ib = Integer.parseInt(b);
-				
-				int roll = RandomUtils.roll(ia, ix, ib);
-				dungeon.greenYou("roll a %,dd%,d+%,d. Result: %,d.", ia, ix, ib, roll);
-			}
-			
-			Matcher wishGoldDroppedMatcher = wishGoldDropped.matcher(wish);
-			
-			if (wishGoldDroppedMatcher.find()) {
-				int gold = Integer.parseInt(wishGoldDroppedMatcher.group(1));
-				
-				dungeon.getLevel().getEntityStore().addEntity(new EntityItem(dungeon, dungeon.getLevel(),
-					player.getX(),
-					player.getY(),
-					new ItemStack(
-						new ItemGold(),
-						gold
-					)
-				));
-				
-				dungeon.turn();
-				return;
-			}
-			
-			Matcher wishGoldMatcher = wishGold.matcher(wish);
-			
-			if (wishGoldMatcher.find()) {
-				int gold = Integer.parseInt(wishGoldMatcher.group(1));
-				
-				player.giveGold(gold);
-				
-				dungeon.turn();
-			}
-		}
-	}
-	
-	private static boolean wishMonsters(Dungeon dungeon, Player player, String wish) {
-		if (wish.equalsIgnoreCase("jackal")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterJackal(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("fox")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterFox(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("lizard")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterLizard(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		}  else if (wish.equalsIgnoreCase("hound")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterHound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("hellhound")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterHellhound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("icehound")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterIcehound(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("spider")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterSpider(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("rat")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterRat(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		} else if (wish.equalsIgnoreCase("skeleton")) {
-			dungeon.getLevel().getEntityStore()
-				.addEntity(new MonsterSkeleton(dungeon, dungeon.getLevel(), player.getX(), player.getY()));
-			return true;
-		}
-		
-		return false;
-	}
-	
 	private static boolean wishItems(Dungeon dungeon, Player player, String wish) {
 		Matcher wishSwordMatcher = wishSword.matcher(wish);
 		
