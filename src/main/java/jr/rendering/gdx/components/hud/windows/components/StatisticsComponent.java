@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud.windows.components;
+package jr.rendering.gdx.components.hud.windows.components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

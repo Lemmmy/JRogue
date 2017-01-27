@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud.windows.components;
+package jr.rendering.gdx.components.hud.windows.components;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.gdx.hud.windows.Window;
+import jr.rendering.gdx.components.hud.windows.Window;
 
 public class SpellComponent extends Table {
 	private Window parentWindow;

@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud;
+package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -16,7 +16,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
-import jr.rendering.gdx.RendererComponent;
+import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Gradient;
 import jr.utils.Utils;

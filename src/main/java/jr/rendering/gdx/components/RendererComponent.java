@@ -1,8 +1,9 @@
-package jr.rendering.gdx;
+package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.rendering.gdx.GDXRenderer;
 
 public abstract class RendererComponent implements Dungeon.Listener {
 	public GDXRenderer renderer;

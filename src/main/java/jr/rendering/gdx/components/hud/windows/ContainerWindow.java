@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud.windows;
+package jr.rendering.gdx.components.hud.windows;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.gdx.hud.windows.components.ContainerComponent;
+import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
 import jr.dungeon.entities.Entity;
 import jr.rendering.gdx.GDXRenderer;
 

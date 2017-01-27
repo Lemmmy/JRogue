@@ -10,14 +10,15 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import jr.Settings;
 import jr.rendering.Renderer;
+import jr.rendering.gdx.components.LightingComponent;
+import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.entities.EntityMap;
-import jr.rendering.gdx.hud.HUDComponent;
-import jr.rendering.gdx.hud.MinimapComponent;
-import jr.rendering.gdx.hud.windows.*;
+import jr.rendering.gdx.components.hud.HUDComponent;
+import jr.rendering.gdx.components.MinimapComponent;
+import jr.rendering.gdx.components.hud.windows.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.tiles.TilePooledEffect;
 import jr.rendering.gdx.utils.FontLoader;
@@ -313,7 +314,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(true, width, height);
 		
 		camera.viewportWidth = Math.round(zoom);
 		camera.viewportHeight = Math.round(zoom * height / width);

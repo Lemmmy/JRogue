@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud;
+package jr.rendering.gdx.components.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;

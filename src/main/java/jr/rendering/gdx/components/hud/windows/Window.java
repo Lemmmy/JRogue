@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud.windows;
+package jr.rendering.gdx.components.hud.windows;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;

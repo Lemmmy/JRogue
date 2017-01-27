@@ -1,4 +1,4 @@
-package jr.rendering.gdx.hud;
+package jr.rendering.gdx.components.hud;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,7 +10,7 @@ import jr.dungeon.Prompt;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdx.GDXRenderer;
-import jr.rendering.gdx.RendererComponent;
+import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;

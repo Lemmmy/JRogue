@@ -1,4 +1,4 @@
-package jr.rendering.gdx;
+package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.tiles.TileMap;
 
 public class LightingComponent extends RendererComponent {
