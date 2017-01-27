@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -166,6 +167,12 @@ public class HUDComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
+		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
+			Runnable r = iterator.next();
+			r.run();
+			iterator.remove();
+		}
+		
 		stage.draw();
 	}
 	
@@ -425,6 +432,13 @@ public class HUDComponent extends RendererComponent {
 	
 	public List<PopupWindow> getWindows() {
 		return windows;
+	}
+	
+	@Override
+	public void onContainerShow(Entity containerEntity) {
+		nextFrameDeferred
+			.add(() -> new ContainerWindow(renderer, stage, skin, containerEntity)
+				.show());
 	}
 	
 	public void showDebugWindow() {

@@ -135,7 +135,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		rendererComponents.add(hudComponent);
 		rendererComponents.add(minimapComponent);
-		rendererComponents.add(lightingComponent);
+		// rendererComponents.add(lightingComponent);
 		rendererComponents.add(levelComponent);
 		
 		// add mod components
@@ -186,13 +186,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void onTurn(long turn) {
 		updateWindowTitle();
 		lastPath = null;
-	}
-	
-	@Override
-	public void onContainerShow(Entity containerEntity) {
-		nextFrameDeferred
-			.add(() -> new ContainerWindow(GDXRenderer.this, hudComponent.getStage(), hudComponent.getSkin(), containerEntity)
-				.show());
 	}
 	
 	@Override
