@@ -17,10 +17,17 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
-import jr.dungeon.items.weapons.ItemDagger;
-import jr.dungeon.items.weapons.ItemLongsword;
-import jr.dungeon.items.weapons.ItemShortsword;
+import jr.dungeon.items.comestibles.*;
+import jr.dungeon.items.magical.ItemSpellbook;
+import jr.dungeon.items.magical.spells.SpellLightOrb;
+import jr.dungeon.items.projectiles.ItemArrow;
+import jr.dungeon.items.quaffable.potions.BottleType;
+import jr.dungeon.items.quaffable.potions.ItemPotion;
+import jr.dungeon.items.quaffable.potions.PotionType;
+import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.items.weapons.*;
 import jr.dungeon.tiles.TileType;
+import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
@@ -31,9 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Wishes {
-	private static final String wishDRoll = "roll (\\d+)?d(\\d+)(?:\\+(\\d+))?";
-	private static final String wishGold = "(\\d+) gold";
-	private static final String wishGoldDropped = "drop(?:ed)? (\\d+) gold";
 	private static final String wishSword =
 		"(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)";
 
@@ -102,6 +106,31 @@ public class Wishes {
 				d.turn();
 			}
 		});
+
+		registerWish("potion", new WishItem<>(ItemPotion.class, p -> {
+			BottleType bottle = RandomUtils.randomFrom(BottleType.values());
+			PotionType potionType = RandomUtils.randomFrom(PotionType.values());
+			float potency = RandomUtils.randomFloat(6f);
+
+			p.setBottleType(bottle);
+			p.setPotionType(potionType);
+			p.setEmpty(false);
+			p.setPotency(potency);
+		}));
+
+		registerWish("bread", new WishItem<>(ItemBread.class));
+		registerWish("apple", new WishItem<>(ItemApple.class));
+		registerWish("orange", new WishItem<>(ItemOrange.class));
+		registerWish("lemon", new WishItem<>(ItemLemon.class));
+		registerWish("banana", new WishItem<>(ItemBanana.class));
+		registerWish("carrot", new WishItem<>(ItemCarrot.class));
+		registerWish("cherries", new WishItem<>(ItemCherries.class));
+		registerWish("corn", new WishItem<>(ItemCorn.class));
+		registerWish("staff", new WishItem<>(ItemStaff.class));
+		registerWish("spellbook", new WishItem<>(ItemSpellbook.class, s -> s.setSpell(new SpellLightOrb())));
+		registerWish("bow", new WishItem<>(ItemBow.class));
+		registerWish("arrow", new WishItem<>(ItemArrow.class));
+		registerWish("thermometer", new WishItem<>(ItemThermometer.class));
 	}
 
 	public void registerWish(Pattern pattern, Wish wish) {
