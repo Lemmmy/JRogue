@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
-public class TileStore implements Serialisable, Closeable {
+public class TileStore implements Serialisable {
 	private Level level;
 	
 	private Tile[] tiles;
@@ -33,7 +33,7 @@ public class TileStore implements Serialisable, Closeable {
 		tiles = new Tile[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
-			tiles[i] = Tile.getTile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
+			tiles[i] = new Tile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
 		}
 	}
 	
@@ -208,12 +208,5 @@ public class TileStore implements Serialisable, Closeable {
 		}
 		
 		return found;
-	}
-	
-	@Override
-	public void close() {
-		for (Tile t : tiles) {
-			Tile.free(t);
-		}
 	}
 }

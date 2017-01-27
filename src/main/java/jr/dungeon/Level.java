@@ -9,12 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import jr.ErrorHandler;
 
-import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class Level implements Serialisable, Persisting, Closeable {
+public class Level implements Serialisable, Persisting {
 	private UUID uuid;
 	
 	private Dungeon dungeon;
@@ -57,9 +56,9 @@ public class Level implements Serialisable, Persisting, Closeable {
 		visibilityStore = new VisibilityStore(this);
 		lightStore = new LightStore(this);
 		monsterSpawner = new MonsterSpawner(this);
-		
+
 		lightStore.initialiseLight();
-		
+
 		persistence = new JSONObject();
 	}
 	
@@ -207,14 +206,9 @@ public class Level implements Serialisable, Persisting, Closeable {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
-	}
-	
-	@Override
-	public void close() {
-		getTileStore().close();
 	}
 }

@@ -128,7 +128,7 @@ public class LightStore implements Serialisable {
 				
 				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 				
-				Tile tile = Tile.getTile(level, TileType.TILE_DUMMY, e.getX(), e.getY());
+				Tile tile = new Tile(level, TileType.TILE_DUMMY, e.getX(), e.getY());
 				
 				if (!level.getVisibilityStore().isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour());
