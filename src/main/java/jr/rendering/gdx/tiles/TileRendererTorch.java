@@ -17,15 +17,15 @@ public class TileRendererTorch extends TileRenderer {
 	private TextureRegion torch;
 	
 	public TileRendererTorch(int sheetX, int sheetY, String particleName) {
-		wallH = getImageFromSheet("tiles.png", 1, 0);
-		wallV = getImageFromSheet("tiles.png", 0, 0);
-		wallCT = getImageFromSheet("tiles.png", 2, 0);
-		wallCB = getImageFromSheet("tiles.png", 3, 0);
+		wallH = getImageFromSheet("textures/tiles.png", 1, 0);
+		wallV = getImageFromSheet("textures/tiles.png", 0, 0);
+		wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
+		wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
 		
-		torch = getImageFromSheet("tiles.png", sheetX, sheetY);
+		torch = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
 		
 		ParticleEffect torchEffect = new ParticleEffect();
-		torchEffect.load(Gdx.files.internal(particleName + ".particle"), Gdx.files.internal(""));
+		torchEffect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
 	}

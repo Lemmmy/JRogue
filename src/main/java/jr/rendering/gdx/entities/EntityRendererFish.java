@@ -10,7 +10,7 @@ public class EntityRendererFish extends EntityRenderer {
 	protected TextureRegion image;
 	
 	public EntityRendererFish(int sheetX, int sheetY) {
-		image = getImageFromSheet("entities.png", sheetX, sheetY);
+		image = getImageFromSheet("textures/entities.png", sheetX, sheetY);
 	}
 	
 	@Override

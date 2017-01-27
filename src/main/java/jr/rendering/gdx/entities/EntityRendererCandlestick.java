@@ -9,10 +9,10 @@ import jr.dungeon.entities.EntityAppearance;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
 	public EntityRendererCandlestick(int sheetX, int sheetY) {
-		super("entities.png", sheetX, sheetY);
+		super("textures/entities.png", sheetX, sheetY);
 		
 		ParticleEffect torchEffect = new ParticleEffect();
-		torchEffect.load(Gdx.files.internal("candlestick_fire.particle"), Gdx.files.internal(""));
+		torchEffect.load(Gdx.files.internal("particles/candlestick_fire.particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
 	}

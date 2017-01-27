@@ -20,9 +20,9 @@ public class ItemRendererGold extends ItemRenderer {
 	
 	public ItemRendererGold() {
 		for (int i = 0; i < values.length; i++) {
-			images.add(getImageFromSheet("items.png", i, 7));
+			images.add(getImageFromSheet("textures/items.png", i, 7));
 			imagesDrawable
-				.add(ImageLoader.getImageFromSheet("items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+				.add(ImageLoader.getImageFromSheet("textures/items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
 		}
 	}
 	

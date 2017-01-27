@@ -152,17 +152,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("hud.png", 6, 0);
-		pathH = ImageLoader.getImageFromSheet("hud.png", 7, 0);
-		pathV = ImageLoader.getImageFromSheet("hud.png", 8, 0);
-		pathUR = ImageLoader.getImageFromSheet("hud.png", 9, 0);
-		pathUL = ImageLoader.getImageFromSheet("hud.png", 10, 0);
-		pathBR = ImageLoader.getImageFromSheet("hud.png", 11, 0);
-		pathBL = ImageLoader.getImageFromSheet("hud.png", 12, 0);
-		pathR = ImageLoader.getImageFromSheet("hud.png", 13, 0);
-		pathL = ImageLoader.getImageFromSheet("hud.png", 14, 0);
-		pathU = ImageLoader.getImageFromSheet("hud.png", 15, 0);
-		pathB = ImageLoader.getImageFromSheet("hud.png", 16, 0);
+		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 6, 0);
+		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 7, 0);
+		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 8, 0);
+		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 9, 0);
+		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 10, 0);
+		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 11, 0);
+		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 12, 0);
+		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 13, 0);
+		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 14, 0);
+		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 15, 0);
+		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 16, 0);
 	}
 	
 	private void updateWindowTitle() {

@@ -18,13 +18,13 @@ public class ItemRendererPotion extends ItemRenderer {
 	private final TextureRegionDrawable fluidDrawable, bottleDrawable;
 	
 	public ItemRendererPotion(int sheetX, int sheetY, int liquidX, int liquidY) {
-		bottleTex = ImageLoader.getImageFromSheet("items.png", sheetX, sheetY);
-		fluidTex = ImageLoader.getImageFromSheet("items.png", liquidX, liquidY);
+		bottleTex = ImageLoader.getImageFromSheet("textures/items.png", sheetX, sheetY);
+		fluidTex = ImageLoader.getImageFromSheet("textures/items.png", liquidX, liquidY);
 		
 		fluidDrawable = new TextureRegionDrawable(ImageLoader
-			.getImageFromSheet("items.png", liquidX, liquidY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+			.getImageFromSheet("textures/items.png", liquidX, liquidY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
 		bottleDrawable = new TextureRegionDrawable(ImageLoader
-			.getImageFromSheet("items.png", sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+			.getImageFromSheet("textures/items.png", sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
 	}
 	
 	@Override

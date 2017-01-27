@@ -33,8 +33,8 @@ public class TileRendererRug extends TileRendererBlob8 {
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		rug = getImageFromSheet("tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("tiles.png", floorSheetX, floorSheetY);
+		rug = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
 
 		loadBlob(overlayImages, 3, 0);
 		loadBlob(cutoutImages, 0, 1);

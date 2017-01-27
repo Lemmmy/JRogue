@@ -43,7 +43,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 			int sheetX = (i % BLOB_SHEET_WIDTH) + (BLOB_SHEET_WIDTH * blobOffsetX);
 			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + (BLOB_SHEET_HEIGHT * blobOffsetY);
 			
-			set[i] = getImageFromSheet("blobs.png", sheetX, sheetY);
+			set[i] = getImageFromSheet("textures/blobs.png", sheetX, sheetY);
 		}
 	}
 	
