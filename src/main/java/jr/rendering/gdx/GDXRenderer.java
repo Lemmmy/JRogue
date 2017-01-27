@@ -8,7 +8,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import jr.ErrorHandler;
 import jr.Settings;
@@ -16,10 +15,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.rendering.Renderer;
-import jr.rendering.gdx.components.LevelComponent;
-import jr.rendering.gdx.components.LightingComponent;
-import jr.rendering.gdx.components.MinimapComponent;
-import jr.rendering.gdx.components.RendererComponent;
+import jr.rendering.gdx.components.*;
 import jr.rendering.gdx.components.hud.HUDComponent;
 import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
@@ -28,23 +24,15 @@ import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.FontLoader;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.rendering.gdx.utils.ShaderLoader;
-import jr.utils.Gradient;
-import jr.utils.Path;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
 	private static final String WINDOW_TITLE = "JRogue";
-	
-	private static final Gradient PATH_GRADIENT = Gradient.getGradient(
-		Color.GREEN,
-		Color.RED
-	);
 	
 	private Lwjgl3Application application;
 	
@@ -57,15 +45,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
+	private LevelComponent levelComponent;
+	private PathComponent pathComponent;
+	private LightingComponent lightingComponent;
 	private HUDComponent hudComponent;
 	private MinimapComponent minimapComponent;
-	private LevelComponent levelComponent;
-	private LightingComponent lightingComponent;
 	
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
-	
-	private Path lastPath = null;
-	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
 	
 	private float zoom = 1.0f;
 	
@@ -103,8 +89,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		mainBatch = new SpriteBatch();
 		
-		loadPathSprites();
-		
 		initialiseRendererComponents();
 		initialiseInputMultiplexer();
 		
@@ -126,15 +110,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	private void initialiseRendererComponents() {
-		hudComponent = new HUDComponent(this, dungeon, settings);
-		minimapComponent = new MinimapComponent(this, dungeon, settings);
-		lightingComponent = new LightingComponent(this, dungeon, settings);
 		levelComponent = new LevelComponent(this, dungeon, settings);
+		pathComponent = new PathComponent(this, dungeon, settings);
+		lightingComponent = new LightingComponent(this, dungeon, settings);
+		minimapComponent = new MinimapComponent(this, dungeon, settings);
+		hudComponent = new HUDComponent(this, dungeon, settings);
 		
-		rendererComponents.add(hudComponent);
-		rendererComponents.add(minimapComponent);
-		rendererComponents.add(lightingComponent);
 		rendererComponents.add(levelComponent);
+		rendererComponents.add(pathComponent);
+		rendererComponents.add(lightingComponent);
+		rendererComponents.add(minimapComponent);
+		rendererComponents.add(hudComponent);
 		
 		// add mod components
 		
@@ -142,6 +128,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		rendererComponents.forEach(r -> r.setCamera(camera));
 		rendererComponents.forEach(RendererComponent::initialise);
+		rendererComponents.forEach(r -> dungeon.addListener(r));
 	}
 	
 	private void initialiseInputMultiplexer() {
@@ -149,20 +136,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
 		inputMultiplexer.addProcessor(hudComponent.getStage());
 		Gdx.input.setInputProcessor(inputMultiplexer);
-	}
-	
-	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 6, 0);
-		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 7, 0);
-		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 8, 0);
-		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 9, 0);
-		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 10, 0);
-		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 11, 0);
-		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 12, 0);
-		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 13, 0);
-		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 14, 0);
-		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 15, 0);
-		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 16, 0);
 	}
 	
 	private void updateWindowTitle() {
@@ -177,21 +150,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onLevelChange(Level level) {
 		entityPooledEffects.clear();
-		lastPath = null;
-		rendererComponents.forEach(r -> r.onLevelChange(level));
 	}
 	
 	@Override
 	public void onTurn(long turn) {
 		updateWindowTitle();
-		lastPath = null;
-		rendererComponents.forEach(r -> r.onTurn(turn));
-	}
-	
-	@Override
-	public void onPathShow(Path path) {
-		lastPath = path;
-		rendererComponents.forEach(r -> r.onPathShow(path));
 	}
 	
 	@Override
@@ -226,8 +189,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			effect
 		);
 		entityPooledEffects.add(entityPooledEffect);
-
-		rendererComponents.forEach(r -> r.onEntityAdded(entity));
 	}
 	
 	@Override
@@ -252,26 +213,21 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 				);
 			}
 		}
-
-		rendererComponents.forEach(r -> r.onEntityMoved(entity, lastX, lastY, newX, newY));
 	}
 	
 	@Override
 	public void onEntityRemoved(Entity entity) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
-		rendererComponents.forEach(r -> r.onEntityRemoved(entity));
 	}
 	
 	@Override
 	public void onQuit() {
 		dontSave = true;
-		rendererComponents.forEach(Dungeon.Listener::onQuit);
 		application.exit();
 	}
 	
 	@Override
 	public void onSaveAndQuit() {
-		rendererComponents.forEach(Dungeon.Listener::onSaveAndQuit);
 		application.exit();
 	}
 	
@@ -317,7 +273,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			.filter(RendererComponent::useMainBatch)
 			.forEach(r -> r.render(delta));
 		
-		drawLastPath();
 		drawEntityParticles(delta, false);
 		drawEntities();
 		drawEntityParticles(delta, true);
@@ -327,62 +282,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.stream()
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
-	}
-	
-	private void drawLastPath() {
-		if (lastPath == null) {
-			return;
-		}
-		
-		Color oldColour = mainBatch.getColor();
-		
-		Path path = lastPath;
-		AtomicInteger i = new AtomicInteger(0);
-		
-		path.forEach(step -> {
-			i.incrementAndGet();
-			
-			TextureRegion image;
-			
-			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
-
-			/*
-				 3
-				1 0
-				 2
-			 */
-			
-			if (a[0] && !a[1] && !a[2] && !a[3]) {
-				image = pathR;
-			} else if (!a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathL;
-			} else if (!a[0] && !a[1] && !a[2] && a[3]) {
-				image = pathU;
-			} else if (!a[0] && !a[1] && a[2] && !a[3]) {
-				image = pathB;
-			} else if (a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathH;
-			} else if (!a[0] && !a[1] && a[2]) {
-				image = pathV;
-			} else if (!a[0] && a[1] && !a[2]) {
-				image = pathUL;
-			} else if (a[0] && !a[1] && !a[2]) {
-				image = pathUR;
-			} else if (!a[0] && a[1] && !a[3]) {
-				image = pathBL;
-			} else if (a[0] && !a[1] && !a[3]) {
-				image = pathBR;
-			} else {
-				image = pathSpot;
-			}
-			
-			float point = (float) (i.get() - 1) / (float) (path.getLength() - 1);
-			
-			mainBatch.setColor(PATH_GRADIENT.getColourAtPoint(point));
-			mainBatch.draw(image, step.getX() * TileMap.TILE_WIDTH + 0.01f, step.getY() * TileMap.TILE_HEIGHT + 0.01f);
-		});
-		
-		mainBatch.setColor(oldColour);
 	}
 
 	public Matrix4 getCombinedTransform() {
@@ -495,20 +394,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		return pixmap;
 	}
 	
-	public HUDComponent getHUDComponent() {
-		return hudComponent;
+	public LevelComponent getLevelComponent() {
+		return levelComponent;
 	}
 	
-	public MinimapComponent getMinimapComponent() {
-		return minimapComponent;
+	public PathComponent getPathComponent() {
+		return pathComponent;
 	}
 	
 	public LightingComponent getLightingComponent() {
 		return lightingComponent;
 	}
 	
-	public LevelComponent getLevelComponent() {
-		return levelComponent;
+	public HUDComponent getHUDComponent() {
+		return hudComponent;
+	}
+	
+	public MinimapComponent getMinimapComponent() {
+		return minimapComponent;
 	}
 	
 	public OrthographicCamera getCamera() {

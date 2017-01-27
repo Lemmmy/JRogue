@@ -17,20 +17,18 @@ import java.util.List;
 public class LevelComponent extends RendererComponent {
 	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
 	
-	private SpriteBatch batch;
+	private SpriteBatch mainBatch;
 	
 	private Level level;
 	
 	public LevelComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
-		
-		batch = renderer.getMainBatch();
-		level = dungeon.getLevel();
 	}
 	
 	@Override
 	public void initialise() {
-		
+		mainBatch = renderer.getMainBatch();
+		level = dungeon.getLevel();
 	}
 	
 	@Override
@@ -48,7 +46,7 @@ public class LevelComponent extends RendererComponent {
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
 				if (!level.getVisibilityStore().isTileDiscovered(x, y)) {
-					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
+					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;
 				}
 				
@@ -56,9 +54,9 @@ public class LevelComponent extends RendererComponent {
 				
 				if (tm.getRenderer() != null) {
 					if (extra) {
-						tm.getRenderer().drawExtra(batch, dungeon, x, y);
+						tm.getRenderer().drawExtra(mainBatch, dungeon, x, y);
 					} else {
-						tm.getRenderer().draw(batch, dungeon, x, y);
+						tm.getRenderer().draw(mainBatch, dungeon, x, y);
 					}
 				}
 			}
@@ -75,7 +73,7 @@ public class LevelComponent extends RendererComponent {
 				continue;
 			}
 			
-			effect.getPooledEffect().draw(batch);
+			effect.getPooledEffect().draw(mainBatch);
 			
 			if (effect.getPooledEffect().isComplete()) {
 				effect.getPooledEffect().free();
