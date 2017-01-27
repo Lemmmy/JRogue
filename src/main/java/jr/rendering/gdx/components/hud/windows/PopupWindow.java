@@ -26,7 +26,7 @@ public abstract class PopupWindow implements Window.ResultListener {
 	}
 	
 	public void show() {
-		renderer.addWindow(this);
+		renderer.getHUDComponent().addWindow(this);
 		initialiseWindow();
 	}
 	
@@ -56,7 +56,7 @@ public abstract class PopupWindow implements Window.ResultListener {
 	public abstract void populateWindow();
 	
 	protected void remove() {
-		renderer.removeWindow(this);
+		renderer.getHUDComponent().removeWindow(this);
 	}
 	
 	public Stage getStage() {

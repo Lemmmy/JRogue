@@ -45,11 +45,15 @@ public class MinimapComponent extends RendererComponent {
 	
 	private TextureRegion iconPoint, iconUp, iconDown;
 	
+	private Level level;
+	
 	public MinimapComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 		
 		tileWidth = settings.getMinimapTileWidth();
 		tileHeight = settings.getMinimapTileHeight();
+		
+		level = dungeon.getLevel();
 	}
 	
 	@Override
@@ -75,11 +79,12 @@ public class MinimapComponent extends RendererComponent {
 	@Override
 	public void resize(int width, int height) {
 		minimapCamera.setToOrtho(true, width, height);
-		xOffset = width - dungeon.getLevel().getWidth() * tileWidth;
+		xOffset = width - level.getWidth() * tileWidth;
 	}
 	
 	@Override
 	public void onLevelChange(Level level) {
+		this.level = level;
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
@@ -115,10 +120,10 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void drawMap() {
-		for (Tile tile : dungeon.getLevel().getTileStore().getTiles()) {
-			boolean discovered = dungeon.getLevel().getVisibilityStore()
+		for (Tile tile : level.getTileStore().getTiles()) {
+			boolean discovered = level.getVisibilityStore()
 				.isTileDiscovered(tile.getX(), tile.getY());
-			boolean visible = !dungeon.getLevel().getVisibilityStore()
+			boolean visible = !level.getVisibilityStore()
 				.isTileInvisible(tile.getX(), tile.getY());
 			
 			if (discovered) {
@@ -152,36 +157,36 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void drawStairIcons() {
-		Arrays.stream(dungeon.getLevel().getTileStore().getTiles())
+		Arrays.stream(level.getTileStore().getTiles())
 			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP || t.getType() == TileType.TILE_ROOM_LADDER_UP)
-			.filter(t -> dungeon.getLevel().getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
 		
-		Arrays.stream(dungeon.getLevel().getTileStore().getTiles())
+		Arrays.stream(level.getTileStore().getTiles())
 			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN || t.getType() == TileType.TILE_ROOM_LADDER_DOWN)
-			.filter(t -> dungeon.getLevel().getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
 	}
 	
 	private void drawEntityIcons() {
-		dungeon.getLevel().getEntityStore().getEntities().stream()
+		level.getEntityStore().getEntities().stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
 			.filter(
-				e -> e.isStatic() && dungeon.getLevel().getVisibilityStore()
+				e -> e.isStatic() && level.getVisibilityStore()
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getX(), e.getY())
+				!level.getVisibilityStore().isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
-		dungeon.getLevel().getEntityStore().getMonsters().stream()
+		level.getEntityStore().getMonsters().stream()
 			.filter(
-				e -> e.isStatic() && dungeon.getLevel().getVisibilityStore()
+				e -> e.isStatic() && level.getVisibilityStore()
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getX(), e.getY())
+				!level.getVisibilityStore().isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.map(e -> (Monster) e)

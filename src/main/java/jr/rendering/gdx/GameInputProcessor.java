@@ -67,7 +67,7 @@ public class GameInputProcessor implements InputProcessor {
 			dungeon.getPlayer().fire();
 			return true;
 		} else if (key == 'i') {
-			renderer.showInventoryWindow();
+			renderer.getHUDComponent().showInventoryWindow();
 			return true;
 		} else if (key == 'l') {
 			dungeon.getPlayer().loot();
@@ -94,7 +94,7 @@ public class GameInputProcessor implements InputProcessor {
 			dungeon.getPlayer().swapHands();
 			return true;
 		} else if (key == 'Z') {
-			renderer.showSpellWindow();
+			renderer.getHUDComponent().showSpellWindow();
 			return true;
 		} else if (key == ',') {
 			dungeon.getPlayer().pickup();
@@ -116,10 +116,10 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.D) {
-				renderer.showDebugWindow();
+				renderer.getHUDComponent().showDebugWindow();
 				return true;
 			} else if (keycode == Input.Keys.W) {
-				renderer.showWishWindow();
+				renderer.getHUDComponent().showWishWindow();
 				return true;
 			} else if (keycode == Input.Keys.S) {
 				Pixmap snapshot = renderer.takeLevelSnapshot();
@@ -149,7 +149,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
-		if (renderer.getWindows().size() > 0) {
+		if (renderer.getHUDComponent().getWindows().size() > 0) {
 			return false;
 		}
 		
@@ -187,7 +187,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if (renderer.getWindows().size() > 0) { return false; }
+		if (renderer.getHUDComponent().getWindows().size() > 0) { return false; }
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -212,7 +212,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) {
-		if (renderer.getWindows().size() > 0) { return false; }
+		if (renderer.getHUDComponent().getWindows().size() > 0) { return false; }
 		if (character == 0) { return false; }
 		
 		if (dontHandleNext) {

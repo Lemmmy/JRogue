@@ -19,10 +19,13 @@ public class LevelComponent extends RendererComponent {
 	
 	private SpriteBatch batch;
 	
+	private Level level;
+	
 	public LevelComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 		
 		batch = renderer.getMainBatch();
+		level = dungeon.getLevel();
 	}
 	
 	@Override
@@ -42,14 +45,14 @@ public class LevelComponent extends RendererComponent {
 	}
 	
 	private void drawLevel(boolean extra) {
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!dungeon.getLevel().getVisibilityStore().isTileDiscovered(x, y)) {
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				if (!level.getVisibilityStore().isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					if (extra) {
@@ -68,7 +71,7 @@ public class LevelComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * 0.25f);
 			
-			if (!dungeon.getLevel().getVisibilityStore().isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!level.getVisibilityStore().isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
 			}
 			
@@ -110,9 +113,9 @@ public class LevelComponent extends RendererComponent {
 		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
 		tilePooledEffects.clear();
 		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() == null) {
 					continue;
@@ -139,6 +142,7 @@ public class LevelComponent extends RendererComponent {
 	
 	@Override
 	public void onLevelChange(Level level) {
+		this.level = level;
 		findTilePooledParticles();
 	}
 }

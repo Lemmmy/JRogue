@@ -9,14 +9,13 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.utils.ScreenUtils;
 import jr.ErrorHandler;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.rendering.Renderer;
+import jr.rendering.gdx.components.LevelComponent;
 import jr.rendering.gdx.components.LightingComponent;
 import jr.rendering.gdx.components.MinimapComponent;
 import jr.rendering.gdx.components.RendererComponent;
@@ -26,8 +25,6 @@ import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
 import jr.rendering.gdx.entities.EntityRenderer;
 import jr.rendering.gdx.tiles.TileMap;
-import jr.rendering.gdx.tiles.TilePooledEffect;
-import jr.rendering.gdx.tiles.TileRenderer;
 import jr.rendering.gdx.utils.FontLoader;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.rendering.gdx.utils.ShaderLoader;
@@ -60,9 +57,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
-	private HUDComponent hud;
-	private MinimapComponent minimap;
-	private LightingComponent lighting;
+	private HUDComponent hudComponent;
+	private MinimapComponent minimapComponent;
+	private LevelComponent levelComponent;
+	private LightingComponent lightingComponent;
 	
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
@@ -130,13 +128,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	private void initialiseRendererComponents() {
-		hud = new HUDComponent(this, dungeon, settings);
-		minimap = new MinimapComponent(this, dungeon, settings);
-		lighting = new LightingComponent(this, dungeon, settings);
+		hudComponent = new HUDComponent(this, dungeon, settings);
+		minimapComponent = new MinimapComponent(this, dungeon, settings);
+		lightingComponent = new LightingComponent(this, dungeon, settings);
+		levelComponent = new LevelComponent(this, dungeon, settings);
 		
-		rendererComponents.add(hud);
-		rendererComponents.add(minimap);
-		rendererComponents.add(lighting);
+		rendererComponents.add(hudComponent);
+		rendererComponents.add(minimapComponent);
+		rendererComponents.add(lightingComponent);
+		rendererComponents.add(levelComponent);
 		
 		// add mod components
 		
@@ -149,7 +149,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private void initialiseInputMultiplexer() {
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hud.getStage());
+		inputMultiplexer.addProcessor(hudComponent.getStage());
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
@@ -191,7 +191,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Override
 	public void onContainerShow(Entity containerEntity) {
 		nextFrameDeferred
-			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
+			.add(() -> new ContainerWindow(GDXRenderer.this, hudComponent.getStage(), hudComponent.getSkin(), containerEntity)
 				.show());
 	}
 	
@@ -495,6 +495,22 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		pixmap.setColor(Color.WHITE);
 		pixmap.fill();
 		return pixmap;
+	}
+	
+	public HUDComponent getHUDComponent() {
+		return hudComponent;
+	}
+	
+	public MinimapComponent getMinimapComponent() {
+		return minimapComponent;
+	}
+	
+	public LightingComponent getLightingComponent() {
+		return lightingComponent;
+	}
+	
+	public LevelComponent getLevelComponent() {
+		return levelComponent;
 	}
 	
 	public OrthographicCamera getCamera() {
