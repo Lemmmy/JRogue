@@ -18,7 +18,7 @@ public class WishWindow extends PopupWindow {
 	
 	@Override
 	public String getTitle() {
-		return "Wish";
+		return "Wishes";
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class WishWindow extends PopupWindow {
 		getWindow().getContentTable().add(wishField).pad(8).width(300);
 		getStage().setKeyboardFocus(wishField);
 		
-		getWindow().button("Wish", true);
+		getWindow().button("Wishes", true);
 		getWindow().key(Input.Keys.ENTER, true);
 		getWindow().pack();
 	}

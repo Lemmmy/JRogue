@@ -1,6 +1,7 @@
-package jr.dungeon;
+package jr.dungeon.wishes;
 
 import jr.JRogue;
+import jr.dungeon.Dungeon;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityChest;
@@ -30,18 +31,95 @@ import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.*;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Wish {
+public class Wishes {
 	private static final Pattern wishDRoll = Pattern.compile("^roll (\\d+)?d(\\d+)(?:\\+(\\d+))?");
 	private static final Pattern wishGold = Pattern.compile("^(\\d+) gold$");
 	private static final Pattern wishGoldDropped = Pattern.compile("^drop(?:ed)? (\\d+) gold$");
 	private static final Pattern wishSword = Pattern
 		.compile("^(wood|stone|bronze|iron|steel|silver|gold|mithril|adamantite) (shortsword|longsword|dagger)$");
-	
+
+	private final Set<Pair<Pattern, Wish>> wishes = new HashSet<>();
+
+	private static Wishes instance;
+
+	public static Wishes get() {
+		if (instance == null) {
+			instance = new Wishes();
+		}
+
+		return instance;
+	}
+
+	private Wishes() {
+		registerWish("^death$", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+		registerWish("^kill\\s+all$", (d, p, a) -> d.getLevel().getEntityStore().getEntities().stream()
+													.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
+													.map(e -> (EntityLiving) e)
+													.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null, false)));
+		registerWish("^nutrition$", (d, p, a) -> p.setNutrition(1000));
+		registerWish("^downstairs$", (d, p, a) -> Arrays.stream(p.getLevel().getTileStore().getTiles())
+													.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
+													.findFirst()
+													.ifPresent(t -> p.teleport(t.getX(), t.getY())));
+	}
+
+	public void registerWish(Pattern pattern, Wish wish) {
+		wishes.add(Pair.of(pattern, wish));
+	}
+
+	public void registerWish(String pattern, Wish wish) {
+		registerWish(Pattern.compile(pattern), wish);
+	}
+
+	public boolean makeWish(Dungeon dungeon, String wish) {
+		final Player player = dungeon.getPlayer();
+
+		if (player == null || !player.isDebugger()) {
+			dungeon.redYou("can't do that.");
+			return false;
+		}
+
+		Optional<Pair<Matcher, Wish>> optP = wishes.stream()
+			.map(p -> Pair.of(p.getKey().matcher(wish), p.getValue()))
+			.filter(p -> p.getKey().matches())
+			.findFirst();
+
+		if (optP.isPresent()) {
+			Pair<Matcher, Wish> p = optP.get();
+			Matcher m = p.getKey();
+			Wish w = p.getValue();
+
+			int gc = m.groupCount();
+			String[] args = new String[gc];
+
+			for (int i = 1; i < gc + 1; ++i) {
+				args[i - 1] = m.group(i);
+			}
+
+			w.grant(dungeon, player, args);
+
+			return true;
+		} else {
+			dungeon.logRandom(
+				"[RED]You have extraordinary needs.",
+				"[RED]You speak in mysteries.",
+				"[RED]You speak in riddles.",
+				"[RED]You are undecipherable."
+			);
+
+			return false;
+		}
+	}
+
 	public static void wish(Dungeon dungeon, String wish) {
 		Player player = dungeon.getPlayer();
 		
@@ -50,23 +128,8 @@ public class Wish {
 		}
 		
 		wish = wish.toLowerCase();
-		
-		if (wish.equalsIgnoreCase("death")) {
-			player.kill(DamageSource.WISH_FOR_DEATH, 0, null, false);
-		} else if (wish.equalsIgnoreCase("kill all")) {
-			dungeon.getLevel().getEntityStore().getEntities().stream()
-				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
-				.forEach(e -> ((EntityLiving) e).kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
-			
-			dungeon.turn();
-		} else if (wish.equalsIgnoreCase("nutrition")) {
-			player.setNutrition(1000);
-		} else if (wish.equalsIgnoreCase("downstairs")) {
-			Arrays.stream(player.getLevel().getTileStore().getTiles())
-				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
-				.findFirst()
-				.ifPresent(t -> player.teleport(t.getX(), t.getY()));
-		} else if (wish.equalsIgnoreCase("godmode")) {
+
+		if (wish.equalsIgnoreCase("godmode")) {
 			player.godmode();
 		} else if (wish.equalsIgnoreCase("chest")) {
 			dungeon.getLevel().getEntityStore().addEntity(

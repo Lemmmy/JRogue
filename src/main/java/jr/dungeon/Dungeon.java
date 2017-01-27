@@ -15,6 +15,7 @@ import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.wishes.Wishes;
 import jr.utils.OperatingSystem;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
@@ -540,7 +541,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public void wish(String wish) {
-		Wish.wish(this, wish);
+		//Wishes.wish(this, wish);
+		Wishes.get().makeWish(this, wish);
 	}
 	
 	public Level getLevel() {
