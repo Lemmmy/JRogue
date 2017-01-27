@@ -11,8 +11,8 @@
 
         <RollingFile
             name="FILE"
-            fileName="${sys:jrogue.logs}/jrogue.latest.entry"
-            filePattern="${sys:jrogue.logs}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.entry.gz"
+            fileName="${sys:jrogue.logs}/jrogue.latest.log"
+            filePattern="${sys:jrogue.logs}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
         >
             <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level - %msg%n" />
 
