@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.rendering.gdx.tiles.TileMap;
 
 public class LightingComponent extends RendererComponent {
 	private ShapeRenderer lightBatch;
 	private SpriteBatch lightSpriteBatch;
+	
+	private Level level;
 	
 	public LightingComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -20,6 +23,11 @@ public class LightingComponent extends RendererComponent {
 	public void initialise() {
 		lightBatch = new ShapeRenderer();
 		lightSpriteBatch = new SpriteBatch();
+		
+		lightBatch.setProjectionMatrix(camera.combined);
+		lightSpriteBatch.setProjectionMatrix(camera.combined);
+		
+		level = dungeon.getLevel();
 	}
 	
 	@Override
@@ -29,9 +37,9 @@ public class LightingComponent extends RendererComponent {
 		
 		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
 		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
@@ -41,14 +49,14 @@ public class LightingComponent extends RendererComponent {
 		
 		// Due to the light being drawn offset, we need additional tiles on the level borders.
 		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
+		for (int y = 0; y < level.getHeight(); y++) {
 			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, y);
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, dungeon.getLevel().getWidth() + 1, y);
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, level.getWidth() + 1, y);
 		}
 		
-		for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
+		for (int x = 0; x < level.getWidth(); x++) {
 			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, -1);
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, dungeon.getLevel().getHeight() + 1);
+			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, level.getHeight() + 1);
 		}
 		
 		TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, -1);
@@ -57,9 +65,9 @@ public class LightingComponent extends RendererComponent {
 		
 		lightSpriteBatch.begin();
 		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileStore().getTileType(x, y).name());
+		for (int y = 0; y < level.getHeight(); y++) {
+			for (int x = 0; x < level.getWidth(); x++) {
+				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);
@@ -77,6 +85,7 @@ public class LightingComponent extends RendererComponent {
 		
 	}
 	
+	@Override
 	public void resize(int width, int height) {
 		lightBatch.setProjectionMatrix(camera.combined);
 		lightSpriteBatch.setProjectionMatrix(camera.combined);
@@ -91,5 +100,10 @@ public class LightingComponent extends RendererComponent {
 	public void dispose() {
 		lightBatch.dispose();
 		lightSpriteBatch.dispose();
+	}
+	
+	@Override
+	public void onLevelChange(Level level) {
+		this.level = level;
 	}
 }
