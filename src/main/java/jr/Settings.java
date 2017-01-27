@@ -17,7 +17,7 @@ public class Settings {
 
 	@Setting(comment="The size of the log.")
 	private int logSize = 7;
-	@Setting(comment="The scale of the HUD.")
+	@Setting(comment="The scale of the HUDComponent.")
 	private float hudScale = 1.0f;
 
 	@Setting(comment="The width of each individual tile (square) on the minimap.")

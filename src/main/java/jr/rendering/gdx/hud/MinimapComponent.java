@@ -15,6 +15,8 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.gdx.RendererComponent;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Gradient;
 import jr.utils.Utils;
@@ -22,7 +24,7 @@ import jr.utils.Utils;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Minimap implements Dungeon.Listener {
+public class MinimapComponent extends RendererComponent {
 	private static final Color SOLID_COLOUR = new Color(0x666666cc);
 	private static final Color NONSOLID_COLOUR = new Color(0xaaaaaacc);
 	private static final Color DOOR_COLOUR = new Color(0xab5e20cc);
@@ -34,29 +36,26 @@ public class Minimap implements Dungeon.Listener {
 	
 	private static final float INVISIBLE_ALPHA = -0.15f;
 	
-	private Dungeon dungeon;
-	
 	private ShapeRenderer mapBatch;
 	private SpriteBatch iconBatch;
 	
-	private OrthographicCamera camera;
+	private OrthographicCamera minimapCamera;
 	
 	private int tileWidth, tileHeight;
 	private int xOffset;
 	
 	private TextureRegion iconPoint, iconUp, iconDown;
 	
-	public Minimap(Settings settings, Dungeon dungeon) {
-		this.dungeon = dungeon;
+	public MinimapComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
+		super(renderer, dungeon, settings);
 		
-		this.tileWidth = settings.getMinimapTileWidth();
-		this.tileHeight = settings.getMinimapTileHeight();
+		tileWidth = settings.getMinimapTileWidth();
+		tileHeight = settings.getMinimapTileHeight();
 	}
 	
-	public void init() {
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		resize();
-		camera.update();
+	@Override
+	public void initialise() {
+		minimapCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		mapBatch = new ShapeRenderer();
 		iconBatch = new SpriteBatch();
@@ -74,21 +73,23 @@ public class Minimap implements Dungeon.Listener {
 		iconUp.flip(false, true);
 	}
 	
-	public void resize() {
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		xOffset = Gdx.graphics.getWidth() - dungeon.getLevel().getWidth() * tileWidth;
+	@Override
+	public void resize(int width, int height) {
+		minimapCamera.setToOrtho(true, width, height);
+		xOffset = width - dungeon.getLevel().getWidth() * tileWidth;
 	}
 	
 	@Override
 	public void onLevelChange(Level level) {
-		resize();
+		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
+	@Override
 	public void render() {
-		camera.update();
+		minimapCamera.update();
 		
-		mapBatch.setProjectionMatrix(camera.combined);
-		iconBatch.setProjectionMatrix(camera.combined);
+		mapBatch.setProjectionMatrix(minimapCamera.combined);
+		iconBatch.setProjectionMatrix(minimapCamera.combined);
 		
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -102,6 +103,16 @@ public class Minimap implements Dungeon.Listener {
 		iconBatch.begin();
 		drawIcons();
 		iconBatch.end();
+	}
+	
+	@Override
+	public void update(float dt) {
+		
+	}
+	
+	@Override
+	public int getZIndex() {
+		return 75;
 	}
 	
 	private void drawMap() {
@@ -200,5 +211,10 @@ public class Minimap implements Dungeon.Listener {
 			xOffset + x * tileWidth - icon.getRegionWidth() / 2,
 			y * tileHeight - icon.getRegionHeight() / 2
 		);
+	}
+	
+	@Override
+	public void dispose() {
+		
 	}
 }

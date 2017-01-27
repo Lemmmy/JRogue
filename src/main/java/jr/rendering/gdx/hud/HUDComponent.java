@@ -10,6 +10,7 @@ import jr.dungeon.Prompt;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.gdx.RendererComponent;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;
@@ -25,10 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HUD implements Dungeon.Listener {
-	private GDXRenderer renderer;
-	private Settings settings;
-	
+public class HUDComponent extends RendererComponent {
 	private Skin skin;
 	private Stage stage;
 	private Label playerLabel;
@@ -44,37 +42,10 @@ public class HUD implements Dungeon.Listener {
 	private int healthLastTurn;
 	private int energyLastTurn;
 	
-	private Dungeon dungeon;
 	private List<LogEntry> log = new ArrayList<>();
 	
-	public HUD(GDXRenderer renderer, Settings settings, Dungeon dungeon) {
-		this.renderer = renderer;
-		this.settings = settings;
-		
-		this.dungeon = dungeon;
-	}
-	
-	public void init() {
-		ScreenViewport stageViewport = new ScreenViewport();
-		stageViewport.setUnitsPerPixel(1f / settings.getHUDScale());
-		stage = new Stage(stageViewport);
-		skin = new HUDSkin();
-		
-		Table root = new Table();
-		root.setFillParent(true);
-		
-		Table hudTopContainer = new Table(skin);
-		hudTopContainer.setBackground("blackTransparent");
-		initPlayerLine(hudTopContainer);
-		root.add(hudTopContainer).left().fillX().row();
-		
-		root.add(new Container<>()).expand().row();
-		
-		initEffectsLine(root);
-		initAttributes(root);
-		
-		root.top();
-		stage.addActor(root);
+	public HUDComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
+		super(renderer, dungeon, settings);
 	}
 	
 	private void initPlayerLine(Table container) {
@@ -165,15 +136,51 @@ public class HUD implements Dungeon.Listener {
 		return skin;
 	}
 	
-	public void updateAndDraw(float delta) {
-		stage.act(delta);
+	@Override
+	public void initialise() {
+		ScreenViewport stageViewport = new ScreenViewport();
+		stageViewport.setUnitsPerPixel(1f / settings.getHUDScale());
+		stage = new Stage(stageViewport);
+		skin = new HUDSkin();
+		
+		Table root = new Table();
+		root.setFillParent(true);
+		
+		Table hudTopContainer = new Table(skin);
+		hudTopContainer.setBackground("blackTransparent");
+		initPlayerLine(hudTopContainer);
+		root.add(hudTopContainer).left().fillX().row();
+		
+		root.add(new Container<>()).expand().row();
+		
+		initEffectsLine(root);
+		initAttributes(root);
+		
+		root.top();
+		stage.addActor(root);
+	}
+	
+	@Override
+	public void render() {
 		stage.draw();
 	}
 	
-	public void updateViewport(int width, int height) {
+	@Override
+	public void update(float dt) {
+		stage.act(dt);
+	}
+	
+	@Override
+	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 	}
 	
+	@Override
+	public int getZIndex() {
+		return 100;
+	}
+	
+	@Override
 	public void dispose() {
 		stage.dispose();
 		skin.dispose();
