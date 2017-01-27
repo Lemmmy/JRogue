@@ -55,12 +55,12 @@ public class Wishes {
 
 	private Wishes() {
 		// Basic wishes
-		registerWish("death", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null, false));
+		registerWish("death", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null));
 		registerWish("kill\\s+all", (d, p, a) ->
 			d.getLevel().getEntityStore().getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.map(e -> (EntityLiving) e)
-				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null, false)));
+				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("downstairs", (d, p, a) ->
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
