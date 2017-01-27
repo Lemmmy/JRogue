@@ -78,10 +78,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		updateWindowTitle();
 		
-		initialiseCamera();
-		
 		mainBatch = new SpriteBatch();
 		
+		initialiseCamera();
 		initialiseRendererComponents();
 		initialiseInputMultiplexer();
 		
@@ -142,34 +141,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		));
 	}
 	
-	@Override
-	public void onTurn(long turn) {
-		updateWindowTitle();
-	}
-	
-	@Override
-	public void onQuit() {
-		dontSave = true;
-		application.exit();
-	}
-	
-	@Override
-	public void onSaveAndQuit() {
-		application.exit();
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		
-		camera.setToOrtho(true, width, height);
-		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * height / width);
-		
-		rendererComponents.forEach(r -> r.resize(width, height));
-	}
-	
 	public void updateCamera() {
 		if (dungeon.getPlayer() != null) {
 			camera.position.x = (dungeon.getPlayer().getX() + 0.5f) * TileMap.TILE_WIDTH;
@@ -206,9 +177,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
 	}
-
-	public Matrix4 getCombinedTransform() {
-		return camera.combined;
+	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		
+		camera.setToOrtho(true, width, height);
+		
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * height / width);
+		
+		rendererComponents.forEach(r -> r.resize(width, height));
 	}
 	
 	@Override
@@ -227,6 +206,34 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		FontLoader.disposeAll();
 		ShaderLoader.disposeAll();
 		LogManager.shutdown();
+	}
+	
+	@Override
+	public void onTurn(long turn) {
+		updateWindowTitle();
+	}
+	
+	@Override
+	public void onQuit() {
+		dontSave = true;
+		application.exit();
+	}
+	
+	@Override
+	public void onSaveAndQuit() {
+		application.exit();
+	}
+	
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+	
+	public Matrix4 getCombinedTransform() {
+		return camera.combined;
+	}
+	
+	public SpriteBatch getMainBatch() {
+		return mainBatch;
 	}
 	
 	public LevelComponent getLevelComponent() {
@@ -251,14 +258,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	public MinimapComponent getMinimapComponent() {
 		return minimapComponent;
-	}
-	
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-	
-	public SpriteBatch getMainBatch() {
-		return mainBatch;
 	}
 	
 	@Override
