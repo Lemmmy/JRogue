@@ -3,9 +3,9 @@ package jr.rendering.gdx.components.hud.windows;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.gdx.GDXRenderer;
-import jr.dungeon.Dungeon;
 
 public abstract class PopupWindow implements Window.ResultListener {
 	private final Stage stage;

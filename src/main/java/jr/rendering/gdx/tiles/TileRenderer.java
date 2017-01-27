@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.Tile;
-import jr.rendering.gdx.utils.ImageLoader;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Utils;
 
 import java.awt.*;

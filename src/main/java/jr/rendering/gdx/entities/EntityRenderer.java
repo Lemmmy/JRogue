@@ -3,9 +3,9 @@ package jr.rendering.gdx.entities;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.rendering.gdx.utils.ImageLoader;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.rendering.gdx.utils.ImageLoader;
 
 public abstract class EntityRenderer {
 	protected ParticleEffectPool effectPool;

@@ -2,8 +2,8 @@ package jr.rendering.gdx.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
-import jr.dungeon.entities.player.NutritionState;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.player.NutritionState;
 
 public class HUDUtils {
 	public static String getHealthColour(int health, int maxHealth) {

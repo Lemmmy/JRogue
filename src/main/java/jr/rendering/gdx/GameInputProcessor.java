@@ -6,9 +6,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.Vector3;
+import jr.dungeon.Dungeon;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.utils.Point;
-import jr.dungeon.Dungeon;
 import jr.utils.Utils;
 
 import java.nio.file.Paths;

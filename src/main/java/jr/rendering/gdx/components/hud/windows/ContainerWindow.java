@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import jr.dungeon.entities.player.Player;
-import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.player.Player;
 import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
 
 public class ContainerWindow extends PopupWindow {
 	private Entity entity;
