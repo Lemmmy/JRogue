@@ -22,8 +22,8 @@ public class TileRendererDirt extends TileRendererBlob8 {
 		
 		this.self = self;
 		
-		dirt = getImageFromSheet("tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("tiles.png", floorSheetX, floorSheetY);
+		dirt = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
 	}
 	
 	@Override

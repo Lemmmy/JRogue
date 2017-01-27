@@ -43,7 +43,7 @@ public class StatisticsComponent extends Table {
 	}
 	
 	private void addArmourClass(Table container) {
-		container.add(new Image(ImageLoader.getImageFromSheet("hud.png", 15, 2, 16, 16, false))).padRight(6);
+		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 15, 2, 16, 16, false))).padRight(6);
 		
 		String label = String.format("[P_GREY_0]Armour Class:  [P_GREEN_1]%,d[][]", player.getArmourClass());
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(243).left();
@@ -64,7 +64,7 @@ public class StatisticsComponent extends Table {
 		boolean canSpend = player.getAttributes().canIncrementAttribute(attribute, player);
 		
 		int sheetX = attribute.ordinal();
-		container.add(new Image(ImageLoader.getImageFromSheet("hud.png", sheetX, 2, 16, 16, false))).padRight(6);
+		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false))).padRight(6);
 		
 		String label = String.format("[P_GREY_0]%s:  [P_GREEN_1]%,d[][]", attribute.getName(), level);
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(180).left();

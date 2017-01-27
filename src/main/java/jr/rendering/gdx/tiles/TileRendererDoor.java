@@ -14,10 +14,10 @@ public class TileRendererDoor extends TileRenderer {
 	
 	public TileRendererDoor(DoorState state) {
 		if (closed == null || openH == null || openV == null || broken == null) {
-			closed = getImageFromSheet("tiles.png", 4, 0);
-			openH = getImageFromSheet("tiles.png", 6, 0);
-			openV = getImageFromSheet("tiles.png", 5, 0);
-			broken = getImageFromSheet("tiles.png", 7, 0);
+			closed = getImageFromSheet("textures/tiles.png", 4, 0);
+			openH = getImageFromSheet("textures/tiles.png", 6, 0);
+			openV = getImageFromSheet("textures/tiles.png", 5, 0);
+			broken = getImageFromSheet("textures/tiles.png", 7, 0);
 		}
 		
 		this.state = state;

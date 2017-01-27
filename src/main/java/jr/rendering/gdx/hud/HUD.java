@@ -84,32 +84,32 @@ public class HUD implements Dungeon.Listener {
 		
 		topStats = new Table();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 3, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 2, 16, 16, false)));
 		Label hpLabel = new Label("Health: 0 / 0", skin);
 		hpLabel.setName("health");
 		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 7, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 2, 16, 16, false)));
 		Label nutritionLabel = new Label("Not hungry", skin);
 		nutritionLabel.setName("nutrition");
 		topStats.add(nutritionLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 12, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 2, 16, 16, false)));
 		Label expLabel = new Label("Level: 1", skin);
 		expLabel.setName("exp");
 		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 14, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 2, 16, 16, false)));
 		Label energyLabel = new Label("Energy: 0 / 0", skin);
 		energyLabel.setName("energy");
 		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 11, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 2, 16, 16, false)));
 		Label goldLabel = new Label("Gold: 0", skin);
 		goldLabel.setName("gold");
 		topStats.add(goldLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("hud.png", 13, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 2, 16, 16, false)));
 		Label depthLabel = new Label("Depth: 1", skin);
 		depthLabel.setName("depth");
 		topStats.add(depthLabel).pad(0, 2, 0, 8).left();
@@ -143,7 +143,7 @@ public class HUD implements Dungeon.Listener {
 			String text = String.format("%s: 0", attribute.getName());
 			int sheetX = attribute.ordinal();
 			
-			attributeTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", sheetX, 2, 16, 16, false)));
+			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
 			Label attributeLabel = new Label(text, skin);
 			attributeLabel.setName(actorName);
 			attributeTable.add(attributeLabel).pad(0, 2, 0, 8);
@@ -314,7 +314,7 @@ public class HUD implements Dungeon.Listener {
 		
 		int sheetX = player.getLevel().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 		
-		brightness.addActor(new Image(ImageLoader.getImageFromSheet("hud.png", sheetX, 2, 16, 16, false)));
+		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
 		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));
 	}
 	
@@ -349,11 +349,11 @@ public class HUD implements Dungeon.Listener {
 		Table attackStatTable = new Table(skin);
 		attackStatTable.setBackground("blackTransparent");
 		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 17, 2, 16, 16, false)))
+		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 17, 2, 16, 16, false)))
 			.width(16).height(16).padRight(4);
 		attackStatTable.add(new Label(String.format("%,d", roll), skin)).padRight(8);
 		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("hud.png", 18, 2, 16, 16, false)))
+		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 18, 2, 16, 16, false)))
 			.width(16).height(16).padRight(4);
 		attackStatTable.add(new Label(String.format("[%s]%,d[]", toHit > roll ? "P_GREEN_2" : "RED", toHit), skin));
 		

@@ -20,9 +20,9 @@ public class ItemRendererSword extends ItemRenderer {
 	
 	public ItemRendererSword(int sheetX, int sheetY) {
 		for (int i = 0; i < 9; i++) {
-			images.add(getImageFromSheet("items.png", sheetX + i, sheetY));
+			images.add(getImageFromSheet("textures/items.png", sheetX + i, sheetY));
 			imagesDrawable.add(ImageLoader.getImageFromSheet(
-				"items.png",
+					"textures/items.png",
 				sheetX + i,
 				sheetY,
 				ItemMap.ITEM_WIDTH,

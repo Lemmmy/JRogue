@@ -15,16 +15,16 @@ public class TileRendererSewerWall extends TileRenderer {
 	
 	public TileRendererSewerWall() {
 		if (wallH == null || wallV == null || wallCT == null || wallCB == null) {
-			wallH = getImageFromSheet("tiles.png", 1, 0);
-			wallV = getImageFromSheet("tiles.png", 0, 0);
-			wallCT = getImageFromSheet("tiles.png", 2, 0);
-			wallCB = getImageFromSheet("tiles.png", 3, 0);
+			wallH = getImageFromSheet("textures/tiles.png", 1, 0);
+			wallV = getImageFromSheet("textures/tiles.png", 0, 0);
+			wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
+			wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
 			
 			mosses = new TextureRegion[3];
 			
-			mosses[0] = getImageFromSheet("tiles.png", 1, 2);
-			mosses[1] = getImageFromSheet("tiles.png", 2, 2);
-			mosses[2] = getImageFromSheet("tiles.png", 3, 2);
+			mosses[0] = getImageFromSheet("textures/tiles.png", 1, 2);
+			mosses[1] = getImageFromSheet("textures/tiles.png", 2, 2);
+			mosses[2] = getImageFromSheet("textures/tiles.png", 3, 2);
 		}
 	}
 	

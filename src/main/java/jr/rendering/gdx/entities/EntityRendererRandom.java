@@ -14,7 +14,7 @@ public class EntityRendererRandom extends EntityRenderer {
 		this.count = count;
 		
 		for (int i = 0; i < count; i++) {
-			images[i] = getImageFromSheet("entities.png", sheetX + i, sheetY);
+			images[i] = getImageFromSheet("textures/entities.png", sheetX + i, sheetY);
 		}
 	}
 	

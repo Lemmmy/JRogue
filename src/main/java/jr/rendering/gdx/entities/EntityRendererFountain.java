@@ -13,7 +13,7 @@ public class EntityRendererFountain extends EntityRendererRandom {
 		super(sheetX, sheetY, count);
 		
 		ParticleEffect effect = new ParticleEffect();
-		effect.load(Gdx.files.internal("fountain.particle"), Gdx.files.internal(""));
+		effect.load(Gdx.files.internal("particles/fountain.particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(effect, 100, 500);
 	}

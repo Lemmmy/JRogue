@@ -14,8 +14,8 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	public TileRendererCorridor() {
 		super(1, 0);
 		
-		corridor = getImageFromSheet("tiles.png", 0, 1);
-		empty = getImageFromSheet("tiles.png", 1, 1);
+		corridor = getImageFromSheet("textures/tiles.png", 0, 1);
+		empty = getImageFromSheet("textures/tiles.png", 1, 1);
 	}
 	
 	@Override

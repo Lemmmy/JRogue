@@ -65,9 +65,9 @@ public class Minimap implements Dungeon.Listener {
 	}
 	
 	private void loadIcons() {
-		iconPoint = ImageLoader.getSubimage("hud.png", 272, 0, 4, 5);
-		iconDown = ImageLoader.getSubimage("hud.png", 276, 0, 3, 5);
-		iconUp = ImageLoader.getSubimage("hud.png", 279, 0, 3, 5);
+		iconPoint = ImageLoader.getSubimage("textures/hud.png", 272, 0, 4, 5);
+		iconDown = ImageLoader.getSubimage("textures/hud.png", 276, 0, 3, 5);
+		iconUp = ImageLoader.getSubimage("textures/hud.png", 279, 0, 3, 5);
 		
 		iconPoint.flip(false, true);
 		iconDown.flip(false, true);

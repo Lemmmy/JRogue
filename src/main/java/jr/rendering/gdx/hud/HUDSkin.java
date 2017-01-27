@@ -101,10 +101,10 @@ public class HUDSkin extends Skin {
 	}
 	
 	private void addFonts() {
-		add("default", FontLoader.getFont("PixelOperator.ttf", 16, true));
-		add("defaultNoShadow", FontLoader.getFont("PixelOperator.ttf", 16, false));
-		add("large", FontLoader.getFont("PixelOperator.ttf", 32, true));
-		add("largeNoShadow", FontLoader.getFont("PixelOperator.ttf", 32, false));
+		add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true));
+		add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false));
+		add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true));
+		add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false));
 	}
 	
 	private void addLabelStyles() {
@@ -140,21 +140,21 @@ public class HUDSkin extends Skin {
 		Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
 		
 		buttonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 0, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 0, 0, 10, 10),
 			4,
 			4,
 			4,
 			4
 		));
 		buttonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 10, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 10, 0, 10, 10),
 			4,
 			4,
 			4,
 			4
 		));
 		buttonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 20, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 20, 0, 10, 10),
 			4,
 			4,
 			4,
@@ -162,7 +162,7 @@ public class HUDSkin extends Skin {
 		));
 		buttonStyle.disabled = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 50, 0, 10, 10),
+				.getSubimage("textures/hud.png", 50, 0, 10, 10),
 			4,
 			4,
 			4,
@@ -176,21 +176,21 @@ public class HUDSkin extends Skin {
 		Button.ButtonStyle inventoryButtonStyle = new Button.ButtonStyle();
 		
 		inventoryButtonStyle.disabled = inventoryButtonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 94, 25, 5, 5),
+			ImageLoader.getSubimage("textures/hud.png", 94, 25, 5, 5),
 			2,
 			2,
 			2,
 			2
 		));
 		inventoryButtonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 84, 25, 5, 5),
+			ImageLoader.getSubimage("textures/hud.png", 84, 25, 5, 5),
 			2,
 			2,
 			2,
 			2
 		));
 		inventoryButtonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 89, 25, 5, 5),
+			ImageLoader.getSubimage("textures/hud.png", 89, 25, 5, 5),
 			2,
 			2,
 			2,
@@ -204,21 +204,21 @@ public class HUDSkin extends Skin {
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		
 		textButtonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 0, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 0, 0, 10, 10),
 			4,
 			4,
 			4,
 			4
 		));
 		textButtonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 10, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 10, 0, 10, 10),
 			4,
 			4,
 			4,
 			4
 		));
 		textButtonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 20, 0, 10, 10),
+			ImageLoader.getSubimage("textures/hud.png", 20, 0, 10, 10),
 			4,
 			4,
 			4,
@@ -226,7 +226,7 @@ public class HUDSkin extends Skin {
 		));
 		textButtonStyle.disabled = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 50, 0, 10, 10),
+				.getSubimage("textures/hud.png", 50, 0, 10, 10),
 			4,
 			4,
 			4,
@@ -247,7 +247,7 @@ public class HUDSkin extends Skin {
 		
 		textFieldStyle.background = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 59, 10, 5, 18),
+				.getSubimage("textures/hud.png", 59, 10, 5, 18),
 			2,
 			2,
 			2,
@@ -255,7 +255,7 @@ public class HUDSkin extends Skin {
 		));
 		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage(
-				"hud.png",
+					"textures/hud.png",
 				64,
 				10,
 				5,
@@ -268,7 +268,7 @@ public class HUDSkin extends Skin {
 		));
 		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage(
-				"hud.png",
+					"textures/hud.png",
 				69,
 				10,
 				5,
@@ -289,14 +289,14 @@ public class HUDSkin extends Skin {
 	private void addListStyle() {
 		listStyle = new List.ListStyle();
 		listStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 84, 10, 3, 3),
+			ImageLoader.getSubimage("textures/hud.png", 84, 10, 3, 3),
 			1,
 			1,
 			1,
 			1
 		));
 		listStyle.selection = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 84, 22, 3, 3),
+			ImageLoader.getSubimage("textures/hud.png", 84, 22, 3, 3),
 			1,
 			1,
 			1,
@@ -311,14 +311,14 @@ public class HUDSkin extends Skin {
 	private void addScrollPaneStyle() {
 		scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
 		scrollPaneStyle.hScroll = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 87, 21, 7, 4),
+			ImageLoader.getSubimage("textures/hud.png", 87, 21, 7, 4),
 			2,
 			1,
 			1,
 			1
 		));
 		scrollPaneStyle.vScroll = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 87, 17, 7, 4),
+			ImageLoader.getSubimage("textures/hud.png", 87, 17, 7, 4),
 			1,
 			1,
 			2,
@@ -326,7 +326,7 @@ public class HUDSkin extends Skin {
 		));
 		scrollPaneStyle.hScrollKnob = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 87, 10, 7, 7),
+				.getSubimage("textures/hud.png", 87, 10, 7, 7),
 			2,
 			2,
 			2,
@@ -340,7 +340,7 @@ public class HUDSkin extends Skin {
 		SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
 		selectBoxStyle.background = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 59, 10, 5, 18),
+				.getSubimage("textures/hud.png", 59, 10, 5, 18),
 			2,
 			2,
 			2,
@@ -348,7 +348,7 @@ public class HUDSkin extends Skin {
 		));
 		selectBoxStyle.backgroundDisabled = new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage(
-				"hud.png",
+					"textures/hud.png",
 				69,
 				10,
 				5,
@@ -361,7 +361,7 @@ public class HUDSkin extends Skin {
 		));
 		selectBoxStyle.backgroundOver = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 74, 10, 5, 18),
+				.getSubimage("textures/hud.png", 74, 10, 5, 18),
 			2,
 			2,
 			2,
@@ -369,7 +369,7 @@ public class HUDSkin extends Skin {
 		));
 		selectBoxStyle.backgroundOpen = new NinePatchDrawable(new NinePatch(
 			ImageLoader
-				.getSubimage("hud.png", 79, 10, 5, 18),
+				.getSubimage("textures/hud.png", 79, 10, 5, 18),
 			2,
 			2,
 			2,
@@ -384,14 +384,14 @@ public class HUDSkin extends Skin {
 	
 	private void addWindowStyle() {
 		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
-		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 5, 10, 18, 18));
-		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 23, 10, 18, 18));
-		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("hud.png", 41, 10, 18, 18));
+		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 5, 10, 18, 18));
+		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 23, 10, 18, 18));
+		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 41, 10, 18, 18));
 		add("windowCloseButton", windowCloseButtonStyle);
 		
 		Window.WindowStyle windowStyle = new Window.WindowStyle();
 		windowStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("hud.png", 0, 10, 5, 20),
+			ImageLoader.getSubimage("textures/hud.png", 0, 10, 5, 20),
 			2,
 			2,
 			18,

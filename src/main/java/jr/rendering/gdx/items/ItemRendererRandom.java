@@ -20,9 +20,9 @@ public class ItemRendererRandom extends ItemRenderer {
 		this.count = count;
 		
 		for (int i = 0; i < count; i++) {
-			images[i] = getImageFromSheet("items.png", sheetX + i, sheetY);
+			images[i] = getImageFromSheet("textures/items.png", sheetX + i, sheetY);
 			imagesDrawable[i] = ImageLoader
-				.getImageFromSheet("items.png", sheetX + i, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
+				.getImageFromSheet("textures/items.png", sheetX + i, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
 		}
 	}
 	

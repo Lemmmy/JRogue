@@ -68,7 +68,7 @@ public enum ItemMap {
 	}
 	
 	ItemMap(int sheetX, int sheetY) {
-		this("items.png", sheetX, sheetY);
+		this("textures/items.png", sheetX, sheetY);
 	}
 	
 	ItemMap(String sheetName, int sheetX, int sheetY) {
