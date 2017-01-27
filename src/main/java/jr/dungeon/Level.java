@@ -1,18 +1,20 @@
 package jr.dungeon;
 
+import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
-import jr.utils.*;
+import jr.utils.Persisting;
+import jr.utils.Serialisable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import jr.ErrorHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 public class Level implements Serialisable, Persisting {
 	private UUID uuid;

@@ -1,7 +1,7 @@
 package jr.dungeon.items.magical.spells;
 
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.projectiles.EntityStrike;
 import jr.dungeon.items.magical.DirectionType;

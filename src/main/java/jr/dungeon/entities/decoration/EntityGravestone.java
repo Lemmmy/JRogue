@@ -1,13 +1,13 @@
 package jr.dungeon.entities.decoration;
 
-import jr.dungeon.entities.EntityLiving;
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 public class EntityGravestone extends Entity implements Readable {
 	private static final String[] GRAVE_MESSAGES = new String[] {

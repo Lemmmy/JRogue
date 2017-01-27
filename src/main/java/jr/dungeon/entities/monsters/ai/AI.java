@@ -2,15 +2,15 @@ package jr.dungeon.entities.monsters.ai;
 
 import jr.JRogue;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Player;
-import jr.utils.Path;
-import org.json.JSONObject;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

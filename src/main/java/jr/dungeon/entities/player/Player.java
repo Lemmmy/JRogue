@@ -1,27 +1,26 @@
 package jr.dungeon.entities.player;
 
 import jr.JRogue;
-import jr.dungeon.entities.*;
-import jr.dungeon.entities.player.visitors.*;
-import jr.dungeon.events.EntityAttackedEvent;
-import jr.dungeon.events.EntityMovedEvent;
-import jr.dungeon.items.comestibles.ItemComestible;
-import jr.dungeon.tiles.Tile;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.roles.Role;
+import jr.dungeon.entities.player.visitors.*;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
+import jr.dungeon.events.EntityAttackedEvent;
+import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.tiles.Tile;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

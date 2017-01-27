@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.ContainerShowEvent;
 
 import java.util.List;

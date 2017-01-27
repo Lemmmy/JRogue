@@ -1,10 +1,10 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
+import jr.JRogue;
 import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.Serialisable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
-import jr.JRogue;
-import jr.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

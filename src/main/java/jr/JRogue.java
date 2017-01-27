@@ -1,6 +1,8 @@
 package jr;
 
 import com.google.common.reflect.TypeToken;
+import jr.dungeon.Dungeon;
+import jr.rendering.gdx.GDXRenderer;
 import jr.utils.OperatingSystem;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -9,8 +11,6 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import jr.dungeon.Dungeon;
-import jr.rendering.gdx.GDXRenderer;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;

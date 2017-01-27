@@ -7,9 +7,9 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
-import jr.dungeon.items.comestibles.ItemCorpse;
 
 import java.util.List;
 

@@ -1,14 +1,14 @@
 package jr.dungeon.entities.player.roles;
 
 import jr.dungeon.entities.player.Attribute;
+import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
+import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellStrike;
 import jr.dungeon.items.weapons.ItemStaff;
 import jr.utils.RandomUtils;
-import jr.dungeon.entities.player.Attributes;
-import jr.dungeon.items.ItemStack;
-import jr.dungeon.items.magical.spells.Spell;
 
 import java.util.ArrayList;
 import java.util.HashMap;

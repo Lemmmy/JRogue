@@ -1,13 +1,13 @@
 package jr.dungeon.entities.decoration;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
-import jr.dungeon.generators.Climate;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.interfaces.Quaffable;
+import jr.dungeon.generators.Climate;
 
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
 	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {

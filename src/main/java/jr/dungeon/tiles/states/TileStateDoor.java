@@ -1,9 +1,9 @@
 package jr.dungeon.tiles.states;
 
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
-import jr.dungeon.tiles.TileType;
 
 public class TileStateDoor extends TileState {
 	private int health = 0;

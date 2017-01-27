@@ -1,14 +1,14 @@
 package jr.dungeon.items.valuables;
 
-import jr.dungeon.entities.EntityLiving;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import jr.dungeon.Level;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.identity.AspectGemValue;
 import jr.utils.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 public class ItemGem extends Item {
 	private Gem gem;

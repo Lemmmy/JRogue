@@ -2,11 +2,11 @@ package jr.dungeon.entities.magic;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.identity.AspectBeatitude;
-import jr.dungeon.entities.Entity;
 
 public class EntityAltar extends Entity {
 	public EntityAltar(Dungeon dungeon, Level level, int x, int y) {

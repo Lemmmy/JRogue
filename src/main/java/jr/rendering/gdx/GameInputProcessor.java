@@ -3,15 +3,11 @@ package jr.rendering.gdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;
-
-import java.nio.file.Paths;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;

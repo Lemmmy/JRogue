@@ -1,8 +1,8 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.player.Player;
-import jr.utils.RandomUtils;
 import jr.dungeon.items.magical.spells.Spell;
+import jr.utils.RandomUtils;
 
 public class PlayerCastSpellNonDirectional implements PlayerVisitor {
 	private Spell spell;

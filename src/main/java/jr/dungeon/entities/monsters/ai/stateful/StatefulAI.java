@@ -1,13 +1,13 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.dungeon.entities.EntityLiving;
-import jr.utils.MultiLineNoPrefixToStringStyle;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.tiles.TileType;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Utils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.json.JSONObject;
 
 public class StatefulAI extends AI {
 	private AIState defaultState;

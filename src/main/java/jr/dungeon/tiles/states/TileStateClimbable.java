@@ -1,11 +1,11 @@
 package jr.dungeon.tiles.states;
 
-import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
 import jr.ErrorHandler;
 import jr.dungeon.Level;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.tiles.Tile;
+import org.json.JSONObject;
 
 import java.util.Optional;
 import java.util.UUID;

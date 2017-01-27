@@ -6,8 +6,8 @@ import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
-import jr.utils.Path;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
 import jr.utils.Utils;
 
 public class PlayerTravelDirectional implements PlayerVisitor {

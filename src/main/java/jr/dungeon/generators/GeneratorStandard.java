@@ -1,14 +1,14 @@
 package jr.dungeon.generators;
 
+import jr.dungeon.Level;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
+import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
+import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.utils.OpenSimplexNoise;
 import jr.utils.RandomUtils;
-import jr.dungeon.Level;
-import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
-import jr.dungeon.generators.rooms.Room;
-import jr.dungeon.tiles.TileType;
 
 import java.util.Arrays;
 import java.util.List;

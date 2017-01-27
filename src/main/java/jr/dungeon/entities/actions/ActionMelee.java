@@ -1,8 +1,8 @@
 package jr.dungeon.entities.actions;
 
+import jr.dungeon.Messenger;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.Messenger;
 
 public class ActionMelee extends EntityAction {
 	private final EntityLiving victim;

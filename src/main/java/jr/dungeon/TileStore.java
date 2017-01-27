@@ -1,7 +1,6 @@
 package jr.dungeon;
 
 import jr.JRogue;
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileState;
@@ -14,7 +13,6 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.List;
 
 public class TileStore implements Serialisable {
 	private Level level;

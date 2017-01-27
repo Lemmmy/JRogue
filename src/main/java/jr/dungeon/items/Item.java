@@ -1,16 +1,16 @@
 package jr.dungeon.items;
 
 import jr.JRogue;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.utils.Persisting;
+import jr.utils.RandomUtils;
+import jr.utils.Serialisable;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.items.identity.Aspect;
-import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

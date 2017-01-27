@@ -2,8 +2,8 @@ package jr.dungeon.items.magical.spells;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.magic.EntityLightOrb;
-import jr.dungeon.items.magical.MagicalSchool;
 import jr.dungeon.items.magical.DirectionType;
+import jr.dungeon.items.magical.MagicalSchool;
 
 public class SpellLightOrb extends Spell {
 	@Override

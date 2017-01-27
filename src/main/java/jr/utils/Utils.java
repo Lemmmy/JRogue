@@ -2,7 +2,6 @@ package jr.utils;
 
 import com.badlogic.gdx.Input;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 

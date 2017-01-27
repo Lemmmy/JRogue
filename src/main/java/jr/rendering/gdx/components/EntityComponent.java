@@ -8,7 +8,6 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.*;
 import jr.rendering.gdx.GDXRenderer;
-import jr.rendering.gdx.components.RendererComponent;
 import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
 import jr.rendering.gdx.entities.EntityRenderer;

@@ -1,14 +1,14 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Attribute;
-import jr.dungeon.tiles.Tile;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;

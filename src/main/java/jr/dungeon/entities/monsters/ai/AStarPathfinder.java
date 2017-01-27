@@ -1,8 +1,8 @@
 package jr.dungeon.entities.monsters.ai;
 
 import jr.dungeon.Level;
-import jr.utils.Path;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
 import jr.utils.Utils;
 
 import java.util.ArrayList;

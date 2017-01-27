@@ -1,11 +1,11 @@
 package jr.dungeon.entities.monsters.canines;
 
-import jr.dungeon.entities.EntityAppearance;
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.TileType;
 
 import java.awt.*;

@@ -1,7 +1,5 @@
 package jr.dungeon.entities;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -11,6 +9,8 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
 import jr.utils.RandomUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 

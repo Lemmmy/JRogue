@@ -6,10 +6,10 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
-import jr.dungeon.items.magical.MagicalSchool;
-import org.json.JSONObject;
 import jr.dungeon.items.magical.DirectionType;
+import jr.dungeon.items.magical.MagicalSchool;
 import jr.utils.Serialisable;
+import org.json.JSONObject;
 
 public abstract class Spell implements Serialisable {
 	private int knowledgeTimeout = 20000;

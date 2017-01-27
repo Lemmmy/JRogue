@@ -1,10 +1,10 @@
 package jr.dungeon.entities;
 
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 public abstract class EntityTurnBased extends Entity {
 	private int movementPoints = 0;

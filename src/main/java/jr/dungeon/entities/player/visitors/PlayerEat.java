@@ -1,14 +1,14 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.actions.ActionEat;
+import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.actions.ActionEat;
-import jr.dungeon.entities.actions.EntityAction;
 
 import java.util.List;
 import java.util.Optional;

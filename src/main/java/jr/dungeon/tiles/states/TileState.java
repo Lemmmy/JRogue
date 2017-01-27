@@ -1,8 +1,8 @@
 package jr.dungeon.tiles.states;
 
 import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
 import jr.utils.Serialisable;
+import org.json.JSONObject;
 
 public abstract class TileState implements Serialisable {
 	private Tile tile;

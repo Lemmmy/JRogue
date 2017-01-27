@@ -1,7 +1,7 @@
 package jr.dungeon.generators;
 
-import jr.dungeon.tiles.Tile;
 import jr.dungeon.Level;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
 public class GeneratorIce extends GeneratorRooms {

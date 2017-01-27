@@ -1,10 +1,10 @@
 package jr.dungeon.entities.monsters.humanoids;
 
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.containers.Container;

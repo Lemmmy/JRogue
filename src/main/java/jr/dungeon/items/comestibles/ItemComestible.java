@@ -1,10 +1,10 @@
 package jr.dungeon.items.comestibles;
 
-import org.json.JSONObject;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemCategory;
+import org.json.JSONObject;
 
 import java.util.List;
 

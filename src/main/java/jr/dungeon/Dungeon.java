@@ -1,8 +1,10 @@
 package jr.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
+import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
@@ -10,24 +12,20 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
+import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
 import jr.utils.OperatingSystem;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
+import jr.utils.Serialisable;
 import org.apache.commons.lang3.Range;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import jr.ErrorHandler;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.generators.DungeonNameGenerator;
-import jr.utils.Serialisable;
-import org.reflections.ReflectionUtils;
 
 import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;

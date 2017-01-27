@@ -2,10 +2,10 @@ package jr.dungeon.entities;
 
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
-import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.items.valuables.ItemGold;
 import jr.dungeon.Level;
+import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.valuables.ItemGold;
 
 import java.lang.reflect.Constructor;
 

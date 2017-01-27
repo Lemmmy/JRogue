@@ -1,18 +1,18 @@
 package jr.dungeon.entities.monsters.canines;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
+import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.ai.GhoulAI;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.utils.RandomUtils;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
-import jr.dungeon.entities.actions.EntityAction;
-import jr.dungeon.entities.effects.InjuredFoot;
-import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
 
 public abstract class MonsterCanine extends Monster {
 	public MonsterCanine(Dungeon dungeon, Level level, int x, int y) {

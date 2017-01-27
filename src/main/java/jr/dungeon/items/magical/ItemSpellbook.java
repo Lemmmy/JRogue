@@ -1,22 +1,22 @@
 package jr.dungeon.items.magical;
 
-import jr.JRogue;
-import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Attribute;
-import jr.dungeon.items.*;
-import jr.dungeon.items.identity.AspectBookContents;
-import jr.dungeon.items.magical.spells.SpellStrike;
-import org.json.JSONObject;
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityChest;
+import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.items.*;
 import jr.dungeon.items.Readable;
+import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
+import jr.dungeon.items.magical.spells.SpellStrike;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

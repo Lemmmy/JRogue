@@ -7,8 +7,8 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.Poison;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.ai.FishAI;
 
 import java.util.ArrayList;
 import java.util.List;

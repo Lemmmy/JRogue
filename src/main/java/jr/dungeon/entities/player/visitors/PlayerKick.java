@@ -2,11 +2,11 @@ package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.actions.ActionKick;
+import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.entities.actions.EntityAction;
-import jr.dungeon.entities.effects.InjuredFoot;
 import jr.utils.Utils;
 
 public class PlayerKick implements PlayerVisitor {

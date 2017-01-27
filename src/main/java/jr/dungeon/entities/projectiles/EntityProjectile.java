@@ -2,17 +2,17 @@ package jr.dungeon.entities.projectiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.items.Shatterable;
 import jr.dungeon.tiles.TileType;
+import org.json.JSONObject;
 
 import java.util.Optional;
 

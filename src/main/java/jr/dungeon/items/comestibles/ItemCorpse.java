@@ -1,7 +1,6 @@
 package jr.dungeon.items.comestibles;
 
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -13,8 +12,8 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.identity.AspectBeatitude;
-import org.json.JSONObject;
 import jr.dungeon.items.identity.AspectRottenness;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

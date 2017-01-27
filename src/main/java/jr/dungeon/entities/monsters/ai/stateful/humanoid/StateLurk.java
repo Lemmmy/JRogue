@@ -1,12 +1,12 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 

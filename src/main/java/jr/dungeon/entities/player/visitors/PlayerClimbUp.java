@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.tiles.Tile;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
 public class PlayerClimbUp implements PlayerVisitor {

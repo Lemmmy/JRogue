@@ -1,12 +1,12 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.actions.ActionMove;
+import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
-import jr.utils.Path;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -1,10 +1,10 @@
 package jr.dungeon.generators;
 
 import jr.dungeon.Level;
-import jr.dungeon.tiles.Tile;
-import jr.utils.OpenSimplexNoise;
 import jr.dungeon.generators.rooms.features.FeatureSewerDrain;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.OpenSimplexNoise;
 
 public class GeneratorSewer extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.1;

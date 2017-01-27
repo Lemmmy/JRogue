@@ -1,14 +1,14 @@
 package jr.dungeon.entities.magic;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
-import jr.utils.RandomUtils;
-import org.json.JSONObject;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.TileType;
+import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 import java.awt.*;
 

@@ -1,10 +1,10 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.BlankMessenger;
-import org.json.JSONObject;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.utils.Serialisable;
+import org.json.JSONObject;
 
 public abstract class StatusEffect implements Serialisable {
 	private Messenger messenger;

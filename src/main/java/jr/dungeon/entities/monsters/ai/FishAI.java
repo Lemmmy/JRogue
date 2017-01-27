@@ -1,8 +1,8 @@
 package jr.dungeon.entities.monsters.ai;
 
 import com.github.alexeyr.pcg.Pcg32;
-import jr.dungeon.tiles.Tile;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
 

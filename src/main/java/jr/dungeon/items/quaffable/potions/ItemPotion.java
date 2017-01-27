@@ -1,7 +1,5 @@
 package jr.dungeon.items.quaffable.potions;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
@@ -9,6 +7,8 @@ import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.utils.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 public class ItemPotion extends ItemQuaffable implements Shatterable {
 	private boolean empty = false;
