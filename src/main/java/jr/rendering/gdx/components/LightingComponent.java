@@ -32,7 +32,7 @@ public class LightingComponent extends RendererComponent {
 	}
 	
 	@Override
-	public void render() {
+	public void render(float dt) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		

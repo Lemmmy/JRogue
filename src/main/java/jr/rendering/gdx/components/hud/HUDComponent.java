@@ -16,6 +16,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.RendererComponent;
+import jr.rendering.gdx.components.hud.windows.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;
@@ -38,11 +39,14 @@ public class HUDComponent extends RendererComponent {
 	private HorizontalGroup brightness;
 	
 	private List<Actor> singleTurnActors = new ArrayList<>();
+	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	private int healthLastTurn;
 	private int energyLastTurn;
 	
 	private List<LogEntry> log = new ArrayList<>();
+	
+	private List<PopupWindow> windows = new ArrayList<>();
 	
 	public HUDComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -161,7 +165,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@Override
-	public void render() {
+	public void render(float dt) {
 		stage.draw();
 	}
 	
@@ -409,6 +413,42 @@ public class HUDComponent extends RendererComponent {
 				));
 			}
 		}
+	}
+	
+	public void addWindow(PopupWindow window) {
+		windows.add(window);
+	}
+	
+	public void removeWindow(PopupWindow window) {
+		windows.remove(window);
+	}
+	
+	public List<PopupWindow> getWindows() {
+		return windows;
+	}
+	
+	public void showDebugWindow() {
+		nextFrameDeferred
+			.add(() -> new DebugWindow(renderer, stage, skin, dungeon, dungeon.getLevel())
+				.show());
+	}
+	
+	public void showInventoryWindow() {
+		nextFrameDeferred
+			.add(() -> new PlayerWindow(renderer, stage, skin, dungeon.getPlayer())
+				.show());
+	}
+	
+	public void showWishWindow() {
+		nextFrameDeferred
+			.add(() -> new WishWindow(renderer, stage, skin, dungeon, dungeon.getLevel())
+				.show());
+	}
+	
+	public void showSpellWindow() {
+		nextFrameDeferred
+			.add(() -> new SpellWindow(renderer, stage, skin, dungeon.getPlayer())
+				.show());
 	}
 	
 	private class LogEntry {

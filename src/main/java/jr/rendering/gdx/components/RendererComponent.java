@@ -26,9 +26,13 @@ public abstract class RendererComponent implements Dungeon.Listener {
 		this.camera = camera;
 	}
 	
+	public boolean useMainBatch() {
+		return false;
+	}
+	
 	public abstract void initialise();
 	
-	public abstract void render();
+	public abstract void render(float dt);
 	
 	public abstract void update(float dt);
 	

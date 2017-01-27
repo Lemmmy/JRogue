@@ -84,7 +84,7 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	@Override
-	public void render() {
+	public void render(float dt) {
 		minimapCamera.update();
 		
 		mapBatch.setProjectionMatrix(minimapCamera.combined);
