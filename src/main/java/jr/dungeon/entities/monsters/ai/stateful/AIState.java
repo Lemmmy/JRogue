@@ -1,6 +1,7 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.JRogue;
+import jr.dungeon.entities.monsters.ai.AI;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
@@ -20,6 +21,10 @@ public class AIState implements Serialisable {
 	public AIState(StatefulAI ai, int duration) {
 		this.ai = ai;
 		this.duration = duration;
+	}
+	
+	public StatefulAI getAI() {
+		return ai;
 	}
 	
 	public void update() {

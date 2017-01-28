@@ -49,6 +49,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		this.dy = dy;
 	}
 	
+	public void setTravelRange(int range) {
+		this.range = range;
+	}
+	
 	@Override
 	public int getMovementSpeed() {
 		return Dungeon.NORMAL_SPEED;

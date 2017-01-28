@@ -53,7 +53,7 @@ public class Player extends EntityLiving {
 	
 	@Getter private int gold = 0;
 	
-	@Getter private boolean godmode = false;
+	@Getter @Setter private boolean godmode = false;
 
 	private final JSONObject persistence = new JSONObject();
 	

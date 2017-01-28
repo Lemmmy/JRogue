@@ -197,7 +197,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 					if (slope <= CORRIDOR_LINE_SLOPE) {
 						TileType tile = TileType.TILE_CORRIDOR;
 						
-						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), tile, true, false);
+						buildLine(point.getAx(), point.getAy(), point.getBx(), point.getBy(), tile, true, false);
 					} else {
 						if (point.getOrientationA() == point.getOrientationB()) {
 							buildSCorridor(point);
@@ -206,19 +206,19 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 						}
 					}
 					
-					safePlaceDoor(point.getAX(), point.getAY());
-					safePlaceDoor(point.getBX(), point.getBY());
+					safePlaceDoor(point.getAx(), point.getAy());
+					safePlaceDoor(point.getBx(), point.getBy());
 				}
 			}
 		}
 	}
 	
 	protected void buildLCorridor(ConnectionPoint point) {
-		int ax = point.getAX();
-		int ay = point.getAY();
+		int ax = point.getAx();
+		int ay = point.getAy();
 		
-		int bx = point.getBX();
-		int by = point.getBY();
+		int bx = point.getBx();
+		int by = point.getBy();
 		
 		int dx = bx - ax;
 		int dy = by - ay;
@@ -236,11 +236,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	protected void buildSCorridor(ConnectionPoint point) {
-		int ax = point.getAX();
-		int ay = point.getAY();
+		int ax = point.getAx();
+		int ay = point.getAy();
 		
-		int bx = point.getBX();
-		int by = point.getBY();
+		int bx = point.getBx();
+		int by = point.getBy();
 		
 		int dx = bx - ax;
 		int dy = by - ay;
@@ -323,7 +323,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			}
 		}
 		
-		spawnRoom.setSpawn();
+		spawnRoom.setSpawn(true);
 		startTile = level.getTileStore().getTile(stairX, stairY);
 		level.setSpawnPoint(stairX, stairY);
 		

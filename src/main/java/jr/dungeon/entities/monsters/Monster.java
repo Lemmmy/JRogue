@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public abstract class Monster extends EntityLiving {
-	@Getter @Setter private AI ai;
+	private AI ai;
 	
 	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);

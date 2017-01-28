@@ -12,14 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
 public abstract class Room {
-	@NonNull private Level level;
+	private Level level;
 	
-	@NonNull private int x;
-	@NonNull private int y;
-	@NonNull private int width;
-	@NonNull private int height;
+	private int x;
+	private int y;
+	private int width;
+	private int height;
+	
+	public Room(Level level, int x, int y, int width, int height) {
+		this.level = level;
+		
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
 	
 	/***
 	 * List of rooms this room should be connected to
