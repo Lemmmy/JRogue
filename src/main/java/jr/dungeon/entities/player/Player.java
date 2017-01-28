@@ -22,6 +22,8 @@ import jr.dungeon.items.weapons.ItemWeapon;
 import jr.dungeon.tiles.Tile;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -32,26 +34,26 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Player extends EntityLiving {
-	private AStarPathfinder pathfinder = new AStarPathfinder();
+	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
 	private String name;
-	private Role role;
+	@Getter private Role role;
 	
-	private int energy;
-	private int maxEnergy;
-	private int chargingTurns = 0;
-	private Map<Character, Spell> knownSpells;
+	@Getter @Setter private int energy;
+	@Getter private int maxEnergy;
+	@Getter private int chargingTurns = 0;
+	@Getter private Map<Character, Spell> knownSpells;
 	
-	private int nutrition;
-	private NutritionState lastNutritionState;
+	@Getter @Setter private int nutrition;
+	@Getter private NutritionState lastNutritionState;
 	
-	private int spendableSkillPoints = 3;
-	private Attributes attributes = new Attributes();
-	private Map<Skill, SkillLevel> skills;
+	@Getter private int spendableSkillPoints = 3;
+	@Getter private Attributes attributes = new Attributes();
+	@Getter private Map<Skill, SkillLevel> skills;
 	
-	private int gold = 0;
+	@Getter private int gold = 0;
 	
-	private boolean godmode = false;
+	@Getter private boolean godmode = false;
 
 	private final JSONObject persistence = new JSONObject();
 	
@@ -117,18 +119,6 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	public int getEnergy() {
-		return energy;
-	}
-	
-	public void setEnergy(int energy) {
-		this.energy = energy;
-	}
-	
-	public int getMaxEnergy() {
-		return maxEnergy;
-	}
-	
 	public int getChargingRate() {
 		return (int) Math.floor((38 - getExperienceLevel()) * (3.5f / 6f));
 	}
@@ -144,10 +134,6 @@ public class Player extends EntityLiving {
 		
 		maxEnergy += gain;
 		charge(gain);
-	}
-	
-	public Map<Character, Spell> getKnownSpells() {
-		return knownSpells;
 	}
 	
 	public char getAvailableSpellLetter() {
@@ -195,22 +181,6 @@ public class Player extends EntityLiving {
 		return EntityLiving.Size.LARGE;
 	}
 	
-	public Role getRole() {
-		return role;
-	}
-	
-	public Attributes getAttributes() {
-		return attributes;
-	}
-	
-	public int getNutrition() {
-		return nutrition;
-	}
-	
-	public void setNutrition(int nutrition) {
-		this.nutrition = nutrition;
-	}
-	
 	public NutritionState getNutritionState() {
 		if (nutrition >= 1500) {
 			return NutritionState.CHOKING;
@@ -225,10 +195,6 @@ public class Player extends EntityLiving {
 		} else {
 			return NutritionState.FAINTING;
 		}
-	}
-	
-	public int getSpendableSkillPoints() {
-		return spendableSkillPoints;
 	}
 	
 	public void decrementSpendableSkillPoints() {
@@ -247,10 +213,6 @@ public class Player extends EntityLiving {
 	
 	public void giveGold(int amount) {
 		gold += amount;
-	}
-	
-	public int getGold() {
-		return gold;
 	}
 	
 	public boolean canTakeGold(int amount) {
@@ -279,14 +241,6 @@ public class Player extends EntityLiving {
 	
 	public boolean isDebugger() {
 		return name.equalsIgnoreCase("debugger");
-	}
-	
-	public void godmode() {
-		this.godmode = true;
-	}
-		
-	public AStarPathfinder getPathfinder() {
-		return pathfinder;
 	}
 	
 	@Override

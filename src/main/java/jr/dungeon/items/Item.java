@@ -8,6 +8,7 @@ import jr.dungeon.items.identity.AspectBeatitude;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+@Getter
 public abstract class Item implements Serialisable, Persisting {
 	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
 	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
@@ -40,14 +42,6 @@ public abstract class Item implements Serialisable, Persisting {
 	
 	public boolean shouldAge() {
 		return true;
-	}
-	
-	public int getAge() {
-		return age;
-	}
-	
-	public int getVisualID() {
-		return visualID;
 	}
 	
 	public boolean isis() {
@@ -87,14 +81,6 @@ public abstract class Item implements Serialisable, Persisting {
 		return other.getClass() == getClass() &&
 			other.getAppearance() == getAppearance() &&
 			other.getAspects() == getAspects();
-	}
-	
-	public Map<Class<? extends Aspect>, Aspect> getAspects() {
-		return aspects;
-	}
-	
-	public Set<Class<? extends Aspect>> getKnownAspects() {
-		return knownAspects;
 	}
 	
 	public List<Aspect> getPersistentAspects() {

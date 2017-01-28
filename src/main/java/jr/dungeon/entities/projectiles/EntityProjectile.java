@@ -12,18 +12,20 @@ import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.util.Optional;
 
 public abstract class EntityProjectile extends EntityTurnBased {
 	private int dx = 0, dy = 0;
-	private int range = Integer.MAX_VALUE;
-	private int distanceTravelled = 0;
+	@Getter private int range = Integer.MAX_VALUE;
+	@Getter private int distanceTravelled = 0;
 	
-	private Entity source = null;
+	@Getter @Setter private Entity source = null;
 	
-	private ItemProjectile originalItem;
+	@Getter @Setter private ItemProjectile originalItem;
 	
 	public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
@@ -45,26 +47,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		
 		this.dx = dx;
 		this.dy = dy;
-	}
-	
-	public void setTravelRange(int range) {
-		this.range = range;
-	}
-	
-	public void setSource(Entity source) {
-		this.source = source;
-	}
-	
-	public void setOriginalItem(ItemProjectile originalItem) {
-		this.originalItem = originalItem;
-	}
-	
-	public Entity getSource() {
-		return source;
-	}
-	
-	public int getDistanceTravelled() {
-		return distanceTravelled;
 	}
 	
 	@Override

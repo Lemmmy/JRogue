@@ -7,6 +7,8 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Utils;
 import jr.utils.WeightedCollection;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Random;
 
@@ -19,8 +21,8 @@ public abstract class DungeonGenerator {
 		DOOR_TYPES.add(6, TileType.TILE_ROOM_DOOR_OPEN);
 	}
 	
-	protected Level level;
-	protected Tile sourceTile;
+	@Getter protected Level level;
+	@Getter protected Tile sourceTile;
 	
 	protected Pcg32 rand = new Pcg32();
 	protected Random jrand = new Random();
@@ -190,6 +192,7 @@ public abstract class DungeonGenerator {
 		CORNER
 	}
 	
+	@Getter
 	public class ConnectionPoint {
 		private int ax, ay;
 		private int bx, by;
@@ -207,34 +210,6 @@ public abstract class DungeonGenerator {
 			this.intendedOrientation = intendedOrientation;
 			this.orientationA = getWallOrientation(ax, ay);
 			this.orientationB = getWallOrientation(bx, by);
-		}
-		
-		public int getAX() {
-			return ax;
-		}
-		
-		public int getAY() {
-			return ay;
-		}
-		
-		public int getBX() {
-			return bx;
-		}
-		
-		public int getBY() {
-			return by;
-		}
-		
-		public Orientation getIntendedOrientation() {
-			return intendedOrientation;
-		}
-		
-		public Orientation getOrientationA() {
-			return orientationA;
-		}
-		
-		public Orientation getOrientationB() {
-			return orientationB;
 		}
 	}
 }
