@@ -13,6 +13,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.items.identity.AspectRottenness;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Getter
 public class ItemCorpse extends ItemComestible {
 	private EntityLiving entity;
 	
@@ -98,10 +100,6 @@ public class ItemCorpse extends ItemComestible {
 		} else {
 			return 0;
 		}
-	}
-	
-	public EntityLiving getEntity() {
-		return entity;
 	}
 	
 	@Override

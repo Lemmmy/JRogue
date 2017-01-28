@@ -37,10 +37,10 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	private int visualID;
 	
-	private boolean beingRemoved = false;
+	@Setter private boolean beingRemoved = false;
 	
 	private Dungeon dungeon;
-	private Level level;
+	@Setter private Level level;
 	
 	private List<StatusEffect> statusEffects = new ArrayList<>();
 
@@ -101,18 +101,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public Optional<String> lootFailedString() {
 		return Optional.empty();
-	}
-	
-	public void setLevel(Level level) {
-		this.level = level;
-	}
-	
-	public boolean isBeingRemoved() {
-		return beingRemoved;
-	}
-	
-	public void setBeingRemoved(boolean beingRemoved) {
-		this.beingRemoved = beingRemoved;
 	}
 	
 	public void update() {

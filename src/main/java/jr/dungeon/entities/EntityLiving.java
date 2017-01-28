@@ -12,6 +12,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
 import jr.utils.RandomUtils;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -19,19 +20,24 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+@Getter
+@Setter
 public abstract class EntityLiving extends EntityTurnBased {
-	@Getter @Setter private int health;
-	@Getter @Setter protected int maxHealth;
+	private int health;
+	protected int maxHealth;
 	
-	@Getter @Setter private int experienceLevel = 1;
-	@Getter @Setter private int experience = 0;
+	private int experienceLevel = 1;
+	private int experience = 0;
 	
-	@Getter private int healingTurns = 0;
+	@Setter(AccessLevel.NONE)
+	private int healingTurns = 0;
 	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private Container inventory;
 	
-	@Getter @Setter private Container.ContainerEntry leftHand;
-	@Getter @Setter private Container.ContainerEntry rightHand;
+	private Container.ContainerEntry leftHand;
+	private Container.ContainerEntry rightHand;
 	
 	/**
 	 * known persistent aspects per item class
@@ -108,10 +114,6 @@ public abstract class EntityLiving extends EntityTurnBased {
 	}
 	
 	public abstract Size getSize();
-	
-	public Map<Integer, Set<Class<? extends Aspect>>> getKnownAspects() {
-		return knownAspects;
-	}
 	
 	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
 		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectClass);

@@ -1,7 +1,9 @@
 package jr.dungeon.items;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+@Getter
 public enum Material {
 	WOOD(1, 2, 0, true),
 	STONE(2, 3, 0),
@@ -29,22 +31,6 @@ public enum Material {
 		this.baseDamage = baseDamage;
 		this.levelRequiredToSpawn = levelRequiredToSpawn;
 		this.flammable = flammable;
-	}
-	
-	public int getValue() {
-		return value;
-	}
-	
-	public int getBaseDamage() {
-		return baseDamage;
-	}
-	
-	public int getLevelRequiredToSpawn() {
-		return levelRequiredToSpawn;
-	}
-	
-	public boolean isFlammable() {
-		return flammable;
 	}
 	
 	public String getName(boolean requiresCapitalisation) {

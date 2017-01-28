@@ -1,17 +1,13 @@
 package jr.dungeon.items.identity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
+@Getter
+@Setter
 public class AspectBeatitude extends Aspect {
 	private Beatitude beatitude = Beatitude.UNCURSED;
-	
-	public Beatitude getBeatitude() {
-		return beatitude;
-	}
-	
-	public void setBeatitude(Beatitude beatitude) {
-		this.beatitude = beatitude;
-	}
 	
 	@Override
 	public String getName() {

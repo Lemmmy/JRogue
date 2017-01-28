@@ -20,12 +20,15 @@ import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.FontLoader;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.rendering.gdx.utils.ShaderLoader;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Getter
 public class GDXRenderer extends ApplicationAdapter implements Renderer, DungeonEventListener {
 	private static final String WINDOW_TITLE = "JRogue";
 	
@@ -49,6 +52,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	private float zoom = 1.0f;
 	
+	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
 	public GDXRenderer(Settings settings, Dungeon dungeon) {
@@ -223,40 +227,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		application.exit();
 	}
 	
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-	
 	public Matrix4 getCombinedTransform() {
 		return camera.combined;
-	}
-	
-	public SpriteBatch getMainBatch() {
-		return mainBatch;
-	}
-	
-	public LevelComponent getLevelComponent() {
-		return levelComponent;
-	}
-	
-	public PathComponent getPathComponent() {
-		return pathComponent;
-	}
-	
-	public EntityComponent getEntityComponent() {
-		return entityComponent;
-	}
-	
-	public LightingComponent getLightingComponent() {
-		return lightingComponent;
-	}
-	
-	public HUDComponent getHUDComponent() {
-		return hudComponent;
-	}
-	
-	public MinimapComponent getMinimapComponent() {
-		return minimapComponent;
 	}
 	
 	@Override

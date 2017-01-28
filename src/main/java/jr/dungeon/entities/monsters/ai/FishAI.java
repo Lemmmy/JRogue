@@ -5,20 +5,20 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 
 public class FishAI extends AI {
 	private static final int SLEEP_DISTANCE = 20;
+	
 	private Pcg32 random = new Pcg32();
-	private float moveProbability = 0.1f;
+	
+	@Getter @Setter private float moveProbability = 0.1f;
 	
 	public FishAI(Monster monster) {
 		super(monster);
-	}
-	
-	public void setMoveProbability(float moveProbability) {
-		this.moveProbability = moveProbability;
 	}
 	
 	@Override

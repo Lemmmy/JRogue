@@ -319,7 +319,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			if (spawnTile.getState() instanceof TileStateClimbable) {
 				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
 				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
-				tsc.setDestPosition(sourceTile.getX(), sourceTile.getY());
+				tsc.setDestinationPosition(sourceTile.getX(), sourceTile.getY());
 			}
 		}
 		
@@ -372,7 +372,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		if (stairTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
-			tsc.setDestGenerator(getNextGenerator());
+			tsc.setDestinationGenerator(getNextGenerator());
 		}
 		
 		endTile = level.getTileStore().getTile(stairX, stairY);

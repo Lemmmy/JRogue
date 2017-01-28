@@ -6,7 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.gdx.GDXRenderer;
+import lombok.Getter;
 
+@Getter
 public abstract class PopupWindow implements Window.ResultListener {
 	private final Stage stage;
 	private final Skin skin;
@@ -26,7 +28,7 @@ public abstract class PopupWindow implements Window.ResultListener {
 	}
 	
 	public void show() {
-		renderer.getHUDComponent().addWindow(this);
+		renderer.getHudComponent().addWindow(this);
 		initialiseWindow();
 	}
 	
@@ -56,31 +58,7 @@ public abstract class PopupWindow implements Window.ResultListener {
 	public abstract void populateWindow();
 	
 	protected void remove() {
-		renderer.getHUDComponent().removeWindow(this);
-	}
-	
-	public Stage getStage() {
-		return stage;
-	}
-	
-	public Skin getSkin() {
-		return skin;
-	}
-	
-	public Dungeon getDungeon() {
-		return dungeon;
-	}
-	
-	public Level getLevel() {
-		return level;
-	}
-	
-	public Window getWindow() {
-		return window;
-	}
-	
-	public GDXRenderer getRenderer() {
-		return renderer;
+		renderer.getHudComponent().removeWindow(this);
 	}
 	
 	public void onResult(Object result) {}

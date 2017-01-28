@@ -1,6 +1,7 @@
 package jr.rendering.gdx.tiles;
 
 import jr.dungeon.tiles.TileType;
+import lombok.Getter;
 
 public enum TileMap {
 	TILE_GROUND(1, 1),
@@ -44,7 +45,7 @@ public enum TileMap {
 	public static final int TILE_WIDTH = 16;
 	public static final int TILE_HEIGHT = 16;
 	
-	private TileRenderer renderer;
+	@Getter private TileRenderer renderer;
 	
 	TileMap(TileRenderer renderer) {
 		this.renderer = renderer;
@@ -60,9 +61,5 @@ public enum TileMap {
 	
 	public TileType getTile() {
 		return TileType.valueOf(name());
-	}
-	
-	public TileRenderer getRenderer() {
-		return renderer;
 	}
 }

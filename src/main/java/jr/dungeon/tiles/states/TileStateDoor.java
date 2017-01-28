@@ -3,8 +3,10 @@ package jr.dungeon.tiles.states;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import lombok.Getter;
 import org.json.JSONObject;
 
+@Getter
 public class TileStateDoor extends TileState {
 	private int health = 0;
 	
@@ -14,10 +16,6 @@ public class TileStateDoor extends TileState {
 		if (tile.getType() != TileType.TILE_ROOM_DOOR_BROKEN) {
 			health = RandomUtils.roll(2, 3);
 		}
-	}
-	
-	public int getHealth() {
-		return health;
 	}
 	
 	public int damage(int damage) {

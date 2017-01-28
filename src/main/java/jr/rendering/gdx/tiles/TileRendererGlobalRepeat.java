@@ -7,7 +7,11 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx.utils.ShaderLoader;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class TileRendererGlobalRepeat extends TileRenderer {
 	private TextureRegion texRegion;
 	private ShaderProgram program;
@@ -33,38 +37,6 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 	
 	public TileRendererGlobalRepeat(Texture texture) {
 		this(texture, 0.0f, 0.0f, 1.0f, 1.0f);
-	}
-	
-	public float getOffsetX() {
-		return offsetX;
-	}
-	
-	public float getOffsetY() {
-		return offsetY;
-	}
-	
-	public void setOffsetX(float x) {
-		this.offsetX = x;
-	}
-	
-	public void setOffsetY(float y) {
-		this.offsetY = y;
-	}
-	
-	public float getScaleX() {
-		return scaleX;
-	}
-	
-	public void setScaleX(float scaleX) {
-		this.scaleX = scaleX;
-	}
-	
-	public float getScaleY() {
-		return scaleY;
-	}
-	
-	public void setScaleY(float scaleY) {
-		this.scaleY = scaleY;
 	}
 	
 	@Override

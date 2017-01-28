@@ -7,6 +7,8 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.identity.AspectGemValue;
 import jr.utils.RandomUtils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -114,6 +116,8 @@ public class ItemGem extends Item {
 		gem = Gem.valueOf(obj.getString("gem"));
 	}
 	
+	@Getter
+	@AllArgsConstructor
 	public enum Gem {
 		// TODO: Gem values
 		
@@ -166,24 +170,6 @@ public class ItemGem extends Item {
 			this.appearance = appearance;
 			name = name().toLowerCase().replace("_", "");
 			namePlural = name + "s";
-		}
-		
-		Gem(ItemAppearance appearance, String name, String namePlural) {
-			this.appearance = appearance;
-			this.name = name;
-			this.namePlural = namePlural;
-		}
-		
-		public ItemAppearance getAppearance() {
-			return appearance;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public String getNamePlural() {
-			return namePlural;
 		}
 	}
 }

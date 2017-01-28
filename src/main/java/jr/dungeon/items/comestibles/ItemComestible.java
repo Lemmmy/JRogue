@@ -4,10 +4,12 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemCategory;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.util.List;
 
+@Getter
 public abstract class ItemComestible extends Item {
 	private int turnsEaten = 0;
 	
@@ -19,10 +21,6 @@ public abstract class ItemComestible extends Item {
 		} else {
 			return EatenState.PARTLY_EATEN;
 		}
-	}
-	
-	public int getTurnsEaten() {
-		return turnsEaten;
 	}
 	
 	public int getTurnsRequiredToEat() {

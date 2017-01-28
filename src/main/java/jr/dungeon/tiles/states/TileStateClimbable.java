@@ -5,16 +5,18 @@ import jr.dungeon.Level;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class TileStateClimbable extends TileState {
-	private Optional<UUID> linkedLevelUUID = Optional.empty();
-	private int destX = 0;
-	private int destY = 0;
-	private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
+	@Setter private Optional<UUID> linkedLevelUUID = Optional.empty();
+	@Getter private int destX = 0;
+	@Getter private int destY = 0;
+	@Getter private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
 	
 	public TileStateClimbable(Tile tile) {
 		super(tile);
@@ -63,28 +65,12 @@ public class TileStateClimbable extends TileState {
 		}
 	}
 	
-	public void setLinkedLevelUUID(UUID linkedLevelUUID) {
-		this.linkedLevelUUID = Optional.of(linkedLevelUUID);
-	}
-	
-	public int getDestX() {
-		return destX;
-	}
-	
-	public int getDestY() {
-		return destY;
-	}
-	
-	public void setDestPosition(int x, int y) {
+	public void setDestinationPosition(int x, int y) {
 		destX = x;
 		destY = y;
 	}
 	
-	public Class<? extends DungeonGenerator> getGeneratorClass() {
-		return generatorClass;
-	}
-	
-	public void setDestGenerator(Class<? extends DungeonGenerator> generatorClass) {
+	public void setDestinationGenerator(Class<? extends DungeonGenerator> generatorClass) {
 		this.generatorClass = generatorClass;
 	}
 }

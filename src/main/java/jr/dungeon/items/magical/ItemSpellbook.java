@@ -16,6 +16,8 @@ import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -27,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Getter
 public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	private static final Map<Integer, Class<? extends Spell>> spellLevelMap = new HashMap<>();
 	
@@ -35,7 +38,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		spellLevelMap.put(0, SpellStrike.class);
 	}
 	
-	private Spell spell;
+	@Setter private Spell spell;
 	
 	private int timesRead = 0;
 	private int readingProgress = 0;
@@ -190,14 +193,6 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 			
 			// TODO: paralyse the player for turns - 2
 		}
-	}
-	
-	public Spell getSpell() {
-		return spell;
-	}
-	
-	public void setSpell(Spell spell) {
-		this.spell = spell;
 	}
 	
 	@Override

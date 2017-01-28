@@ -159,7 +159,7 @@ public class GeneratorStandard extends GeneratorRooms {
 		
 		if (ladderTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();
-			tsc.setDestGenerator(GeneratorSewer.class);
+			tsc.setDestinationGenerator(GeneratorSewer.class);
 		}
 	}
 }

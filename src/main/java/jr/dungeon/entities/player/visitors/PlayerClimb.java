@@ -39,7 +39,7 @@ public class PlayerClimb implements PlayerVisitor {
 			Level level = player.getDungeon().newLevel(depth, tile, tsc.getGeneratorClass());
 			level.getEntityStore().processEntityQueues();
 			tsc.setLinkedLevelUUID(level.getUUID());
-			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
+			tsc.setDestinationPosition(level.getSpawnX(), level.getSpawnY());
 		}
 		
 		if (tsc.getLinkedLevel().isPresent()) {

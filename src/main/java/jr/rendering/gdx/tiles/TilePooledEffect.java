@@ -1,29 +1,14 @@
 package jr.rendering.gdx.tiles;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public class TilePooledEffect {
 	private int x;
 	private int y;
 	
 	private ParticleEffectPool.PooledEffect pooledEffect;
-	
-	public TilePooledEffect(int x, int y, ParticleEffectPool.PooledEffect pooledEffect) {
-		this.x = x;
-		this.y = y;
-		
-		this.pooledEffect = pooledEffect;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public ParticleEffectPool.PooledEffect getPooledEffect() {
-		return pooledEffect;
-	}
 }

@@ -9,8 +9,12 @@ import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
 import jr.utils.Serialisable;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
+@Getter
+@Setter
 public abstract class Spell implements Serialisable {
 	private int knowledgeTimeout = 20000;
 	private boolean known = false;
@@ -24,22 +28,6 @@ public abstract class Spell implements Serialisable {
 	public abstract int getTurnsToRead();
 	
 	public abstract int getLevel();
-	
-	public int getKnowledgeTimeout() {
-		return knowledgeTimeout;
-	}
-	
-	public void setKnowledgeTimeout(int knowledgeTimeout) {
-		this.knowledgeTimeout = knowledgeTimeout;
-	}
-	
-	public boolean isKnown() {
-		return known;
-	}
-	
-	public void setKnown(boolean known) {
-		this.known = known;
-	}
 	
 	public abstract boolean canCastAtSelf();
 	
