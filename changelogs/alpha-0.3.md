@@ -11,3 +11,5 @@
 - Moved all of Dungeon's Listener related stuff to Events
 - Moved all of Entity's on* to Events
 - Rewritten the Wish class
+- Removed all getters and setters, and replaced them with Lombok's @Getter and @Setter annotations
+- Replaced some constructors with Lombok's @AllArgsConstructor annotations
