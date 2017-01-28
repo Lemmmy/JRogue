@@ -64,7 +64,7 @@ public class GameInputProcessor implements InputProcessor {
 			// dungeon.getPlayer().acceptVisitor(new PlayerFire());
 			return true;
 		} else if (key == 'i') {
-			renderer.getHUDComponent().showInventoryWindow();
+			renderer.getHudComponent().showInventoryWindow();
 			return true;
 		} else if (key == 'l') {
 			dungeon.getPlayer().acceptVisitor(new PlayerLoot());
@@ -91,7 +91,7 @@ public class GameInputProcessor implements InputProcessor {
 			dungeon.getPlayer().swapHands();
 			return true;
 		} else if (key == 'Z') {
-			renderer.getHUDComponent().showSpellWindow();
+			renderer.getHudComponent().showSpellWindow();
 			return true;
 		} else if (key == ',') {
 			dungeon.getPlayer().acceptVisitor(new PlayerPickup());
@@ -113,10 +113,10 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.D) {
-				renderer.getHUDComponent().showDebugWindow();
+				renderer.getHudComponent().showDebugWindow();
 				return true;
 			} else if (keycode == Input.Keys.W) {
-				renderer.getHUDComponent().showWishWindow();
+				renderer.getHudComponent().showWishWindow();
 				return true;
 			}
 		}
@@ -125,7 +125,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
-		if (renderer.getHUDComponent().getWindows().size() > 0) {
+		if (renderer.getHudComponent().getWindows().size() > 0) {
 			return false;
 		}
 		
@@ -163,7 +163,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if (renderer.getHUDComponent().getWindows().size() > 0) { return false; }
+		if (renderer.getHudComponent().getWindows().size() > 0) { return false; }
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -188,8 +188,8 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) {
-		if (renderer.getHUDComponent().getWindows().size() > 0) { return false; }
-		if (character == 0) { return false; }
+		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (character == 0) return false;
 		
 		if (dontHandleNext) {
 			dontHandleNext = false;
