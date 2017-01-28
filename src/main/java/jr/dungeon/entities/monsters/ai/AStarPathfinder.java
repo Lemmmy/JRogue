@@ -4,6 +4,7 @@ import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
 import jr.utils.Utils;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,7 @@ public class AStarPathfinder {
 		return Utils.chebyshevDistance(ax, ay, bx, by);
 	}
 	
+	@Getter
 	public class Node implements Comparable<Node> {
 		private int x;
 		private int y;
@@ -144,7 +146,6 @@ public class AStarPathfinder {
 		}
 		
 		public int compareTo(Node other) {
-			
 			float f = heuristic + cost;
 			float of = other.heuristic + other.cost;
 			

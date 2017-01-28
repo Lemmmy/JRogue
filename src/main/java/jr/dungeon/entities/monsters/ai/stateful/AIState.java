@@ -3,12 +3,14 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.JRogue;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Serialisable;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+@Getter
 public class AIState implements Serialisable {
 	private StatefulAI ai;
 	
@@ -22,18 +24,6 @@ public class AIState implements Serialisable {
 	
 	public void update() {
 		turnsTaken = Math.max(0, turnsTaken - 1);
-	}
-	
-	public StatefulAI getAI() {
-		return ai;
-	}
-	
-	public int getDuration() {
-		return duration;
-	}
-	
-	public int getTurnsTaken() {
-		return turnsTaken;
 	}
 	
 	@Override

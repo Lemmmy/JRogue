@@ -1,6 +1,5 @@
 package jr.dungeon.entities.monsters;
 
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -13,12 +12,14 @@ import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.util.List;
 
 public abstract class Monster extends EntityLiving {
-	private AI ai;
+	@Getter @Setter private AI ai;
 	
 	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);

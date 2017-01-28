@@ -4,26 +4,17 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEvent;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public class EntityWalkedOnEvent extends DungeonEvent {
 	private Entity walkedOn;
 	private EntityLiving walker;
 	
-	public EntityWalkedOnEvent(Entity walkedOn, EntityLiving walker) {
-		this.walkedOn = walkedOn;
-		this.walker = walker;
-	}
-	
-	public Entity getWalkedOn() {
-		return walkedOn;
-	}
-	
 	public boolean isWalkedOnPlayer() {
 		return walkedOn instanceof Player;
-	}
-	
-	public EntityLiving getWalker() {
-		return walker;
 	}
 	
 	public boolean isWalkerPlayer() {

@@ -10,6 +10,7 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -20,7 +21,7 @@ import java.util.List;
 public abstract class AI implements Serialisable {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
 	
-	private Monster monster;
+	@Getter private Monster monster;
 	
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
@@ -127,10 +128,6 @@ public abstract class AI implements Serialisable {
 					new EntityAction.NoCallback()
 				)));
 		}
-	}
-	
-	public Monster getMonster() {
-		return monster;
 	}
 	
 	public abstract void update();
