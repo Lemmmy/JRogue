@@ -3,6 +3,7 @@
 # Minor changes
 
 # Bugfixes
+- Fixed a bug where you couldn't diagonally attack monsters standing in a door
 
 # Code
 - Moved everything out of Level into their own specialised Store classes
