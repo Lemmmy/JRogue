@@ -4,15 +4,14 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateClimbable;
+import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
+@AllArgsConstructor
 public class PlayerClimb implements PlayerVisitor {
 	private Tile tile;
 	private boolean up;
-	
-	public PlayerClimb(Tile tile, boolean up) {
-		this.tile = tile;
-		this.up = up;
-	}
 	
 	@Override
 	public void visit(Player player) {
@@ -40,9 +39,9 @@ public class PlayerClimb implements PlayerVisitor {
 		if (!tsc.getLinkedLevel().isPresent()) {
 			int depth = player.getLevel().getDepth() + (up ? 1 : -1);
 			Level level = player.getDungeon().newLevel(depth, tile, tsc.getGeneratorClass());
-			level.processEntityQueues();
-			tsc.setLinkedLevelUUID(level.getUUID());
-			tsc.setDestPosition(level.getSpawnX(), level.getSpawnY());
+			level.getEntityStore().processEntityQueues();
+			tsc.setLinkedLevelUUID(Optional.ofNullable(level.getUUID()));
+			tsc.setDestinationPosition(level.getSpawnX(), level.getSpawnY());
 		}
 		
 		if (tsc.getLinkedLevel().isPresent()) {

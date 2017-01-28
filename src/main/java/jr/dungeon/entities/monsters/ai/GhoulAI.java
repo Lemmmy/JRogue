@@ -2,6 +2,9 @@ package jr.dungeon.entities.monsters.ai;
 
 import jr.dungeon.entities.monsters.Monster;
 import jr.utils.MultiLineNoPrefixToStringStyle;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
@@ -13,7 +16,11 @@ import java.util.Random;
  * <p>
  * Melee only.
  */
+@Getter
+@Setter
 public class GhoulAI extends AI {
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private Random random = new Random();
 	
 	private float moveProbability = 0.25f;
@@ -24,18 +31,6 @@ public class GhoulAI extends AI {
 	
 	public GhoulAI(Monster monster) {
 		super(monster);
-	}
-	
-	public void setMoveProbability(float moveProbability) {
-		this.moveProbability = moveProbability;
-	}
-	
-	public void setAttackProbability(float attackProbability) {
-		this.attackProbability = attackProbability;
-	}
-	
-	public void setAttackCooldownDuration(int attackCooldownDuration) {
-		this.attackCooldownDuration = attackCooldownDuration;
 	}
 	
 	@Override

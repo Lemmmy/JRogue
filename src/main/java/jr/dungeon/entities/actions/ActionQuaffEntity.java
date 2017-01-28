@@ -1,8 +1,8 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Quaffable;
 
 public class ActionQuaffEntity extends EntityAction {

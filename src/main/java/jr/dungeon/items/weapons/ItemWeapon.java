@@ -3,9 +3,9 @@ package jr.dungeon.items.weapons;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Wieldable;
 import jr.dungeon.items.projectiles.ItemProjectile;
-import jr.dungeon.items.ItemCategory;
 
 public abstract class ItemWeapon extends Item implements Wieldable {
 	public abstract void hit(EntityLiving attacker, EntityLiving victim);

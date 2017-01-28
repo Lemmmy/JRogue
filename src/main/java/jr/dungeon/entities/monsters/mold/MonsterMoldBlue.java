@@ -1,9 +1,9 @@
 package jr.dungeon.entities.monsters.mold;
 
-import jr.dungeon.entities.EntityAppearance;
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
 
 public class MonsterMoldBlue extends MonsterMold {
 	public MonsterMoldBlue(Dungeon dungeon, Level level, int x, int y) {

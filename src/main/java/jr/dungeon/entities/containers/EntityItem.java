@@ -1,22 +1,27 @@
 package jr.dungeon.entities.containers;
 
-import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.items.valuables.ItemThermometer;
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.MercuryPoisoning;
+import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
+import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.tiles.TileType;
+import lombok.Getter;
+import org.json.JSONObject;
 
 import java.util.Optional;
 
 public class EntityItem extends Entity {
-	private ItemStack itemStack;
+	@Getter private ItemStack itemStack;
 
 	private final JSONObject persistence = new JSONObject();
 	
@@ -28,10 +33,6 @@ public class EntityItem extends Entity {
 		super(dungeon, level, x, y);
 		
 		this.itemStack = itemStack;
-	}
-	
-	public ItemStack getItemStack() {
-		return itemStack;
 	}
 	
 	public Item getItem() {
@@ -60,23 +61,23 @@ public class EntityItem extends Entity {
 		itemStack.getItem().update(this);
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		int x = getX() + dx;
-		int y = getY() + dy;
+	@DungeonEventHandler(selfOnly = true)
+	protected void onKick(EntityKickedEvent e) {
+		int x = getX() + e.getDeltaX();
+		int y = getY() + e.getDeltaY();
 		
 		if (getItem() instanceof Shatterable) {
 			getDungeon().The("%s shatters into a thousand pieces!", getName(getDungeon().getPlayer(), false));
 			
 			if (getItem() instanceof ItemThermometer) {
-				kicker.addStatusEffect(new MercuryPoisoning());
+				e.getKicker().addStatusEffect(new MercuryPoisoning());
 			}
 			
-			getLevel().removeEntity(this);
+			getLevel().getEntityStore().removeEntity(this);
 			return;
 		}
 		
-		TileType tile = getLevel().getTileType(x, y);
+		TileType tile = getLevel().getTileStore().getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
@@ -92,16 +93,11 @@ public class EntityItem extends Entity {
 		return itemStack.getName(observer, requiresCapitalisation);
 	}
 	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
-	
-	@Override
-	public void onSpawn() {
-		super.onSpawn();
-		
-		getLevel().getEntitiesAt(getX(), getY()).stream()
+	@DungeonEventHandler(selfOnly = true)
+	public void onSpawn(EntityAddedEvent event) {
+		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 			.filter(e -> e != this)
-			.forEach(e -> e.onItemDropped(this));
+			.forEach(e -> getDungeon().triggerEvent(new EntityItemDroppedOnEvent(e, this)));
 	}
 	
 	@Override

@@ -1,12 +1,12 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
@@ -40,7 +40,7 @@ public class StateLurk extends AIState {
 	private Tile getRandomDestination() {
 		Monster m = getAI().getMonster();
 		
-		return RandomUtils.randomFrom(m.getLevel().getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.collect(Collectors.toList()));
 	}

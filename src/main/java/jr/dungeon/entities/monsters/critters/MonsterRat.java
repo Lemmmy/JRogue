@@ -1,19 +1,21 @@
 package jr.dungeon.entities.monsters.critters;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.player.Attribute;
-import jr.dungeon.entities.player.Player;
-import jr.utils.RandomUtils;
-import org.json.JSONObject;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
+import jr.dungeon.entities.player.Attribute;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -78,25 +80,22 @@ public class MonsterRat extends Monster {
 		return 8;
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
-	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(kicker, false));
+	@DungeonEventHandler(selfOnly = true)
+	public void onKick(EntityKickedEvent e) {
+		if (e.isKickerPlayer()) {
+			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
 				
 		int damageChance = 2;
 		
-		if (isPlayer) {
-			Player player = (Player) kicker;
+		if (e.isKickerPlayer()) {
+			Player player = (Player) e.getKicker();
 			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
 			damageChance = (int) Math.ceil(strength / 6) + 1;
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
+			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
 		}
 	}
 	

@@ -1,10 +1,12 @@
 package jr.utils;
 
 import jr.dungeon.tiles.Tile;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+@Getter
 public class Path implements Iterable<Tile> {
 	private List<Tile> steps = new ArrayList<>();
 	
@@ -14,10 +16,6 @@ public class Path implements Iterable<Tile> {
 	
 	public Tile getStep(int index) {
 		return steps.get(index);
-	}
-	
-	public List<Tile> getSteps() {
-		return steps;
 	}
 	
 	public boolean[] getAdjacentSteps(int x, int y) {

@@ -197,7 +197,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 					if (slope <= CORRIDOR_LINE_SLOPE) {
 						TileType tile = TileType.TILE_CORRIDOR;
 						
-						buildLine(point.getAX(), point.getAY(), point.getBX(), point.getBY(), tile, true, false);
+						buildLine(point.getAx(), point.getAy(), point.getBx(), point.getBy(), tile, true, false);
 					} else {
 						if (point.getOrientationA() == point.getOrientationB()) {
 							buildSCorridor(point);
@@ -206,19 +206,19 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 						}
 					}
 					
-					safePlaceDoor(point.getAX(), point.getAY());
-					safePlaceDoor(point.getBX(), point.getBY());
+					safePlaceDoor(point.getAx(), point.getAy());
+					safePlaceDoor(point.getBx(), point.getBy());
 				}
 			}
 		}
 	}
 	
 	protected void buildLCorridor(ConnectionPoint point) {
-		int ax = point.getAX();
-		int ay = point.getAY();
+		int ax = point.getAx();
+		int ay = point.getAy();
 		
-		int bx = point.getBX();
-		int by = point.getBY();
+		int bx = point.getBx();
+		int by = point.getBy();
 		
 		int dx = bx - ax;
 		int dy = by - ay;
@@ -236,11 +236,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	protected void buildSCorridor(ConnectionPoint point) {
-		int ax = point.getAX();
-		int ay = point.getAY();
+		int ax = point.getAx();
+		int ay = point.getAy();
 		
-		int bx = point.getBX();
-		int by = point.getBY();
+		int bx = point.getBx();
+		int by = point.getBy();
 		
 		int dx = bx - ax;
 		int dy = by - ay;
@@ -309,7 +309,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		int stairY = nextInt(spawnRoom.getY() + 2, spawnRoom.getY() + spawnRoom.getHeight() - 2);
 		
 		if (sourceTile != null) {
-			Tile spawnTile = level.getTile(stairX, stairY);
+			Tile spawnTile = level.getTileStore().getTile(stairX, stairY);
 			spawnTile.setType(getUpstairsTileType());
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
@@ -318,13 +318,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			
 			if (spawnTile.getState() instanceof TileStateClimbable) {
 				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
-				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
-				tsc.setDestPosition(sourceTile.getX(), sourceTile.getY());
+				tsc.setLinkedLevelUUID(Optional.ofNullable(sourceTile.getLevel().getUUID()));
+				tsc.setDestinationPosition(sourceTile.getX(), sourceTile.getY());
 			}
 		}
 		
-		spawnRoom.setSpawn();
-		startTile = level.getTile(stairX, stairY);
+		spawnRoom.setSpawn(true);
+		startTile = level.getTileStore().getTile(stairX, stairY);
 		level.setSpawnPoint(stairX, stairY);
 		
 		return true;
@@ -362,20 +362,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			nextStairsRoom.getY() + nextStairsRoom.getHeight() - 2
 		);
 		
-		level.setTileType(stairX, stairY, getDownstairsTileType());
+		level.getTileStore().setTileType(stairX, stairY, getDownstairsTileType());
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.setTileType(stairX, stairY, getUpstairsTileType());
+			level.getTileStore().setTileType(stairX, stairY, getUpstairsTileType());
 		}
 		
-		Tile stairTile = level.getTile(stairX, stairY);
+		Tile stairTile = level.getTileStore().getTile(stairX, stairY);
 		
 		if (stairTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
-			tsc.setDestGenerator(getNextGenerator());
+			tsc.setDestinationGenerator(getNextGenerator());
 		}
 		
-		endTile = level.getTile(stairX, stairY);
+		endTile = level.getTileStore().getTile(stairX, stairY);
 	}
 	
 	protected boolean verify() {
@@ -402,7 +402,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
 			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.getTileType(x, y) == null || !level.getTileType(x, y).isBuildable()) {
+				if (level.getTileStore().getTileType(x, y) == null || !level.getTileStore().getTileType(x, y).isBuildable()) {
 					return false;
 				}
 			}

@@ -1,14 +1,17 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.BlankMessenger;
-import org.json.JSONObject;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.utils.Serialisable;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
 
+@Getter
 public abstract class StatusEffect implements Serialisable {
-	private Messenger messenger;
-	private Entity entity;
+	@Setter private Messenger messenger;
+	@Setter private Entity entity;
 	
 	private int duration;
 	private int turnsPassed = 0;
@@ -39,30 +42,6 @@ public abstract class StatusEffect implements Serialisable {
 	@Override
 	public void unserialise(JSONObject obj) {
 		turnsPassed = obj.getInt("turnsPassed");
-	}
-	
-	public void setMessenger(Messenger msg) {
-		this.messenger = msg;
-	}
-	
-	public Messenger getMessenger() {
-		return messenger;
-	}
-	
-	public Entity getEntity() {
-		return entity;
-	}
-	
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
-	
-	public int getDuration() {
-		return duration;
-	}
-	
-	public int getTurnsPassed() {
-		return turnsPassed;
 	}
 	
 	public abstract String getName();

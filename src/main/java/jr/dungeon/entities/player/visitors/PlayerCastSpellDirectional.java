@@ -1,17 +1,15 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class PlayerCastSpellDirectional implements PlayerVisitor {
 	private Spell spell;
-	
-	public PlayerCastSpellDirectional(Spell spell) {
-		this.spell = spell;
-	}
 	
 	@Override
 	public void visit(Player player) {

@@ -5,75 +5,54 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.math.Matrix4;
+import jr.ErrorHandler;
 import jr.Settings;
+import jr.dungeon.Dungeon;
+import jr.dungeon.events.*;
 import jr.rendering.Renderer;
-import jr.rendering.gdx.entities.EntityMap;
-import jr.rendering.gdx.hud.Minimap;
-import jr.rendering.gdx.hud.windows.*;
+import jr.rendering.gdx.components.*;
+import jr.rendering.gdx.components.hud.HUDComponent;
 import jr.rendering.gdx.tiles.TileMap;
-import jr.rendering.gdx.tiles.TilePooledEffect;
 import jr.rendering.gdx.utils.FontLoader;
 import jr.rendering.gdx.utils.ImageLoader;
-import jr.utils.Gradient;
-import jr.utils.Path;
-import org.apache.logging.log4j.LogManager;
-import jr.ErrorHandler;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
-import jr.dungeon.entities.Entity;
-import jr.rendering.gdx.entities.EntityPooledEffect;
-import jr.rendering.gdx.entities.EntityRenderer;
-import jr.rendering.gdx.hud.HUD;
-import jr.rendering.gdx.tiles.TileRenderer;
 import jr.rendering.gdx.utils.ShaderLoader;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon.Listener {
+@Getter
+public class GDXRenderer extends ApplicationAdapter implements Renderer, DungeonEventListener {
 	private static final String WINDOW_TITLE = "JRogue";
 	
-	private static final Gradient PATH_GRADIENT = Gradient.getGradient(
-		Color.GREEN,
-		Color.RED
-	);
-	
 	private Lwjgl3Application application;
-	
-	private HUD hud;
-	private Minimap minimap;
-	
-	private SpriteBatch batch;
-	private ShapeRenderer lightBatch;
-	private SpriteBatch lightSpriteBatch;
-	
-	private OrthographicCamera camera;
 	
 	private Dungeon dungeon;
 	private Settings settings;
 	
-	private List<Runnable> nextFrameDeferred = new ArrayList<>();
+	private SpriteBatch mainBatch;
 	
-	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
-	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
+	private OrthographicCamera camera;
 	
-	private List<PopupWindow> windows = new ArrayList<>();
+	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
-	private Path lastPath = null;
-	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
+	private LevelComponent levelComponent;
+	private PathComponent pathComponent;
+	private EntityComponent entityComponent;
+	private LightingComponent lightingComponent;
+	private HUDComponent hudComponent;
+	private MinimapComponent minimapComponent;
 	
 	private float zoom = 1.0f;
 	
+	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
 	public GDXRenderer(Settings settings, Dungeon dungeon) {
@@ -104,6 +83,16 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		updateWindowTitle();
 		
+		mainBatch = new SpriteBatch();
+		
+		initialiseCamera();
+		initialiseRendererComponents();
+		initialiseInputMultiplexer();
+		
+		dungeon.start();
+	}
+	
+	private void initialiseCamera() {
 		zoom = 24 * TileMap.TILE_WIDTH;
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -113,44 +102,37 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
 		
 		camera.update();
-		
-		batch = new SpriteBatch();
-		lightBatch = new ShapeRenderer();
-		lightSpriteBatch = new SpriteBatch();
-		
-		loadPathSprites();
-		
-		hud = new HUD(this, settings, dungeon);
-		hud.init();
-		dungeon.addListener(hud);
-		
-		minimap = new Minimap(settings, dungeon);
-		minimap.init();
-		dungeon.addListener(minimap);
-		
-		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hud.getStage());
-		Gdx.input.setInputProcessor(inputMultiplexer);
-		
-		onLevelChange(dungeon.getLevel());
-		hud.onLevelChange(dungeon.getLevel());
-		minimap.onLevelChange(dungeon.getLevel());
-		dungeon.start();
 	}
 	
-	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 6, 0);
-		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 7, 0);
-		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 8, 0);
-		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 9, 0);
-		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 10, 0);
-		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 11, 0);
-		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 12, 0);
-		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 13, 0);
-		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 14, 0);
-		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 15, 0);
-		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 16, 0);
+	private void initialiseRendererComponents() {
+		levelComponent = new LevelComponent(this, dungeon, settings);
+		pathComponent = new PathComponent(this, dungeon, settings);
+		entityComponent = new EntityComponent(this, dungeon, settings);
+		lightingComponent = new LightingComponent(this, dungeon, settings);
+		minimapComponent = new MinimapComponent(this, dungeon, settings);
+		hudComponent = new HUDComponent(this, dungeon, settings);
+		
+		rendererComponents.add(levelComponent);
+		rendererComponents.add(pathComponent);
+		rendererComponents.add(entityComponent);
+		rendererComponents.add(lightingComponent);
+		rendererComponents.add(minimapComponent);
+		rendererComponents.add(hudComponent);
+		
+		// add mod components
+		
+		rendererComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
+		
+		rendererComponents.forEach(r -> r.setCamera(camera));
+		rendererComponents.forEach(r -> dungeon.addListener(r));
+		rendererComponents.forEach(RendererComponent::initialise);
+	}
+	
+	private void initialiseInputMultiplexer() {
+		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
+		inputMultiplexer.addProcessor(hudComponent.getStage());
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
 	private void updateWindowTitle() {
@@ -160,151 +142,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			dungeon.getName(),
 			dungeon.getTurn()
 		));
-	}
-	
-	@Override
-	public void onLevelChange(Level level) {
-		entityPooledEffects.clear();
-		findTilePooledParticles();
-		lastPath = null;
-	}
-	
-	private void findTilePooledParticles() {
-		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
-		tilePooledEffects.clear();
-		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-				
-				if (tm.getRenderer() == null) {
-					continue;
-				}
-				
-				TileRenderer renderer = tm.getRenderer();
-				
-				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
-					continue;
-				}
-				
-				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
-				
-				effect.setPosition(
-					x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(),
-					y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset()
-				);
-				
-				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
-				tilePooledEffects.add(tilePooledEffect);
-			}
-		}
-	}
-	
-	@Override
-	public void onTurn(long turn) {
-		updateWindowTitle();
-		lastPath = null;
-	}
-	
-	@Override
-	public void onContainerShow(Entity containerEntity) {
-		nextFrameDeferred
-			.add(() -> new ContainerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), containerEntity)
-				.show());
-	}
-	
-	@Override
-	public void onPathShow(Path path) {
-		lastPath = path;
-	}
-	
-	@Override
-	public void onEntityAdded(Entity entity) {
-		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-		
-		if (em.getRenderer() == null) {
-			return;
-		}
-		
-		EntityRenderer renderer = em.getRenderer();
-		
-		if (renderer.getParticleEffectPool(entity) == null) {
-			return;
-		}
-		
-		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
-		
-		effect.setPosition(
-			entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
-			entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
-		);
-		
-		boolean over = renderer.shouldDrawParticlesOver(dungeon, entity, entity.getX(), entity.getY());
-		
-		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(
-			entity,
-			renderer,
-			entity.getX(),
-			entity.getY(),
-			over,
-			effect
-		);
-		entityPooledEffects.add(entityPooledEffect);
-	}
-	
-	@Override
-	public void onEntityMoved(Entity entity, int lastX, int lastY, int newX, int newY) {
-		for (EntityPooledEffect e : entityPooledEffects) {
-			if (e.getEntity() == entity) {
-				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
-				
-				if (em.getRenderer() == null) {
-					return;
-				}
-				
-				EntityRenderer renderer = em.getRenderer();
-				
-				if (renderer.getParticleEffectPool(entity) == null) {
-					return;
-				}
-				
-				e.getPooledEffect().setPosition(
-					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
-					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
-				);
-			}
-		}
-	}
-	
-	@Override
-	public void onEntityRemoved(Entity entity) {
-		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
-	}
-	
-	@Override
-	public void onQuit() {
-		dontSave = true;
-		
-		application.exit();
-	}
-	
-	@Override
-	public void onSaveAndQuit() {
-		application.exit();
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * height / width);
-		
-		hud.updateViewport(width, height);
-		
-		minimap.resize();
 	}
 	
 	public void updateCamera() {
@@ -320,262 +157,53 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void render() {
 		super.render();
 		
-		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
-			Runnable r = iterator.next();
-			r.run();
-			iterator.remove();
-		}
-		
 		float delta = Gdx.graphics.getDeltaTime();
 		
 		updateCamera();
 		
-		batch.setProjectionMatrix(camera.combined);
-		lightBatch.setProjectionMatrix(camera.combined);
-		lightSpriteBatch.setProjectionMatrix(camera.combined);
+		rendererComponents.forEach(r -> r.update(delta));
+		
+		mainBatch.setProjectionMatrix(camera.combined);
 		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		batch.begin();
-		batch.enableBlending();
+		mainBatch.begin();
+		mainBatch.enableBlending();
 		
-		drawMap();
-		drawTileParticles(delta);
-		drawLastPath();
-		drawEntityParticles(delta, false);
-		drawEntities(false);
-		drawEntityParticles(delta, true);
+		rendererComponents.stream()
+			.filter(RendererComponent::useMainBatch)
+			.forEach(r -> r.render(delta));
 		
-		batch.end();
+		mainBatch.end();
 		
-		drawLights();
-		
-		hud.updateAndDraw(delta);
-		
-		minimap.render();
+		rendererComponents.stream()
+			.filter(r -> !r.useMainBatch())
+			.forEach(r -> r.render(delta));
 	}
 	
-	private void drawMap() {
-		drawMap(false, false);
-		drawMap(false, true);
-	}
-	
-	private void drawMap(boolean allRevealed, boolean extra) {
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				if (!allRevealed && !dungeon.getLevel().isTileDiscovered(x, y)) {
-					TileMap.TILE_GROUND.getRenderer().draw(batch, dungeon, x, y);
-					continue;
-				}
-				
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-				
-				if (tm.getRenderer() != null) {
-					if (extra) {
-						tm.getRenderer().drawExtra(batch, dungeon, x, y);
-					} else {
-						tm.getRenderer().draw(batch, dungeon, x, y);
-					}
-				}
-			}
-		}
-	}
-	
-	private void drawTileParticles(float delta) {
-		for (Iterator<TilePooledEffect> iterator = tilePooledEffects.iterator(); iterator.hasNext(); ) {
-			TilePooledEffect effect = iterator.next();
-			
-			effect.getPooledEffect().update(delta * 0.25f);
-			
-			if (!dungeon.getLevel().isTileDiscovered(effect.getX(), effect.getY())) {
-				continue;
-			}
-			
-			effect.getPooledEffect().draw(batch);
-			
-			if (effect.getPooledEffect().isComplete()) {
-				effect.getPooledEffect().free();
-				iterator.remove();
-			}
-		}
-	}
-	
-	private void drawLastPath() {
-		if (lastPath == null) {
-			return;
-		}
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
 		
-		Color oldColour = batch.getColor();
+		camera.setToOrtho(true, width, height);
 		
-		Path path = lastPath;
-		AtomicInteger i = new AtomicInteger(0);
+		camera.viewportWidth = Math.round(zoom);
+		camera.viewportHeight = Math.round(zoom * height / width);
 		
-		path.forEach(step -> {
-			i.incrementAndGet();
-			
-			TextureRegion image;
-			
-			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
-
-			/*
-				 3
-				1 0
-				 2
-			 */
-			
-			if (a[0] && !a[1] && !a[2] && !a[3]) {
-				image = pathR;
-			} else if (!a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathL;
-			} else if (!a[0] && !a[1] && !a[2] && a[3]) {
-				image = pathU;
-			} else if (!a[0] && !a[1] && a[2] && !a[3]) {
-				image = pathB;
-			} else if (a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathH;
-			} else if (!a[0] && !a[1] && a[2]) {
-				image = pathV;
-			} else if (!a[0] && a[1] && !a[2]) {
-				image = pathUL;
-			} else if (a[0] && !a[1] && !a[2]) {
-				image = pathUR;
-			} else if (!a[0] && a[1] && !a[3]) {
-				image = pathBL;
-			} else if (a[0] && !a[1] && !a[3]) {
-				image = pathBR;
-			} else {
-				image = pathSpot;
-			}
-			
-			float point = (float) (i.get() - 1) / (float) (path.getLength() - 1);
-			
-			batch.setColor(PATH_GRADIENT.getColourAtPoint(point));
-			batch.draw(image, step.getX() * TileMap.TILE_WIDTH + 0.01f, step.getY() * TileMap.TILE_HEIGHT + 0.01f);
-		});
-		
-		batch.setColor(oldColour);
-	}
-	
-	private void drawEntityParticles(float delta, boolean over) {
-		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
-			EntityPooledEffect effect = iterator.next();
-			
-			boolean shouldDrawParticles = effect.getRenderer().shouldDrawParticles(
-				dungeon,
-				effect.getEntity(),
-				effect.getEntity().getX(),
-				effect.getEntity().getY()
-			);
-			
-			if (!shouldDrawParticles) {
-				effect.getPooledEffect().free();
-				continue;
-			}
-			
-			if (effect.shouldDrawOver() != over) { continue; }
-			
-			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(
-				dungeon,
-				effect.getEntity(),
-				effect.getEntity().getX(),
-				effect.getEntity().getY()
-			);
-			
-			effect.getPooledEffect().update(delta * deltaMultiplier);
-			
-			if (dungeon.getLevel().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
-				continue;
-			}
-			
-			effect.getPooledEffect().draw(batch);
-			
-			if (effect.getPooledEffect().isComplete()) {
-				effect.getPooledEffect().free();
-				iterator.remove();
-			}
-		}
-	}
-	
-	private void drawEntities(boolean allRevealed) {
-		dungeon.getLevel().getEntities().stream()
-			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> {
-				if (!allRevealed && !e.isStatic() && dungeon.getLevel().isTileInvisible(e.getX(), e.getY())) {
-					return;
-				}
-				
-				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
-				
-				if (em.getRenderer() != null) {
-					em.getRenderer().draw(batch, dungeon, e);
-				}
-			});
-	}
-	
-	private void drawLights() {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		
-		lightBatch.begin(ShapeRenderer.ShapeType.Filled);
-		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-				
-				if (tm.getRenderer() != null) {
-					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
-				}
-			}
-		}
-		
-		// Due to the light being drawn offset, we need additional tiles on the level borders.
-		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, y);
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, dungeon.getLevel().getWidth() + 1, y);
-		}
-		
-		for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, -1);
-			TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, x, dungeon.getLevel().getHeight() + 1);
-		}
-		
-		TileMap.TILE_GROUND.getRenderer().drawLight(lightBatch, dungeon, -1, -1);
-		
-		lightBatch.end();
-		
-		lightSpriteBatch.begin();
-		
-		for (int y = 0; y < dungeon.getLevel().getHeight(); y++) {
-			for (int x = 0; x < dungeon.getLevel().getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(dungeon.getLevel().getTileType(x, y).name());
-				
-				if (tm.getRenderer() != null) {
-					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);
-				}
-			}
-		}
-		
-		lightSpriteBatch.end();
-		
-		Gdx.gl.glDisable(GL20.GL_BLEND);
+		rendererComponents.forEach(r -> r.resize(width, height));
 	}
 	
 	@Override
 	public void dispose() {
 		super.dispose();
 		
-		if (settings.shouldAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
+		if (settings.isAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
 			dungeon.save();
 		}
 		
-		batch.dispose();
-		lightBatch.dispose();
-		lightSpriteBatch.dispose();
-		
-		hud.dispose();
-		
-		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
+		mainBatch.dispose();
+
+		rendererComponents.forEach(RendererComponent::dispose);
 		
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
@@ -583,71 +211,24 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		LogManager.shutdown();
 	}
 	
-	public Pixmap takeLevelSnapshot() {
-		int levelWidth = dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH;
-		int levelHeight = dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
-		
-		FrameBuffer fbo = new FrameBuffer(Pixmap.Format.RGBA8888, levelWidth, levelHeight, false, false);
-		Camera fullCamera = new OrthographicCamera(levelWidth, levelHeight);
-		fullCamera.position.set(levelWidth / 2.0f, levelHeight / 2.0f, 0.0f);
-		fullCamera.update();
-		
-		fbo.begin();
-		batch.setProjectionMatrix(fullCamera.combined);
-		batch.enableBlending();
-		batch.begin();
-		
-		drawMap(true, false);
-		drawMap(true, true);
-		drawEntities(true);
-		
-		batch.end();
-		
-		Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, levelWidth, levelHeight);
-		
-		fbo.end();
-		fbo.dispose();
-		return pixmap;
+	@DungeonEventHandler
+	public void onTurn(TurnEvent e) {
+		updateWindowTitle();
 	}
 	
-	public void showDebugWindow() {
-		nextFrameDeferred
-			.add(() -> new DebugWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
-				.show());
+	@DungeonEventHandler
+	public void onQuit(QuitEvent e) {
+		dontSave = true;
+		application.exit();
 	}
 	
-	public void showInventoryWindow() {
-		nextFrameDeferred
-			.add(() -> new PlayerWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
-				.show());
+	@DungeonEventHandler
+	public void onSaveAndQuit(SaveAndQuitEvent e) {
+		application.exit();
 	}
 	
-	public void showWishWindow() {
-		nextFrameDeferred
-			.add(() -> new WishWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon, dungeon.getLevel())
-				.show());
-	}
-	
-	public void showSpellWindow() {
-		nextFrameDeferred
-			.add(() -> new SpellWindow(GDXRenderer.this, hud.getStage(), hud.getSkin(), dungeon.getPlayer())
-				.show());
-	}
-	
-	public OrthographicCamera getCamera() {
-		return camera;
-	}
-	
-	public void addWindow(PopupWindow window) {
-		windows.add(window);
-	}
-	
-	public void removeWindow(PopupWindow window) {
-		windows.remove(window);
-	}
-	
-	public List<PopupWindow> getWindows() {
-		return windows;
+	public Matrix4 getCombinedTransform() {
+		return camera.combined;
 	}
 	
 	@Override

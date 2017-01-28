@@ -2,8 +2,8 @@ package jr.dungeon.items.magical.spells;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.magic.EntityLightOrb;
-import jr.dungeon.items.magical.MagicalSchool;
 import jr.dungeon.items.magical.DirectionType;
+import jr.dungeon.items.magical.MagicalSchool;
 
 public class SpellLightOrb extends Spell {
 	@Override
@@ -43,7 +43,7 @@ public class SpellLightOrb extends Spell {
 	@Override
 	public void castNonDirectional(EntityLiving caster) {
 		EntityLightOrb orb = new EntityLightOrb(caster.getDungeon(), caster.getLevel(), caster.getX(), caster.getY());
-		caster.getLevel().addEntity(orb);
+		caster.getLevel().getEntityStore().addEntity(orb);
 		
 		caster.getDungeon().log("A great orb of light materialises and lights up the dungeon.");
 	}

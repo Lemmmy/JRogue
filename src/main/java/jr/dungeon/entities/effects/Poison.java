@@ -32,12 +32,12 @@ public class Poison extends StatusEffect {
 				 entityLiving.getHealth() > entityLiving.getMaxHealth() - getDamageLimit()) &&
 				getHealthLimit() < entityLiving.getHealth()
 			) {
-				entityLiving.damage(getDamageSource(), 1, null, false);
+				entityLiving.damage(getDamageSource(), 1, null);
 			}
 			
 			if (getHealthLimit() >= entityLiving.getMaxHealth()) {
 				// The victim is far too weak to take normal damage and is killed instantaneously
-				entityLiving.kill(getDamageSource(), 1, null, false);
+				entityLiving.kill(getDamageSource(), 1, null);
 			}
 		}
 	}

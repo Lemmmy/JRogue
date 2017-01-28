@@ -1,7 +1,11 @@
 package jr.utils;
 
 import com.badlogic.gdx.utils.Pool;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Point implements Pool.Poolable {
 	private static final Pool<Point> pointPool = new Pool<Point>() {
 		@Override
@@ -35,22 +39,6 @@ public class Point implements Pool.Poolable {
 
 	private void init(int x, int y) {
 		this.x = x;
-		this.y = y;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public void setY(int y) {
 		this.y = y;
 	}
 

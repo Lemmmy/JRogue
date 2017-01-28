@@ -1,17 +1,17 @@
 package jr.dungeon.entities.projectiles;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Player;
-import jr.dungeon.tiles.Tile;
-import jr.utils.RandomUtils;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.RandomUtils;
 
 import java.awt.*;
 
@@ -61,23 +61,13 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 			if (roll < 10 + living.getArmourClass()) {
 				int damage = RandomUtils.roll(2, 12);
 				
-				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource, source instanceof Player);
+				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource);
 			}
 		}
 		
 		if (victim instanceof Extinguishable) {
 			((Extinguishable) victim).extinguish();
 		}
-	}
-	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		
-	}
-	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		
 	}
 	
 	@Override

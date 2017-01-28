@@ -1,13 +1,16 @@
 package jr.dungeon.entities.decoration;
 
-import jr.dungeon.entities.EntityLiving;
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 public class EntityGravestone extends Entity implements Readable {
 	private static final String[] GRAVE_MESSAGES = new String[] {
@@ -34,15 +37,15 @@ public class EntityGravestone extends Entity implements Readable {
 		return EntityAppearance.APPEARANCE_GRAVESTONE;
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
+	@DungeonEventHandler(selfOnly = true)
+	protected void onKick(EntityKickedEvent e) {
 		// TODO: shit on the player's luck
 	}
 	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {
-		if (isPlayer) {
-			getDungeon().log("There is a %s here.", getName(walker, false));
+	@DungeonEventHandler(selfOnly = true)
+	protected void onWalk(EntityWalkedOnEvent e) {
+		if (e.isWalkerPlayer()) {
+			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}
 	}
 	

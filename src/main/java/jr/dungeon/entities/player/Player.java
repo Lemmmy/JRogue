@@ -1,25 +1,31 @@
 package jr.dungeon.entities.player;
 
 import jr.JRogue;
-import jr.dungeon.entities.*;
-import jr.dungeon.entities.player.visitors.*;
-import jr.dungeon.items.comestibles.ItemComestible;
-import jr.dungeon.tiles.Tile;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
+import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.roles.Role;
+import jr.dungeon.entities.player.visitors.*;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.tiles.Tile;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -28,28 +34,30 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Player extends EntityLiving {
-	private AStarPathfinder pathfinder = new AStarPathfinder();
+	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
 	private String name;
-	private Role role;
+	@Getter private Role role;
 	
-	private int energy;
-	private int maxEnergy;
-	private int chargingTurns = 0;
-	private Map<Character, Spell> knownSpells;
+	@Getter @Setter private int energy;
+	@Getter private int maxEnergy;
+	@Getter private int chargingTurns = 0;
+	@Getter private Map<Character, Spell> knownSpells;
 	
-	private int nutrition;
-	private NutritionState lastNutritionState;
+	@Getter @Setter private int nutrition;
+	@Getter private NutritionState lastNutritionState;
 	
-	private int spendableSkillPoints = 3;
-	private Attributes attributes = new Attributes();
-	private Map<Skill, SkillLevel> skills;
+	@Getter private int spendableSkillPoints = 3;
+	@Getter private Attributes attributes = new Attributes();
+	@Getter private Map<Skill, SkillLevel> skills;
 	
-	private int gold = 0;
+	@Getter private int gold = 0;
 	
-	private boolean godmode = false;
+	@Getter @Setter private boolean godmode = false;
 
 	private final JSONObject persistence = new JSONObject();
+	
+	public final PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -113,18 +121,6 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	public int getEnergy() {
-		return energy;
-	}
-	
-	public void setEnergy(int energy) {
-		this.energy = energy;
-	}
-	
-	public int getMaxEnergy() {
-		return maxEnergy;
-	}
-	
 	public int getChargingRate() {
 		return (int) Math.floor((38 - getExperienceLevel()) * (3.5f / 6f));
 	}
@@ -140,10 +136,6 @@ public class Player extends EntityLiving {
 		
 		maxEnergy += gain;
 		charge(gain);
-	}
-	
-	public Map<Character, Spell> getKnownSpells() {
-		return knownSpells;
 	}
 	
 	public char getAvailableSpellLetter() {
@@ -191,22 +183,6 @@ public class Player extends EntityLiving {
 		return EntityLiving.Size.LARGE;
 	}
 	
-	public Role getRole() {
-		return role;
-	}
-	
-	public Attributes getAttributes() {
-		return attributes;
-	}
-	
-	public int getNutrition() {
-		return nutrition;
-	}
-	
-	public void setNutrition(int nutrition) {
-		this.nutrition = nutrition;
-	}
-	
 	public NutritionState getNutritionState() {
 		if (nutrition >= 1500) {
 			return NutritionState.CHOKING;
@@ -221,10 +197,6 @@ public class Player extends EntityLiving {
 		} else {
 			return NutritionState.FAINTING;
 		}
-	}
-	
-	public int getSpendableSkillPoints() {
-		return spendableSkillPoints;
 	}
 	
 	public void decrementSpendableSkillPoints() {
@@ -245,10 +217,6 @@ public class Player extends EntityLiving {
 		gold += amount;
 	}
 	
-	public int getGold() {
-		return gold;
-	}
-	
 	public boolean canTakeGold(int amount) {
 		return gold > amount;
 	}
@@ -262,7 +230,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getLightLevel() {
-		return getLevel().getTile(getX(), getY()).getLightIntensity();
+		return getLevel().getTileStore().getTile(getX(), getY()).getLightIntensity();
 	}
 	
 	public int getCorridorVisibilityRange() {
@@ -277,21 +245,13 @@ public class Player extends EntityLiving {
 		return name.equalsIgnoreCase("debugger");
 	}
 	
-	public void godmode() {
-		this.godmode = true;
-	}
-		
-	public AStarPathfinder getPathfinder() {
-		return pathfinder;
-	}
-	
 	@Override
 	public void applyMovementPoints() {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@Override
-	public void onLevelUp() {
+	@DungeonEventHandler(selfOnly = true)
+	public void onLevelUp(EntityLevelledUpEvent event) {
 		levelUpEnergy();
 		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
@@ -358,7 +318,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(DamageSource.CHOKING, 1, this, true);
+			damage(DamageSource.CHOKING, 1, this);
 		}
 		
 		nutrition--;
@@ -460,13 +420,10 @@ public class Player extends EntityLiving {
 		});
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
-	
-	@Override
-	protected void onDie(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
-		if (damageSource.getDeathString() != null) {
-			getDungeon().log("[RED]" + damageSource.getDeathString() + "[]");
+	@DungeonEventHandler(selfOnly = true)
+	protected void onDie(EntityDeathEvent e) {
+		if (e.getDamageSource().getDeathString() != null) {
+			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
 		} else {
 			getDungeon().redYou("die.");
 		}
@@ -475,119 +432,16 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		getDungeon().orangeYou("step on your own foot.");
-	}
-	
-	@Override
-	protected void onWalk(EntityLiving walker, boolean isPlayer) {}
-	
-	@Override
 	public boolean canBeWalkedOn() {
 		return false;
 	}
 	
-	private void acceptVisitor(PlayerVisitor visitor) {
+	public void acceptVisitor(PlayerVisitor visitor) {
 		visitor.visit(this);
-	}
-	
-	public void teleport(int x, int y) {
-		acceptVisitor(new PlayerTeleport(x, y));
-	}
-	
-	public void walk(int dx, int dy) {
-		acceptVisitor(new PlayerWalk(dx, dy));
-	}
-	
-	public void travelDirectional() {
-		acceptVisitor(new PlayerTravelDirectional());
-	}
-	
-	public void travelPathfind(int tx, int ty) {
-		acceptVisitor(new PlayerTravelPathfind(tx, ty));
-	}
-	
-	public void kick() {
-		acceptVisitor(new PlayerKick());
-	}
-	
-	public void castSpell(Spell spell) {
-		switch (spell.getDirectionType()) {
-			case NON_DIRECTIONAL:
-				castSpellNonDirectional(spell);
-				break;
-			default:
-				castSpellDirectional(spell);
-				break;
-		}
 	}
 	
 	public boolean canCastSpell(Spell spell) {
 		return energy >= spell.getCastingCost();
-	}
-	
-	private void castSpellNonDirectional(Spell spell) {
-		acceptVisitor(new PlayerCastSpellNonDirectional(spell));
-	}
-	
-	private void castSpellDirectional(Spell spell) {
-		acceptVisitor(new PlayerCastSpellDirectional(spell));
-	}
-	
-	public void eat() {
-		acceptVisitor(new PlayerEat());
-	}
-	
-	public void quaff() {
-		acceptVisitor(new PlayerQuaff());
-	}
-	
-	public void consume(ItemComestible item) {
-		acceptVisitor(new PlayerConsume(item));
-	}
-	
-	public void pickup() {
-		acceptVisitor(new PlayerPickup());
-	}
-	
-	public void drop() {
-		acceptVisitor(new PlayerDrop());
-	}
-	
-	public void loot() {
-		acceptVisitor(new PlayerLoot());
-	}
-	
-	public void wield() {
-		acceptVisitor(new PlayerWield());
-	}
-	
-	public void fire() {
-		// TODO: quiver
-	}
-	
-	public void throwItem() {
-		acceptVisitor(new PlayerThrowItem());
-	}
-	
-	public void climbAny() {
-		acceptVisitor(new PlayerClimbAny());
-	}
-	
-	public void climbUp() {
-		acceptVisitor(new PlayerClimbUp());
-	}
-	
-	public void climbDown() {
-		acceptVisitor(new PlayerClimbDown());
-	}
-	
-	public void climb(Tile tile, boolean up) {
-		acceptVisitor(new PlayerClimb(tile, up));
-	}
-	
-	public void read() {
-		acceptVisitor(new PlayerRead());
 	}
 	
 	public Hit hitFromMonster(DamageSource damageSource, int damage, EntityLiving attacker) {
@@ -685,7 +539,7 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().entityAttacked(victim, victim.getX(), victim.getY(), roll, toHit);
+		getDungeon().triggerEvent(new EntityAttackedToHitRollEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

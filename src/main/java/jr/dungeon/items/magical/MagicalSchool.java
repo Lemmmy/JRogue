@@ -1,7 +1,11 @@
 package jr.dungeon.items.magical;
 
 import jr.dungeon.entities.skills.Skill;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public enum MagicalSchool {
 	ATTACK(Skill.SKILL_SPELLS_ATTACK),
 	CLERICAL(Skill.SKILL_SPELLS_CLERICAL),
@@ -13,12 +17,4 @@ public enum MagicalSchool {
 	OTHER(Skill.SKILL_SPELLS_OTHER);
 	
 	private Skill skill;
-	
-	MagicalSchool(Skill skill) {
-		this.skill = skill;
-	}
-	
-	public Skill getSkill() {
-		return skill;
-	}
 }

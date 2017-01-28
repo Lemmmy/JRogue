@@ -1,7 +1,5 @@
 package jr.dungeon.items.quaffable.potions;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
@@ -9,7 +7,13 @@ import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
+@Getter
+@Setter
 public class ItemPotion extends ItemQuaffable implements Shatterable {
 	private boolean empty = false;
 	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
@@ -19,46 +23,6 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	
 	public ItemPotion() {
 		potionColour = RandomUtils.randomFrom(PotionColour.values());
-	}
-	
-	public boolean isEmpty() {
-		return empty;
-	}
-	
-	public void setEmpty(boolean empty) {
-		this.empty = empty;
-	}
-	
-	public BottleType getBottleType() {
-		return bottleType;
-	}
-	
-	public void setBottleType(BottleType type) {
-		this.bottleType = type;
-	}
-	
-	public PotionType getPotionType() {
-		return potionType;
-	}
-	
-	public void setPotionType(PotionType potionType) {
-		this.potionType = potionType;
-	}
-	
-	public PotionColour getPotionColour() {
-		return potionColour;
-	}
-	
-	public void setPotionColour(PotionColour potionColour) {
-		this.potionColour = potionColour;
-	}
-	
-	public float getPotency() {
-		return potency;
-	}
-	
-	public void setPotency(float potency) {
-		this.potency = potency;
 	}
 	
 	@Override
@@ -100,8 +64,8 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 			return;
 		}
 		
-		if (quaffer instanceof EntityLiving) {
-			potionType.getEffect().apply((EntityLiving) quaffer, potency);
+		if (quaffer != null) {
+			potionType.getEffect().apply(quaffer, potency);
 		}
 	}
 	
@@ -153,7 +117,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	
 	@Override
 	public int hashCode() {
-		int result = (empty ? 1 : 0);
+		int result = empty ? 1 : 0;
 		result = 31 * result + (bottleType != null ? bottleType.hashCode() : 0);
 		result = 31 * result + (potionType != null ? potionType.hashCode() : 0);
 		result = 31 * result + (potionColour != null ? potionColour.hashCode() : 0);

@@ -1,10 +1,10 @@
 package jr.dungeon.generators;
 
 import jr.dungeon.Level;
-import jr.dungeon.tiles.Tile;
-import jr.utils.OpenSimplexNoise;
 import jr.dungeon.generators.rooms.features.FeatureSewerDrain;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.OpenSimplexNoise;
 
 public class GeneratorSewer extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.1;
@@ -55,8 +55,8 @@ public class GeneratorSewer extends GeneratorRooms {
 			for (int x = 0; x < level.getWidth(); x++) {
 				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
 				
-				if (noise > THRESHOLD_WATER_NOISE && level.getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
-					level.setTileType(x, y, TileType.TILE_SEWER_WATER);
+				if (noise > THRESHOLD_WATER_NOISE && level.getTileStore().getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
+					level.getTileStore().setTileType(x, y, TileType.TILE_SEWER_WATER);
 				}
 			}
 		}

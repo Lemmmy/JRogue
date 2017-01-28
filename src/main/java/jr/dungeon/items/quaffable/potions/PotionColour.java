@@ -1,5 +1,8 @@
 package jr.dungeon.items.quaffable.potions;
 
+import lombok.Getter;
+
+@Getter
 public enum PotionColour {
 	CLEAR,
 	WATERY,
@@ -50,9 +53,5 @@ public enum PotionColour {
 	
 	PotionColour() {
 		name = name().toLowerCase().replace("_", " ");
-	}
-	
-	public String getName() {
-		return name;
 	}
 }

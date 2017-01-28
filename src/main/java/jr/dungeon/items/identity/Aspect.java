@@ -1,7 +1,7 @@
 package jr.dungeon.items.identity;
 
-import org.json.JSONObject;
 import jr.utils.Serialisable;
+import org.json.JSONObject;
 
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();

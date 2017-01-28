@@ -1,14 +1,14 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Attribute;
-import jr.dungeon.tiles.Tile;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
@@ -61,12 +61,12 @@ public class ActionKick extends EntityAction {
 			}
 		}
 		
-		kickedEntity.kick(kicker, isPlayer, dx, dy);
+		kickedEntity.kick(kicker, dx, dy);
 	}
 	
 	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int x, int y) {
-		Tile tile = entity.getLevel().getTile(x, y);
-		TileType tileType = entity.getLevel().getTileType(x, y);
+		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
+		TileType tileType = entity.getLevel().getTileStore().getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
@@ -87,7 +87,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker, isPlayer);
+				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker);
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
@@ -143,7 +143,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker, isPlayer);
+				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker);
 				kicker.addStatusEffect(new InjuredFoot(entity.getDungeon(), kicker, RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {

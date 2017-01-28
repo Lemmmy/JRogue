@@ -4,11 +4,17 @@ import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
-import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityMovedEvent;
+import jr.dungeon.entities.events.EntityTeleportedToEvent;
+import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,24 +22,25 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public abstract class Entity implements Serialisable, Persisting {
+@Getter
+public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
 	private UUID uuid;
 	
-	private int x;
-	private int y;
+	@Setter private int x;
+	@Setter private int y;
 	
-	private int lastX;
-	private int lastY;
+	@Setter private int lastX;
+	@Setter private int lastY;
 	
-	private int lastSeenX;
-	private int lastSeenY;
+	@Setter private int lastSeenX;
+	@Setter private int lastSeenY;
 	
 	private int visualID;
 	
-	private boolean beingRemoved = false;
+	@Setter private boolean beingRemoved = false;
 	
 	private Dungeon dungeon;
-	private Level level;
+	@Setter private Level level;
 	
 	private List<StatusEffect> statusEffects = new ArrayList<>();
 
@@ -59,10 +66,6 @@ public abstract class Entity implements Serialisable, Persisting {
 		return uuid;
 	}
 	
-	public int getVisualID() {
-		return visualID;
-	}
-	
 	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
 	
 	public abstract EntityAppearance getAppearance();
@@ -73,55 +76,7 @@ public abstract class Entity implements Serialisable, Persisting {
 		setX(x);
 		setY(y);
 		
-		dungeon.entityMoved(this, getLastX(), getLastY(), x, y);
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	private void setX(int x) {
-		this.x = x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	private void setY(int y) {
-		this.y = y;
-	}
-	
-	public int getLastX() {
-		return lastX;
-	}
-	
-	public void setLastX(int lastX) {
-		this.lastX = lastX;
-	}
-	
-	public int getLastY() {
-		return lastY;
-	}
-	
-	public void setLastY(int lastY) {
-		this.lastY = lastY;
-	}
-	
-	public int getLastSeenX() {
-		return lastSeenX;
-	}
-	
-	public void setLastSeenX(int lastSeenX) {
-		this.lastSeenX = lastSeenX;
-	}
-	
-	public int getLastSeenY() {
-		return lastSeenY;
-	}
-	
-	public void setLastSeenY(int lastSeenY) {
-		this.lastSeenY = lastSeenY;
+		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
 	}
 	
 	public int getDepth() {
@@ -148,26 +103,6 @@ public abstract class Entity implements Serialisable, Persisting {
 		return Optional.empty();
 	}
 	
-	public Dungeon getDungeon() {
-		return dungeon;
-	}
-	
-	public Level getLevel() {
-		return level;
-	}
-	
-	public void setLevel(Level level) {
-		this.level = level;
-	}
-	
-	public boolean isBeingRemoved() {
-		return beingRemoved;
-	}
-	
-	public void setBeingRemoved(boolean beingRemoved) {
-		this.beingRemoved = beingRemoved;
-	}
-	
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
 			StatusEffect statusEffect = iterator.next();
@@ -180,10 +115,6 @@ public abstract class Entity implements Serialisable, Persisting {
 			}
 		}
 	}
-	
-	public void onSpawn() {}
-	
-	public void onItemDropped(EntityItem entityItem) {}
 	
 	@Override
 	public void serialise(JSONObject obj) {
@@ -269,27 +200,17 @@ public abstract class Entity implements Serialisable, Persisting {
 		return statusEffects.stream().anyMatch(statusEffect::isInstance);
 	}
 	
-	public List<StatusEffect> getStatusEffects() {
-		return statusEffects;
+	public void kick(EntityLiving kicker, int dx, int dy) {
+		getDungeon().triggerEvent(new EntityKickedEvent(this, kicker, dx, dy));
 	}
 	
-	public void kick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		onKick(kicker, isPlayer, dx, dy);
+	public void walk(EntityLiving walker) {
+		getDungeon().triggerEvent(new EntityWalkedOnEvent(this, walker));
 	}
 	
-	protected abstract void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy);
-	
-	public void walk(EntityLiving walker, boolean isPlayer) {
-		onWalk(walker, isPlayer);
+	public void teleport(EntityLiving teleporter) {
+		getDungeon().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
-	
-	protected abstract void onWalk(EntityLiving walker, boolean isPlayer);
-	
-	public void teleport(EntityLiving walker, boolean isPlayer) {
-		onTeleport(walker, isPlayer);
-	}
-	
-	protected void onTeleport(EntityLiving walker, boolean isPlayer) {}
 	
 	public abstract boolean canBeWalkedOn();
 

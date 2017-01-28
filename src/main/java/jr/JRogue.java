@@ -1,7 +1,10 @@
 package jr;
 
 import com.google.common.reflect.TypeToken;
+import jr.dungeon.Dungeon;
+import jr.rendering.gdx.GDXRenderer;
 import jr.utils.OperatingSystem;
+import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -9,8 +12,13 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import jr.dungeon.Dungeon;
-import jr.rendering.gdx.GDXRenderer;
+import org.reflections.Reflections;
+import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.MethodParameterScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import javax.swing.*;
 import java.io.File;
@@ -25,15 +33,20 @@ public class JRogue {
 	public static String VERSION = "unknown";
 	public static String BUILD_DATE = "unknown";
 	
+	@Getter
+	private static Reflections reflections;
+	
+	@Getter
 	private static Logger logger;
 	
 	public Dungeon dungeon;
 	public jr.rendering.Renderer renderer;
 	
 	public JRogue(Settings settings) {
+		initialiseReflections();
+		
 		try {
-			dungeon = Dungeon.load(settings);
-			renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
+			start(settings);
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
 			
@@ -41,6 +54,28 @@ public class JRogue {
 				renderer.panic();
 			}
 		}
+	}
+	
+	private void initialiseReflections() {
+		// if this isn't used once the modding api is added,
+		// remove this method and the org.reflections dependency
+		
+		ConfigurationBuilder cb = new ConfigurationBuilder()
+			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().toString()))
+			// TODO: add mod packages as URLs
+			.addScanners(
+				new MethodParameterScanner(),
+				new MethodAnnotationsScanner(),
+				new FieldAnnotationsScanner(),
+				new TypeAnnotationsScanner()
+			);
+		
+		reflections = new Reflections(cb);
+	}
+	
+	private void start(Settings settings) {
+		dungeon = Dungeon.load(settings);
+		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
 	}
 	
 	public static void main(String[] args) {
@@ -56,7 +91,7 @@ public class JRogue {
 		logger = LogManager.getLogger("JRogue");
 		
 		try (
-			InputStream is = JRogue.class.getResourceAsStream("/version.properties");
+			InputStream is = JRogue.class.getResourceAsStream("/version.properties")
 		) {
 			Properties versionProperties = new Properties();
 			versionProperties.load(is);
@@ -93,7 +128,7 @@ public class JRogue {
 		String homeDirectory = System.getProperty("user.home");
 		File configFile = Paths.get(homeDirectory, CONFIG_FILE_NAME).toFile();
 
-		Settings settings = null;
+		Settings settings;
 
 		if (cmd.hasOption("config")) {
 			settings = loadConfig(new File(cmd.getOptionValue("config")));
@@ -127,8 +162,8 @@ public class JRogue {
 										.setFile(configFile)
 										.build();
 
-		CommentedConfigurationNode root = null;
-		Settings settings = null;
+		CommentedConfigurationNode root;
+		Settings settings;
 
 		try {
 			root = loader.load();
@@ -145,9 +180,5 @@ public class JRogue {
 		}
 
 		return settings;
-	}
-	
-	public static Logger getLogger() {
-		return logger;
 	}
 }

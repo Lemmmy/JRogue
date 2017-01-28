@@ -13,6 +13,6 @@ public class FeatureFountain extends SpecialRoomFeature {
 		int fountainY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		EntityFountain fountain = new EntityFountain(room.getLevel().getDungeon(), room.getLevel(), fountainX, fountainY);
-		room.getLevel().addEntity(fountain);
+		room.getLevel().getEntityStore().addEntity(fountain);
 	}
 }

@@ -1,7 +1,9 @@
 package jr.dungeon.entities.monsters;
 
+import lombok.Getter;
 import org.apache.commons.lang3.Range;
 
+@Getter
 public class MonsterSpawn {
 	private Range<Integer> levelRange;
 	private Range<Integer> rangePerLevel;
@@ -31,25 +33,5 @@ public class MonsterSpawn {
 		this.isPack = true;
 		
 		this.monsterClass = monsterClass;
-	}
-	
-	public Range<Integer> getLevelRange() {
-		return levelRange;
-	}
-	
-	public Range<Integer> getRangePerLevel() {
-		return rangePerLevel;
-	}
-	
-	public Range<Integer> getPackRange() {
-		return packRange;
-	}
-	
-	public boolean isPack() {
-		return isPack;
-	}
-	
-	public Class<? extends Monster> getMonsterClass() {
-		return monsterClass;
 	}
 }

@@ -2,15 +2,16 @@ package jr.dungeon.entities.monsters.ai;
 
 import jr.JRogue;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.player.Player;
-import jr.utils.Path;
-import org.json.JSONObject;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +21,7 @@ import java.util.List;
 public abstract class AI implements Serialisable {
 	private AStarPathfinder pathfinder = new AStarPathfinder();
 	
-	private Monster monster;
+	@Getter private Monster monster;
 	
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
@@ -35,7 +36,7 @@ public abstract class AI implements Serialisable {
 	public boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 			y < 0 || y > monster.getLevel().getHeight()) &&
-			monster.getLevel().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+			monster.getLevel().getTileStore().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 	
 	public boolean canMoveTowardsPlayer() {
@@ -127,10 +128,6 @@ public abstract class AI implements Serialisable {
 					new EntityAction.NoCallback()
 				)));
 		}
-	}
-	
-	public Monster getMonster() {
-		return monster;
 	}
 	
 	public abstract void update();

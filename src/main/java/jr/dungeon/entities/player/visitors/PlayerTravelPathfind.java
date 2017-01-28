@@ -1,29 +1,27 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.player.Player;
-import jr.dungeon.tiles.Tile;
-import jr.utils.Path;
 import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.PathShowEvent;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
+import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@AllArgsConstructor
 public class PlayerTravelPathfind implements PlayerVisitor {
 	private int tx, ty;
 	
-	public PlayerTravelPathfind(int tx, int ty) {
-		this.tx = tx;
-		this.ty = ty;
-	}
-	
 	@Override
 	public void visit(Player player) {
-		Tile destTile = player.getLevel().getTile(tx, ty);
+		Tile destTile = player.getLevel().getTileStore().getTile(tx, ty);
 		
-		if (destTile == null || !player.getLevel().isTileDiscovered(tx, ty)) {
+		if (destTile == null || !player.getLevel().getVisibilityStore().isTileDiscovered(tx, ty)) {
 			player.getDungeon().You("can't travel there.");
 			return;
 		}
@@ -72,11 +70,12 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 				return;
 			}
 			
-			if (i.get() > 2 && player.getLevel().getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
+			if (i.get() > 2 && player.getLevel().getEntityStore()
+				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
 				stop.set(true);
 			}
 		});
 		
-		player.getDungeon().showPath(pathTaken);
+		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

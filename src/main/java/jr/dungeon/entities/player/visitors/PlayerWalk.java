@@ -8,17 +8,14 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class PlayerWalk implements PlayerVisitor {
 	private int dx, dy;
-	
-	public PlayerWalk(int dx, int dy) {
-		this.dx = dx;
-		this.dy = dy;
-	}
 	
 	@Override
 	public void visit(Player player) {
@@ -28,7 +25,7 @@ public class PlayerWalk implements PlayerVisitor {
 		int newX = player.getX() + dx;
 		int newY = player.getY() + dy;
 		
-		Tile tile = player.getLevel().getTile(newX, newY);
+		Tile tile = player.getLevel().getTileStore().getTile(newX, newY);
 		
 		if (tile == null) {
 			return;
@@ -39,7 +36,7 @@ public class PlayerWalk implements PlayerVisitor {
 			return;
 		}
 		
-		List<Entity> destEntities = player.getLevel().getEntitiesAt(newX, newY);
+		List<Entity> destEntities = player.getLevel().getEntityStore().getEntitiesAt(newX, newY);
 		
 		if (destEntities.size() > 0) {
 			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)

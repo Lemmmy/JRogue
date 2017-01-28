@@ -2,10 +2,10 @@ package jr.dungeon.entities;
 
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
-import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.items.valuables.ItemGold;
 import jr.dungeon.Level;
+import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.valuables.ItemGold;
 
 import java.lang.reflect.Constructor;
 
@@ -20,7 +20,7 @@ public class QuickSpawn {
 			x, y, new ItemStack(new ItemGold(), amount)
 		);
 		
-		level.addEntity(entity);
+		level.getEntityStore().addEntity(entity);
 	}
 	
 	public static void spawnClass(Class<? extends Entity> entityClass, Level level, int x, int y) {
@@ -35,7 +35,7 @@ public class QuickSpawn {
 				x, y
 			);
 			
-			level.addEntity(entity);
+			level.getEntityStore().addEntity(entity);
 		} catch (Exception e) {
 			ErrorHandler.error("Error spawning entity", e);
 		}

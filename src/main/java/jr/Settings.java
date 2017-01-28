@@ -1,8 +1,12 @@
 package jr;
 
+import lombok.Getter;
+import lombok.Setter;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
+@Getter
+@Setter
 @ConfigSerializable
 public class Settings {
 	@Setting(comment="The name of the player as it appears in the game.")
@@ -17,7 +21,7 @@ public class Settings {
 
 	@Setting(comment="The size of the log.")
 	private int logSize = 7;
-	@Setting(comment="The scale of the HUD.")
+	@Setting(comment="The scale of the HUDComponent.")
 	private float hudScale = 1.0f;
 
 	@Setting(comment="The width of each individual tile (square) on the minimap.")
@@ -47,69 +51,5 @@ public class Settings {
 		}
 		
 		this.playerName = playerName;
-	}
-
-	public int getScreenWidth() {
-		return screenWidth;
-	}
-
-	public void setScreenWidth(int screenWidth) {
-		this.screenWidth = screenWidth;
-	}
-
-	public int getScreenHeight() {
-		return screenHeight;
-	}
-
-	public void setScreenHeight(int screenHeight) {
-		this.screenHeight = screenHeight;
-	}
-
-	public int getLogSize() {
-		return logSize;
-	}
-
-	public void setLogSize(int logSize) {
-		this.logSize = logSize;
-	}
-
-	public float getHUDScale() {
-		return hudScale;
-	}
-
-	public void setHUDScale(float hudScale) {
-		this.hudScale = hudScale;
-	}
-
-	public boolean shouldAutosave() {
-		return autosave;
-	}
-
-	public void setAutosave(boolean autosave) {
-		this.autosave = autosave;
-	}
-
-	public int getMinimapTileWidth() {
-		return minimapTileWidth;
-	}
-
-	public void setMinimapTileWidth(int minimapTileWidth) {
-		this.minimapTileWidth = minimapTileWidth;
-	}
-
-	public int getMinimapTileHeight() {
-		return minimapTileHeight;
-	}
-
-	public void setMinimapTileHeight(int minimapTileHeight) {
-		this.minimapTileHeight = minimapTileHeight;
-	}
-	
-	public boolean shouldShowAIDebug() {
-		return showAIDebug;
-	}
-	
-	public void setShowAIDebug(boolean showAIDebug) {
-		this.showAIDebug = showAIDebug;
 	}
 }

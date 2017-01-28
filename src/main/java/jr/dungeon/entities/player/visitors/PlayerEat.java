@@ -1,14 +1,14 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.actions.ActionEat;
+import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.actions.ActionEat;
-import jr.dungeon.entities.actions.EntityAction;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PlayerEat extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().getEntitiesAt(player.getX(), player.getY());
+		List<Entity> floorEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY());
 		
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
@@ -67,7 +67,7 @@ public class PlayerEat extends PlayerItemVisitor {
 									  EntityItem entity,
 									  Player player) {
 		if (stack.getCount() == 1) {
-			entity.getLevel().removeEntity(entity);
+			entity.getLevel().getEntityStore().removeEntity(entity);
 		} else {
 			stack.subtractCount(1);
 		}
@@ -81,7 +81,7 @@ public class PlayerEat extends PlayerItemVisitor {
 				new ItemStack(itemCopy, 1)
 			);
 			
-			player.getLevel().addEntity(newStack);
+			player.getLevel().getEntityStore().addEntity(newStack);
 		}
 	}
 	
@@ -95,9 +95,7 @@ public class PlayerEat extends PlayerItemVisitor {
 			
 			player.setAction(new ActionEat(
 				itemCopy,
-				(EntityAction.CompleteCallback) entity -> {
-					eatFromInventoryCallback(ce, inv, stack, itemCopy);
-				}
+				(EntityAction.CompleteCallback) entity -> eatFromInventoryCallback(ce, inv, stack, itemCopy)
 			));
 			
 			player.getDungeon().turn();

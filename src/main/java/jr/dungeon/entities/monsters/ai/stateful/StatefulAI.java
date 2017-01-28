@@ -1,14 +1,19 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.dungeon.entities.EntityLiving;
-import jr.utils.MultiLineNoPrefixToStringStyle;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.tiles.TileType;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Utils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.json.JSONObject;
 
+@Getter
+@Setter
 public class StatefulAI extends AI {
 	private AIState defaultState;
 	private AIState currentState;
@@ -16,6 +21,8 @@ public class StatefulAI extends AI {
 	private EntityLiving currentTarget;
 	private int targetLastX, targetLastY;
 	
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private boolean shouldTargetPlayer = true;
 	private int visibilityRange = 15;
 	
@@ -50,46 +57,6 @@ public class StatefulAI extends AI {
 		}
 		
 		updateTargetVisibility();
-	}
-	
-	public AIState getDefaultState() {
-		return defaultState;
-	}
-	
-	public void setDefaultState(AIState defaultState) {
-		this.defaultState = defaultState;
-	}
-	
-	public AIState getCurrentState() {
-		return currentState;
-	}
-	
-	public void setCurrentState(AIState currentState) {
-		this.currentState = currentState;
-	}
-	
-	public EntityLiving getCurrentTarget() {
-		return currentTarget;
-	}
-	
-	public void setCurrentTarget(EntityLiving currentTarget) {
-		this.currentTarget = currentTarget;
-	}
-	
-	public int getTargetLastX() {
-		return targetLastX;
-	}
-	
-	public int getTargetLastY() {
-		return targetLastY;
-	}
-	
-	public int getVisibilityRange() {
-		return visibilityRange;
-	}
-	
-	public void setVisibilityRange(int visibilityRange) {
-		this.visibilityRange = visibilityRange;
 	}
 	
 	public boolean shouldTargetPlayer() {
@@ -128,7 +95,7 @@ public class StatefulAI extends AI {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (getMonster().getLevel().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
+			if (getMonster().getLevel().getTileStore().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				return false;
 			}
 		}
@@ -189,7 +156,7 @@ public class StatefulAI extends AI {
 		currentState = AIState.createFromJSON(obj.getJSONObject("currentState"), this);
 		
 		if (obj.has("currentTarget")) {
-			currentTarget = (EntityLiving) getMonster().getLevel().getEntityByUUID(obj.optString("currentTarget"));
+			currentTarget = (EntityLiving) getMonster().getLevel().getEntityStore().getEntityByUUID(obj.optString("currentTarget"));
 			targetLastX = obj.optInt("targetLastX");
 			targetLastY = obj.optInt("targetLastY");
 		}

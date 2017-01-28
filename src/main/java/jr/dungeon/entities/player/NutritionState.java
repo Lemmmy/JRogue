@@ -1,5 +1,8 @@
 package jr.dungeon.entities.player;
 
+import lombok.Getter;
+
+@Getter
 public enum NutritionState {
 	CHOKING("Choking", 2),
 	STUFFED("Stuffed", 1),
@@ -23,9 +26,5 @@ public enum NutritionState {
 	@Override
 	public String toString() {
 		return string;
-	}
-	
-	public int getImportance() {
-		return importance;
 	}
 }

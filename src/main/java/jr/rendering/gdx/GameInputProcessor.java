@@ -3,15 +3,12 @@ package jr.rendering.gdx;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.math.Vector3;
+import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.visitors.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.utils.Point;
-import jr.dungeon.Dungeon;
 import jr.utils.Utils;
-
-import java.nio.file.Paths;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
@@ -30,7 +27,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
 			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
-			dungeon.getPlayer().walk(d[0], d[1]);
+			dungeon.getPlayer().defaultVisitors.walk(d[0], d[1]);
 			return true;
 		}
 		
@@ -40,7 +37,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
-				dungeon.getPlayer().kick();
+				dungeon.getPlayer().defaultVisitors.kick();
 				return false; // this shouldn't be false but it should be because id ont fucking know
 			}
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
@@ -55,58 +52,58 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handlePlayerCommandsCharacters(char key) {
 		if (key == '5' || key == 'g') {
-			dungeon.getPlayer().travelDirectional();
+			dungeon.getPlayer().defaultVisitors.travelDirectional();
 			return true;
 		} else if (key == 'd') {
-			dungeon.getPlayer().drop();
+			dungeon.getPlayer().defaultVisitors.drop();
 			return true;
 		} else if (key == 'e') {
-			dungeon.getPlayer().eat();
+			dungeon.getPlayer().defaultVisitors.eat();
 			return true;
 		} else if (key == 'f') {
-			dungeon.getPlayer().fire();
+			dungeon.getPlayer().defaultVisitors.fire();
 			return true;
 		} else if (key == 'i') {
-			renderer.showInventoryWindow();
+			renderer.getHudComponent().showInventoryWindow();
 			return true;
 		} else if (key == 'l') {
-			dungeon.getPlayer().loot();
+			dungeon.getPlayer().defaultVisitors.loot();
 			return true;
 		} else if (key == 'q') {
-			dungeon.getPlayer().quaff();
+			dungeon.getPlayer().defaultVisitors.quaff();
 			return true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'Q') {
 			dungeon.quit();
 			return true;
 		} else if (key == 'r') {
-			dungeon.getPlayer().read();
+			dungeon.getPlayer().defaultVisitors.read();
 			return true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'S') {
 			dungeon.saveAndQuit();
 			return true;
 		} else if (key == 't') {
-			dungeon.getPlayer().throwItem();
+			dungeon.getPlayer().defaultVisitors.throwItem();
 			return true;
 		} else if (key == 'w') {
-			dungeon.getPlayer().wield();
+			dungeon.getPlayer().defaultVisitors.wield();
 			return true;
 		} else if (key == 'x') {
 			dungeon.getPlayer().swapHands();
 			return true;
 		} else if (key == 'Z') {
-			renderer.showSpellWindow();
+			renderer.getHudComponent().showSpellWindow();
 			return true;
 		} else if (key == ',') {
-			dungeon.getPlayer().pickup();
+			dungeon.getPlayer().defaultVisitors.pickup();
 			return true;
 		} else if (key == '.') {
-			dungeon.getPlayer().climbAny();
+			dungeon.getPlayer().defaultVisitors.climbAny();
 			return true;
 		} else if (key == '<') {
-			dungeon.getPlayer().climbUp();
+			dungeon.getPlayer().defaultVisitors.climbUp();
 			return true;
 		} else if (key == '>') {
-			dungeon.getPlayer().climbDown();
+			dungeon.getPlayer().defaultVisitors.climbDown();
 			return true;
 		}
 		
@@ -116,31 +113,10 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.D) {
-				renderer.showDebugWindow();
+				renderer.getHudComponent().showDebugWindow();
 				return true;
 			} else if (keycode == Input.Keys.W) {
-				renderer.showWishWindow();
-				return true;
-			} else if (keycode == Input.Keys.S) {
-				Pixmap snapshot = renderer.takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("java.io.tmpdir"))
-					.resolve("jrogue_level_snap.png")
-					.toString();
-				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
-				snapshot.dispose();
-				
-				return true;
-			} else if (keycode == Input.Keys.R) {
-				dungeon.wish("downstairs");
-				dungeon.getPlayer().climbAny();
-				
-				Pixmap snapshot = renderer.takeLevelSnapshot();
-				String path = Paths.get(System.getProperty("java.io.tmpdir"))
-					.resolve("jrogue_level_snap.png")
-					.toString();
-				PixmapIO.writePNG(Gdx.files.absolute(path), snapshot);
-				snapshot.dispose();
-				
+				renderer.getHudComponent().showWishWindow();
 				return true;
 			}
 		}
@@ -149,7 +125,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
-		if (renderer.getWindows().size() > 0) {
+		if (renderer.getHudComponent().getWindows().size() > 0) {
 			return false;
 		}
 		
@@ -164,11 +140,11 @@ public class GameInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().teleport(pos.getX(), pos.getY());
+				dungeon.getPlayer().defaultVisitors.teleport(pos.getX(), pos.getY());
 				teleporting = false;
 				return true;
 			} else {
-				dungeon.getPlayer().travelPathfind(pos.getX(), pos.getY());
+				dungeon.getPlayer().defaultVisitors.travelPathfind(pos.getX(), pos.getY());
 				return true;
 			}
 		}
@@ -187,7 +163,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if (renderer.getWindows().size() > 0) { return false; }
+		if (renderer.getHudComponent().getWindows().size() > 0) { return false; }
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -212,8 +188,8 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) {
-		if (renderer.getWindows().size() > 0) { return false; }
-		if (character == 0) { return false; }
+		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (character == 0) return false;
 		
 		if (dontHandleNext) {
 			dontHandleNext = false;

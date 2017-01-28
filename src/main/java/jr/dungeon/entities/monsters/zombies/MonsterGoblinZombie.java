@@ -7,8 +7,10 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.events.DungeonEventHandler;
 import jr.utils.RandomUtils;
 
 public class MonsterGoblinZombie extends MonsterZombie {
@@ -63,15 +65,15 @@ public class MonsterGoblinZombie extends MonsterZombie {
 		return false;
 	}
 	
-	@Override
-	protected void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy) {
-		if (isPlayer) {
-			getDungeon().You("kick the %s!", getName(kicker, false));
+	@DungeonEventHandler(selfOnly = true)
+	public void onKick(EntityKickedEvent e) {
+		if (e.isKickerPlayer()) {
+			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
 		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
-			damage(DamageSource.PLAYER_KICK, 1, kicker, isPlayer);
+			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
 		}
 	}
 	

@@ -2,28 +2,30 @@ package jr.dungeon.entities.projectiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.tiles.Tile;
-import org.json.JSONObject;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.items.Shatterable;
 import jr.dungeon.tiles.TileType;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
 
 import java.util.Optional;
 
 public abstract class EntityProjectile extends EntityTurnBased {
 	private int dx = 0, dy = 0;
-	private int range = Integer.MAX_VALUE;
-	private int distanceTravelled = 0;
+	@Getter private int range = Integer.MAX_VALUE;
+	@Getter private int distanceTravelled = 0;
 	
-	private Entity source = null;
+	@Getter @Setter private Entity source = null;
 	
-	private ItemProjectile originalItem;
+	@Getter @Setter private ItemProjectile originalItem;
 	
 	public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
@@ -51,22 +53,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		this.range = range;
 	}
 	
-	public void setSource(Entity source) {
-		this.source = source;
-	}
-	
-	public void setOriginalItem(ItemProjectile originalItem) {
-		this.originalItem = originalItem;
-	}
-	
-	public Entity getSource() {
-		return source;
-	}
-	
-	public int getDistanceTravelled() {
-		return distanceTravelled;
-	}
-	
 	@Override
 	public int getMovementSpeed() {
 		return Dungeon.NORMAL_SPEED;
@@ -77,11 +63,11 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		int x = getX() + dx;
 		int y = getY() + dy;
 		
-		if (getLevel().getTile(x, y).getType().getSolidity() != TileType.Solidity.SOLID) {
+		if (getLevel().getTileStore().getTile(x, y).getType().getSolidity() != TileType.Solidity.SOLID) {
 			setPosition(x, y);
 			distanceTravelled++;
 			
-			getLevel().getEntitiesAt(x, y).stream()
+			getLevel().getEntityStore().getEntitiesAt(x, y).stream()
 				.filter(e -> !(e == this))
 				.forEach(this::onHitEntity);
 			
@@ -89,7 +75,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				killProjectile();
 			}
 		} else {
-			onHitTile(getLevel().getTile(x, y));
+			onHitTile(getLevel().getTileStore().getTile(x, y));
 			killProjectile();
 		}
 	}
@@ -109,7 +95,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				"%s shatters into a thousand pieces!",
 				((EntityItem) victim).getItem().getName(getDungeon().getPlayer(), false, false)
 			);
-			getLevel().removeEntity(victim);
+			getLevel().getEntityStore().removeEntity(victim);
 		}
 	}
 	
@@ -118,7 +104,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			return;
 		}
 		
-		Optional<EntityItem> existingItem = getLevel().getEntitiesAt(getX(), getY()).stream()
+		Optional<EntityItem> existingItem = getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 			.filter(EntityItem.class::isInstance)
 			.map(e -> (EntityItem) e)
 			.filter(e -> e.getItem().equals(originalItem))
@@ -135,7 +121,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				new ItemStack(originalItem, 1)
 			);
 			
-			getLevel().addEntity(droppedItem);
+			getLevel().getEntityStore().addEntity(droppedItem);
 		}
 	}
 	
@@ -144,7 +130,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			return;
 		}
 		
-		getLevel().removeEntity(this);
+		getLevel().getEntityStore().removeEntity(this);
 	}
 	
 	@Override
@@ -177,12 +163,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	@Override
 	public abstract EntityAppearance getAppearance();
-	
-	@Override
-	protected abstract void onKick(EntityLiving kicker, boolean isPlayer, int dx, int dy);
-	
-	@Override
-	protected abstract void onWalk(EntityLiving walker, boolean isPlayer);
 	
 	@Override
 	public boolean canBeWalkedOn() {

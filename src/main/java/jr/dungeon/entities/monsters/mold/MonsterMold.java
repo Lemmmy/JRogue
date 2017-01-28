@@ -1,12 +1,14 @@
 package jr.dungeon.entities.monsters.mold;
 
-import jr.dungeon.entities.DamageSource;
-import jr.dungeon.entities.EntityLiving;
-import jr.utils.RandomUtils;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.utils.RandomUtils;
 
 import java.util.List;
 
@@ -84,12 +86,12 @@ public abstract class MonsterMold extends Monster {
 		return Size.SMALL;
 	}
 	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {
-		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE) {
+	@DungeonEventHandler(selfOnly = true)
+	protected void onDamage(EntityDamagedEvent e) {
+		if (e.getDamageSource().getDamageType() == DamageSource.DamageType.MELEE) {
 			int damageToDeal = RandomUtils.jroll(getExperienceLevel() + 1, 6);
 			
-			attacker.damage(DamageSource.MOLD_RETALIATION, damageToDeal, this, false);
+			e.getAttacker().damage(DamageSource.MOLD_RETALIATION, damageToDeal, this);
 		}
 	}
 }

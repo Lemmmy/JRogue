@@ -3,14 +3,11 @@ package jr.dungeon.entities.player.visitors;
 import jr.dungeon.entities.actions.ActionTeleport;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class PlayerTeleport implements PlayerVisitor {
 	private int x, y;
-	
-	public PlayerTeleport(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
 	
 	@Override
 	public void visit(Player player) {

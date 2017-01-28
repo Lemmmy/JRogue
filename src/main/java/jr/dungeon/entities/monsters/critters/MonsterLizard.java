@@ -1,15 +1,16 @@
 package jr.dungeon.entities.monsters.critters;
 
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
+import jr.dungeon.events.DungeonEventHandler;
 
 import java.util.List;
 
@@ -75,9 +76,6 @@ public class MonsterLizard extends Monster {
 	public int getBaseArmourClass() {
 		return 5;
 	}
-	
-	@Override
-	protected void onDamage(DamageSource damageSource, int damage, EntityLiving attacker, boolean isPlayer) {}
 	
 	@Override
 	public int getVisibilityRange() {

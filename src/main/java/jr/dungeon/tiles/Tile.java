@@ -3,25 +3,28 @@ package jr.dungeon.tiles;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
-import jr.utils.Gradient;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+@Getter
+@Setter
 public class Tile {
-	public int x;
-	public int y;
+	private int x;
+	private int y;
 	
 	private TileType type;
 	private TileState state;
 	
-	private Color light;
+	private Color lightColour;
 	private int lightIntensity;
 	private int absorb;
 	
 	private Level level;
-	
+
 	public Tile(Level level, TileType type, int x, int y) {
 		this.level = level;
 		this.type = type;
@@ -29,22 +32,20 @@ public class Tile {
 		this.x = x;
 		this.y = y;
 		
-		resetLight();
-		
 		initialiseState();
 	}
 	
 	public void resetLight() {
-		light = type.getLight();
+		lightColour = type.getLightColour();
 		lightIntensity = type.getLightIntensity();
 		absorb = type.getAbsorb();
 		
-		if (light == null) {
-			light = level.getAmbientLight();
-			lightIntensity = level.getAmbientLightIntensity();
+		if (lightColour == null) {
+			lightColour = level.getLightStore().getAmbientLight();
+			lightIntensity = level.getLightStore().getAmbientLightIntensity();
 		}
 		
-		light = level.applyIntensity(light, lightIntensity);
+		lightColour = level.getLightStore().applyIntensity(lightColour, lightIntensity);
 	}
 	
 	private void initialiseState() {
@@ -60,8 +61,8 @@ public class Tile {
 		}
 	}
 	
-	public TileType getType() {
-		return type;
+	public boolean hasState() {
+		return state != null;
 	}
 	
 	public void setType(TileType type) {
@@ -74,56 +75,8 @@ public class Tile {
 		}
 	}
 	
-	public Level getLevel() {
-		return level;
-	}
-	
-	public TileState getState() {
-		return state;
-	}
-	
-	public boolean hasState() {
-		return state != null;
-	}
-	
-	public void setState(TileState state) {
-		this.state = state;
-	}
-	
-	public Color getLightColour() {
-		return light;
-	}
-	
-	public void setLightColour(Color light) {
-		this.light = light;
-	}
-	
-	public int getLightIntensity() {
-		return lightIntensity;
-	}
-	
-	public void setLightIntensity(int lightIntensity) {
-		this.lightIntensity = lightIntensity;
-	}
-	
-	public int getAbsorb() {
-		return absorb;
-	}
-	
-	public void setAbsorb(int absorb) {
-		this.absorb = absorb;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Tile && ((Tile) o).getX() == x && ((Tile) o).getY() == y;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
 	}
 }

@@ -1,6 +1,7 @@
 package jr.rendering.gdx.items;
 
 import jr.dungeon.items.ItemAppearance;
+import lombok.Getter;
 
 public enum ItemMap {
 	APPEARANCE_CORPSE(0, 0),
@@ -61,7 +62,7 @@ public enum ItemMap {
 	public static final int ITEM_WIDTH = 16;
 	public static final int ITEM_HEIGHT = 16;
 	
-	private ItemRenderer renderer;
+	@Getter private ItemRenderer renderer;
 	
 	ItemMap(ItemRenderer renderer) {
 		this.renderer = renderer;
@@ -77,9 +78,5 @@ public enum ItemMap {
 	
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.valueOf(name());
-	}
-	
-	public ItemRenderer getRenderer() {
-		return renderer;
 	}
 }

@@ -2,6 +2,12 @@ package jr.dungeon.generators.rooms.features;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.JRogue;
+import jr.dungeon.Level;
+import jr.dungeon.entities.containers.Container;
+import jr.dungeon.entities.containers.EntityChest;
+import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.SpecialChestSpawn;
 import jr.dungeon.items.comestibles.*;
 import jr.dungeon.items.magical.ItemSpellbook;
@@ -9,16 +15,10 @@ import jr.dungeon.items.valuables.ItemGem;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemLongsword;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-import jr.dungeon.Level;
-import jr.dungeon.entities.containers.Container;
-import jr.dungeon.entities.containers.EntityChest;
-import jr.dungeon.generators.rooms.Room;
-import jr.dungeon.items.Item;
-import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.weapons.ItemShortsword;
 import jr.utils.RandomUtils;
 import jr.utils.WeightedCollection;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -70,7 +70,7 @@ public class FeatureChest extends SpecialRoomFeature {
 		
 		EntityChest chest = new EntityChest(room.getLevel().getDungeon(), room.getLevel(), chestX, chestY);
 		populateChest(room, chest);
-		room.getLevel().addEntity(chest);
+		room.getLevel().getEntityStore().addEntity(chest);
 	}
 	
 	private void populateChest(Room room, EntityChest chest) {

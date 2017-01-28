@@ -1,8 +1,8 @@
 package jr.dungeon.entities.actions;
 
+import jr.dungeon.Messenger;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.Messenger;
 
 public class ActionMelee extends EntityAction {
 	private final EntityLiving victim;
@@ -51,7 +51,7 @@ public class ActionMelee extends EntityAction {
 				break;
 			case SUCCESS:
 				runBeforeRunCallback(entity);
-				victim.damage(damageSource, damage, attacker, isAttackerPlayer);
+				victim.damage(damageSource, damage, attacker);
 				runOnCompleteCallback(entity);
 				break;
 			default:

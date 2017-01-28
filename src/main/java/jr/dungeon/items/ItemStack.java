@@ -1,13 +1,16 @@
 package jr.dungeon.items;
 
 import jr.dungeon.entities.EntityLiving;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Getter
 public class ItemStack {
 	private Item item;
-	private int count;
+	@Setter private int count;
 	
 	public ItemStack(Item item) {
 		this(item, 1);
@@ -16,10 +19,6 @@ public class ItemStack {
 	public ItemStack(Item item, int count) {
 		this.item = item;
 		this.count = count;
-	}
-	
-	public Item getItem() {
-		return item;
 	}
 	
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
@@ -36,14 +35,6 @@ public class ItemStack {
 	
 	public ItemCategory getCategory() {
 		return item.getCategory();
-	}
-	
-	public int getCount() {
-		return count;
-	}
-	
-	public void setCount(int count) {
-		this.count = count;
 	}
 	
 	public void addCount(int count) {
