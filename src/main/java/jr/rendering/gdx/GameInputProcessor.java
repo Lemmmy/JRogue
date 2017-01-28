@@ -27,7 +27,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
 			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
-			dungeon.getPlayer().acceptVisitor(new PlayerWalk(d[0], d[1]));
+			dungeon.getPlayer().defaultVisitors.walk(d[0], d[1]);
 			return true;
 		}
 		
@@ -37,7 +37,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
-				dungeon.getPlayer().acceptVisitor(new PlayerKick());
+				dungeon.getPlayer().defaultVisitors.kick();
 				return false; // this shouldn't be false but it should be because id ont fucking know
 			}
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
@@ -52,40 +52,40 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handlePlayerCommandsCharacters(char key) {
 		if (key == '5' || key == 'g') {
-			dungeon.getPlayer().acceptVisitor(new PlayerTravelDirectional());
+			dungeon.getPlayer().defaultVisitors.travelDirectional();
 			return true;
 		} else if (key == 'd') {
-			dungeon.getPlayer().acceptVisitor(new PlayerDrop());
+			dungeon.getPlayer().defaultVisitors.drop();
 			return true;
 		} else if (key == 'e') {
-			dungeon.getPlayer().acceptVisitor(new PlayerEat());
+			dungeon.getPlayer().defaultVisitors.eat();
 			return true;
 		} else if (key == 'f') {
-			// dungeon.getPlayer().acceptVisitor(new PlayerFire());
+			dungeon.getPlayer().defaultVisitors.fire();
 			return true;
 		} else if (key == 'i') {
 			renderer.getHudComponent().showInventoryWindow();
 			return true;
 		} else if (key == 'l') {
-			dungeon.getPlayer().acceptVisitor(new PlayerLoot());
+			dungeon.getPlayer().defaultVisitors.loot();
 			return true;
 		} else if (key == 'q') {
-			dungeon.getPlayer().acceptVisitor(new PlayerQuaff());
+			dungeon.getPlayer().defaultVisitors.quaff();
 			return true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'Q') {
 			dungeon.quit();
 			return true;
 		} else if (key == 'r') {
-			dungeon.getPlayer().acceptVisitor(new PlayerRead());
+			dungeon.getPlayer().defaultVisitors.read();
 			return true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'S') {
 			dungeon.saveAndQuit();
 			return true;
 		} else if (key == 't') {
-			dungeon.getPlayer().acceptVisitor(new PlayerThrowItem());
+			dungeon.getPlayer().defaultVisitors.throwItem();
 			return true;
 		} else if (key == 'w') {
-			dungeon.getPlayer().acceptVisitor(new PlayerWield());
+			dungeon.getPlayer().defaultVisitors.wield();
 			return true;
 		} else if (key == 'x') {
 			dungeon.getPlayer().swapHands();
@@ -94,16 +94,16 @@ public class GameInputProcessor implements InputProcessor {
 			renderer.getHudComponent().showSpellWindow();
 			return true;
 		} else if (key == ',') {
-			dungeon.getPlayer().acceptVisitor(new PlayerPickup());
+			dungeon.getPlayer().defaultVisitors.pickup();
 			return true;
 		} else if (key == '.') {
-			dungeon.getPlayer().acceptVisitor(new PlayerClimbAny());
+			dungeon.getPlayer().defaultVisitors.climbAny();
 			return true;
 		} else if (key == '<') {
-			dungeon.getPlayer().acceptVisitor(new PlayerClimbUp());
+			dungeon.getPlayer().defaultVisitors.climbUp();
 			return true;
 		} else if (key == '>') {
-			dungeon.getPlayer().acceptVisitor(new PlayerClimbDown());
+			dungeon.getPlayer().defaultVisitors.climbDown();
 			return true;
 		}
 		
@@ -140,11 +140,11 @@ public class GameInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().acceptVisitor(new PlayerTeleport(pos.getX(), pos.getY()));
+				dungeon.getPlayer().defaultVisitors.teleport(pos.getX(), pos.getY());
 				teleporting = false;
 				return true;
 			} else {
-				dungeon.getPlayer().acceptVisitor(new PlayerTravelPathfind(pos.getX(), pos.getY()));
+				dungeon.getPlayer().defaultVisitors.travelPathfind(pos.getX(), pos.getY());
 				return true;
 			}
 		}

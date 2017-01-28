@@ -67,7 +67,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
-				.ifPresent(t -> p.acceptVisitor(new PlayerTeleport(t.getX(), t.getY()))));
+				.ifPresent(t -> p.defaultVisitors.teleport(t.getX(), t.getY())));
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));

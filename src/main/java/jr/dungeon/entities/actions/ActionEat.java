@@ -20,7 +20,7 @@ public class ActionEat extends EntityAction {
 		
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
-			player.acceptVisitor(new PlayerConsume(item));
+			player.defaultVisitors.consume(item);
 			
 			runOnCompleteCallback(entity);
 		}

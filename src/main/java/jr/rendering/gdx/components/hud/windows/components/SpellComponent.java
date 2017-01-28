@@ -78,7 +78,7 @@ public class SpellComponent extends Table {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					if (event.getButton() == Input.Buttons.LEFT) {
-						player.acceptVisitor(new PlayerCastSpell(spell));
+						player.defaultVisitors.castSpell(spell);
 						parentWindow.hide();
 					}
 				}
@@ -95,7 +95,7 @@ public class SpellComponent extends Table {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
 				if (player.getKnownSpells().containsKey(character)) {
-					player.acceptVisitor(new PlayerCastSpell(player.getKnownSpells().get(character)));
+					player.defaultVisitors.castSpell(player.getKnownSpells().get(character));
 					parentWindow.hide();
 					return true;
 				}
