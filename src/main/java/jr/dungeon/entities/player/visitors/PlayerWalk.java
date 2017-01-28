@@ -31,11 +31,6 @@ public class PlayerWalk implements PlayerVisitor {
 			return;
 		}
 		
-		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
-			// prevent diagonal movement to a door - the player cannot reach the handle
-			return;
-		}
-		
 		List<Entity> destEntities = player.getLevel().getEntityStore().getEntitiesAt(newX, newY);
 		
 		if (destEntities.size() > 0) {
@@ -64,6 +59,11 @@ public class PlayerWalk implements PlayerVisitor {
 	}
 	
 	private void walkAction(Player player, Tile tile, int x, int y) {
+		if (dx != 0 && dy != 0 && tile.getType().isDoor()) {
+			// prevent diagonal movement to a door - the player cannot reach the handle
+			return;
+		}
+		
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			player.setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
