@@ -5,6 +5,10 @@ buildscript {
 		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 		jcenter()
 	}
+
+	dependencies {
+		classpath "net.sf.proguard:proguard-gradle:5.3.2"
+	}
 }
 
 apply plugin: "java"
@@ -12,7 +16,7 @@ apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "application"
 
-archivesBaseName = "JRogue"
+def jarName = "JRogue"
 mainClassName = "jr.JRogue"
 version = "alpha-0.3"
 
@@ -63,16 +67,37 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:1.16.12"
 }
 
-task fatJar(type: Jar) {
-	baseName = "JRogue"
-
-	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-	}
+task subJar(type: Jar) {
+	baseName = jarName + "-deobf"
 
 	manifest {
 		attributes "Main-Class": mainClassName
 	}
 
 	with jar
+}
+
+task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
+	configuration "proguard.conf"
+
+	injars "$buildDir/libs/${jarName}-deobf-${version}.jar"
+	outjars "$buildDir/libs/${jarName}-obf-${version}.jar"
+
+	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+	libraryjars files(configurations.compile.collect())
+
+	printmapping "proguard.map"
+}
+
+task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
+	baseName = jarName + "-full"
+
+	from zipTree("$buildDir/libs/${jarName}-obf-${version}.jar")
+	files(configurations.compile.collect()).each { f ->
+		from zipTree(f)
+	}
+
+	manifest {
+		attributes "Main-Class": mainClassName
+	}
 }
