@@ -16,6 +16,6 @@ public class PlayerClimbAny implements PlayerVisitor {
 		}
 		
 		boolean up = tile.getType() == TileType.TILE_ROOM_STAIRS_UP || tile.getType() == TileType.TILE_ROOM_LADDER_UP;
-		player.climb(tile, up);
+		player.acceptVisitor(new PlayerClimb(tile, up));
 	}
 }

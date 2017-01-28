@@ -146,7 +146,7 @@ public class HUDComponent extends RendererComponent {
 	@Override
 	public void initialise() {
 		ScreenViewport stageViewport = new ScreenViewport();
-		stageViewport.setUnitsPerPixel(1f / settings.getHUDScale());
+		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
 		stage = new Stage(stageViewport);
 		skin = new HUDSkin();
 		
@@ -223,7 +223,7 @@ public class HUDComponent extends RendererComponent {
 		updateBrightness(player);
 		updateStatusEffects(player);
 		
-		if (settings.shouldShowAIDebug()) {
+		if (settings.isShowAIDebug()) {
 			showEntityAIStates();
 		}
 		

@@ -95,9 +95,7 @@ public class PlayerEat extends PlayerItemVisitor {
 			
 			player.setAction(new ActionEat(
 				itemCopy,
-				(EntityAction.CompleteCallback) entity -> {
-					eatFromInventoryCallback(ce, inv, stack, itemCopy);
-				}
+				(EntityAction.CompleteCallback) entity -> eatFromInventoryCallback(ce, inv, stack, itemCopy)
 			));
 			
 			player.getDungeon().turn();

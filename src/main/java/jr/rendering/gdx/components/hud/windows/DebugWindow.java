@@ -40,30 +40,6 @@ public class DebugWindow extends PopupWindow {
 		);
 		getWindow().getContentTable().row();
 		
-		getWindow().getContentTable().add(new Label("Turn: ", getSkin(), "windowStyle"));
-		
-		final TextField turnField = new TextField("", getSkin());
-		getWindow().getContentTable().add(turnField).left().width(100f);
-		
-		Button turnSetButton = new TextButton("Set", getSkin());
-		turnSetButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				try {
-					long turn = Long.parseLong(turnField.getText());
-					
-					getDungeon().setTurn(turn);
-					getDungeon().turn();
-					
-					getWindow().hide();
-				} catch (NumberFormatException e) {
-					new MessageWindow(getRenderer(), getStage(), getSkin(), "Error", "Invalid turn number.").show();
-				}
-			}
-		});
-		getWindow().getContentTable().add(turnSetButton).width(50f);
-		getWindow().getContentTable().row();
-		
 		Button seeAllButton = new TextButton("See all", getSkin());
 		seeAllButton.addListener(new ChangeListener() {
 			@Override

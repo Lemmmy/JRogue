@@ -193,7 +193,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	public void dispose() {
 		super.dispose();
 		
-		if (settings.shouldAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
+		if (settings.isAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
 			dungeon.save();
 		}
 		

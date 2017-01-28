@@ -4,13 +4,11 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.NutritionState;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class PlayerConsume implements PlayerVisitor {
 	private ItemComestible item;
-	
-	public PlayerConsume(ItemComestible item) {
-		this.item = item;
-	}
 	
 	@Override
 	public void visit(Player player) {

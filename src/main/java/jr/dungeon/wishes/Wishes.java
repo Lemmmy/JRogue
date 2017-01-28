@@ -14,6 +14,7 @@ import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.player.visitors.PlayerTeleport;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
@@ -66,7 +67,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
-				.ifPresent(t -> p.teleport(t.getX(), t.getY())));
+				.ifPresent(t -> p.acceptVisitor(new PlayerTeleport(t.getX(), t.getY()))));
 		registerWish("godmode", (d, p, a) -> p.godmode());
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));

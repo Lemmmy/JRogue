@@ -7,18 +7,15 @@ import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
+import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@AllArgsConstructor
 public class PlayerTravelPathfind implements PlayerVisitor {
 	private int tx, ty;
-	
-	public PlayerTravelPathfind(int tx, int ty) {
-		this.tx = tx;
-		this.ty = ty;
-	}
 	
 	@Override
 	public void visit(Player player) {

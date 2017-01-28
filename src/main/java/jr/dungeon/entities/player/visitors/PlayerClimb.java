@@ -4,15 +4,12 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateClimbable;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class PlayerClimb implements PlayerVisitor {
 	private Tile tile;
 	private boolean up;
-	
-	public PlayerClimb(Tile tile, boolean up) {
-		this.tile = tile;
-		this.up = up;
-	}
 	
 	@Override
 	public void visit(Player player) {

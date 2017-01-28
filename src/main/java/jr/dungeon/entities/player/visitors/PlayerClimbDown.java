@@ -14,6 +14,6 @@ public class PlayerClimbDown implements PlayerVisitor {
 			return;
 		}
 		
-		player.climb(tile, false);
+		player.acceptVisitor(new PlayerClimb(tile, false));
 	}
 }

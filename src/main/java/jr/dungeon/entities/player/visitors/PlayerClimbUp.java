@@ -14,6 +14,6 @@ public class PlayerClimbUp implements PlayerVisitor {
 			return;
 		}
 		
-		player.climb(tile, true);
+		player.acceptVisitor(new PlayerClimb(tile, true));
 	}
 }

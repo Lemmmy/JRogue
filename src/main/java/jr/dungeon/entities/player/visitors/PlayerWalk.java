@@ -8,17 +8,14 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class PlayerWalk implements PlayerVisitor {
 	private int dx, dy;
-	
-	public PlayerWalk(int dx, int dy) {
-		this.dx = dx;
-		this.dy = dy;
-	}
 	
 	@Override
 	public void visit(Player player) {

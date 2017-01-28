@@ -3,6 +3,7 @@ package jr.dungeon.entities.actions;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.player.visitors.PlayerConsume;
 import jr.dungeon.items.comestibles.ItemComestible;
 
 public class ActionEat extends EntityAction {
@@ -19,7 +20,7 @@ public class ActionEat extends EntityAction {
 		
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
-			player.consume(item);
+			player.acceptVisitor(new PlayerConsume(item));
 			
 			runOnCompleteCallback(entity);
 		}

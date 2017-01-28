@@ -77,7 +77,7 @@ public class SpellComponent extends Table {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					if (event.getButton() == Input.Buttons.LEFT) {
-						player.castSpell(spell);
+						player.acceptVisitor(new PlayerCastSpell(spell));
 						parentWindow.hide();
 					}
 				}
