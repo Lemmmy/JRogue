@@ -134,7 +134,9 @@ public enum MonsterSpawningStrategy {
 			Range.between(0, 4),
 			MonsterGoblin.class
 		)
-	);
+	),
+
+	NONE();
 	
 	private List<MonsterSpawn> spawns;
 	

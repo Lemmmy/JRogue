@@ -4,7 +4,6 @@ import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.dungeon.tiles.states.TileStateDoor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -50,7 +49,9 @@ public enum TileType {
 	TILE_SEWER_DRAIN_EMPTY(29, TileFlag.WALL, Solidity.SOLID),
 	TILE_SEWER_DRAIN(30, TileFlag.WALL, Solidity.SOLID),
 	
-	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON);
+	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON),
+
+	TILE_L_NOISE(32, TileFlag.BUILDABLE, Solidity.WALK_ON);
 	
 	private short id;
 	private int flags;

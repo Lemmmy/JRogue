@@ -1,6 +1,7 @@
 package jr.rendering.gdx.tiles;
 
 import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx.utils.ImageLoader;
 import lombok.Getter;
 
 public enum TileMap {
@@ -40,8 +41,10 @@ public enum TileMap {
 	TILE_SEWER_DRAIN_EMPTY(14, 1),
 	TILE_SEWER_DRAIN(new TileRendererSewerDrain()),
 	
-	TILE_CORRIDOR(new TileRendererCorridor());
-	
+	TILE_CORRIDOR(new TileRendererCorridor()),
+
+	TILE_L_NOISE(new TileRendererGlobalRepeat(ImageLoader.getImage("textures/noise_bg.png"), 0.1f, 0.1f));
+
 	public static final int TILE_WIDTH = 16;
 	public static final int TILE_HEIGHT = 16;
 	
