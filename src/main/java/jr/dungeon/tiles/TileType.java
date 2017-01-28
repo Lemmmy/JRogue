@@ -3,10 +3,13 @@ package jr.dungeon.tiles;
 import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.dungeon.tiles.states.TileStateDoor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 import java.util.Arrays;
 
+@Getter
 public enum TileType {
 	TILE_DUMMY(0, Solidity.WALK_ON),
 	
@@ -55,7 +58,7 @@ public enum TileType {
 	private Solidity solidity;
 	private Class<? extends TileState> stateClass;
 	
-	private Color light;
+	private Color lightColour;
 	private int lightIntensity = 0;
 	private int absorb;
 	
@@ -75,15 +78,15 @@ public enum TileType {
 		this(id, flags, solidity, stateClass, null, 0, 0);
 	}
 	
-	TileType(int id, int flags, Solidity solidity, Color light, int lightIntensity, int absorb) {
-		this(id, flags, solidity, null, light, lightIntensity, absorb);
+	TileType(int id, int flags, Solidity solidity, Color lightColour, int lightIntensity, int absorb) {
+		this(id, flags, solidity, null, lightColour, lightIntensity, absorb);
 	}
 	
 	TileType(int id,
 			 int flags,
 			 Solidity solidity,
 			 Class<? extends TileState> stateClass,
-			 Color light,
+			 Color lightColour,
 			 int lightIntensity,
 			 int absorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
@@ -92,46 +95,18 @@ public enum TileType {
 		this.solidity = solidity;
 		this.stateClass = stateClass;
 		
-		this.light = light;
+		this.lightColour = lightColour;
 		this.lightIntensity = lightIntensity;
 		this.absorb = absorb;
 		
-		if (light == null) {
+		if (lightColour == null) {
 			if (solidity == Solidity.SOLID) {
-				this.light = Color.DARK_GRAY;
+				this.lightColour = Color.DARK_GRAY;
 				this.absorb = 40;
 			} else {
 				this.absorb = 10;
 			}
 		}
-	}
-	
-	public short getID() {
-		return id;
-	}
-	
-	public int getFlags() {
-		return flags;
-	}
-	
-	public Solidity getSolidity() {
-		return solidity;
-	}
-	
-	public Class<? extends TileState> getStateClass() {
-		return stateClass;
-	}
-	
-	public Color getLight() {
-		return light;
-	}
-	
-	public int getLightIntensity() {
-		return lightIntensity;
-	}
-	
-	public int getAbsorb() {
-		return absorb;
 	}
 	
 	public boolean isBuildable() {
@@ -177,6 +152,10 @@ public enum TileType {
 		}
 		
 		return null;
+	}
+	
+	public short getID() {
+		return id;
 	}
 	
 	public static TileType fromID(short id) {

@@ -15,12 +15,13 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.tiles.TileType;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.util.Optional;
 
 public class EntityItem extends Entity {
-	private ItemStack itemStack;
+	@Getter private ItemStack itemStack;
 
 	private final JSONObject persistence = new JSONObject();
 	
@@ -32,10 +33,6 @@ public class EntityItem extends Entity {
 		super(dungeon, level, x, y);
 		
 		this.itemStack = itemStack;
-	}
-	
-	public ItemStack getItemStack() {
-		return itemStack;
 	}
 	
 	public Item getItem() {

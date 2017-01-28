@@ -4,7 +4,6 @@ import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
-import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
@@ -14,6 +13,8 @@ import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,17 +22,18 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+@Getter
 public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
 	private UUID uuid;
 	
-	private int x;
-	private int y;
+	@Setter private int x;
+	@Setter private int y;
 	
-	private int lastX;
-	private int lastY;
+	@Setter private int lastX;
+	@Setter private int lastY;
 	
-	private int lastSeenX;
-	private int lastSeenY;
+	@Setter private int lastSeenX;
+	@Setter private int lastSeenY;
 	
 	private int visualID;
 	
@@ -64,10 +66,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		return uuid;
 	}
 	
-	public int getVisualID() {
-		return visualID;
-	}
-	
 	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
 	
 	public abstract EntityAppearance getAppearance();
@@ -79,54 +77,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		setY(y);
 		
 		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	private void setX(int x) {
-		this.x = x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	private void setY(int y) {
-		this.y = y;
-	}
-	
-	public int getLastX() {
-		return lastX;
-	}
-	
-	public void setLastX(int lastX) {
-		this.lastX = lastX;
-	}
-	
-	public int getLastY() {
-		return lastY;
-	}
-	
-	public void setLastY(int lastY) {
-		this.lastY = lastY;
-	}
-	
-	public int getLastSeenX() {
-		return lastSeenX;
-	}
-	
-	public void setLastSeenX(int lastSeenX) {
-		this.lastSeenX = lastSeenX;
-	}
-	
-	public int getLastSeenY() {
-		return lastSeenY;
-	}
-	
-	public void setLastSeenY(int lastSeenY) {
-		this.lastSeenY = lastSeenY;
 	}
 	
 	public int getDepth() {
@@ -151,14 +101,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public Optional<String> lootFailedString() {
 		return Optional.empty();
-	}
-	
-	public Dungeon getDungeon() {
-		return dungeon;
-	}
-	
-	public Level getLevel() {
-		return level;
 	}
 	
 	public void setLevel(Level level) {
@@ -268,10 +210,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
 		return statusEffects.stream().anyMatch(statusEffect::isInstance);
-	}
-	
-	public List<StatusEffect> getStatusEffects() {
-		return statusEffects;
 	}
 	
 	public void kick(EntityLiving kicker, int dx, int dy) {

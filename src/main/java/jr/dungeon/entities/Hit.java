@@ -1,19 +1,13 @@
 package jr.dungeon.entities;
 
+import lombok.Getter;
+
 public class Hit {
-	private final HitType hitType;
-	private final int damage;
+	@Getter private final HitType hitType;
+	@Getter private final int damage;
 	
 	public Hit(HitType hitType, int damage) {
 		this.hitType = hitType;
 		this.damage = damage;
-	}
-	
-	public HitType getHitType() {
-		return hitType;
-	}
-	
-	public int getDamage() {
-		return damage;
 	}
 }

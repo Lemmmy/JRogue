@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx.GDXRenderer;
 import jr.utils.OperatingSystem;
+import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -32,8 +33,10 @@ public class JRogue {
 	public static String VERSION = "unknown";
 	public static String BUILD_DATE = "unknown";
 	
+	@Getter
 	private static Reflections reflections;
 	
+	@Getter
 	private static Logger logger;
 	
 	public Dungeon dungeon;
@@ -177,13 +180,5 @@ public class JRogue {
 		}
 
 		return settings;
-	}
-	
-	public static Reflections getReflections() {
-		return reflections;
-	}
-	
-	public static Logger getLogger() {
-		return logger;
 	}
 }

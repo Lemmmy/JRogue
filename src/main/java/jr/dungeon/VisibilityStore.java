@@ -4,17 +4,18 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Serialisable;
 import jr.utils.SerialisationUtils;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Base64;
 
 public class VisibilityStore implements Serialisable {
-	private Boolean[] discoveredTiles;
-	private Boolean[] visibleTiles;
+	@Getter private Boolean[] discoveredTiles;
+	@Getter private Boolean[] visibleTiles;
 	
-	private int width;
-	private int height;
+	@Getter private int width;
+	@Getter private int height;
 	
 	private Level level;
 	
@@ -53,10 +54,6 @@ public class VisibilityStore implements Serialisable {
 		);
 	}
 	
-	public Boolean[] getDiscoveredTiles() {
-		return discoveredTiles;
-	}
-	
 	public boolean isTileDiscovered(int x, int y) {
 		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[y * width + x];
 	}
@@ -67,10 +64,6 @@ public class VisibilityStore implements Serialisable {
 		}
 		
 		discoveredTiles[width * y + x] = true;
-	}
-	
-	public Boolean[] getVisibleTiles() {
-		return visibleTiles;
 	}
 	
 	public boolean isTileVisible(int x, int y) {

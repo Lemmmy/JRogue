@@ -1,5 +1,8 @@
 package jr.dungeon.entities;
 
+import lombok.Getter;
+
+@Getter
 public enum DamageSource {
 	UNKNOWN("You die of an unknown cause."),
 	DAGGER(DamageType.MELEE),
@@ -43,14 +46,6 @@ public enum DamageSource {
 	DamageSource(DamageType damageType, String deathString) {
 		this.damageType = damageType;
 		this.deathString = deathString;
-	}
-	
-	public DamageType getDamageType() {
-		return damageType;
-	}
-	
-	public String getDeathString() {
-		return deathString;
 	}
 	
 	public enum DamageType {

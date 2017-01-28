@@ -8,6 +8,7 @@ import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Persisting;
 import jr.utils.Serialisable;
+import lombok.Getter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public class Level implements Serialisable, Persisting {
 	private UUID uuid;
 	
@@ -152,64 +154,16 @@ public class Level implements Serialisable, Persisting {
 
 		unserialisePersistence(obj);
 	}
-		
-	public UUID getUUID() {
-		return uuid;
-	}
-	
-	public Dungeon getDungeon() {
-		return dungeon;
-	}
-	
-	public int getDepth() {
-		return depth;
-	}
-	
-	public int getSpawnX() {
-		return spawnX;
-	}
-	
-	public int getSpawnY() {
-		return spawnY;
-	}
 	
 	public void setSpawnPoint(int x, int y) {
 		spawnX = x;
 		spawnY = y;
 	}
 	
-	public Climate getClimate() {
-		return climate;
+	public UUID getUUID() {
+		return uuid;
 	}
 	
-	public TileStore getTileStore() {
-		return tileStore;
-	}
-	
-	public EntityStore getEntityStore() {
-		return entityStore;
-	}
-	
-	public LightStore getLightStore() {
-		return lightStore;
-	}
-	
-	public VisibilityStore getVisibilityStore() {
-		return visibilityStore;
-	}
-	
-	public MonsterSpawner getMonsterSpawner() {
-		return monsterSpawner;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return height;
-	}
-
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;

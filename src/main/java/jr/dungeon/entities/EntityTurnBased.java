@@ -4,10 +4,12 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 public abstract class EntityTurnBased extends Entity {
-	private int movementPoints = 0;
+	@Getter @Setter private int movementPoints = 0;
 	private EntityAction nextAction;
 	
 	public EntityTurnBased(Dungeon dungeon, Level level, int x, int y) {
@@ -45,14 +47,6 @@ public abstract class EntityTurnBased extends Entity {
 	
 	public boolean hasAction() {
 		return nextAction != null;
-	}
-	
-	public int getMovementPoints() {
-		return movementPoints;
-	}
-	
-	public void setMovementPoints(int movementPoints) {
-		this.movementPoints = movementPoints;
 	}
 	
 	public abstract int getMovementSpeed();

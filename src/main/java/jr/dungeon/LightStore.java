@@ -17,13 +17,11 @@ public class LightStore implements Serialisable {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
-	private Dungeon dungeon;
 	private Level level;
 	
 	private List<List<Tile>> lightTiles;
 	
 	public LightStore(Level level) {
-		this.dungeon = level.getDungeon();
 		this.level = level;
 		
 		lightTiles = new ArrayList<>();

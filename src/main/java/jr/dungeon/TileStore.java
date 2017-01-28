@@ -6,6 +6,7 @@ import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,17 +15,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+@Getter
 public class TileStore implements Serialisable {
-	private Level level;
-	
 	private Tile[] tiles;
 	
 	private int width;
 	private int height;
 	
 	public TileStore(Level level) {
-		this.level = level;
-		
 		this.width = level.getWidth();
 		this.height = level.getHeight();
 		

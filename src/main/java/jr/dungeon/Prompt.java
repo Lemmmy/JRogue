@@ -1,12 +1,13 @@
 package jr.dungeon;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
 public class Prompt {
-	private String message;
-	private char[] options;
+	@Getter private String message;
+	@Getter private char[] options;
 	private PromptCallback callback;
 	private boolean escapable;
 	
@@ -15,14 +16,6 @@ public class Prompt {
 		this.options = options;
 		this.callback = callback;
 		this.escapable = escapable;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public char[] getOptions() {
-		return options;
 	}
 	
 	public String getOptionsString() {
@@ -35,7 +28,7 @@ public class Prompt {
 		start = end = chars[0];
 		
 		for (int i = 1; i < chars.length; i++) {
-			if (chars[i] == (chars[i - 1] + 1)) {
+			if (chars[i] == chars[i - 1] + 1) {
 				end = chars[i];
 			} else {
 				if (start == end) {

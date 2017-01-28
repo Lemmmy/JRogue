@@ -21,6 +21,8 @@ import jr.utils.OperatingSystem;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.Range;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -53,23 +55,23 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	/**
 	 * Randomly generated name of this dungeon
 	 */
-	private String originalName;
+	@Getter @Setter private String originalName;
 	
 	/**
 	 * User-chosen name of this dungeon
 	 */
-	private String name;
+	@Getter @Setter private String name;
 	
 	private Map<UUID, Level> levels = new HashMap<>();
-	private Level level;
-	private Player player;
+	@Getter private Level level;
+	@Getter @Setter private Player player;
 	
-	private long turn = 0;
-	private long exerciseCounter = 500;
-	private long passiveSoundCounter = 0;
-	private long monsterSpawnCounter = 50;
+	@Getter private long turn = 0;
+	@Getter private long exerciseCounter = 500;
+	@Getter private long passiveSoundCounter = 0;
+	@Getter private long monsterSpawnCounter = 50;
 	
-	private Prompt prompt;
+	@Getter private Prompt prompt;
 	private Settings settings;
 	
 	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
@@ -333,14 +335,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		listeners.remove(listener);
 	}
 	
-	public String getOriginalName() {
-		return originalName;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
 	public void rerollName() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
@@ -545,28 +539,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		Wishes.get().makeWish(this, wish);
 	}
 	
-	public Level getLevel() {
-		return level;
-	}
-	
 	public Level getLevelFromUUID(UUID uuid) {
 		return levels.get(uuid);
-	}
-	
-	public Player getPlayer() {
-		return player;
-	}
-	
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-	
-	public long getTurn() {
-		return turn;
-	}
-	
-	public void setTurn(long turn) {
-		this.turn = turn;
 	}
 
 	@Override

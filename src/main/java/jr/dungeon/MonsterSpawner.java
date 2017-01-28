@@ -12,6 +12,8 @@ import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class MonsterSpawner implements Serialisable {
 	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 	
-	private MonsterSpawningStrategy monsterSpawningStrategy;
+	@Getter @Setter	private MonsterSpawningStrategy monsterSpawningStrategy;
 	
 	private Dungeon dungeon;
 	private Level level;
@@ -45,14 +47,6 @@ public class MonsterSpawner implements Serialisable {
 			"monsterSpawningStrategy",
 			MonsterSpawningStrategy.STANDARD.name()
 		));
-	}
-	
-	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
-		return monsterSpawningStrategy;
-	}
-	
-	public void setMonsterSpawningStrategy(MonsterSpawningStrategy monsterSpawningStrategy) {
-		this.monsterSpawningStrategy = monsterSpawningStrategy;
 	}
 	
 	public void spawnMonsters() {

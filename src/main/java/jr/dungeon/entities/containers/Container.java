@@ -10,6 +10,8 @@ import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
 
@@ -19,25 +21,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Container implements Serialisable {
-	private String name;
+	@Getter @Setter	private String name;
 	
-	private Map<Character, ItemStack> items = new LinkedHashMap<>();
+	@Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
 	private List<ContainerListener> listeners = new ArrayList<>();
 	
 	public Container(String name) {
 		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public Map<Character, ItemStack> getItems() {
-		return items;
 	}
 	
 	public int getItemCount() {
@@ -225,8 +215,8 @@ public class Container implements Serialisable {
 	}
 	
 	public class ContainerEntry {
-		private final Character letter;
-		private ItemStack stack;
+		@Getter	private final Character letter;
+		@Getter private ItemStack stack;
 		
 		public ContainerEntry(Map.Entry<Character, ItemStack> entry) {
 			this.letter = entry.getKey();
@@ -238,20 +228,12 @@ public class Container implements Serialisable {
 			this.stack = stack;
 		}
 		
-		public Character getLetter() {
-			return letter;
-		}
-		
 		public Item getItem() {
 			return stack.getItem();
 		}
 		
 		public int getCount() {
 			return stack.getCount();
-		}
-		
-		public ItemStack getStack() {
-			return stack;
 		}
 		
 		public ItemStack setStack(final ItemStack value) {

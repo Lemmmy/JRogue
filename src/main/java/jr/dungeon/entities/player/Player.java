@@ -480,107 +480,12 @@ public class Player extends EntityLiving {
 		return false;
 	}
 	
-	private void acceptVisitor(PlayerVisitor visitor) {
+	public void acceptVisitor(PlayerVisitor visitor) {
 		visitor.visit(this);
-	}
-	
-	public void teleport(int x, int y) {
-		acceptVisitor(new PlayerTeleport(x, y));
-	}
-	
-	public void walk(int dx, int dy) {
-		acceptVisitor(new PlayerWalk(dx, dy));
-	}
-	
-	public void travelDirectional() {
-		acceptVisitor(new PlayerTravelDirectional());
-	}
-	
-	public void travelPathfind(int tx, int ty) {
-		acceptVisitor(new PlayerTravelPathfind(tx, ty));
-	}
-	
-	public void kick() {
-		acceptVisitor(new PlayerKick());
-	}
-	
-	public void castSpell(Spell spell) {
-		switch (spell.getDirectionType()) {
-			case NON_DIRECTIONAL:
-				castSpellNonDirectional(spell);
-				break;
-			default:
-				castSpellDirectional(spell);
-				break;
-		}
 	}
 	
 	public boolean canCastSpell(Spell spell) {
 		return energy >= spell.getCastingCost();
-	}
-	
-	private void castSpellNonDirectional(Spell spell) {
-		acceptVisitor(new PlayerCastSpellNonDirectional(spell));
-	}
-	
-	private void castSpellDirectional(Spell spell) {
-		acceptVisitor(new PlayerCastSpellDirectional(spell));
-	}
-	
-	public void eat() {
-		acceptVisitor(new PlayerEat());
-	}
-	
-	public void quaff() {
-		acceptVisitor(new PlayerQuaff());
-	}
-	
-	public void consume(ItemComestible item) {
-		acceptVisitor(new PlayerConsume(item));
-	}
-	
-	public void pickup() {
-		acceptVisitor(new PlayerPickup());
-	}
-	
-	public void drop() {
-		acceptVisitor(new PlayerDrop());
-	}
-	
-	public void loot() {
-		acceptVisitor(new PlayerLoot());
-	}
-	
-	public void wield() {
-		acceptVisitor(new PlayerWield());
-	}
-	
-	public void fire() {
-		// TODO: quiver
-	}
-	
-	public void throwItem() {
-		acceptVisitor(new PlayerThrowItem());
-	}
-	
-	public void climbAny() {
-		acceptVisitor(new PlayerClimbAny());
-	}
-	
-	public void climbUp() {
-		acceptVisitor(new PlayerClimbUp());
-	}
-	
-	public void climbDown() {
-		acceptVisitor(new PlayerClimbDown());
-	}
-	
-	public void climb(Tile tile, boolean up) {
-		acceptVisitor(new PlayerClimb(tile, up));
-	}
-	
-	public void read() {
-		acceptVisitor(new PlayerRead());
 	}
 	
 	public Hit hitFromMonster(DamageSource damageSource, int damage, EntityLiving attacker) {

@@ -11,6 +11,7 @@ import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.utils.RandomUtils;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.util.Iterator;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class EntityChest extends Entity {
 	private Container container;
-	private boolean locked;
+	@Getter private boolean locked;
 	
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

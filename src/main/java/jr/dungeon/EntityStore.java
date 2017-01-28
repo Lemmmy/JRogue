@@ -8,6 +8,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,8 +20,8 @@ import java.util.stream.Collectors;
 public class EntityStore implements Serialisable {
 	private Map<UUID, Entity> entities;
 	
-	private List<Entity> entityAddQueue;
-	private List<Entity> entityRemoveQueue;
+	@Getter private List<Entity> entityAddQueue;
+	@Getter private List<Entity> entityRemoveQueue;
 	
 	private Dungeon dungeon;
 	private Level level;
@@ -98,14 +99,6 @@ public class EntityStore implements Serialisable {
 	
 	public Collection<Entity> getEntities() {
 		return entities.values();
-	}
-	
-	public List<Entity> getEntityAddQueue() {
-		return entityAddQueue;
-	}
-	
-	public List<Entity> getEntityRemoveQueue() {
-		return entityRemoveQueue;
 	}
 	
 	public Entity getEntityByUUID(UUID uuid) {

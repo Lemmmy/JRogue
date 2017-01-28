@@ -12,24 +12,26 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
 
 public abstract class EntityLiving extends EntityTurnBased {
-	private int health;
-	protected int maxHealth;
+	@Getter @Setter private int health;
+	@Getter @Setter protected int maxHealth;
 	
-	private int experienceLevel = 1;
-	private int experience = 0;
+	@Getter @Setter private int experienceLevel = 1;
+	@Getter @Setter private int experience = 0;
 	
-	private int healingTurns = 0;
+	@Getter private int healingTurns = 0;
 	
 	private Container inventory;
 	
-	private Container.ContainerEntry leftHand;
-	private Container.ContainerEntry rightHand;
+	@Getter @Setter private Container.ContainerEntry leftHand;
+	@Getter @Setter private Container.ContainerEntry rightHand;
 	
 	/**
 	 * known persistent aspects per item class
@@ -52,18 +54,6 @@ public abstract class EntityLiving extends EntityTurnBased {
 		return RandomUtils.roll(experienceLevel, 6);
 	}
 	
-	public int getMaxHealth() {
-		return maxHealth;
-	}
-	
-	public int getHealth() {
-		return health;
-	}
-	
-	public void setHealth(int health) {
-		this.health = health;
-	}
-	
 	public boolean isAlive() {
 		return health > 0;
 	}
@@ -81,22 +71,6 @@ public abstract class EntityLiving extends EntityTurnBased {
 	}
 	
 	public abstract int getBaseArmourClass();
-	
-	public int getExperienceLevel() {
-		return experienceLevel;
-	}
-	
-	protected void setExperienceLevel(int level) {
-		experienceLevel = level;
-	}
-	
-	public int getExperience() {
-		return experience;
-	}
-	
-	public void setExperience(int experience) {
-		this.experience = experience;
-	}
 	
 	public int getXPForLevel(int level) {
 		return (int) Math.pow((float) level / 1.75f, 2) * 2 + 10;
@@ -160,22 +134,6 @@ public abstract class EntityLiving extends EntityTurnBased {
 	
 	protected void setInventoryContainer(Container container) {
 		this.inventory = container;
-	}
-	
-	public Container.ContainerEntry getLeftHand() {
-		return leftHand;
-	}
-	
-	public void setLeftHand(Container.ContainerEntry leftHand) {
-		this.leftHand = leftHand;
-	}
-	
-	public Container.ContainerEntry getRightHand() {
-		return rightHand;
-	}
-	
-	public void setRightHand(Container.ContainerEntry rightHand) {
-		this.rightHand = rightHand;
 	}
 	
 	public void swapHands() {
