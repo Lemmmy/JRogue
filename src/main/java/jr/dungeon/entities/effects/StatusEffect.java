@@ -3,13 +3,14 @@ package jr.dungeon.entities.effects;
 import jr.dungeon.BlankMessenger;
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 
 @Getter
-public abstract class StatusEffect implements Serialisable {
+public abstract class StatusEffect implements Serialisable, DungeonEventListener {
 	@Setter private Messenger messenger;
 	@Setter private Entity entity;
 	

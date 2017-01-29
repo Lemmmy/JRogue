@@ -23,6 +23,7 @@ import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Range;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -553,12 +554,24 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		listeners.forEach(l -> triggerEvent(l, event));
 		
 		if (level != null) {
-			level.getEntityStore().getEntities().forEach(e -> triggerEvent(e, event));
+			level.getEntityStore().getEntities().forEach(e -> {
+				JRogue.getLogger().trace(
+					"Triggering event {} on entity {} with sublisteners: {}",
+					event.getClass().getSimpleName(),
+					e.getClass().getSimpleName(),
+					ArrayUtils.toString(e.getSubListeners().stream().map(l -> l.getClass().getSimpleName()).collect(Collectors.toList()))
+				);
+				
+				triggerEvent(e, event);
+				e.getSubListeners().forEach(l2 -> triggerEvent(l2, event));
+			});
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEventListener listener, DungeonEvent event) {
+		event.setDungeon(this);
+		
 		Arrays.stream(listener.getClass().getMethods())
 			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
 			.filter(m -> m.getParameterCount() == 1)

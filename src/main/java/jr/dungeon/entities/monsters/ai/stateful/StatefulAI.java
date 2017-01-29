@@ -3,14 +3,20 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Utils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,6 +31,8 @@ public class StatefulAI extends AI {
 	@Setter(AccessLevel.NONE)
 	private boolean shouldTargetPlayer = true;
 	private int visibilityRange = 15;
+	
+	private Map<Class<? extends AITrait>, AITrait> traits = new HashMap<>();
 	
 	public StatefulAI(Monster monster) {
 		super(monster);
@@ -142,6 +150,16 @@ public class StatefulAI extends AI {
 		
 		obj.put("shouldTargetPlayer", shouldTargetPlayer);
 		obj.put("visibilityRange", visibilityRange);
+		
+		JSONObject serialisedTraits = new JSONObject();
+		
+		traits.forEach((c, t) -> {
+			JSONObject serialisedTrait = new JSONObject();
+			t.serialise(serialisedTrait);
+			serialisedTraits.put(c.getName(), serialisedTrait);
+		});
+		
+		obj.put("traits", serialisedTraits);
 	}
 	
 	@Override
@@ -163,6 +181,17 @@ public class StatefulAI extends AI {
 		
 		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
 		visibilityRange = obj.optInt("visibilityRange");
+		
+		if (obj.has("traits")) {
+			JSONObject serialisedTraits = obj.getJSONObject("traits");
+			
+			serialisedTraits.keySet().forEach(traitClassName -> {
+				JSONObject serialisedTrait = serialisedTraits.getJSONObject(traitClassName);
+				AITrait unserialisedTrait = AITrait.createFromJSON(traitClassName, serialisedTrait, this);
+				assert unserialisedTrait != null;
+				traits.put(unserialisedTrait.getClass(), unserialisedTrait);
+			});
+		}
 	}
 	
 	@Override
@@ -171,5 +200,17 @@ public class StatefulAI extends AI {
 			.append(currentState == null ? "no state" : currentState.toString())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
 			.toString();
+	}
+	
+	@Override
+	public List<DungeonEventListener> getSubListeners() {
+		val subListeners = super.getSubListeners();
+		
+		subListeners.add(currentState);
+		subListeners.add(defaultState);
+		
+		traits.values().forEach(subListeners::add);
+		
+		return subListeners;
 	}
 }

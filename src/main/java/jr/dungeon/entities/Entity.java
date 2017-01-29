@@ -218,4 +218,8 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	public JSONObject getPersistence() {
 		return persistence;
 	}
+	
+	public List<DungeonEventListener> getSubListeners() {
+		return new ArrayList<>(statusEffects);
+	}
 }

@@ -1,8 +1,10 @@
 package jr.dungeon.entities.containers;
 
 import jr.ErrorHandler;
+import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Wieldable;
@@ -12,6 +14,7 @@ import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
 
@@ -20,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Container implements Serialisable {
+public class Container implements Serialisable, DungeonEventListener {
 	@Getter @Setter	private String name;
 	
 	@Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
@@ -204,6 +207,15 @@ public class Container implements Serialisable {
 		return items.entrySet().stream()
 			.filter(e -> e.getValue().getItem().getClass().isAssignableFrom(type))
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<DungeonEventListener> getSubListeners() {
+		List<DungeonEventListener> subListeners = new ArrayList<>();
+		
+		items.values().forEach(i -> subListeners.add(i.getItem()));
+		
+		return subListeners;
 	}
 	
 	public interface ContainerListener {

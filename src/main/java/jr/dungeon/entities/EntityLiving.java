@@ -8,6 +8,7 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
@@ -15,6 +16,7 @@ import jr.utils.RandomUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -222,6 +224,18 @@ public abstract class EntityLiving extends EntityTurnBased {
 			
 			knownAspects.put(code, aspectSet);
 		});
+	}
+	
+	@Override
+	public List<DungeonEventListener> getSubListeners() {
+		val subListeners = super.getSubListeners();
+		
+		getContainer().ifPresent(c -> {
+			subListeners.add(c);
+			subListeners.addAll(c.getSubListeners());
+		});
+		
+		return subListeners;
 	}
 	
 	@Override

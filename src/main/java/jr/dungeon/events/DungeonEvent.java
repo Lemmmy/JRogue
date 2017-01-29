@@ -1,5 +1,6 @@
 package jr.dungeon.events;
 
+import jr.dungeon.Dungeon;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Setter
 public abstract class DungeonEvent {
 	private boolean cancelled;
+	private Dungeon dungeon;
 	
 	public boolean isSelf(Object other) {
 		return false;

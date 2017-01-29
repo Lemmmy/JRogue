@@ -6,11 +6,16 @@ import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
+import jr.utils.Persisting;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -18,16 +23,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AI implements Serialisable {
+@RequiredArgsConstructor
+public abstract class AI implements Serialisable, Persisting, DungeonEventListener {
+	@NonNull @Getter private Monster monster;
+	
 	private AStarPathfinder pathfinder = new AStarPathfinder();
-	
-	@Getter private Monster monster;
-	
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
-	public AI(Monster monster) {
-		this.monster = monster;
-	}
+	private JSONObject persistence = new JSONObject();
 	
 	public void addAvoidTile(TileType tileType) {
 		avoidTiles.add(tileType);
@@ -135,13 +138,20 @@ public abstract class AI implements Serialisable {
 	@Override
 	public void serialise(JSONObject obj) {
 		obj.put("class", getClass().getName());
+		
+		serialisePersistence(obj);
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		
+		unserialisePersistence(obj);
 	}
-		
+	
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
 		String aiClassName = serialisedAI.getString("class");
@@ -167,5 +177,9 @@ public abstract class AI implements Serialisable {
 	
 	public String toString() {
 		return "";
+	}
+	
+	public List<DungeonEventListener> getSubListeners() {
+		return new ArrayList<>();
 	}
 }
