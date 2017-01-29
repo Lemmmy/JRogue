@@ -6,7 +6,6 @@ public class Paralysed extends StatusEffect {
 
     public Paralysed() {
         super(RandomUtils.random(10, 20));
-        System.out.println("PARALYSED CONSTRUCTOR CALLED");
     }
 
     @Override
