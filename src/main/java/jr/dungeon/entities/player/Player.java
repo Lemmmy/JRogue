@@ -421,7 +421,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDie(EntityDeathEvent e) {
+	public void onDie(EntityDeathEvent e) {
 		if (e.getDamageSource().getDeathString() != null) {
 			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
 		} else {
