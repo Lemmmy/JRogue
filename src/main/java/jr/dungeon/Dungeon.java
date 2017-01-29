@@ -342,14 +342,17 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	public void start() {
 		triggerEvent(new LevelChangeEvent(level));
+		triggerEvent(new BeforeGameStartedEvent(turn <= 0));
 		
 		if (turn <= 0) {
 			You("drop down into [CYAN]%s[].", this.name);
+			triggerEvent(new GameStartedEvent(true));
 			turn();
 		} else {
 			triggerEvent(new BeforeTurnEvent(turn));
 			log("Welcome back to [CYAN]%s[].", this.name);
 			level.getEntityStore().processEntityQueues();
+			triggerEvent(new GameStartedEvent(false));
 			triggerEvent(new TurnEvent(turn));
 		}
 	}
