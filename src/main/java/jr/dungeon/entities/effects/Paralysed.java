@@ -18,6 +18,6 @@ public class Paralysed extends StatusEffect {
 
     @Override
     public void onEnd() {
-        getMessenger().greenYou("manage to break free of the paralysis"); // TODO betterer message
+        getMessenger().greenThe("paralysis finally wears off after " + getDuration() + " turns.");
     }
 }
