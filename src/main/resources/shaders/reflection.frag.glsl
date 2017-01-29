@@ -6,6 +6,9 @@
 #define WAVE_FREQUENCY 	16.0   // The "amount" of wobbles in the sprite
 #define WAVE_TIME_SCALE 2.0    // Wobble speed
 
+#define FADE_AMPLITUDE 10.0 // Fade strength and decay
+#define FADE_BASE      0.2  // Minimum transparency
+
 precision mediump float;
 
 uniform sampler2D u_texture;
@@ -19,6 +22,6 @@ void main() {
 	vec2 nt = vec2(min(1.0, max(0.0, ntx)), v_texCoords.y);
 	vec4 texel = texture2D(u_texture, nt);
 	float fy = normalize(nt.y);
-	float fade = 10.0 * fy * fy + 0.2;
+	float fade = FADE_AMPLITUDE * fy * fy + FADE_BASE;
 	gl_FragColor = vec4(texel.rgb, texel.a);
 }
