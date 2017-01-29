@@ -64,7 +64,7 @@ dependencies {
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 
-	compileOnly "org.projectlombok:lombok:1.16.12"
+	compile "org.projectlombok:lombok:1.16.12"
 }
 
 task subJar(type: Jar) {
@@ -85,7 +85,6 @@ task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
 
 	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
 	libraryjars files(configurations.compile.collect())
-	libraryjars files(configurations.compileOnly.collect())
 
 	printmapping "proguard.map"
 }
@@ -95,9 +94,6 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 
 	from zipTree("$buildDir/libs/${jarName}-obf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
-		from zipTree(f)
-	}
-	files(configurations.compileOnly.collect()).each { f ->
 		from zipTree(f)
 	}
 
