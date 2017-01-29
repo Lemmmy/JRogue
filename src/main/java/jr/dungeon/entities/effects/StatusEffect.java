@@ -5,6 +5,7 @@ import jr.dungeon.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Serialisable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ public abstract class StatusEffect implements Serialisable, DungeonEventListener
 	@Setter private Entity entity;
 	
 	private int duration;
-	private int turnsPassed = 0;
+	@Setter(AccessLevel.PROTECTED) int turnsPassed = 0;
 	
 	public StatusEffect(int duration) {
 		this.messenger = new BlankMessenger();

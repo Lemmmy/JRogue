@@ -63,6 +63,7 @@ public class Wishes {
 				.map(e -> (EntityLiving) e)
 				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
+		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
 		registerWish("downstairs", (d, p, a) ->
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
@@ -84,6 +85,7 @@ public class Wishes {
 		registerWish("injured foot", new WishEffect(InjuredFoot.class));
 		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
 		registerWish("strained leg", new WishEffect(StrainedLeg.class));
+		registerWish("fire", new WishEffect(Ablaze.class));
 
 		// Monsters
 		registerWish("jackal", new WishSpawn<>(MonsterJackal.class));
