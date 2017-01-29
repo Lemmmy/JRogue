@@ -23,5 +23,5 @@ void main() {
 	vec4 texel = texture2D(u_texture, nt);
 	float fy = normalize(nt.y);
 	float fade = FADE_AMPLITUDE * fy * fy + FADE_BASE;
-	gl_FragColor = vec4(texel.rgb, texel.a);
+	gl_FragColor = v_colour * vec4(texel.rgb, texel.a);
 }
