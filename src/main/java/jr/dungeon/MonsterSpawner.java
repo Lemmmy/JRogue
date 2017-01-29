@@ -118,7 +118,7 @@ public class MonsterSpawner implements Serialisable {
 			.collect(Collectors.toList())
 		);
 		
-		return new jr.utils.Point(tile.getX(), tile.getY());
+		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
 	}
 	
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
@@ -139,6 +139,6 @@ public class MonsterSpawner implements Serialisable {
 			.collect(Collectors.toList())
 		);
 		
-		return new jr.utils.Point(tile.getX(), tile.getY());
+		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
 	}
 }
