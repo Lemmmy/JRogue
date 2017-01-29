@@ -93,8 +93,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		return TileType.TILE_ROOM_STAIRS_UP;
 	}
 	
+	public TileType getGroundTileType() {
+		return TileType.TILE_GROUND;
+	}
+	
 	@Override
 	public boolean generate() {
+		if (getGroundTileType() != TileType.TILE_GROUND) {
+			for (int y = 0; y < level.getHeight(); ++y) {
+				for (int x = 0; x < level.getWidth(); ++x) {
+					level.getTileStore().setTileType(x, y, getGroundTileType());
+				}
+			}
+		}
+		
 		int width = nextInt(minRoomWidth, maxRoomWidth);
 		int height = nextInt(minRoomHeight, maxRoomHeight);
 

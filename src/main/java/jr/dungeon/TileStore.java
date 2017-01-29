@@ -151,7 +151,7 @@ public class TileStore implements Serialisable {
 	}
 	
 	public void setTileType(int x, int y, TileType tile) {
-		if (tile == TileType.TILE_IDENTITY) return;
+		if (tile.getID() < 0) return;
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
 		tiles[width * y + x].setType(tile);
 	}

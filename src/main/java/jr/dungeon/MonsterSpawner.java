@@ -77,6 +77,7 @@ public class MonsterSpawner implements Serialisable {
 				.collect(Collectors.toList());
 			
 			MonsterSpawn chosenSpawn = RandomUtils.randomFrom(possibleMonsterSpawns);
+			if (chosenSpawn == null) return;
 			spawnMonsterAtPoint(chosenSpawn.getMonsterClass(), point);
 		}
 	}

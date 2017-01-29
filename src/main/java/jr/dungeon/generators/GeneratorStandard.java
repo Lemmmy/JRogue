@@ -28,6 +28,7 @@ public class GeneratorStandard extends GeneratorRooms {
 	protected OpenSimplexNoise simplexNoise;
 	
 	protected boolean spawnSewers = true;
+	protected boolean spawnWater = true;
 	
 	public GeneratorStandard(Level level, Tile sourceTile) {
 		super(level, sourceTile);
@@ -57,19 +58,14 @@ public class GeneratorStandard extends GeneratorRooms {
 		
 		simplexNoise = new OpenSimplexNoise(rand.nextLong());
 		
-		addWaterBodies();
-		spawnFish();
-		
-		if (spawnSewers && level.getDepth() == sewerStartDepth) {
-			addSewerStart();
+		if (spawnWater) {
+			addWaterBodies();
+			spawnFish();
 		}
 		
+		if (spawnSewers && level.getDepth() == sewerStartDepth) addSewerStart();
+		
 		return verify();
-	}
-	
-	@Override
-	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_TORCH_FIRE;
 	}
 	
 	public TileType getPuddleTileType() {
@@ -78,10 +74,6 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	public TileType getGroundWaterTileType() {
 		return TileType.TILE_GROUND_WATER;
-	}
-	
-	public TileType getGroundTileType() {
-		return TileType.TILE_GROUND;
 	}
 	
 	private void addWaterBodies() {
