@@ -264,11 +264,13 @@ public class Player extends EntityLiving {
 	
 	@DungeonEventHandler
 	public void onGameStarted(GameStartedEvent event) {
-		getDungeon().greenYou(
-			"have %,d spendable skill point%s.",
-			spendableSkillPoints,
-			spendableSkillPoints == 1 ? "" : "s"
-		);
+		if (spendableSkillPoints > 0) {
+			getDungeon().greenYou(
+				"have %,d spendable skill point%s.",
+				spendableSkillPoints,
+				spendableSkillPoints == 1 ? "" : "s"
+			);
+		}
 	}
 	
 	@Override
