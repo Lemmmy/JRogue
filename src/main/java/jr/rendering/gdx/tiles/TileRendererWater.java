@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.TimeUtils;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
@@ -26,14 +27,17 @@ public class TileRendererWater extends TileRendererBlob8 {
 	private boolean connectToOthers;
 	private TileType self;
 	
-	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY) {
-		this(sheetX, sheetY, floorSheetX, floorSheetY, true, null);
+	private float waterTransparency;
+	
+	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, float waterTransparency) {
+		this(sheetX, sheetY, floorSheetX, floorSheetY, waterTransparency, true, null);
 	}
 	
 	public TileRendererWater(int sheetX,
 							 int sheetY,
 							 int floorSheetX,
 							 int floorSheetY,
+							 float waterTransparency,
 							 boolean connectToOthers,
 							 TileType self) {
 		super(1, 0);
@@ -43,6 +47,8 @@ public class TileRendererWater extends TileRendererBlob8 {
 		
 		water = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
 		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
+		
+		this.waterTransparency = waterTransparency;
 		
 		loadBlob(overlayImages, 2, 0);
 	}
@@ -71,6 +77,8 @@ public class TileRendererWater extends TileRendererBlob8 {
 				
 				ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
 				batch.setShader(reflectionShader);
+				float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
+				reflectionShader.setUniformf("u_time", time);
 				renderer.setDrawReflection(true);
 				renderer.draw(batch, dungeon, e);
 				renderer.setDrawReflection(false);
@@ -88,8 +96,17 @@ public class TileRendererWater extends TileRendererBlob8 {
 		
 		Color colourOld = batch.getColor();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 1.0f);
+		
+		if (waterTransparency < 1.0f) {
+			drawTile(batch, floor, x, y);
+			drawReflection(batch, dungeon, x, y);
+		}
+		
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);
 		drawTile(batch, water, x, y);
-		drawReflection(batch, dungeon, x, y);
+		
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, colourOld.a);
 		batch.flush();
 		
 		Gdx.gl.glColorMask(false, false, false, true);

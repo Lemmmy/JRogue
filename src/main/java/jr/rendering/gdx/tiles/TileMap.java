@@ -5,7 +5,7 @@ import lombok.Getter;
 
 public enum TileMap {
 	TILE_GROUND(1, 1),
-	TILE_GROUND_WATER(new TileRendererWater(2, 1, 1, 1)),
+	TILE_GROUND_WATER(new TileRendererWater(2, 1, 1, 1, 0.8f)),
 	
 	TILE_DEBUG_A(0, 15),
 	TILE_DEBUG_B(1, 15),
@@ -20,8 +20,8 @@ public enum TileMap {
 	TILE_ROOM_TORCH_FIRE(new TileRendererTorch(6, 1, "torch_fire")),
 	TILE_ROOM_TORCH_ICE(new TileRendererTorch(7, 1, "torch_ice")),
 	TILE_ROOM_FLOOR(8, 0),
-	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0)),
-	TILE_ROOM_PUDDLE(new TileRendererWater(4, 1, 8, 0, false, TileType.TILE_ROOM_PUDDLE)),
+	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0, 0.8f)),
+	TILE_ROOM_PUDDLE(new TileRendererWater(5, 2, 8, 0, 0.4f, false, TileType.TILE_ROOM_PUDDLE)),
 	TILE_ROOM_RUG(new TileRendererRug(0, 2, 8, 0, false, TileType.TILE_ROOM_RUG)),
 	TILE_ROOM_DIRT(new TileRendererDirt(4, 2, 8, 0, TileType.TILE_ROOM_DIRT)),
 	TILE_ROOM_DOOR_LOCKED(new TileRendererDoor(TileRendererDoor.DoorState.LOCKED)),
@@ -36,7 +36,7 @@ public enum TileMap {
 	TILE_ROOM_LADDER_DOWN(11, 0),
 	
 	TILE_SEWER_WALL(new TileRendererSewerWall()),
-	TILE_SEWER_WATER(new TileRendererWater(13, 1, 8, 0, false, TileType.TILE_SEWER_WATER)),
+	TILE_SEWER_WATER(new TileRendererWater(13, 1, 8, 0, 0.6f, false, TileType.TILE_SEWER_WATER)),
 	TILE_SEWER_DRAIN_EMPTY(14, 1),
 	TILE_SEWER_DRAIN(new TileRendererSewerDrain()),
 	
