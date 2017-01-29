@@ -33,9 +33,9 @@ public class TileRendererReflective extends TileRendererBasic {
 		final ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
 		
 		batch.setShader(reflectionShader);
-		reflectionShader.setUniformf("u_waveAmplitude", s.getWaveAmplitude());
-		reflectionShader.setUniformf("u_waveFrequency", s.getWaveFrequency());
-		reflectionShader.setUniformf("u_timeScale", s.getWaveTimeScale());
+		reflectionShader.setUniformf("u_waveAmplitude", 0.0f);
+		reflectionShader.setUniformf("u_waveFrequency", 0.0f);
+		reflectionShader.setUniformf("u_timeScale", 0.0f);
 		reflectionShader.setUniformf("u_fadeAmplitude", s.getFadeAmplitude());
 		reflectionShader.setUniformf("u_fadeBase", s.getFadeBase());
 		
@@ -45,8 +45,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		reflectionShader.setUniformf("u_tilePositionScreen", tps1.x, tps1.y);
 		reflectionShader.setUniformf("u_tileSizeScreen", tps2.x - tps1.x, tps2.y - tps1.y);
 		
-		final float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
-		reflectionShader.setUniformf("u_time", time);
+		reflectionShader.setUniformf("u_time", 0.0f);
 		
 		TileType tileAbove = dungeon.getLevel().getTileStore().getTileType(x, y - 1);
 		
@@ -59,6 +58,14 @@ public class TileRendererReflective extends TileRendererBasic {
 			r.draw(batch, dungeon, x, y - 1);
 			r.setDrawingReflection(false);
 		}
+		
+		batch.setShader(reflectionShader);
+		reflectionShader.setUniformf("u_waveAmplitude", s.getWaveAmplitude());
+		reflectionShader.setUniformf("u_waveFrequency", s.getWaveFrequency());
+		reflectionShader.setUniformf("u_timeScale", s.getWaveTimeScale());
+		
+		final float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
+		reflectionShader.setUniformf("u_time", time);
 		
 		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
 		entities.stream()

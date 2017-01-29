@@ -22,10 +22,12 @@ varying vec4 v_colour;
 
 void main() {
 	float ntx = u_waveAmplitude * sin(2.0 * PI * u_waveFrequency * v_texCoords.y + u_time * u_timeScale) + v_texCoords.x;
-	vec2 nt = vec2(min(1.0, max(0.0, ntx)), v_texCoords.y);
+	vec2 nt = vec2(ntx, v_texCoords.y);
 	vec4 texel = texture2D(u_texture, nt);
+
 	vec2 fc = (gl_FragCoord.xy - u_tilePositionScreen) / u_tileSizeScreen;
 	float fy = 1.0 - fc.y;
 	float fade = u_fadeAmplitude * fy * fy + u_fadeBase;
+
 	gl_FragColor = v_colour * vec4(texel.rgb, texel.a * fade);
 }
