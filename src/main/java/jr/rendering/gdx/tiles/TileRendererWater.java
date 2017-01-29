@@ -5,8 +5,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx.entities.EntityMap;
+import jr.rendering.gdx.entities.EntityRenderer;
+import jr.rendering.gdx.utils.ShaderLoader;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class TileRendererWater extends TileRendererBlob8 {
 	private TextureRegion water;
@@ -49,18 +58,43 @@ public class TileRendererWater extends TileRendererBlob8 {
 		}
 	}
 	
+	private void drawReflection(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		if (y - 1 < 0) return;
+		
+		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
+		entities.stream()
+			.sorted(Comparator.comparingInt(Entity::getDepth))
+			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
+			.forEach(e -> {
+				EntityRenderer renderer = EntityMap.getRenderer(e.getAppearance());
+				ShaderProgram oldShader = batch.getShader();
+				
+				ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
+				batch.setShader(reflectionShader);
+				renderer.setDrawReflection(true);
+				renderer.draw(batch, dungeon, e);
+				renderer.setDrawReflection(false);
+				
+				batch.setShader(oldShader);
+			});
+	}
+	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
 		
-		Color colourOld = batch.getColor();
+		batch.enableBlending();
 		
+		Color colourOld = batch.getColor();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		drawTile(batch, water, x, y);
+		drawReflection(batch, dungeon, x, y);
 		batch.flush();
 		
 		Gdx.gl.glColorMask(false, false, false, true);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		
 		drawTile(batch, blobImage, x, y);
 		batch.flush();
 		
