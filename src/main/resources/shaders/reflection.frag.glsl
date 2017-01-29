@@ -2,12 +2,12 @@
 
 #define PI 3.141592654
 
-#define WAVE_AMPLITUDE 	0.0015 // Wobble strength
-#define WAVE_FREQUENCY 	16.0   // The "amount" of wobbles in the sprite
-#define WAVE_TIME_SCALE 2.0    // Wobble speed
+#define WAVE_AMPLITUDE 	0.00125 // Wobble strength
+#define WAVE_FREQUENCY 	16.0    // The "amount" of wobbles in the sprite
+#define WAVE_TIME_SCALE 2.0     // Wobble speed
 
-#define FADE_AMPLITUDE 10.0 // Fade strength and decay
-#define FADE_BASE      0.2  // Minimum transparency
+#define FADE_AMPLITUDE 5.0 // Fade strength and decay
+#define FADE_BASE      0.0  // Minimum transparency
 
 precision mediump float;
 
@@ -21,7 +21,7 @@ void main() {
 	float ntx = WAVE_AMPLITUDE * sin(2.0 * PI * WAVE_FREQUENCY * v_texCoords.y + u_time * WAVE_TIME_SCALE) + v_texCoords.x;
 	vec2 nt = vec2(min(1.0, max(0.0, ntx)), v_texCoords.y);
 	vec4 texel = texture2D(u_texture, nt);
-	float fy = normalize(nt.y);
+	float fy = normalize(nt).y;
 	float fade = FADE_AMPLITUDE * fy * fy + FADE_BASE;
-	gl_FragColor = v_colour * vec4(texel.rgb, texel.a);
+	gl_FragColor = v_colour * vec4(texel.rgb, texel.a * fade);
 }
