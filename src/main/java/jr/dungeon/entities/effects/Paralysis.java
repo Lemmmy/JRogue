@@ -2,15 +2,16 @@ package jr.dungeon.entities.effects;
 
 import jr.utils.RandomUtils;
 
-public class Paralysed extends StatusEffect {
-
-    public Paralysed() {
+public class Paralysis extends StatusEffect {
+    public Paralysis() {
         super(RandomUtils.random(10, 20));
         System.out.println("PARALYSED CONSTRUCTOR CALLED");
     }
 
     @Override
-    public String getName() { return "Paralysis"; }
+    public String getName() {
+        return "Paralysis";
+    }
 
     @Override
     public Severity getSeverity() {

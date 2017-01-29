@@ -79,7 +79,7 @@ public class Wishes {
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
-		registerWish("paralysis", new WishEffect(Paralysed.class));
+		registerWish("paralysis", new WishEffect(Paralysis.class));
 		registerWish("food poisoning", new WishEffect(FoodPoisoning.class));
 		registerWish("injured foot", new WishEffect(InjuredFoot.class));
 		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
