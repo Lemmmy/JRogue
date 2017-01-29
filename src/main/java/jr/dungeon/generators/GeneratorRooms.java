@@ -26,50 +26,50 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class GeneratorRooms extends DungeonGenerator {
-	private static final WeightedCollection<Class<? extends Room>> ROOM_TYPES = new WeightedCollection<>();
+	private final WeightedCollection<Class<? extends Room>> roomTypes = new WeightedCollection<>();
 	
-	static {
-		ROOM_TYPES.add(49, RoomBasic.class);
-		ROOM_TYPES.add(2, RoomWater.class);
-		ROOM_TYPES.add(1, RoomGraveyard.class);
+	{
+		roomTypes.add(49, RoomBasic.class);
+		roomTypes.add(2, RoomWater.class);
+		roomTypes.add(1, RoomGraveyard.class);
 	}
 	
-	private static final int MIN_ROOM_WIDTH = 5;
-	private static final int MAX_ROOM_WIDTH = 20;
+	protected int minRoomWidth = 5;
+	protected int maxRoomWidth = 20;
 	
-	private static final int MIN_ROOM_HEIGHT = 5;
-	private static final int MAX_ROOM_HEIGHT = 9;
+	protected int minRoomHeight = 5;
+	protected int maxRoomHeight = 9;
 	
-	private static final int MIN_ROOM_DISTANCE_X = 1;
-	private static final int MAX_ROOM_DISTANCE_X = 15;
-	private static final int MIN_ROOM_OFFSET_X = -4;
-	private static final int MAX_ROOM_OFFSET_X = 4;
+	protected int minRoomDistanceX = 1;
+	protected int maxRoomDistanceX = 15;
+	protected int minRoomOffsetX = -4;
+	protected int maxRoomOffsetX = 4;
 	
-	private static final int MIN_ROOM_DISTANCE_Y = 1;
-	private static final int MAX_ROOM_DISTANCE_Y = 5;
-	private static final int MIN_ROOM_OFFSET_Y = -4;
-	private static final int MAX_ROOM_OFFSET_Y = 4;
+	protected int minRoomDistanceY = 1;
+	protected int maxRoomDistanceY = 5;
+	protected int minRoomOffsetY = -4;
+	protected int maxRoomOffsetY = 4;
 	
-	private static final float CORRIDOR_LINE_SLOPE = 0.2f;
+	protected static final float CORRIDOR_LINE_SLOPE = 0.2f;
 	
 	private static final double PROBABILITY_GOLD_DROP = 0.08;
 	
-	protected static final WeightedCollection<Integer> PROBABILITY_SPECIAL_FEATURE_COUNT = new WeightedCollection<>();
+	protected final WeightedCollection<Integer> probabilitySpecialFeatureCount = new WeightedCollection<>();
 	
-	static {
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(3, 0);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(3, 1);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 2);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 3);
+	{
+		probabilitySpecialFeatureCount.add(3, 0);
+		probabilitySpecialFeatureCount.add(3, 1);
+		probabilitySpecialFeatureCount.add(2, 2);
+		probabilitySpecialFeatureCount.add(1, 3);
 	}
 	
-	protected static final WeightedCollection<Class<? extends SpecialRoomFeature>> PROBABILITY_SPECIAL_FEATURES
+	protected final WeightedCollection<Class<? extends SpecialRoomFeature>> probabilitySpecialFeatures
 		= new WeightedCollection<>();
 	
-	static {
-		PROBABILITY_SPECIAL_FEATURES.add(15, FeatureFountain.class);
-		PROBABILITY_SPECIAL_FEATURES.add(4, FeatureChest.class);
-		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureAltar.class);
+	{
+		probabilitySpecialFeatures.add(15, FeatureFountain.class);
+		probabilitySpecialFeatures.add(4, FeatureChest.class);
+		probabilitySpecialFeatures.add(1, FeatureAltar.class);
 	}
 	
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
@@ -95,8 +95,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	
 	@Override
 	public boolean generate() {
-		int width = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
-		int height = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+		int width = nextInt(minRoomWidth, maxRoomWidth);
+		int height = nextInt(minRoomHeight, maxRoomHeight);
 
 		createRoom(
 			nextInt(1, level.getWidth() - width - 1),
@@ -119,19 +119,19 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	private void createRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
-		buildRoom(ROOM_TYPES.next(), roomX, roomY, roomWidth, roomHeight);
+		buildRoom(roomTypes.next(), roomX, roomY, roomWidth, roomHeight);
 		
 		for (int[] direction : Utils.DIRECTIONS) {
 			for (int attempts = 1; attempts < 5; ++attempts) {
-				int newRoomWidth = nextInt(MIN_ROOM_WIDTH, MAX_ROOM_WIDTH);
-				int newRoomHeight = nextInt(MIN_ROOM_HEIGHT, MAX_ROOM_HEIGHT);
+				int newRoomWidth = nextInt(minRoomWidth, maxRoomWidth);
+				int newRoomHeight = nextInt(minRoomHeight, maxRoomHeight);
 				
 				int newRoomX = roomX + direction[0] * roomWidth +
-					direction[0] * nextInt(MIN_ROOM_DISTANCE_X, MAX_ROOM_DISTANCE_X) +
-					direction[1] * nextInt(MIN_ROOM_OFFSET_X, MAX_ROOM_OFFSET_X);
+					direction[0] * nextInt(minRoomDistanceX, maxRoomDistanceX) +
+					direction[1] * nextInt(minRoomOffsetX, maxRoomOffsetX);
 				int newRoomY = roomY + direction[1] * roomHeight +
-					direction[1] * nextInt(MIN_ROOM_DISTANCE_Y, MAX_ROOM_DISTANCE_Y) +
-					direction[0] * nextInt(MIN_ROOM_OFFSET_Y, MAX_ROOM_OFFSET_Y);
+					direction[1] * nextInt(minRoomDistanceY, maxRoomDistanceY) +
+					direction[0] * nextInt(minRoomOffsetY, maxRoomOffsetY);
 				
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
@@ -265,11 +265,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	private void addRoomFeatures() {
 		rooms.forEach(Room::addFeatures);
 		
-		int featureCount = PROBABILITY_SPECIAL_FEATURE_COUNT.next();
+		int featureCount = probabilitySpecialFeatureCount.next();
 		
 		for (int i = 0; i < featureCount; i++) {
 			try {
-				Class<? extends SpecialRoomFeature> featureClass = PROBABILITY_SPECIAL_FEATURES.next();
+				Class<? extends SpecialRoomFeature> featureClass = probabilitySpecialFeatures.next();
 				Constructor featureConstructor = featureClass.getConstructor();
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
 				feature.generate(RandomUtils.randomFrom(rooms));

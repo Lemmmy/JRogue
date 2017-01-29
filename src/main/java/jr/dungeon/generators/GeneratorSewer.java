@@ -12,19 +12,19 @@ public class GeneratorSewer extends GeneratorRooms {
 	
 	private OpenSimplexNoise simplexNoise;
 	
-	static {
-		PROBABILITY_SPECIAL_FEATURE_COUNT.clear();
+	{
+		probabilitySpecialFeatureCount.clear();
 		
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(1, 1);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(2, 2);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(4, 3);
-		PROBABILITY_SPECIAL_FEATURE_COUNT.add(5, 4);
+		probabilitySpecialFeatureCount.add(1, 1);
+		probabilitySpecialFeatureCount.add(2, 2);
+		probabilitySpecialFeatureCount.add(4, 3);
+		probabilitySpecialFeatureCount.add(5, 4);
 	}
 	
-	static {
-		PROBABILITY_SPECIAL_FEATURES.clear();
+	{
+		probabilitySpecialFeatures.clear();
 		
-		PROBABILITY_SPECIAL_FEATURES.add(1, FeatureSewerDrain.class);
+		probabilitySpecialFeatures.add(1, FeatureSewerDrain.class);
 	}
 	
 	public GeneratorSewer(Level level, Tile sourceTile) {
