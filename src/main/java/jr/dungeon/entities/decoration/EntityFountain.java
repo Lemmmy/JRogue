@@ -41,7 +41,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 		return true;
 	}
 	
-	@DungeonEventHandler
+	@DungeonEventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
@@ -60,7 +60,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	
 	@Override
 	public String[] getSounds() {
-		return new String[]{
+		return new String[] {
 			"You hear a light splashing sound.",
 			"You hear a light splishing sound.",
 			"You hear a light pattering sound.",
