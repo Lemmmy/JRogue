@@ -94,8 +94,6 @@ public class TileRendererWater extends TileRendererBlob8 {
 		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
 		
-		batch.enableBlending();
-		
 		Color colourOld = batch.getColor();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 1.0f);
