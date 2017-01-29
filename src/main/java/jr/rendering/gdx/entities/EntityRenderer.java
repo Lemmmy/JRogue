@@ -14,6 +14,10 @@ public abstract class EntityRenderer {
 	protected ParticleEffectPool effectPool;
 	@Getter @Setter private boolean drawReflection = false;
 	
+	public boolean shouldBeReflected(Entity entity) {
+		return true;
+	}
+	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity);
 	
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {

@@ -67,15 +67,17 @@ public class TileRendererWater extends TileRendererBlob8 {
 	private void drawReflection(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		if (y - 1 < 0) return;
 		
+		final ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
+		
 		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
 		entities.stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
+			.filter(e -> EntityMap.getRenderer(e.getAppearance()).shouldBeReflected(e))
 			.forEach(e -> {
 				EntityRenderer renderer = EntityMap.getRenderer(e.getAppearance());
 				ShaderProgram oldShader = batch.getShader();
 				
-				ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
 				batch.setShader(reflectionShader);
 				float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
 				reflectionShader.setUniformf("u_time", time);
