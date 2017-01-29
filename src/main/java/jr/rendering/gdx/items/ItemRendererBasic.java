@@ -20,8 +20,9 @@ public class ItemRendererBasic extends ItemRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
-		drawItem(batch, image, x, y);
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean
+		reflect) {
+		drawItem(batch, image, x, y, reflect);
 	}
 	
 	@Override

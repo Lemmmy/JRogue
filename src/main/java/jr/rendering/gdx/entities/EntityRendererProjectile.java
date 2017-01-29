@@ -32,6 +32,10 @@ public class EntityRendererProjectile extends EntityRenderer {
 			rotation = (float) (Math.atan2(dy, dx) * (180 / Math.PI));
 		}
 		
-		batch.draw(image, x, y, originX, originY, width, height, 1, 1, rotation);
+		if (isDrawingReflection()) {
+			batch.draw(image, x, y + height, originX, originY, width, height, 1, -1, rotation);
+		} else {
+			batch.draw(image, x, y, originX, originY, width, height, 1, 1, rotation);
+		}
 	}
 }
