@@ -12,14 +12,13 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.roles.Role;
-import jr.dungeon.entities.player.visitors.*;
+import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
+import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
-import jr.dungeon.tiles.Tile;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -150,7 +149,7 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public int getMovementSpeed() {
-		int speed = Dungeon.NORMAL_SPEED;
+		int speed = super.getMovementSpeed();
 		
 		if (hasStatusEffect(InjuredFoot.class)) {
 			speed -= 1;
@@ -159,7 +158,7 @@ public class Player extends EntityLiving {
 		if (hasStatusEffect(StrainedLeg.class)) {
 			speed -= 1;
 		}
-		
+
 		return speed;
 	}
 	

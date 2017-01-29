@@ -5,6 +5,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
+import jr.dungeon.entities.effects.Paralysed;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
@@ -97,7 +98,13 @@ public abstract class EntityLiving extends EntityTurnBased {
 		}
 	}
 	
-	public abstract int getMovementSpeed();
+	public int getMovementSpeed() {
+		if (!this.hasStatusEffect(Paralysed.class)) {
+			return Dungeon.NORMAL_SPEED;
+		} else {
+			return 0;
+		}
+	}
 	
 	@Override
 	public int getDepth() {
