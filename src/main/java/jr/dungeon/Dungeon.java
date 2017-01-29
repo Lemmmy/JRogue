@@ -555,7 +555,11 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		if (level != null) {
 			level.getEntityStore().getEntities().forEach(e -> {
 				triggerEvent(e, event);
-				e.getSubListeners().forEach(l2 -> triggerEvent(l2, event));
+				e.getSubListeners().forEach(l2 -> {
+					if (l2 != null) {
+						triggerEvent(l2, event);
+					}
+				});
 			});
 		}
 	}
