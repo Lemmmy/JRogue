@@ -11,6 +11,7 @@ import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.tiles.TileMap;
+import jr.rendering.gdx.tiles.TileRenderer;
 
 public class LightingComponent extends RendererComponent {
 	private ShapeRenderer lightBatch;
@@ -43,6 +44,10 @@ public class LightingComponent extends RendererComponent {
 		
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
+				if (!TileRenderer.shouldDrawTile(camera, x, y)) {
+					continue;
+				}
+				
 				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
@@ -72,6 +77,10 @@ public class LightingComponent extends RendererComponent {
 		
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
+				if (!TileRenderer.shouldDrawTile(camera, x, y)) {
+					continue;
+				}
+				
 				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
