@@ -38,12 +38,12 @@ public class EntityGravestone extends Entity implements Readable {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEvent e) {
 		// TODO: shit on the player's luck
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onWalk(EntityWalkedOnEvent e) {
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}

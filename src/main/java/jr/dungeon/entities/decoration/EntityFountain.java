@@ -42,7 +42,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@DungeonEventHandler
-	protected void onWalk(EntityWalkedOnEvent e) {
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}

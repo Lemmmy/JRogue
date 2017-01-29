@@ -1,5 +1,6 @@
 package jr.rendering.gdx.tiles;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -86,6 +87,13 @@ public abstract class TileRenderer {
 				batch.draw(dim, x * width, y * height, width, height);
 			}
 		}
+	}
+	
+	public static boolean shouldDrawTile(Camera camera, int x, int y) {
+		float tx = (x + 0.5f) * TileMap.TILE_WIDTH;
+		float ty = (y + 0.5f) * TileMap.TILE_HEIGHT;
+		
+		return camera.frustum.boundsInFrustum(tx, ty, 0.0f, TileMap.TILE_WIDTH / 2, TileMap.TILE_HEIGHT / 2, 0.0f);
 	}
 	
 	public int getParticleXOffset() {

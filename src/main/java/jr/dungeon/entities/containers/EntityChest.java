@@ -72,7 +72,7 @@ public class EntityChest extends Entity {
 	}
 	
 	@DungeonEventHandler
-	protected void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEvent e) {
 		if (e.isKickerPlayer()) {
 			boolean somethingShattered = false;
 			
@@ -104,7 +104,7 @@ public class EntityChest extends Entity {
 	}
 	
 	@DungeonEventHandler
-	protected void onWalk(EntityWalkedOnEvent e) {
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}

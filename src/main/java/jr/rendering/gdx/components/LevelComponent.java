@@ -47,6 +47,10 @@ public class LevelComponent extends RendererComponent {
 	private void drawLevel(boolean extra) {
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
+				if (!TileRenderer.shouldDrawTile(camera, x, y)) {
+					continue;
+				}
+				
 				if (!level.getVisibilityStore().isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;

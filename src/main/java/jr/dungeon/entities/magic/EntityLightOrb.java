@@ -57,7 +57,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@DungeonEventHandler
-	protected void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEvent e) {
 		int x = getX() + e.getDeltaY();
 		int y = getY() + e.getDeltaY();
 		

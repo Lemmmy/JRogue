@@ -149,7 +149,7 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public int getMovementSpeed() {
-		int speed = Dungeon.NORMAL_SPEED;
+		int speed = super.getMovementSpeed();
 		
 		if (hasStatusEffect(InjuredFoot.class)) {
 			speed -= 1;
@@ -158,7 +158,7 @@ public class Player extends EntityLiving {
 		if (hasStatusEffect(StrainedLeg.class)) {
 			speed -= 1;
 		}
-		
+
 		return speed;
 	}
 	
@@ -420,7 +420,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDie(EntityDeathEvent e) {
+	public void onDie(EntityDeathEvent e) {
 		if (e.getDamageSource().getDeathString() != null) {
 			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
 		} else {

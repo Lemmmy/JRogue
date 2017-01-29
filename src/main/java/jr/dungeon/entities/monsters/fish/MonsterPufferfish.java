@@ -67,7 +67,7 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDamage(EntityDamagedEvent e) {
+	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 	

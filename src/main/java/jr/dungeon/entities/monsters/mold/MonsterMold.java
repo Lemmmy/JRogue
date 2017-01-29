@@ -87,7 +87,7 @@ public abstract class MonsterMold extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDamage(EntityDamagedEvent e) {
+	public void onDamage(EntityDamagedEvent e) {
 		if (e.getDamageSource().getDamageType() == DamageSource.DamageType.MELEE) {
 			int damageToDeal = RandomUtils.jroll(getExperienceLevel() + 1, 6);
 			
