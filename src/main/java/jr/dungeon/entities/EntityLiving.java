@@ -99,7 +99,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 	}
 	
 	public int getMovementSpeed() {
-		if (!this.hasStatusEffect(Paralysis.class)) {
+		if (!hasStatusEffect(Paralysis.class)) {
 			return Dungeon.NORMAL_SPEED;
 		} else {
 			return 0;
