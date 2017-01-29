@@ -1,0 +1,61 @@
+package jr.dungeon.entities.player.visitors;
+
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.containers.Container;
+import jr.dungeon.entities.containers.EntityItem;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.valuables.ItemGold;
+
+import java.util.List;
+import java.util.Optional;
+
+public class PlayerPickup implements PlayerVisitor {
+	@Override
+	public void visit(Player player) {
+		List<Entity> floorEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY());
+		
+		for (Entity entity : floorEntities) {
+			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
+				ItemStack stack = ((EntityItem) entity).getItemStack();
+				Item item = stack.getItem();
+				
+				if (item instanceof ItemGold) {
+					player.giveGold(stack.getCount());
+					player.getLevel().getEntityStore().removeEntity(entity);
+					player.getDungeon().turn();
+					player.getDungeon().You("pick up [YELLOW]%s[].", stack.getName(player, false));
+				} else if (player.getContainer().isPresent()) {
+					Optional<Container.ContainerEntry> result = player.getContainer().get().add(stack);
+					
+					if (!result.isPresent()) {
+						player.getDungeon().You("can't hold any more items.");
+						return;
+					}
+					
+					player.getLevel().getEntityStore().removeEntity(entity);
+					player.getDungeon().turn();
+					
+					if (item.isis() || stack.getCount() > 1) {
+						player.getDungeon().You(
+							"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
+							stack.getName(player, false),
+							result.get().getLetter()
+						);
+					} else {
+						player.getDungeon().You(
+							"pick up %s [YELLOW]%s[] ([YELLOW]%s[]).",
+							stack.beginsWithVowel(player) ? "an" : "a", stack.getName(player, false), result.get()
+								.getLetter()
+						);
+					}
+					
+					break;
+				} else {
+					player.getDungeon().yellowYou("can't hold anything!");
+				}
+			}
+		}
+	}
+}
