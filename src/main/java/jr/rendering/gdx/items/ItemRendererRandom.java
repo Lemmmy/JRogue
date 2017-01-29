@@ -27,8 +27,9 @@ public class ItemRendererRandom extends ItemRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
-		drawItem(batch, images[item.getVisualID() % count], x, y);
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean
+		reflect) {
+		drawItem(batch, images[item.getVisualID() % count], x, y, reflect);
 	}
 	
 	@Override

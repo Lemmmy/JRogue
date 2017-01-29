@@ -33,8 +33,9 @@ public class ItemRendererSword extends ItemRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
-		drawItem(batch, getImageFromMaterial(((HasMaterial) item).getMaterial(), true), x, y);
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean
+		reflect) {
+		drawItem(batch, getImageFromMaterial(((HasMaterial) item).getMaterial(), true), x, y, reflect);
 	}
 	
 	private TextureRegion getImageFromMaterial(Material material, boolean flipped) {

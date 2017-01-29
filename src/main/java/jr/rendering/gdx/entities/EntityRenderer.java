@@ -3,7 +3,6 @@ package jr.rendering.gdx.entities;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.rendering.gdx.utils.ImageLoader;
@@ -12,7 +11,7 @@ import lombok.Setter;
 
 public abstract class EntityRenderer {
 	protected ParticleEffectPool effectPool;
-	@Getter @Setter private boolean drawReflection = false;
+	@Getter @Setter private boolean drawingReflection = false;
 	
 	public boolean shouldBeReflected(Entity entity) {
 		return true;
@@ -32,7 +31,7 @@ public abstract class EntityRenderer {
 			float ex = x * width + 0.01f;
 			float ey = y * height + 0.01f;
 			
-			if (drawReflection) {
+			if (drawingReflection) {
 				batch.draw(image, ex, ey + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
 			} else {
 				batch.draw(image, ex, ey);

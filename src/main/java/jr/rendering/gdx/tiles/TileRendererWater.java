@@ -81,9 +81,9 @@ public class TileRendererWater extends TileRendererBlob8 {
 				batch.setShader(reflectionShader);
 				float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
 				reflectionShader.setUniformf("u_time", time);
-				renderer.setDrawReflection(true);
+				renderer.setDrawingReflection(true);
 				renderer.draw(batch, dungeon, e);
-				renderer.setDrawReflection(false);
+				renderer.setDrawingReflection(false);
 				
 				batch.setShader(oldShader);
 			});

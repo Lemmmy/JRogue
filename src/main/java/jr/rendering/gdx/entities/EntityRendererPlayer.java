@@ -29,7 +29,7 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		if (!isDrawReflection()) {
+		if (!isDrawingReflection()) {
 			drawEntity(batch, playerHighlight, entity.getX(), entity.getY());
 		}
 		
