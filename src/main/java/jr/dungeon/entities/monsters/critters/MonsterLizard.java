@@ -10,7 +10,6 @@ import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
-import jr.dungeon.events.DungeonEventHandler;
 
 import java.util.List;
 

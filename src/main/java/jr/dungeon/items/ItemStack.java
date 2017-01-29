@@ -1,7 +1,6 @@
 package jr.dungeon.items;
 
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.events.DungeonEventListener;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;

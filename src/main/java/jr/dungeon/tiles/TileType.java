@@ -4,7 +4,6 @@ import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.dungeon.tiles.states.TileStateDoor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.awt.*;
 import java.util.Arrays;

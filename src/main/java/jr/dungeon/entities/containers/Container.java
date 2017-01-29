@@ -1,7 +1,6 @@
 package jr.dungeon.entities.containers;
 
 import jr.ErrorHandler;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventListener;
@@ -14,7 +13,6 @@ import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.json.JSONObject;
 

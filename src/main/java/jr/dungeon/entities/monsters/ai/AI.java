@@ -15,7 +15,6 @@ import jr.utils.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;

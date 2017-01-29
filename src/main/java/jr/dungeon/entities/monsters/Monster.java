@@ -13,8 +13,6 @@ import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import org.json.JSONObject;
 
