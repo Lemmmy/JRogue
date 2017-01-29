@@ -64,31 +64,6 @@ public class TileRendererWater extends TileRendererBlob8 {
 		}
 	}
 	
-	private void drawReflection(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		if (y - 1 < 0) return;
-		
-		final ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
-		
-		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
-		entities.stream()
-			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
-			.filter(e -> EntityMap.getRenderer(e.getAppearance()).shouldBeReflected(e))
-			.forEach(e -> {
-				EntityRenderer renderer = EntityMap.getRenderer(e.getAppearance());
-				ShaderProgram oldShader = batch.getShader();
-				
-				batch.setShader(reflectionShader);
-				float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
-				reflectionShader.setUniformf("u_time", time);
-				renderer.setDrawingReflection(true);
-				renderer.draw(batch, dungeon, e);
-				renderer.setDrawingReflection(false);
-				
-				batch.setShader(oldShader);
-			});
-	}
-	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
@@ -100,7 +75,14 @@ public class TileRendererWater extends TileRendererBlob8 {
 		
 		if (waterTransparency < 1.0f) {
 			drawTile(batch, floor, x, y);
-			drawReflection(batch, dungeon, x, y);
+				
+			TileRendererReflective.drawReflection(batch, dungeon, x, y, ReflectionSettings.create(
+				0.00125f,
+				16.0f,
+				2.0f,
+				5.0f,
+				0.0f
+			));
 		}
 		
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);

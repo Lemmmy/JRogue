@@ -28,6 +28,7 @@ public enum TileMap {
 	TILE_ROOM_DOOR_CLOSED(new TileRendererDoor(TileRendererDoor.DoorState.CLOSED)),
 	TILE_ROOM_DOOR_OPEN(new TileRendererDoor(TileRendererDoor.DoorState.OPEN)),
 	TILE_ROOM_DOOR_BROKEN(new TileRendererDoor(TileRendererDoor.DoorState.BROKEN)),
+	TILE_ROOM_ICE(new TileRendererReflective(5, 1, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 1.25f, 0.0f))),
 	
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
 	TILE_ROOM_STAIRS_DOWN(new TileRendererStairs(TileRendererStairs.StairDirection.DOWN, 10, 0)),
