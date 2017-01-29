@@ -8,9 +8,10 @@ uniform mat4 u_projTrans;
 
 varying vec2 v_texCoords;
 varying vec4 v_colour;
+varying vec4 v_worldPos;
 
 void main() {
 	v_texCoords = a_texCoord0;
-	v_colour = a_color;
+	v_colour = vec4(a_color.rgb, 1.0);
 	gl_Position = u_projTrans * a_position;
 }

@@ -25,6 +25,7 @@ import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -126,6 +127,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.forEach(r -> r.setCamera(camera));
 		rendererComponents.forEach(r -> dungeon.addListener(r));
 		rendererComponents.forEach(RendererComponent::initialise);
+		
+		for (TileMap tmap : TileMap.values()) {
+			tmap.getRenderer().setRenderer(this);
+		}
 	}
 	
 	private void initialiseInputMultiplexer() {

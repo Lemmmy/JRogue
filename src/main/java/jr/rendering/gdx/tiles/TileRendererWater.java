@@ -76,7 +76,7 @@ public class TileRendererWater extends TileRendererBlob8 {
 		if (waterTransparency < 1.0f) {
 			drawTile(batch, floor, x, y);
 				
-			TileRendererReflective.drawReflection(batch, dungeon, x, y, ReflectionSettings.create(
+			TileRendererReflective.drawReflection(batch, renderer, dungeon, x, y, ReflectionSettings.create(
 				0.00125f,
 				16.0f,
 				2.0f,

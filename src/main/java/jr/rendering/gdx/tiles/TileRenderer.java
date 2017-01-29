@@ -5,17 +5,28 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.Renderer;
+import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 
 public abstract class TileRenderer {
 	private static TextureRegion dim;
 	private static TextureRegion dimLight;
+	
+	@Getter @Setter
+	protected GDXRenderer renderer;
+	
+	@Getter @Setter
+	private boolean drawingReflection = false;
 	
 	static {
 		dim = getImageFromSheet("textures/tiles.png", 9, 1);
@@ -41,7 +52,14 @@ public abstract class TileRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 			
-			batch.draw(image, x * width + 0.01f, y * height + 0.01f);
+			float tx = x * width + 0.01f;
+			float ty = y * height + 0.01f;
+			
+			if (isDrawingReflection()) {
+				batch.draw(image, tx, ty + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
+			} else {
+				batch.draw(image, tx, ty);
+			}
 		}
 	}
 	
