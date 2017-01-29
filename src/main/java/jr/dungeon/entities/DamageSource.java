@@ -20,6 +20,7 @@ public enum DamageSource {
 	GOBLIN_ZOMBIE_HIT(DamageType.MELEE),
 	MOLD_RETALIATION(DamageType.MELEE),
 	STRIKE_SPELL(DamageType.MAGIC, "The strike penetrates your body, cutting it into several pieces."),
+	FIRE("You burn to death"),
 	POISON("The poison kills you."),
 	MERCURY("The mercury kills you."),
 	FOOD_POISONING("It was a bad idea to eat that food. You die of food poisoning."),
