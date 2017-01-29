@@ -555,13 +555,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		if (level != null) {
 			level.getEntityStore().getEntities().forEach(e -> {
-				JRogue.getLogger().trace(
-					"Triggering event {} on entity {} with sublisteners: {}",
-					event.getClass().getSimpleName(),
-					e.getClass().getSimpleName(),
-					ArrayUtils.toString(e.getSubListeners().stream().map(l -> l.getClass().getSimpleName()).collect(Collectors.toList()))
-				);
-				
 				triggerEvent(e, event);
 				e.getSubListeners().forEach(l2 -> triggerEvent(l2, event));
 			});
