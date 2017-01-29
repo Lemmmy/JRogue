@@ -29,7 +29,7 @@ public class Ablaze extends StatusEffect {
 			}
 
 			if (getDamage() == 0) {
-				System.out.println("Skipping damage for a turn");
+				// fuck off lignum
 			} else if(getDamage() >= el.getMaxHealth()) {
 				el.kill(DamageSource.FIRE, getDamage(), null);
 			} else {
