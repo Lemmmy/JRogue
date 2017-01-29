@@ -7,6 +7,7 @@ import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityFountain;
+import jr.dungeon.entities.effects.*;
 import jr.dungeon.entities.magic.EntityAltar;
 import jr.dungeon.entities.monsters.canines.*;
 import jr.dungeon.entities.monsters.critters.MonsterLizard;
@@ -14,7 +15,6 @@ import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.entities.player.visitors.PlayerTeleport;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
@@ -76,6 +76,14 @@ public class Wishes {
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
+
+		// Status effects
+		// NOTE: Please add a new wish here for any status effects you implement.
+		registerWish("paralysis", new WishEffect(Paralysis.class));
+		registerWish("food poisoning", new WishEffect(FoodPoisoning.class));
+		registerWish("injured foot", new WishEffect(InjuredFoot.class));
+		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
+		registerWish("strained leg", new WishEffect(StrainedLeg.class));
 
 		// Monsters
 		registerWish("jackal", new WishSpawn<>(MonsterJackal.class));
