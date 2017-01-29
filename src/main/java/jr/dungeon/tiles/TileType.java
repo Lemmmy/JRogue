@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 @Getter
 public enum TileType {
+	TILE_IDENTITY(-1, Solidity.WALK_ON),
 	TILE_DUMMY(0, Solidity.WALK_ON),
 	
 	TILE_DEBUG_A(1, Solidity.WALK_ON),
