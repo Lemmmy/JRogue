@@ -9,7 +9,6 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 

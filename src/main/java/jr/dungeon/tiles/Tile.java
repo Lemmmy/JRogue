@@ -3,12 +3,10 @@ package jr.dungeon.tiles;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
-import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
-import java.awt.Point;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 

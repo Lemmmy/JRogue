@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
-import jr.dungeon.entities.player.visitors.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;

@@ -10,13 +10,11 @@ import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 

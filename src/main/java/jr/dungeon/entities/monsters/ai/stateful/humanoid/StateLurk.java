@@ -9,11 +9,8 @@ import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class StateLurk extends AIState {

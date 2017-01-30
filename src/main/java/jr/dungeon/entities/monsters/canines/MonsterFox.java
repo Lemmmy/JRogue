@@ -5,7 +5,6 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
 
 import java.util.List;
 
