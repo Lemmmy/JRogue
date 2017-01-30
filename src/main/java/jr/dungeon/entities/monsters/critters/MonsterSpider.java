@@ -11,6 +11,8 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
@@ -28,8 +30,9 @@ public class MonsterSpider extends Monster {
 		
 		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
 		
-		setAI(new GhoulAI(this));
-		getAI().addAvoidTile(TileType.TILE_GROUND_WATER);
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override

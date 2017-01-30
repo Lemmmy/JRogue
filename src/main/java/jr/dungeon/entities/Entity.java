@@ -11,6 +11,7 @@ import jr.dungeon.entities.events.EntityTeleportedToEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Persisting;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
@@ -70,6 +71,10 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public abstract EntityAppearance getAppearance();
 	
+	public Point getPosition() {
+		return Point.getPoint(x, y);
+	}
+	
 	public void setPosition(int x, int y) {
 		setLastX(getX());
 		setLastY(getY());
@@ -77,6 +82,14 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		setY(y);
 		
 		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+	}
+	
+	public Point getLastPosition() {
+		return Point.getPoint(lastX, lastY);
+	}
+	
+	public Point getLastSeenPosition() {
+		return Point.getPoint(lastSeenX, lastSeenY);
 	}
 	
 	public int getDepth() {

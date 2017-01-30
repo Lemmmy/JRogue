@@ -1,6 +1,7 @@
 package jr.dungeon.entities.monsters.ai;
 
 import jr.JRogue;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
@@ -8,10 +9,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Path;
-import jr.utils.Persisting;
-import jr.utils.Serialisable;
-import jr.utils.Utils;
+import jr.utils.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -102,7 +100,15 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 	public void moveTowardsPlayer() {
 		Player player = monster.getDungeon().getPlayer();
 		
-		moveTowards(player.getX(), player.getY());
+		moveTowards(player);
+	}
+	
+	public void moveTowards(Entity entity) {
+		moveTowards(entity.getPosition());
+	}
+	
+	public void moveTowards(Point point) {
+		moveTowards(point.getX(), point.getY());
 	}
 	
 	public void moveTowards(int destX, int destY) {

@@ -2,6 +2,8 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.utils.MultiLineNoPrefixToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class StateSearch extends AIState {
 	public StateSearch(StatefulAI ai, int duration) {
@@ -22,9 +24,15 @@ public class StateSearch extends AIState {
 			return;
 		}
 		
-		int destX = getAI().getTargetLastX();
-		int destY = getAI().getTargetLastY();
-		
-		getAI().moveTowards(destX, destY);
+		getAI().moveTowards(getAI().getTargetLastPos());
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("duration", getDuration())
+			.append("turnsTaken", getTurnsTaken())
+			.append("dest", getAI().getTargetLastPos())
+			.toString();
 	}
 }

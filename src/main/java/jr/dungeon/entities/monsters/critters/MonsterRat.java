@@ -11,6 +11,8 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.GhoulAI;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
@@ -27,7 +29,9 @@ public class MonsterRat extends Monster {
 		
 		speed = Dungeon.NORMAL_SPEED + 4 - RandomUtils.random(8);
 		
-		setAI(new GhoulAI(this));
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override

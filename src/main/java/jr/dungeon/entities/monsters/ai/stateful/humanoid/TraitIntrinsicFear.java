@@ -16,22 +16,27 @@ public class TraitIntrinsicFear extends AITrait {
 	
 	@Override
 	public void serialise(JSONObject obj) {
-		obj.put("fear", fear);
+		obj.put("intrinsicFear", fear);
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		fear = obj.getInt("fear");
+		fear = obj.getInt("intrinsicFear");
 	}
 	
 	@Override
 	public void update() {
-		if (RandomUtils.randomFloat() < 0.04f) {
-			fear = 0;
-		}
+		// TODO: ensure this is balanced
 		
-		if (getMonster().getHealth() < getMonster().getMaxHealth() / 2) {
-			
+		// if the current target's armour class is 5 lower than our own,
+		// extrinsic fear is 0.5
+		
+		if (
+			getAI().getCurrentTarget() != null &&
+			getMonster().getArmourClass() - getAI().getCurrentTarget().getArmourClass() >= 5 &&
+			RandomUtils.randomFloat() < 0.25f
+		) {
+			fear = 0.5f;
 		}
 	}
 }

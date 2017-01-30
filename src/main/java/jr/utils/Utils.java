@@ -68,6 +68,13 @@ public class Utils {
 		return Math.max(dy, dx);
 	}
 	
+	public static float octileDistance(int ax, int ay, int bx, int by, float d, float d2) {
+		int dx = Math.abs(ax - bx);
+		int dy = Math.abs(ay - by);
+		
+		return d * (dx + dy) + (d2 - 2 * d) * Math.min(dx, dy);
+	}
+	
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour, int dummyID) {
 		if (DUMMY_COLOURS.containsKey(dummyID)) {
 			com.badlogic.gdx.graphics.Color c = DUMMY_COLOURS.get(dummyID);

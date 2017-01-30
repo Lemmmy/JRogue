@@ -12,10 +12,6 @@ import java.util.List;
 public class MonsterFox extends MonsterCanine {
 	public MonsterFox(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
-		
-		if (getAI() instanceof GhoulAI) {
-			((GhoulAI) getAI()).setAttackProbability(0.65f);
-		}
 	}
 	
 	@Override

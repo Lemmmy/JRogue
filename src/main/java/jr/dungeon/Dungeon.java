@@ -576,6 +576,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			.filter(m -> m.getParameterCount() == 1)
 			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
 			.forEach(m -> {
+				m.setAccessible(true); // ha ha
+				
 				if (event.isCancelled()) {
 					return;
 				}
