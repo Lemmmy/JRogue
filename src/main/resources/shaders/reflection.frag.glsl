@@ -1,7 +1,5 @@
 #version 120
 
-precision mediump float;
-
 #define PI 3.141592654
 
 uniform float u_waveAmplitude;
