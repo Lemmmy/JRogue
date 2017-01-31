@@ -71,7 +71,7 @@ public class EntityChest extends Entity {
 		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
 	}
 	
-	@DungeonEventHandler
+	@DungeonEventHandler(selfOnly = true)
 	public void onKick(EntityKickedEvent e) {
 		if (e.isKickerPlayer()) {
 			boolean somethingShattered = false;
@@ -103,7 +103,7 @@ public class EntityChest extends Entity {
 		}
 	}
 	
-	@DungeonEventHandler
+	@DungeonEventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
