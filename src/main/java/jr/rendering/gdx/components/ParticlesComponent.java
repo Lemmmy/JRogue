@@ -1,6 +1,7 @@
 package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
@@ -10,6 +11,7 @@ import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.TurnEvent;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.ParticleEffectMap;
+import jr.rendering.gdx.tiles.TileMap;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -30,7 +32,13 @@ public abstract class ParticlesComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
-		pooledEffects.forEach(p -> p.getPooledEffect().draw(renderer.getMainBatch()));
+		pooledEffects.forEach(p -> {
+			if (dungeon.getLevel().getVisibilityStore().isTileInvisible(p.getX(), p.getY())) {
+				return;
+			}
+			
+			p.getPooledEffect().draw(renderer.getMainBatch());
+		});
 	}
 	
 	@Override
@@ -38,7 +46,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 		for (Iterator<PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
 			PooledEffect effect = iterator.next();
 			
-			effect.getPooledEffect().update(dt);
+			effect.getPooledEffect().update(dt * effect.getOriginalEffect().getDeltaModifier());
 			
 			if (effect.getPooledEffect().isComplete()) {
 				effect.getPooledEffect().free();
@@ -76,25 +84,21 @@ public abstract class ParticlesComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
-	public void onEntityMoved(EntityMovedEvent event) {
-		Entity e = event.getEntity();
-		
-		if (
-			e.getLevel() == dungeon.getLevel() &&
-			e.getLevel().getTileStore().getTileType(e.getPosition())
-		) {
-			
-		}
-	}
-	
 	public void addEffect(ParticleEffectMap effect, int x, int y, int duration) {
-		pooledEffects.add(new PooledEffect(
+		PooledEffect e = new PooledEffect(
+			effect,
 			effect.getPool().obtain(),
 			x,
 			y,
 			duration
-		));
+		);
+		
+		e.getPooledEffect().setPosition(
+			x * TileMap.TILE_WIDTH + effect.getXOffset(),
+			y * TileMap.TILE_HEIGHT + effect.getYOffset()
+		);
+		
+		pooledEffects.add(e);
 	}
 	
 	@Override
@@ -104,6 +108,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	
 	@Getter
 	public class PooledEffect {
+		private ParticleEffectMap originalEffect;
 		private ParticleEffectPool.PooledEffect pooledEffect;
 		
 		private int x;
@@ -117,7 +122,13 @@ public abstract class ParticlesComponent extends RendererComponent {
 		
 		private int turnsTaken;
 		
-		public PooledEffect(ParticleEffectPool.PooledEffect pooledEffect, int x, int y, int duration) {
+		public PooledEffect(
+			ParticleEffectMap originalEffect,
+			ParticleEffectPool.PooledEffect pooledEffect,
+			int x, int y,
+			int duration
+		) {
+			this.originalEffect = originalEffect;
 			this.pooledEffect = pooledEffect;
 			
 			this.x = x;
@@ -139,6 +150,18 @@ public abstract class ParticlesComponent extends RendererComponent {
 		@Override
 		public int getZIndex() {
 			return 15;
+		}
+		
+		@DungeonEventHandler
+		public void onEntityMoved(EntityMovedEvent event) {
+			Entity e = event.getEntity();
+			
+			if (
+				e.getLevel() == dungeon.getLevel() &&
+					e.getLevel().getTileStore().getTileType(e.getPosition()).isWater()
+				) {
+				addEffect(ParticleEffectMap.WATER_STEP, e.getX(), e.getY(), 0);
+			}
 		}
 	}
 	
