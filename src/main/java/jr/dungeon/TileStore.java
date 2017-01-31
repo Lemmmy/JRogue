@@ -4,6 +4,7 @@ import jr.JRogue;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileState;
+import jr.utils.Point;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -148,12 +149,20 @@ public class TileStore implements Serialisable {
 		return tiles[width * y + x];
 	}
 	
+	public Tile getTile(Point point) {
+		return getTile(point.getX(), point.getY());
+	}
+	
 	public TileType getTileType(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return null;
 		}
 		
 		return getTile(x, y).getType();
+	}
+	
+	public TileType getTileType(Point point) {
+		return getTileType(point.getX(), point.getY());
 	}
 	
 	public void setTileType(int x, int y, TileType tile) {

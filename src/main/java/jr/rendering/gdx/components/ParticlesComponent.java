@@ -3,6 +3,7 @@ package jr.rendering.gdx.components;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
@@ -76,8 +77,15 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityMoved(EntityMovedEvent e) {
-		if (e.getEntity())
+	public void onEntityMoved(EntityMovedEvent event) {
+		Entity e = event.getEntity();
+		
+		if (
+			e.getLevel() == dungeon.getLevel() &&
+			e.getLevel().getTileStore().getTileType(e.getPosition())
+		) {
+			
+		}
 	}
 	
 	public void addEffect(ParticleEffectMap effect, int x, int y, int duration) {
