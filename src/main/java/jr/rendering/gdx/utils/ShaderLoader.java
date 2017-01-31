@@ -2,6 +2,7 @@ package jr.rendering.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import jr.ErrorHandler;
 import jr.JRogue;
 
 import java.util.Map;
@@ -16,7 +17,7 @@ public class ShaderLoader {
 				new ShaderProgram(Gdx.files.classpath(n + ".vert.glsl"), Gdx.files.classpath(n + ".frag.glsl"));
 			
 			if (!shader.isCompiled()) {
-				JRogue.getLogger().info("Failed to compile shader '{}': {}", name, shader.getLog());
+				ErrorHandler.error(String.format("Failed to compile shader '%s': %s", name, shader.getLog()), null);
 				return null;
 			}
 			
