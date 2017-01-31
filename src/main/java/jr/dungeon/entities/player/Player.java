@@ -17,6 +17,7 @@ import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.GameStartedEvent;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.utils.RandomUtils;
@@ -259,6 +260,17 @@ public class Player extends EntityLiving {
 			++spendableSkillPoints,
 			spendableSkillPoints == 1 ? "" : "s"
 		);
+	}
+	
+	@DungeonEventHandler
+	public void onGameStarted(GameStartedEvent event) {
+		if (spendableSkillPoints > 0) {
+			getDungeon().greenYou(
+				"have %,d spendable skill point%s.",
+				spendableSkillPoints,
+				spendableSkillPoints == 1 ? "" : "s"
+			);
+		}
 	}
 	
 	@Override

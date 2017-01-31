@@ -2,6 +2,7 @@ package jr.utils;
 
 import com.badlogic.gdx.Input;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,5 +93,24 @@ public class Utils {
 			
 			return c;
 		}
+	}
+
+	public static Color mixColours(Color colour1, Color colour2) {
+		final float r1 = colour1.getRed() / 255.0f;
+		final float g1 = colour1.getGreen() / 255.0f;
+		final float b1 = colour1.getBlue() / 255.0f;
+		final float a1 = colour1.getAlpha() / 255.0f;
+
+		final float r2 = colour2.getRed() / 255.0f;
+		final float g2 = colour2.getGreen() / 255.0f;
+		final float b2 = colour2.getBlue() / 255.0f;
+		final float a2 = colour1.getAlpha() / 255.0f;
+
+		return new Color(
+			(int)(r1 * r2 * 255),
+			(int)(g1 * g2 * 255),
+			(int)(b1 * b2 * 255),
+			(int)(a1 * a2 * 255)
+		);
 	}
 }

@@ -39,7 +39,10 @@ public class JRogue {
 	
 	@Getter
 	private static Logger logger;
-	
+
+	@Getter
+	private static Settings settings;
+
 	public Dungeon dungeon;
 	public jr.rendering.Renderer renderer;
 	
@@ -75,10 +78,10 @@ public class JRogue {
 		
 		reflections = new Reflections(cb);
 	}
-	
+
 	private void start(Settings settings) {
-		dungeon = Dungeon.load(settings);
-		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
+		dungeon = Dungeon.load();
+		renderer = new GDXRenderer(dungeon); // TODO: Make this configurable
 	}
 	
 	public static void main(String[] args) {
@@ -130,8 +133,6 @@ public class JRogue {
 		
 		String homeDirectory = System.getProperty("user.home");
 		File configFile = Paths.get(homeDirectory, CONFIG_FILE_NAME).toFile();
-
-		Settings settings;
 
 		if (cmd.hasOption("config")) {
 			settings = loadConfig(new File(cmd.getOptionValue("config")));
