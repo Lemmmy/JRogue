@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.events.*;
@@ -55,11 +56,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
-	public GDXRenderer(Settings settings, Dungeon dungeon) {
-		this.settings = settings;
-		
+	public GDXRenderer(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
+
+		settings = JRogue.getSettings();
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setResizable(true);

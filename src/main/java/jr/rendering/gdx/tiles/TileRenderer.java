@@ -5,15 +5,35 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import jr.JRogue;
+import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
+import jr.dungeon.TileStore;
+import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Utils;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class TileRenderer {
+	private static final boolean AO_ENABLED = true;
+
+	private static final Map<Integer, Integer[]> AO_MODES = new HashMap<>();
+
+	static {
+		AO_MODES.put(0, null);
+		AO_MODES.put(1, new Integer[] { 180, 200, 220, 255 });
+		AO_MODES.put(2, new Integer[] { 130, 170, 200, 255 });
+		AO_MODES.put(3, new Integer[] { 100, 140, 170, 255 });
+		AO_MODES.put(4, new Integer[] { 0, 0, 0, 0 });
+	}
+
 	private static TextureRegion dim;
 	private static TextureRegion dimLight;
 	
@@ -44,6 +64,21 @@ public abstract class TileRenderer {
 			batch.draw(image, x * width + 0.01f, y * height + 0.01f);
 		}
 	}
+
+
+	private static int aoVal(Tile t) {
+		return t == null ? 0 : (t.getType().getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0;
+	}
+
+	private static Color vAOCol(int i) {
+		int rgb = AO_MODES.get(JRogue.getSettings().getAOLevel())[i];
+		return new Color(rgb, rgb, rgb, 255);
+	}
+
+	private static int vAO(Tile s1, Tile s2, Tile c) {
+		if (aoVal(s1) == 1 && aoVal(s2) == 1) return 0;
+		return 3 - (aoVal(s1) + aoVal(s2) + aoVal(c));
+	}
 	
 	public void drawLight(ShapeRenderer batch, Dungeon dungeon, int x, int y) {
 		int width = TileMap.TILE_WIDTH;
@@ -53,20 +88,26 @@ public abstract class TileRenderer {
 		Color ctr = Color.BLACK;
 		Color cbr = Color.BLACK;
 		Color cbl = Color.BLACK;
-		
-		Tile tl = dungeon.getLevel().getTileStore().getTile(x, y);
-		Tile tr = dungeon.getLevel().getTileStore().getTile(x + 1, y);
-		Tile br = dungeon.getLevel().getTileStore().getTile(x + 1, y + 1);
-		Tile bl = dungeon.getLevel().getTileStore().getTile(x, y + 1);
-		
-		if (tl != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x, y)) { ctl = tl.getLightColour(); }
-		if (tr != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x + 1, y)) { ctr = tr.getLightColour(); }
-		if (br != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x + 1, y + 1)) { cbr = br.getLightColour(); }
-		if (bl != null && dungeon.getLevel().getVisibilityStore().isTileDiscovered(x, y + 1)) { cbl = bl.getLightColour(); }
-		
+
+		Level lvl = dungeon.getLevel();
+		TileStore ts = lvl.getTileStore();
+
+		Tile tl = ts.getTile(x, y);
+		Tile tr = ts.getTile(x + 1, y);
+		Tile br = ts.getTile(x + 1, y + 1);
+		Tile bl = ts.getTile(x, y + 1);
+
+		VisibilityStore vs = lvl.getVisibilityStore();
+
+		if (tl != null && vs.isTileDiscovered(x, y)) ctl = tl.getLightColour();
+		if (tr != null && vs.isTileDiscovered(x + 1, y)) ctr = tr.getLightColour();
+		if (br != null && vs.isTileDiscovered(x + 1, y + 1)) cbr = br.getLightColour();
+		if (bl != null && vs.isTileDiscovered(x, y + 1)) cbl = bl.getLightColour();
+
 		float lx = (x + 0.5f) * width;
 		float ly = (y + 0.5f) * height;
-		
+
+		// Lighting
 		batch.rect(
 			lx, ly, width, height,
 			Utils.awtColourToGdx(ctl, 0),
@@ -74,6 +115,36 @@ public abstract class TileRenderer {
 			Utils.awtColourToGdx(cbr, 2),
 			Utils.awtColourToGdx(cbl, 3)
 		);
+
+		// Ambient occlusion
+		if (AO_ENABLED && tl != null && (tl.getType().getFlags() & TileFlag.WALL) != TileFlag.WALL) {
+			Tile al = dungeon.getLevel().getTileStore().getTile(x - 1, y);
+			Tile ar = dungeon.getLevel().getTileStore().getTile(x + 1, y);
+			Tile at = dungeon.getLevel().getTileStore().getTile(x, y - 1);
+			Tile ab = dungeon.getLevel().getTileStore().getTile(x, y + 1);
+			Tile atl = dungeon.getLevel().getTileStore().getTile(x - 1, y - 1);
+			Tile atr = dungeon.getLevel().getTileStore().getTile(x + 1, y - 1);
+			Tile abl = dungeon.getLevel().getTileStore().getTile(x - 1, y + 1);
+			Tile abr = dungeon.getLevel().getTileStore().getTile(x + 1, y + 1);
+
+			int aotl = vAO(al, at, atl);
+			int aotr = vAO(ar, at, atr);
+			int aobl = vAO(al, ab, abl);
+			int aobr = vAO(ar, ab, abr);
+
+			Color caotl = vAOCol(aotl);
+			Color caotr = vAOCol(aotr);
+			Color caobl = vAOCol(aobl);
+			Color caobr = vAOCol(aobr);
+
+			batch.rect(
+				x * width, y * height, width, height,
+				Utils.awtColourToGdx(caotl, 0),
+				Utils.awtColourToGdx(caotr, 1),
+				Utils.awtColourToGdx(caobr, 2),
+				Utils.awtColourToGdx(caobl, 3)
+			);
+		}
 	}
 	
 	public void drawDim(SpriteBatch batch, Dungeon dungeon, int x, int y) {
