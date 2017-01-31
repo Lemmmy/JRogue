@@ -13,7 +13,12 @@ public class EntityRendererBasic extends EntityRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return image;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, image, entity.getLastSeenX(), entity.getLastSeenY());
+		drawEntity(batch, getTextureRegion(dungeon, entity), entity.getLastSeenX(), entity.getLastSeenY());
 	}
 }

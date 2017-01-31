@@ -25,7 +25,7 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
@@ -33,31 +33,41 @@ public class TileRendererWall extends TileRenderer {
 		boolean top = adjacentTiles[2].isInnerRoomTile();
 		
 		if (top && x % 2 == 0) {
-			drawTile(batch, wallHPillar, x, y);
+			return wallHPillar;
 		} else if (h && !v) {
-			drawTile(batch, wallH, x, y);
+			return wallH;
 		} else if (!h && v) {
-			drawTile(batch, wallV, x, y);
+			return wallV;
 		} else {
-			if (adjacentTiles[2].isWallTile()) {
-				drawTile(batch, wallCT, x, y);
-			} else {
-				drawTile(batch, wallCB, x, y);
-			}
+			return adjacentTiles[2].isWallTile() ? wallCT : wallCB;
 		}
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		super.drawExtra(batch, dungeon, x, y);
-		
+	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean top = adjacentTiles[2].isInnerRoomTile();
 		
 		if (h && top && x % 2 == 0) {
-			drawTile(batch, wallHPillarExtra, x, y + 1);
+			return wallHPillarExtra;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	}
+	
+	@Override
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
+		
+		if (t != null) {
+			drawTile(batch, t, x, y + 1);
 		}
 	}
 }

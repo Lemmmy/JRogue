@@ -1,5 +1,6 @@
 package jr;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx.GDXRenderer;
@@ -44,6 +45,8 @@ public class JRogue {
 
 	public Dungeon dungeon;
 	public jr.rendering.Renderer renderer;
+	
+	public static final long START_TIME = TimeUtils.millis();
 	
 	public JRogue(Settings settings) {
 		initialiseReflections();
