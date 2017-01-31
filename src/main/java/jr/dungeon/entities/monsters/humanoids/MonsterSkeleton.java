@@ -22,8 +22,9 @@ public class MonsterSkeleton extends Monster {
 	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		setAI(new StatefulAI(this));
-		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override

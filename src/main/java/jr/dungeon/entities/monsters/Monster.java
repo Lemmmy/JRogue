@@ -9,11 +9,11 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.val;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -143,5 +143,15 @@ public abstract class Monster extends EntityLiving {
 		super.unserialise(obj);
 		
 		ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+	}
+	
+	@Override
+	public List<DungeonEventListener> getSubListeners() {
+		val subListeners = super.getSubListeners();
+		
+		subListeners.add(ai);
+		subListeners.addAll(ai.getSubListeners());
+		
+		return subListeners;
 	}
 }

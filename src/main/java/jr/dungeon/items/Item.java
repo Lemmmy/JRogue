@@ -3,6 +3,7 @@ package jr.dungeon.items;
 import jr.JRogue;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.utils.Persisting;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Getter
-public abstract class Item implements Serialisable, Persisting {
+public abstract class Item implements Serialisable, Persisting, DungeonEventListener {
 	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
 	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	

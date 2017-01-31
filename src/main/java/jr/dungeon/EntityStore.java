@@ -6,6 +6,7 @@ import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
+import jr.utils.Point;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -112,6 +113,12 @@ public class EntityStore implements Serialisable {
 	public List<Entity> getEntitiesAt(int x, int y) {
 		return entities.values().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)
+			.collect(Collectors.toList());
+	}
+	
+	public List<Entity> getEntitiesAt(Point p) {
+		return entities.values().stream()
+			.filter(e -> e.getPosition().equals(p))
 			.collect(Collectors.toList());
 	}
 	
