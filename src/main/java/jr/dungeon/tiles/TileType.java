@@ -53,7 +53,8 @@ public enum TileType {
 	
 	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON),
 
-	TILE_L_NOISE(32, TileFlag.BUILDABLE, Solidity.SOLID);
+	TILE__NOISE(32, TileFlag.BUILDABLE, Solidity.SOLID),
+	TILE__FLOOR(34, TileFlag.FLOOR, Solidity.WALK_ON);
 	
 	private short id;
 	private int flags;

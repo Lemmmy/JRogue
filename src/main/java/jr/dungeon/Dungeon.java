@@ -14,7 +14,7 @@ import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
-import jr.dungeon.generators.GeneratorLimbo;
+import jr.dungeon.generators.Generator_;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.OperatingSystem;
@@ -95,7 +95,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorLimbo.class);
+		level.generate(null, Generator_.class);
 		
 		if (player == null) {
 			player = new Player(

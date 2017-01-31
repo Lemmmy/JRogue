@@ -4,8 +4,8 @@ import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
-public class GeneratorLimbo extends GeneratorStandard {
-	public GeneratorLimbo(Level level, Tile sourceTile) {
+public class Generator_ extends GeneratorStandard {
+	public Generator_(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 		spawnWater = false;
 		spawnSewers = false;
@@ -13,7 +13,7 @@ public class GeneratorLimbo extends GeneratorStandard {
 	
 	@Override
 	public Climate getClimate() {
-		return Climate.LIMBO;
+		return Climate.__;
 	}
 	
 	@Override
@@ -28,7 +28,16 @@ public class GeneratorLimbo extends GeneratorStandard {
 	
 	@Override
 	public TileType getGroundTileType() {
-		return TileType.TILE_L_NOISE;
+		return TileType.TILE__NOISE;
 	}
-	
+
+	@Override
+	public TileType getFloorTileType() {
+		return TileType.TILE__FLOOR;
+	}
+
+	@Override
+	public TileType getWallTileType() {
+		return TileType.TILE__FLOOR;
+	}
 }

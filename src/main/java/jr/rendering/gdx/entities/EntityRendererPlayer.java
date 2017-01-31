@@ -26,7 +26,12 @@ public class EntityRendererPlayer extends EntityRenderer {
 		
 		effectPool = new ParticleEffectPool(waterStepEffect, 0, 250);
 	}
-	
+
+	@Override
+	public boolean shouldRenderReal(Entity entity) {
+		return true;
+	}
+
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
 		return getTextureFromPlayer((Player) entity);
