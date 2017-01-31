@@ -34,10 +34,6 @@ public class Tile {
 		
 		initialiseState();
 	}
-
-	public int getAOValue() {
-		return (type.getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0;
-	}
 	
 	public void resetLight() {
 		lightColour = type.getLightColour();

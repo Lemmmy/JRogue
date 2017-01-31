@@ -16,8 +16,6 @@ import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Utils;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class TileRenderer {
 	private static final boolean AO_ENABLED = true;
@@ -59,7 +57,7 @@ public abstract class TileRenderer {
 
 
 	private static int aoVal(Tile t) {
-		return t == null ? 0 : t.getAOValue();
+		return t == null ? 0 : ((t.getType().getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0);
 	}
 
 	private static Color vAOCol(int i) {
