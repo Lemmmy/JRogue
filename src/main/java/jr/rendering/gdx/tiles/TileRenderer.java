@@ -21,7 +21,7 @@ public abstract class TileRenderer {
 	private static final boolean AO_ENABLED = true;
 
 	private static final int[] AO_BRIGHTNESS_MAP = new int[] {
-		25, 100, 150, 255
+		190, 200, 220, 255
 	};
 
 	private static TextureRegion dim;
@@ -57,7 +57,7 @@ public abstract class TileRenderer {
 
 
 	private static int aoVal(Tile t) {
-		return t == null ? 0 : ((t.getType().getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0);
+		return t == null ? 0 : (t.getType().getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0;
 	}
 
 	private static Color vAOCol(int i) {
