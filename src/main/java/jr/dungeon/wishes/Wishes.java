@@ -76,8 +76,13 @@ public class Wishes {
 		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+
+		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
+		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
+		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
+
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
