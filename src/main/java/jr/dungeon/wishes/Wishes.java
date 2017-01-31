@@ -65,11 +65,14 @@ public class Wishes {
 				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
-		registerWish("downstairs", (d, p, a) ->
+		registerWish("(?:ds|downstairs)", (d, p, a) ->
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
-				.ifPresent(t -> p.defaultVisitors.teleport(t.getX(), t.getY())));
+				.ifPresent(t -> {
+					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.defaultVisitors.climbDown();
+				}));
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
