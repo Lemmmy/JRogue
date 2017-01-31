@@ -14,6 +14,11 @@ public class EntityRendererProjectile extends EntityRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return image;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
 		int worldX = entity.getLastSeenX();
 		int worldY = entity.getLastSeenY();
@@ -33,9 +38,23 @@ public class EntityRendererProjectile extends EntityRenderer {
 		}
 		
 		if (isDrawingReflection()) {
-			batch.draw(image, x, y + height, originX, originY, width, height, 1, -1, rotation);
+			batch.draw(
+				getTextureRegion(dungeon, entity),
+				x, y + height,
+				originX, originY,
+				width, height,
+				1, -1,
+				rotation
+			);
 		} else {
-			batch.draw(image, x, y, originX, originY, width, height, 1, 1, rotation);
+			batch.draw(
+				getTextureRegion(dungeon, entity),
+				x, y,
+				originX, originY,
+				width, height,
+				1, 1,
+				rotation
+			);
 		}
 	}
 }

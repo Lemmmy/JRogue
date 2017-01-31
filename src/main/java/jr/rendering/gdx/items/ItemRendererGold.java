@@ -27,9 +27,13 @@ public class ItemRendererGold extends ItemRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean
-		reflect) {
-		drawItem(batch, getImageFromAmount(itemStack.getCount(), true), x, y, reflect);
+	public TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect) {
+		return getImageFromAmount(itemStack.getCount(), true);
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean reflect) {
+		drawItem(batch, getTextureRegion(dungeon, itemStack, item, reflect), x, y, reflect);
 	}
 	
 	private TextureRegion getImageFromAmount(int count, boolean flipped) {

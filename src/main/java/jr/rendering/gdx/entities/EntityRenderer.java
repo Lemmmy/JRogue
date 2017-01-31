@@ -17,6 +17,8 @@ public abstract class EntityRenderer {
 		return true;
 	}
 	
+	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
+	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity);
 	
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {

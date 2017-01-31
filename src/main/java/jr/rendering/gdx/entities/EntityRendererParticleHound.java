@@ -8,21 +8,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 
-public class EntityRendererParticleHound extends EntityRenderer {
+public class EntityRendererParticleHound extends EntityRendererBasic {
 	protected TextureRegion image;
 	
 	public EntityRendererParticleHound(int sheetX, int sheetY, String particleName) {
-		image = getImageFromSheet("textures/entities.png", sheetX, sheetY);
+		super("textures/entities.png", sheetX, sheetY);
 		
 		ParticleEffect effect = new ParticleEffect();
 		effect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(effect, 100, 500);
-	}
-	
-	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawEntity(batch, image, entity.getLastSeenX(), entity.getLastSeenY());
 	}
 	
 	@Override
