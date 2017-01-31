@@ -34,6 +34,11 @@ public class Settings {
 	
 	@Setting(comment="[Debug] Show AI information.")
 	private boolean showAIDebug = false;
+
+	@Setting(comment="Ambient occlusion strength. 0=none, 3=maximum")
+	private int aoLevel = 1;
+
+	protected Settings() {}
 	
 	public String getPlayerName() {
 		if (playerName == null) {
@@ -51,5 +56,9 @@ public class Settings {
 		}
 		
 		this.playerName = playerName;
+	}
+
+	public int getAOLevel() {
+		return Math.min(Math.max(aoLevel, 0), 4);
 	}
 }

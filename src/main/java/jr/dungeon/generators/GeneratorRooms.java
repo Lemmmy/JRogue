@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class GeneratorRooms extends DungeonGenerator {
-	private final WeightedCollection<Class<? extends Room>> roomTypes = new WeightedCollection<>();
+	protected final WeightedCollection<Class<? extends Room>> roomTypes = new WeightedCollection<>();
 	
 	{
 		roomTypes.add(49, RoomBasic.class);

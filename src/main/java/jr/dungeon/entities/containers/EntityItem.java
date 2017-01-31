@@ -62,7 +62,7 @@ public class EntityItem extends Entity {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEvent e) {
 		int x = getX() + e.getDeltaX();
 		int y = getY() + e.getDeltaY();
 		

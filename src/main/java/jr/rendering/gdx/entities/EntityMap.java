@@ -69,4 +69,8 @@ public enum EntityMap {
 	public EntityRenderer getRenderer() {
 		return renderer;
 	}
+	
+	public static EntityRenderer getRenderer(EntityAppearance appearance) {
+		return valueOf(appearance.name()).getRenderer();
+	}
 }

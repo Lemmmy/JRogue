@@ -78,8 +78,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 
 	private final JSONObject persistence = new JSONObject();
 
-	public Dungeon(Settings settings) {
-		this.settings = settings;
+	public Dungeon() {
+		this.settings = JRogue.getSettings();
 		
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
@@ -136,8 +136,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 	}
 	
-	public static Dungeon load(Settings settings) {
-		Dungeon dungeon = new Dungeon(settings);
+	public static Dungeon load() {
+		Dungeon dungeon = new Dungeon();
 		
 		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 		
@@ -342,15 +342,18 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	public void start() {
 		triggerEvent(new LevelChangeEvent(level));
+		triggerEvent(new BeforeGameStartedEvent(turn <= 0));
 		
 		if (turn <= 0) {
 			You("drop down into [CYAN]%s[].", this.name);
 			turn();
+			triggerEvent(new GameStartedEvent(true));
 		} else {
 			triggerEvent(new BeforeTurnEvent(turn));
 			log("Welcome back to [CYAN]%s[].", this.name);
 			level.getEntityStore().processEntityQueues();
 			triggerEvent(new TurnEvent(turn));
+			triggerEvent(new GameStartedEvent(false));
 		}
 	}
 	

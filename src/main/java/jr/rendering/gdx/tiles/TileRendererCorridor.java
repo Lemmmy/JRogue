@@ -24,6 +24,11 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return corridor;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 		

@@ -28,9 +28,17 @@ public class EntityRendererPlayer extends EntityRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return getTextureFromPlayer((Player) entity);
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, playerHighlight, entity.getX(), entity.getY());
-		drawTile(batch, getTextureFromPlayer((Player) entity), entity.getX(), entity.getY());
+		if (!isDrawingReflection()) {
+			drawEntity(batch, playerHighlight, entity.getX(), entity.getY());
+		}
+		
+		drawEntity(batch, getTextureRegion(dungeon, entity), entity.getX(), entity.getY());
 	}
 	
 	private TextureRegion getTextureFromPlayer(Player player) {

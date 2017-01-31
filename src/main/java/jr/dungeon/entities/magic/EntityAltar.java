@@ -29,13 +29,13 @@ public class EntityAltar extends Entity {
 		return EntityAppearance.APPEARANCE_ALTAR;
 	}
 	
-	@DungeonEventHandler
-	protected void onKick(EntityKickedEvent e) {
+	@DungeonEventHandler(selfOnly = true)
+	public void onKick(EntityKickedEvent e) {
 		// TODO: player alignment and luck penalty
 	}
 	
-	@DungeonEventHandler
-	protected void onWalk(EntityWalkedOnEvent e) {
+	@DungeonEventHandler(selfOnly = true)
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}
@@ -46,7 +46,7 @@ public class EntityAltar extends Entity {
 		return true;
 	}
 	
-	@DungeonEventHandler
+	@DungeonEventHandler(selfOnly = true)
 	public void onItemDropped(EntityItemDroppedOnEvent e) {
 		EntityItem itemEntity = e.getItemEntity();
 		Item item = e.getItem();

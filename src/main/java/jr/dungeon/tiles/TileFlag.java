@@ -8,5 +8,6 @@ public class TileFlag {
 							WATER				= (int) Math.pow(2, 5),
 							DOOR				= (int) Math.pow(2, 6),
 							DOOR_SHUT			= (int) Math.pow(2, 7),
-							BUILDABLE			= (int) Math.pow(2, 8);
+							BUILDABLE			= (int) Math.pow(2, 8),
+							DONT_REFLECT		= (int) Math.pow(2, 9);
 }

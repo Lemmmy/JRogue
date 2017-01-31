@@ -14,10 +14,20 @@ public class EntityRendererFish extends EntityRenderer {
 	}
 	
 	@Override
+	public boolean shouldBeReflected(Entity entity) {
+		return false;
+	}
+	
+	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return image;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
 		Color c = batch.getColor();
 		batch.setColor(c.r, c.g, c.b, 0.7f);
-		drawTile(batch, image, entity.getLastSeenX(), entity.getLastSeenY());
+		drawEntity(batch, image, entity.getLastSeenX(), entity.getLastSeenY());
 		batch.setColor(c);
 	}
 }

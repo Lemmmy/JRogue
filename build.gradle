@@ -64,7 +64,7 @@ dependencies {
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 
-	compileOnly "org.projectlombok:lombok:1.16.12"
+	compile "org.projectlombok:lombok:1.16.12"
 }
 
 task subJar(type: Jar) {

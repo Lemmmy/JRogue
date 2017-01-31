@@ -87,11 +87,12 @@ public abstract class MonsterMold extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDamage(EntityDamagedEvent e) {
-		if (e.getDamageSource().getDamageType() == DamageSource.DamageType.MELEE) {
-			int damageToDeal = RandomUtils.jroll(getExperienceLevel() + 1, 6);
-			
-			e.getAttacker().damage(DamageSource.MOLD_RETALIATION, damageToDeal, this);
+	public void onDamage(EntityDamagedEvent e) {
+		if (
+			e.getDamageSource().getDamageType() == DamageSource.DamageType.MELEE &&
+			RandomUtils.jroll(1, 4) == 1
+		) {
+			e.getAttacker().damage(DamageSource.MOLD_RETALIATION, 1, this);
 		}
 	}
 }

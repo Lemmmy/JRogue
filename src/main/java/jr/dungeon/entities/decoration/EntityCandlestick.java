@@ -56,8 +56,8 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 		return true;
 	}
 	
-	@DungeonEventHandler
-	protected void onWalk(EntityWalkedOnEvent e) {
+	@DungeonEventHandler(selfOnly = true)
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}
