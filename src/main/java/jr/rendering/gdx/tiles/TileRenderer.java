@@ -21,7 +21,7 @@ public abstract class TileRenderer {
 	private static final boolean AO_ENABLED = true;
 
 	private static final int[] AO_BRIGHTNESS_MAP = new int[] {
-		190, 200, 220, 255
+		180, 200, 220, 255
 	};
 
 	private static TextureRegion dim;
