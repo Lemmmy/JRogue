@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import jr.JRogue;
+import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
@@ -16,13 +18,21 @@ import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Utils;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class TileRenderer {
 	private static final boolean AO_ENABLED = true;
 
-	private static final int[] AO_BRIGHTNESS_MAP = new int[] {
-		180, 200, 220, 255
-	};
+	private static final Map<Integer, Integer[]> AO_MODES = new HashMap<>();
+
+	static {
+		AO_MODES.put(0, null);
+		AO_MODES.put(1, new Integer[] { 180, 200, 220, 255 });
+		AO_MODES.put(2, new Integer[] { 130, 170, 200, 255 });
+		AO_MODES.put(3, new Integer[] { 100, 140, 170, 255 });
+		AO_MODES.put(4, new Integer[] { 0, 0, 0, 0 });
+	}
 
 	private static TextureRegion dim;
 	private static TextureRegion dimLight;
@@ -61,7 +71,7 @@ public abstract class TileRenderer {
 	}
 
 	private static Color vAOCol(int i) {
-		int rgb = AO_BRIGHTNESS_MAP[i];
+		int rgb = AO_MODES.get(JRogue.getSettings().getAOLevel())[i];
 		return new Color(rgb, rgb, rgb, 255);
 	}
 
