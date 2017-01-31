@@ -2,8 +2,11 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.RandomUtils;
+import jr.utils.Utils;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
@@ -28,15 +31,19 @@ public class TraitIntrinsicFear extends AITrait {
 	public void update() {
 		// TODO: ensure this is balanced
 		
-		// if the current target's armour class is 5 lower than our own,
-		// extrinsic fear is 0.5
-		
 		if (
 			getAI().getCurrentTarget() != null &&
-			getMonster().getArmourClass() - getAI().getCurrentTarget().getArmourClass() >= 5 &&
-			RandomUtils.randomFloat() < 0.25f
+			Utils.chebyshevDistance(getAI().getCurrentTarget().getPosition(), getMonster().getPosition()) < 5
 		) {
-			fear = 0.5f;
+			fear = (getMonster().getArmourClass() - getAI().getCurrentTarget().getArmourClass()) / 10;
+			fear = Math.max(0, Math.min(1, fear));
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("fear", fear)
+			.toString();
 	}
 }

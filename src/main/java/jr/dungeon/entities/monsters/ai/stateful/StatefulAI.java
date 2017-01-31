@@ -60,6 +60,8 @@ public class StatefulAI extends AI {
 			currentState = defaultState;
 		}
 		
+		traits.values().forEach(AITrait::update);
+		
 		if (currentState != null) {
 			currentState.update();
 		}
@@ -215,12 +217,16 @@ public class StatefulAI extends AI {
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
 			.append(currentState == null ? "no state" : currentState.toString())
 			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
 			.append("safePoints", safePoints.size())
-			.toString();
+			.append("");
+		
+		traits.values().forEach(t -> tsb.append(t.toString()));
+		
+		return tsb.toString();
 	}
 	
 	@Override

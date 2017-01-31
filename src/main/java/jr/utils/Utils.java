@@ -61,6 +61,10 @@ public class Utils {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 	
+	public static int chebyshevDistance(Point a, Point b) {
+		return chebyshevDistance(a.getX(), a.getY(), b.getX(), b.getY());
+	}
+	
 	public static int chebyshevDistance(int ax, int ay, int bx, int by) {
 		int dx = Math.abs(ax - bx);
 		int dy = Math.abs(ay - by);

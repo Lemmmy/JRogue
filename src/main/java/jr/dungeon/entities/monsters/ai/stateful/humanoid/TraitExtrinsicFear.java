@@ -4,8 +4,10 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.events.DungeonEventHandler;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.RandomUtils;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
@@ -28,27 +30,31 @@ public class TraitExtrinsicFear extends AITrait {
 	
 	@Override
 	public void update() {
-		if (RandomUtils.randomFloat() < 0.04f) {
+		if (RandomUtils.randomFloat() <= 0.05f) {
 			fear = 0;
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@DungeonEventHandler
 	public void onMonsterDamaged(EntityDamagedEvent e) {
-		// TODO: ensure this is balanced
+		if (e.getVictim() != getMonster()) {
+			return;
+		}
 		
-		// when the monster is attacked,
-		//  if their health is less than their maxHealth / 2.5,
-		//  and the attacker's health is greater than their maxHealth / 1.5,
-		//  and a d2 has a positive roll,
-		//  increase extrinsic fear by monster.maxHealth * rand(0, 1)
+		// TODO: ensure this is balanced
 		
 		if (
 			getMonster().getHealth() < getMonster().getMaxHealth() / 2.5f &&
-			e.getAttacker().getHealth() > e.getAttacker().getMaxHealth() / 1.5f &&
-			RandomUtils.rollD2()
+			e.getAttacker().getHealth() > e.getAttacker().getMaxHealth() / 1.5f
 		) {
-			fear += getMonster().getMaxHealth() * RandomUtils.randomFloat();
+			fear += (1 - getMonster().getHealth() / getMonster().getMaxHealth()) * RandomUtils.randomFloat();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("fear", fear)
+			.toString();
 	}
 }
