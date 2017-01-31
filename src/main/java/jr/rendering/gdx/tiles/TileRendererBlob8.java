@@ -40,23 +40,23 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	
 	protected void loadBlob(TextureRegion[] set, int blobOffsetX, int blobOffsetY) {
 		for (int i = 0; i < BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT; i++) {
-			int sheetX = (i % BLOB_SHEET_WIDTH) + (BLOB_SHEET_WIDTH * blobOffsetX);
-			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + (BLOB_SHEET_HEIGHT * blobOffsetY);
+			int sheetX = i % BLOB_SHEET_WIDTH + BLOB_SHEET_WIDTH * blobOffsetX;
+			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + BLOB_SHEET_HEIGHT * blobOffsetY;
 			
 			set[i] = getImageFromSheet("textures/blobs.png", sheetX, sheetY);
 		}
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {
-		int n = (isJoinedTile(level.getTileStore().getTileType(x, y - 1))) ? 1 : 0;
-		int s = (isJoinedTile(level.getTileStore().getTileType(x, y + 1))) ? 1 : 0;
-		int w = (isJoinedTile(level.getTileStore().getTileType(x - 1, y))) ? 1 : 0;
-		int e = (isJoinedTile(level.getTileStore().getTileType(x + 1, y))) ? 1 : 0;
+		int n = isJoinedTile(level.getTileStore().getTileType(x, y - 1)) ? 1 : 0;
+		int s = isJoinedTile(level.getTileStore().getTileType(x, y + 1)) ? 1 : 0;
+		int w = isJoinedTile(level.getTileStore().getTileType(x - 1, y)) ? 1 : 0;
+		int e = isJoinedTile(level.getTileStore().getTileType(x + 1, y)) ? 1 : 0;
 		
-		int nw = (isJoinedTile(level.getTileStore().getTileType(x - 1, y - 1)) && w == 1 && n == 1) ? 1 : 0;
-		int ne = (isJoinedTile(level.getTileStore().getTileType(x + 1, y - 1)) && e == 1 && n == 1) ? 1 : 0;
-		int sw = (isJoinedTile(level.getTileStore().getTileType(x - 1, y + 1)) && w == 1 && s == 1) ? 1 : 0;
-		int se = (isJoinedTile(level.getTileStore().getTileType(x + 1, y + 1)) && e == 1 && s == 1) ? 1 : 0;
+		int nw = isJoinedTile(level.getTileStore().getTileType(x - 1, y - 1)) && w == 1 && n == 1 ? 1 : 0;
+		int ne = isJoinedTile(level.getTileStore().getTileType(x + 1, y - 1)) && e == 1 && n == 1 ? 1 : 0;
+		int sw = isJoinedTile(level.getTileStore().getTileType(x - 1, y + 1)) && w == 1 && s == 1 ? 1 : 0;
+		int se = isJoinedTile(level.getTileStore().getTileType(x + 1, y + 1)) && e == 1 && s == 1 ? 1 : 0;
 		
 		return nw + 2 * n + 4 * ne + 8 * w + 16 * e + 32 * sw + 64 * s + 128 * se;
 	}

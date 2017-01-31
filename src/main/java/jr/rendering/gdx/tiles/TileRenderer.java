@@ -39,6 +39,12 @@ public abstract class TileRenderer {
 		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
 	}
 	
+	public abstract TextureRegion getTextureRegion(Dungeon dungeon, int x, int y);
+	
+	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+		return null;
+	}
+	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, int x, int y);
 	
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {}

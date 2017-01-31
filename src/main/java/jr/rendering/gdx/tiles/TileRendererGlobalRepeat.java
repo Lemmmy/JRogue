@@ -40,6 +40,11 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return texRegion;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		ShaderProgram previousShader = batch.getShader();
 		batch.setShader(program);
@@ -53,7 +58,7 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 		
 		program.setUniformMatrix("u_proj", levelProjMat);
 		
-		drawTile(batch, texRegion, x, y);
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 		batch.setShader(previousShader);
 	}
 }

@@ -23,16 +23,33 @@ public class TileRendererStairs extends TileRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, image, x, y);
-		
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return image;
+	}
+	
+	@Override
+	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
 		switch (direction) {
 			case UP:
-				drawTile(batch, up, x, y);
-				break;
+				return up;
 			case DOWN:
-				drawTile(batch, down, x, y);
-				break;
+				return down;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	}
+	
+	@Override
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
+		
+		if (t != null) {
+			drawTile(batch, t, x, y);
 		}
 	}
 	

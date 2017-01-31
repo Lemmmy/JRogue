@@ -1,24 +1,18 @@
 package jr.rendering.gdx.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityRenderer;
 import jr.rendering.gdx.utils.ShaderLoader;
-import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Comparator;
