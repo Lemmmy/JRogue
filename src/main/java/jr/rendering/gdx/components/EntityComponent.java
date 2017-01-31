@@ -181,9 +181,7 @@ public class EntityComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityRemoved(EntityRemovedEvent event) {
-		Entity entity = event.getEntity();
-		
-		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
 	}
 	
 	@Override
@@ -198,6 +196,6 @@ public class EntityComponent extends RendererComponent {
 	
 	@Override
 	public void dispose() {
-		
+		entityPooledEffects.forEach(e -> e.getPooledEffect().dispose());
 	}
 }
