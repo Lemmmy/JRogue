@@ -1,10 +1,19 @@
 package jr.dungeon.generators;
 
 import jr.dungeon.Level;
+import jr.dungeon.generators.rooms.RoomBasic;
+import jr.dungeon.generators.rooms.RoomIce;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
 public class GeneratorIce extends GeneratorRooms {
+	static {
+		ROOM_TYPES.clear();
+		
+		ROOM_TYPES.add(15, RoomBasic.class);
+		ROOM_TYPES.add(1, RoomIce.class);
+	}
+	
 	public GeneratorIce(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}

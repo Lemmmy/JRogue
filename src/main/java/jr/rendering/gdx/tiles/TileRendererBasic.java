@@ -12,7 +12,12 @@ public class TileRendererBasic extends TileRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return image;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, image, x, y);
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 	}
 }

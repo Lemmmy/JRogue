@@ -29,7 +29,23 @@ public class TileRendererSewerWall extends TileRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		
+		if (h && !v) {
+			return wallH;
+		} else if (!h && v) {
+			return wallV;
+		} else {
+			return adjacentTiles[2].isWallTile() ? wallCT : wallCB;
+		}
+	}
+	
+	@Override
+	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
@@ -38,21 +54,25 @@ public class TileRendererSewerWall extends TileRenderer {
 		
 		boolean shouldMoss = (x + y) % 3 == 0;
 		
-		if (h && !v) {
-			drawTile(batch, wallH, x, y);
-			
-			if (top && shouldMoss) {
-				int mossNumber = (x + y) % mosses.length;
-				drawTile(batch, mosses[mossNumber], x, y);
-			}
-		} else if (!h && v) {
-			drawTile(batch, wallV, x, y);
-		} else {
-			if (adjacentTiles[2].isWallTile()) {
-				drawTile(batch, wallCT, x, y);
-			} else {
-				drawTile(batch, wallCB, x, y);
-			}
+		if (h && !v && top && shouldMoss) {
+			int mossNumber = (x + y) % mosses.length;
+			return mosses[mossNumber];
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	}
+	
+	@Override
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
+		
+		if (t != null) {
+			drawTile(batch, t, x, y);
 		}
 	}
 }

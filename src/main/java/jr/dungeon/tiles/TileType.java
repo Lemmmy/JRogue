@@ -32,6 +32,7 @@ public enum TileType {
 	TILE_ROOM_PUDDLE(16, TileFlag.WATER | TileFlag.INNER_ROOM, Solidity.WALK_ON),
 	TILE_ROOM_RUG(26, TileFlag.FLOOR | TileFlag.INNER_ROOM, Solidity.WALK_ON),
 	TILE_ROOM_DIRT(31, TileFlag.FLOOR | TileFlag.INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_ICE(33, TileFlag.FLOOR | TileFlag.INNER_ROOM, Solidity.WALK_ON),
 	
 	TILE_ROOM_DOOR_LOCKED(17, TileFlag.WALL | TileFlag.DOOR | TileFlag.DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_CLOSED(18, TileFlag.WALL | TileFlag.DOOR | TileFlag.DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),

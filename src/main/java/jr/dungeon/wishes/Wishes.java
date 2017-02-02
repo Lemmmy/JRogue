@@ -13,6 +13,7 @@ import jr.dungeon.entities.monsters.canines.*;
 import jr.dungeon.entities.monsters.critters.MonsterLizard;
 import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
+import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
@@ -64,19 +65,27 @@ public class Wishes {
 				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
-		registerWish("downstairs", (d, p, a) ->
+		registerWish("(?:ds|downstairs)", (d, p, a) ->
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
-				.ifPresent(t -> p.defaultVisitors.teleport(t.getX(), t.getY())));
+				.ifPresent(t -> {
+					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.defaultVisitors.climbDown();
+				}));
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
 		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+
+		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
+		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
+		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
+
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
