@@ -28,16 +28,21 @@ public class ItemRendererPotion extends ItemRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y) {
+	public TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect) {
+		return bottleTex;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean reflect) {
 		if (item instanceof ItemPotion) {
 			ItemPotion potion = (ItemPotion) item;
 			Color prevColour = batch.getColor();
 			batch.setColor(PotionColourMap.fromPotion(potion));
-			batch.draw(fluidTex, x, y);
+			drawItem(batch, fluidTex, x, y, reflect);
 			batch.setColor(prevColour);
 		}
 		
-		batch.draw(bottleTex, x, y);
+		drawItem(batch, bottleTex, x, y, reflect);
 	}
 	
 	@Override

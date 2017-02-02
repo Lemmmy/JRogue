@@ -23,25 +23,27 @@ public class TileRendererDoor extends TileRenderer {
 		this.state = state;
 	}
 	
+	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
 		switch (state) {
-			case LOCKED:
-			case CLOSED:
-				drawTile(batch, closed, x, y);
-				break;
-			
 			case OPEN:
 				TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 				boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 				
-				drawTile(batch, h ? openH : openV, x, y);
-				break;
+				return h ? openH : openV;
 			
 			case BROKEN:
-				drawTile(batch, broken, x, y);
-				break;
+				return broken;
+				
+			default:
+				return closed;
 		}
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 	}
 	
 	protected enum DoorState {

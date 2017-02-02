@@ -19,7 +19,12 @@ public class EntityRendererRandom extends EntityRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return images[entity.getVisualID() % count];
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawTile(batch, images[entity.getVisualID() % count], entity.getLastSeenX(), entity.getLastSeenY());
+		drawEntity(batch, getTextureRegion(dungeon, entity), entity.getLastSeenX(), entity.getLastSeenY());
 	}
 }

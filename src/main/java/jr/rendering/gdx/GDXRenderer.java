@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.events.*;
@@ -25,6 +26,7 @@ import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -55,11 +57,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
-	public GDXRenderer(Settings settings, Dungeon dungeon) {
-		this.settings = settings;
-		
+	public GDXRenderer(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
+
+		settings = JRogue.getSettings();
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setResizable(true);
@@ -126,6 +128,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.forEach(r -> r.setCamera(camera));
 		rendererComponents.forEach(r -> dungeon.addListener(r));
 		rendererComponents.forEach(RendererComponent::initialise);
+		
+		for (TileMap tmap : TileMap.values()) {
+			tmap.getRenderer().setRenderer(this);
+		}
 	}
 	
 	private void initialiseInputMultiplexer() {

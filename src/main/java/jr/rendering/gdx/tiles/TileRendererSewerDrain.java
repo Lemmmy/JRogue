@@ -16,8 +16,18 @@ public class TileRendererSewerDrain extends TileRenderer {
 	}
 	
 	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return drain;
+	}
+	
+	@Override
+	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+		return water;
+	}
+	
+	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, drain, x, y);
+		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 	}
 	
 	@Override
@@ -25,7 +35,7 @@ public class TileRendererSewerDrain extends TileRenderer {
 		super.drawExtra(batch, dungeon, x, y);
 		
 		if (dungeon.getLevel().getTileStore().getTileType(x, y + 1).isWater()) {
-			drawTile(batch, water, x, y + 1);
+			drawTile(batch, getTextureRegionExtra(dungeon, x, y), x, y + 1);
 		}
 	}
 }
