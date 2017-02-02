@@ -63,7 +63,13 @@ public class ItemCorpse extends ItemComestible {
 			requiresCapitalisation = false;
 		}
 		
-		s += getEatenState() == EatenState.PARTLY_EATEN ? "partly eaten " : "";
+		if (getEatenState() == EatenState.PARTLY_EATEN) {
+			s += requiresCapitalisation ? "Partly eaten " : "partly eaten ";
+			
+			if (!s.isEmpty() && requiresCapitalisation) {
+				requiresCapitalisation = false;
+			}
+		}
 		
 		if (getRottenness() > 7 && isAspectKnown(observer, AspectRottenness.class)) {
 			s += requiresCapitalisation ? "Rotten " : "rotten ";
