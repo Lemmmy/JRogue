@@ -42,7 +42,7 @@ public class ItemThermometer extends Item implements Readable, Shatterable {
 				break;
 			case __:
 				reader.getDungeon().The("mercury is floating in the thermometer.");
-        break;
+        		break;
 			case MID:
 				reader.getDungeon().The("mercury reaches up to a quarter of the thermometer.");
 				break;
