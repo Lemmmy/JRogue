@@ -149,8 +149,10 @@ public abstract class Monster extends EntityLiving {
 	public List<DungeonEventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
-		subListeners.add(ai);
-		subListeners.addAll(ai.getSubListeners());
+		if (ai != null) {
+			subListeners.add(ai);
+			subListeners.addAll(ai.getSubListeners());
+		}
 		
 		return subListeners;
 	}
