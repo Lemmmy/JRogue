@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AStarPathfinder {
+	private static final float d = 1;
+	private static final float d2 = (float) Math.sqrt(2);
+	
 	public Path findPath(Level level,
 						 int sx,
 						 int sy,
@@ -121,7 +124,7 @@ public class AStarPathfinder {
 	}
 	
 	public float getHeuristicCost(int ax, int ay, int bx, int by) {
-		return Utils.chebyshevDistance(ax, ay, bx, by);
+		return Utils.octileDistance(ax, ay, bx, by, d, d2);
 	}
 	
 	@Getter

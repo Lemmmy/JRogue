@@ -7,6 +7,7 @@ import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
+import jr.utils.Point;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -51,21 +52,20 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			i.incrementAndGet();
 			
 			if (stop.get()) { return; }
-			if (player.getX() == step.getX() && player.getY() == step.getY()) { return; }
+			if (player.getPosition().equals(step.getPosition())) { return; }
 			
 			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
 				stop.set(true);
 				return;
 			}
 			
-			int oldX = player.getX();
-			int oldY = player.getY();
+			Point oldPos = player.getPosition();
 			
 			pathTaken.addStep(step);
 			player.setAction(new ActionMove(step.getX(), step.getY(), new EntityAction.NoCallback()));
 			player.getDungeon().turn();
 			
-			if (oldX == player.getX() && oldY == player.getY()) {
+			if (oldPos.equals(player.getPosition())) {
 				stop.set(true);
 				return;
 			}

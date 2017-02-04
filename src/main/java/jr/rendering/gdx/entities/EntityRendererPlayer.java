@@ -1,8 +1,5 @@
 package jr.rendering.gdx.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
@@ -20,11 +17,6 @@ public class EntityRendererPlayer extends EntityRenderer {
 		playerWizard = getImageFromSheet("textures/entities.png", 1, 0);
 		
 		playerHighlight = getImageFromSheet("textures/tiles.png", 8, 1);
-		
-		ParticleEffect waterStepEffect = new ParticleEffect();
-		waterStepEffect.load(Gdx.files.internal("particles/water_step.particle"), Gdx.files.internal("textures"));
-		
-		effectPool = new ParticleEffectPool(waterStepEffect, 0, 250);
 	}
 	
 	@Override
@@ -47,10 +39,5 @@ public class EntityRendererPlayer extends EntityRenderer {
 		}
 		
 		return playerWizard; // TODO
-	}
-	
-	@Override
-	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
-		return entity.getLevel().getTileStore().getTileType(x, y).isWater();
 	}
 }

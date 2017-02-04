@@ -9,8 +9,8 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 
 import java.util.List;
 
@@ -18,8 +18,9 @@ public class MonsterLizard extends Monster {
 	public MonsterLizard(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		setAI(new GhoulAI(this));
-		((GhoulAI) getAI()).setAttackProbability(1f / 6f);
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override
