@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GeneratorCave extends DungeonGenerator {
-	private static final float PROBABILITY_INITIAL_FLOOR = 0.6f;
+	private static final float PROBABILITY_INITIAL_FLOOR = 0.4f;
 	
 	private static final int R1_CUTOFF = 5;
 	private static final int R2_CUTOFF = 2;
