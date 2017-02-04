@@ -116,7 +116,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.add(pathComponent = new PathComponent(this, dungeon, settings));
 		rendererComponents.add(entityComponent = new EntityComponent(this, dungeon, settings));
 		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
-		rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		
+		if (!settings.isShowLevelDebug()) {
+			rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		}
+		
 		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
 		rendererComponents.add(hudComponent = new HUDComponent(this, dungeon, settings));
 		
