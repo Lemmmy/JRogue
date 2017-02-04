@@ -59,7 +59,7 @@ public class StateFlee extends AIState {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
-		obj.put("dest", dest);
+		obj.put("dest", new JSONObject().put("x", dest.getX()).put("y", dest.getY()));
 	}
 	
 	@Override
