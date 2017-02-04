@@ -10,6 +10,13 @@ import java.util.Objects;
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.6f;
 	
+	private static final int R1_CUTOFF = 5;
+	private static final int R2_CUTOFF = 2;
+	
+	private static final int PASS_COUNT = 4;
+	
+	private Tile[] tempTiles;
+	
 	public GeneratorCave(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
@@ -27,9 +34,30 @@ public class GeneratorCave extends DungeonGenerator {
 	@Override
 	public boolean generate() {
 		passAir();
-		pass();
+		
+		for (int i = 0; i < 6; i++) {
+			pass();
+		}
 		
 		return true;
+	}
+	
+	private void initialiseTempTiles() {
+		int width = level.getWidth();
+		int height = level.getHeight();
+		
+		tempTiles = new Tile[width * height];
+		
+		for (int i = 0; i < width * height; i++) {
+			int x = i % width;
+			int y = (int) Math.floor(i / width);
+			
+			tempTiles[i] = new Tile(level, level.getTileStore().getTileType(x, y), x, y);
+		}
+	}
+	
+	private void flushTempTiles() {
+		Arrays.stream(tempTiles).forEach(t -> level.getTileStore().setTileType(t.getX(), t.getY(), t.getType()));
 	}
 	
 	private void passAir() {
@@ -43,43 +71,82 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void pass() {
+		initialiseTempTiles();
+		
 		Arrays.stream(level.getTileStore().getTiles())
 			.filter(this::isTileInBounds)
-			.forEach(t -> {
-				int pass = tilePass(t);
-				
-				t.setType(pass == 1 ? TileType.TILE_GROUND : TileType.TILE_ROOM_FLOOR);
-			});
+			.forEach(t -> setTempTileType(
+				t.getX(), t.getY(),
+				tilePass(t) ? TileType.TILE_GROUND : TileType.TILE_ROOM_FLOOR
+			));
+		
+		flushTempTiles();
 	}
 	
-	private int tilePass(Tile tile) {
-		int x = tile.getX();
-		int y = tile.getY();
+	private boolean tilePass(Tile tile) {
+		int x = tile.getX(),
+			y = tile.getY();
 		
-		int adjacentCount = getAdjacentCount(x, y);
+		int cr1 = getAdjacentCountR1(x, y),
+			cr2 = getAdjacentCountR2(x, y);
 		
-		if (tile.getType().getSolidity() == TileType.Solidity.SOLID) {
-			if (adjacentCount >= 4) {
-				return 1;
-			}
-			
-			if (adjacentCount < 2) {
-				return 0;
-			}
-		} else {
-			if (adjacentCount >= 5) {
-				return 1;
-			}
-		}
-		
-		return 0;
+		return cr1 >= R1_CUTOFF || cr2 <= R2_CUTOFF;
 	}
 	
-	private int getAdjacentCount(int x, int y) {
+	public Tile getTempTile(int x, int y) {
+		int width = level.getWidth();
+		int height = level.getHeight();
+		
+		if (x < 0 || y < 0 || x >= width || y >= height) return null;
+		return tempTiles[width * y + x];
+	}
+	
+	public TileType getTempTileType(int x, int y) {
+		int width = level.getWidth();
+		int height = level.getHeight();
+		
+		if (x < 0 || y < 0 || x >= width || y >= height) return null;
+		return tempTiles[width * y + x].getType();
+	}
+	
+	public void setTempTileType(int x, int y, TileType tile) {
+		int width = level.getWidth();
+		int height = level.getHeight();
+		
+		if (tile.getID() < 0) return;
+		if (x < 0 || y < 0 || x >= width || y >= height) return;
+		tempTiles[width * y + x].setType(tile);
+	}
+	
+	private int getAdjacentCountR1(int x, int y) {
 		return (int) Arrays.stream(level.getTileStore().getOctAdjacentTiles(x, y))
 			.filter(Objects::nonNull)
 			.filter(t -> t.getType().getSolidity() == TileType.Solidity.SOLID)
 			.count();
+	}
+	
+	private int getAdjacentCountR2(int x, int y) {
+		int c = 0;
+		
+		for (int j = y - 2; j <= y + 2; j++) {
+			for (int i = x - 2; i <= x + 2; i++) {
+				if (Math.abs(j - y) == 2 && Math.abs(i - x) == 2) {
+					continue;
+				}
+				
+				TileType t = level.getTileStore().getTileType(i, j);
+				
+				if (t == null) {
+					continue;
+				}
+				
+				if (t.getSolidity() == TileType.Solidity.SOLID) {
+					c++;
+				}
+			}
+		}
+		
+		return c;
 	}
 	
 	private boolean isTileInBounds(Tile t) {
