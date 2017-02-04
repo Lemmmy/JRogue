@@ -12,7 +12,12 @@ public class Utils {
 	
 	public static final Map<Integer, Integer[]> MOVEMENT_KEYS = new HashMap<>();
 	public static final Map<Character, Integer[]> MOVEMENT_CHARS = new HashMap<>();
-	public static final int[][] DIRECTIONS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	public static final int[][] DIRECTIONS = new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	public static final int[][] OCT_DIRECTIONS = new int[][] {
+		{-1, -1}, {0, -1}, {1, -1},
+		{-1, 0}, {1, 0},
+		{-1, 1}, {0, 1}, {1, 1}
+	};
 	
 	private static final Map<Integer, com.badlogic.gdx.graphics.Color> DUMMY_COLOURS = new HashMap<>();
 	

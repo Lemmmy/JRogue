@@ -176,6 +176,17 @@ public class TileStore implements Serialisable {
 		return t;
 	}
 	
+	public Tile[] getOctAdjacentTiles(int x, int y) {
+		Tile[] t = new Tile[Utils.OCT_DIRECTIONS.length];
+		
+		for (int i = 0; i < Utils.OCT_DIRECTIONS.length; i++) {
+			int[] direction = Utils.OCT_DIRECTIONS[i];
+			t[i] = getTile(x + direction[0], y + direction[1]);
+		}
+		
+		return t;
+	}
+	
 	public TileType[] getAdjacentTileTypes(int x, int y) {
 		TileType[] t = new TileType[Utils.DIRECTIONS.length];
 		
