@@ -7,11 +7,11 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
 public class GeneratorIce extends GeneratorRooms {
-	static {
-		ROOM_TYPES.clear();
+	{
+		roomTypes.clear();
 		
-		ROOM_TYPES.add(15, RoomBasic.class);
-		ROOM_TYPES.add(1, RoomIce.class);
+		roomTypes.add(15, RoomBasic.class);
+		roomTypes.add(1, RoomIce.class);
 	}
 	
 	public GeneratorIce(Level level, Tile sourceTile) {

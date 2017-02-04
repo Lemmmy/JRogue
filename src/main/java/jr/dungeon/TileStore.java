@@ -142,10 +142,7 @@ public class TileStore implements Serialisable {
 	}
 	
 	public Tile getTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return null;
-		}
-		
+		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return tiles[width * y + x];
 	}
 	
@@ -154,10 +151,7 @@ public class TileStore implements Serialisable {
 	}
 	
 	public TileType getTileType(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return null;
-		}
-		
+		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return getTile(x, y).getType();
 	}
 	
@@ -166,10 +160,8 @@ public class TileStore implements Serialisable {
 	}
 	
 	public void setTileType(int x, int y, TileType tile) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-		
+		if (tile.getID() < 0) return;
+		if (x < 0 || y < 0 || x >= width || y >= height) return;
 		tiles[width * y + x].setType(tile);
 	}
 	
@@ -178,7 +170,6 @@ public class TileStore implements Serialisable {
 		
 		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
 			int[] direction = Utils.DIRECTIONS[i];
-			
 			t[i] = getTile(x + direction[0], y + direction[1]);
 		}
 		

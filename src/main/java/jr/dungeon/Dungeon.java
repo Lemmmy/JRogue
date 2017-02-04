@@ -14,7 +14,7 @@ import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
-import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.generators.Generator_;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.OperatingSystem;
@@ -41,8 +41,8 @@ import java.util.zip.GZIPOutputStream;
 public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static final int NORMAL_SPEED = 12;
 	
-	private static final int LEVEL_WIDTH = 90;
-	private static final int LEVEL_HEIGHT = 40;
+	public static final int LEVEL_WIDTH = 90;
+	public static final int LEVEL_HEIGHT = 40;
 	
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
@@ -95,7 +95,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorStandard.class);
+		level.generate(null, Generator_.class);
 		
 		if (player == null) {
 			player = new Player(

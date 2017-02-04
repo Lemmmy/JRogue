@@ -18,7 +18,12 @@ public class EntityRendererPlayer extends EntityRenderer {
 		
 		playerHighlight = getImageFromSheet("textures/tiles.png", 8, 1);
 	}
-	
+
+	@Override
+	public boolean shouldRenderReal(Entity entity) {
+		return true;
+	}
+
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
 		return getTextureFromPlayer((Player) entity);

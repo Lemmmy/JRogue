@@ -1,0 +1,43 @@
+package jr.dungeon.generators;
+
+import jr.dungeon.Level;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
+
+public class Generator_ extends GeneratorStandard {
+	public Generator_(Level level, Tile sourceTile) {
+		super(level, sourceTile);
+		spawnWater = false;
+		spawnSewers = false;
+	}
+	
+	@Override
+	public Climate getClimate() {
+		return Climate.__;
+	}
+	
+	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.NONE;
+	}
+	
+	@Override
+	public TileType getTorchTileType() {
+		return null;
+	}
+	
+	@Override
+	public TileType getGroundTileType() {
+		return TileType.TILE__NOISE;
+	}
+
+	@Override
+	public TileType getFloorTileType() {
+		return TileType.TILE__FLOOR;
+	}
+
+	@Override
+	public TileType getWallTileType() {
+		return TileType.TILE__FLOOR;
+	}
+}

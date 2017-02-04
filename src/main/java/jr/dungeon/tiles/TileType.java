@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 @Getter
 public enum TileType {
+	TILE_IDENTITY(-1, Solidity.WALK_ON),
 	TILE_DUMMY(0, Solidity.WALK_ON),
 	
 	TILE_DEBUG_A(1, Solidity.WALK_ON),
@@ -50,7 +51,10 @@ public enum TileType {
 	TILE_SEWER_DRAIN_EMPTY(29, TileFlag.WALL, Solidity.SOLID),
 	TILE_SEWER_DRAIN(30, TileFlag.WALL, Solidity.SOLID),
 	
-	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON);
+	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON),
+
+	TILE__NOISE(32, TileFlag.BUILDABLE, Solidity.SOLID),
+	TILE__FLOOR(34, TileFlag.FLOOR, Solidity.WALK_ON);
 	
 	private short id;
 	private int flags;
