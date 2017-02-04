@@ -25,7 +25,7 @@ public enum TileMap {
 	TILE_ROOM_WATER(new TileRendererWater(2, 1, 8, 0, 0.8f)),
 	TILE_ROOM_PUDDLE(new TileRendererWater(5, 2, 8, 0, 0.4f, false, TileType.TILE_ROOM_PUDDLE)),
 	TILE_ROOM_RUG(new TileRendererRug(0, 2, 8, 0, false, TileType.TILE_ROOM_RUG)),
-	TILE_ROOM_DIRT(new TileRendererConnecting(4, 2, 8, 0, TileType.TILE_ROOM_DIRT)),
+	TILE_ROOM_DIRT(new TileRendererConnecting(4, 2, 8, 0, false, TileType.TILE_ROOM_DIRT)),
 	TILE_ROOM_DOOR_LOCKED(new TileRendererDoor(TileRendererDoor.DoorState.LOCKED)),
 	TILE_ROOM_DOOR_CLOSED(new TileRendererDoor(TileRendererDoor.DoorState.CLOSED)),
 	TILE_ROOM_DOOR_OPEN(new TileRendererDoor(TileRendererDoor.DoorState.OPEN)),
@@ -35,8 +35,8 @@ public enum TileMap {
 	TILE_ROOM_STAIRS_UP(new TileRendererStairs(TileRendererStairs.StairDirection.UP, 9, 0)),
 	TILE_ROOM_STAIRS_DOWN(new TileRendererStairs(TileRendererStairs.StairDirection.DOWN, 10, 0)),
 	
-	TILE_ROOM_LADDER_UP(12, 0),
-	TILE_ROOM_LADDER_DOWN(11, 0),
+	TILE_LADDER_UP(new TileRendererLadder(12, 0)),
+	TILE_LADDER_DOWN(new TileRendererLadder(11, 0)),
 	
 	TILE_SEWER_WALL(new TileRendererSewerWall()),
 	TILE_SEWER_WATER(new TileRendererWater(13, 1, 8, 0, 0.6f, false, TileType.TILE_SEWER_WATER)),
@@ -45,8 +45,8 @@ public enum TileMap {
 	
 	TILE_CORRIDOR(new TileRendererCorridor()),
 	
-	TILE_CAVE_WALL(new TileRendererConnecting(7, 2, 1, 1, TileType.TILE_CAVE_WALL, TileType.TILE_CAVE_FLOOR)),
-	TILE_CAVE_FLOOR(new TileRendererConnecting(6, 2, 7, 2, TileType.TILE_CAVE_FLOOR)),
+	TILE_CAVE_WALL(new TileRendererConnecting(7, 2, 1, 1, false, TileType.TILE_CAVE_WALL, TileType.TILE_CAVE_FLOOR)),
+	TILE_CAVE_FLOOR(new TileRendererConnecting(6, 2, 7, 2, true, TileType.TILE_GROUND, TileType.TILE_CAVE_WALL)),
 
 	TILE__NOISE(new TileRendererNoise(ImageLoader.getImage("textures/noise_bg.png"), 0.2f, 0.2f * Dungeon.LEVEL_WIDTH / (float)Dungeon.LEVEL_HEIGHT)),
 	TILE__FLOOR(new TileRendererReflective(8, 0, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f)));

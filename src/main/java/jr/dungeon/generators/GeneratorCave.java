@@ -1,11 +1,16 @@
 package jr.dungeon.generators;
 
+import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.utils.Path;
+import jr.utils.RandomUtils;
+import jr.utils.Utils;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.6f;
@@ -15,10 +20,19 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	private static final int PASS_COUNT = 4;
 	
+	private static final int DISTANCE_SPAWN_EXIT = 30;
+	
 	private Tile[] tempTiles;
+	private Tile spawnTile, exitTile;
+	
+	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
 	public GeneratorCave(Level level, Tile sourceTile) {
 		super(level, sourceTile);
+	}
+	
+	public Class<? extends DungeonGenerator> getNextGenerator() {
+		return GeneratorCave.class;
 	}
 	
 	@Override
@@ -41,7 +55,10 @@ public class GeneratorCave extends DungeonGenerator {
 		
 		wallPass();
 		
-		return true;
+		chooseSpawn();
+		chooseExit();
+		
+		return verify();
 	}
 	
 	private void initialiseTempTiles(boolean firstPass) {
@@ -113,6 +130,66 @@ public class GeneratorCave extends DungeonGenerator {
 			});
 	}
 	
+	private void chooseSpawn() {
+		List<Tile> validSpawnTiles = Arrays.stream(level.getTileStore().getTiles())
+			.filter(t -> t.getType().isFloor())
+			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+				.filter(TileType::isFloor)
+				.count() == 4)
+			.collect(Collectors.toList());
+		
+		spawnTile = RandomUtils.randomFrom(validSpawnTiles);
+		assert spawnTile != null;
+		
+		int spawnX = spawnTile.getX();
+		int spawnY = spawnTile.getY();
+		
+		if (sourceTile != null) {
+			spawnTile.setType(TileType.TILE_LADDER_UP);
+			
+			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
+				spawnTile.setType(TileType.TILE_LADDER_DOWN);
+			}
+			
+			if (spawnTile.getState() instanceof TileStateClimbable) {
+				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
+				tsc.setLinkedLevelUUID(Optional.ofNullable(sourceTile.getLevel().getUUID()));
+				tsc.setDestinationPosition(sourceTile.getX(), sourceTile.getY());
+			}
+		}
+		
+		level.setSpawnPoint(spawnX, spawnY);
+	}
+	
+	private void chooseExit() {
+		List<Tile> validExitTiles = Arrays.stream(level.getTileStore().getTiles())
+			.filter(t -> t.getType().isFloor())
+			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+							.filter(TileType::isFloor)
+							.count() == 4)
+			.filter(t -> Utils.chebyshevDistance(t.getX(), t.getY(), spawnTile.getX(), spawnTile.getY()) > DISTANCE_SPAWN_EXIT)
+			.collect(Collectors.toList());
+		
+		exitTile = RandomUtils.randomFrom(validExitTiles);
+		assert exitTile != null;
+		
+		int exitX = exitTile.getX();
+		int exitY = exitTile.getY();
+		
+		level.getTileStore().setTileType(exitX, exitY, TileType.TILE_LADDER_DOWN);
+		
+		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
+			level.getTileStore().setTileType(exitX, exitY, TileType.TILE_LADDER_UP);
+		}
+		
+		exitTile = level.getTileStore().getTile(exitX, exitY);
+		
+		if (exitTile.getState() instanceof TileStateClimbable) {
+			TileStateClimbable tsc = (TileStateClimbable) exitTile.getState();
+			tsc.setDestinationGenerator(getNextGenerator());
+		}
+	}
+	
 	public Tile getTempTile(int x, int y) {
 		int width = level.getWidth();
 		int height = level.getHeight();
@@ -174,5 +251,24 @@ public class GeneratorCave extends DungeonGenerator {
 			   t.getY() > 0 &&
 			   t.getX() < level.getWidth() - 1 &&
 			   t.getY() < level.getHeight() - 1;
+	}
+	
+	public boolean verify() {
+		Path path = pathfinder.findPath(
+			level,
+			spawnTile.getX(),
+			spawnTile.getY(),
+			exitTile.getX(),
+			exitTile.getY(),
+			Integer.MAX_VALUE,
+			true,
+			new ArrayList<>()
+		);
+		
+		if (path == null) {
+			JRogue.getLogger().debug("Level was generated unreachable - regenerating");
+		}
+		
+		return path != null;
 	}
 }

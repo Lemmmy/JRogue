@@ -23,7 +23,7 @@ public class FeatureSewerDrain extends SpecialRoomFeature {
 			
 			if (
 				!room.getLevel().getTileStore().getTileType(drainX, drainY + 1).isWater() &&
-				room.getLevel().getTileStore().getTileType(drainX, drainY + 1).isFloorTile()
+				room.getLevel().getTileStore().getTileType(drainX, drainY + 1).isFloor()
 			) {
 				room.getLevel().getTileStore().setTileType(drainX, drainY + 1, TileType.TILE_SEWER_WATER);
 			}

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 
 public class TileRendererBasic extends TileRenderer {
-	private TextureRegion image;
+	protected TextureRegion image;
 	
 	public TileRendererBasic(String sheetName, int sheetX, int sheetY) {
 		image = getImageFromSheet(sheetName, sheetX, sheetY);
