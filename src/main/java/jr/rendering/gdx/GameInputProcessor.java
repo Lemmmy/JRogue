@@ -117,6 +117,9 @@ public class GameInputProcessor implements InputProcessor {
 			} else if (keycode == Input.Keys.W) {
 				renderer.getHudComponent().showWishWindow();
 				return true;
+			} else if (keycode == Input.Keys.R) {
+				dungeon.generateLevel();
+				return true;
 			}
 		}
 		
