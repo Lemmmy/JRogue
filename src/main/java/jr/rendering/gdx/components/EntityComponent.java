@@ -73,7 +73,7 @@ public class EntityComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * deltaMultiplier);
 			
-			if (dungeon.getLevel().getVisibilityStore().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
+			if (!settings.isShowLevelDebug() && dungeon.getLevel().getVisibilityStore().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 			

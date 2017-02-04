@@ -102,8 +102,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		if (!settings.isShowLevelDebug()) {
+			camera.viewportWidth = Math.round(zoom);
+			camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		}
 		
 		camera.update();
 	}
@@ -148,7 +150,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	public void updateCamera() {
-		if (dungeon.getPlayer() != null) {
+		if (dungeon.getPlayer() != null && !settings.isShowLevelDebug()) {
 			camera.position.x = (dungeon.getPlayer().getX() + 0.5f) * TileMap.TILE_WIDTH;
 			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
 		}
@@ -190,8 +192,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		camera.setToOrtho(true, width, height);
 		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * height / width);
+		if (!settings.isShowLevelDebug()) {
+			camera.viewportWidth = Math.round(zoom);
+			camera.viewportHeight = Math.round(zoom * height / width);
+		}
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
 	}
