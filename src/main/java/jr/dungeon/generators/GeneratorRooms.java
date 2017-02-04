@@ -207,7 +207,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 					b.addConnectionPoint(point);
 					
 					if (slope <= CORRIDOR_LINE_SLOPE) {
-						TileType tile = TileType.TILE_CORRIDOR;
+						TileType tile = getCorridorTileType();
 						
 						buildLine(point.getAx(), point.getAy(), point.getBx(), point.getBy(), tile, true, false);
 					} else {
@@ -235,7 +235,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 		
-		TileType tile = TileType.TILE_CORRIDOR;
+		TileType tile = getCorridorTileType();
 		
 		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
 			buildLine(ax, ay, bx, by, tile, true, true);
@@ -257,7 +257,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		int dx = bx - ax;
 		int dy = by - ay;
 		
-		TileType tile = TileType.TILE_CORRIDOR;
+		TileType tile = getCorridorTileType();
 		
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
 			buildLine(ax, ay, ax + (int) Math.ceil(dx / 2), ay, tile, true, true);
@@ -451,5 +451,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	
 	public TileType getTorchTileType() {
 		return TileType.TILE_ROOM_TORCH_FIRE;
+	}
+	
+	public TileType getCorridorTileType() {
+		return TileType.TILE_CORRIDOR;
 	}
 }

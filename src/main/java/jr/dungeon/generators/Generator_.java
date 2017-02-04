@@ -40,4 +40,9 @@ public class Generator_ extends GeneratorStandard {
 	public TileType getWallTileType() {
 		return TileType.TILE__FLOOR;
 	}
+	
+	@Override
+	public TileType getCorridorTileType() {
+		return TileType.TILE__BRIDGE;
+	}
 }
