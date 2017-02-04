@@ -36,13 +36,13 @@ public class GeneratorCave extends DungeonGenerator {
 		passAir();
 		
 		for (int i = 0; i < 6; i++) {
-			pass();
+			pass(i == 0);
 		}
 		
 		return true;
 	}
 	
-	private void initialiseTempTiles() {
+	private void initialiseTempTiles(boolean firstPass) {
 		int width = level.getWidth();
 		int height = level.getHeight();
 		
@@ -52,7 +52,12 @@ public class GeneratorCave extends DungeonGenerator {
 			int x = i % width;
 			int y = (int) Math.floor(i / width);
 			
-			tempTiles[i] = new Tile(level, level.getTileStore().getTileType(x, y), x, y);
+			tempTiles[i] = new Tile(
+				level,
+				firstPass ? TileType.TILE_GROUND
+						  : level.getTileStore().getTileType(x, y),
+				x, y
+			);
 		}
 	}
 	
@@ -70,8 +75,8 @@ public class GeneratorCave extends DungeonGenerator {
 			});
 	}
 	
-	private void pass() {
-		initialiseTempTiles();
+	private void pass(boolean firstPass) {
+		initialiseTempTiles(firstPass);
 		
 		Arrays.stream(level.getTileStore().getTiles())
 			.filter(this::isTileInBounds)
