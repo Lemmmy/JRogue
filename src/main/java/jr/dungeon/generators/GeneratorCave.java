@@ -39,6 +39,8 @@ public class GeneratorCave extends DungeonGenerator {
 			pass(i == 0);
 		}
 		
+		wallPass();
+		
 		return true;
 	}
 	
@@ -70,7 +72,7 @@ public class GeneratorCave extends DungeonGenerator {
 			.filter(this::isTileInBounds)
 			.forEach(t -> {
 				if (rand.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
-					t.setType(TileType.TILE_ROOM_FLOOR); // TODO: cave floor tile
+					t.setType(TileType.TILE_CAVE_FLOOR); // TODO: cave floor tile
 				}
 			});
 	}
@@ -82,7 +84,7 @@ public class GeneratorCave extends DungeonGenerator {
 			.filter(this::isTileInBounds)
 			.forEach(t -> setTempTileType(
 				t.getX(), t.getY(),
-				tilePass(t) ? TileType.TILE_GROUND : TileType.TILE_ROOM_FLOOR
+				tilePass(t) ? TileType.TILE_GROUND : TileType.TILE_CAVE_FLOOR
 			));
 		
 		flushTempTiles();
@@ -96,6 +98,19 @@ public class GeneratorCave extends DungeonGenerator {
 			cr2 = getAdjacentCountR2(x, y);
 		
 		return cr1 >= R1_CUTOFF || cr2 <= R2_CUTOFF;
+	}
+	
+	private void wallPass() {
+		Arrays.stream(level.getTileStore().getTiles())
+			.filter(t -> t.getType() == TileType.TILE_GROUND)
+			.forEach(t -> {
+				TileType[] adjacentTileTypes = level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY());
+				
+				Arrays.stream(adjacentTileTypes)
+					.filter(t2 -> t2 == TileType.TILE_CAVE_FLOOR)
+					.findFirst()
+					.ifPresent(__ -> t.setType(TileType.TILE_CAVE_WALL));
+			});
 	}
 	
 	public Tile getTempTile(int x, int y) {

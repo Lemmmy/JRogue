@@ -52,6 +52,9 @@ public enum TileType {
 	TILE_SEWER_DRAIN(30, TileFlag.WALL, Solidity.SOLID),
 	
 	TILE_CORRIDOR(25, TileFlag.BUILDABLE, Solidity.WALK_ON),
+	
+	TILE_CAVE_WALL(35, TileFlag.BUILDABLE | TileFlag.WALL, Solidity.SOLID),
+	TILE_CAVE_FLOOR(36, TileFlag.FLOOR, Solidity.WALK_ON),
 
 	TILE__NOISE(32, TileFlag.BUILDABLE, Solidity.SOLID),
 	TILE__FLOOR(34, TileFlag.FLOOR, Solidity.WALK_ON);

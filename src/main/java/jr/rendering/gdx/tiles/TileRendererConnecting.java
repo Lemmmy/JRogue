@@ -7,40 +7,44 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 
-public class TileRendererDirt extends TileRendererBlob8 {
-	private TextureRegion dirt;
-	private TextureRegion floor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-	private TileType self;
+public class TileRendererConnecting extends TileRendererBlob8 {
+	private TextureRegion fg;
+	private TextureRegion bg;
 
-	public TileRendererDirt(int sheetX,
-							int sheetY,
-							int floorSheetX,
-							int floorSheetY,
-							TileType self) {
+	private List<TileType> connecting;
+
+	public TileRendererConnecting(int sheetX,
+								  int sheetY,
+								  int bgSheetX,
+								  int bgSheetY,
+								  TileType... connecting) {
 		super(1, 0);
 		
-		this.self = self;
+		this.connecting = new ArrayList<>(Arrays.asList(connecting));
 		
-		dirt = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
+		fg = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		bg = getImageFromSheet("textures/tiles.png", bgSheetX, bgSheetY);
 	}
 	
 	@Override
 	boolean isJoinedTile(TileType tile) {
-		return tile == self;
+		return connecting.contains(tile);
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		return dirt;
+		return fg;
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 		
-		drawTile(batch, dirt, x, y);
+		drawTile(batch, fg, x, y);
 		batch.flush();
 		
 		Gdx.gl.glColorMask(false, false, false, true);
@@ -50,7 +54,7 @@ public class TileRendererDirt extends TileRendererBlob8 {
 		
 		Gdx.gl.glColorMask(true, true, true, true);
 		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
-		drawTile(batch, floor, x, y);
+		drawTile(batch, bg, x, y);
 		batch.flush();
 		
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
