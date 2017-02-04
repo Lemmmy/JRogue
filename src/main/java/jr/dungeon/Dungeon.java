@@ -556,17 +556,28 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		listeners.forEach(l -> triggerEvent(l, event));
 		
 		if (level != null) {
-			level.getEntityStore().getEntities().forEach(e -> triggerEvent(e, event));
+			level.getEntityStore().getEntities().forEach(e -> {
+				triggerEvent(e, event);
+				e.getSubListeners().forEach(l2 -> {
+					if (l2 != null) {
+						triggerEvent(l2, event);
+					}
+				});
+			});
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEventListener listener, DungeonEvent event) {
+		event.setDungeon(this);
+		
 		Arrays.stream(listener.getClass().getMethods())
 			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
 			.filter(m -> m.getParameterCount() == 1)
 			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
 			.forEach(m -> {
+				m.setAccessible(true); // ha ha
+				
 				if (event.isCancelled()) {
 					return;
 				}

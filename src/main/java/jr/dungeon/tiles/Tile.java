@@ -35,6 +35,10 @@ public class Tile {
 		initialiseState();
 	}
 	
+	public jr.utils.Point getPosition() {
+		return jr.utils.Point.getPoint(x, y);
+	}
+	
 	public void resetLight() {
 		lightColour = type.getLightColour();
 		lightIntensity = type.getLightIntensity();

@@ -62,11 +62,22 @@ public class Utils {
 		return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 	}
 	
+	public static int chebyshevDistance(Point a, Point b) {
+		return chebyshevDistance(a.getX(), a.getY(), b.getX(), b.getY());
+	}
+	
 	public static int chebyshevDistance(int ax, int ay, int bx, int by) {
 		int dx = Math.abs(ax - bx);
 		int dy = Math.abs(ay - by);
 		
 		return Math.max(dy, dx);
+	}
+	
+	public static float octileDistance(int ax, int ay, int bx, int by, float d, float d2) {
+		int dx = Math.abs(ax - bx);
+		int dy = Math.abs(ay - by);
+		
+		return d * (dx + dy) + (d2 - 2 * d) * Math.min(dx, dy);
 	}
 	
 	public static com.badlogic.gdx.graphics.Color awtColourToGdx(java.awt.Color colour, int dummyID) {

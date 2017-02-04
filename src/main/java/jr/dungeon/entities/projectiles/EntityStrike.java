@@ -8,7 +8,6 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;

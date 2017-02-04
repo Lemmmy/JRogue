@@ -8,15 +8,16 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
-public class StateLurk extends AIState {
+public class StateFlee extends AIState {
 	private Point dest;
 	
-	public StateLurk(StatefulAI ai, int duration) {
+	public StateFlee(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}
 	
@@ -24,34 +25,34 @@ public class StateLurk extends AIState {
 	public void update() {
 		super.update();
 		
-		if (getAI().canSeeTarget()) {
-			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
-			return;
-		}
-		
 		Monster m = getAI().getMonster();
 		
 		if (dest == null) {
 			dest = getRandomDestination();
 		}
 		
-		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
-			dest = getRandomDestination();
+		if (m.getPosition() == dest || m.getPosition() == m.getLastPosition()) {
+			getAI().setCurrentState(null);
 			
 			Point safePoint = Point.getPoint(m.getX(), m.getY());
 			getAI().addSafePoint(safePoint);
+		} else {
+			getAI().moveTowards(dest);
 		}
-		
-		getAI().moveTowards(dest);
 	}
 	
 	private Point getRandomDestination() {
+		val safePoint = getAI().getSafePoint();
 		Monster m = getAI().getMonster();
 		
-		return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
-			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
-			.map(Tile::getPosition)
-			.collect(Collectors.toList()));
+		if (safePoint.isPresent()) {
+			return safePoint.get();
+		} else {
+			return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
+				.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
+				.map(Tile::getPosition)
+				.collect(Collectors.toList()));
+		}
 	}
 	
 	@Override

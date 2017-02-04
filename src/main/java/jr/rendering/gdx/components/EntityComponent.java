@@ -9,7 +9,8 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
-import jr.dungeon.events.*;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
@@ -181,9 +182,7 @@ public class EntityComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityRemoved(EntityRemovedEvent event) {
-		Entity entity = event.getEntity();
-		
-		entityPooledEffects.removeIf(e -> e.getEntity().equals(entity));
+		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
 	}
 	
 	@Override
@@ -198,6 +197,6 @@ public class EntityComponent extends RendererComponent {
 	
 	@Override
 	public void dispose() {
-		
+		entityPooledEffects.forEach(e -> e.getPooledEffect().dispose());
 	}
 }

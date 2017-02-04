@@ -46,8 +46,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
 	private LevelComponent levelComponent;
+	private ParticlesComponent particlesBelowComponent;
 	private PathComponent pathComponent;
 	private EntityComponent entityComponent;
+	private ParticlesComponent particlesAboveComponent;
 	private LightingComponent lightingComponent;
 	private HUDComponent hudComponent;
 	private MinimapComponent minimapComponent;
@@ -107,19 +109,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	private void initialiseRendererComponents() {
-		levelComponent = new LevelComponent(this, dungeon, settings);
-		pathComponent = new PathComponent(this, dungeon, settings);
-		entityComponent = new EntityComponent(this, dungeon, settings);
-		lightingComponent = new LightingComponent(this, dungeon, settings);
-		minimapComponent = new MinimapComponent(this, dungeon, settings);
-		hudComponent = new HUDComponent(this, dungeon, settings);
-		
-		rendererComponents.add(levelComponent);
-		rendererComponents.add(pathComponent);
-		rendererComponents.add(entityComponent);
-		rendererComponents.add(lightingComponent);
-		rendererComponents.add(minimapComponent);
-		rendererComponents.add(hudComponent);
+		rendererComponents.add(levelComponent = new LevelComponent(this, dungeon, settings));
+		rendererComponents.add(particlesBelowComponent = new ParticlesComponent.Below(this, dungeon, settings));
+		rendererComponents.add(pathComponent = new PathComponent(this, dungeon, settings));
+		rendererComponents.add(entityComponent = new EntityComponent(this, dungeon, settings));
+		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
+		rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
+		rendererComponents.add(hudComponent = new HUDComponent(this, dungeon, settings));
 		
 		// add mod components
 		

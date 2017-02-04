@@ -1,7 +1,7 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.JRogue;
-import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.events.DungeonEventListener;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 @Getter
-public class AIState implements Serialisable {
+public class AIState implements Serialisable, DungeonEventListener {
 	private StatefulAI ai;
 	
 	private int duration = 0;

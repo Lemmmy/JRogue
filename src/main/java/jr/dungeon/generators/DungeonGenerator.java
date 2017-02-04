@@ -7,7 +7,6 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Utils;
 import jr.utils.WeightedCollection;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Random;
