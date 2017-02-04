@@ -156,6 +156,10 @@ public enum TileType {
 				return "There is a staircase up here.";
 			case TILE_ROOM_STAIRS_DOWN:
 				return "There is a staircase down here.";
+			case TILE_LADDER_UP:
+				return "There is a ladder up here.";
+			case TILE_LADDER_DOWN:
+				return "There is a ladder down here.";
 			default:
 				break;
 		}
