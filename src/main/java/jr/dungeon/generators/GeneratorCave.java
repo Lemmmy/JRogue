@@ -33,7 +33,7 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	@Override
 	public boolean generate() {
-		passAir();
+		airPass();
 		
 		for (int i = 0; i < 6; i++) {
 			pass(i == 0);
@@ -67,7 +67,7 @@ public class GeneratorCave extends DungeonGenerator {
 		Arrays.stream(tempTiles).forEach(t -> level.getTileStore().setTileType(t.getX(), t.getY(), t.getType()));
 	}
 	
-	private void passAir() {
+	private void airPass() {
 		Arrays.stream(level.getTileStore().getTiles())
 			.filter(this::isTileInBounds)
 			.forEach(t -> {
@@ -104,7 +104,7 @@ public class GeneratorCave extends DungeonGenerator {
 		Arrays.stream(level.getTileStore().getTiles())
 			.filter(t -> t.getType() == TileType.TILE_GROUND)
 			.forEach(t -> {
-				TileType[] adjacentTileTypes = level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY());
+				TileType[] adjacentTileTypes = level.getTileStore().getOctAdjacentTileTypes(t.getX(), t.getY());
 				
 				Arrays.stream(adjacentTileTypes)
 					.filter(t2 -> t2 == TileType.TILE_CAVE_FLOOR)
