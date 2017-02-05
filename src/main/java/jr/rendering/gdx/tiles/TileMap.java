@@ -46,7 +46,7 @@ public enum TileMap {
 	TILE_CORRIDOR(new TileRendererCorridor()),
 	
 	TILE_CAVE_WALL(new TileRendererConnecting(7, 2, 1, 1, false, TileType.TILE_CAVE_WALL, TileType.TILE_CAVE_FLOOR)),
-	TILE_CAVE_FLOOR(new TileRendererConnecting(6, 2, 7, 2, true, TileType.TILE_GROUND, TileType.TILE_CAVE_WALL)),
+	TILE_CAVE_FLOOR(new TileRendererCaveFloor()),
 
 	TILE__NOISE(new TileRendererNoise(ImageLoader.getImage("textures/noise_bg.png"), 0.2f, 0.2f * Dungeon.LEVEL_WIDTH / (float)Dungeon.LEVEL_HEIGHT)),
 	TILE__FLOOR(new TileRendererReflective(8, 0, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f)));
