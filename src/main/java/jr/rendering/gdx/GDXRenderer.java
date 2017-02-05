@@ -53,6 +53,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private LightingComponent lightingComponent;
 	private HUDComponent hudComponent;
 	private MinimapComponent minimapComponent;
+	private FPSCounterComponent fpsCounterComponent;
 	
 	private float zoom = 1.0f;
 	
@@ -118,6 +119,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
 		rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
 		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
+		
+		if (settings.isShowFPSCounter()) {
+			rendererComponents.add(fpsCounterComponent = new FPSCounterComponent(this, dungeon, settings));
+		}
+		
 		rendererComponents.add(hudComponent = new HUDComponent(this, dungeon, settings));
 		
 		// add mod components
