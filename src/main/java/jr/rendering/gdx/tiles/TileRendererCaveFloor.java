@@ -45,16 +45,16 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 		// would return false...
 		
 		if (rand.nextInt(100) <= PROBABILITY_ROCK) {
-			float rockX = rand.nextFloat(),
-				  rockY = rand.nextFloat();
+			int rockX = rand.nextInt(16),
+				rockY = rand.nextInt(16);
 			
 			int rock = rand.nextInt(rocks.length);
 			TextureRegion rockRegion = rocks[rock];
 			
 			batch.draw(
 				rockRegion,
-				x * TileMap.TILE_WIDTH + rockX * TileMap.TILE_WIDTH,
-				y * TileMap.TILE_HEIGHT + rockY * TileMap.TILE_HEIGHT
+				x * TileMap.TILE_WIDTH + rockX,
+				y * TileMap.TILE_HEIGHT + rockY
 			);
 		}
 	}
