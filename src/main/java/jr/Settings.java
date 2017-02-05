@@ -40,6 +40,9 @@ public class Settings {
 	
 	@Setting(comment="[Debug] Show FPS counter.")
 	private boolean showFPSCounter = false;
+	
+	@Setting(comment="Use VSync.")
+	private boolean vsync = true;
 
 	@Setting(comment="Ambient occlusion strength. 0=none, 3=maximum")
 	private int aoLevel = 1;

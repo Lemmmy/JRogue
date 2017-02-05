@@ -69,6 +69,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setResizable(true);
 		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+		config.useVsync(settings.isVsync());
 		
 		new Lwjgl3Application(this, config);
 	}
