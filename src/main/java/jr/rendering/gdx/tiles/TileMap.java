@@ -49,8 +49,8 @@ public enum TileMap {
 	TILE_CAVE_FLOOR(new TileRendererCaveFloor()),
 
 	TILE__NOISE(new TileRendererNoise(ImageLoader.getImage("textures/noise_bg.png"), 0.2f, 0.2f * Dungeon.LEVEL_WIDTH / (float)Dungeon.LEVEL_HEIGHT)),
-	TILE__FLOOR(new TileRendererReflective(8, 0, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f))),
-	TILE__BRIDGE(new TileRendererBridge(8, 2));
+	TILE__FLOOR(new TileRenderer_Floor(8, 0, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f), false, TileType.TILE__FLOOR)),
+	TILE__BRIDGE(new TileRenderer_Bridge(8, 2));
 
 	public static final int TILE_WIDTH = 16;
 	public static final int TILE_HEIGHT = 16;

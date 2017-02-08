@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 
-public class TileRendererBridge extends TileRendererBlob8 {
+public class TileRenderer_Bridge extends TileRendererBlob8 {
 	private TextureRegion bridge;
 	
-	public TileRendererBridge(int sheetX, int sheetY) {
+	public TileRenderer_Bridge(int sheetX, int sheetY) {
 		super(1, 1);
 		
 		bridge = getImageFromSheet("textures/tiles.png", sheetX, sheetY);

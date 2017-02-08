@@ -96,7 +96,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorCave.class);
+		level.generate(null, Generator_.class);
 		
 		if (player == null) {
 			player = new Player(
