@@ -57,6 +57,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	private float zoom = 1.0f;
 	
+	private float renderTime;
+	
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
@@ -174,6 +176,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		super.render();
 		
 		float delta = Gdx.graphics.getDeltaTime();
+		renderTime += delta;
 		
 		updateCamera();
 		
