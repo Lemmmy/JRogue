@@ -143,12 +143,15 @@ public class MinimapComponent extends RendererComponent {
 			colour = DOOR_COLOUR;
 		}
 		
-		Gradient gradient = Gradient.getGradient(colour, Utils.awtColourToGdx(tile.getLightColour(), 1));
-		Color newColour = gradient.getColourAtPoint(0.5f);
-		Gradient.free(gradient);
-
-		mapBatch.setColor(newColour.r, newColour.g, newColour.b, isVisible ? colour.a : colour.a / 3f);
+		mapBatch.setColor(colour.r, colour.g, colour.b, isVisible ? colour.a : colour.a / 3f);
 		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+
+		if (isVisible) {
+			Color lightColour = Utils.awtColourToGdx(tile.getLightColour(), 1);
+			
+			mapBatch.setColor(lightColour.r, lightColour.g, lightColour.b, 0.5f);
+			mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+		}
 	}
 	
 	private void drawIcons() {
