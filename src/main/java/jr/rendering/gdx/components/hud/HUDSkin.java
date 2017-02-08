@@ -101,10 +101,10 @@ public class HUDSkin extends Skin {
 	}
 	
 	private void addFonts() {
-		add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true));
-		add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false));
-		add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true));
-		add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false));
+		add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true, false));
+		add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false, false));
+		add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true, false));
+		add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false, false));
 	}
 	
 	private void addLabelStyles() {

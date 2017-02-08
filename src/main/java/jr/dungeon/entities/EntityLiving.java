@@ -202,13 +202,13 @@ public abstract class EntityLiving extends EntityTurnBased {
 			JSONObject serialisedInventory = obj.getJSONObject("inventory");
 			setInventoryContainer(Container.createFromJSON(serialisedInventory));
 			
-			if (obj.has("leftHand")) {
+			if (obj.has("leftHand") && !obj.isNull("leftHand") && obj.get("leftHand") instanceof String) {
 				Character letter = obj.getString("leftHand").charAt(0);
 				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
 				entryOptional.ifPresent(this::setLeftHand);
 			}
 			
-			if (obj.has("rightHand")) {
+			if (obj.has("rightHand") && !obj.isNull("rightHand") && obj.get("rightHand") instanceof String) {
 				Character letter = obj.getString("rightHand").charAt(0);
 				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
 				entryOptional.ifPresent(this::setRightHand);

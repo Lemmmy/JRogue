@@ -84,11 +84,11 @@ public class GeneratorSewer extends GeneratorRooms {
 	
 	@Override
 	public TileType getDownstairsTileType() {
-		return TileType.TILE_ROOM_LADDER_DOWN;
+		return TileType.TILE_LADDER_DOWN;
 	}
 	
 	@Override
 	public TileType getUpstairsTileType() {
-		return TileType.TILE_ROOM_LADDER_UP;
+		return TileType.TILE_LADDER_UP;
 	}
 }

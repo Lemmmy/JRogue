@@ -164,7 +164,7 @@ public class GeneratorStandard extends GeneratorRooms {
 		int ladderY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		Tile ladderTile = level.getTileStore().getTile(ladderX, ladderY);
-		ladderTile.setType(TileType.TILE_ROOM_LADDER_DOWN);
+		ladderTile.setType(TileType.TILE_LADDER_DOWN);
 		
 		if (ladderTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();

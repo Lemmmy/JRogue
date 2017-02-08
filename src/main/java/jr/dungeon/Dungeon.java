@@ -14,6 +14,7 @@ import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
+import jr.dungeon.generators.GeneratorCave;
 import jr.dungeon.generators.Generator_;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
@@ -95,7 +96,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, Generator_.class);
+		level.generate(null, GeneratorCave.class);
 		
 		if (player == null) {
 			player = new Player(
@@ -122,7 +123,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			return;
 		}
 		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 		
 		try (
 			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
@@ -139,7 +140,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static Dungeon load() {
 		Dungeon dungeon = new Dungeon();
 		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 		
 		if (file.exists()) {
 			try (

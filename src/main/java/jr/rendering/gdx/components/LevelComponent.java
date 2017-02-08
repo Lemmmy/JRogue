@@ -51,7 +51,7 @@ public class LevelComponent extends RendererComponent {
 					continue;
 				}
 				
-				if (!level.getVisibilityStore().isTileDiscovered(x, y)) {
+				if (!settings.isShowLevelDebug() && !level.getVisibilityStore().isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;
 				}
@@ -148,5 +148,9 @@ public class LevelComponent extends RendererComponent {
 	public void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		findTilePooledParticles();
+		
+		if (settings.isShowLevelDebug()) {
+			level.getVisibilityStore().seeAll();
+		}
 	}
 }

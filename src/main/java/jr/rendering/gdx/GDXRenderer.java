@@ -53,6 +53,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private LightingComponent lightingComponent;
 	private HUDComponent hudComponent;
 	private MinimapComponent minimapComponent;
+	private FPSCounterComponent fpsCounterComponent;
 	
 	private float zoom = 1.0f;
 	
@@ -68,6 +69,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setResizable(true);
 		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+		config.useVsync(settings.isVsync());
 		
 		new Lwjgl3Application(this, config);
 	}
@@ -102,8 +104,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		if (!settings.isShowLevelDebug()) {
+			camera.viewportWidth = Math.round(zoom);
+			camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		}
 		
 		camera.update();
 	}
@@ -114,8 +118,17 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.add(pathComponent = new PathComponent(this, dungeon, settings));
 		rendererComponents.add(entityComponent = new EntityComponent(this, dungeon, settings));
 		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
-		rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		
+		if (!settings.isShowLevelDebug()) {
+			rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		}
+		
 		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
+		
+		if (settings.isShowFPSCounter()) {
+			rendererComponents.add(fpsCounterComponent = new FPSCounterComponent(this, dungeon, settings));
+		}
+		
 		rendererComponents.add(hudComponent = new HUDComponent(this, dungeon, settings));
 		
 		// add mod components
@@ -148,7 +161,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	public void updateCamera() {
-		if (dungeon.getPlayer() != null) {
+		if (dungeon.getPlayer() != null && !settings.isShowLevelDebug()) {
 			camera.position.x = (dungeon.getPlayer().getX() + 0.5f) * TileMap.TILE_WIDTH;
 			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
 		}
@@ -190,8 +203,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		camera.setToOrtho(true, width, height);
 		
-		camera.viewportWidth = Math.round(zoom);
-		camera.viewportHeight = Math.round(zoom * height / width);
+		if (!settings.isShowLevelDebug()) {
+			camera.viewportWidth = Math.round(zoom);
+			camera.viewportHeight = Math.round(zoom * height / width);
+		}
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
 	}
