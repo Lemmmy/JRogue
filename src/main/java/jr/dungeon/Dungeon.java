@@ -12,10 +12,7 @@ import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
-import jr.dungeon.generators.DungeonGenerator;
-import jr.dungeon.generators.DungeonNameGenerator;
-import jr.dungeon.generators.GeneratorCave;
-import jr.dungeon.generators.Generator_;
+import jr.dungeon.generators.*;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.OperatingSystem;
@@ -96,7 +93,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, Generator_.class);
+		level.generate(null, GeneratorStandard.class);
 		
 		if (player == null) {
 			player = new Player(
