@@ -16,6 +16,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.utils.ImageLoader;
@@ -163,12 +164,12 @@ public class MinimapComponent extends RendererComponent {
 	
 	private void drawStairIcons() {
 		Arrays.stream(level.getTileStore().getTiles())
-			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP || t.getType() == TileType.TILE_ROOM_LADDER_UP)
+			.filter(t -> (t.getType().getFlags() & TileFlag.UP) == TileFlag.UP)
 			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
 		
 		Arrays.stream(level.getTileStore().getTiles())
-			.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN || t.getType() == TileType.TILE_ROOM_LADDER_DOWN)
+			.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
 	}

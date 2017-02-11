@@ -51,7 +51,7 @@ public class RoomGraveyard extends RoomBasic {
 		int y = rand.nextInt(getHeight() - 2) + getY() + 1;
 		
 		if (
-			getLevel().getTileStore().getTileType(x, y).isFloorTile() &&
+			getLevel().getTileStore().getTileType(x, y).isFloor() &&
 			getLevel().getEntityStore().getEntitiesAt(x, y).size() == 0
 		) {
 			getLevel().getEntityStore().addEntity(new EntityGravestone(getLevel().getDungeon(), getLevel(), x, y));

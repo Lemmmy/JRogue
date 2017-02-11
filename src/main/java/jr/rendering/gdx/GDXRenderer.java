@@ -57,6 +57,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	private float zoom = 1.0f;
 	
+	private float renderTime;
+	
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
@@ -118,7 +120,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.add(pathComponent = new PathComponent(this, dungeon, settings));
 		rendererComponents.add(entityComponent = new EntityComponent(this, dungeon, settings));
 		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
-		rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		
+		if (!settings.isShowLevelDebug()) {
+			rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+		}
+		
 		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
 		
 		if (settings.isShowFPSCounter()) {
@@ -170,6 +176,7 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		super.render();
 		
 		float delta = Gdx.graphics.getDeltaTime();
+		renderTime += delta;
 		
 		updateCamera();
 		

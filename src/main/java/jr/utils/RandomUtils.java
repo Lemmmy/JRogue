@@ -16,6 +16,7 @@ public class RandomUtils {
 	}
 	
 	public static <T> T randomFrom(List<T> items) {
+		if (items.size() == 0) return null;
 		return items.get(rand.nextInt(items.size()));
 	}
 	

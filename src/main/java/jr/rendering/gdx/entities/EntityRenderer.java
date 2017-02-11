@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.generators.Climate;
 import jr.rendering.gdx.utils.ImageLoader;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,11 @@ public abstract class EntityRenderer {
 	public boolean shouldBeReflected(Entity entity) {
 		return true;
 	}
-	
+
+	public boolean shouldRenderReal(Entity entity) {
+		return entity.getLevel().getClimate() != Climate.__;
+	}
+
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
 	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity);

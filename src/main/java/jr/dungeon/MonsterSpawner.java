@@ -38,18 +38,26 @@ public class MonsterSpawner implements Serialisable {
 	
 	@Override
 	public void serialise(JSONObject obj) {
-		obj.put("monsterSpawningStrategy", monsterSpawningStrategy.name());
+		if (monsterSpawningStrategy != null) {
+			obj.put("monsterSpawningStrategy", monsterSpawningStrategy.name());
+		}
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		monsterSpawningStrategy = MonsterSpawningStrategy.valueOf(obj.optString(
-			"monsterSpawningStrategy",
-			MonsterSpawningStrategy.STANDARD.name()
-		));
+		if (obj.has("monsterSpawningStrategy")) {
+			monsterSpawningStrategy = MonsterSpawningStrategy.valueOf(obj.optString(
+				"monsterSpawningStrategy",
+				MonsterSpawningStrategy.STANDARD.name()
+			));
+		}
 	}
 	
 	public void spawnMonsters() {
+		if (monsterSpawningStrategy == null) {
+			return;
+		}
+		
 		monsterSpawningStrategy.getSpawns().stream()
 			.filter(s -> s.getLevelRange().contains(Math.abs(level.getDepth())))
 			.forEach(s -> {
@@ -69,6 +77,10 @@ public class MonsterSpawner implements Serialisable {
 	
 	@SuppressWarnings("unchecked")
 	public void spawnNewMonsters() {
+		if (monsterSpawningStrategy == null) {
+			return;
+		}
+		
 		jr.utils.Point point = getMonsterSpawnPointAwayFromPlayer();
 		
 		if (point != null) {
@@ -77,6 +89,7 @@ public class MonsterSpawner implements Serialisable {
 				.collect(Collectors.toList());
 			
 			MonsterSpawn chosenSpawn = RandomUtils.randomFrom(possibleMonsterSpawns);
+			if (chosenSpawn == null) return;
 			spawnMonsterAtPoint(chosenSpawn.getMonsterClass(), point);
 		}
 	}
@@ -118,7 +131,7 @@ public class MonsterSpawner implements Serialisable {
 			.collect(Collectors.toList())
 		);
 		
-		return new jr.utils.Point(tile.getX(), tile.getY());
+		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
 	}
 	
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
@@ -139,6 +152,6 @@ public class MonsterSpawner implements Serialisable {
 			.collect(Collectors.toList())
 		);
 		
-		return new jr.utils.Point(tile.getX(), tile.getY());
+		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
 	}
 }

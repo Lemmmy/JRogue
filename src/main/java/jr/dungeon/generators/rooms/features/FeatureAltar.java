@@ -21,7 +21,7 @@ public class FeatureAltar extends SpecialRoomFeature {
 		
 		for (int y = altarY - 1; y < altarY + 2; y++) {
 			for (int x = altarX - 1; x < altarX + 2; x++) {
-				if (room.getLevel().getTileStore().getTileType(x, y).isFloorTile()) {
+				if (room.getLevel().getTileStore().getTileType(x, y).isFloor()) {
 					room.getLevel().getTileStore().setTileType(x, y, TileType.TILE_ROOM_RUG);
 				}
 			}
@@ -31,14 +31,14 @@ public class FeatureAltar extends SpecialRoomFeature {
 			int x = altarX - 1;
 			int y = altarY;
 			
-			if (room.getLevel().getTileStore().getTileType(x, y).isFloorTile()) {
+			if (room.getLevel().getTileStore().getTileType(x, y).isFloor()) {
 				EntityCandlestick cs1 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
 				room.getLevel().getEntityStore().addEntity(cs1);
 			}
 			
 			x = altarX + 1;
 			
-			if (room.getLevel().getTileStore().getTileType(x, y).isFloorTile()) {
+			if (room.getLevel().getTileStore().getTileType(x, y).isFloor()) {
 				EntityCandlestick cs2 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
 				room.getLevel().getEntityStore().addEntity(cs2);
 			}
