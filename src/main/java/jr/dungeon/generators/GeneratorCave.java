@@ -42,7 +42,7 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	@Override
 	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
-		return null;
+		return MonsterSpawningStrategy.CAVE;
 	}
 	
 	@Override

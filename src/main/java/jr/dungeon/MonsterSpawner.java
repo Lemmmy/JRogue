@@ -109,7 +109,7 @@ public class MonsterSpawner implements Serialisable {
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
 		List<Tile> validTiles = Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.sorted(Comparator.comparingInt(a -> Utils.distance(
@@ -125,7 +125,7 @@ public class MonsterSpawner implements Serialisable {
 	private jr.utils.Point getMonsterSpawnPoint() {
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
@@ -139,7 +139,7 @@ public class MonsterSpawner implements Serialisable {
 		
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.filter(t -> !level.getVisibilityStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])

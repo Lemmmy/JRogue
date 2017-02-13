@@ -14,5 +14,6 @@ public class TileFlag {
 							LADDER				= (int) Math.pow(2, 11),
 							UP					= (int) Math.pow(2, 12),
 							DOWN				= (int) Math.pow(2, 13),
-							CLIMBABLE			= (int) Math.pow(2, 14);
+							CLIMBABLE			= (int) Math.pow(2, 14),
+							SPAWNABLE			= (int) Math.pow(2, 15);
 }

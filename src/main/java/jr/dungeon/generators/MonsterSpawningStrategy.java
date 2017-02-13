@@ -135,6 +135,14 @@ public enum MonsterSpawningStrategy {
 			MonsterGoblin.class
 		)
 	),
+	
+	CAVE(
+		new MonsterSpawn(
+			Range.between(1, Integer.MAX_VALUE),
+			Range.between(100, 200),
+			MonsterSpider.class
+		)
+	),
 
 	NONE();
 	

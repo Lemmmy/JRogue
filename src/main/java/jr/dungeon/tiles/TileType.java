@@ -30,12 +30,12 @@ public enum TileType {
 	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
 	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Color(0xFF9B26), 100, 0),
 	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Color(0x8BD1EC), 100, 0),
-	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
-	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
+	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
+	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
+	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
 	
 	TILE_ROOM_DOOR_LOCKED(17, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_CLOSED(18, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
@@ -56,11 +56,11 @@ public enum TileType {
 	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON),
 	
 	TILE_CAVE_WALL(35, BUILDABLE | WALL, Solidity.SOLID),
-	TILE_CAVE_FLOOR(36, FLOOR, Solidity.WALK_ON),
+	TILE_CAVE_FLOOR(36, FLOOR | SPAWNABLE, Solidity.WALK_ON),
 
 	TILE__NOISE(32, BUILDABLE, Solidity.SOLID),
-	TILE__FLOOR(34, FLOOR, Solidity.WALK_ON),
-	TILE__BRIDGE(37, FLOOR, Solidity.WALK_ON);
+	TILE__FLOOR(34, FLOOR | SPAWNABLE, Solidity.WALK_ON),
+	TILE__BRIDGE(37, FLOOR | SPAWNABLE, Solidity.WALK_ON);
 	
 	private short id;
 	private int flags;
@@ -149,6 +149,10 @@ public enum TileType {
 	
 	public boolean isDoorShut() {
 		return (flags & DOOR_SHUT) == DOOR_SHUT;
+	}
+	
+	public boolean isSpawnable() {
+		return (flags & SPAWNABLE) == SPAWNABLE;
 	}
 	
 	public String onWalk() {
