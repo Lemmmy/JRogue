@@ -26,7 +26,7 @@ public class MonsterRat extends Monster {
 	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		speed = Dungeon.NORMAL_SPEED + 4 - RandomUtils.random(8);
+		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
 		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);
@@ -70,7 +70,7 @@ public class MonsterRat extends Monster {
 	
 	@Override
 	public float getCorpseChance() {
-		return 0.1f;
+		return 0.3f;
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ public class MonsterRat extends Monster {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 8;
+		return 9;
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
