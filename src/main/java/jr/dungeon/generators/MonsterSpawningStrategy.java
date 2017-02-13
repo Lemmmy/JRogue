@@ -139,7 +139,7 @@ public enum MonsterSpawningStrategy {
 	CAVE(
 		new MonsterSpawn(
 			Range.between(1, Integer.MAX_VALUE),
-			Range.between(100, 200),
+			Range.between(5, 30),
 			MonsterSpider.class
 		)
 	),
