@@ -32,15 +32,15 @@ public class TileRendererSewerWall extends TileRenderer {
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
+		boolean v = adjacentTiles[2].isWall() || adjacentTiles[3].isWall();
 		
 		if (h && !v) {
 			return wallH;
 		} else if (!h && v) {
 			return wallV;
 		} else {
-			return adjacentTiles[2].isWallTile() ? wallCT : wallCB;
+			return adjacentTiles[2].isWall() ? wallCT : wallCB;
 		}
 	}
 	
@@ -48,8 +48,8 @@ public class TileRendererSewerWall extends TileRenderer {
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
 		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
 		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
+		boolean v = adjacentTiles[2].isWall() || adjacentTiles[3].isWall();
 		boolean top = adjacentTiles[2].isInnerRoomTile();
 		
 		boolean shouldMoss = (x + y) % 3 == 0;

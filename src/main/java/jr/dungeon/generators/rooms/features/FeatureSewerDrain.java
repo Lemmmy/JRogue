@@ -13,7 +13,7 @@ public class FeatureSewerDrain extends SpecialRoomFeature {
 		int drainY = room.getY();
 		
 		if (
-			room.getLevel().getTileStore().getTileType(drainX, drainY).isWallTile() &&
+			room.getLevel().getTileStore().getTileType(drainX, drainY).isWall() &&
 			!room.getLevel().getTileStore().getTileType(drainX, drainY).isDoor()
 		) {
 			TileType drainTile = rand.nextBoolean() ? TileType.TILE_SEWER_DRAIN :

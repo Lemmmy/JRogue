@@ -2,6 +2,8 @@ package jr.dungeon.generators;
 
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityStalagmites;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.4f;
+	private static final float PROBABILITY_STALAGMITES = 0.3f;
 	
 	private static final int R1_CUTOFF = 5;
 	private static final int R2_CUTOFF = 2;
@@ -57,6 +60,8 @@ public class GeneratorCave extends DungeonGenerator {
 		
 		chooseSpawn();
 		chooseExit();
+		
+		stalagmitePass();
 		
 		return verify();
 	}
@@ -188,6 +193,19 @@ public class GeneratorCave extends DungeonGenerator {
 			TileStateClimbable tsc = (TileStateClimbable) exitTile.getState();
 			tsc.setDestinationGenerator(getNextGenerator());
 		}
+	}
+	
+	private void stalagmitePass() {
+		Arrays.stream(level.getTileStore().getTiles())
+			.filter(t -> t.getType() == TileType.TILE_CAVE_FLOOR)
+			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+				.filter(t2 -> t2 == TileType.TILE_CAVE_WALL)
+				.count() != 0)
+			.forEach(t -> {
+				if (RandomUtils.randomFloat() < PROBABILITY_STALAGMITES) {
+					QuickSpawn.spawnClass(EntityStalagmites.class, level, t.getX(), t.getY());
+				}
+			});
 	}
 	
 	public Tile getTempTile(int x, int y) {

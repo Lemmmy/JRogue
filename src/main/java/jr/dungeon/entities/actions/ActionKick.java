@@ -124,7 +124,7 @@ public class ActionKick extends EntityAction {
 					);
 				}
 			}
-		} else if (tileType.isWallTile()) {
+		} else if (tileType.isWall()) {
 			if (isPlayer) {
 				msg.You("kick the wall!");
 			}

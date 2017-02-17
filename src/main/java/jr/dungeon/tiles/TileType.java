@@ -123,7 +123,7 @@ public enum TileType {
 		return (flags & BUILDABLE) == BUILDABLE;
 	}
 	
-	public boolean isWallTile() {
+	public boolean isWall() {
 		return (flags & WALL) == WALL;
 	}
 	
