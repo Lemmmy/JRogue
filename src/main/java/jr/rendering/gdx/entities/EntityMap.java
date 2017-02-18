@@ -45,7 +45,14 @@ public enum EntityMap {
 	
 	APPEARANCE_LIGHT_ORB(2, 4),
 	
-	APPEARANCE_STALAGMITES(new EntityRendererRandom(0, 5, 5));
+	APPEARANCE_STALAGMITES(new EntityRendererRandom(0, 5, 5)),
+	
+	APPEARANCE_CAVE_CRYSTAL_WHITE(5, 5),
+	APPEARANCE_CAVE_CRYSTAL_BLUE(6, 5),
+	APPEARANCE_CAVE_CRYSTAL_CYAN(7, 5),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_WHITE(new EntityRendererRandom(8, 5, 2)),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_BLUE(new EntityRendererRandom(10, 5, 2)),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_CYAN(new EntityRendererRandom(12, 5, 2));
 	
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;

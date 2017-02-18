@@ -3,6 +3,8 @@ package jr.dungeon.generators;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityCaveCrystal;
+import jr.dungeon.entities.decoration.EntityCaveCrystalSmall;
 import jr.dungeon.entities.decoration.EntityStalagmites;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
@@ -16,7 +18,9 @@ import java.util.stream.Collectors;
 
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.4f;
-	private static final float PROBABILITY_STALAGMITES = 0.3f;
+	private static final float PROBABILITY_STALAGMITES = 0.25f;
+	private static final float PROBABILITY_SMALL_CRYSTALS = 0.04f;
+	private static final float PROBABILITY_CRYSTAL = 0.01f;
 	
 	private static final int R1_CUTOFF = 5;
 	private static final int R2_CUTOFF = 2;
@@ -62,6 +66,7 @@ public class GeneratorCave extends DungeonGenerator {
 		chooseExit();
 		
 		stalagmitePass();
+		crystalPass();
 		
 		return verify();
 	}
@@ -201,9 +206,26 @@ public class GeneratorCave extends DungeonGenerator {
 			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
 				.filter(t2 -> t2 == TileType.TILE_CAVE_WALL)
 				.count() != 0)
+			.filter(t -> level.getEntityStore().getEntitiesAt(t.getPosition()).size() == 0)
 			.forEach(t -> {
 				if (RandomUtils.randomFloat() < PROBABILITY_STALAGMITES) {
 					QuickSpawn.spawnClass(EntityStalagmites.class, level, t.getX(), t.getY());
+				}
+			});
+	}
+	
+	private void crystalPass() {
+		Arrays.stream(level.getTileStore().getTiles())
+			.filter(t -> t.getType() == TileType.TILE_CAVE_FLOOR)
+			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+				.filter(t2 -> t2 == TileType.TILE_CAVE_WALL)
+				.count() != 0)
+			.filter(t -> level.getEntityStore().getEntitiesAt(t.getPosition()).size() == 0)
+			.forEach(t -> {
+				if (RandomUtils.randomFloat() < PROBABILITY_SMALL_CRYSTALS) {
+					QuickSpawn.spawnClass(EntityCaveCrystalSmall.class, level, t.getX(), t.getY());
+				} else if (RandomUtils.randomFloat() < PROBABILITY_CRYSTAL) {
+					QuickSpawn.spawnClass(EntityCaveCrystal.class, level, t.getX(), t.getY());
 				}
 			});
 	}
