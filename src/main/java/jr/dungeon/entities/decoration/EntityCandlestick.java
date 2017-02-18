@@ -9,11 +9,11 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.DungeonEventHandler;
-
-import java.awt.*;
+import jr.utils.Colour;
 
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private static final int LIGHT_INTENSITY = 60;
+	private static final Colour LIGHT_COLOUR = new Colour(0xFF9329FF);
 	
 	private boolean lit = true;
 	
@@ -69,8 +69,8 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	}
 	
 	@Override
-	public Color getLightColour() {
-		return new Color(0xFF9329);
+	public Colour getLightColour() {
+		return LIGHT_COLOUR;
 	}
 	
 	@Override

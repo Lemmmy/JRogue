@@ -3,10 +3,10 @@ package jr.dungeon.tiles;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
+import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,7 +19,7 @@ public class Tile {
 	private TileType type;
 	private TileState state;
 	
-	private Color lightColour;
+	private Colour lightColour;
 	private int lightIntensity;
 	private int absorb;
 	
@@ -49,7 +49,7 @@ public class Tile {
 			lightIntensity = level.getLightStore().getAmbientLightIntensity();
 		}
 		
-		lightColour = level.getLightStore().applyIntensity(lightColour, lightIntensity);
+		lightColour = level.getLightStore().applyIntensity(lightColour, lightIntensity).copy();
 	}
 	
 	private void initialiseState() {

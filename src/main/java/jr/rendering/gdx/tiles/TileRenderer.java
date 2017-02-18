@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import jr.JRogue;
-import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
@@ -15,14 +13,13 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.utils.ImageLoader;
+import jr.utils.Colour;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +27,7 @@ public abstract class TileRenderer {
 	private static final boolean AO_ENABLED = true;
 
 	private static final Map<Integer, Integer[]> AO_MODES = new HashMap<>();
+	private static final Colour[] AO_COLOURS = new Colour[256];
 
 	static {
 		AO_MODES.put(0, null);
@@ -37,6 +35,10 @@ public abstract class TileRenderer {
 		AO_MODES.put(2, new Integer[] { 130, 170, 200, 255 });
 		AO_MODES.put(3, new Integer[] { 100, 140, 170, 255 });
 		AO_MODES.put(4, new Integer[] { 0, 0, 0, 0 });
+		
+		for (int i = 0; i <= 255; i++) {
+			AO_COLOURS[i] = new Colour(i, i, i, 255);
+		}
 	}
 
 	private static TextureRegion dim;
@@ -94,13 +96,15 @@ public abstract class TileRenderer {
 		return t == null ? 0 : (t.getType().getFlags() & TileFlag.WALL) == TileFlag.WALL ? 1 : 0;
 	}
 
-	private static Color vAOCol(int i) {
+	private static Colour vAOCol(int i) {
 		int rgb = AO_MODES.get(JRogue.getSettings().getAOLevel())[i];
-		return new Color(rgb, rgb, rgb, 255);
+		
+		return AO_COLOURS[rgb];
 	}
 
 	private static int vAO(Tile s1, Tile s2, Tile c) {
 		if (aoVal(s1) == 1 && aoVal(s2) == 1) return 0;
+		
 		return 3 - (aoVal(s1) + aoVal(s2) + aoVal(c));
 	}
 	
@@ -108,10 +112,10 @@ public abstract class TileRenderer {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 		
-		Color ctl = Color.BLACK;
-		Color ctr = Color.BLACK;
-		Color cbr = Color.BLACK;
-		Color cbl = Color.BLACK;
+		Colour ctl = Colour.BLACK;
+		Colour ctr = Colour.BLACK;
+		Colour cbr = Colour.BLACK;
+		Colour cbl = Colour.BLACK;
 
 		Level lvl = dungeon.getLevel();
 		TileStore ts = lvl.getTileStore();
@@ -134,11 +138,13 @@ public abstract class TileRenderer {
 		// Lighting
 		batch.rect(
 			lx, ly, width, height,
-			Utils.awtColourToGdx(ctl, 0),
-			Utils.awtColourToGdx(ctr, 1),
-			Utils.awtColourToGdx(cbr, 2),
-			Utils.awtColourToGdx(cbl, 3)
+			Utils.colourToGdx(ctl, 0),
+			Utils.colourToGdx(ctr, 1),
+			Utils.colourToGdx(cbr, 2),
+			Utils.colourToGdx(cbl, 3)
 		);
+		
+		/*
 
 		// Ambient occlusion
 		if (AO_ENABLED && tl != null && (tl.getType().getFlags() & TileFlag.WALL) != TileFlag.WALL) {
@@ -156,19 +162,19 @@ public abstract class TileRenderer {
 			int aobl = vAO(al, ab, abl);
 			int aobr = vAO(ar, ab, abr);
 
-			Color caotl = vAOCol(aotl);
-			Color caotr = vAOCol(aotr);
-			Color caobl = vAOCol(aobl);
-			Color caobr = vAOCol(aobr);
+			Colour caotl = vAOCol(aotl);
+			Colour caotr = vAOCol(aotr);
+			Colour caobl = vAOCol(aobl);
+			Colour caobr = vAOCol(aobr);
 
 			batch.rect(
 				x * width, y * height, width, height,
-				Utils.awtColourToGdx(caotl, 0),
-				Utils.awtColourToGdx(caotr, 1),
-				Utils.awtColourToGdx(caobr, 2),
-				Utils.awtColourToGdx(caobl, 3)
+				Utils.colourToGdx(caotl, 0),
+				Utils.colourToGdx(caotr, 1),
+				Utils.colourToGdx(caobr, 2),
+				Utils.colourToGdx(caobl, 3)
 			);
-		}
+		}*/
 	}
 	
 	public void drawDim(SpriteBatch batch, Dungeon dungeon, int x, int y) {
