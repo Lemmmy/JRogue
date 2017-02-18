@@ -3,9 +3,9 @@ package jr.dungeon.tiles;
 import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.dungeon.tiles.states.TileStateDoor;
+import jr.utils.Colour;
 import lombok.Getter;
 
-import java.awt.*;
 import java.util.Arrays;
 
 import static jr.dungeon.tiles.TileFlag.*;
@@ -25,11 +25,11 @@ public enum TileType {
 	TILE_DEBUG_H(8, Solidity.WALK_ON),
 	
 	TILE_GROUND(9, BUILDABLE, Solidity.SOLID),
-	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Color(0x3072D6), 40, 5),
+	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
 	
 	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
-	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Color(0xFF9B26), 100, 0),
-	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Color(0x8BD1EC), 100, 0),
+	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Colour(0xFF9B26FF), 100, 0),
+	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Colour(0x8BD1ECFF), 100, 0),
 	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, Solidity.WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
 	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, Solidity.WALK_ON),
@@ -68,7 +68,7 @@ public enum TileType {
 	private Solidity solidity;
 	private Class<? extends TileState> stateClass;
 	
-	private Color lightColour;
+	private Colour lightColour;
 	private int lightIntensity = 0;
 	private int absorb;
 	
@@ -88,7 +88,7 @@ public enum TileType {
 		this(id, flags, solidity, stateClass, null, 0, 0);
 	}
 	
-	TileType(int id, int flags, Solidity solidity, Color lightColour, int lightIntensity, int absorb) {
+	TileType(int id, int flags, Solidity solidity, Colour lightColour, int lightIntensity, int absorb) {
 		this(id, flags, solidity, null, lightColour, lightIntensity, absorb);
 	}
 	
@@ -96,7 +96,7 @@ public enum TileType {
 			 int flags,
 			 Solidity solidity,
 			 Class<? extends TileState> stateClass,
-			 Color lightColour,
+			 Colour lightColour,
 			 int lightIntensity,
 			 int absorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
@@ -111,7 +111,7 @@ public enum TileType {
 		
 		if (lightColour == null) {
 			if (solidity == Solidity.SOLID) {
-				this.lightColour = Color.DARK_GRAY;
+				this.lightColour = new Colour(0x404040FF);
 				this.absorb = 40;
 			} else {
 				this.absorb = 10;

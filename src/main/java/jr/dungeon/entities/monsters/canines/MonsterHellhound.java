@@ -7,11 +7,13 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Colour;
 
-import java.awt.*;
 import java.util.List;
 
 public class MonsterHellhound extends MonsterHound implements LightEmitter {
+	private static final Colour LIGHT_COLOUR = new Colour(0xFF9B26FF);
+	
 	public MonsterHellhound(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
@@ -35,8 +37,8 @@ public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public Color getLightColour() {
-		return new Color(0xFF9B26);
+	public Colour getLightColour() {
+		return LIGHT_COLOUR;
 	}
 	
 	@Override
