@@ -143,8 +143,6 @@ public abstract class TileRenderer {
 			Utils.colourToGdx(cbr, 2),
 			Utils.colourToGdx(cbl, 3)
 		);
-		
-		/*
 
 		// Ambient occlusion
 		if (AO_ENABLED && tl != null && (tl.getType().getFlags() & TileFlag.WALL) != TileFlag.WALL) {
@@ -174,7 +172,7 @@ public abstract class TileRenderer {
 				Utils.colourToGdx(caobr, 2),
 				Utils.colourToGdx(caobl, 3)
 			);
-		}*/
+		}
 	}
 	
 	public void drawDim(SpriteBatch batch, Dungeon dungeon, int x, int y) {
