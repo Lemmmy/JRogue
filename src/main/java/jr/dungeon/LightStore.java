@@ -40,7 +40,7 @@ public class LightStore implements Serialisable {
 		) {
 			Arrays.stream(level.getTileStore().getTiles()).forEach(t -> {
 				try {
-					dos.writeInt(t.getLightColour().toIntBits());
+					dos.writeInt(Colour.rgba8888(t.getLightColour()));
 					dos.writeByte(t.getLightIntensity());
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error saving level:");
@@ -74,9 +74,7 @@ public class LightStore implements Serialisable {
 					int colourInt = dis.readInt();
 					int intensity = dis.readByte();
 					
-					workingColour.set(colourInt);
-					
-					t.setLightColour(workingColour.copy());
+					t.setLightColour(new Colour(colourInt));
 					t.setLightIntensity(intensity);
 				} catch (IOException e) {
 					JRogue.getLogger().error("Error loading level:");

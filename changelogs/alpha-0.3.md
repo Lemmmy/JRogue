@@ -27,3 +27,4 @@
 - Removed all getters and setters, and replaced them with Lombok's @Getter and @Setter annotations
 - Replaced some constructors with Lombok's @AllArgsConstructor annotations
 - Made a lot of coordinate things used Points instead
+- Replaced java.awt.Color with our own Colour class
