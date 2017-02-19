@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityStore implements Serialisable {
 	private Map<UUID, Entity> entities;
@@ -118,6 +119,18 @@ public class EntityStore implements Serialisable {
 	
 	public List<Entity> getEntitiesAt(Point p) {
 		return entities.values().stream()
+			.filter(e -> e.getPosition().equals(p))
+			.collect(Collectors.toList());
+	}
+	
+	public List<Entity> getAllEntitiesAt(int x, int y) {
+		return Stream.concat(entities.values().stream(), entityAddQueue.stream())
+			.filter(e -> e.getX() == x && e.getY() == y)
+			.collect(Collectors.toList());
+	}
+	
+	public List<Entity> getAllEntitiesAt(Point p) {
+		return Stream.concat(entities.values().stream(), entityAddQueue.stream())
 			.filter(e -> e.getPosition().equals(p))
 			.collect(Collectors.toList());
 	}

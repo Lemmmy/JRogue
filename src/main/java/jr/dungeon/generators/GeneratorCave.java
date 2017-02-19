@@ -206,7 +206,7 @@ public class GeneratorCave extends DungeonGenerator {
 			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
 				.filter(t2 -> t2 == TileType.TILE_CAVE_WALL)
 				.count() != 0)
-			.filter(t -> level.getEntityStore().getEntitiesAt(t.getPosition()).size() == 0)
+			.filter(t -> level.getEntityStore().getAllEntitiesAt(t.getPosition()).size() == 0)
 			.forEach(t -> {
 				if (RandomUtils.randomFloat() < PROBABILITY_STALAGMITES) {
 					QuickSpawn.spawnClass(EntityStalagmites.class, level, t.getX(), t.getY());
@@ -220,7 +220,7 @@ public class GeneratorCave extends DungeonGenerator {
 			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
 				.filter(t2 -> t2 == TileType.TILE_CAVE_WALL)
 				.count() != 0)
-			.filter(t -> level.getEntityStore().getEntitiesAt(t.getPosition()).size() == 0)
+			.filter(t -> level.getEntityStore().getAllEntitiesAt(t.getPosition()).size() == 0)
 			.forEach(t -> {
 				if (RandomUtils.randomFloat() < PROBABILITY_SMALL_CRYSTALS) {
 					QuickSpawn.spawnClass(EntityCaveCrystalSmall.class, level, t.getX(), t.getY());
