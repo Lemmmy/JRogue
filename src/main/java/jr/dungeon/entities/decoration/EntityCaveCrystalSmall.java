@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
-public class EntityCaveCrystalSmall extends Entity implements Decorative, LightEmitter {
+public class EntityCaveCrystalSmall extends Entity implements Decorative {
 	private CrystalColour colour;
 	
 	public EntityCaveCrystalSmall(Dungeon dungeon, Level level, int x, int y) {
@@ -38,16 +38,6 @@ public class EntityCaveCrystalSmall extends Entity implements Decorative, LightE
 	}
 	
 	@Override
-	public Colour getLightColour() {
-		return colour.getLightColour();
-	}
-	
-	@Override
-	public int getLightIntensity() {
-		return 10;
-	}
-	
-	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
@@ -64,11 +54,10 @@ public class EntityCaveCrystalSmall extends Entity implements Decorative, LightE
 	@AllArgsConstructor
 	@Getter
 	public enum CrystalColour {
-		WHITE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_WHITE, Colour.WHITE),
-		BLUE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_BLUE, new Colour(0x4BA2FEFF)),
-		CYAN(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_CYAN, new Colour(0x58C8DBFF));
+		WHITE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_WHITE),
+		BLUE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_BLUE),
+		CYAN(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_SMALL_CYAN);
 		
 		private EntityAppearance appearance;
-		private Colour lightColour;
 	}
 }
