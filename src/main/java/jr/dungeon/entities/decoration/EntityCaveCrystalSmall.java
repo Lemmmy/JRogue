@@ -38,6 +38,11 @@ public class EntityCaveCrystalSmall extends Entity implements Decorative {
 	}
 	
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+	
+	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		

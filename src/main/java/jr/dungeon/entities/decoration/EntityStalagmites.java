@@ -26,4 +26,9 @@ public class EntityStalagmites extends Entity implements Decorative {
 	public boolean canBeWalkedOn() {
 		return true;
 	}
+	
+	@Override
+	public boolean isStatic() {
+		return true;
+	}
 }

@@ -38,6 +38,11 @@ public class EntityCaveCrystal extends Entity implements Decorative, LightEmitte
 	}
 	
 	@Override
+	public boolean isStatic() {
+		return true;
+	}
+	
+	@Override
 	public Colour getLightColour() {
 		return colour.getLightColour();
 	}
