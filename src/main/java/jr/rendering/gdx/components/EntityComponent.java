@@ -2,7 +2,6 @@ package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -10,7 +9,6 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdx.GDXRenderer;
@@ -122,6 +120,8 @@ public class EntityComponent extends RendererComponent {
 				
 				e.getPersistence().put("lerpX", x);
 				e.getPersistence().put("lerpY", y);
+				
+				entityParticleCheck(e);
 			});
 		} else {
 			level.getEntityStore().getEntities().forEach(e -> {
@@ -182,13 +182,11 @@ public class EntityComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityMoved(EntityMovedEvent event) {
-		entityParticleCheck(event);
+		entityParticleCheck(event.getEntity());
 		entityBeginLerp(event);
 	}
 	
-	private void entityParticleCheck(EntityMovedEvent event) {
-		Entity entity = event.getEntity();
-		
+	private void entityParticleCheck(Entity entity) {
 		for (EntityPooledEffect e : entityPooledEffects) {
 			if (e.getEntity() == entity) {
 				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
@@ -203,9 +201,12 @@ public class EntityComponent extends RendererComponent {
 					return;
 				}
 				
+				float lerpX = (float) entity.getPersistence().optDouble("lerpX", 0);
+				float lerpY = (float) entity.getPersistence().optDouble("lerpY", 0);
+				
 				e.getPooledEffect().setPosition(
-					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
-					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
+					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + lerpX,
+					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity) + lerpY
 				);
 			}
 		}
