@@ -14,7 +14,9 @@ public interface Persisting {
 
         if (p != null) {
             for (String key : p.keySet()) {
-                getPersistence().put(key, obj.get(key));
+            	if (p.has(key)) {
+					getPersistence().put(key, obj.get(key));
+				}
             }
         }
     }
