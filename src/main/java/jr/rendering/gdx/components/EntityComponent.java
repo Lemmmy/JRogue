@@ -2,6 +2,7 @@ package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -9,6 +10,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdx.GDXRenderer;
@@ -120,6 +122,10 @@ public class EntityComponent extends RendererComponent {
 				
 				e.getPersistence().put("lerpX", x);
 				e.getPersistence().put("lerpY", y);
+								
+				if (e instanceof Player) {
+					JRogue.getLogger().debug("t: {} dx: {} dy: {} x: {} y: {}", t, dx, dy, x, y);
+				}
 			});
 		} else {
 			level.getEntityStore().getEntities().forEach(e -> {
