@@ -174,8 +174,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			float worldX = p.getX() + (float) p.getPersistence().optDouble("lerpX", 0);
 			float worldY = p.getY() + (float) p.getPersistence().optDouble("lerpY", 0);
 			
-			camera.position.x = (worldX + 0.5f) * TileMap.TILE_WIDTH;
-			camera.position.y = worldY * TileMap.TILE_HEIGHT;
+			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
+			float camY = worldY * TileMap.TILE_HEIGHT;
+			
+			camera.position.x = Math.round(camX * 100) / 100;
+			camera.position.y = Math.round(camY * 100) / 100;
 		}
 		
 		camera.update();
