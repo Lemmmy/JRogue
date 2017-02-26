@@ -200,6 +200,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			turnLerpTime = 0;
 		}
 		
+		if (!settings.isShowTurnAnimations()) {
+			updateCamera();
+		}
+		
 		rendererComponents.forEach(r -> r.update(delta));
 		
 		mainBatch.setProjectionMatrix(camera.combined);
@@ -219,7 +223,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
 		
-		updateCamera();
+		if (settings.isShowTurnAnimations()) {
+			updateCamera();
+		}
 	}
 	
 	@Override
@@ -262,8 +268,10 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	
 	@DungeonEventHandler
 	public void onBeforeTurn(BeforeTurnEvent e) {
-		turnLerpTime = 0;
-		turnLerping = true;
+		if (settings.isShowTurnAnimations()) {
+			turnLerpTime = 0;
+			turnLerping = true;
+		}
 	}
 	
 	@DungeonEventHandler

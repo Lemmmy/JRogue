@@ -105,31 +105,33 @@ public class EntityComponent extends RendererComponent {
 	
 	@Override
 	public void update(float dt) {
-		if (renderer.isTurnLerping()) {
-			float lerpTime = renderer.getTurnLerpTime();
-			float lerpDuration = GDXRenderer.TURN_LERP_DURATION;
-			
-			float t = lerpTime / lerpDuration;
-			
-			level.getEntityStore().getEntities().forEach(e -> {
-				float dx = (float) e.getPersistence().optDouble("lerpDX", 0);
-				float dy = (float) e.getPersistence().optDouble("lerpDY", 0);
+		if (settings.isShowTurnAnimations()) {
+			if (renderer.isTurnLerping()) {
+				float lerpTime = renderer.getTurnLerpTime();
+				float lerpDuration = GDXRenderer.TURN_LERP_DURATION;
 				
-				float x = Utils.easeInOut(t, -dx, dx, 1);
-				float y = Utils.easeInOut(t, -dy, dy, 1);
+				float t = lerpTime / lerpDuration;
 				
-				e.getPersistence().put("lerpX", x);
-				e.getPersistence().put("lerpY", y);
-				
-				entityParticleCheck(e);
-			});
-		} else {
-			level.getEntityStore().getEntities().forEach(e -> {
-				e.getPersistence().put("lerpDX", 0);
-				e.getPersistence().put("lerpDY", 0);
-				e.getPersistence().put("lerpX", 0);
-				e.getPersistence().put("lerpY", 0);
-			});
+				level.getEntityStore().getEntities().forEach(e -> {
+					float dx = (float) e.getPersistence().optDouble("lerpDX", 0);
+					float dy = (float) e.getPersistence().optDouble("lerpDY", 0);
+					
+					float x = Utils.easeInOut(t, -dx, dx, 1);
+					float y = Utils.easeInOut(t, -dy, dy, 1);
+					
+					e.getPersistence().put("lerpX", x);
+					e.getPersistence().put("lerpY", y);
+					
+					entityParticleCheck(e);
+				});
+			} else {
+				level.getEntityStore().getEntities().forEach(e -> {
+					e.getPersistence().put("lerpDX", 0);
+					e.getPersistence().put("lerpDY", 0);
+					e.getPersistence().put("lerpX", 0);
+					e.getPersistence().put("lerpY", 0);
+				});
+			}
 		}
 	}
 	
@@ -183,7 +185,10 @@ public class EntityComponent extends RendererComponent {
 	@DungeonEventHandler
 	public void onEntityMoved(EntityMovedEvent event) {
 		entityParticleCheck(event.getEntity());
-		entityBeginLerp(event);
+		
+		if (settings.isShowTurnAnimations()) {
+			entityBeginLerp(event);
+		}
 	}
 	
 	private void entityParticleCheck(Entity entity) {
