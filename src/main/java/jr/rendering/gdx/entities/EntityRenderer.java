@@ -30,7 +30,7 @@ public abstract class EntityRenderer {
 		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
 	}
 	
-	protected void drawEntity(SpriteBatch batch, TextureRegion image, int x, int y) {
+	protected void drawEntity(SpriteBatch batch, TextureRegion image, float x, float y) {
 		if (image != null) {
 			int width = EntityMap.ENTITY_WIDTH;
 			int height = EntityMap.ENTITY_HEIGHT;

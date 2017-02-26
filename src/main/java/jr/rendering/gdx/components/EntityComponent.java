@@ -16,6 +16,7 @@ import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
 import jr.rendering.gdx.entities.EntityRenderer;
 import jr.rendering.gdx.tiles.TileMap;
+import jr.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -104,7 +105,30 @@ public class EntityComponent extends RendererComponent {
 	
 	@Override
 	public void update(float dt) {
-		
+		if (renderer.isTurnLerping()) {
+			float lerpTime = renderer.getTurnLerpTime();
+			float lerpDuration = GDXRenderer.TURN_LERP_DURATION;
+			
+			float t = lerpTime / lerpDuration;
+			
+			level.getEntityStore().getEntities().forEach(e -> {
+				float dx = (float) e.getPersistence().optDouble("lerpDX", 0);
+				float dy = (float) e.getPersistence().optDouble("lerpDY", 0);
+				
+				float x = Utils.easeInOut(t, -dx, dx, 1);
+				float y = Utils.easeInOut(t, -dy, dy, 1);
+				
+				e.getPersistence().put("lerpX", x);
+				e.getPersistence().put("lerpY", y);
+			});
+		} else {
+			level.getEntityStore().getEntities().forEach(e -> {
+				e.getPersistence().put("lerpDX", 0);
+				e.getPersistence().put("lerpDY", 0);
+				e.getPersistence().put("lerpX", 0);
+				e.getPersistence().put("lerpY", 0);
+			});
+		}
 	}
 	
 	@Override
@@ -156,6 +180,11 @@ public class EntityComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityMoved(EntityMovedEvent event) {
+		entityParticleCheck(event);
+		entityBeginLerp(event);
+	}
+	
+	private void entityParticleCheck(EntityMovedEvent event) {
 		Entity entity = event.getEntity();
 		
 		for (EntityPooledEffect e : entityPooledEffects) {
@@ -178,6 +207,17 @@ public class EntityComponent extends RendererComponent {
 				);
 			}
 		}
+	}
+	
+	private void entityBeginLerp(EntityMovedEvent event) {
+		int dx = event.getLastX() - event.getNewX();
+		int dy = event.getLastY() - event.getNewY();
+		
+		event.getEntity().getPersistence().put("lerpDX", -dx);
+		event.getEntity().getPersistence().put("lerpDY", -dy);
+		
+		event.getEntity().getPersistence().put("lerpX", -dx);
+		event.getEntity().getPersistence().put("lerpY", -dy);
 	}
 	
 	@DungeonEventHandler

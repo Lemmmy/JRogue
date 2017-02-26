@@ -19,6 +19,9 @@ public class EntityRendererBasic extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		drawEntity(batch, getTextureRegion(dungeon, entity), entity.getLastSeenX(), entity.getLastSeenY());
+		float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("lerpX", 0);
+		float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("lerpY", 0);
+		
+		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
 	}
 }

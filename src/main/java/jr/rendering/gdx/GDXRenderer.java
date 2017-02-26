@@ -13,6 +13,7 @@ import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.rendering.Renderer;
 import jr.rendering.gdx.components.*;
@@ -26,12 +27,13 @@ import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 @Getter
 public class GDXRenderer extends ApplicationAdapter implements Renderer, DungeonEventListener {
+	public static final float TURN_LERP_DURATION = 0.170f;
+	
 	private static final String WINDOW_TITLE = "JRogue";
 	
 	private Lwjgl3Application application;
@@ -58,6 +60,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	private float zoom = 1.0f;
 	
 	private float renderTime;
+	
+	private float turnLerpTime;
+	private boolean turnLerping = false;
 	
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
@@ -163,9 +168,14 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	public void updateCamera() {
-		if (dungeon.getPlayer() != null && !settings.isShowLevelDebug()) {
-			camera.position.x = (dungeon.getPlayer().getX() + 0.5f) * TileMap.TILE_WIDTH;
-			camera.position.y = dungeon.getPlayer().getY() * TileMap.TILE_HEIGHT;
+		Player p = dungeon.getPlayer();
+		
+		if (p != null && !settings.isShowLevelDebug()) {
+			float worldX = p.getX() + (float) p.getPersistence().optDouble("lerpX", 0);
+			float worldY = p.getY() + (float) p.getPersistence().optDouble("lerpY", 0);
+			
+			camera.position.x = (worldX + 0.5f) * TileMap.TILE_WIDTH;
+			camera.position.y = worldY * TileMap.TILE_HEIGHT;
 		}
 		
 		camera.update();
@@ -177,6 +187,15 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		
 		float delta = Gdx.graphics.getDeltaTime();
 		renderTime += delta;
+		
+		if (turnLerping) {
+			turnLerpTime += delta;
+		}
+		
+		if (turnLerpTime >= TURN_LERP_DURATION) {
+			turnLerping = false;
+			turnLerpTime = 0;
+		}
 		
 		updateCamera();
 		
@@ -230,6 +249,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		FontLoader.disposeAll();
 		ShaderLoader.disposeAll();
 		LogManager.shutdown();
+	}
+	
+	@DungeonEventHandler
+	public void onBeforeTurn(BeforeTurnEvent e) {
+		turnLerpTime = 0;
+		turnLerping = true;
 	}
 	
 	@DungeonEventHandler

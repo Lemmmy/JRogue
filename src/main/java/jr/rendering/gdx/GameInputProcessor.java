@@ -34,6 +34,10 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
+		if (renderer.isTurnLerping()) {
+			return false;
+		}
+		
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
 				dungeon.getPlayer().defaultVisitors.kick();
@@ -50,6 +54,10 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommandsCharacters(char key) {
+		if (renderer.isTurnLerping()) {
+			return false;
+		}
+		
 		if (key == '5' || key == 'g') {
 			dungeon.getPlayer().defaultVisitors.travelDirectional();
 			return true;
@@ -127,6 +135,10 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
+		if (renderer.isTurnLerping()) {
+			return false;
+		}
+		
 		if (renderer.getHudComponent().getWindows().size() > 0) {
 			return false;
 		}

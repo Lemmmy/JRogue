@@ -109,8 +109,8 @@ public abstract class TileRenderer {
 	}
 	
 	public void drawLight(ShapeRenderer batch, Dungeon dungeon, int x, int y) {
-		int width = TileMap.TILE_WIDTH;
-		int height = TileMap.TILE_HEIGHT;
+		float width = TileMap.TILE_WIDTH;
+		float height = TileMap.TILE_HEIGHT;
 		
 		Colour ctl = Colour.BLACK;
 		Colour ctr = Colour.BLACK;
