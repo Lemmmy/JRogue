@@ -197,8 +197,6 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 			turnLerpTime = 0;
 		}
 		
-		updateCamera();
-		
 		rendererComponents.forEach(r -> r.update(delta));
 		
 		mainBatch.setProjectionMatrix(camera.combined);
@@ -217,6 +215,8 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		rendererComponents.stream()
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
+		
+		updateCamera();
 	}
 	
 	@Override

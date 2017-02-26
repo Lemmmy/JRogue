@@ -122,10 +122,6 @@ public class EntityComponent extends RendererComponent {
 				
 				e.getPersistence().put("lerpX", x);
 				e.getPersistence().put("lerpY", y);
-								
-				if (e instanceof Player) {
-					JRogue.getLogger().debug("t: {} dx: {} dy: {} x: {} y: {}", t, dx, dy, x, y);
-				}
 			});
 		} else {
 			level.getEntityStore().getEntities().forEach(e -> {
