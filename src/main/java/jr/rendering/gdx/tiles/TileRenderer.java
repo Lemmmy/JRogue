@@ -192,7 +192,13 @@ public abstract class TileRenderer {
 		float tx = (x + 0.5f) * TileMap.TILE_WIDTH;
 		float ty = (y + 0.5f) * TileMap.TILE_HEIGHT;
 		
-		return camera.frustum.boundsInFrustum(tx, ty, 0.0f, TileMap.TILE_WIDTH / 2, TileMap.TILE_HEIGHT / 2, 0.0f);
+		return camera.frustum.boundsInFrustum(
+			tx, ty, 0.0f,
+			TileMap.TILE_WIDTH / 2, TileMap.TILE_HEIGHT / 2, 0.0f
+		) || camera.frustum.boundsInFrustum(
+			tx + TileMap.TILE_WIDTH, ty + TileMap.TILE_HEIGHT, 0.0f,
+			TileMap.TILE_WIDTH / 2, TileMap.TILE_HEIGHT / 2, 0.0f
+		);
 	}
 	
 	public int getParticleXOffset() {
