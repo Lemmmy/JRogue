@@ -7,6 +7,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
+import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.TurnEvent;
@@ -160,7 +161,8 @@ public abstract class ParticlesComponent extends RendererComponent {
 			if (
 				e.getLevel() == dungeon.getLevel() &&
 				e.getLevel().getTileStore().getTileType(e.getPosition()).isWater() &&
-				!(e instanceof MonsterFish)
+				!(e instanceof MonsterFish) &&
+				!(e instanceof MonsterPufferfish)
 			) {
 				addEffect(ParticleEffectMap.WATER_STEP, e.getX(), e.getY(), 0);
 			}
