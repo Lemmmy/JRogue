@@ -358,6 +358,10 @@ public class HUDComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityAttacked(EntityAttackedToHitRollEvent e) {
+		if (!settings.isShowToHitRolls()) {
+			return;
+		}
+		
 		Entity entity = e.getEntity();
 		int x = e.getX();
 		int y = e.getY();

@@ -41,6 +41,9 @@ public class Settings {
 	@Setting(comment="[Debug] Show FPS counter.")
 	private boolean showFPSCounter = false;
 	
+	@Setting(comment="[Debug] Show to-hit rolls.")
+	private boolean showToHitRolls = false;
+	
 	@Setting(comment="Use VSync.")
 	private boolean vsync = true;
 
