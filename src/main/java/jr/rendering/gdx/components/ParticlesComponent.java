@@ -1,7 +1,6 @@
 package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;

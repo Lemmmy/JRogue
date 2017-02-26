@@ -255,6 +255,12 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	@DungeonEventHandler
+	public void onLevelChange(LevelChangeEvent e) {
+		turnLerpTime = 0;
+		turnLerping = false;
+	}
+	
+	@DungeonEventHandler
 	public void onBeforeTurn(BeforeTurnEvent e) {
 		turnLerpTime = 0;
 		turnLerping = true;
