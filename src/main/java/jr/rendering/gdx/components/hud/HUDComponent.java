@@ -9,7 +9,6 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;

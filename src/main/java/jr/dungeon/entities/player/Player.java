@@ -558,7 +558,6 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().triggerEvent(new EntityAttackedToHitRollEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

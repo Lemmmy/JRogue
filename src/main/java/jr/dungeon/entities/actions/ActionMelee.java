@@ -2,6 +2,7 @@ package jr.dungeon.entities.actions;
 
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.*;
+import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.player.Player;
 
 public class ActionMelee extends EntityAction {
@@ -36,6 +37,8 @@ public class ActionMelee extends EntityAction {
 		
 		switch (hit.getHitType()) {
 			case JUST_MISS:
+				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, attacker, damageSource, hit));
+				
 				if (isAttackerPlayer) {
 					msg.orangeYou("just miss the %s.", victim.getName((EntityLiving) entity, false));
 				} else if (isVictimPlayer) {
@@ -43,6 +46,8 @@ public class ActionMelee extends EntityAction {
 				}
 				break;
 			case MISS:
+				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, attacker, damageSource, hit));
+				
 				if (isAttackerPlayer) {
 					msg.orangeYou("miss the %s.", victim.getName((EntityLiving) entity, false));
 				} else if (isVictimPlayer) {

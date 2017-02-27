@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.events.EntityEnergyChangedEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.player.Player;
@@ -63,6 +64,11 @@ public class TextPopups implements DungeonEventListener {
 			positive ? "+" : "-",
 			Math.abs(delta)
 		));
+	}
+	
+	@DungeonEventHandler
+	public void onEntityAttackMissed(EntityAttackMissedEvent e) {
+		showTextPopup(e.getAttacker().getPosition(), "[P_ORANGE_2]missed[]");
 	}
 	
 	private void showTextPopup(Point worldPos, String text) {
