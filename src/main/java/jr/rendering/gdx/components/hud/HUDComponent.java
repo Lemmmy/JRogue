@@ -3,6 +3,7 @@ package jr.rendering.gdx.components.hud;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
@@ -10,6 +11,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
+import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HUDComponent extends RendererComponent {
+	private static final float TEXT_POPUP_DURATION = 0.4f;
+	
 	private Skin skin;
 	private Stage stage;
 	private Label playerLabel;
@@ -301,8 +305,6 @@ public class HUDComponent extends RendererComponent {
 				player.getMaxHealth()
 			));
 		}
-		
-		
 	}
 	
 	private void updateEnergy(Player player) {
@@ -357,12 +359,56 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
+	public void onEntityHealthChanged(EntityHealthChangedEvent e) {
+		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getEntity().getPosition())) {
+			return;
+		}
+		
+		int setting = settings.getTextPopup();
+		
+		if (setting == 0) {
+			return;
+		}
+		
+		Player player = (Player) e.getEntity();
+		int x = player.getX();
+		int y = player.getY();
+		
+		int oldHealth = e.getOldHealth();
+		int newHealth = e.getNewHealth();
+		int delta = e.getNewHealth() - e.getOldHealth();
+		boolean positive = delta >= 0;
+		
+		Vector3 pos = renderer.getCamera().project(
+			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
+		);
+		
+		Table table = new Table(skin);
+		table.add(new Label(String.format(
+			"[%s]%s%,d HP[]",
+			positive ? "P_GREEN_2" : "RED",
+			positive ? "+" : "-",
+			Math.abs(delta)
+		), skin, setting == 1 ? "default" : "large"));
+		
+		stage.getRoot().addActor(table);
+		table.pack();
+		table.setPosition((int) pos.x - (int) (table.getWidth() / 2), (int) pos.y);
+		singleTurnActors.add(table);
+		
+		table.addAction(Actions.moveTo(table.getX(), table.getY() + (TileMap.TILE_HEIGHT / 2), TEXT_POPUP_DURATION));
+		table.addAction(Actions.sequence(
+			Actions.delay(TEXT_POPUP_DURATION / 2),
+			Actions.fadeOut(TEXT_POPUP_DURATION))
+		);
+	}
+	
+	@DungeonEventHandler
 	public void onEntityAttacked(EntityAttackedToHitRollEvent e) {
 		if (!settings.isShowToHitRolls()) {
 			return;
 		}
 		
-		Entity entity = e.getEntity();
 		int x = e.getX();
 		int y = e.getY();
 		int roll = e.getRoll();

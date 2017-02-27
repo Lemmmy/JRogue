@@ -73,7 +73,9 @@ public abstract class EntityLiving extends EntityTurnBased {
 		this.health = health;
 		int newHealth = this.health;
 		
-		getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+		if (oldHealth != newHealth) {
+			getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+		}
 	}
 	
 	public void heal(int amount) {

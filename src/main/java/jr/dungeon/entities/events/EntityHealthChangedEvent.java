@@ -10,4 +10,9 @@ import lombok.Getter;
 public class EntityHealthChangedEvent extends DungeonEvent {
 	private Entity entity;
 	private int oldHealth, newHealth;
+	
+	@Override
+	public boolean isSelf(Object other) {
+		return other.equals(entity);
+	}
 }

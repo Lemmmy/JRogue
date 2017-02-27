@@ -52,6 +52,9 @@ public class Settings {
 
 	@Setting(comment="Ambient occlusion strength. 0=none, 3=maximum")
 	private int aoLevel = 1;
+	
+	@Setting(comment="Show text popups when stats change. 0=none, 1=small, 2=large")
+	private int textPopup = 1;
 
 	protected Settings() {}
 	
