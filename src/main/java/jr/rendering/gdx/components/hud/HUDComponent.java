@@ -351,43 +351,6 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityAttacked(EntityAttackedToHitRollEvent e) {
-		if (!settings.isShowToHitRolls()) {
-			return;
-		}
-		
-		int x = e.getX();
-		int y = e.getY();
-		int roll = e.getRoll();
-		int toHit = e.getToHit();
-			
-		if (!player.isDebugger()) {
-			return;
-		}
-		
-		Vector3 pos = renderer.getCamera().project(
-			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
-		);
-		
-		Table attackStatTable = new Table(skin);
-		attackStatTable.setBackground("blackTransparent");
-		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 17, 2, 16, 16, false)))
-			.width(16).height(16).padRight(4);
-		attackStatTable.add(new Label(String.format("%,d", roll), skin)).padRight(8);
-		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 18, 2, 16, 16, false)))
-			.width(16).height(16).padRight(4);
-		attackStatTable.add(new Label(String.format("[%s]%,d[]", toHit > roll ? "P_GREEN_2" : "RED", toHit), skin));
-		
-		stage.getRoot().addActor(attackStatTable);
-		attackStatTable.pad(4);
-		attackStatTable.pack();
-		attackStatTable.setPosition((int) pos.x - (int) (attackStatTable.getWidth() / 2), (int) pos.y);
-		singleTurnActors.add(attackStatTable);
-	}
-	
-	@DungeonEventHandler
 	public void onLog(LogEvent event) {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
