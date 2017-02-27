@@ -31,11 +31,14 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
+		float x = entity.getX() + (float) entity.getPersistence().optDouble("lerpX", 0);
+		float y = entity.getY() + (float) entity.getPersistence().optDouble("lerpY", 0);
+		
 		if (!isDrawingReflection()) {
-			drawEntity(batch, playerHighlight, entity.getX(), entity.getY());
+			drawEntity(batch, playerHighlight, x, y);
 		}
 		
-		drawEntity(batch, getTextureRegion(dungeon, entity), entity.getX(), entity.getY());
+		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
 	}
 	
 	private TextureRegion getTextureFromPlayer(Player player) {

@@ -201,7 +201,11 @@ public abstract class Item implements Serialisable, Persisting, DungeonEventList
 			}
 		});
 
-		unserialisePersistence(obj);
+		try {
+			unserialisePersistence(obj);
+		} catch (Exception e) {
+			JRogue.getLogger().error(e);
+		}
 	}
 	
 	public Item copy() {

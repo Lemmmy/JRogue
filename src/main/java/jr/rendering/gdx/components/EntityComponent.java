@@ -16,6 +16,7 @@ import jr.rendering.gdx.entities.EntityMap;
 import jr.rendering.gdx.entities.EntityPooledEffect;
 import jr.rendering.gdx.entities.EntityRenderer;
 import jr.rendering.gdx.tiles.TileMap;
+import jr.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -104,7 +105,34 @@ public class EntityComponent extends RendererComponent {
 	
 	@Override
 	public void update(float dt) {
-		
+		if (settings.isShowTurnAnimations()) {
+			if (renderer.isTurnLerping()) {
+				float lerpTime = renderer.getTurnLerpTime();
+				float lerpDuration = GDXRenderer.TURN_LERP_DURATION;
+				
+				float t = lerpTime / lerpDuration;
+				
+				level.getEntityStore().getEntities().forEach(e -> {
+					float dx = (float) e.getPersistence().optDouble("lerpDX", 0);
+					float dy = (float) e.getPersistence().optDouble("lerpDY", 0);
+					
+					float x = Utils.easeInOut(t, -dx, dx, 1);
+					float y = Utils.easeInOut(t, -dy, dy, 1);
+					
+					e.getPersistence().put("lerpX", x);
+					e.getPersistence().put("lerpY", y);
+					
+					entityParticleCheck(e);
+				});
+			} else {
+				level.getEntityStore().getEntities().forEach(e -> {
+					e.getPersistence().put("lerpDX", 0);
+					e.getPersistence().put("lerpDY", 0);
+					e.getPersistence().put("lerpX", 0);
+					e.getPersistence().put("lerpY", 0);
+				});
+			}
+		}
 	}
 	
 	@Override
@@ -156,8 +184,14 @@ public class EntityComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityMoved(EntityMovedEvent event) {
-		Entity entity = event.getEntity();
+		entityParticleCheck(event.getEntity());
 		
+		if (settings.isShowTurnAnimations()) {
+			entityBeginLerp(event);
+		}
+	}
+	
+	private void entityParticleCheck(Entity entity) {
 		for (EntityPooledEffect e : entityPooledEffects) {
 			if (e.getEntity() == entity) {
 				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
@@ -172,12 +206,26 @@ public class EntityComponent extends RendererComponent {
 					return;
 				}
 				
+				float lerpX = (float) entity.getPersistence().optDouble("lerpX", 0);
+				float lerpY = (float) entity.getPersistence().optDouble("lerpY", 0);
+				
 				e.getPooledEffect().setPosition(
-					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
-					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
+					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + lerpX,
+					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity) + lerpY
 				);
 			}
 		}
+	}
+	
+	private void entityBeginLerp(EntityMovedEvent event) {
+		int dx = event.getLastX() - event.getNewX();
+		int dy = event.getLastY() - event.getNewY();
+		
+		event.getEntity().getPersistence().put("lerpDX", -dx);
+		event.getEntity().getPersistence().put("lerpDY", -dy);
+		
+		event.getEntity().getPersistence().put("lerpX", -dx);
+		event.getEntity().getPersistence().put("lerpY", -dy);
 	}
 	
 	@DungeonEventHandler
