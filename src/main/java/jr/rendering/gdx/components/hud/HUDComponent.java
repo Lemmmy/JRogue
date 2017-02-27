@@ -399,6 +399,7 @@ public class HUDComponent extends RendererComponent {
 		if (setting == 0) {
 			return;
 		}
+		
 		Vector3 pos = renderer.getCamera().project(
 			new Vector3((worldPos.getX() + 0.5f) * TileMap.TILE_WIDTH, worldPos.getY() * TileMap.TILE_HEIGHT, 0)
 		);
