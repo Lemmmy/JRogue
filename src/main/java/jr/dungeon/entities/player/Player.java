@@ -124,7 +124,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public void charge(int amount) {
-		energy = Math.min(maxEnergy, energy + amount);
+		setEnergy(Math.min(maxEnergy, energy + amount));
 	}
 	
 	private void levelUpEnergy() {
@@ -295,7 +295,7 @@ public class Player extends EntityLiving {
 	}
 	
 	private void updateEnergy() {
-		energy = Math.max(0, Math.min(maxEnergy, energy));
+		setEnergy(Math.max(0, Math.min(maxEnergy, energy)));
 		
 		if (energy < maxEnergy) {
 			chargingTurns++;

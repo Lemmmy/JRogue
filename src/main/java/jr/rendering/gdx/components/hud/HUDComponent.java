@@ -6,11 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
+import jr.dungeon.entities.events.EntityEnergyChangedEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
@@ -23,6 +25,7 @@ import jr.rendering.gdx.components.hud.windows.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;
+import jr.utils.Point;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -360,7 +363,37 @@ public class HUDComponent extends RendererComponent {
 	
 	@DungeonEventHandler
 	public void onEntityHealthChanged(EntityHealthChangedEvent e) {
-		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getEntity().getPosition())) {
+		Entity entity = e.getEntity();
+		int delta = e.getNewHealth() - e.getOldHealth();
+		boolean positive = delta >= 0;
+		
+		showTextPopup(entity.getPosition(), String.format(
+			"[%s]%s%,d HP[]",
+			positive ? "P_GREEN_2" : "RED",
+			positive ? "+" : "-",
+			Math.abs(delta)
+		));
+	}
+	
+	@DungeonEventHandler
+	public void onPlayerEnergyChanged(EntityEnergyChangedEvent e) {
+		// TODO: this doesnt work because the energy is changed before the turn starts.
+		//       make an event queue for deferring til next turn.
+		
+		Entity entity = e.getEntity();
+		int delta = e.getNewEnergy() - e.getOldEnergy();
+		boolean positive = delta >= 0;
+		
+		showTextPopup(entity.getPosition(), String.format(
+			"[%s]%s%,d MP[]",
+			"P_PURPLE_1",
+			positive ? "+" : "-",
+			Math.abs(delta)
+		));
+	}
+	
+	private void showTextPopup(Point worldPos, String text) {
+		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(worldPos)) {
 			return;
 		}
 		
@@ -369,27 +402,12 @@ public class HUDComponent extends RendererComponent {
 		if (setting == 0) {
 			return;
 		}
-		
-		Player player = (Player) e.getEntity();
-		int x = player.getX();
-		int y = player.getY();
-		
-		int oldHealth = e.getOldHealth();
-		int newHealth = e.getNewHealth();
-		int delta = e.getNewHealth() - e.getOldHealth();
-		boolean positive = delta >= 0;
-		
 		Vector3 pos = renderer.getCamera().project(
-			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
+			new Vector3((worldPos.getX() + 0.5f) * TileMap.TILE_WIDTH, worldPos.getY() * TileMap.TILE_HEIGHT, 0)
 		);
 		
 		Table table = new Table(skin);
-		table.add(new Label(String.format(
-			"[%s]%s%,d HP[]",
-			positive ? "P_GREEN_2" : "RED",
-			positive ? "+" : "-",
-			Math.abs(delta)
-		), skin, setting == 1 ? "default" : "large"));
+		table.add(new Label(text, skin, setting == 1 ? "default" : "large"));
 		
 		stage.getRoot().addActor(table);
 		table.pack();
