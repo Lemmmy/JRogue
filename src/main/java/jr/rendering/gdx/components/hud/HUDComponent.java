@@ -383,7 +383,7 @@ public class HUDComponent extends RendererComponent {
 		
 		showTextPopup(entity.getPosition(), String.format(
 			"[%s]%s%,d MP[]",
-			"P_PURPLE_1",
+			positive ? "P_PURPLE_3" : "P_PURPLE_1",
 			positive ? "+" : "-",
 			Math.abs(delta)
 		));
