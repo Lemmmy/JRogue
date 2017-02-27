@@ -47,6 +47,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
 	private final List<DungeonEventListener> listeners = new ArrayList<>();
+	private final List<DungeonEvent> eventQueueNextTurn = new ArrayList<>();
 	
 	private Pcg32 rand = new Pcg32();
 	
@@ -472,6 +473,12 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getVisibilityStore().updateSight(player);
 		level.getLightStore().buildLight(false);
 		
+		for (Iterator<DungeonEvent> iterator = eventQueueNextTurn.iterator(); iterator.hasNext(); ) {
+			DungeonEvent event = iterator.next();
+			triggerEvent(event, DungeonEventInvocationTime.NEXT_TURN);
+			iterator.remove();
+		}
+		
 		triggerEvent(new TurnEvent(turn));
 	}
 	
@@ -549,16 +556,21 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		return persistence;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEvent event) {
-		listeners.forEach(l -> triggerEvent(l, event));
+		eventQueueNextTurn.add(event);
+		triggerEvent(event, DungeonEventInvocationTime.IMMEDIATELY);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void triggerEvent(DungeonEvent event, DungeonEventInvocationTime invocationTime) {
+		listeners.forEach(l -> invokeEvent(l, event, invocationTime));
 		
 		if (level != null) {
 			level.getEntityStore().getEntities().forEach(e -> {
-				triggerEvent(e, event);
+				invokeEvent(e, event, invocationTime);
 				e.getSubListeners().forEach(l2 -> {
 					if (l2 != null) {
-						triggerEvent(l2, event);
+						invokeEvent(l2, event, invocationTime);
 					}
 				});
 			});
@@ -566,7 +578,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void triggerEvent(DungeonEventListener listener, DungeonEvent event) {
+	public void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
 		event.setDungeon(this);
 		
 		Arrays.stream(listener.getClass().getMethods())
@@ -580,7 +592,13 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 					return;
 				}
 				
-				if (m.getAnnotation(DungeonEventHandler.class).selfOnly() && !event.isSelf(listener)) {
+				DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
+				
+				if (annotation.selfOnly() && !event.isSelf(listener)) {
+					return;
+				}
+				
+				if (annotation.invocationTime() != invocationTime) {
 					return;
 				}
 				

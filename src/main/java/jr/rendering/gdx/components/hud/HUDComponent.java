@@ -375,11 +375,8 @@ public class HUDComponent extends RendererComponent {
 		));
 	}
 	
-	@DungeonEventHandler
+	@DungeonEventHandler(invocationTime = DungeonEventInvocationTime.NEXT_TURN)
 	public void onPlayerEnergyChanged(EntityEnergyChangedEvent e) {
-		// TODO: this doesnt work because the energy is changed before the turn starts.
-		//       make an event queue for deferring til next turn.
-		
 		Entity entity = e.getEntity();
 		int delta = e.getNewEnergy() - e.getOldEnergy();
 		boolean positive = delta >= 0;
