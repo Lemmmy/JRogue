@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
@@ -26,6 +25,8 @@ import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;
 import jr.utils.Point;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ import java.util.stream.Collectors;
 public class HUDComponent extends RendererComponent {
 	private static final float TEXT_POPUP_DURATION = 0.4f;
 	
-	private Skin skin;
-	private Stage stage;
+	@Getter private Skin skin;
+	@Getter private Stage stage;
 	private Label playerLabel;
 	private Table gameLog;
 	private Label promptLabel;
@@ -53,9 +54,9 @@ public class HUDComponent extends RendererComponent {
 	private Player player;
 	
 	private List<LogEntry> log = new ArrayList<>();
-	private List<PopupWindow> windows = new ArrayList<>();
+	@Getter	private List<PopupWindow> windows = new ArrayList<>();
 	
-	private List<Actor> singleTurnActors = new ArrayList<>();
+	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	public HUDComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
@@ -140,14 +141,6 @@ public class HUDComponent extends RendererComponent {
 		attributeTable.add(brightness).pad(0, 2, -2, 2).right();
 		
 		container.add(attributeTable).left().fillX().pad(0, 1, 0, 1);
-	}
-	
-	public Stage getStage() {
-		return stage;
-	}
-	
-	public Skin getSkin() {
-		return skin;
 	}
 	
 	@Override
@@ -412,7 +405,7 @@ public class HUDComponent extends RendererComponent {
 		table.setPosition((int) pos.x - (int) (table.getWidth() / 2), (int) pos.y);
 		singleTurnActors.add(table);
 		
-		table.addAction(Actions.moveTo(table.getX(), table.getY() + (TileMap.TILE_HEIGHT / 2), TEXT_POPUP_DURATION));
+		table.addAction(Actions.moveTo(table.getX(), table.getY() + TileMap.TILE_HEIGHT / 2, TEXT_POPUP_DURATION));
 		table.addAction(Actions.sequence(
 			Actions.delay(TEXT_POPUP_DURATION / 2),
 			Actions.fadeOut(TEXT_POPUP_DURATION))
@@ -507,10 +500,6 @@ public class HUDComponent extends RendererComponent {
 		windows.remove(window);
 	}
 	
-	public List<PopupWindow> getWindows() {
-		return windows;
-	}
-	
 	@DungeonEventHandler
 	public void onContainerShow(ContainerShowEvent e) {
 		Entity containerEntity = e.getContainerEntity();
@@ -544,21 +533,10 @@ public class HUDComponent extends RendererComponent {
 				.show());
 	}
 	
+	@Getter
+	@AllArgsConstructor
 	private class LogEntry {
 		private long turn;
 		private String text;
-		
-		public LogEntry(long turn, String text) {
-			this.turn = turn;
-			this.text = text;
-		}
-		
-		public long getTurn() {
-			return turn;
-		}
-		
-		public String getText() {
-			return text;
-		}
 	}
 }
