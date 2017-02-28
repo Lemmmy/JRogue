@@ -5,15 +5,18 @@ import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
 
 public class Ablaze extends StatusEffect {
-
 	private Severity severity;
+	
+	private boolean putOut;
+	
 	public Ablaze() {
 		this(Severity.MAJOR, RandomUtils.random(10, 20));
 	}
 
-	public Ablaze(Severity s, int d) {
-		super(d);
-		this.severity = s;
+	public Ablaze(Severity severity, int duration) {
+		super(duration);
+		
+		this.severity = severity;
 	}
 
 	@Override
@@ -24,7 +27,9 @@ public class Ablaze extends StatusEffect {
 			EntityLiving el = (EntityLiving) getEntity();
 
 			if (el.getLevel().getTileStore().getTileType(el.getX(), el.getY()).isWater()) {
+				putOut = true;
 				setTurnsPassed(getDuration());
+				getMessenger().greenYou("put the fire out.");
 				return;
 			}
 
@@ -50,7 +55,9 @@ public class Ablaze extends StatusEffect {
 
 	@Override
 	public void onEnd() {
-		getMessenger().greenThe("fire wears off after %d turn%s.", getTurnsPassed(), getTurnsPassed() > 1 ? "s" : "");
+		if (!putOut) {
+			getMessenger().greenThe("fire wears off after %d turn%s.", getTurnsPassed(), getTurnsPassed() > 1 ? "s" : "");
+		}
 	}
 
 	public int getDamage() {
@@ -62,6 +69,7 @@ public class Ablaze extends StatusEffect {
 			case MINOR:
 				return getTurnsPassed() % 4 == 0 ? 1 : 0;
 		}
+		
 		return 0;
 	}
 
