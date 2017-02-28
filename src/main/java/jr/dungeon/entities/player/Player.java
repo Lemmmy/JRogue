@@ -286,6 +286,11 @@ public class Player extends EntityLiving {
 		}
 	}
 	
+	@DungeonEventHandler(selfOnly = true)
+	public void onHealthChanged(EntityHealthChangedEvent event) {
+		
+	}
+	
 	private void updateEnergy() {
 		energy = Math.max(0, Math.min(maxEnergy, energy));
 		

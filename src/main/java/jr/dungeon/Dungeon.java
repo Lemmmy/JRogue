@@ -69,6 +69,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	@Getter private long passiveSoundCounter = 0;
 	@Getter private long monsterSpawnCounter = 50;
 	
+	@Getter private boolean somethingHappened;
+	
 	@Getter private Prompt prompt;
 	private Settings settings;
 	
@@ -333,9 +335,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		listeners.remove(listener);
 	}
 	
-	public void rerollName() {
-		this.originalName = DungeonNameGenerator.generate();
-		this.name = this.originalName;
+	public void markSomethingHappened() {
+		somethingHappened = true;
 	}
 	
 	public void start() {
@@ -413,6 +414,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		}
 		
 		triggerEvent(new BeforeTurnEvent(turn + 1));
+		somethingHappened = false;
+		
 		level.getEntityStore().processEntityQueues();
 		
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
