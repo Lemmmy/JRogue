@@ -29,7 +29,7 @@ public class Ablaze extends StatusEffect {
 			if (el.getLevel().getTileStore().getTileType(el.getX(), el.getY()).isWater()) {
 				putOut = true;
 				setTurnsPassed(getDuration());
-				getMessenger().greenYou("put the fire out.");
+				getMessenger().greenYou("douse the flames in the water!");
 				return;
 			}
 
