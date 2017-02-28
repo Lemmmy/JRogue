@@ -7,9 +7,7 @@ import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
-import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
-import jr.dungeon.entities.events.EntityDeathEvent;
-import jr.dungeon.entities.events.EntityLevelledUpEvent;
+import jr.dungeon.entities.events.*;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
@@ -39,7 +37,7 @@ public class Player extends EntityLiving {
 	private String name;
 	@Getter private Role role;
 	
-	@Getter @Setter private int energy;
+	@Getter private int energy;
 	@Getter private int maxEnergy;
 	@Getter private int chargingTurns = 0;
 	@Getter private Map<Character, Spell> knownSpells;
@@ -126,7 +124,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public void charge(int amount) {
-		energy = Math.min(maxEnergy, energy + amount);
+		setEnergy(Math.min(maxEnergy, energy + amount));
 	}
 	
 	private void levelUpEnergy() {
@@ -136,6 +134,16 @@ public class Player extends EntityLiving {
 		
 		maxEnergy += gain;
 		charge(gain);
+	}
+	
+	public void setEnergy(int energy) {
+		int oldEnergy = this.energy;
+		this.energy = energy;
+		int newEnergy = this.energy;
+		
+		if (oldEnergy != newEnergy) {
+			getDungeon().triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
+		}
 	}
 	
 	public char getAvailableSpellLetter() {
@@ -287,7 +295,7 @@ public class Player extends EntityLiving {
 	}
 	
 	private void updateEnergy() {
-		energy = Math.max(0, Math.min(maxEnergy, energy));
+		setEnergy(Math.max(0, Math.min(maxEnergy, energy)));
 		
 		if (energy < maxEnergy) {
 			chargingTurns++;
@@ -550,7 +558,6 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().triggerEvent(new EntityAttackedToHitRollEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

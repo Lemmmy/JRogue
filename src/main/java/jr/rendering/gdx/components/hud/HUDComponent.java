@@ -9,7 +9,6 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -21,6 +20,8 @@ import jr.rendering.gdx.components.hud.windows.*;
 import jr.rendering.gdx.tiles.TileMap;
 import jr.rendering.gdx.utils.HUDUtils;
 import jr.rendering.gdx.utils.ImageLoader;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HUDComponent extends RendererComponent {
-	private Skin skin;
-	private Stage stage;
+	@Getter private Skin skin;
+	@Getter private Stage stage;
 	private Label playerLabel;
 	private Table gameLog;
 	private Label promptLabel;
@@ -46,9 +47,9 @@ public class HUDComponent extends RendererComponent {
 	private Player player;
 	
 	private List<LogEntry> log = new ArrayList<>();
-	private List<PopupWindow> windows = new ArrayList<>();
+	@Getter	private List<PopupWindow> windows = new ArrayList<>();
 	
-	private List<Actor> singleTurnActors = new ArrayList<>();
+	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	public HUDComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
@@ -135,14 +136,6 @@ public class HUDComponent extends RendererComponent {
 		container.add(attributeTable).left().fillX().pad(0, 1, 0, 1);
 	}
 	
-	public Stage getStage() {
-		return stage;
-	}
-	
-	public Skin getSkin() {
-		return skin;
-	}
-	
 	@Override
 	public void initialise() {
 		ScreenViewport stageViewport = new ScreenViewport();
@@ -165,6 +158,8 @@ public class HUDComponent extends RendererComponent {
 		
 		root.top();
 		stage.addActor(root);
+		
+		dungeon.addListener(new TextPopups(this));
 	}
 	
 	@Override
@@ -301,8 +296,6 @@ public class HUDComponent extends RendererComponent {
 				player.getMaxHealth()
 			));
 		}
-		
-		
 	}
 	
 	private void updateEnergy(Player player) {
@@ -357,44 +350,6 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityAttacked(EntityAttackedToHitRollEvent e) {
-		if (!settings.isShowToHitRolls()) {
-			return;
-		}
-		
-		Entity entity = e.getEntity();
-		int x = e.getX();
-		int y = e.getY();
-		int roll = e.getRoll();
-		int toHit = e.getToHit();
-			
-		if (!player.isDebugger()) {
-			return;
-		}
-		
-		Vector3 pos = renderer.getCamera().project(
-			new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
-		);
-		
-		Table attackStatTable = new Table(skin);
-		attackStatTable.setBackground("blackTransparent");
-		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 17, 2, 16, 16, false)))
-			.width(16).height(16).padRight(4);
-		attackStatTable.add(new Label(String.format("%,d", roll), skin)).padRight(8);
-		
-		attackStatTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 18, 2, 16, 16, false)))
-			.width(16).height(16).padRight(4);
-		attackStatTable.add(new Label(String.format("[%s]%,d[]", toHit > roll ? "P_GREEN_2" : "RED", toHit), skin));
-		
-		stage.getRoot().addActor(attackStatTable);
-		attackStatTable.pad(4);
-		attackStatTable.pack();
-		attackStatTable.setPosition((int) pos.x - (int) (attackStatTable.getWidth() / 2), (int) pos.y);
-		singleTurnActors.add(attackStatTable);
-	}
-	
-	@DungeonEventHandler
 	public void onLog(LogEvent event) {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
@@ -445,10 +400,6 @@ public class HUDComponent extends RendererComponent {
 		windows.remove(window);
 	}
 	
-	public List<PopupWindow> getWindows() {
-		return windows;
-	}
-	
 	@DungeonEventHandler
 	public void onContainerShow(ContainerShowEvent e) {
 		Entity containerEntity = e.getContainerEntity();
@@ -482,21 +433,10 @@ public class HUDComponent extends RendererComponent {
 				.show());
 	}
 	
+	@Getter
+	@AllArgsConstructor
 	private class LogEntry {
 		private long turn;
 		private String text;
-		
-		public LogEntry(long turn, String text) {
-			this.turn = turn;
-			this.text = text;
-		}
-		
-		public long getTurn() {
-			return turn;
-		}
-		
-		public String getText() {
-			return text;
-		}
 	}
 }

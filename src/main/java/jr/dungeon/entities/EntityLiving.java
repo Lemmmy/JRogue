@@ -8,6 +8,7 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.Paralysis;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.Item;
@@ -67,8 +68,18 @@ public abstract class EntityLiving extends EntityTurnBased {
 		return health > 0;
 	}
 	
+	public void setHealth(int health) {
+		int oldHealth = this.health;
+		this.health = health;
+		int newHealth = this.health;
+		
+		if (oldHealth != newHealth) {
+			getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+		}
+	}
+	
 	public void heal(int amount) {
-		health = Math.min(maxHealth, health + amount);
+		setHealth(Math.min(maxHealth, health + amount));
 	}
 	
 	public int getHealingRate() {
@@ -268,7 +279,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
-		health = Math.max(0, health - damageModifier);
+		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
 		getDungeon().triggerEvent(new EntityDamagedEvent(this, attacker, damageSource, damage));
