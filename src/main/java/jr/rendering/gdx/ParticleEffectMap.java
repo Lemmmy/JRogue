@@ -8,7 +8,8 @@ import lombok.Getter;
 
 @Getter
 public enum ParticleEffectMap {
-	WATER_STEP("water_step", 0, 250);
+	WATER_STEP("water_step", 0, 250),
+	ENTITY_FIRE("entity_fire", 0, 250, EntityMap.ENTITY_WIDTH / 4, EntityMap.ENTITY_HEIGHT - 2);
 	
 	private ParticleEffectPool pool;
 	private ParticleEffect effect;
