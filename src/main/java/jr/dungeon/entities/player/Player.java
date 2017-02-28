@@ -9,6 +9,7 @@ import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.*;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
+import jr.dungeon.entities.player.events.PlayerDefaultEvents;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
 import jr.dungeon.entities.player.visitors.PlayerVisitor;
@@ -94,6 +95,8 @@ public class Player extends EntityLiving {
 		
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
+		
+		dungeon.addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
