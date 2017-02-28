@@ -56,37 +56,21 @@ public class PlayerEat extends PlayerItemVisitor {
 					stack.subtractCount(1);
 				}
 				
-				for (int i = 0; i < 15; i++) {
-					player.setAction(new ActionEat(item,null));
-					player.getDungeon().turn();
-					
-					if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
-						break;
-					}
-					
-					if (player.getDungeon().isSomethingHappened()) {
-						player.getDungeon().log("You stop eating.");
-						break;
-					}
-				}
+				eatTurns(player, item);
 				
-				eatFromFloorCallback((ItemComestible) item.copy(), player);
+				if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
+					EntityItem newStack = new EntityItem(
+						player.getDungeon(),
+						player.getLevel(),
+						player.getX(),
+						player.getY(),
+						new ItemStack(item, 1)
+					);
+					
+					player.getLevel().getEntityStore().addEntity(newStack);
+				}
 			}
 		}));
-	}
-	
-	private void eatFromFloorCallback(ItemComestible item, Player player) {
-		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
-			EntityItem newStack = new EntityItem(
-				player.getDungeon(),
-				player.getLevel(),
-				player.getX(),
-				player.getY(),
-				new ItemStack(item, 1)
-			);
-			
-			player.getLevel().getEntityStore().addEntity(newStack);
-		}
 	}
 	
 	private void eatFromInventory(Player player) {
@@ -95,14 +79,18 @@ public class PlayerEat extends PlayerItemVisitor {
 		InventoryUseResult result = useInventoryItem(player, msg, s -> s.getItem() instanceof ItemComestible, (c, ce, inv) -> {
 			ItemStack stack = ce.getStack();
 			ItemComestible item = (ItemComestible) stack.getItem();
-			ItemComestible itemCopy = (ItemComestible) item.copy();
 			
-			player.setAction(new ActionEat(
-				itemCopy,
-				(EntityAction.CompleteCallback) entity -> eatFromInventoryCallback(ce, inv, stack, itemCopy)
-			));
+			if (stack.getCount() == 1) {
+				inv.remove(ce.getLetter());
+			} else {
+				stack.subtractCount(1);
+			}
 			
-			player.getDungeon().turn();
+			eatTurns(player, item);
+			
+			if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
+				inv.add(new ItemStack(item, 1));
+			}
 		});
 		
 		switch (result) {
@@ -115,18 +103,25 @@ public class PlayerEat extends PlayerItemVisitor {
 		}
 	}
 	
-	private void eatFromInventoryCallback(Container.ContainerEntry ce,
-										  Container inv,
-										  ItemStack stack,
-										  ItemComestible itemCopy) {
-		if (stack.getCount() == 1) {
-			inv.remove(ce.getLetter());
-		} else {
-			stack.subtractCount(1);
+	private void eatTurns(Player player, ItemComestible item) {
+		for (int i = 0; i < 15; i++) {
+			if (i != 0) {
+				player.getDungeon().setDoingMassAction(true);
+			}
+			
+			player.setAction(new ActionEat(item,null));
+			player.getDungeon().turn();
+			
+			if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
+				break;
+			}
+			
+			if (player.getDungeon().isSomethingHappened()) {
+				player.getDungeon().log("You stop eating.");
+				break;
+			}
 		}
 		
-		if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
-			inv.add(new ItemStack(itemCopy, 1));
-		}
+		player.getDungeon().setDoingMassAction(false);
 	}
 }

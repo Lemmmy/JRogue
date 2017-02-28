@@ -71,6 +71,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	@Getter private long monsterSpawnCounter = 50;
 	
 	@Getter private boolean somethingHappened;
+	@Getter @Setter private boolean doingMassAction;
 	
 	@Getter private Prompt prompt;
 	private Settings settings;
