@@ -50,35 +50,39 @@ public class PlayerEat extends PlayerItemVisitor {
 					return;
 				}
 				
-				ItemComestible itemCopy = (ItemComestible) item.copy();
+				if (stack.getCount() == 1) {
+					entity.getLevel().getEntityStore().removeEntity(entity);
+				} else {
+					stack.subtractCount(1);
+				}
 				
-				player.setAction(new ActionEat(
-					itemCopy,
-					(EntityAction.CompleteCallback) ent -> eatFromFloorCallback(itemCopy, stack, entity, player)
-				));
+				for (int i = 0; i < 15; i++) {
+					player.setAction(new ActionEat(item,null));
+					player.getDungeon().turn();
+					
+					if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
+						break;
+					}
+					
+					if (player.getDungeon().isSomethingHappened()) {
+						player.getDungeon().log("You stop eating.");
+						break;
+					}
+				}
 				
-				player.getDungeon().turn();
+				eatFromFloorCallback((ItemComestible) item.copy(), player);
 			}
 		}));
 	}
 	
-	private void eatFromFloorCallback(ItemComestible itemCopy,
-									  ItemStack stack,
-									  EntityItem entity,
-									  Player player) {
-		if (stack.getCount() == 1) {
-			entity.getLevel().getEntityStore().removeEntity(entity);
-		} else {
-			stack.subtractCount(1);
-		}
-		
-		if (itemCopy.getEatenState() != ItemComestible.EatenState.EATEN) {
+	private void eatFromFloorCallback(ItemComestible item, Player player) {
+		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
 			EntityItem newStack = new EntityItem(
 				player.getDungeon(),
 				player.getLevel(),
 				player.getX(),
 				player.getY(),
-				new ItemStack(itemCopy, 1)
+				new ItemStack(item, 1)
 			);
 			
 			player.getLevel().getEntityStore().addEntity(newStack);

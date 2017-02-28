@@ -51,6 +51,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 					}
 					
 					if (player.getDungeon().isSomethingHappened()) {
+						player.getDungeon().log("You stop kicking the door.");
 						return;
 					}
 				}
