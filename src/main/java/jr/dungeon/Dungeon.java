@@ -338,6 +338,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	public void markSomethingHappened() {
 		somethingHappened = true;
+		
+		// TODO: trigger event here?
 	}
 	
 	public void start() {
