@@ -5,10 +5,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.events.EntityKickedEvent;
-import jr.dungeon.entities.events.EntityMovedEvent;
-import jr.dungeon.entities.events.EntityTeleportedToEvent;
-import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.events.*;
 import jr.dungeon.events.DungeonEventListener;
 import jr.utils.Persisting;
 import jr.utils.Point;
@@ -118,13 +115,14 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
-			StatusEffect statusEffect = iterator.next();
+			StatusEffect effect = iterator.next();
 			
-			statusEffect.turn();
+			effect.turn();
 			
-			if (statusEffect.getDuration() >= 0 && statusEffect.getTurnsPassed() >= statusEffect.getDuration()) {
-				statusEffect.onEnd();
+			if (effect.getDuration() >= 0 && effect.getTurnsPassed() >= effect.getDuration()) {
+				effect.onEnd();
 				iterator.remove();
+				dungeon.triggerEvent(new EntityStatusEffectRemovedEvent(this, effect));
 			}
 		}
 	}
@@ -205,8 +203,9 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	
 	public void addStatusEffect(StatusEffect effect) {
 		effect.setEntity(this);
-		effect.setMessenger(getDungeon());
+		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
+		dungeon.triggerEvent(new EntityStatusEffectAddedEvent(this, effect));
 	}
 	
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
