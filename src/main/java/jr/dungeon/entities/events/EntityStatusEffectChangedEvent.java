@@ -8,12 +8,18 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityStatusEffectRemovedEvent extends DungeonEvent {
+public class EntityStatusEffectChangedEvent extends DungeonEvent {
 	private Entity entity;
 	private StatusEffect effect;
+	
+	private Change change;
 	
 	@Override
 	public boolean isSelf(Object other) {
 		return other.equals(entity);
+	}
+	
+	public enum Change {
+		ADDED, DURATION_CHANGED, REMOVED
 	}
 }

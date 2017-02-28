@@ -1,14 +1,12 @@
 package jr.rendering.gdx.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.effects.Ablaze;
 import jr.dungeon.entities.events.EntityMovedEvent;
-import jr.dungeon.entities.events.EntityStatusEffectAddedEvent;
-import jr.dungeon.entities.events.EntityStatusEffectRemovedEvent;
+import jr.dungeon.entities.events.EntityStatusEffectChangedEvent;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.events.DungeonEventHandler;
@@ -215,20 +213,25 @@ public abstract class ParticlesComponent extends RendererComponent {
 		}
 		
 		@DungeonEventHandler
-		public void onEntityStatusEffectAdded(EntityStatusEffectAddedEvent e) {
-			if (e.getEffect() instanceof Ablaze) {
-				addEffect(ParticleEffectMap.ENTITY_FIRE, e.getEntity(), 0);
-			}
-		}
-		
-		@DungeonEventHandler
-		public void onEntityStatusEffectRemoved(EntityStatusEffectRemovedEvent e) {
-			if (e.getEffect() instanceof Ablaze) {
-				getPooledEffects().stream()
-					.filter(effect -> effect.getAttachedEntity().equals(e.getEntity()))
-					.filter(effect -> effect.getOriginalEffect() == ParticleEffectMap.ENTITY_FIRE)
-					.findFirst()
-					.ifPresent(effect -> getPooledEffects().remove(effect));
+		public void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
+			switch (e.getChange()) {
+				case ADDED:
+					if (e.getEffect() instanceof Ablaze) {
+						addEffect(ParticleEffectMap.ENTITY_FIRE, e.getEntity(), 0);
+					}
+					
+					break;
+					
+				case REMOVED:
+					if (e.getEffect() instanceof Ablaze) {
+						getPooledEffects().stream()
+							.filter(effect -> effect.getAttachedEntity().equals(e.getEntity()))
+							.filter(effect -> effect.getOriginalEffect() == ParticleEffectMap.ENTITY_FIRE)
+							.findFirst()
+							.ifPresent(effect -> getPooledEffects().remove(effect));
+					}
+					
+					break;
 			}
 		}
 	}

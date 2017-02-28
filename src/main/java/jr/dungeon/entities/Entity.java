@@ -122,7 +122,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 			if (effect.getDuration() >= 0 && effect.getTurnsPassed() >= effect.getDuration()) {
 				effect.onEnd();
 				iterator.remove();
-				dungeon.triggerEvent(new EntityStatusEffectRemovedEvent(this, effect));
+				dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED));
 			}
 		}
 	}
@@ -205,7 +205,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
-		dungeon.triggerEvent(new EntityStatusEffectAddedEvent(this, effect));
+		dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED));
 	}
 	
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
