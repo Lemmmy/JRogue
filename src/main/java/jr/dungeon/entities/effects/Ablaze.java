@@ -72,5 +72,4 @@ public class Ablaze extends StatusEffect {
 		
 		return 0;
 	}
-
 }
