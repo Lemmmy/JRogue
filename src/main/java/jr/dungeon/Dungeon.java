@@ -47,7 +47,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
 	private final List<DungeonEventListener> listeners = new ArrayList<>();
-	private final List<DungeonEvent> eventQueueNextTurn = new ArrayList<>();
+	private final List<DungeonEvent> eventQueueNextTurn = new LinkedList<>();
 	
 	private Pcg32 rand = new Pcg32();
 	
