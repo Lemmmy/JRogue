@@ -6,7 +6,7 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.DungeonEventListener;
@@ -53,7 +53,7 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}

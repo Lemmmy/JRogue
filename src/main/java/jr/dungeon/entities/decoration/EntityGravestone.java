@@ -5,7 +5,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.DungeonEventHandler;
@@ -38,7 +38,7 @@ public class EntityGravestone extends Entity implements Readable {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		// TODO: shit on the player's luck
 	}
 	

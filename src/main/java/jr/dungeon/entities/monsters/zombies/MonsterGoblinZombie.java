@@ -7,7 +7,7 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.events.DungeonEventHandler;
@@ -66,7 +66,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}

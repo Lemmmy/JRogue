@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
@@ -84,7 +84,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("step on the %s!", getName(e.getKicker(), false));
 		}

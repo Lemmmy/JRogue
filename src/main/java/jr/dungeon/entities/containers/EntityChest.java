@@ -5,7 +5,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
@@ -72,7 +72,7 @@ public class EntityChest extends Entity {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			boolean somethingShattered = false;
 			

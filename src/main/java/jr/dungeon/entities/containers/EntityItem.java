@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.MercuryPoisoning;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -62,7 +62,7 @@ public class EntityItem extends Entity {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		int x = getX() + e.getDeltaX();
 		int y = getY() + e.getDeltaY();
 		

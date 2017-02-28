@@ -5,7 +5,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityTeleportedToEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
@@ -214,7 +214,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 	
 	public void kick(EntityLiving kicker, int dx, int dy) {
-		getDungeon().triggerEvent(new EntityKickedEvent(this, kicker, dx, dy));
+		getDungeon().triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
 	}
 	
 	public void walk(EntityLiving walker) {

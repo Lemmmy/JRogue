@@ -9,7 +9,7 @@ import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.EntityDamagedEvent;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
@@ -48,7 +48,7 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}

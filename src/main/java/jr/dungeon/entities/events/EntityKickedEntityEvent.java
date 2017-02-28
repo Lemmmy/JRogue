@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityKickedEvent extends DungeonEvent {
+public class EntityKickedEntityEvent extends DungeonEvent {
 	private Entity victim;
 	private EntityLiving kicker;
 	
