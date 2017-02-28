@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.effects.Ablaze;
 import jr.dungeon.entities.events.EntityMovedEvent;
+import jr.dungeon.entities.events.EntityStatusEffectChangedEvent;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.events.DungeonEventHandler;
@@ -14,13 +16,14 @@ import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.ParticleEffectMap;
 import jr.rendering.gdx.tiles.TileMap;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public abstract class ParticlesComponent extends RendererComponent {
-	private List<PooledEffect> pooledEffects = new ArrayList<>();
+	@Getter private List<PooledEffect> pooledEffects = new ArrayList<>();
 	
 	public ParticlesComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -85,6 +88,25 @@ public abstract class ParticlesComponent extends RendererComponent {
 		}
 	}
 	
+	public void addEffect(ParticleEffectMap effect, Entity attachedEntity, int duration) {
+		PooledEffect e = new PooledEffect(
+			effect,
+			effect.getPool().obtain(),
+			attachedEntity.getX(),
+			attachedEntity.getY(),
+			duration
+		);
+		
+		e.getPooledEffect().setPosition(
+			attachedEntity.getX() * TileMap.TILE_WIDTH + effect.getXOffset(),
+			attachedEntity.getY() * TileMap.TILE_HEIGHT + effect.getYOffset()
+		);
+		
+		e.setAttachedEntity(attachedEntity);
+		
+		pooledEffects.add(e);
+	}
+	
 	public void addEffect(ParticleEffectMap effect, int x, int y, int duration) {
 		PooledEffect e = new PooledEffect(
 			effect,
@@ -111,6 +133,8 @@ public abstract class ParticlesComponent extends RendererComponent {
 	public class PooledEffect {
 		private ParticleEffectMap originalEffect;
 		private ParticleEffectPool.PooledEffect pooledEffect;
+		
+		@Setter private Entity attachedEntity;
 		
 		private int x;
 		private int y;
@@ -140,6 +164,16 @@ public abstract class ParticlesComponent extends RendererComponent {
 		
 		public void turn() {
 			turnsTaken++;
+			
+			if (attachedEntity != null) {
+				this.x = attachedEntity.getX();
+				this.y = attachedEntity.getY();
+				
+				pooledEffect.setPosition(
+					x * TileMap.TILE_WIDTH + originalEffect.getXOffset(),
+					y * TileMap.TILE_HEIGHT + originalEffect.getYOffset()
+				);
+			}
 		}
 	}
 	
@@ -176,6 +210,29 @@ public abstract class ParticlesComponent extends RendererComponent {
 		@Override
 		public int getZIndex() {
 			return 35;
+		}
+		
+		@DungeonEventHandler
+		public void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
+			switch (e.getChange()) {
+				case ADDED:
+					if (e.getEffect() instanceof Ablaze) {
+						addEffect(ParticleEffectMap.ENTITY_FIRE, e.getEntity(), 0);
+					}
+					
+					break;
+					
+				case REMOVED:
+					if (e.getEffect() instanceof Ablaze) {
+						getPooledEffects().stream()
+							.filter(effect -> effect.getAttachedEntity().equals(e.getEntity()))
+							.filter(effect -> effect.getOriginalEffect() == ParticleEffectMap.ENTITY_FIRE)
+							.findFirst()
+							.ifPresent(effect -> getPooledEffects().remove(effect));
+					}
+					
+					break;
+			}
 		}
 	}
 }
