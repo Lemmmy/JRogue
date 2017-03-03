@@ -402,7 +402,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 
 	/**
-	 * Displays a message in the dungeon log seen in the top left corner of the UI.
+	 * Displays a message in the dungeon's event log.
 	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
 	 * @param s The format used for the message.
 	 * @param objects The format parameters.
@@ -434,8 +434,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 
 	/**
-	 * Simulate a response to a prompt.
-	 * @param response The char response to simulate.
+	 * Responds to a prompt.
+	 * @param response The char response to send.
 	 */
 	public void promptRespond(char response) {
 		if (prompt != null) {

@@ -69,7 +69,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 
 	/**
-	 * @param observer The entity "reading" the name.
+	 * @param observer The entity "reading" the name. Used, for example, to hide aspects the entity does not know about.
 	 * @param requiresCapitalisation Whether the name should have its first letter capitalised.
 	 * @return The name of this entity.
 	 */
