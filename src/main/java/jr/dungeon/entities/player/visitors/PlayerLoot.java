@@ -1,8 +1,10 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.utils.EntityHelper;
 import jr.dungeon.events.ContainerShowEvent;
 
 import java.util.List;
@@ -12,7 +14,8 @@ public class PlayerLoot implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
 		List<Entity> containerEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
-			.filter(e -> !(e instanceof Player) && e.getContainer().isPresent())
+			.filter(e -> !(e instanceof Player))
+			.filter(EntityHelper::hasContainer)
 			.collect(Collectors.toList());
 		
 		if (containerEntities.size() == 0) {

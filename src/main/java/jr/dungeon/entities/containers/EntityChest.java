@@ -7,6 +7,7 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityKickedEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EntityChest extends Entity implements Lootable {
+public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	private Container container;
 	@Getter private boolean locked;
 	
@@ -54,7 +55,7 @@ public class EntityChest extends Entity implements Lootable {
 	
 	@Override
 	public Optional<Container> getContainer() {
-		return Optional.of(container);
+		return Optional.ofNullable(container);
 	}
 
 	@Override

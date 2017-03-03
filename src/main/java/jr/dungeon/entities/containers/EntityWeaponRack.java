@@ -6,13 +6,14 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.DungeonEventHandler;
 import org.json.JSONObject;
 
 import java.util.Optional;
 
-public class EntityWeaponRack extends Entity implements Lootable {
+public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
 	private Container container;
 	
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {

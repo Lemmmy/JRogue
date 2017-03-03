@@ -113,13 +113,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 
 	/**
-	 * @return A Container associated with this entity. E.g. {@link jr.dungeon.entities.player.Player} will return its inventory.
-	 */
-	public Optional<Container> getContainer() {
-		return Optional.empty();
-	}
-
-	/**
 	 * This method is called every frame.
 	 * It's possible to get the time since the last frame using <code>Gdx.graphics.getDeltaTime()</code>.
 	 */
