@@ -120,21 +120,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 
 	/**
-	 * @return true if this entity can be looted like a chest.
-	 */
-	public boolean isLootable() {
-		return false;
-	}
-	
-	public Optional<String> lootSuccessString() {
-		return Optional.empty();
-	}
-	
-	public Optional<String> lootFailedString() {
-		return Optional.empty();
-	}
-
-	/**
 	 * This method is called every frame.
 	 * It's possible to get the time since the last frame using <code>Gdx.graphics.getDeltaTime()</code>.
 	 */
