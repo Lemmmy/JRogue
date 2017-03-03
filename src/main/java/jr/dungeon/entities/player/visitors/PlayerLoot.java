@@ -23,7 +23,7 @@ public class PlayerLoot implements PlayerVisitor {
 		
 		Entity containerEntity = containerEntities.get(0);
 		
-		if (!containerEntity.lootable()) {
+		if (!containerEntity.isLootable()) {
 			containerEntity.lootFailedString().ifPresent(s -> player.getDungeon().log(s));
 			return;
 		}

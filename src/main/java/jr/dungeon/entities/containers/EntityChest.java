@@ -57,7 +57,7 @@ public class EntityChest extends Entity {
 	}
 	
 	@Override
-	public boolean lootable() {
+	public boolean isLootable() {
 		return !locked;
 	}
 	
