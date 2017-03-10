@@ -28,6 +28,7 @@ import org.json.JSONTokener;
 import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -683,32 +684,47 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
 		event.setDungeon(this);
 		
-		Arrays.stream(listener.getClass().getMethods())
-			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
-			.filter(m -> m.getParameterCount() == 1)
-			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
-			.forEach(m -> {
-				m.setAccessible(true); // ha ha
-				
-				if (event.isCancelled()) {
-					return;
+		Class<?> listenerClass = listener.getClass();
+		ArrayList<Method> listenerMethods = new ArrayList<>();
+		
+		while (listenerClass != null) {
+			Method[] methods = listenerClass.getDeclaredMethods();
+			
+			for (Method method : methods) {
+				if (
+					method.isAnnotationPresent(DungeonEventHandler.class) &&
+					method.getParameterCount() == 1 &&
+					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
+				) {
+					listenerMethods.add(method);
 				}
-				
-				DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
-				
-				if (annotation.selfOnly() && !event.isSelf(listener)) {
-					return;
-				}
-				
-				if (annotation.invocationTime() != invocationTime) {
-					return;
-				}
-				
-				try {
-					m.invoke(listener, event);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
-				}
-			});
+			}
+			
+			listenerClass = listenerClass.getSuperclass();
+		}
+		
+		listenerMethods.forEach(m -> {
+			m.setAccessible(true); // ha ha
+			
+			if (event.isCancelled()) {
+				return;
+			}
+			
+			DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
+			
+			if (annotation.selfOnly() && !event.isSelf(listener)) {
+				return;
+			}
+			
+			if (annotation.invocationTime() != invocationTime) {
+				return;
+			}
+			
+			try {
+				m.invoke(listener, event);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
+			}
+		});
 	}
 }
