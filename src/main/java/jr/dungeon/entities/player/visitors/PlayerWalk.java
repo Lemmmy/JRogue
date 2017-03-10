@@ -1,7 +1,9 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.ActionKick;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
@@ -67,7 +69,31 @@ public class PlayerWalk implements PlayerVisitor {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			player.setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			player.getDungeon().The("door is locked.");
+			player.getDungeon().prompt(new Prompt(
+				"The door is locked. Kick it down?",
+				new char[]{'y', 'n'},
+				true,
+				new Prompt.SimplePromptCallback(player.getDungeon()) {
+					@Override
+					public void onResponse(char response) {
+						if (response == 'n') {
+							player.getDungeon().log("Nevermind.");
+							return;
+						}
+						
+						for (int i = 0; i < 15; i++) {
+							player.setAction(new ActionKick(new Integer[]{dx, dy}, null));
+							player.getDungeon().turn();
+							
+							if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
+								return;
+							}
+						}
+						
+						player.getDungeon().log("Unable to kick the door down after 15 turns.");
+					}
+				}
+			));
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 			tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
 			player.getDungeon().You("open the door.");
