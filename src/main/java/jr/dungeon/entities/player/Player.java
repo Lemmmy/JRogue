@@ -271,7 +271,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@DungeonEventHandler
-	public void onGameStarted(GameStartedEvent event) {
+	private void onGameStarted(GameStartedEvent event) {
 		if (spendableSkillPoints > 0) {
 			getDungeon().greenYou(
 				"have %,d spendable skill point%s.",

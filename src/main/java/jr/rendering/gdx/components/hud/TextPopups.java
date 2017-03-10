@@ -39,7 +39,7 @@ public class TextPopups implements DungeonEventListener {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityHealthChanged(EntityHealthChangedEvent e) {
+	private void onEntityHealthChanged(EntityHealthChangedEvent e) {
 		Entity entity = e.getEntity();
 		int delta = e.getNewHealth() - e.getOldHealth();
 		boolean positive = delta >= 0;
@@ -67,7 +67,7 @@ public class TextPopups implements DungeonEventListener {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityAttackMissed(EntityAttackMissedEvent e) {
+	private void onEntityAttackMissed(EntityAttackMissedEvent e) {
 		showTextPopup(e.getAttacker().getPosition(), "[P_ORANGE_2]missed[]");
 	}
 	

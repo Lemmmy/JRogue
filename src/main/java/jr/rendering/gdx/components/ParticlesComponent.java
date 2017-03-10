@@ -70,12 +70,12 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		pooledEffects.clear();
 	}
 	
 	@DungeonEventHandler
-	public void onTurn(TurnEvent e) {
+	private void onTurn(TurnEvent e) {
 		for (Iterator<PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
 			PooledEffect effect = iterator.next();
 			
@@ -188,7 +188,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 		}
 		
 		@DungeonEventHandler
-		public void onEntityMoved(EntityMovedEvent event) {
+		private void onEntityMoved(EntityMovedEvent event) {
 			Entity e = event.getEntity();
 			
 			if (
@@ -213,7 +213,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 		}
 		
 		@DungeonEventHandler
-		public void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
+		private void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
 			switch (e.getChange()) {
 				case ADDED:
 					if (e.getEffect() instanceof Ablaze) {
