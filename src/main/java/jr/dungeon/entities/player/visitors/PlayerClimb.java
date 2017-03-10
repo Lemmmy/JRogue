@@ -6,8 +6,6 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import lombok.AllArgsConstructor;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 public class PlayerClimb implements PlayerVisitor {
 	private Tile tile;
