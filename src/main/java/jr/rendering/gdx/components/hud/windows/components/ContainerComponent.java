@@ -7,9 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.utils.EntityHelper;
 import jr.dungeon.items.Item;
 import jr.rendering.gdx.items.ItemMap;
 import jr.rendering.gdx.items.ItemRenderer;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class ContainerComponent extends Table {
 	private void update() {
 		clearChildren();
 		
-		if (entity.getContainer().isPresent()) {
+		if (EntityHelper.hasContainer(entity)) {
 			showContainer();
 		} else {
 			showNoContainer();
@@ -66,11 +68,14 @@ public class ContainerComponent extends Table {
 	}
 	
 	private void showContainer() {
-		if (!entity.getContainer().isPresent()) {
+		val containerOpt = EntityHelper.getContainer(entity);
+
+		if (!containerOpt.isPresent()) {
 			return;
 		}
-		
-		Container container = entity.getContainer().get();
+
+		Container container = containerOpt.get();
+
 		boolean isPlayer = entity instanceof Player;
 		
 		if (container.getItems().size() == 0) {
@@ -119,13 +124,14 @@ public class ContainerComponent extends Table {
 				itemButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						if (!transferTo.getContainer().isPresent()) {
+						val containerOpt = EntityHelper.getContainer(transferTo);
+						if (!containerOpt.isPresent()) {
 							return;
 						}
 						
 						int amount = event.getButton() == Input.Buttons.LEFT ? itemStack.getCount() : 1;
 						
-						Container destContainer = transferTo.getContainer().get();
+						Container destContainer = containerOpt.get();
 						container.transfer(
 							destContainer,
 							character,

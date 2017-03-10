@@ -8,9 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.utils.EntityHelper;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
 import jr.rendering.gdx.components.hud.windows.components.StatisticsComponent;
+import lombok.val;
 
 public class PlayerWindow extends PopupWindow {
 	private Entity entity;
@@ -30,8 +32,9 @@ public class PlayerWindow extends PopupWindow {
 	public void populateWindow() {
 		getWindow().setWidth(600);
 		getWindow().setHeight(400);
-		
-		String inventoryName = entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Inventory";
+
+		val ec = EntityHelper.getContainer(entity);
+		String inventoryName = ec.isPresent() ? ec.get().getName() : "Inventory";
 		
 		getWindow().getContentTable().padTop(4);
 		getWindow().getContentTable().add(new Label("Statistics", getSkin(), "windowStyle"));
