@@ -17,10 +17,29 @@ public class ActionKick extends EntityAction {
 	private final Integer[] direction;
 	private final Entity kickedEntity;
 	
+	/**
+	 * Kick action. Explicitly kicks a tile.
+	 *
+	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
+	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 */
 	public ActionKick(Integer[] direction, ActionCallback callback) {
+		// TODO: replace these silly Integer[] directions with arbitrary directions?
+		
 		this(direction, null, callback);
 	}
 	
+	/**
+	 * Kick action. Explicitly kicks an entity.
+	 *
+	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
+	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
+	 * @param kicked The entity that was kicked.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 */
 	public ActionKick(Integer[] direction, Entity kicked, ActionCallback callback) {
 		super(callback);
 		this.direction = direction;

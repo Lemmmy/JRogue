@@ -10,6 +10,15 @@ public class ActionMelee extends EntityAction {
 	private final DamageSource damageSource;
 	private final int damage;
 	
+	/**
+	 * Melee attack action.
+	 *
+	 * @param victim The entity that was attacked.
+	 * @param damageSource The source of the damage. See {@link DamageSource}.
+	 * @param damage The amount of damage to deal.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 */
 	public ActionMelee(EntityLiving victim, DamageSource damageSource, int damage, ActionCallback callback) {
 		super(callback);
 		this.victim = victim;

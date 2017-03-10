@@ -9,10 +9,20 @@ public class Ablaze extends StatusEffect {
 	
 	private boolean putOut;
 	
+	/**
+	 * Fire status effect. Default duration is 10 to 20 turns.
+	 */
 	public Ablaze() {
 		this(Severity.MAJOR, RandomUtils.random(10, 20));
 	}
-
+	
+	/**
+	 * Fire status effect.
+	 *
+	 * @param severity How severe the effect is in the HUD. See
+	 * {@link jr.dungeon.entities.effects.StatusEffect.Severity}
+	 * @param duration How long the effect lasts for.
+	 */
 	public Ablaze(Severity severity, int duration) {
 		super(duration);
 		
