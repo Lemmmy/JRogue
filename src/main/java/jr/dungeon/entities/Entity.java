@@ -1,10 +1,8 @@
 package jr.dungeon.entities;
 
-import com.badlogic.gdx.Gdx;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
 import jr.dungeon.events.DungeonEventListener;

@@ -13,8 +13,6 @@ import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
 import lombok.val;
 
-import java.util.Optional;
-
 public class ContainerWindow extends PopupWindow {
 	private Entity entity;
 	private Player player;

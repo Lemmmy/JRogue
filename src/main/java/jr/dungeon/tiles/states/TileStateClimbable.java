@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class TileStateClimbable extends TileState {
-	@Setter private Optional<UUID> linkedLevelUUID = Optional.empty();
+	@Setter private UUID linkedLevelUUID;
 	@Getter private int destX = 0;
 	@Getter private int destY = 0;
 	@Getter private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
@@ -26,11 +26,11 @@ public class TileStateClimbable extends TileState {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
-		linkedLevelUUID.ifPresent(uuid -> {
-			obj.put("uuid", uuid.toString());
+		if (linkedLevelUUID != null) {
+			obj.put("uuid", linkedLevelUUID.toString());
 			obj.put("destX", destX);
 			obj.put("destY", destY);
-		});
+		}
 		
 		if (generatorClass != null) {
 			obj.put("generatorClass", generatorClass.getName());
@@ -43,7 +43,7 @@ public class TileStateClimbable extends TileState {
 		super.unserialise(obj);
 		
 		if (obj.has("uuid")) {
-			linkedLevelUUID = Optional.of(UUID.fromString(obj.getString("uuid")));
+			linkedLevelUUID = UUID.fromString(obj.getString("uuid"));
 			destX = obj.getInt("destX");
 			destY = obj.getInt("destY");
 		}
@@ -58,8 +58,8 @@ public class TileStateClimbable extends TileState {
 	}
 	
 	public Optional<Level> getLinkedLevel() {
-		if (linkedLevelUUID.isPresent()) {
-			return Optional.of(getTile().getLevel().getDungeon().getLevelFromUUID(linkedLevelUUID.get()));
+		if (linkedLevelUUID != null) {
+			return Optional.of(getTile().getLevel().getDungeon().getLevelFromUUID(linkedLevelUUID));
 		} else {
 			return Optional.empty();
 		}

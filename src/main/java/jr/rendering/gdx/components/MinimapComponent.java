@@ -20,7 +20,6 @@ import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.utils.ImageLoader;
-import jr.utils.Gradient;
 import jr.utils.Utils;
 
 import java.util.Arrays;

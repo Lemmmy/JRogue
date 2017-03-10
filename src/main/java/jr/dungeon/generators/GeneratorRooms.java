@@ -317,6 +317,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		Room spawnRoom = RandomUtils.randomFrom(temp2);
 		
+		if (spawnRoom == null) {
+			return false;
+		}
+		
 		int stairX = nextInt(spawnRoom.getX() + 2, spawnRoom.getX() + spawnRoom.getWidth() - 2);
 		int stairY = nextInt(spawnRoom.getY() + 2, spawnRoom.getY() + spawnRoom.getHeight() - 2);
 		

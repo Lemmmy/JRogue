@@ -33,9 +33,7 @@ public class Ablaze extends StatusEffect {
 				return;
 			}
 
-			if (getDamage() == 0) {
-				// fuck off lignum
-			} else if(getDamage() >= el.getMaxHealth()) {
+			if (getDamage() >= el.getMaxHealth()) {
 				el.kill(DamageSource.FIRE, getDamage(), null);
 			} else {
 				el.damage(DamageSource.FIRE, getDamage(), null);

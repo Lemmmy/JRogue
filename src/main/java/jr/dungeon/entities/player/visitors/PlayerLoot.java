@@ -1,7 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;

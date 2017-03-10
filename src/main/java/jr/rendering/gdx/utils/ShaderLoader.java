@@ -3,7 +3,6 @@ package jr.rendering.gdx.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.ErrorHandler;
-import jr.JRogue;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
