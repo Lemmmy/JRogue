@@ -5,6 +5,11 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Quaffable;
 
+/**
+ * Quaff/drink from entity action. For example, see {@link jr.dungeon.entities.decoration.EntityFountain}.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionQuaffEntity extends EntityAction {
 	private final Quaffable quaffable;
 	

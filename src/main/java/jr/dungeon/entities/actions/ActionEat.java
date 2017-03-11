@@ -5,6 +5,11 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
 
+/**
+ * Eat action. Takes 1 turn to consume a part of a comestible.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionEat extends EntityAction {
 	private final ItemComestible item;
 	

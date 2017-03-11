@@ -12,6 +12,11 @@ import jr.utils.Point;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Move/walk action.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionMove extends EntityAction {
 	private int x;
 	private int y;

@@ -3,8 +3,6 @@ package jr.dungeon.entities.player.visitors;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.ActionEat;
-import jr.dungeon.entities.actions.EntityAction;
-import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
@@ -106,7 +104,7 @@ public class PlayerEat extends PlayerItemVisitor {
 	private void eatTurns(Player player, ItemComestible item) {
 		for (int i = 0; i < 15; i++) {
 			if (i != 0) {
-				player.getDungeon().setDoingMassAction(true);
+				player.getDungeon().setDoingBulkAction(true);
 			}
 			
 			player.setAction(new ActionEat(item,null));
@@ -122,6 +120,6 @@ public class PlayerEat extends PlayerItemVisitor {
 			}
 		}
 		
-		player.getDungeon().setDoingMassAction(false);
+		player.getDungeon().setDoingBulkAction(false);
 	}
 }

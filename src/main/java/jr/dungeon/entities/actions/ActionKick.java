@@ -14,6 +14,11 @@ import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
 
+/**
+ * Kick action.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionKick extends EntityAction {
 	private final Integer[] direction;
 	private final Entity kickedEntity;

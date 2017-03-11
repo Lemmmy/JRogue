@@ -9,6 +9,11 @@ import jr.utils.Point;
 
 import java.util.List;
 
+/**
+ * Teleport action.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionTeleport extends EntityAction {
 	private int x;
 	private int y;

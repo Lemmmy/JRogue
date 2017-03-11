@@ -32,7 +32,7 @@ public class PlayerConsume implements PlayerVisitor {
 					item.getStatusEffects(player).forEach(player::addStatusEffect);
 				}
 			} else {
-				if (!player.getDungeon().isDoingMassAction()) {
+				if (!player.getDungeon().isDoingBulkAction()) {
 					player.getDungeon().You("eat a part of the %s.", item.getName(player, false, false));
 				}
 				

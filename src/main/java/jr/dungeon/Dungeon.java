@@ -37,6 +37,10 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
+ * levels, and player.
+ */
 public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static final int NORMAL_SPEED = 12;
 	
@@ -72,7 +76,18 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	@Getter private long monsterSpawnCounter = 50;
 	
 	@Getter private boolean somethingHappened;
-	@Getter @Setter private boolean doingMassAction;
+	
+	/**
+	 * A bulk action is an action in which multiple turns will pass, and the action is repeated. For example, when
+	 * you walk to a locked door, and confirm you want to automatically kick it down, the bulk action of kicking the
+	 * door will occur. Bulk actions can be interrupted by marking the turn as a turn in which 'something happened'.
+	 *
+	 * @see #markSomethingHappened()
+	 *
+	 * @param doingBulkAction Sets whether or not a bulk action is currently happening.
+	 * @return Whether or not a bulk action is currently happening.
+	 */
+	@Getter @Setter private boolean doingBulkAction;
 	
 	@Getter private Prompt prompt;
 	private Settings settings;
@@ -80,7 +95,11 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
 
 	private final JSONObject persistence = new JSONObject();
-
+	
+	/**
+	 * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
+	 * levels, and player.
+	 */
 	public Dungeon() {
 		this.settings = JRogue.getSettings();
 		
@@ -377,6 +396,11 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		listeners.remove(listener);
 	}
 	
+	/**
+	 * Mark this turn as a turn that something critical happened in. This usually means that this should interrupt
+	 * bulk-actions, e.g. the player is knocking down a door as a bulk action, but then a monster attacks it. The
+	 * monster attack marks the turn as 'something happened', and the bulk action is cancelled.
+	 */
 	public void markSomethingHappened() {
 		somethingHappened = true;
 		

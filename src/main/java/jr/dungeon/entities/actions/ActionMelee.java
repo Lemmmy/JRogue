@@ -5,6 +5,11 @@ import jr.dungeon.entities.*;
 import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.player.Player;
 
+/**
+ * Melee attack action.
+ *
+ * @see jr.dungeon.entities.actions.EntityAction
+ */
 public class ActionMelee extends EntityAction {
 	private final EntityLiving victim;
 	private final DamageSource damageSource;
