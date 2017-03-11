@@ -177,12 +177,20 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 	/**
 	 * {@link #moveTowards(int, int) Moves towards} the specified point.
 	 *
-	 * @param point The position to {@link #moveTowards(int int) move towards.}
+	 * @param point The position to {@link #moveTowards(int, int) move towards.}
 	 */
 	public void moveTowards(Point point) {
 		moveTowards(point.getX(), point.getY());
 	}
 	
+	/**
+	 * Pathfinds towards the specified destX and destY coordinates.
+	 *
+	 * @param destX The X position to pathfind towards.
+	 * @param destY The Y position to pathfind towards.
+	 *
+	 * @see AStarPathfinder
+	 */
 	public void moveTowards(int destX, int destY) {
 		int sourceX = getMonster().getX();
 		int sourceY = getMonster().getY();
@@ -210,6 +218,9 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 		}
 	}
 	
+	/**
+	 * Called every turn - this is the AI's turn to assign an action to the monster.
+	 */
 	public abstract void update();
 	
 	@Override
@@ -229,6 +240,14 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 		return persistence;
 	}
 	
+	/**
+	 * Instantiates and unserialises an AI from serialised JSON.
+	 *
+	 * @param serialisedAI The previously serialised JSONObject containing the AI information.
+	 * @param monster The {@link Monster} that hosts this AI.
+	 *
+	 * @return A fully unserialised AI instance.
+	 */
 	@SuppressWarnings("unchecked")
 	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
 		String aiClassName = serialisedAI.getString("class");

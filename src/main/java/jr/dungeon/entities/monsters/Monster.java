@@ -45,11 +45,11 @@ public abstract class Monster extends EntityLiving {
 	
 	@Override
 	public void update() {
-		super.update();
-		
 		if (ai != null) {
 			ai.update();
 		}
+		
+		super.update();
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
