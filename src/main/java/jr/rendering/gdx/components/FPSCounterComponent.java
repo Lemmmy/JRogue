@@ -94,7 +94,7 @@ public class FPSCounterComponent extends RendererComponent {
 		
 		font.draw(
 			spriteBatch,
-			String.format("%.2fms  %,dfps", peakTime, Gdx.graphics.getFramesPerSecond()),
+			String.format("current: %,dfps\npeak: %.2fms", Gdx.graphics.getFramesPerSecond(), peakTime),
 			x,
 			y
 		);
