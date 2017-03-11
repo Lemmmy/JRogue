@@ -10,6 +10,7 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -26,7 +27,7 @@ import java.util.*;
 
 @Getter
 @Setter
-public abstract class EntityLiving extends EntityTurnBased {
+public abstract class EntityLiving extends EntityTurnBased implements ContainerOwner {
 	private int health;
 	protected int maxHealth;
 	

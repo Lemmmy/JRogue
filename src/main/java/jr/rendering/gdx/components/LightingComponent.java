@@ -117,7 +117,7 @@ public class LightingComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 	}
 }

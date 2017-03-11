@@ -20,7 +20,6 @@ import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.utils.ImageLoader;
-import jr.utils.Gradient;
 import jr.utils.Utils;
 
 import java.util.Arrays;
@@ -86,7 +85,7 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}

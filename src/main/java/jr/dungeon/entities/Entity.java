@@ -3,7 +3,6 @@ package jr.dungeon.entities;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
 import jr.dungeon.events.DungeonEventListener;
@@ -59,19 +58,30 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		
 		this.visualID = RandomUtils.random(1000);
 	}
-	
+
+	/**
+	 * @return An identifier unique to this entity.
+	 */
 	public UUID getUUID() {
 		return uuid;
 	}
-	
+
+	/**
+	 * @param observer The entity "reading" the name. Used, for example, to hide aspects the entity does not know about.
+	 * @param requiresCapitalisation Whether the name should have its first letter capitalised.
+	 * @return The name of this entity.
+	 */
 	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
-	
+
+	/**
+	 * @return The appearance of this entity. Determines which sprite is rendered.
+	 */
 	public abstract EntityAppearance getAppearance();
 	
 	public Point getPosition() {
 		return Point.getPoint(x, y);
 	}
-	
+
 	public void setPosition(int x, int y) {
 		setLastX(getX());
 		setLastY(getY());
@@ -92,27 +102,18 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	public int getDepth() {
 		return 1;
 	}
-	
+
+	/**
+	 * @return true if this entity is immobile and should be shown outside of the player's view.
+	 */
 	public boolean isStatic() {
 		return false;
 	}
-	
-	public Optional<Container> getContainer() {
-		return Optional.empty();
-	}
-	
-	public boolean lootable() {
-		return false;
-	}
-	
-	public Optional<String> lootSuccessString() {
-		return Optional.empty();
-	}
-	
-	public Optional<String> lootFailedString() {
-		return Optional.empty();
-	}
-	
+
+	/**
+	 * This method is called every frame.
+	 * It's possible to get the time since the last frame using <code>Gdx.graphics.getDeltaTime()</code>.
+	 */
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
 			StatusEffect effect = iterator.next();
@@ -200,32 +201,60 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 			JRogue.getLogger().error(e);
 		}
 	}
-	
+
+	/**
+	 * Adds a {@link jr.dungeon.entities.effects.StatusEffect} to this entity and triggers related events.
+	 * @param effect The effect to be applied.
+	 */
 	public void addStatusEffect(StatusEffect effect) {
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
 		dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED));
 	}
-	
+
+	/**
+	 * @param statusEffect The class of a {@link jr.dungeon.entities.effects.StatusEffect}.
+	 * @return Whether this entity is affected by <code>statusEffect</code>.
+	 */
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
 		return statusEffects.stream().anyMatch(statusEffect::isInstance);
 	}
-	
+
+	/**
+	 * Kicks this entity. Will trigger an {@link jr.dungeon.entities.events.EntityKickedEvent}.
+	 * @param kicker The entity that is kicking this entity.
+	 * @param dx The x direction to kick in.
+	 * @param dy The y direction to kick in.
+	 */
 	public void kick(EntityLiving kicker, int dx, int dy) {
 		getDungeon().triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
 	}
-	
+
+	/**
+	 * Walk on top of this entity. Will trigger an {@link jr.dungeon.entities.events.EntityWalkedOnEvent}.
+	 * @param walker The entity walking on top of this entity.
+	 */
 	public void walk(EntityLiving walker) {
 		getDungeon().triggerEvent(new EntityWalkedOnEvent(this, walker));
 	}
-	
+
+	/**
+	 * Teleports this entity to the given entity. Will trigger an {@link jr.dungeon.entities.events.EntityTeleportedToEvent}.
+	 * @param teleporter The entity to teleport to.
+	 */
 	public void teleport(EntityLiving teleporter) {
 		getDungeon().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
-	
+
+	/**
+	 * @return Whether this entity is solid or can be walked on.
+	 */
 	public abstract boolean canBeWalkedOn();
 
+	/**
+	 * @return Persistence data. Anything stored in this JSONObject will persist across saves.
+	 */
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;

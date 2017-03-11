@@ -36,7 +36,7 @@ public class TraitExtrinsicFear extends AITrait {
 	}
 	
 	@DungeonEventHandler
-	public void onMonsterDamaged(EntityDamagedEvent e) {
+	private void onMonsterDamaged(EntityDamagedEvent e) {
 		if (e.getVictim() != getMonster()) {
 			return;
 		}

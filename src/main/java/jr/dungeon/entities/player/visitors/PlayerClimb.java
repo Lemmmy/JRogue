@@ -6,8 +6,6 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import lombok.AllArgsConstructor;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 public class PlayerClimb implements PlayerVisitor {
 	private Tile tile;
@@ -40,7 +38,7 @@ public class PlayerClimb implements PlayerVisitor {
 			int depth = player.getLevel().getDepth() + (up ? 1 : -1);
 			Level level = player.getDungeon().newLevel(depth, tile, tsc.getGeneratorClass());
 			level.getEntityStore().processEntityQueues();
-			tsc.setLinkedLevelUUID(Optional.ofNullable(level.getUUID()));
+			tsc.setLinkedLevelUUID(level.getUUID());
 			tsc.setDestinationPosition(level.getSpawnX(), level.getSpawnY());
 		}
 		

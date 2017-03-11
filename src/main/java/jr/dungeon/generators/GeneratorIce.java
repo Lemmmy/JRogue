@@ -35,11 +35,8 @@ public class GeneratorIce extends GeneratorRooms {
 	
 	@Override
 	public boolean generate() {
-		if (!super.generate()) {
-			return false;
-		}
+		return super.generate() && verify();
 		
-		return verify();
 	}
 	
 	@Override

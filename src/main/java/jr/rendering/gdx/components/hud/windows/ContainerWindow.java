@@ -8,8 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.utils.EntityHelper;
 import jr.rendering.gdx.GDXRenderer;
 import jr.rendering.gdx.components.hud.windows.components.ContainerComponent;
+import lombok.val;
 
 public class ContainerWindow extends PopupWindow {
 	private Entity entity;
@@ -24,14 +26,16 @@ public class ContainerWindow extends PopupWindow {
 	
 	@Override
 	public String getTitle() {
-		return entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Container";
+		val ec = EntityHelper.getContainer(entity);
+		return ec.isPresent() ? ec.get().getName() : "Container";
 	}
 	
 	@Override
 	public void populateWindow() {
 		getWindow().setSize(560, 400);
-		
-		String containerName = entity.getContainer().isPresent() ? entity.getContainer().get().getName() : "Container";
+
+		val ec = EntityHelper.getContainer(entity);
+		String containerName = ec.isPresent() ? ec.get().getName() : "Container";
 		String inventoryName = player.getContainer().isPresent() ? player.getContainer().get().getName() : "Inventory";
 		
 		getWindow().getContentTable().padTop(4);

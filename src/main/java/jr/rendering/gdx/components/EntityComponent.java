@@ -141,14 +141,14 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		
 		entityPooledEffects.clear();
 	}
 	
 	@DungeonEventHandler
-	public void onEntityAdded(EntityAddedEvent e) {
+	private void onEntityAdded(EntityAddedEvent e) {
 		Entity entity = e.getEntity();
 		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 		
@@ -183,7 +183,7 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityMoved(EntityMovedEvent event) {
+	private void onEntityMoved(EntityMovedEvent event) {
 		entityParticleCheck(event.getEntity());
 		
 		if (settings.isShowTurnAnimations()) {
@@ -229,7 +229,7 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onEntityRemoved(EntityRemovedEvent event) {
+	private void onEntityRemoved(EntityRemovedEvent event) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
 	}
 	

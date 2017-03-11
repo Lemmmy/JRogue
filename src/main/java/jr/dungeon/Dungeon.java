@@ -28,6 +28,7 @@ import org.json.JSONTokener;
 import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -85,7 +86,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
-	
+
+	/**
+	 * Randomly generates a level and switches the dungeon to it.
+	 */
 	public void generateLevel() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
@@ -117,7 +121,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		triggerEvent(new LevelChangeEvent(level));
 	}
-	
+
+	/**
+	 * Saves this dungeon as dungeon.save.gz in the game data directory.
+	 */
 	public void save() {
 		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
 			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
@@ -137,7 +144,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			ErrorHandler.error("Error saving dungeon", e);
 		}
 	}
-	
+
+	/**
+	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
+	 */
 	public static Dungeon load() {
 		Dungeon dungeon = new Dungeon();
 		
@@ -253,7 +263,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 
 		unserialisePersistence(obj);
 	}
-	
+
+	/**
+	 * Deletes the game save file.
+	 */
 	public void deleteSave() {
 		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 		
@@ -261,14 +274,27 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			JRogue.getLogger().error("Failed to delete save file. Panic!");
 		}
 	}
-	
+
+	/**
+	 * Creates a new level.
+	 * @param depth The depth the level is located at.
+	 * @param sourceTile The tile the player came from (usually a staircase).
+	 * @param generatorClass The {@link jr.dungeon.generators.DungeonGenerator} to use to generate this level.
+	 * @return The generated level.
+	 */
 	public Level newLevel(int depth, Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
 		levels.put(level.getUUID(), level);
 		level.generate(sourceTile, generatorClass);
 		return level;
 	}
-	
+
+	/**
+	 * Switches the level to <code>level</code>.
+	 * @param level The level to switch to.
+	 * @param x The x coordinate to spawn the player at.
+	 * @param y The y coordinate to spawn the player at.
+	 */
 	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 		
@@ -287,7 +313,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e)));
 	}
-	
+
+	/**
+	 * Triggers the "Really quit without saving?" prompt.
+	 */
 	public void quit() {
 		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
@@ -310,7 +339,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}));
 	}
-	
+
+	/**
+	 * Triggers the "Really save and quit?" prompt.
+	 */
 	public void saveAndQuit() {
 		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
@@ -328,11 +360,19 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}));
 	}
-	
+
+	/**
+	 * Adds an event listener to this dungeon.
+	 * @param listener The event listener to add.
+	 */
 	public void addListener(DungeonEventListener listener) {
 		listeners.add(listener);
 	}
-	
+
+	/**
+	 * Removes an event listener from this dungeon.
+	 * @param listener The event listener to remove.
+	 */
 	public void removeListener(DungeonEventListener listener) {
 		listeners.remove(listener);
 	}
@@ -342,7 +382,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		// TODO: trigger event here?
 	}
-	
+
+	/**
+	 * Starts/resumes a game. Should be called after the first level in the session is loaded.
+	 */
 	public void start() {
 		triggerEvent(new LevelChangeEvent(level));
 		triggerEvent(new BeforeGameStartedEvent(turn <= 0));
@@ -359,7 +402,13 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			triggerEvent(new GameStartedEvent(false));
 		}
 	}
-	
+
+	/**
+	 * Displays a message in the dungeon's event log.
+	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
+	 * @param s The format used for the message.
+	 * @param objects The format parameters.
+	 */
 	public void log(String s, Object... objects) {
 		String logString = String.format(s, objects);
 		
@@ -376,12 +425,20 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		triggerEvent(new LogEvent(logString));
 	}
-	
+
+	/**
+	 * Triggers a {@link jr.dungeon.Prompt}.
+	 * @param prompt The prompt to trigger.
+	 */
 	public void prompt(Prompt prompt) {
 		this.prompt = prompt;
 		triggerEvent(new PromptEvent(prompt));
 	}
-	
+
+	/**
+	 * Responds to a prompt.
+	 * @param response The char response to send.
+	 */
 	public void promptRespond(char response) {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
@@ -393,7 +450,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}
 	}
-	
+
+	/**
+	 * Ends a prompt, behaves like pressing ESC in the game.
+	 */
 	public void escapePrompt() {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
@@ -403,15 +463,24 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			triggerEvent(new PromptEvent(null));
 		}
 	}
-	
+
+	/**
+	 * @return true if there is an active prompt.
+	 */
 	public boolean hasPrompt() {
 		return prompt != null;
 	}
-	
+
+	/**
+	 * @return true if there is an active prompt that cannot be forcefully ended (escaped).
+	 */
 	public boolean isPromptEscapable() {
 		return prompt != null && prompt.isEscapable();
 	}
-	
+
+	/**
+	 * Triggers the next turn, increasing the turn counter, and updating all entities.
+	 */
 	public void turn() {
 		if (!player.isAlive()) {
 			return;
@@ -487,7 +556,11 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		triggerEvent(new TurnEvent(turn));
 	}
-	
+
+	/**
+	 * Makes all entities make their next move.
+	 * @return false if nobody moved.
+	 */
 	private boolean moveEntities() {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
@@ -512,7 +585,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		return somebodyCanMove.get();
 	}
-	
+
+	/**
+	 * Updates the dungeon, which includes playing sounds and spawning monsters.
+	 */
 	private void update() {
 		if (--passiveSoundCounter <= 0) {
 			emitPassiveSounds();
@@ -529,7 +605,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
 	}
-	
+
+	/**
+	 * Emits passive sounds.
+	 */
 	private void emitPassiveSounds() {
 		List<Entity> emitters = level.getEntityStore().getEntities().stream()
 			.filter(e -> e instanceof PassiveSoundEmitter)
@@ -548,25 +627,46 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			log(sound);
 		}
 	}
-	
+
+	/**
+	 * Make a wish, used in debug mode.
+	 * @see jr.dungeon.wishes.Wishes
+	 * @param wish The wish to make.
+	 */
 	public void wish(String wish) {
 		Wishes.get().makeWish(this, wish);
 	}
-	
+
+	/**
+	 * @param uuid A level UUID.
+	 * @return The level with the specified UUID.
+	 */
 	public Level getLevelFromUUID(UUID uuid) {
 		return levels.get(uuid);
 	}
 
+	/**
+	 * @return A JSONObject that persists across game sessions.
+	 */
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
 	}
-	
+
+	/**
+	 * Triggers a dungeon event, notifying all listeners.
+	 * @param event The event to trigger.
+	 */
 	public void triggerEvent(DungeonEvent event) {
 		eventQueueNextTurn.add(event);
 		triggerEvent(event, DungeonEventInvocationTime.IMMEDIATELY);
 	}
-	
+
+	/**
+	 * Triggers a dungeon event, notifying all listeners.
+	 * @param event The event to trigger.
+	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>NEXT_TURN</code> to delay it to the next turn.
+	 */
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEvent event, DungeonEventInvocationTime invocationTime) {
 		listeners.forEach(l -> invokeEvent(l, event, invocationTime));
@@ -584,35 +684,50 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
+	private void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
 		event.setDungeon(this);
 		
-		Arrays.stream(listener.getClass().getMethods())
-			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
-			.filter(m -> m.getParameterCount() == 1)
-			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
-			.forEach(m -> {
-				m.setAccessible(true); // ha ha
-				
-				if (event.isCancelled()) {
-					return;
+		Class<?> listenerClass = listener.getClass();
+		ArrayList<Method> listenerMethods = new ArrayList<>();
+		
+		while (listenerClass != null) {
+			Method[] methods = listenerClass.getDeclaredMethods();
+			
+			for (Method method : methods) {
+				if (
+					method.isAnnotationPresent(DungeonEventHandler.class) &&
+					method.getParameterCount() == 1 &&
+					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
+				) {
+					listenerMethods.add(method);
 				}
-				
-				DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
-				
-				if (annotation.selfOnly() && !event.isSelf(listener)) {
-					return;
-				}
-				
-				if (annotation.invocationTime() != invocationTime) {
-					return;
-				}
-				
-				try {
-					m.invoke(listener, event);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
-				}
-			});
+			}
+			
+			listenerClass = listenerClass.getSuperclass();
+		}
+		
+		listenerMethods.forEach(m -> {
+			m.setAccessible(true); // ha ha
+			
+			if (event.isCancelled()) {
+				return;
+			}
+			
+			DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
+			
+			if (annotation.selfOnly() && !event.isSelf(listener)) {
+				return;
+			}
+			
+			if (annotation.invocationTime() != invocationTime) {
+				return;
+			}
+			
+			try {
+				m.invoke(listener, event);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
+			}
+		});
 	}
 }

@@ -5,18 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.TimeUtils;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.entities.Entity;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdx.entities.EntityMap;
-import jr.rendering.gdx.entities.EntityRenderer;
-import jr.rendering.gdx.utils.ShaderLoader;
-
-import java.util.Comparator;
-import java.util.List;
 
 public class TileRendererWater extends TileRendererBlob8 {
 	private TextureRegion water;

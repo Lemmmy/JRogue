@@ -86,10 +86,6 @@ public class TileRendererTorch extends TileRenderer {
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 		
-		if (h && !v && adjacentTiles[2].isInnerRoomTile()) {
-			return true;
-		}
-		
-		return false;
+		return h && !v && adjacentTiles[2].isInnerRoomTile();
 	}
 }

@@ -195,7 +195,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		if (dungeon.getPlayer() != null) {
 			player = dungeon.getPlayer();
 			
@@ -206,13 +206,13 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onBeforeTurn(BeforeTurnEvent e) {
+	private void onBeforeTurn(BeforeTurnEvent e) {
 		singleTurnActors.forEach(Actor::remove);
 		singleTurnActors.clear();
 	}
 	
 	@DungeonEventHandler
-	public void onTurn(TurnEvent e) {
+	private void onTurn(TurnEvent e) {
 		updatePlayerLine(player);
 		updateAttributes(player);
 		updateBrightness(player);
@@ -350,7 +350,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLog(LogEvent event) {
+	private void onLog(LogEvent event) {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
 		
@@ -371,7 +371,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onPrompt(PromptEvent e) {
+	private void onPrompt(PromptEvent e) {
 		Prompt prompt = e.getPrompt();
 		
 		if (prompt == null) {
@@ -401,7 +401,7 @@ public class HUDComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onContainerShow(ContainerShowEvent e) {
+	private void onContainerShow(ContainerShowEvent e) {
 		Entity containerEntity = e.getContainerEntity();
 		
 		nextFrameDeferred

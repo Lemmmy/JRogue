@@ -7,6 +7,8 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
+import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
@@ -20,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EntityChest extends Entity {
+public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	private Container container;
 	@Getter private boolean locked;
 	
@@ -53,21 +55,21 @@ public class EntityChest extends Entity {
 	
 	@Override
 	public Optional<Container> getContainer() {
-		return Optional.of(container);
+		return Optional.ofNullable(container);
 	}
-	
+
 	@Override
-	public boolean lootable() {
+	public boolean isLootable() {
 		return !locked;
 	}
-	
+
 	@Override
-	public Optional<String> lootSuccessString() {
+	public Optional<String> getLootSuccessString() {
 		return Optional.of(String.format("You open the %s...", getName(getDungeon().getPlayer(), false)));
 	}
 	
 	@Override
-	public Optional<String> lootFailedString() {
+	public Optional<String> getLootFailedString() {
 		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
 	}
 	

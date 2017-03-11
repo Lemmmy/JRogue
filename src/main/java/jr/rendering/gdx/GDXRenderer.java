@@ -67,6 +67,11 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
+	/**
+	 * The game's main OpenGL renderer using LibGDX.
+	 *
+	 * @param dungeon The dungeon that should be rendered.
+	 */
 	public GDXRenderer(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
@@ -167,6 +172,9 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 		));
 	}
 	
+	/**
+	 * Updates the in-game camera position.
+	 */
 	public void updateCamera() {
 		Player p = dungeon.getPlayer();
 		
@@ -261,13 +269,13 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		turnLerpTime = 0;
 		turnLerping = false;
 	}
 	
 	@DungeonEventHandler
-	public void onBeforeTurn(BeforeTurnEvent e) {
+	private void onBeforeTurn(BeforeTurnEvent e) {
 		if (settings.isShowTurnAnimations()) {
 			turnLerpTime = 0;
 			turnLerping = true;
@@ -275,18 +283,18 @@ public class GDXRenderer extends ApplicationAdapter implements Renderer, Dungeon
 	}
 	
 	@DungeonEventHandler
-	public void onTurn(TurnEvent e) {
+	private void onTurn(TurnEvent e) {
 		updateWindowTitle();
 	}
 	
 	@DungeonEventHandler
-	public void onQuit(QuitEvent e) {
+	private void onQuit(QuitEvent e) {
 		dontSave = true;
 		application.exit();
 	}
 	
 	@DungeonEventHandler
-	public void onSaveAndQuit(SaveAndQuitEvent e) {
+	private void onSaveAndQuit(SaveAndQuitEvent e) {
 		application.exit();
 	}
 	

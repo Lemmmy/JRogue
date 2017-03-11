@@ -39,11 +39,26 @@ public class Level implements Serialisable, Persisting {
 	private MonsterSpawner monsterSpawner;
 	
 	private JSONObject persistence;
-	
+
+	/**
+	 * Constructs a level with a random UUID.
+	 * @param dungeon The dungeon this level should belong to.
+	 * @param width The width of this level in tiles.
+	 * @param height The height of this level in tiles.
+	 * @param depth The depth this level is at.
+	 */
 	public Level(Dungeon dungeon, int width, int height, int depth) {
 		this(UUID.randomUUID(), dungeon, width, height, depth);
 	}
-	
+
+	/**
+	 * Constructs a level with a specified UUID.
+	 * @param uuid The UUID to use for this level.
+	 * @param dungeon The dungeon this level should belong to.
+	 * @param width The width of this level in tiles.
+	 * @param height The height of this level in tiles.
+	 * @param depth The depth this level is at.
+	 */
 	public Level(UUID uuid, Dungeon dungeon, int width, int height, int depth) {
 		this.uuid = uuid;
 		
@@ -54,7 +69,10 @@ public class Level implements Serialisable, Persisting {
 		
 		this.depth = depth;
 	}
-	
+
+	/**
+	 * Initialises the Level, including the initialisation of its stores.
+	 */
 	private void initialise() {
 		tileStore = new TileStore(this);
 		entityStore = new EntityStore(this);
@@ -66,7 +84,12 @@ public class Level implements Serialisable, Persisting {
 
 		persistence = new JSONObject();
 	}
-	
+
+	/**
+	 * Generates the level.
+	 * @param sourceTile The tile the player entered the level from. Usually a staircase.
+	 * @param generatorClass The {@link jr.dungeon.generators.DungeonGenerator} to generate the level with.
+	 */
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
@@ -94,7 +117,14 @@ public class Level implements Serialisable, Persisting {
 		
 		getMonsterSpawner().spawnMonsters();
 	}
-	
+
+	/**
+	 * Unserialises the level from a JSONObject.
+	 * @param uuid The UUID to give to the unserialised level.
+	 * @param obj The JSONObject containing the serialised level.
+	 * @param dungeon The {@link jr.dungeon.Dungeon} this level should belong to.
+	 * @return The unserialised level.
+	 */
 	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
 		try {
 			int width = obj.getInt("width");
@@ -154,16 +184,27 @@ public class Level implements Serialisable, Persisting {
 
 		unserialisePersistence(obj);
 	}
-	
+
+	/**
+	 * Sets the level's spawn point in tile coordinates. This is where the player will appear when entering the level.
+	 * @param x The x coordinate of the spawn point.
+	 * @param y The y coordinate of the spawn point.
+	 */
 	public void setSpawnPoint(int x, int y) {
 		spawnX = x;
 		spawnY = y;
 	}
-	
+
+	/**
+	 * @return A UUID unique to this level.
+	 */
 	public UUID getUUID() {
 		return uuid;
 	}
-	
+
+	/**
+	 * @return A JSONObject containing data that will persist across game sessions.
+	 */
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;

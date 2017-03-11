@@ -54,17 +54,17 @@ public class PathComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	public void onLevelChange(LevelChangeEvent e) {
+	private void onLevelChange(LevelChangeEvent e) {
 		lastPath = null;
 	}
 	
 	@DungeonEventHandler
-	public void onTurn(TurnEvent e) {
+	private void onTurn(TurnEvent e) {
 		lastPath = null;
 	}
 	
 	@DungeonEventHandler
-	public void onPathShow(PathShowEvent e) {
+	private void onPathShow(PathShowEvent e) {
 		lastPath = e.getPath();
 	}
 	
