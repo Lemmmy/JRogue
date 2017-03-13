@@ -19,30 +19,93 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+/**
+ * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
+ * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
+ * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+ * methods.
+ */
 @Getter
 public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
+	/**
+	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
+	 */
 	private UUID uuid;
 	
+	/**
+	 * The X position of this Entity in the {@link Level}.
+	 */
 	@Setter private int x;
+	/**
+	 * The Y position of this Entity in the {@link Level}.
+	 */
 	@Setter private int y;
 	
+	/**
+	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
+	 * the position before it was last assigned.
+	 */
 	@Setter private int lastX;
+	/**
+	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
+	 * the position before it was last assigned.
+	 */
 	@Setter private int lastY;
 	
+	/**
+	 * The last X position of this Entity in the {@link Level} that was seen by the
+	 * {@link jr.dungeon.entities.player.Player}.
+	 */
 	@Setter private int lastSeenX;
+	/**
+	 * The last Y position of this Entity in the {@link Level} that was seen by the
+	 * {@link jr.dungeon.entities.player.Player}.
+	 */
 	@Setter private int lastSeenY;
 	
+	/**
+	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this
+	 * number for persistent random effects with no actual gameplay effect, e.g. the colour of a spider could be
+	 * visualID % 2.
+	 */
 	private int visualID;
 	
+	/**
+	 * Assigned by the {@link jr.dungeon.EntityStore} when the Entity is in the removal queue. Do not set this yourself,
+	 * instead, use {@link jr.dungeon.EntityStore#removeEntity(Entity)}.
+	 *
+	 * @see jr.dungeon.EntityStore
+	 */
 	@Setter private boolean beingRemoved = false;
 	
+	/**
+	 * The {@link Dungeon} this Entity is part of.
+	 */
 	private Dungeon dungeon;
+	/**
+	 * The {@link Level} this Entity is part of.
+	 * -- SETTER --
+	 * Sets the  {@link Level} this Entity is part of. Do not set this without removing it from the old Level's
+	 * {@link jr.dungeon.EntityStore} and placing it in the new Level's one. This value is not automatically synced
+	 * with {@link jr.dungeon.EntityStore EntityStores}.
+	 */
 	@Setter private Level level;
 	
 	private List<StatusEffect> statusEffects = new ArrayList<>();
 
 	private final JSONObject persistence = new JSONObject();
 	
+	/**
+	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
+	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
+	 * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+	 * methods.
+	 *
+	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
+	 * @param level The {@link Level} that this Entity is inside.
+	 * @param x The starting X position of the Entity inside the {@link Level}.
+	 * @param y The starting Y position of the Entity inside the {@link Level}.
+	 */
 	public Entity(Dungeon dungeon, Level level, int x, int y) {
 		this.uuid = UUID.randomUUID();
 		
