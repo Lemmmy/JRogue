@@ -91,8 +91,19 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 */
 	@Setter private Level level;
 	
+	/**
+	 * List of extrinsic {@link StatusEffect status effects} that the Entity has. These are typically temporary
+	 * effects that last a certain duration of turns, for example being {@link jr.dungeon.entities.effects.Ablaze} or
+	 * blind.
+	 *
+	 * @see StatusEffect
+	 */
 	private List<StatusEffect> statusEffects = new ArrayList<>();
-
+	
+	/**
+	 * An object of persistent properties that will be serialised with the Entity. Can contain absolutely any data
+	 * for any purpose - typically for use by mods or the renderer.
+	 */
 	private final JSONObject persistence = new JSONObject();
 	
 	/**
@@ -141,10 +152,20 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 */
 	public abstract EntityAppearance getAppearance();
 	
+	/**
+	 * @return The Entity's X and Y coordinates in the {@link Level} as a {@link Point}.
+	 */
 	public Point getPosition() {
 		return Point.getPoint(x, y);
 	}
-
+	
+	/**
+	 * Sets the Entity's X and Y coordinates in the {@link Level}, updates the Entity's lastX and lastY coordinates,
+	 * and triggers an {@link EntityMovedEvent},
+	 *
+	 * @param x The Entity's new X position.
+	 * @param y The Entity's new Y position.
+	 */
 	public void setPosition(int x, int y) {
 		setLastX(getX());
 		setLastY(getY());
@@ -154,14 +175,24 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
 	}
 	
+	/**
+	 * @return The Entity's last X and Y coordinates in the {@link Level} as a {@link Point}.
+	 */
 	public Point getLastPosition() {
 		return Point.getPoint(lastX, lastY);
 	}
 	
+	/**
+	 * @return The position the {@link jr.dungeon.entities.player.Player} last saw this Entity in the {@link Level} as
+	 * a {@link Point}.
+	 */
 	public Point getLastSeenPosition() {
 		return Point.getPoint(lastSeenX, lastSeenY);
 	}
 	
+	/**
+	 * @return The rendering depth of this Entity. Entities with lower depths are drawn first, i.e. on the bottom.
+	 */
 	public int getDepth() {
 		return 1;
 	}
@@ -285,7 +316,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 
 	/**
-	 * Kicks this entity. Will trigger an {@link jr.dungeon.entities.events.EntityKickedEvent}.
+	 * Kicks this entity. Will trigger an {@link jr.dungeon.entities.events.EntityKickedEntityEvent}.
 	 * @param kicker The entity that is kicking this entity.
 	 * @param dx The x direction to kick in.
 	 * @param dy The y direction to kick in.
