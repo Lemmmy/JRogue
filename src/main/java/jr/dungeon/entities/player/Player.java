@@ -68,7 +68,7 @@ public class Player extends EntityLiving {
 		this.name = name;
 		this.role = role;
 		
-		nutrition = 1000;
+		nutrition = 1500;
 		maxHealth = getMaxHealth();
 		
 		energy = maxEnergy = role.getMaxEnergy();
@@ -195,11 +195,11 @@ public class Player extends EntityLiving {
 	}
 	
 	public NutritionState getNutritionState() {
-		if (nutrition >= 1500) {
+		if (nutrition >= 2250) {
 			return NutritionState.CHOKING;
-		} else if (nutrition >= 1000) {
+		} else if (nutrition >= 1750) {
 			return NutritionState.STUFFED;
-		} else if (nutrition >= 600) {
+		} else if (nutrition >= 750) {
 			return NutritionState.NOT_HUNGRY;
 		} else if (nutrition >= 300) {
 			return NutritionState.HUNGRY;
