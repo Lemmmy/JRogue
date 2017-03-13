@@ -246,7 +246,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	}
 	
 	@Override
-	public List<DungeonEventListener> getSubListeners() {
+	public Set<DungeonEventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		getContainer().ifPresent(c -> {

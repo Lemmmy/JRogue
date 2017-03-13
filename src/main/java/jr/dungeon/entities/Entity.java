@@ -354,7 +354,14 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		return persistence;
 	}
 	
-	public List<DungeonEventListener> getSubListeners() {
-		return new ArrayList<>(statusEffects);
+	/**
+	 * This is a set of objects related to the Entity which should receive {@link jr.dungeon.events.DungeonEvent
+	 * dungeon events}. When overriding this to add your own, you must always concatenate super's getSubListeners()
+	 * to the list that you return.
+	 *
+	 * @return A set of {@link DungeonEventListener DunegonEventListeners} to receive events.
+	 */
+	public Set<DungeonEventListener> getSubListeners() {
+		return new HashSet<>(statusEffects);
 	}
 }

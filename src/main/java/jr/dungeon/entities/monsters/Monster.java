@@ -17,6 +17,7 @@ import lombok.val;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class Monster extends EntityLiving {
 	private AI ai;
@@ -146,7 +147,7 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public List<DungeonEventListener> getSubListeners() {
+	public Set<DungeonEventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		if (ai != null) {
