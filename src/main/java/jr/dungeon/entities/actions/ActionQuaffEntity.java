@@ -8,9 +8,9 @@ import jr.dungeon.entities.interfaces.Quaffable;
 /**
  * Quaff/drink from entity action. For example, see {@link jr.dungeon.entities.decoration.EntityFountain}.
  *
- * @see jr.dungeon.entities.actions.EntityAction
+ * @see Action
  */
-public class ActionQuaffEntity extends EntityAction {
+public class ActionQuaffEntity extends Action {
 	private final Quaffable quaffable;
 	
 	/**
@@ -18,7 +18,7 @@ public class ActionQuaffEntity extends EntityAction {
 	 *
 	 * @param quaffable The quaffable entity to quaff/drink from.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionQuaffEntity(Quaffable quaffable, ActionCallback callback) {
 		super(callback);

@@ -8,9 +8,9 @@ import jr.dungeon.items.comestibles.ItemComestible;
 /**
  * Eat action. Takes 1 turn to consume a part of a comestible.
  *
- * @see jr.dungeon.entities.actions.EntityAction
+ * @see Action
  */
-public class ActionEat extends EntityAction {
+public class ActionEat extends Action {
 	private final ItemComestible item;
 	
 	/**
@@ -18,7 +18,7 @@ public class ActionEat extends EntityAction {
 	 *
 	 * @param item The comestible to eat.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionEat(ItemComestible item, ActionCallback callback) {
 		super(callback);

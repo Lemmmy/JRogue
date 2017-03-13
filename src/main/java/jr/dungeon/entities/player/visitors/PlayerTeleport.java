@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionTeleport;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class PlayerTeleport implements PlayerVisitor {
 	
 	@Override
 	public void visit(Player player) {
-		player.setAction(new ActionTeleport(x, y, new EntityAction.NoCallback()));
+		player.setAction(new ActionTeleport(x, y, new Action.NoCallback()));
 		player.getDungeon().turn();
 	}
 }

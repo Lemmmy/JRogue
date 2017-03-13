@@ -8,9 +8,9 @@ import jr.dungeon.entities.player.Player;
 /**
  * Melee attack action.
  *
- * @see jr.dungeon.entities.actions.EntityAction
+ * @see Action
  */
-public class ActionMelee extends EntityAction {
+public class ActionMelee extends Action {
 	private final EntityLiving victim;
 	private final DamageSource damageSource;
 	private final int damage;
@@ -22,7 +22,7 @@ public class ActionMelee extends EntityAction {
 	 * @param damageSource The source of the damage. See {@link DamageSource}.
 	 * @param damage The amount of damage to deal.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionMelee(EntityLiving victim, DamageSource damageSource, int damage, ActionCallback callback) {
 		super(callback);

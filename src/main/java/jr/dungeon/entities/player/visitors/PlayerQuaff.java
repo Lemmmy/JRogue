@@ -3,7 +3,7 @@ package jr.dungeon.entities.player.visitors;
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.actions.ActionQuaffEntity;
 import jr.dungeon.entities.actions.ActionQuaffItem;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.entities.player.Player;
@@ -66,7 +66,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 				
 				player.setAction(new ActionQuaffItem(
 					quaffable,
-					(EntityAction.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
+					(Action.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
 				);
 				
 				player.getDungeon().turn();

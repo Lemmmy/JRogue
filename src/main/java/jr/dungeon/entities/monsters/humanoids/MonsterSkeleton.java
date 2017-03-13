@@ -6,7 +6,7 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
@@ -130,7 +130,7 @@ public class MonsterSkeleton extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.SKELETON_HIT,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().logRandom(
+			(Action.CompleteCallback) entity -> getDungeon().logRandom(
 				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
 				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false)),
 				String.format("[ORANGE]The %s kicks you!", getName(getDungeon().getPlayer(), false)),

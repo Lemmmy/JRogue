@@ -1,8 +1,8 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
@@ -51,7 +51,7 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 			Point oldPos = player.getPosition();
 			
 			pathTaken.addStep(destTile);
-			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new EntityAction.NoCallback()));
+			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new Action.NoCallback()));
 			player.getDungeon().turn();
 			
 			if (oldPos.equals(player.getPosition())) { // we didn't go anywhere, so stop

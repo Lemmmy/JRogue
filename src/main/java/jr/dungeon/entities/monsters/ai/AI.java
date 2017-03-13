@@ -3,8 +3,8 @@ package jr.dungeon.entities.monsters.ai;
 import jr.JRogue;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventListener;
@@ -213,7 +213,7 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 				.ifPresent(t -> getMonster().setAction(new ActionMove(
 					t.getX(),
 					t.getY(),
-					new EntityAction.NoCallback()
+					new Action.NoCallback()
 				)));
 		}
 	}

@@ -6,7 +6,7 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
@@ -133,7 +133,7 @@ public class MonsterSpider extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.SPIDER_BITE,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
+			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));
 	}
 	

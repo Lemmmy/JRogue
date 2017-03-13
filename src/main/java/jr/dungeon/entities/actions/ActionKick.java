@@ -4,22 +4,20 @@ import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
 
 /**
  * Kick action.
  *
- * @see jr.dungeon.entities.actions.EntityAction
+ * @see Action
  */
-public class ActionKick extends EntityAction {
+public class ActionKick extends Action {
 	private final Integer[] direction;
 	private final Entity kickedEntity;
 	
@@ -29,7 +27,7 @@ public class ActionKick extends EntityAction {
 	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
 	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionKick(Integer[] direction, ActionCallback callback) {
 		// TODO: replace these silly Integer[] directions with arbitrary directions?
@@ -44,7 +42,7 @@ public class ActionKick extends EntityAction {
 	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
 	 * @param kicked The entity that was kicked.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionKick(Integer[] direction, Entity kicked, ActionCallback callback) {
 		super(callback);

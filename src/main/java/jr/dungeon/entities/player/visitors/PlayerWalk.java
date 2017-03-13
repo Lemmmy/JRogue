@@ -3,7 +3,7 @@ package jr.dungeon.entities.player.visitors;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.events.PlayerWalkedIntoSolidEvent;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
@@ -61,7 +61,7 @@ public class PlayerWalk implements PlayerVisitor {
 	
 	private void walkAction(Player player, Tile tile, int x, int y) {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			player.setAction(new ActionMove(x, y, new EntityAction.NoCallback()));
+			player.setAction(new ActionMove(x, y, new Action.NoCallback()));
 		} else {
 			player.getDungeon().triggerEvent(new PlayerWalkedIntoSolidEvent(player, tile, x, y, dx, dy));
 		}

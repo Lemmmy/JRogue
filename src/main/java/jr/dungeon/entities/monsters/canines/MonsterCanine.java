@@ -5,7 +5,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.EntityDamagedEvent;
@@ -138,7 +138,7 @@ public abstract class MonsterCanine extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.CANINE_BITE,
 			1,
-			(EntityAction.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
+			(Action.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));
 	}
 }

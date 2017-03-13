@@ -6,7 +6,7 @@ import jr.dungeon.entities.Entity;
 /**
  * An action which a {@link jr.dungeon.entities.EntityTurnBased turn-based entity} should perform during a turn.
  */
-public abstract class EntityAction {
+public abstract class Action {
 	private final ActionCallback callback;
 	
 	/**
@@ -14,7 +14,7 @@ public abstract class EntityAction {
 	 *
 	 * @param callback The {@link ActionCallback} which will be called when action-related events occur.
 	 */
-	public EntityAction(ActionCallback callback) {
+	public Action(ActionCallback callback) {
 		this.callback = callback;
 	}
 	
@@ -75,7 +75,7 @@ public abstract class EntityAction {
 	 *
 	 * This is a {@link FunctionalInterface}, so it can be used with a lambda function. Example usage:
 	 * <pre><code>
-	 * entity.setAction(new ActionX(..., (EntityAction.CompleteCallback) entity -> { doSomething() })
+	 * entity.setAction(new ActionX(..., (Action.CompleteCallback) entity -> { doSomething() })
 	 * </code></pre>
  	 */
 	@FunctionalInterface

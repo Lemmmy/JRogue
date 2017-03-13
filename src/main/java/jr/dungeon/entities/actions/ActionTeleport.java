@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Teleport action.
  *
- * @see jr.dungeon.entities.actions.EntityAction
+ * @see Action
  */
-public class ActionTeleport extends EntityAction {
+public class ActionTeleport extends Action {
 	private int x;
 	private int y;
 	
@@ -23,7 +23,7 @@ public class ActionTeleport extends EntityAction {
 	 *
 	 * @param point The point to teleport to.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionTeleport(Point point, ActionCallback callback) {
 		this(point.getX(), point.getY(), callback);
@@ -35,7 +35,7 @@ public class ActionTeleport extends EntityAction {
 	 * @param x The X position to teleport to.
 	 * @param y The Y position to teleport to.
 	 * @param callback Callback to call when action-related events occur. See
-	 * {@link jr.dungeon.entities.actions.EntityAction.ActionCallback}.
+	 * {@link Action.ActionCallback}.
 	 */
 	public ActionTeleport(int x, int y, ActionCallback callback) {
 		super(callback);

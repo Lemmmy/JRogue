@@ -5,8 +5,8 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
@@ -83,7 +83,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 			getDungeon().getPlayer(),
 			DamageSource.GOBLIN_ZOMBIE_HIT,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().logRandom(
+			(Action.CompleteCallback) entity -> getDungeon().logRandom(
 				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
 				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false))
 			)

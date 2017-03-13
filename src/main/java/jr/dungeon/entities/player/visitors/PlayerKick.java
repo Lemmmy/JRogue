@@ -1,8 +1,8 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionKick;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.player.Attribute;
@@ -50,10 +50,10 @@ public class PlayerKick implements PlayerVisitor {
 			player.setAction(new ActionKick(
 				d,
 				player.getLevel().getEntityStore().getEntitiesAt(player.getX() + dx, player.getY() + dy).get(0),
-				new EntityAction.NoCallback()
+				new Action.NoCallback()
 			));
 		} else {
-			player.setAction(new ActionKick(d, new EntityAction.NoCallback()));
+			player.setAction(new ActionKick(d, new Action.NoCallback()));
 		}
 		
 		player.getDungeon().turn();
