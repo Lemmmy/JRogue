@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.utils.html'>jr.utils</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.utils.Point</TD><TD>10</TD><TD>0.0% &nbsp; (0/760)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.utils;
+
+import com.badlogic.gdx.utils.Pool;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Point implements Pool.Poolable {
+	private static final Pool&lt;Point> pointPool = new Pool&lt;Point>() {
+		@Override
+		protected Point newObject() {
+			return new Point();
+		}
+	};
+
+	private int x;
+	private int y;
+
+	public static Point getPoint(int x, int y) {
+		Point p = pointPool.obtain();
+		p.init(x, y);
+		return p;
+	}
+
+	private Point() {
+		reset();
+	}
+
+	public Point(int x, int y) {
+		init(x, y);
+	}
+
+	@Override
+	public void reset() {
+		this.x = 0;
+		this.y = 0;
+	}
+
+	private void init(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public void set(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) { return true; }
+		if (o == null || getClass() != o.getClass()) { return false; }
+		
+		Point point = (Point) o;
+		
+		return x == point.x && y == point.y;
+	}
+	
+	public boolean equals(int x, int y) {
+		return this.x == x && this.y == y;
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = x;
+		result = 31 * result + y;
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return x + ", " + y;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

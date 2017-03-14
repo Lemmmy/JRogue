@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.rendering.gdx.entities.html'>jr.rendering.gdx.entities</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.rendering.gdx.entities.EntityRendererProjectile</TD><TD>3</TD><TD>0.0% &nbsp; (0/1101)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.rendering.gdx.entities;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import jr.dungeon.Dungeon;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.projectiles.EntityProjectile;
+
+public class EntityRendererProjectile extends EntityRenderer {
+	protected TextureRegion image;
+	
+	public EntityRendererProjectile(String sheetName, int sheetX, int sheetY) {
+		image = getImageFromSheet(sheetName, sheetX, sheetY);
+	}
+	
+	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+		return image;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
+		int worldX = entity.getLastSeenX();
+		int worldY = entity.getLastSeenY();
+		int width = EntityMap.ENTITY_WIDTH;
+		int height = EntityMap.ENTITY_HEIGHT;
+		int x = worldX * width;
+		int y = worldY * height;
+		int originX = width / 2;
+		int originY = height / 2;
+		float rotation = 0;
+		
+		if (entity instanceof EntityProjectile) {
+			int dx = ((EntityProjectile) entity).getDeltaX();
+			int dy = ((EntityProjectile) entity).getDeltaY();
+			
+			rotation = (float) (Math.atan2(dy, dx) * (180 / Math.PI));
+		}
+		
+		if (isDrawingReflection()) {
+			batch.draw(
+				getTextureRegion(dungeon, entity),
+				x, y + height,
+				originX, originY,
+				width, height,
+				1, -1,
+				rotation
+			);
+		} else {
+			batch.draw(
+				getTextureRegion(dungeon, entity),
+				x, y,
+				originX, originY,
+				width, height,
+				1, 1,
+				rotation
+			);
+		}
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

@@ -1,0 +1,81 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.weapons.html'>jr.dungeon.items.weapons</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.weapons.ItemBow</TD><TD>8</TD><TD>0.0% &nbsp; (0/1027)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.weapons;
+
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.skills.Skill;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.projectiles.ItemArrow;
+import jr.dungeon.items.projectiles.ItemProjectile;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ItemBow extends ItemProjectileLauncher {
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
+	
+	@Override
+	public boolean isMagic() {
+		return false;
+	}
+	
+	@Override
+	public int getToHitBonus() {
+		return 0;
+	}
+	
+	@Override
+	public Skill getSkill() {
+		return Skill.SKILL_BOW;
+	}
+	
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
+		
+		return s;
+	}
+	
+	@Override
+	public float getWeight() {
+		return 40;
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return ItemAppearance.APPEARANCE_BOW;
+	}
+	
+	@Override
+	public List&lt;Class&lt;? extends ItemProjectile>> getValidProjectiles() {
+		List&lt;Class&lt;? extends ItemProjectile>> projectiles = new ArrayList&lt;>();
+		projectiles.add(ItemArrow.class);
+		return projectiles;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

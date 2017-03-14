@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.player.visitors.html'>jr.dungeon.entities.player.visitors</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.player.visitors.PlayerTravelPathfind</TD><TD>1</TD><TD>0.0% &nbsp; (0/1491)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.player.visitors;
+
+import jr.dungeon.entities.actions.ActionMove;
+import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.PathShowEvent;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
+import jr.utils.Path;
+import jr.utils.Point;
+import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@AllArgsConstructor
+public class PlayerTravelPathfind implements PlayerVisitor {
+	private int tx, ty;
+	
+	@Override
+	public void visit(Player player) {
+		Tile destTile = player.getLevel().getTileStore().getTile(tx, ty);
+		
+		if (destTile == null || !player.getLevel().getVisibilityStore().isTileDiscovered(tx, ty)) {
+			player.getDungeon().You("can't travel there.");
+			return;
+		}
+		
+		Path path = player.getPathfinder().findPath(
+			player.getLevel(),
+			player.getX(),
+			player.getY(),
+			tx,
+			ty,
+			50,
+			true,
+			new ArrayList&lt;>()
+		);
+		
+		Path pathTaken = new Path();
+		
+		if (path == null || path.getLength() == 0) {
+			player.getDungeon().You("can't travel there.");
+			return;
+		}
+		
+		AtomicBoolean stop = new AtomicBoolean(false);
+		AtomicInteger i = new AtomicInteger(0);
+		
+		path.forEach(step -> {
+			i.incrementAndGet();
+			
+			if (stop.get()) { return; }
+			if (player.getPosition().equals(step.getPosition())) { return; }
+			
+			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
+				stop.set(true);
+				return;
+			}
+			
+			Point oldPos = player.getPosition();
+			
+			pathTaken.addStep(step);
+			player.setAction(new ActionMove(step.getX(), step.getY(), new Action.NoCallback()));
+			player.getDungeon().turn();
+			
+			if (oldPos.equals(player.getPosition())) {
+				stop.set(true);
+				return;
+			}
+			
+			if (i.get() > 2 && player.getLevel().getEntityStore()
+				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
+				stop.set(true);
+			}
+		});
+		
+		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

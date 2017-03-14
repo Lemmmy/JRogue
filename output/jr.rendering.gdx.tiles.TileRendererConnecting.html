@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.rendering.gdx.tiles.html'>jr.rendering.gdx.tiles</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.rendering.gdx.tiles.TileRendererConnecting</TD><TD>4</TD><TD>0.0% &nbsp; (0/1387)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.rendering.gdx.tiles;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.TileType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class TileRendererConnecting extends TileRendererBlob8 {
+	private TextureRegion fg;
+	private TextureRegion bg;
+
+	private List&lt;TileType> connecting;
+	
+	private boolean exclusive;
+
+	public TileRendererConnecting(int sheetX,
+								  int sheetY,
+								  int bgSheetX,
+								  int bgSheetY,
+								  boolean exclusive,
+								  TileType... connecting) {
+		super(1, 0);
+		
+		this.exclusive = exclusive;
+		this.connecting = new ArrayList&lt;>(Arrays.asList(connecting));
+		
+		fg = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		bg = getImageFromSheet("textures/tiles.png", bgSheetX, bgSheetY);
+	}
+	
+	@Override
+	boolean isJoinedTile(TileType tile) {
+		return exclusive != connecting.contains(tile);
+	}
+	
+	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return fg;
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+		
+		drawTile(batch, fg, x, y);
+		batch.flush();
+		
+		Gdx.gl.glColorMask(false, false, false, true);
+		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		drawTile(batch, blobImage, x, y);
+		batch.flush();
+		
+		Gdx.gl.glColorMask(true, true, true, true);
+		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+		drawTile(batch, bg, x, y);
+		batch.flush();
+		
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

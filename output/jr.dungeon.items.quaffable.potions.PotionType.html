@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.quaffable.potions.html'>jr.dungeon.items.quaffable.potions</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.quaffable.potions.PotionType</TD><TD>5</TD><TD>0.0% &nbsp; (0/180)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.quaffable.potions;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum PotionType {
+	POTION_HEALTH((ent, potency) -> ent.heal((int) Math.round(potency)));
+	
+	private final PotionEffect effect;
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

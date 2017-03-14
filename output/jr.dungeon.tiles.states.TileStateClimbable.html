@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.tiles.states.html'>jr.dungeon.tiles.states</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.tiles.states.TileStateClimbable</TD><TD>7</TD><TD>0.0% &nbsp; (0/1486)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.tiles.states;
+
+import jr.ErrorHandler;
+import jr.dungeon.Level;
+import jr.dungeon.generators.DungeonGenerator;
+import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.tiles.Tile;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public class TileStateClimbable extends TileState {
+	@Setter private UUID linkedLevelUUID;
+	@Getter private int destX = 0;
+	@Getter private int destY = 0;
+	@Getter private Class&lt;? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
+	
+	public TileStateClimbable(Tile tile) {
+		super(tile);
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		if (linkedLevelUUID != null) {
+			obj.put("uuid", linkedLevelUUID.toString());
+			obj.put("destX", destX);
+			obj.put("destY", destY);
+		}
+		
+		if (generatorClass != null) {
+			obj.put("generatorClass", generatorClass.getName());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		if (obj.has("uuid")) {
+			linkedLevelUUID = UUID.fromString(obj.getString("uuid"));
+			destX = obj.getInt("destX");
+			destY = obj.getInt("destY");
+		}
+		
+		try {
+			generatorClass = (Class&lt;? extends DungeonGenerator>) Class.forName(
+				obj.optString("generatorClass", GeneratorStandard.class.getName())
+			);
+		} catch (ClassNotFoundException e) {
+			ErrorHandler.error("Error unserialising TileStateClimbable (generatorClass)", e);
+		}
+	}
+	
+	public Optional&lt;Level> getLinkedLevel() {
+		if (linkedLevelUUID != null) {
+			return Optional.of(getTile().getLevel().getDungeon().getLevelFromUUID(linkedLevelUUID));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public void setDestinationPosition(int x, int y) {
+		destX = x;
+		destY = y;
+	}
+	
+	public void setDestinationGenerator(Class&lt;? extends DungeonGenerator> generatorClass) {
+		this.generatorClass = generatorClass;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

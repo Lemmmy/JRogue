@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.rendering.gdx.tiles.html'>jr.rendering.gdx.tiles</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.rendering.gdx.tiles.TileRendererCaveFloor</TD><TD>2</TD><TD>11.9% &nbsp; (146/1083)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.rendering.gdx.tiles;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx.utils.ImageLoader;
+
+import java.util.Random;
+
+public class TileRendererCaveFloor extends TileRendererConnecting {
+	private static final int PROBABILITY_ROCK = 25;
+	
+	private static final int ROCK_SHEET_WIDTH = 6,
+							 ROCK_SHEET_HEIGHT = 4,
+						
+							 ROCK_WIDTH = 8,
+							 ROCK_HEIGHT = 8;
+	
+	private TextureRegion[] rocks;
+	
+	private Random rand = new Random();
+	
+	public TileRendererCaveFloor() {
+		super(6, 2, 7, 2, true, TileType.TILE_GROUND, TileType.TILE_CAVE_WALL);
+		
+		rocks = new TextureRegion[6 * 4];
+		
+		for (int i = 0; i &lt; ROCK_SHEET_WIDTH * ROCK_SHEET_HEIGHT; i++) {
+			int sx = i % ROCK_SHEET_WIDTH;
+			int sy = (int) Math.floor(i / ROCK_SHEET_WIDTH);
+			
+			rocks[i] = ImageLoader.getImageFromSheet("textures/rocks.png", sx, sy, ROCK_WIDTH, ROCK_HEIGHT);
+		}
+	}
+	
+	@Override
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		super.drawExtra(batch, dungeon, x, y);
+		
+		rand.setSeed(x * y);
+		
+</span><span class='comment'>		// i'd normally do a randFloat() comparison here but
+</span><span class='code'></span><span class='comment'>		// for some reason there was a REALLY strange problem where any branch here with a randFloat() in it
+</span><span class='code'></span><span class='comment'>		// would return false...
+</span><span class='code'>		
+		if (rand.nextInt(100) &lt;= PROBABILITY_ROCK) {
+			int rockX = rand.nextInt(16),
+				rockY = rand.nextInt(16);
+			
+			int rock = rand.nextInt(rocks.length);
+			TextureRegion rockRegion = rocks[rock];
+			
+			batch.draw(
+				rockRegion,
+				x * TileMap.TILE_WIDTH + rockX,
+				y * TileMap.TILE_HEIGHT + rockY
+			);
+		}
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

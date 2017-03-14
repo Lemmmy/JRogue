@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.actions.html'>jr.dungeon.entities.actions</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.actions.ActionTeleport</TD><TD>3</TD><TD>27.4% &nbsp; (317/841)</TD><TD>0</TD><TD>1</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.actions;
+
+import jr.dungeon.Messenger;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Tile;
+import jr.utils.Point;
+
+import java.util.List;
+
+</span><span class='comment'>/**
+ * Teleport action.
+ *
+ * @see Action
+ */</span><span class='code'>
+public class ActionTeleport extends Action {
+	private int x;
+	private int y;
+	
+</span><span class='comment'>	/**
+	 * Teleport action.
+	 *
+	 * @param point The point to teleport to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */</span><span class='code'>
+	public ActionTeleport(Point point, ActionCallback callback) {
+		this(point.getX(), point.getY(), callback);
+	}
+	
+</span><span class='comment'>	/**
+	 * Teleport action.
+	 *
+	 * @param x The X position to teleport to.
+	 * @param y The Y position to teleport to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */</span><span class='code'>
+	public ActionTeleport(int x, int y, ActionCallback callback) {
+		super(callback);
+		this.x = x;
+		this.y = y;
+	}
+	
+	@Override
+	public void execute(Entity entity, Messenger msg) {
+		runBeforeRunCallback(entity);
+		
+		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
+		
+		if (tile == null) {
+			runOnCompleteCallback(entity);
+			return;
+		}
+		
+		entity.setPosition(x, y);
+		
+		if (entity instanceof Player) {
+			if (tile.getType().onWalk() != null) {
+				msg.log(tile.getType().onWalk());
+			}
+		}
+		
+		List&lt;Entity> walkable = entity.getLevel().getEntityStore().getWalkableEntitiesAt(x, y);
+		walkable.forEach(e -> e.teleport((EntityLiving) entity));
+		
+		runOnCompleteCallback(entity);
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

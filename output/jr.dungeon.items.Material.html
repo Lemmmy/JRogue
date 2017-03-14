@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.html'>jr.dungeon.items</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.Material</TD><TD>12</TD><TD>0.0% &nbsp; (0/760)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items;
+
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+
+@Getter
+public enum Material {
+	WOOD(1, 2, 0, true),
+	STONE(2, 3, 0),
+	BRONZE(5, 4, 2),
+	IRON(10, 5, 6),
+	STEEL(15, 6, 8),
+	SILVER(25, 7, 12),
+	GOLD(40, 8, 14),
+	MITHRIL(50, 10, 16),
+	ADAMANTITE(60, 12, 20);
+	
+	private int value;
+	private int baseDamage;
+	private int levelRequiredToSpawn;
+	private boolean flammable = false;
+	
+	Material(int value, int baseDamage, int levelRequiredToSpawn) {
+		this.value = value;
+		this.baseDamage = baseDamage;
+		this.levelRequiredToSpawn = levelRequiredToSpawn;
+	}
+	
+	Material(int value, int baseDamage, int levelRequiredToSpawn, boolean flammable) {
+		this.value = value;
+		this.baseDamage = baseDamage;
+		this.levelRequiredToSpawn = levelRequiredToSpawn;
+		this.flammable = flammable;
+	}
+	
+	public String getName(boolean requiresCapitalisation) {
+		return requiresCapitalisation ? StringUtils.capitalize(this.name().toLowerCase()) : this.name().toLowerCase();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

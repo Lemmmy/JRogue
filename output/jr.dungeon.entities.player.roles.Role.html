@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.player.roles.html'>jr.dungeon.entities.player.roles</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.player.roles.Role</TD><TD>12</TD><TD>0.0% &nbsp; (0/822)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.player.roles;
+
+import jr.dungeon.entities.player.Attribute;
+import jr.dungeon.entities.player.Attributes;
+import jr.dungeon.entities.skills.Skill;
+import jr.dungeon.entities.skills.SkillLevel;
+import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.magical.spells.Spell;
+
+import java.util.List;
+import java.util.Map;
+
+public abstract class Role {
+	public abstract String getName();
+	
+	public abstract int getStartingHealth();
+	
+	public abstract List&lt;ItemStack> getStartingItems();
+	
+	public abstract ItemStack getStartingLeftHand();
+	
+	public abstract ItemStack getStartingRightHand();
+	
+	public abstract Map&lt;Skill, SkillLevel> getStartingSkills();
+	
+	public abstract Map&lt;Character, Spell> getStartingSpells();
+	
+	public abstract void assignAttributes(Attributes attributes);
+	
+	public abstract int getMaxEnergy();
+	
+	public abstract int getSpellcastingSuccessBase();
+	
+	public abstract int getSpellcastingSuccessEscape();
+	
+	public abstract Attribute getSpellcastingSuccessAttribute();
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

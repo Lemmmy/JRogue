@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.player.visitors.html'>jr.dungeon.entities.player.visitors</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.player.visitors.PlayerWield</TD><TD>2</TD><TD>0.0% &nbsp; (0/1241)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.player.visitors;
+
+import jr.dungeon.entities.containers.Container;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.Wieldable;
+
+public class PlayerWield extends PlayerItemVisitor {
+	@Override
+	public void visit(Player player) {
+		String msg = "Wield what?";
+		
+		InventoryUseResult result = useInventoryItem(player, msg, s -> s.getItem() instanceof Wieldable, (c, ce, inv) -> {
+			if (c == '-') {
+				player.setLeftHand(null);
+				player.setRightHand(null);
+				player.getDungeon().You("unwield everything.");
+				player.getDungeon().turn();
+				return;
+			}
+			
+			if (ce == null) {
+				player.getDungeon().log(String.format("Invalid item '[YELLOW]%s[]'.", c));
+				return;
+			}
+			
+			wield(player, c, ce);
+		}, true);
+		
+		switch (result) {
+			case NO_CONTAINER:
+			case NO_ITEM:
+				player.getDungeon().yellowYou("have nothing to wield!");
+				break;
+			default:
+				break;
+		}
+	}
+	
+	private void wield(Player player, Character c, Container.ContainerEntry ce) {
+		ItemStack stack = ce.getStack();
+		Item item = stack.getItem();
+		
+		if (player.getRightHand() != null && ((Wieldable) player.getRightHand().getItem()).isTwoHanded()) {
+			player.setLeftHand(null);
+		}
+		
+		player.setRightHand(ce);
+		
+		if (((Wieldable) item).isTwoHanded()) {
+			player.setLeftHand(ce);
+		}
+		
+		String name = stack.getName(player, false);
+		
+		if (item.isis() || stack.getCount() > 1) {
+			player.getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
+		} else {
+			player.getDungeon().You(
+				"wield %s [YELLOW]%s[] ([YELLOW]%s[]).",
+				stack.beginsWithVowel(player) ? "an" : "a",
+				name,
+				c
+			);
+		}
+		
+		player.getDungeon().turn();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

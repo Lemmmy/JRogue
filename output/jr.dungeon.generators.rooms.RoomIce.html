@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.generators.rooms.html'>jr.dungeon.generators.rooms</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.generators.rooms.RoomIce</TD><TD>2</TD><TD>0.0% &nbsp; (0/333)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.generators.rooms;
+
+import jr.dungeon.Level;
+import jr.dungeon.generators.GeneratorRooms;
+import jr.dungeon.tiles.TileType;
+
+public class RoomIce extends RoomBasic {
+	public RoomIce(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
+		super(level, roomX, roomY, roomWidth, roomHeight);
+	}
+	
+	@Override
+	protected TileType getFloorTileType(GeneratorRooms generator) {
+		return TileType.TILE_ROOM_ICE;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

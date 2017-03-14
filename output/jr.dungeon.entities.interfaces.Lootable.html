@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.interfaces.html'>jr.dungeon.entities.interfaces</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.interfaces.Lootable</TD><TD>3</TD><TD>52.4% &nbsp; (227/206)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.interfaces;
+
+import java.util.Optional;
+
+</span><span class='comment'>/**
+ * An interface marking a class implementing it as being a lootable object.
+ */</span><span class='code'>
+public interface Lootable {
+</span><span class='comment'>	/**
+	 * @return true if the object is lootable right now. Used, for example, to implement locking behaviour.
+	 */</span><span class='code'>
+	default boolean isLootable() {
+		return true;
+	}
+
+</span><span class='comment'>	/**
+	 * @return The message shown when looting succeeds.
+	 */</span><span class='code'>
+	default Optional&lt;String> getLootSuccessString() {
+		return Optional.empty();
+	}
+
+</span><span class='comment'>	/**
+	 * @return The message shown when looting fails.
+	 */</span><span class='code'>
+	default Optional&lt;String> getLootFailedString() {
+		return Optional.empty();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.weapons.html'>jr.dungeon.items.weapons</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.weapons.ItemStaff</TD><TD>15</TD><TD>0.0% &nbsp; (0/1375)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.weapons;
+
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.skills.Skill;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.projectiles.ItemProjectile;
+
+public class ItemStaff extends ItemWeaponMelee {
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+			
+		if (requiresCapitalisation) {
+			s += plural ? "Staves" : "Staff";
+		} else {
+			s += plural ? "staves" : "staff";
+		}
+		
+		return s;
+	}
+	
+	@Override
+	public float getWeight() {
+		return 50;
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return ItemAppearance.APPEARANCE_STAFF;
+	}
+	
+	@Override
+	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {}
+	
+	@Override
+	public boolean fire(EntityLiving attacker, ItemProjectile projectile, int dx, int dy) {
+		return false;
+	}
+	
+	@Override
+	public boolean isMelee() {
+		return true;
+	}
+	
+	@Override
+	public boolean isRanged() {
+		return false;
+	}
+	
+	@Override
+	public boolean isMagic() {
+		return false;
+	}
+	
+	@Override
+	public DamageSource getMeleeDamageSource() {
+		return DamageSource.STAFF_BASH;
+	}
+	
+	@Override
+	public void onHit(EntityLiving attacker, EntityLiving victim) {
+		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
+	}
+	
+	@Override
+	public int getSmallDamage() {
+		return 4;
+	}
+	
+	@Override
+	public int getLargeDamage() {
+		return 3;
+	}
+	
+	@Override
+	public int getToHitBonus() {
+		return 0;
+	}
+	
+	@Override
+	public Skill getSkill() {
+		return Skill.SKILL_STAFF;
+	}
+	
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

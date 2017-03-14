@@ -1,0 +1,118 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.html'>jr.dungeon.entities</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.EntityTurnBased</TD><TD>9</TD><TD>59.9% &nbsp; (1320/885)</TD><TD>0</TD><TD>1</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities;
+
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
+import jr.dungeon.entities.actions.Action;
+import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
+
+</span><span class='comment'>/**
+ * An {@link Entity} that gets a chance to run an {@link Action} based on the turn timer. A turn consists of 12
+ * ticks, and every Action takes exactly 12 ticks to perform. If the Entity has a speed of 12, they will perform one
+ * action every turn. If their speed is lower than 12, their movement points will count down until they have enough
+ * to perform the action. For example, an Entity with a speed of 6 will perform 1 action every 2 turns. An Entity
+ * with a speed of 24 will perform 2 actions every turn.
+ *
+ * @see Action
+ */</span><span class='code'>
+public abstract class EntityTurnBased extends Entity {
+</span><span class='comment'>	/**
+	 * The amount of movement points the Entity currently has free.
+	 */</span><span class='code'>
+	@Getter @Setter private int movementPoints = 0;
+</span><span class='comment'>	/**
+	 * The next {@link Action} this Entity is going to perform when it gets a chance to move.
+	 */</span><span class='code'>
+	private Action nextAction;
+	
+</span><span class='comment'>	/**
+	 * @param dungeon The {@link Dungeon} this Entity is part of.
+	 * @param level The {@link Level} this Entity is on.
+	 * @param x The starting X position of this Entity in the {@link Level}.
+	 * @param y The starting Y position of this Entity in the {@link Level}.
+	 */</span><span class='code'>
+	public EntityTurnBased(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y);
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		obj.put("movementPoints", movementPoints);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		movementPoints = obj.getInt("movementPoints");
+	}
+	
+</span><span class='comment'>	/**
+	 * @param action Sets the next action to perform when this Entity gets a chance to move.
+	 */</span><span class='code'>
+	public void setAction(Action action) {
+		nextAction = action;
+	}
+	
+</span><span class='comment'>	/**
+	 * Unsets the next action, meaning the Entity will do nothing when it next gets a chance to move.
+	 */</span><span class='code'>
+	public void removeAction() {
+		nextAction = null;
+	}
+	
+</span><span class='comment'>	/**
+	 * Called during the {@link Dungeon#moveEntities() Dungeon's turn loop - performs the next {@link Action}} if the
+	 * Entity has one to perform.
+	 */</span><span class='code'>
+	public void move() {
+		if (hasAction()) {
+			nextAction.execute(this, getDungeon());
+			nextAction = null;
+		}
+	}
+	
+</span><span class='comment'>	/**
+	 * @return true if the Entity's nextAction is null.
+	 */</span><span class='code'>
+	public boolean hasAction() {
+		return nextAction != null;
+	}
+	
+</span><span class='comment'>	/**
+	 * @return The amount of movement 'ticks' this entity performs per turn.
+	 */</span><span class='code'>
+	public abstract int getMovementSpeed();
+	
+</span><span class='comment'>	/**
+	 * Adds this Entity's movement speed to its stored movementSpeed, with a small random 'bonus'. You can override
+	 * this to change the bonus, but make sure at least some bonus is applied otherwise the turn loop will hang in an
+	 * infinite loop if the Entity is slowed down.
+	 */</span><span class='code'>
+	public void applyMovementPoints() {
+		movementPoints += getMovementSpeed() + Math.max(1, RandomUtils.random(2, 4));
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

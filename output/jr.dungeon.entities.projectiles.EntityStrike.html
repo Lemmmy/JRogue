@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.projectiles.html'>jr.dungeon.entities.projectiles</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.projectiles.EntityStrike</TD><TD>8</TD><TD>0.0% &nbsp; (0/1554)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.projectiles;
+
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityAppearance;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.interfaces.Extinguishable;
+import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
+import jr.utils.Colour;
+import jr.utils.RandomUtils;
+
+public class EntityStrike extends EntityProjectile implements LightEmitter {
+	private static final Colour LIGHT_COLOUR = new Colour(0x75E5F6FF);
+	
+	public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y);
+	}
+	
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Strike" : "strike";
+	}
+	
+	@Override
+	public EntityAppearance getAppearance() {
+		return EntityAppearance.APPEARANCE_STRIKE;
+	}
+	
+	@Override
+	public int getMovementSpeed() {
+		return Dungeon.NORMAL_SPEED * 4;
+	}
+	
+	@Override
+	public void onHitTile(Tile tile) {
+		super.onHitTile(tile);
+		
+		if (tile.getType().isDoorShut()) {
+			getDungeon().The("door crashes open!");
+			tile.setType(TileType.TILE_ROOM_DOOR_BROKEN);
+		}
+	}
+	
+	@Override
+	public void onHitEntity(Entity victim) {
+		super.onHitEntity(victim);
+		
+		if (victim instanceof EntityLiving) {
+			EntityLiving living = (EntityLiving) victim;
+			Entity source = getSource();
+			EntityLiving livingSource = source instanceof EntityLiving ? (EntityLiving) source : null;
+			
+			int roll = RandomUtils.roll(20);
+			
+			if (roll &lt; 10 + living.getArmourClass()) {
+				int damage = RandomUtils.roll(2, 12);
+				
+				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource);
+			}
+		}
+		
+		if (victim instanceof Extinguishable) {
+			((Extinguishable) victim).extinguish();
+		}
+	}
+	
+	@Override
+	public Colour getLightColour() {
+		return LIGHT_COLOUR;
+	}
+	
+	@Override
+	public int getLightIntensity() {
+		return 75;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

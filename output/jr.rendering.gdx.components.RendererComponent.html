@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.rendering.gdx.components.html'>jr.rendering.gdx.components</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.rendering.gdx.components.RendererComponent</TD><TD>8</TD><TD>54.2% &nbsp; (873/738)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.rendering.gdx.components;
+
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import jr.Settings;
+import jr.dungeon.Dungeon;
+import jr.dungeon.events.DungeonEventListener;
+import jr.rendering.gdx.GDXRenderer;
+import lombok.Getter;
+import lombok.Setter;
+
+public abstract class RendererComponent implements DungeonEventListener {
+	public GDXRenderer renderer;
+	public Dungeon dungeon;
+	public Settings settings;
+	
+	@Getter @Setter public OrthographicCamera camera;
+	
+</span><span class='comment'>	/**
+	 * A component that gets a chance to render on the screen at the specified Z-index. Lower Z-indexes are drawn first.
+	 *
+	 * @param renderer The renderer that uses this component.
+	 * @param dungeon The dungeon that this component should use.
+	 * @param settings The user's settings.
+	 */</span><span class='code'>
+	public RendererComponent(GDXRenderer renderer, Dungeon dungeon, Settings settings) {
+		this.renderer = renderer;
+		this.dungeon = dungeon;
+		this.settings = settings;
+	}
+	
+</span><span class='comment'>	/**
+	 * @return Whether or not this should be drawn in the main batch. The main batch is the batch the level is drawn on,
+	 * in the viewport camera.
+	 */</span><span class='code'>
+	public boolean useMainBatch() {
+		return false;
+	}
+	
+</span><span class='comment'>	/**
+	 * Called when the renderer is being initialised - this is where batches, cameras etc. should be initialised. You
+	 * should also load textures here.
+	 */</span><span class='code'>
+	public abstract void initialise();
+	
+</span><span class='comment'>	/**
+	 * Called every frame - this is when draw calls can be done.
+	 *
+	 * @param dt The time since the last frame in seconds. May be smoothed.
+	 */</span><span class='code'>
+	public abstract void render(float dt);
+	
+</span><span class='comment'>	/**
+	 * Called every frame before rendering.
+	 *
+	 * @param dt The time since the last frame in seconds. May be smoothed.
+	 */</span><span class='code'>
+	public abstract void update(float dt);
+	
+</span><span class='comment'>	/**
+	 * Called when the screen is resized.
+	 *
+	 * @param width The new screen width, in pixels.
+	 * @param height The new screen height, in pixels.
+	 */</span><span class='code'>
+	public abstract void resize(int width, int height);
+	
+</span><span class='comment'>	/**
+	 * @return The Z-index of this component. Lower values are drawn first.
+	 */</span><span class='code'>
+	public abstract int getZIndex();
+	
+</span><span class='comment'>	/**
+	 * Called when the game is being exited and the resources should be cleaned up.
+	 */</span><span class='code'>
+	public abstract void dispose();
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

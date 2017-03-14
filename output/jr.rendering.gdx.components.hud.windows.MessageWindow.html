@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.rendering.gdx.components.hud.windows.html'>jr.rendering.gdx.components.hud.windows</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.rendering.gdx.components.hud.windows.MessageWindow</TD><TD>3</TD><TD>0.0% &nbsp; (0/733)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.rendering.gdx.components.hud.windows;
+
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import jr.rendering.gdx.GDXRenderer;
+
+public class MessageWindow extends PopupWindow {
+	private String title;
+	private String message;
+	
+	public MessageWindow(GDXRenderer renderer, Stage stage, Skin skin, String title, String message) {
+		super(renderer, stage, skin, null, null);
+		
+		this.title = title;
+		this.message = message;
+	}
+	
+	@Override
+	public String getTitle() {
+		return title;
+	}
+	
+	@Override
+	public void populateWindow() {
+		Label label = new Label("[P_GREY_0]" + message + "[]", getSkin(), "windowStyleMarkup");
+		label.setWrap(true);
+		getWindow().getContentTable().add(label).pad(16).prefWidth(350);
+		getWindow().button("OK");
+		getWindow().key(Input.Keys.ENTER, true);
+		getWindow().setModal(false);
+		getWindow().pack();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

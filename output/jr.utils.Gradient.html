@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.utils.html'>jr.utils</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.utils.Gradient</TD><TD>7</TD><TD>0.0% &nbsp; (0/865)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.utils;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Pool;
+
+public class Gradient implements Pool.Poolable {
+	private static final Pool&lt;Gradient> gradientPool = new Pool&lt;Gradient>() {
+		@Override
+		protected Gradient newObject() {
+			return new Gradient();
+		}
+	};
+
+	private Color start;
+	private Color end;
+
+	private Gradient() {
+		reset();
+	}
+
+	public static Gradient getGradient(Color start, Color end) {
+		Gradient g = gradientPool.obtain();
+		g.init(start, end);
+		return g;
+	}
+
+	public static void free(Gradient gradient) {
+		gradientPool.free(gradient);
+	}
+
+	private void init(Color start, Color end) {
+		this.start = start;
+		this.end = end;
+	}
+
+	public Color getColourAtPoint(float point) {
+		float r = start.r * sigmoid(point) + end.r * (1 - sigmoid(point));
+		float g = start.g * sigmoid(point) + end.g * (1 - sigmoid(point));
+		float b = start.b * sigmoid(point) + end.b * (1 - sigmoid(point));
+		float a = start.a * sigmoid(point) + end.a * (1 - sigmoid(point));
+		
+		return new Color(r, g, b, a);
+	}
+	
+	private static float sigmoid(float x) {
+		return (float) (1 / (1 + Math.pow(Math.E, -1 * x)));
+	}
+
+	@Override
+	public void reset() {
+		this.start = Color.BLACK;
+		this.end = Color.BLACK;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

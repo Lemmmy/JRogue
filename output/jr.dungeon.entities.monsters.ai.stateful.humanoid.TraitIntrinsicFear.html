@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.monsters.ai.stateful.humanoid.html'>jr.dungeon.entities.monsters.ai.stateful.humanoid</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear</TD><TD>5</TD><TD>2.8% &nbsp; (25/881)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+
+import jr.dungeon.entities.monsters.ai.stateful.AITrait;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.Utils;
+import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.json.JSONObject;
+
+@Getter
+public class TraitIntrinsicFear extends AITrait {
+	private float fear;
+	
+	public TraitIntrinsicFear(StatefulAI ai) {
+		super(ai);
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		obj.put("intrinsicFear", fear);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		fear = obj.getInt("intrinsicFear");
+	}
+	
+	@Override
+	public void update() {
+</span><span class='comment'>		// TODO: ensure this is balanced
+</span><span class='code'>		
+		if (
+			getAI().getCurrentTarget() != null &&
+			Utils.chebyshevDistance(getAI().getCurrentTarget().getPosition(), getMonster().getPosition()) &lt; 5
+		) {
+			fear = (getMonster().getArmourClass() - getAI().getCurrentTarget().getArmourClass()) / 10;
+			fear = Math.max(0, Math.min(1, fear));
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("fear", fear)
+			.toString();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

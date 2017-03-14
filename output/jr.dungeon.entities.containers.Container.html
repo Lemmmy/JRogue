@@ -1,0 +1,275 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.containers.html'>jr.dungeon.entities.containers</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.containers.Container</TD><TD>23</TD><TD>0.0% &nbsp; (0/5260)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.containers;
+
+import jr.ErrorHandler;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.Wieldable;
+import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.items.quaffable.ItemQuaffable;
+import jr.utils.Serialisable;
+import jr.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.json.JSONObject;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Container implements Serialisable, DungeonEventListener {
+	@Getter @Setter	private String name;
+	
+	@Getter private Map&lt;Character, ItemStack> items = new LinkedHashMap&lt;>();
+	private List&lt;ContainerListener> listeners = new ArrayList&lt;>();
+	
+	public Container(String name) {
+		this.name = name;
+	}
+	
+	public int getItemCount() {
+		return items.size();
+	}
+	
+	public boolean isEmpty() {
+		return getItemCount() == 0;
+	}
+	
+	public Optional&lt;ContainerEntry> add(ItemStack stack) {
+		Item item = stack.getItem();
+		
+		if (!canAdd(stack)) {
+			return Optional.empty();
+		}
+		
+		if (stack.getItem().shouldStack()) {
+			for (Map.Entry&lt;Character, ItemStack> entry : items.entrySet()) {
+				ItemStack storedStack = entry.getValue();
+				
+				if (item.equals(storedStack.getItem())) {
+					storedStack.addCount(stack.getCount());
+					ContainerEntry newEntry = new ContainerEntry(entry);
+					listeners.forEach(l -> l.onItemIncrement(newEntry, stack.getCount()));
+					return Optional.of(newEntry);
+				}
+			}
+		}
+		
+		char letter = getAvailableInventoryLetter();
+		items.put(letter, stack);
+		ContainerEntry newEntry = new ContainerEntry(letter, stack);
+		listeners.forEach(l -> l.onItemAdd(newEntry));
+		return Optional.of(newEntry);
+	}
+	
+	public boolean canAdd(ItemStack stack) {
+		if (stack.getItem().shouldStack()) {
+			for (ItemStack storedStack : items.values()) {
+				if (stack.getItem().equals(storedStack.getItem())) {
+					return true;
+				}
+			}
+		}
+		
+		return getAvailableInventoryLetter() != 0;
+	}
+	
+	public char getAvailableInventoryLetter() {
+		for (char letter : Utils.INVENTORY_CHARS) {
+			if (!items.containsKey(letter)) {
+				return letter;
+			}
+		}
+		
+		return 0;
+	}
+	
+	public Optional&lt;ContainerEntry> get(Character letter) {
+		if (items.containsKey(letter)) {
+			return Optional.of(new ContainerEntry(letter, items.get(letter)));
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public boolean has(Character letter) {
+		return items.containsKey(letter);
+	}
+	
+	public void remove(Character letter) {
+		if (items.containsKey(letter)) {
+			ContainerEntry entry = new ContainerEntry(letter, items.get(letter));
+			items.remove(letter);
+			listeners.forEach(l -> l.onItemRemove(entry));
+		}
+	}
+	
+	public void transfer(Container destContainer, Character character, int amount, Player player) {
+		ItemStack itemStack = items.get(character);
+		
+		if (!destContainer.canAdd(itemStack)) {
+			return;
+		}
+		
+		if (player != null) {
+			if (player.getLeftHand() != null) {
+				if (player.getLeftHand().getStack() == itemStack) {
+					player.setLeftHand(null);
+				}
+			}
+			
+			if (player.getRightHand() != null) {
+				if (player.getRightHand().getStack() == itemStack) {
+					player.setRightHand(null);
+				}
+			}
+		}
+		
+		destContainer.add(itemStack);
+		items.remove(character);
+	}
+	
+	public void update(Entity owner) {
+		items.values().forEach(s -> s.getItem().update(owner));
+	}
+	
+	public void addListener(ContainerListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeListener(ContainerListener listener) {
+		listeners.remove(listener);
+	}
+	
+	public static Container createFromJSON(JSONObject obj) {
+		return createFromJSON(Container.class, obj);
+	}
+	
+	public static Container createFromJSON(Class&lt;? extends Container> clazz, JSONObject obj) {
+		try {
+			Constructor c = ConstructorUtils.getAccessibleConstructor(clazz, String.class);
+			Container container = (Container) c.newInstance(obj.getString("name"));
+			container.unserialise(obj);
+			return container;
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			ErrorHandler.error("Error unserialising Container", e);
+		}
+		
+		Container container = new Container(obj.getString("name"));
+		container.unserialise(obj);
+		return container;
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		obj.put("name", name);
+		
+		JSONObject serialisedItems = new JSONObject();
+		items.entrySet().forEach(e -> {
+			JSONObject serialisedItemStack = new JSONObject();
+			e.getValue().serialise(serialisedItemStack);
+			serialisedItems.put(e.getKey().toString(), serialisedItemStack);
+		});
+		obj.put("items", serialisedItems);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		JSONObject serialisedItems = obj.getJSONObject("items");
+		serialisedItems.keySet().forEach(k -> {
+			JSONObject v = serialisedItems.getJSONObject(k);
+			Character letter = k.charAt(0);
+			
+			Optional&lt;ItemStack> itemStackOptional = ItemStack.createFromJSON(v);
+			itemStackOptional.ifPresent(itemStack -> items.put(letter, itemStack));
+		});
+	}
+	
+	public Map&lt;Character, ItemStack> getWieldables() {
+		return getItemStacksOfType(Wieldable.class);
+	}
+	
+	public Map&lt;Character, ItemStack> getComestibles() {
+		return getItemStacksOfType(ItemComestible.class);
+	}
+	
+	public Map&lt;Character, ItemStack> getQuaffables() {
+		return getItemStacksOfType(ItemQuaffable.class);
+	}
+	
+	public &lt;T> Map&lt;Character, ItemStack> getItemStacksOfType(Class&lt;? extends T> type) {
+		return items.entrySet().stream()
+			.filter(e -> e.getValue().getItem().getClass().isAssignableFrom(type))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List&lt;DungeonEventListener> getSubListeners() {
+		List&lt;DungeonEventListener> subListeners = new ArrayList&lt;>();
+		
+		items.values().forEach(i -> subListeners.add(i.getItem()));
+		
+		return subListeners;
+	}
+	
+	public interface ContainerListener {
+		void onItemAdd(ContainerEntry entry);
+		
+		void onItemIncrement(ContainerEntry entry, int amount);
+		
+		void onItemRemove(ContainerEntry entry);
+	}
+	
+	public class ContainerEntry {
+		@Getter	private final Character letter;
+		@Getter private ItemStack stack;
+		
+		public ContainerEntry(Map.Entry&lt;Character, ItemStack> entry) {
+			this.letter = entry.getKey();
+			this.stack = entry.getValue();
+		}
+		
+		public ContainerEntry(final Character letter, final ItemStack stack) {
+			this.letter = letter;
+			this.stack = stack;
+		}
+		
+		public Item getItem() {
+			return stack.getItem();
+		}
+		
+		public int getCount() {
+			return stack.getCount();
+		}
+		
+		public ItemStack setStack(final ItemStack value) {
+			final ItemStack oldStack = this.stack;
+			this.stack = value;
+			items.put(letter, value);
+			return oldStack;
+		}
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

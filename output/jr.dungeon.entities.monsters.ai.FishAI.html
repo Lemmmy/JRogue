@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.monsters.ai.html'>jr.dungeon.entities.monsters.ai</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.monsters.ai.FishAI</TD><TD>2</TD><TD>5.1% &nbsp; (44/817)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.monsters.ai;
+
+import com.github.alexeyr.pcg.Pcg32;
+import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
+import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Arrays;
+
+public class FishAI extends AI {
+	private static final int SLEEP_DISTANCE = 20;
+	
+	private Pcg32 random = new Pcg32();
+	
+	@Getter @Setter private float moveProbability = 0.1f;
+	
+	public FishAI(Monster monster) {
+		super(monster);
+	}
+	
+	@Override
+	public void update() {
+		if (distanceFromPlayer() >= SLEEP_DISTANCE) {
+			return;</span><span class='comment'> // no need to move if we're far away from the player
+</span><span class='code'>		}
+		
+		if (random.nextFloat() &lt; moveProbability) {
+			Tile[] tiles = getMonster().getLevel().getTileStore()
+				.getAdjacentTiles(getMonster().getX(), getMonster().getY());
+			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t
+				.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
+			
+			if (waterTiles.length > 0) {
+				Tile destination = RandomUtils.randomFrom(waterTiles);
+				
+				moveTowards(destination.getX(), destination.getY());
+			}
+		}
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

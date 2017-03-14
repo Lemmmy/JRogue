@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.html'>jr.dungeon.items</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.ItemStack</TD><TD>11</TD><TD>0.0% &nbsp; (0/1254)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items;
+
+import jr.dungeon.entities.EntityLiving;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
+
+import java.util.Optional;
+
+@Getter
+public class ItemStack {
+	private Item item;
+	@Setter private int count;
+	
+	public ItemStack(Item item) {
+		this(item, 1);
+	}
+	
+	public ItemStack(Item item, int count) {
+		this.item = item;
+		this.count = count;
+	}
+	
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
+		if (count > 1) {
+			return String.format("%d %s", count, item.getName(observer, false, true));
+		} else {
+			return item.getName(observer, requiresCapitalisation, false);
+		}
+	}
+	
+	public ItemAppearance getAppearance() {
+		return item.getAppearance();
+	}
+	
+	public ItemCategory getCategory() {
+		return item.getCategory();
+	}
+	
+	public void addCount(int count) {
+		this.count += count;
+	}
+	
+	public void subtractCount(int i) {
+		count = Math.max(0, count - i);
+	}
+	
+	public float getWeight() {
+		return item.getWeight() * count;
+	}
+	
+	public boolean beginsWithVowel(EntityLiving observer) {
+		return item.beginsWithVowel(observer);
+	}
+	
+	public static Optional&lt;ItemStack> createFromJSON(JSONObject serialisedItemStack) {
+		Optional&lt;Item> item = Item.createFromJSON(serialisedItemStack.getJSONObject("item"));
+		
+		if (item.isPresent()) {
+			int count = serialisedItemStack.getInt("count");
+			
+			ItemStack itemStack = new ItemStack(item.get(), count);
+			return Optional.of(itemStack);
+		}
+		
+		return Optional.empty();
+	}
+	
+	public void serialise(JSONObject obj) {
+		obj.put("count", getCount());
+		
+		JSONObject serialisedItem = new JSONObject();
+		item.serialise(serialisedItem);
+		obj.put("item", serialisedItem);
+	}
+}</span>
+</PRE></CODE>
+</BODY>
+</HTML>

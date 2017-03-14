@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.utils.html'>jr.utils</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.utils.WeightedCollection</TD><TD>3</TD><TD>0.0% &nbsp; (0/393)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.utils;
+
+import com.github.alexeyr.pcg.Pcg32;
+
+import java.util.NavigableMap;
+import java.util.TreeMap;
+
+public class WeightedCollection&lt;E> {
+	private static final Pcg32 rand = new Pcg32();
+	
+	private NavigableMap&lt;Integer, E> map = new TreeMap&lt;>();
+	private int total;
+	
+	public void add(int weight, E object) {
+		if (weight &lt;= 0) { return; }
+		total += weight;
+		map.put(total, object);
+	}
+	
+	public E next() {
+		int value = rand.nextInt(total) + 1;
+		return map.ceilingEntry(value).getValue();
+	}
+	
+	public void clear() {
+		total = 0;
+		map.clear();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

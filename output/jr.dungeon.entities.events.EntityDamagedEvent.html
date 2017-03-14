@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.events.html'>jr.dungeon.entities.events</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.events.EntityDamagedEvent</TD><TD>3</TD><TD>0.0% &nbsp; (0/533)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.events;
+
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEvent;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class EntityDamagedEvent extends DungeonEvent {
+	private EntityLiving victim, attacker;
+	private DamageSource damageSource;
+	private int damage;
+	
+	public boolean isVictimPlayer() {
+		return victim instanceof Player;
+	}
+	
+	public boolean isAttackerPlayer() {
+		return attacker instanceof Player;
+	}
+	
+	@Override
+	public boolean isSelf(Object other) {
+		return other.equals(victim);
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

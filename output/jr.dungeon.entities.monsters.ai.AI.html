@@ -1,0 +1,300 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.monsters.ai.html'>jr.dungeon.entities.monsters.ai</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.monsters.ai.AI</TD><TD>26</TD><TD>31.3% &nbsp; (1728/3798)</TD><TD>0</TD><TD>1</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.monsters.ai;
+
+import jr.JRogue;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMove;
+import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.tiles.TileType;
+import jr.utils.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+@RequiredArgsConstructor
+public abstract class AI implements Serialisable, Persisting, DungeonEventListener {
+	@NonNull @Getter private Monster monster;
+	
+	private AStarPathfinder pathfinder = new AStarPathfinder();
+	private List&lt;TileType> avoidTiles = new ArrayList&lt;>();
+	
+	private JSONObject persistence = new JSONObject();
+	
+</span><span class='comment'>	/**
+	 * Adds a tile to the list of tiles to avoid during pathfinding. The AI will absolutely never try to step on this
+	 * tile.
+	 *
+	 * @param tileType The tile type to add.
+	 */</span><span class='code'>
+	public void addAvoidTile(TileType tileType) {
+		avoidTiles.add(tileType);
+	}
+	
+</span><span class='comment'>	/**
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return Whether or not the AI can move to this position - checks if its inside the map and if its not solid.
+	 */</span><span class='code'>
+	public boolean canMoveTo(int x, int y) {
+		return !(x &lt; 0 || x > monster.getLevel().getWidth() ||
+			y &lt; 0 || y > monster.getLevel().getHeight()) &&
+			monster.getLevel().getTileStore().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+	}
+	
+</span><span class='comment'>	/**
+	 * @return Whether or not the player is within the monster's {@link Monster#getVisibilityRange() visibility range}.
+	 */</span><span class='code'>
+	public boolean canMoveTowardsPlayer() {
+		return distanceFromPlayer() &lt; monster.getVisibilityRange();
+	}
+	
+</span><span class='comment'>	/**
+	 * @return Returns the linear distance between the player and the monster.
+	 */</span><span class='code'>
+	public float distanceFromPlayer() {
+		return Utils.distance(
+			(float) monster.getX(), (float) monster.getY(),
+			(float) monster.getDungeon().getPlayer().getX(), (float) monster.getDungeon().getPlayer().getY()
+		);
+	}
+	
+</span><span class='comment'>	/**
+	 * @param target The target to attack.'
+	 *
+	 * @return Whether or not the monster is able to melee attack, and if it is adjacent to the target.
+	 */</span><span class='code'>
+	public boolean canMeleeAttack(EntityLiving target) {
+		return monster.canMeleeAttack() && isAdjacentTo(target);
+	}
+	
+</span><span class='comment'>	/**
+	 * @return Whether or not the monster is able to melee attack the player.
+	 */</span><span class='code'>
+	public boolean canMeleeAttackPlayer() {
+		return canMeleeAttack(monster.getDungeon().getPlayer());
+	}
+	
+</span><span class='comment'>	/**
+	 * @param target The target to check adjacency to.
+	 *
+	 * @return Whether or not the monster is adjacent to the target - checks for a
+	 * {@link Utils#chebyshevDistance(int, int, int, int) Chebyshev distance} of 1 or less.
+	 */</span><span class='code'>
+	public boolean isAdjacentTo(EntityLiving target) {
+		int ax = target.getX();
+		int ay = target.getY();
+		int bx = monster.getX();
+		int by = monster.getY();
+		
+		return Utils.chebyshevDistance(ax, ay, bx, by) &lt;= 1;
+	}
+	
+</span><span class='comment'>	/**
+	 * @return Whether or not the monster is {#isAdjacentTo adjacent to} the player.
+	 */</span><span class='code'>
+	public boolean isAdjacentToPlayer() {
+		Player player = monster.getDungeon().getPlayer();
+		
+		return isAdjacentTo(player);
+	}
+	
+</span><span class='comment'>	/**
+	 * Melee attacks the target.
+	 *
+	 * @param target The target to attack.
+	 */</span><span class='code'>
+	public void meleeAttack(EntityLiving target) {
+		monster.meleeAttack(target);
+	}
+	
+</span><span class='comment'>	/**
+	 * Ranged attacks the target.
+	 *
+	 * @param target The target to attack.
+	 */</span><span class='code'>
+	public void rangedAttack(EntityLiving target) {
+		monster.rangedAttack(target);
+	}
+	
+</span><span class='comment'>	/**
+	 * Magic attacks the target.
+	 *
+	 * @param target The target to attack.
+	 */</span><span class='code'>
+	public void magicAttack(EntityLiving target) {
+		monster.magicAttack(target);
+	}
+	
+</span><span class='comment'>	/**
+	 * Melee attacks the player.
+	 */</span><span class='code'>
+	public void meleeAttackPlayer() {
+		meleeAttack(monster.getDungeon().getPlayer());
+	}
+	
+</span><span class='comment'>	/**
+	 * Ranged attacks the player.
+	 */</span><span class='code'>
+	public void rangedAttackPlayer() {
+		rangedAttack(monster.getDungeon().getPlayer());
+	}
+	
+</span><span class='comment'>	/**
+	 * Magic attacks the player.
+	 */</span><span class='code'>
+	public void magicAttackPlayer() {
+		magicAttack(monster.getDungeon().getPlayer());
+	}
+	
+</span><span class='comment'>	/**
+	 * {@link #moveTowards(Entity) Moves towards} the player.
+	 */</span><span class='code'>
+	public void moveTowardsPlayer() {
+		Player player = monster.getDungeon().getPlayer();
+		
+		moveTowards(player);
+	}
+	
+</span><span class='comment'>	/**
+	 * {@link #moveTowards(Point) Moves towards} the entity.
+	 *
+	 * @param entity The entity to {@link #moveTowards(Point) move towards.}
+	 */</span><span class='code'>
+	public void moveTowards(Entity entity) {
+		moveTowards(entity.getPosition());
+	}
+	
+</span><span class='comment'>	/**
+	 * {@link #moveTowards(int, int) Moves towards} the specified point.
+	 *
+	 * @param point The position to {@link #moveTowards(int, int) move towards.}
+	 */</span><span class='code'>
+	public void moveTowards(Point point) {
+		moveTowards(point.getX(), point.getY());
+	}
+	
+</span><span class='comment'>	/**
+	 * Pathfinds towards the specified destX and destY coordinates.
+	 *
+	 * @param destX The X position to pathfind towards.
+	 * @param destY The Y position to pathfind towards.
+	 *
+	 * @see AStarPathfinder
+	 */</span><span class='code'>
+	public void moveTowards(int destX, int destY) {
+		int sourceX = getMonster().getX();
+		int sourceY = getMonster().getY();
+		
+		Path path = pathfinder.findPath(
+			getMonster().getLevel(),
+			sourceX,
+			sourceY,
+			destX,
+			destY,
+			getMonster().getVisibilityRange(),
+			getMonster().canMoveDiagonally(),
+			avoidTiles
+		);
+		
+		if (path != null) {
+			path.getSteps().stream()
+				.filter(t -> t.getX() != sourceX || t.getY() != sourceY)
+				.findFirst()
+				.ifPresent(t -> getMonster().setAction(new ActionMove(
+					t.getX(),
+					t.getY(),
+					new Action.NoCallback()
+				)));
+		}
+	}
+	
+</span><span class='comment'>	/**
+	 * Called every turn - this is the AI's turn to assign an action to the monster.
+	 */</span><span class='code'>
+	public abstract void update();
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		obj.put("class", getClass().getName());
+		
+		serialisePersistence(obj);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		unserialisePersistence(obj);
+	}
+	
+	@Override
+	public JSONObject getPersistence() {
+		return persistence;
+	}
+	
+</span><span class='comment'>	/**
+	 * Instantiates and unserialises an AI from serialised JSON.
+	 *
+	 * @param serialisedAI The previously serialised JSONObject containing the AI information.
+	 * @param monster The {@link Monster} that hosts this AI.
+	 *
+	 * @return A fully unserialised AI instance.
+	 */</span><span class='code'>
+	@SuppressWarnings("unchecked")
+	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
+		String aiClassName = serialisedAI.getString("class");
+		
+		try {
+			Class&lt;? extends AI> aiClass = (Class&lt;? extends AI>) Class.forName(aiClassName);
+			Constructor&lt;? extends AI> aiConstructor = aiClass.getConstructor(Monster.class);
+			
+			AI ai = aiConstructor.newInstance(monster);
+			ai.unserialise(serialisedAI);
+			return ai;
+		} catch (ClassNotFoundException e) {
+			JRogue.getLogger().error("Unknown AI class {}", aiClassName);
+		} catch (NoSuchMethodException e) {
+			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			JRogue.getLogger().error("Error loading AI class {}", aiClassName);
+			JRogue.getLogger().error(e);
+		}
+		
+		return null;
+	}
+	
+	public String toString() {
+		return "";
+	}
+	
+	public List&lt;DungeonEventListener> getSubListeners() {
+		return new ArrayList&lt;>();
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

@@ -13,6 +13,8 @@ public abstract class Aspect implements Serialisable {
 	 *
 	 * on the other hand, non-persistent aspects are per item instance:
 	 *   an item's BUC status is non-persistent: it differs between all items
+	 *
+	 * @return Whether or not the Aspect is persistent.
 	 */
 	public abstract boolean isPersistent();
 	

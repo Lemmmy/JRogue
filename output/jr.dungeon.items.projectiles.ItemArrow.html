@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.projectiles.html'>jr.dungeon.items.projectiles</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.projectiles.ItemArrow</TD><TD>5</TD><TD>0.0% &nbsp; (0/795)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.projectiles;
+
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.projectiles.EntityArrow;
+import jr.dungeon.entities.projectiles.EntityProjectile;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.ItemCategory;
+
+public class ItemArrow extends ItemProjectile {
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
+		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+		
+		if (!s.isEmpty() && requiresCapitalisation) {
+			requiresCapitalisation = false;
+		}
+		
+		s += (requiresCapitalisation ? "A" : "a") + "rrow" + (plural ? "s" : "");
+		
+		return s;
+	}
+	
+	@Override
+	public float getWeight() {
+		return 1;
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return ItemAppearance.APPEARANCE_ARROW;
+	}
+	
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.PROJECTILE;
+	}
+	
+	@Override
+	public Class&lt;? extends EntityProjectile> getProjectileEntity() {
+		return EntityArrow.class;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

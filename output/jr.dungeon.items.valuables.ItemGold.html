@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.valuables.html'>jr.dungeon.items.valuables</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.valuables.ItemGold</TD><TD>5</TD><TD>0.0% &nbsp; (0/516)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.valuables;
+
+import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.ItemCategory;
+
+public class ItemGold extends Item {
+	public boolean isis() {
+		return true;
+	}
+	
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
+		return requiresCapitalisation ? "Gold" : "gold";
+	}
+	
+	@Override
+	public float getWeight() {
+		return 0.01f;
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return ItemAppearance.APPEARANCE_GOLD;
+	}
+	
+	@Override
+	public ItemCategory getCategory() {
+		return ItemCategory.MISCELLANEOUS;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

@@ -1,0 +1,102 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.effects.html'>jr.dungeon.entities.effects</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.effects.Ablaze</TD><TD>7</TD><TD>16.5% &nbsp; (202/1025)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.effects;
+
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.EntityLiving;
+import jr.utils.RandomUtils;
+
+public class Ablaze extends StatusEffect {
+	private Severity severity;
+	
+	private boolean putOut;
+	
+</span><span class='comment'>	/**
+	 * Fire status effect. Default duration is 10 to 20 turns.
+	 */</span><span class='code'>
+	public Ablaze() {
+		this(Severity.MAJOR, RandomUtils.random(10, 20));
+	}
+	
+</span><span class='comment'>	/**
+	 * Fire status effect.
+	 *
+	 * @param severity How severe the effect is in the HUD. See
+	 * {@link jr.dungeon.entities.effects.StatusEffect.Severity}
+	 * @param duration How long the effect lasts for.
+	 */</span><span class='code'>
+	public Ablaze(Severity severity, int duration) {
+		super(duration);
+		
+		this.severity = severity;
+	}
+
+	@Override
+	public void turn() {
+		super.turn();
+
+		if (getEntity() instanceof EntityLiving) {
+			EntityLiving el = (EntityLiving) getEntity();
+
+			if (el.getLevel().getTileStore().getTileType(el.getX(), el.getY()).isWater()) {
+				putOut = true;
+				setTurnsPassed(getDuration());
+				getMessenger().greenYou("douse the flames in the water!");
+				return;
+			}
+
+			if (getDamage() >= el.getMaxHealth()) {
+				el.kill(DamageSource.FIRE, getDamage(), null);
+			} else {
+				el.damage(DamageSource.FIRE, getDamage(), null);
+			}
+		}
+	}
+
+	@Override
+	public String getName() {
+		return "Ablaze";
+	}
+
+	@Override
+	public Severity getSeverity() {
+		return severity;
+	}
+
+	@Override
+	public void onEnd() {
+		if (!putOut) {
+			getMessenger().greenThe("fire wears off after %d turn%s.", getTurnsPassed(), getTurnsPassed() > 1 ? "s" : "");
+		}
+	}
+
+	public int getDamage() {
+		switch(severity) {
+			case CRITICAL:
+				return 2;
+			case MAJOR:
+				return getTurnsPassed() % 2 == 0 ? 1 : 0;
+			case MINOR:
+				return getTurnsPassed() % 4 == 0 ? 1 : 0;
+		}
+		
+		return 0;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.items.weapons.html'>jr.dungeon.items.weapons</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.items.weapons.ItemLongsword</TD><TD>9</TD><TD>7.0% &nbsp; (50/661)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.items.weapons;
+
+import jr.dungeon.Level;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.skills.Skill;
+import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.items.Material;
+
+public class ItemLongsword extends ItemSword {
+	public ItemLongsword() {</span><span class='comment'> // unserialisation constructor
+</span><span class='code'>		super();
+	}
+	
+	public ItemLongsword(Level level) {</span><span class='comment'> // chest spawning constructor
+</span><span class='code'>		super(level);
+	}
+	
+	public ItemLongsword(Material material) {
+		super(material);
+	}
+	
+	@Override
+	public String getSwordName() {
+		return "longsword";
+	}
+	
+	@Override
+	public ItemAppearance getAppearance() {
+		return ItemAppearance.APPEARANCE_LONGSWORD;
+	}
+	
+	@Override
+	public DamageSource getMeleeDamageSource() {
+		return DamageSource.LONGSWORD;
+	}
+	
+	@Override
+	public int getToHitBonus() {
+		return 0;
+	}
+	
+	@Override
+	public Skill getSkill() {
+		return Skill.SKILL_LONGSWORD;
+	}
+	
+	@Override
+	public boolean isTwoHanded() {
+		return true;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

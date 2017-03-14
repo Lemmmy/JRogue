@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.player.visitors.html'>jr.dungeon.entities.player.visitors</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.player.visitors.PlayerLoot</TD><TD>1</TD><TD>0.0% &nbsp; (0/989)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.player.visitors;
+
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.interfaces.Lootable;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.utils.EntityHelper;
+import jr.dungeon.events.ContainerShowEvent;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class PlayerLoot implements PlayerVisitor {
+	@Override
+	public void visit(Player player) {
+		List&lt;Entity> containerEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
+			.filter(e -> !(e instanceof Player))
+			.filter(EntityHelper::hasContainer)
+			.collect(Collectors.toList());
+		
+		if (containerEntities.size() == 0) {
+			player.getDungeon().log("There is nothing to loot here.");
+			return;
+		}
+		
+		player.getDungeon().turn();
+		
+		Entity containerEntity = containerEntities.get(0);
+
+		if (containerEntity instanceof Lootable) {
+			Lootable l = (Lootable)containerEntity;
+
+			if (!l.isLootable()) {
+				l.getLootFailedString().ifPresent(s -> player.getDungeon().log(s));
+				return;
+			}
+
+			l.getLootSuccessString().ifPresent(s -> player.getDungeon().log(s));
+			player.getDungeon().triggerEvent(new ContainerShowEvent(containerEntity));
+		} else {
+			player.getDungeon().yellowYou("can't loot that!");
+		}
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

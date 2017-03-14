@@ -1,0 +1,36 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.entities.events.html'>jr.dungeon.entities.events</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.entities.events.EntityRemovedEvent</TD><TD>1</TD><TD>0.0% &nbsp; (0/274)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.entities.events;
+
+import jr.dungeon.entities.Entity;
+import jr.dungeon.events.DungeonEvent;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class EntityRemovedEvent extends DungeonEvent {
+	private Entity entity;
+	
+	@Override
+	public boolean isSelf(Object other) {
+		return other.equals(entity);
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>

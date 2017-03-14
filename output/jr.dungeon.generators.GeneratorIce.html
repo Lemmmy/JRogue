@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>JDocCoverage Report - 14-Mar-2017 09:54:02</TITLE>
+<link rel='stylesheet' type='text/css' href='default.css'>
+</HEAD>
+<BODY>
+<TABLE cellspacing='0' class='header'><TR><TD class='title'>JDocCoverage Report - 14-Mar-2017 09:54:02</TD></TR>
+<TR><TD class='menu'><a class='menu' href='index.html'>Overview</a> | <a class='menu' href='jr.dungeon.generators.html'>jr.dungeon.generators</a></TD></TR></TABLE>
+<p>
+<TABLE cellspacing='0'>
+<TR><TH>Name</TH><TH>method, %</TH><TH>comment, %</TH><TH>TODO</TH><TH>@see</TH></TR>
+
+<TR><TD>jr.dungeon.generators.GeneratorIce</TD><TD>6</TD><TD>0.0% &nbsp; (0/710)</TD><TD>0</TD><TD>0</TD></TR>
+</TABLE>
+<CODE><PRE>
+<span class='code'>package jr.dungeon.generators;
+
+import jr.dungeon.Level;
+import jr.dungeon.generators.rooms.RoomBasic;
+import jr.dungeon.generators.rooms.RoomIce;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
+
+public class GeneratorIce extends GeneratorRooms {
+	{
+		roomTypes.clear();
+		
+		roomTypes.add(15, RoomBasic.class);
+		roomTypes.add(1, RoomIce.class);
+	}
+	
+	public GeneratorIce(Level level, Tile sourceTile) {
+		super(level, sourceTile);
+	}
+	
+	@Override
+	public Climate getClimate() {
+		return Climate.COLD;
+	}
+	
+	@Override
+	public Class&lt;? extends DungeonGenerator> getNextGenerator() {
+		return GeneratorIce.class;
+	}
+	
+	@Override
+	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
+		return MonsterSpawningStrategy.ICE;
+	}
+	
+	@Override
+	public boolean generate() {
+		return super.generate() && verify();
+		
+	}
+	
+	@Override
+	public TileType getTorchTileType() {
+		return TileType.TILE_ROOM_TORCH_ICE;
+	}
+}
+</span>
+</PRE></CODE>
+</BODY>
+</HTML>
