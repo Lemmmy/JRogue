@@ -28,12 +28,29 @@ import java.util.*;
 @Getter
 @Setter
 public abstract class EntityLiving extends EntityTurnBased implements ContainerOwner {
+	/**
+	 * The Entity's health.
+	 */
 	private int health;
+	/**
+	 * The Entity's maximum health.
+	 */
 	protected int maxHealth;
 	
+	/**
+	 * The Entity's experience level - i.e. how much they've levelled up.
+	 */
 	private int experienceLevel = 1;
+	/**
+	 * The Entity's progress through their current experience level.
+	 *
+	 * @see #getXPForLevel(int)
+	 */
 	private int experience = 0;
 	
+	/**
+	 * The current turn counter for the Entity's
+	 */
 	@Setter(AccessLevel.NONE)
 	private int healingTurns = 0;
 	

@@ -52,7 +52,7 @@ public class TextPopups implements DungeonEventListener {
 		));
 	}
 	
-	@DungeonEventHandler(invocationTime = DungeonEventInvocationTime.NEXT_TURN)
+	@DungeonEventHandler(invocationTime = DungeonEventInvocationTime.TURN_COMPLETE)
 	public void onPlayerEnergyChanged(EntityEnergyChangedEvent e) {
 		Entity entity = e.getEntity();
 		int delta = e.getNewEnergy() - e.getOldEnergy();

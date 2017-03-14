@@ -42,18 +42,50 @@ import java.util.zip.GZIPOutputStream;
  * levels, and player.
  */
 public class Dungeon implements Messenger, Serialisable, Persisting {
+	/**
+	 * The amount of 'ticks' in a turn.
+	 *
+	 * @see EntityLiving
+	 */
 	public static final int NORMAL_SPEED = 12;
 	
+	/**
+	 * The default {@link Level} width. This may not be the Level's actual width. Use {@link TileStore#getWidth()}
+	 * for that instead.
+	 */
 	public static final int LEVEL_WIDTH = 90;
+	/**
+	 * The default {@link Level} height. This may not be the Level's actual height. Use {@link TileStore#getHeight()}
+	 * for that instead.
+	 */
 	public static final int LEVEL_HEIGHT = 40;
 	
+	/**
+	 * The random range of turns in which a random {@link jr.dungeon.entities.monsters.Monster} will spawn somewhere on
+	 * the {@link Level}.
+	 *
+	 * @see MonsterSpawner#spawnNewMonsters()
+	 */
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
+	/**
+	 * The 'GAME' log level.
+	 */
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
-	private final List<DungeonEventListener> listeners = new ArrayList<>();
+	/**
+	 * List of {@link DungeonEventListener}s that the Dungeon should send events to.
+	 */
+	private final Set<DungeonEventListener> listeners = new HashSet<>();
+	/**
+	 * List of {@link DungeonEvent}s to be sent to {@link DungeonEventListener}s with the flag
+	 * {@link DungeonEventHandler#invocationTime()} set to {@link DungeonEventInvocationTime#TURN_COMPLETE}.
+	 */
 	private final List<DungeonEvent> eventQueueNextTurn = new LinkedList<>();
 	
+	/**
+	 * rand
+	 */
 	private Pcg32 rand = new Pcg32();
 	
 	/**
@@ -66,15 +98,43 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	@Getter @Setter private String name;
 	
+	/**
+	 * Map of the Dungeon's {@link Level}s with unique UUIDs as keys for serialisation reference.
+	 */
 	private Map<UUID, Level> levels = new HashMap<>();
+	/**
+	 * The {@link Level} that the {@link Player} is currently on.
+	 */
 	@Getter private Level level;
+	/**
+	 * The actual {@link Player} entity.
+	 */
 	@Getter @Setter private Player player;
 	
+	/**
+	 * The number of turns that have passed.
+	 */
 	@Getter private long turn = 0;
-	@Getter private long exerciseCounter = 500;
+	/**
+	 * Random counter for ambient dungeon 'sounds'.
+	 *
+	 * @see PassiveSoundEmitter
+	 */
 	@Getter private long passiveSoundCounter = 0;
+	/**
+	 * Random counter for new monster spwans.
+	 *
+	 * @see MonsterSpawner
+	 */
 	@Getter private long monsterSpawnCounter = 50;
 	
+	/**
+	 * A turn in which something happened is usually a turn where something that should interrupt a
+	 * {@link #isDoingBulkAction() bulk action}, for example a {@link jr.dungeon.entities.monsters.Monster} attacking
+	 * the {@link Player}.
+	 *
+	 * @return Whether or not something critical happened in this turn.
+	 */
 	@Getter private boolean somethingHappened;
 	
 	/**
@@ -89,11 +149,25 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	@Getter @Setter private boolean doingBulkAction;
 	
+	/**
+	 * @see Prompt
+	 *
+	 * @return The curernt {@link Prompt} or null.
+	 */
 	@Getter private Prompt prompt;
+	/**
+	 * The current user-specified {@link Settings}.
+	 */
 	private Settings settings;
 	
+	/**
+	 * The directory in which user data is saved, including saves and bones.
+	 */
 	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
-
+	
+	/**
+	 * Persistent object for user-defined keys, typically for use by mods or the renderer.
+	 */
 	private final JSONObject persistence = new JSONObject();
 	
 	/**
@@ -197,7 +271,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		obj.put("name", getName());
 		obj.put("originalName", getOriginalName());
 		obj.put("turn", getTurn());
-		obj.put("exerciseCounter", exerciseCounter);
 		obj.put("passiveSoundCounter", passiveSoundCounter);
 		obj.put("monsterSpawnCounter", monsterSpawnCounter);
 		
@@ -247,7 +320,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			name = obj.getString("name");
 			originalName = obj.getString("originalName");
 			turn = obj.getInt("turn");
-			exerciseCounter = obj.getInt("exerciseCounter");
 			passiveSoundCounter = obj.getInt("passiveSoundCounter");
 			monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
 			
@@ -574,7 +646,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		for (Iterator<DungeonEvent> iterator = eventQueueNextTurn.iterator(); iterator.hasNext(); ) {
 			DungeonEvent event = iterator.next();
-			triggerEvent(event, DungeonEventInvocationTime.NEXT_TURN);
+			triggerEvent(event, DungeonEventInvocationTime.TURN_COMPLETE);
 			iterator.remove();
 		}
 		
@@ -689,7 +761,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	/**
 	 * Triggers a dungeon event, notifying all listeners.
 	 * @param event The event to trigger.
-	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>NEXT_TURN</code> to delay it to the next turn.
+	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>TURN_COMPLETE</code> to delay it to the next turn.
 	 */
 	@SuppressWarnings("unchecked")
 	public void triggerEvent(DungeonEvent event, DungeonEventInvocationTime invocationTime) {
