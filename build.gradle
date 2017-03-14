@@ -101,3 +101,9 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 		attributes "Main-Class": mainClassName
 	}
 }
+
+javadoc {
+	source = sourceSets.main.allJava
+	title = "JRogue API Documentation"
+	destinationDir = file("docs/")
+}

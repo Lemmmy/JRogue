@@ -26,6 +26,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class GeneratorRooms extends DungeonGenerator {
+	/**
+	 * {@link WeightedCollection Weighted collection} containing probability that certain room types would spawn.
+	 * When overriding, clear the collection first then add your own.
+	 */
 	protected final WeightedCollection<Class<? extends Room>> roomTypes = new WeightedCollection<>();
 	
 	{
@@ -34,26 +38,72 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		roomTypes.add(1, RoomGraveyard.class);
 	}
 	
+	/**
+	 * Minimum room generation width in tiles.
+	 */
 	protected int minRoomWidth = 5;
+	/**
+	 * Maximum room generation width in tiles.
+	 */
 	protected int maxRoomWidth = 20;
 	
+	/**
+	 * Minimum room generation height in tiles.
+	 */
 	protected int minRoomHeight = 5;
+	/**
+	 * Maximum room generation height in tiles.
+	 */
 	protected int maxRoomHeight = 9;
 	
+	/**
+	 * Minimum distance in tiles on the X axis when placing two rooms.
+	 */
 	protected int minRoomDistanceX = 1;
+	/**
+	 * Maximum distance in tiles on the X axis when placing two rooms.
+	 */
 	protected int maxRoomDistanceX = 15;
+	/**
+	 * Minimum offset in tiles on the X axis when placing two rooms.
+	 */
 	protected int minRoomOffsetX = -4;
+	/**
+	 * Maximum offset in tiles on the X axis when placing two rooms.
+	 */
 	protected int maxRoomOffsetX = 4;
 	
+	/**
+	 * Minimum distance in tiles on the Y axis when placing two rooms.
+	 */
 	protected int minRoomDistanceY = 1;
+	/**
+	 * Maximum distance in tiles on the Y axis when placing two rooms.
+	 */
 	protected int maxRoomDistanceY = 5;
+	/**
+	 * Minimum offset in tiles on the Y axis when placing two rooms.
+	 */
 	protected int minRoomOffsetY = -4;
+	/**
+	 * Maximum offset in tiles on the Y axis when placing two rooms.
+	 */
 	protected int maxRoomOffsetY = 4;
 	
+	/**
+	 * Maximum slope (between 0 and 1) at which the coridoors will be L-shaped or S shaped, and instead turn into a
+	 * straight line.
+	 */
 	protected static final float CORRIDOR_LINE_SLOPE = 0.2f;
 	
+	/**
+	 * Probability of a pile of gold spawning in any room.
+	 */
 	private static final double PROBABILITY_GOLD_DROP = 0.08;
 	
+	/**
+	 * {@link WeightedCollection Weighted probability} of the count of special features in on level.
+	 */
 	protected final WeightedCollection<Integer> probabilitySpecialFeatureCount = new WeightedCollection<>();
 	
 	{
@@ -63,6 +113,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		probabilitySpecialFeatureCount.add(1, 3);
 	}
 	
+	/**
+	 * {@link WeightedCollection Weighted probablity} of special features in a level.
+	 *
+	 * During generation, a random count will be chosen based on a weighted probability (see
+	 * {@link #probabilitySpecialFeatureCount}), and then for each of the count, a random feature is chosen from this
+	 * list.
+	 */
 	protected final WeightedCollection<Class<? extends SpecialRoomFeature>> probabilitySpecialFeatures
 		= new WeightedCollection<>();
 	
@@ -72,6 +129,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		probabilitySpecialFeatures.add(1, FeatureAltar.class);
 	}
 	
+	/**
+	 * The {@link VerificationPathfinder Pathfinder} used to verify a level is complete - the pathfinder travels from
+	 * the Level's start point to the end point during the verification step, and if it can't reach, the level is
+	 * scrapped and a new one is generated.
+	 */
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
 	protected List<Room> rooms = new ArrayList<>();
