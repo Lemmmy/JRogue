@@ -4,6 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 
+/**
+ * Beatitude aspect - the 'holiness' of an item.
+ *
+ * @see Beatitude
+ * @see Aspect
+ */
 @Getter
 @Setter
 public class AspectBeatitude extends Aspect {
@@ -44,9 +50,21 @@ public class AspectBeatitude extends Aspect {
 		return beatitude != null ? beatitude.hashCode() : 0;
 	}
 	
+	/**
+	 * Beatitude - the 'holiness' of an item - whether its blessed, uncursed or cursed.
+	 */
 	public enum Beatitude {
+		/**
+		 * The item is blessed - it has special perks and properties that the item usually doesn't have.
+		 */
 		BLESSED,
+		/**
+		 * The item is uncursed, or neutral. It has its regular properties.
+		 */
 		UNCURSED,
+		/**
+		 * The item is cursed - it has negative properties that are almost always a problem to the player.
+		 */
 		CURSED
 	}
 }
