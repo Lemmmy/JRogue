@@ -25,6 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Dungeon generator that generates rooms connected with corridors.
+ */
 public abstract class GeneratorRooms extends DungeonGenerator {
 	/**
 	 * {@link WeightedCollection Weighted collection} containing probability that certain room types would spawn.
@@ -136,11 +139,24 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	private VerificationPathfinder pathfinder = new VerificationPathfinder();
 	
+	/**
+	 * List of rooms created during generation.
+	 */
 	protected List<Room> rooms = new ArrayList<>();
 	
+	/**
+	 * The tile that the player enters this map from - the level entrance e.g. the staircase up.
+	 */
 	private Tile startTile;
+	/**
+	 * The primary destination tile for this level - does not include branches. Typically the stiarcase down.
+	 */
 	private Tile endTile;
 	
+	/**
+	 * @param level The level that this generator is generating for.
+	 * @param sourceTile The tile that the player came from in the pervious level.
+	 */
 	public GeneratorRooms(Level level, Tile sourceTile) {
 		super(level, sourceTile);
 	}
@@ -430,6 +446,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			.collect(Collectors.toList());
 		
 		Room nextStairsRoom = RandomUtils.randomFrom(possibleRooms);
+		assert nextStairsRoom != null;
 		
 		int stairX = nextInt(
 			nextStairsRoom.getX() + 2,
