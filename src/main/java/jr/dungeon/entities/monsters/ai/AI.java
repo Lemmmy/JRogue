@@ -20,6 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Artificial 'intelligence' class. Used to automate movement and actions of monsters in the dungeon, for example
+ * making them try to follow the player or attack them.
+ *
+ * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
+ */
 @RequiredArgsConstructor
 public abstract class AI implements Serialisable, Persisting, DungeonEventListener {
 	@NonNull @Getter private Monster monster;

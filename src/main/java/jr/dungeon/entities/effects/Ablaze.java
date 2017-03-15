@@ -4,6 +4,9 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
 
+/**
+ * Fire status effect.
+ */
 public class Ablaze extends StatusEffect {
 	private Severity severity;
 	
