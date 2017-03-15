@@ -11,15 +11,10 @@ import lombok.Getter;
 
 import java.util.Random;
 
+/**
+ * Generic dungeon level generator class with many utilities for generation.
+ */
 public abstract class DungeonGenerator {
-	private static final WeightedCollection<TileType> DOOR_TYPES = new WeightedCollection<>();
-	
-	static {
-		DOOR_TYPES.add(3, TileType.TILE_ROOM_DOOR_LOCKED);
-		DOOR_TYPES.add(4, TileType.TILE_ROOM_DOOR_CLOSED);
-		DOOR_TYPES.add(6, TileType.TILE_ROOM_DOOR_OPEN);
-	}
-	
 	@Getter protected Level level;
 	@Getter protected Tile sourceTile;
 	
@@ -41,13 +36,20 @@ public abstract class DungeonGenerator {
 		return rand.nextInt(max - min) + min;
 	}
 	
+	/**
+	 * Places a line of tiles.
+	 *
+	 * @param startX The starting X position of the line.
+	 * @param startY The starting Y position of the line.
+	 * @param endX The ending X position of the line.
+	 * @param endY The ending Y position of the line.
+	 * @param tile The tile to build the line with.
+	 */
 	protected void buildLine(int startX,
 							 int startY,
 							 int endX,
 							 int endY,
-							 TileType tile,
-							 boolean buildableCheck,
-							 boolean buildDoors) {
+							 TileType tile) {
 		float diffX = endX - startX;
 		float diffY = endY - startY;
 		
@@ -62,8 +64,6 @@ public abstract class DungeonGenerator {
 			
 			if (level.getTileStore().getTileType(x, y).isBuildable()) {
 				level.getTileStore().setTileType(x, y, tile);
-			} else if (buildDoors && canPlaceDoor(x, y)) {
-				safePlaceDoor(x, y);
 			}
 		}
 	}
@@ -82,21 +82,6 @@ public abstract class DungeonGenerator {
 		}
 		
 		return false;
-	}
-	
-	protected void safePlaceDoor(int x, int y) {
-		level.getTileStore().setTileType(x, y, DOOR_TYPES.next());
-		
-		for (int[] direction : Utils.DIRECTIONS) {
-			int nx = x + direction[0];
-			int ny = y + direction[1];
-			
-			TileType t = level.getTileStore().getTileType(nx, ny);
-			
-			if (t == TileType.TILE_GROUND) {
-				level.getTileStore().setTileType(nx, ny, TileType.TILE_CORRIDOR);
-			}
-		}
 	}
 	
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
