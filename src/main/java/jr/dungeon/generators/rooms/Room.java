@@ -36,22 +36,6 @@ public abstract class Room {
 	 */
 	private int height;
 	
-	/**
-	 * @param level The {@link Level} this room is part of.
-	 * @param x The X position of the room's top-left corner.
-	 * @param y The Y position of the room's top-left corner.
-	 * @param width The width of the room.
-	 * @param height The height of the room.
-	 */
-	public Room(Level level, int x, int y, int width, int height) {
-		this.level = level;
-		
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-	
 	/***
 	 * List of rooms this room should be connected to.
 	 *
@@ -70,6 +54,22 @@ public abstract class Room {
 	 */
 	@Setter private boolean spawn = false;
 	
+	/**
+	 * @param level The {@link Level} this room is part of.
+	 * @param x The X position of the room's top-left corner.
+	 * @param y The Y position of the room's top-left corner.
+	 * @param width The width of the room.
+	 * @param height The height of the room.
+	 */
+	public Room(Level level, int x, int y, int width, int height) {
+		this.level = level;
+		
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+	
 	public int getCenterX() {
 		return getX() + (int) Math.floor(getWidth() / 2);
 	}
@@ -79,22 +79,41 @@ public abstract class Room {
 	}
 	
 	/**
-	 * Add the list of rooms this room should be connected to during the
+	 * Add a room to the list of rooms this room should be connected to during the
 	 * {@link GeneratorRooms#graphRooms() graphing step}.
 	 *
 	 * @param room The other room this room should be connected to.
 	 *
-	 * @return true (as specified by {@link java.util.Collection#add(Object)}.
+	 * @return <tt>true</tt> if the collection changed as a result of this call (as specified by
+	 * {@link java.util.Collection#add(Object)}.
 	 */
 	public boolean addTouching(Room room) {
 		return touching.add(room);
 	}
 	
+	/**
+	 * Add a connection point to the list of
+	 * {@link jr.dungeon.generators.GeneratorRooms.ConnectionPoint connection points} involving this room - points a
+	 * door should be placed and a corridor built from.
+	 *
+	 * @param point The connection point to add.
+	 *
+	 * @return <tt>true</tt> if the collection changed as a result of this call (as specified by
+	 * {@link java.util.Collection#add(Object)}.
+	 */
 	public boolean addConnectionPoint(GeneratorRooms.ConnectionPoint point) {
 		return connectionPoints.add(point);
 	}
 	
+	/**
+	 * Build this room's basic structure in the {@link Level}.
+	 *
+	 * @param generator The generator that is generating this room.
+	 */
 	public abstract void build(GeneratorRooms generator);
 	
+	/**
+	 * Add special features (like {@link jr.dungeon.entities.Entity Entities} to this room.
+	 */
 	public abstract void addFeatures();
 }
