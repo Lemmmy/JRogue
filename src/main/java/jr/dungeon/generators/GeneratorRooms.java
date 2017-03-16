@@ -19,6 +19,7 @@ import jr.utils.Path;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import jr.utils.WeightedCollection;
+import lombok.Getter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -393,7 +394,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	/**
 	 * Builds an L-shaped corridoor between two points.
 	 *
-	 * @param point The {@link jr.dungeon.generators.DungeonGenerator.ConnectionPoint connection point} containing
+	 * @param point The {@link ConnectionPoint connection point} containing
 	 *                 the room connection data.
 	 */
 	protected void buildLCorridor(ConnectionPoint point) {
@@ -421,7 +422,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	/**
 	 * Builds an S-shaped corridor between two points.
 	 *
-	 * @param point The {@link jr.dungeon.generators.DungeonGenerator.ConnectionPoint connection point} containing
+	 * @param point The {@link ConnectionPoint connection point} containing
 	 *                 the room connection data.
 	 */
 	protected void buildSCorridor(ConnectionPoint point) {
@@ -667,6 +668,219 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return Whether or not its possible to place a door here - checks if the tile is a wall, all adjacent tiles are
+	 * not doors, and this tile is not a wall corner.
+	 */
+	public boolean canPlaceDoor(int x, int y) {
+		if (level.getTileStore().getTileType(x, y).isWallTile()) {
+			TileType[] adjacentTiles = level.getTileStore().getAdjacentTileTypes(x, y);
+			
+			for (TileType tile : adjacentTiles) {
+				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
+					return false;
+				}
+			}
+			
+			return getWallOrientation(adjacentTiles) != Orientation.CORNER;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @param adjacentTiles The list of adjacent tile types from
+	 * {@link jr.dungeon.TileStore#getAdjacentTileTypes(int, int)}.
+	 *
+	 * @return The {@link Orientation} of the wall.
+	 *
+	 * @see Orientation
+	 */
+	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		
+		if (h && !v) {
+			return Orientation.HORIZONTAL;
+		} else if (!h && v) {
+			return Orientation.VERTICAL;
+		} else {
+			return Orientation.CORNER;
+		}
+	}
+	
+	/**
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return The {@link Orientation} of the wall.
+	 */
+	protected Orientation getWallOrientation(int x, int y) {
+		return getWallOrientation(level.getTileStore().getAdjacentTileTypes(x, y));
+	}
+	
+	/**
+	 * Gets a {@link ConnectionPoint} between two rooms - this finds a location that a door can be placed on each room,
+	 * and a strategy for corridors to be built connecting them.
+	 *
+	 * @param a One of the two rooms to be connected.
+	 * @param b The other of the two rooms to be connected.
+	 *
+	 * @return The {@link ConnectionPoint} between the two rooms.
+	 */
+	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
+		int dx = Math.abs(b.getCenterX() - a.getCenterX());
+		int dy = Math.abs(b.getCenterY() - a.getCenterY());
+		
+		if (dx > dy) {
+			if (
+				dx <= 5 ||
+				b.getCenterX() < a.getCenterX() ||
+				a.getX() + a.getWidth() >= b.getX() ||
+				b.getX() + b.getWidth() <= a.getX()
+			) {
+				if (b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
+					return new ConnectionPoint(
+						a.getX() + a.getWidth() - 1, a.getCenterY(),
+						b.getCenterX(), b.getY() + b.getHeight() - 1,
+						Orientation.HORIZONTAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getX() + b.getWidth() - 1, b.getCenterY(),
+						a.getCenterX(), a.getY() + a.getHeight() - 1,
+						Orientation.HORIZONTAL
+					);
+				}
+			} else {
+				if (b.getX() > a.getX() || b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
+					return new ConnectionPoint(
+						a.getX() + a.getWidth() - 1, a.getCenterY(),
+						b.getX(), b.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getX() + b.getWidth() - 1, b.getCenterY(),
+						a.getX(), a.getCenterY(),
+						Orientation.HORIZONTAL
+					);
+				}
+			}
+		} else {
+			if (
+				dy <= 5 ||
+				b.getCenterX() - a.getCenterX() < 0 ||
+				a.getY() + a.getHeight() == b.getY() ||
+				b.getY() + b.getHeight() == a.getY()
+			) {
+				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
+					return new ConnectionPoint(
+						a.getCenterX(), a.getY() + a.getHeight() - 1,
+						b.getX() + b.getWidth() - 1, b.getCenterY(),
+						Orientation.VERTICAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getCenterX(), b.getY() + b.getHeight() - 1,
+						a.getX() + a.getWidth() - 1, a.getCenterY(),
+						Orientation.VERTICAL
+					);
+				}
+			} else {
+				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
+					return new ConnectionPoint(
+						a.getCenterX(), a.getY() + a.getHeight() - 1,
+						b.getCenterX(), b.getY(),
+						Orientation.VERTICAL
+					);
+				} else {
+					return new ConnectionPoint(
+						b.getCenterX(), b.getY() + b.getHeight() - 1,
+						a.getCenterX(), a.getY(),
+						Orientation.VERTICAL
+					);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * The orientation of a wall, based on its surrounding tiles.
+	 */
+	public enum Orientation {
+		/**
+		 * The wall is horizontal - it has adjacent walls west amd east.
+		 */
+		HORIZONTAL,
+		/**
+		 * The wall is vertical - it has adjacent walls north and south.
+		 */
+		VERTICAL,
+		/**
+		 * The wall is a corner - it has one adjacent wall on its horizontal and vertical axis.
+		 */
+		CORNER
+	}
+	
+	/**
+	 * A connection point between two rooms - decides where doors should be built, and how a corridor should be built
+	 * between them.
+	 */
+	@Getter
+	public class ConnectionPoint {
+		/**
+		 * The X position of the first room's door.
+		 */
+		private int ax;
+		/**
+		 * The Y position of the first room's door.
+		 */
+		private int ay;
+		/**
+		 * The X position of the second room's door.
+		 */
+		private int bx;
+		/**
+		 * The Y position of the second room's door.
+		 */
+		private int by;
+		
+		/**
+		 * The intended orientation of the corridor to be built.
+		 */
+		private Orientation intendedOrientation;
+		/**
+		 * The orientation of the wall where door A will be built.
+		 */
+		private Orientation orientationA;
+		/**
+		 * The orientation of the wall where door B will be built.
+		 */
+		private Orientation orientationB;
+		
+		/**
+		 * @param ax The X position of the first room's door.
+		 * @param ay The Y position of the first room's door.
+		 * @param bx The X position of the second room's door.
+		 * @param by The Y position of the second room's door.
+		 * @param intendedOrientation The intended orientation of the corridor to be built.
+		 */
+		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
+			this.ax = ax;
+			this.ay = ay;
+			this.bx = bx;
+			this.by = by;
+			
+			this.intendedOrientation = intendedOrientation;
+			this.orientationA = getWallOrientation(ax, ay);
+			this.orientationB = getWallOrientation(bx, by);
+		}
 	}
 	
 	public TileType getWallTileType() {

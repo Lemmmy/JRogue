@@ -32,7 +32,7 @@ public abstract class Room {
 	 */
 	private List<Room> touching = new ArrayList<>();
 	
-	private List<DungeonGenerator.ConnectionPoint> connectionPoints = new ArrayList<>();
+	private List<GeneratorRooms.ConnectionPoint> connectionPoints = new ArrayList<>();
 	
 	@Setter private boolean spawn = false;
 	
@@ -48,7 +48,7 @@ public abstract class Room {
 		return touching.add(room);
 	}
 	
-	public boolean addConnectionPoint(DungeonGenerator.ConnectionPoint point) {
+	public boolean addConnectionPoint(GeneratorRooms.ConnectionPoint point) {
 		return connectionPoints.add(point);
 	}
 	

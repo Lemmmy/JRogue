@@ -15,12 +15,30 @@ import java.util.Random;
  * Generic dungeon level generator class with many utilities for generation.
  */
 public abstract class DungeonGenerator {
+	/**
+	 * The {@link Level} that this generator is generating for.
+	 */
 	@Getter protected Level level;
+	/**
+	 * The tile that the Player enters this level via, typically the staircase down in the previous level. Usually
+	 * used for assigning generator types.
+	 */
 	@Getter protected Tile sourceTile;
 	
+	/**
+	 * Local random number generator instance - uses pcg32 algo.
+	 */
 	protected Pcg32 rand = new Pcg32();
+	/**
+	 * Local random number generator instance - uses java algo.
+	 */
 	protected Random jrand = new Random();
 	
+	/**
+	 * @param level The {@link Level} that this generator is generating for.
+	 * @param sourceTile The tile that the Player enters this level via, typically the staircase down in the previous
+	 *                   level. Usually used for assigning generator types.
+	 */
 	public DungeonGenerator(Level level, Tile sourceTile) {
 		this.level = level;
 		this.sourceTile = sourceTile;
@@ -30,8 +48,21 @@ public abstract class DungeonGenerator {
 	
 	public abstract MonsterSpawningStrategy getMonsterSpawningStrategy();
 	
+	/**
+	 * Generates the level.
+	 *
+ 	 * @return Whether the level is valid and complete or not. If false, a new level will be generated.
+	 */
 	public abstract boolean generate();
 	
+	/**
+	 * Quick utility method for generating a random number within a range. Uses the #rand instance (pcg32 algo).
+	 *
+	 * @param min The minimum bound for the random number (inclusive).
+	 * @param max The maximum bound for the random number (exclusive).
+	 *
+	 * @return A (hopefully) random number within the min/max bounds.
+	 */
 	protected int nextInt(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}
@@ -65,135 +96,6 @@ public abstract class DungeonGenerator {
 			if (level.getTileStore().getTileType(x, y).isBuildable()) {
 				level.getTileStore().setTileType(x, y, tile);
 			}
-		}
-	}
-	
-	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTileStore().getTileType(x, y).isWallTile()) {
-			TileType[] adjacentTiles = level.getTileStore().getAdjacentTileTypes(x, y);
-			
-			for (TileType tile : adjacentTiles) {
-				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
-					return false;
-				}
-			}
-			
-			return getWallOrientation(adjacentTiles) != Orientation.CORNER;
-		}
-		
-		return false;
-	}
-	
-	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		
-		if (h && !v) {
-			return Orientation.HORIZONTAL;
-		} else if (!h && v) {
-			return Orientation.VERTICAL;
-		} else {
-			return Orientation.CORNER;
-		}
-	}
-	
-	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.getTileStore().getAdjacentTileTypes(x, y));
-	}
-	
-	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
-		int dx = Math.abs(b.getCenterX() - a.getCenterX());
-		int dy = Math.abs(b.getCenterY() - a.getCenterY());
-		
-		if (dx > dy) {
-			if (dx <= 5 || b.getCenterX() < a.getCenterX() || a.getX() + a.getWidth() >= b.getX() || b
-				.getX() + b.getWidth() <= a.getX()) {
-				if (b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
-					return new ConnectionPoint(
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
-						Orientation.HORIZONTAL
-					);
-				} else {
-					return new ConnectionPoint(
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
-						Orientation.HORIZONTAL
-					);
-				}
-			} else {
-				if (b.getX() > a.getX() || b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
-					return new ConnectionPoint(
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
-						b.getX(), b.getCenterY(),
-						Orientation.HORIZONTAL
-					);
-				} else {
-					return new ConnectionPoint(
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
-						a.getX(), a.getCenterY(),
-						Orientation.HORIZONTAL
-					);
-				}
-			}
-		} else {
-			if (dy <= 5 || b.getCenterX() - a.getCenterX() < 0 || a.getY() + a.getHeight() == b
-				.getY() || b.getY() + b.getHeight() == a.getY()) {
-				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
-					return new ConnectionPoint(
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
-						Orientation.VERTICAL
-					);
-				} else {
-					return new ConnectionPoint(
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
-						Orientation.VERTICAL
-					);
-				}
-			} else {
-				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
-					return new ConnectionPoint(
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
-						b.getCenterX(), b.getY(),
-						Orientation.VERTICAL
-					);
-				} else {
-					return new ConnectionPoint(
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
-						a.getCenterX(), a.getY(),
-						Orientation.VERTICAL
-					);
-				}
-			}
-		}
-	}
-	
-	public enum Orientation {
-		HORIZONTAL,
-		VERTICAL,
-		CORNER
-	}
-	
-	@Getter
-	public class ConnectionPoint {
-		private int ax, ay;
-		private int bx, by;
-		
-		private Orientation intendedOrientation;
-		private Orientation orientationA;
-		private Orientation orientationB;
-		
-		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
-			this.ax = ax;
-			this.ay = ay;
-			this.bx = bx;
-			this.by = by;
-			
-			this.intendedOrientation = intendedOrientation;
-			this.orientationA = getWallOrientation(ax, ay);
-			this.orientationB = getWallOrientation(bx, by);
 		}
 	}
 }
