@@ -3,7 +3,7 @@ package jr;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
-import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.Renderer;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -44,7 +44,7 @@ public class JRogue {
 	private static Settings settings;
 
 	public Dungeon dungeon;
-	public jr.rendering.Renderer renderer;
+	public Renderer renderer;
 	
 	public static final long START_TIME = TimeUtils.millis();
 	
@@ -81,7 +81,7 @@ public class JRogue {
 
 	private void start(Settings settings) {
 		dungeon = Dungeon.load();
-		renderer = new GDXRenderer(dungeon); // TODO: Make this configurable
+		renderer = new Renderer(dungeon); // TODO: Make this configurable
 	}
 	
 	public static void main(String[] args) {
