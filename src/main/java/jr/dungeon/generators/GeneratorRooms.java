@@ -640,6 +640,17 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		return true;
 	}
 	
+	/**
+	 * Builds a room from a room class with the specified dimensions and adds it to the #rooms list.
+	 *
+	 * @param roomType The room class to instantiate and build.
+	 * @param roomX The X position of the top left corner of the room.
+	 * @param roomY The Y position of the top left corner of the room.
+	 * @param roomWidth The width of the room.
+	 * @param roomHeight The height of the room.
+	 *
+	 * @return The newly built room.
+	 */
 	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
 		try {
 			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
