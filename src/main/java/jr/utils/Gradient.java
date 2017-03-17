@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.Pool;
  * the gradient. Uses GDX colours.
  */
 public class Gradient implements Pool.Poolable {
+	/**
+	 * The pool of gradients.
+	 */
 	private static final Pool<Gradient> gradientPool = new Pool<Gradient>() {
 		@Override
 		protected Gradient newObject() {
