@@ -29,25 +29,52 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class JRogue {
+	/**
+	 * Filename of the config file in the home folder.
+	 */
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
 	
+	/**
+	 * Game version, assigned automatically based on Gradle output.
+	 */
 	public static String VERSION = "unknown";
+	/**
+	 * Build date, assigned automatically based on Gradle output.
+	 */
 	public static String BUILD_DATE = "unknown";
 	
 	@Getter
 	private static Reflections reflections;
 	
+	/**
+	 * The game's logger.
+	 */
 	@Getter
 	private static Logger logger;
-
+	
+	/**
+	 * The user's {@link Settings}.
+	 */
 	@Getter
 	private static Settings settings;
-
+	
+	/**
+	 * The current {@link Dungeon}.
+	 */
 	public Dungeon dungeon;
+	/**
+	 * The {@link Renderer} instance.
+	 */
 	public Renderer renderer;
 	
+	/**
+	 * The time (in milliseconds) that the game was started.
+	 */
 	public static final long START_TIME = TimeUtils.millis();
 	
+	/**
+	 * @param settings The user's {@link Settings}.
+	 */
 	public JRogue(Settings settings) {
 		initialiseReflections();
 		
@@ -84,6 +111,9 @@ public class JRogue {
 		renderer = new Renderer(dungeon); // TODO: Make this configurable
 	}
 	
+	/**
+	 * @param args bbbbb
+	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
