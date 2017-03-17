@@ -5,12 +5,36 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
+/**
+ * A prompt is a request for user input from a list of single-character options. Long lists of options will be
+ * collapsed into ranges, e.g. <code>abcdef</code> collapses into <code>a-f</code>.
+ */
 public class Prompt {
+	/**
+	 * The message of the prompt (i.e. the question).
+	 */
 	@Getter private String message;
+	/**
+	 * The list of single-character options that are valid responses from the prompt. Can be null. If null, any
+	 * response is valid.
+	 */
 	@Getter private char[] options;
+	/**
+	 * The {@link PromptCallback} to call when the prompt is responded to, or cancelled.
+	 */
 	private PromptCallback callback;
+	/**
+	 * Whether or not the user can quit the prompt with no input, with the escape key.
+	 */
 	private boolean escapable;
 	
+	/**
+	 * @param message The message of the prompt (i.e. the question).
+	 * @param options The list of single-character options that are valid responses from the prompt. Can be null. If
+	 *                   null, any response is valid.
+	 * @param escapable Whether or not the user can quit the prompt with no input, with the escape key.
+	 * @param callback The {@link PromptCallback} to call when the prompt is responded to, or cancelled.
+	 */
 	public Prompt(String message, char[] options, boolean escapable, PromptCallback callback) {
 		this.message = message;
 		this.options = options;
@@ -54,12 +78,22 @@ public class Prompt {
 		return escapable;
 	}
 	
+	/**
+	 * Escapes the prompt - called when the user presses the escape key in-game. The
+	 * {@link PromptCallback#onNoResponse()} is called.
+	 */
 	public void escape() {
 		if (this.escapable) {
 			callback.onNoResponse();
 		}
 	}
 	
+	/**
+	 * Called when the user responds to the prompt in-game. Will call {@link PromptCallback#onResponse(char)} if the
+	 * response was valid, {@link PromptCallback#onInvalidResponse(char)} if not.
+	 *
+	 * @param response The char the user responded with.
+	 */
 	public void respond(char response) {
 		if (options == null) {
 			callback.onResponse(response);
@@ -75,10 +109,23 @@ public class Prompt {
 	}
 	
 	public interface PromptCallback {
+		/**
+		 * Called when the user escapes the prompt, providing no response.
+		 */
 		void onNoResponse();
 		
+		/**
+		 * Called when the user provides an invalid response, i.e. a char that was not in {@link Prompt#options}.
+		 *
+		 * @param response The user's response.
+		 */
 		void onInvalidResponse(char response);
 		
+		/**
+		 * Called when the user provides a valid response, i.e. a char that is in {@link Prompt#options}.
+		 *
+		 * @param response The user'rs response.
+		 */
 		void onResponse(char response);
 	}
 	
