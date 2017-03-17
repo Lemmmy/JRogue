@@ -108,6 +108,9 @@ public class Prompt {
 		}
 	}
 	
+	/**
+	 * Callbacks to call when responses (or invalid responses) are provided to the {@link Prompt}.
+	 */
 	public interface PromptCallback {
 		/**
 		 * Called when the user escapes the prompt, providing no response.
@@ -129,16 +132,40 @@ public class Prompt {
 		void onResponse(char response);
 	}
 	
+	/**
+	 * Simple {@link Prompt} callback that responds with a static message when no response or an invalid response is
+	 * received.
+	 */
 	public abstract static class SimplePromptCallback implements PromptCallback {
-		private final String noResponseMessage, invalidResponseMessage;
+		/**
+		 * Message to log if the user provides no response ({@link Prompt#escape escapes} the prompt).
+		 */
+		private final String noResponseMessage;
+		/**
+		 * Message to log if the user provides an invalid response (a response that is not in {@link Prompt#options}).
+		 */
+		private final String invalidResponseMessage;
+		/**
+		 * {@link Messenger} to log to. Typically the {@link Dungeon}.
+		 */
 		private final Messenger messenger;
 		
-		public SimplePromptCallback(Messenger msg) {
-			this(msg, "Nevermind.", "Invalid response '[YELLOW]%s[]'.");
+		/**
+		 * @param messenger The {@link Messenger} to log to. Typically the {@link Dungeon}.
+		 */
+		public SimplePromptCallback(Messenger messenger) {
+			this(messenger, "Nevermind.", "Invalid response '[YELLOW]%s[]'.");
 		}
 		
-		public SimplePromptCallback(Messenger msg, String noResponseMsg, String invalidResponseMsg) {
-			this.messenger = msg;
+		/**
+		 * @param messenger The {@link Messenger} to log to. Typically the {@link Dungeon}.
+		 * @param noResponseMsg The message to log if the user provides no response ({@link Prompt#escape escapes} the
+		 *                            prompt).
+		 * @param invalidResponseMsg The message to log if the user provides an invalid response (a response that is
+		 *                                 not in {@link Prompt#options}).
+		 */
+		public SimplePromptCallback(Messenger messenger, String noResponseMsg, String invalidResponseMsg) {
+			this.messenger = messenger;
 			this.noResponseMessage = noResponseMsg;
 			this.invalidResponseMessage = invalidResponseMsg;
 		}
