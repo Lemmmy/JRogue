@@ -12,7 +12,7 @@ import jr.dungeon.events.TurnEvent;
 import jr.rendering.Renderer;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.ImageLoader;
-import jr.utils.Gradient;
+import jr.rendering.utils.Gradient;
 import jr.utils.Path;
 
 import java.util.concurrent.atomic.AtomicInteger;
