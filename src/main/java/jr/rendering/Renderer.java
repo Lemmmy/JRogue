@@ -29,21 +29,45 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The game's renderer. Houses the {@link RendererComponent components} used for rendering, and also handles the main
+ * batch and camera.
+ */
 @Getter
 public class Renderer extends ApplicationAdapter implements DungeonEventListener {
+	/**
+	 * The time in seconds to animate movement between turns.
+	 */
 	public static final float TURN_LERP_DURATION = 0.170f;
 	
+	/**
+	 * The game's title in the game window.
+	 */
 	private static final String WINDOW_TITLE = "JRogue";
 	
-	private Lwjgl3Application application;
-	
+	/**
+	 * The {@link Dungeon} that this renderer should render.
+	 */
 	private Dungeon dungeon;
+	/**
+	 * The user's {@link Settings}.
+	 */
 	private Settings settings;
 	
+	/**
+	 * The 'main sprite batch' - the sprite batch that renders the {@link jr.dungeon.Level}'s contents. This is the
+	 * batch that's inside the game's {@link #camera viewport camera}, and moves along with the player etc.
+	 */
 	private SpriteBatch mainBatch;
 	
+	/**
+	 * The 'main camera' - the camera inside the {@link jr.dungeon.Level} that follows the {@link Player}.
+	 */
 	private OrthographicCamera camera;
 	
+	/**
+	 * 
+	 */
 	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
 	private LevelComponent levelComponent;
@@ -87,8 +111,6 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	
 	@Override
 	public void create() {
-		application = (Lwjgl3Application) Gdx.app;
-		
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
 			ErrorHandler.error(null, throwable);
 			Gdx.app.exit();
@@ -289,18 +311,21 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	@DungeonEventHandler
 	private void onQuit(QuitEvent e) {
 		dontSave = true;
-		application.exit();
+		Gdx.app.exit();
 	}
 	
 	@DungeonEventHandler
 	private void onSaveAndQuit(SaveAndQuitEvent e) {
-		application.exit();
+		Gdx.app.exit();
 	}
 	
 	public Matrix4 getCombinedTransform() {
 		return camera.combined;
 	}
 	
+	/**
+	 * Panic method, called when an error occurs. Cleanly exits the game when a disaster has occurred.
+	 */
 	public void panic() {
 		Gdx.app.exit();
 	}
