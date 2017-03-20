@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    working_directory: /tmp
+    steps:
+      - run:
+        name: Building Artifacts
+        command: |
+          gradle fullDistBuild;
+
+      - store_artifacts:
+        path: /tmp/build/libs
+        destination: jrogue-full-obf-latest
