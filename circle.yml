@@ -5,8 +5,7 @@ jobs:
     steps:
       - run:
         name: Building Artifacts
-        command: |
-          gradle fullDistBuild;
+        command: gradle fullDistBuild
 
       - store_artifacts:
         path: /tmp/build/libs
