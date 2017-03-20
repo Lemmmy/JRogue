@@ -4,9 +4,9 @@ jobs:
     working_directory: /tmp
     steps:
       - run:
-        name: Building Artifacts
-        command: gradle fullDistBuild
+          name: Building Artifacts
+          command: gradle fullDistBuild
 
       - store_artifacts:
         path: /tmp/build/libs
-        destination: jrogue-full-obf-latest
+            destination: jrogue-full-obf-latest
