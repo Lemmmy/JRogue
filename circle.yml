@@ -1,9 +1,0 @@
-machine:
-  java:
-    version: openjdk8
-compile:
-  override:
-    - gradle fullDistBuild
-general:
-  artifacts:
-    - "build/libs"
