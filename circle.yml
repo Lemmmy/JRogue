@@ -8,5 +8,5 @@ jobs:
           command: gradle fullDistBuild
 
       - store_artifacts:
-        path: /tmp/build/libs
-            destination: jrogue-full-obf-latest
+          path: /tmp/build/libs
+          destination: jrogue-full-obf-latest
