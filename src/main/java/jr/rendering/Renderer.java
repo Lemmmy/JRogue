@@ -66,7 +66,8 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	private OrthographicCamera camera;
 	
 	/**
-	 * 
+	 * The list of renderer components - components that get a change to render to the screen at their specified
+	 * Z-indexes.
 	 */
 	private List<RendererComponent> rendererComponents = new ArrayList<>();
 	
