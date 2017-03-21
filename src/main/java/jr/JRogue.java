@@ -80,7 +80,7 @@ public class JRogue {
 		initialiseReflections();
 		
 		try {
-			start(settings);
+			adapter = new GameAdapter();
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
 			
@@ -105,11 +105,6 @@ public class JRogue {
 			);
 		
 		reflections = new Reflections(cb);
-	}
-
-	private void start(Settings settings) {
-		dungeon = Dungeon.load();
-		adapter = new GameAdapter();
 	}
 	
 	/**

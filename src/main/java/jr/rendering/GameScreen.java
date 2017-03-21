@@ -107,6 +107,8 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 		this.dungeon.addListener(this);
 
 		settings = JRogue.getSettings();
+		
+		create();
 	}
 	
 	public void create() {

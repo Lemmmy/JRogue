@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Interpolation;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.dungeon.Dungeon;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,7 +58,7 @@ public class GameAdapter extends Game {
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	
 		screen = new TestScreen1();
-		newScreen = new TestScreen2();
+		newScreen = new GameScreen(this, Dungeon.load());
 		
 		setTransition(
 			new SlidingTransition(SlidingTransition.Direction.LEFT, false, Interpolation.circle),
