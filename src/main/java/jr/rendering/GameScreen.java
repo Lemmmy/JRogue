@@ -205,8 +205,7 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 		camera.update();
 	}
 	
-	public void render() {
-		float delta = Gdx.graphics.getDeltaTime();
+	public void render(float delta) {
 		renderTime += delta;
 		
 		if (turnLerping) {
