@@ -72,15 +72,18 @@ public class GameAdapter extends Game {
 		float delta = Gdx.graphics.getDeltaTime();
 		
 		if (newScreen == null) {
+			// no other screen
 			screen.render(delta);
 		} else if (transitioning && currentTransitionTime >= transitionDuration) {
+			// transition is active and time limit reached
 			screen.hide();
-			screen = this.newScreen;
+			screen = newScreen;
 			screen.resume();
 			transitioning = false;
 			newScreen = null;
 			screen.render(delta);
 		} else if (transition != null) {
+			// transition is active
 			oldFBO.begin();
 			screen.render(delta);
 			oldFBO.end();
@@ -168,6 +171,7 @@ public class GameAdapter extends Game {
 		if (transitioning) return false;
 		this.transition = transition;
 		this.transitionDuration = duration;
+		this.transitioning = true;
 		return true;
 	}
 	
