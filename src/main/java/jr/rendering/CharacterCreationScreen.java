@@ -50,9 +50,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		goButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Dungeon dungeon = Dungeon.load();
-				
-				game.setScreen(new GameScreen(game, dungeon), new SlidingTransition(
+				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
 					false,
 					Interpolation.pow4
