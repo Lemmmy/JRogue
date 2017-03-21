@@ -9,7 +9,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
 
@@ -19,7 +19,7 @@ public class LightingComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public LightingComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public LightingComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	

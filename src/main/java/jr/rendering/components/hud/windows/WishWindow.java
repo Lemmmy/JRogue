@@ -7,12 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 
 public class WishWindow extends PopupWindow {
 	private TextField wishField;
 	
-	public WishWindow(Renderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+	public WishWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
 		super(renderer, stage, skin, dungeon, level);
 	}
 	

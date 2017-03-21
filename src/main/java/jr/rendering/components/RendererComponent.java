@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.events.DungeonEventListener;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import lombok.Getter;
 import lombok.Setter;
 
 public abstract class RendererComponent implements DungeonEventListener {
-	public Renderer renderer;
+	public GameScreen renderer;
 	public Dungeon dungeon;
 	public Settings settings;
 	
@@ -22,7 +22,7 @@ public abstract class RendererComponent implements DungeonEventListener {
 	 * @param dungeon The dungeon that this component should use.
 	 * @param settings The user's settings.
 	 */
-	public RendererComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public RendererComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		this.renderer = renderer;
 		this.dungeon = dungeon;
 		this.settings = settings;

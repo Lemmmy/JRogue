@@ -18,7 +18,7 @@ import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.utils.ImageLoader;
 import jr.utils.Utils;
 
@@ -49,7 +49,7 @@ public class MinimapComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public MinimapComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public MinimapComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 		
 		tileWidth = settings.getMinimapTileWidth();

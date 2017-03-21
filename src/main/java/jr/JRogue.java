@@ -1,9 +1,10 @@
 package jr;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
-import jr.rendering.Renderer;
+import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -63,9 +64,9 @@ public class JRogue {
 	 */
 	public Dungeon dungeon;
 	/**
-	 * The {@link Renderer} instance.
+	 * The {@link GameAdapter} instance.
 	 */
-	public Renderer renderer;
+	public GameAdapter adapter;
 	
 	/**
 	 * The time (in milliseconds) that the game was started.
@@ -83,8 +84,8 @@ public class JRogue {
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
 			
-			if (renderer != null) {
-				renderer.panic();
+			if (adapter != null) {
+				Gdx.app.exit();
 			}
 		}
 	}
@@ -108,7 +109,7 @@ public class JRogue {
 
 	private void start(Settings settings) {
 		dungeon = Dungeon.load();
-		renderer = new Renderer(dungeon); // TODO: Make this configurable
+		adapter = new GameAdapter();
 	}
 	
 	/**

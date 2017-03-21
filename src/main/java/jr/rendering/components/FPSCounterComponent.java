@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.utils.FontLoader;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private BitmapFont font;
 	
-	public FPSCounterComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public FPSCounterComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	

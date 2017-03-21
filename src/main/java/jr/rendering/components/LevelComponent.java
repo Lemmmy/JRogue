@@ -7,7 +7,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TilePooledEffect;
 import jr.rendering.tiles.TileRenderer;
@@ -23,7 +23,7 @@ public class LevelComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public LevelComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public LevelComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	

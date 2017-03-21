@@ -13,7 +13,7 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.utils.ImageLoader;
 import jr.utils.Colour;
 import jr.utils.Utils;
@@ -45,7 +45,7 @@ public abstract class TileRenderer {
 	private static TextureRegion dimLight;
 	
 	@Getter @Setter
-	protected Renderer renderer;
+	protected GameScreen renderer;
 	
 	@Getter @Setter
 	private boolean drawingReflection = false;

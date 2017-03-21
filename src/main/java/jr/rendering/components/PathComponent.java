@@ -9,7 +9,7 @@ import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.ImageLoader;
 import jr.rendering.utils.Gradient;
@@ -28,7 +28,7 @@ public class PathComponent extends RendererComponent {
 	
 	private SpriteBatch mainBatch;
 	
-	public PathComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public PathComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	

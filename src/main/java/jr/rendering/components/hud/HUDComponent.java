@@ -14,7 +14,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.components.hud.windows.*;
 import jr.rendering.tiles.TileMap;
@@ -52,7 +52,7 @@ public class HUDComponent extends RendererComponent {
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
-	public HUDComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public HUDComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	

@@ -9,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 
 public class DebugWindow extends PopupWindow {
-	public DebugWindow(Renderer renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+	public DebugWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
 		super(renderer, stage, skin, dungeon, level);
 	}
 	

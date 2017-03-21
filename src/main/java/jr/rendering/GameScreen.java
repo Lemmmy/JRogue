@@ -1,8 +1,8 @@
 package jr.rendering;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,7 +34,7 @@ import java.util.List;
  * batch and camera.
  */
 @Getter
-public class Renderer extends ApplicationAdapter implements DungeonEventListener {
+public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	/**
 	 * The time in seconds to animate movement between turns.
 	 */
@@ -45,6 +45,10 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	 */
 	private static final String WINDOW_TITLE = "JRogue";
 	
+	/**
+	 * The {@link GameAdapter} instance.
+	 */
+	private GameAdapter game;
 	/**
 	 * The {@link Dungeon} that this renderer should render.
 	 */
@@ -94,33 +98,18 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	/**
 	 * The game's main OpenGL renderer using LibGDX.
 	 *
+	 * @param game The game adapter instance.
 	 * @param dungeon The dungeon that should be rendered.
 	 */
-	public Renderer(Dungeon dungeon) {
+	public GameScreen(GameAdapter game, Dungeon dungeon) {
+		this.game = game;
 		this.dungeon = dungeon;
 		this.dungeon.addListener(this);
 
 		settings = JRogue.getSettings();
-		
-		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setResizable(true);
-		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
-		config.useVsync(settings.isVsync());
-		
-		new Lwjgl3Application(this, config);
 	}
 	
-	@Override
 	public void create() {
-		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-			ErrorHandler.error(null, throwable);
-			Gdx.app.exit();
-		});
-		
-		super.create();
-		
-		ErrorHandler.setGLString();
-		
 		updateWindowTitle();
 		
 		mainBatch = new SpriteBatch();
@@ -214,10 +203,7 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 		camera.update();
 	}
 	
-	@Override
 	public void render() {
-		super.render();
-		
 		float delta = Gdx.graphics.getDeltaTime();
 		renderTime += delta;
 		
@@ -322,12 +308,5 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	
 	public Matrix4 getCombinedTransform() {
 		return camera.combined;
-	}
-	
-	/**
-	 * Panic method, called when an error occurs. Cleanly exits the game when a disaster has occurred.
-	 */
-	public void panic() {
-		Gdx.app.exit();
 	}
 }

@@ -11,14 +11,14 @@ import jr.utils.Utils;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
-	private Renderer renderer;
+	private GameScreen renderer;
 	
 	private boolean dontHandleNext = false;
 	private boolean mouseMoved = false;
 	
 	private boolean teleporting = false;
 	
-	public GameInputProcessor(Dungeon dungeon, Renderer renderer) {
+	public GameInputProcessor(Dungeon dungeon, GameScreen renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
 	}

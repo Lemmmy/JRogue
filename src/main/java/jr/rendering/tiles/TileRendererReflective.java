@@ -9,7 +9,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityRenderer;
 import jr.rendering.utils.ShaderLoader;
@@ -19,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TileRendererReflective extends TileRendererBasic {
-	public static void drawReflection(SpriteBatch batch, Renderer renderer, Dungeon dungeon, int x, int y, @NonNull
+	public static void drawReflection(SpriteBatch batch, GameScreen renderer, Dungeon dungeon, int x, int y, @NonNull
 		ReflectionSettings s) {
 		if (y - 1 < 0) return;
 		

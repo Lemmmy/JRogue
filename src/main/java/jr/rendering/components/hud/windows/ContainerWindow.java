@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.components.hud.windows.partials.ContainerPartial;
 import lombok.val;
 
@@ -17,7 +17,7 @@ public class ContainerWindow extends PopupWindow {
 	private Entity entity;
 	private Player player;
 	
-	public ContainerWindow(Renderer renderer, Stage stage, Skin skin, Entity entity) {
+	public ContainerWindow(GameScreen renderer, Stage stage, Skin skin, Entity entity) {
 		super(renderer, stage, skin, entity.getDungeon(), entity.getLevel());
 		
 		this.entity = entity;

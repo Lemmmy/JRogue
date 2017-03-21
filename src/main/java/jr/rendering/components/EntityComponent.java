@@ -11,7 +11,7 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
@@ -30,7 +30,7 @@ public class EntityComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public EntityComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public EntityComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -108,7 +108,7 @@ public class EntityComponent extends RendererComponent {
 		if (settings.isShowTurnAnimations()) {
 			if (renderer.isTurnLerping()) {
 				float lerpTime = renderer.getTurnLerpTime();
-				float lerpDuration = Renderer.TURN_LERP_DURATION;
+				float lerpDuration = GameScreen.TURN_LERP_DURATION;
 				
 				float t = lerpTime / lerpDuration;
 				

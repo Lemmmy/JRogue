@@ -15,7 +15,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.DungeonEventInvocationTime;
 import jr.dungeon.events.DungeonEventListener;
-import jr.rendering.Renderer;
+import jr.rendering.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 
@@ -26,7 +26,7 @@ public class TextPopups implements DungeonEventListener {
 	
 	private Dungeon dungeon;
 	private Stage stage;
-	private Renderer renderer;
+	private GameScreen renderer;
 	private Settings settings;
 	
 	public TextPopups(HUDComponent hudComponent) {
