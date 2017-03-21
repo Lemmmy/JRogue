@@ -3,13 +3,10 @@ package jr.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
-import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
@@ -85,6 +82,8 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	private MinimapComponent minimapComponent;
 	private FPSCounterComponent fpsCounterComponent;
 	
+	private InputMultiplexer inputMultiplexer;
+	
 	private float zoom = 1.0f;
 	
 	private float renderTime;
@@ -108,17 +107,12 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 
 		settings = JRogue.getSettings();
 		
-		create();
-	}
-	
-	public void create() {
 		updateWindowTitle();
 		
 		mainBatch = new SpriteBatch();
 		
 		initialiseCamera();
 		initialiseRendererComponents();
-		initialiseInputMultiplexer();
 		
 		dungeon.start();
 	}
@@ -170,10 +164,9 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	}
 	
 	private void initialiseInputMultiplexer() {
-		InputMultiplexer inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
 		inputMultiplexer.addProcessor(hudComponent.getStage());
-		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
 	private void updateWindowTitle() {
@@ -257,6 +250,17 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 		}
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
+	}
+	
+	@Override
+	public void show() {
+		super.show();
+		
+		if (inputMultiplexer == null) {
+			initialiseInputMultiplexer();
+		}
+		
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
 	@Override

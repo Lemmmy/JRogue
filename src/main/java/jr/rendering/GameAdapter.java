@@ -56,6 +56,7 @@ public class GameAdapter extends Game {
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	
 		screen = new CharacterCreationScreen(this);
+		screen.show();
 	}
 	
 	@Override
@@ -128,8 +129,7 @@ public class GameAdapter extends Game {
 		return screen;
 	}
 	
-	@Override
-	public void setScreen(Screen screen) {
+	public void setScreen(Screen screen, ScreenTransition transition, float duration) {
 		screen.show();
 		
 		if (transitioning) {
@@ -139,33 +139,15 @@ public class GameAdapter extends Game {
 		if (this.screen == null) {
 			this.screen = screen;
 		} else {
-			if (transition == null) {
-				this.screen.hide();
-				this.screen = screen;
-			} else {
-				this.newScreen = screen;
-				this.screen.pause();
-				this.newScreen.pause();
-				currentTransitionTime = 0;
-				transitioning = false;
-			}
+			this.newScreen = screen;
+			this.screen.pause();
+			currentTransitionTime = 0;
+			this.transition = transition;
+			transitionDuration = duration;
+			transitioning = true;
 		}
 		
 		this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	}
-	
-	/**
-	 * @param transition The transition to switch to.
-	 * @param duration The time (in seconds) to run the transition for.
-	 *
-	 * @return false if transition is already running
-	 */
-	public boolean setTransition(ScreenTransition transition, float duration) {
-		if (transitioning) return false;
-		this.transition = transition;
-		this.transitionDuration = duration;
-		this.transitioning = true;
-		return true;
 	}
 	
 	@Override

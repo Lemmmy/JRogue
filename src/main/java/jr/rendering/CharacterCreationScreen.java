@@ -1,6 +1,7 @@
 package jr.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Interpolation;
@@ -11,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
+import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.GameStartedEvent;
 import jr.rendering.components.hud.HUDSkin;
 
 public class CharacterCreationScreen extends ScreenAdapter {
@@ -42,16 +46,17 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		container.row();
 		container.add(new Container<>()).expand().row();
 		
-		Button goButton = new TextButton("Go", skin);
+		TextButton goButton = new TextButton("Go", skin);
 		goButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				game.setNewScreen(new GameScreen(game, Dungeon.load()));
-				game.setTransition(new SlidingTransition(
+				Dungeon dungeon = Dungeon.load();
+				
+				game.setScreen(new GameScreen(game, dungeon), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
 					false,
-					Interpolation.circle
-				), 0.5f);
+					Interpolation.pow4
+				), 1f);
 			}
 		});
 		container.add(goButton).right().bottom();

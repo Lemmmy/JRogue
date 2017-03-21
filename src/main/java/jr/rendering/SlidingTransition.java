@@ -23,27 +23,30 @@ public class SlidingTransition implements ScreenTransition {
 	public void render(Batch batch, Texture oldTex, Texture newTex, float percent) {
 		float width = oldTex.getWidth();
 		float height = oldTex.getHeight();
-		float x = 0f;
-		float y = 0f;
+		float x1 = 0f, y1 = 0f, x2 = 0f, y2 = 0f;
 		
 		if (interpolation != null) percent = interpolation.apply(percent);
 		
 		switch (direction) {
 			case LEFT:
-				x = -width * percent;
-				if (!slideOut) x += width;
+				x2 = -width * percent;
+				x1 = x2;
+				if (!slideOut) x2 += width;
 				break;
 			case RIGHT:
-				x = width * percent;
-				if (!slideOut) x -= width;
+				x2 = width * percent;
+				x1 = x2;
+				if (!slideOut) x2 -= width;
 				break;
 			case UP:
-				y = height * percent;
-				if (!slideOut) y -= height;
+				y2 = height * percent;
+				y1 = y2;
+				if (!slideOut) y2 -= height;
 				break;
 			case DOWN:
-				y = -height * percent;
-				if (!slideOut) y += height;
+				y2 = -height * percent;
+				y1 = y2;
+				if (!slideOut) y2 += height;
 				break;
 		}
 		
@@ -53,7 +56,7 @@ public class SlidingTransition implements ScreenTransition {
 		batch.begin();
 		batch.draw(
 			texBottom,
-			0, 0,
+			(int) x1, (int) y1,
 			0, 0,
 			width, height,
 			1, 1,
@@ -65,7 +68,7 @@ public class SlidingTransition implements ScreenTransition {
 		);
 		batch.draw(
 			texTop,
-			x, y,
+			(int) x2, (int) y2,
 			0, 0,
 			newTex.getWidth(), newTex.getHeight(),
 			1, 1,
