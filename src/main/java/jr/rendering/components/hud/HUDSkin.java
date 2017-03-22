@@ -127,12 +127,12 @@ public class HUDSkin extends Skin {
 		add("large", largeLabelStyle);
 		
 		Label.LabelStyle windowLabelStyle = new Label.LabelStyle();
-		windowLabelStyle.font = getFont("defaultNoShadow");
-		windowLabelStyle.fontColor = Colors.get("P_GREY_0");
+		windowLabelStyle.font = getFont("default");
+		windowLabelStyle.fontColor = Colors.get("WHITE");
 		add("windowStyle", windowLabelStyle);
 		
 		Label.LabelStyle windowLabelStyleMarkup = new Label.LabelStyle();
-		windowLabelStyleMarkup.font = getFont("defaultNoShadow");
+		windowLabelStyleMarkup.font = getFont("default");
 		add("windowStyleMarkup", windowLabelStyleMarkup);
 	}
 	
@@ -390,13 +390,13 @@ public class HUDSkin extends Skin {
 		add("windowCloseButton", windowCloseButtonStyle);
 		
 		Window.WindowStyle windowStyle = new Window.WindowStyle();
-		windowStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 0, 10, 5, 20),
-			2,
-			2,
-			18,
-			1
-		));
+		windowStyle.background = new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 32, 80, 34),
+			6,
+			6,
+			6,
+			6
+		);
 		windowStyle.titleFont = getFont("defaultNoShadow");
 		windowStyle.titleFontColor = Colors.get("P_GREY_0");
 		add("default", windowStyle);

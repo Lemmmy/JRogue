@@ -69,9 +69,9 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void loadIcons() {
-		iconPoint = ImageLoader.getSubimage("textures/hud.png", 272, 0, 4, 5);
-		iconDown = ImageLoader.getSubimage("textures/hud.png", 276, 0, 3, 5);
-		iconUp = ImageLoader.getSubimage("textures/hud.png", 279, 0, 3, 5);
+		iconPoint = ImageLoader.getSubimage("textures/hud.png", 176, 96, 4, 5);
+		iconDown = ImageLoader.getSubimage("textures/hud.png", 180, 96, 3, 5);
+		iconUp = ImageLoader.getSubimage("textures/hud.png", 183, 96, 3, 5);
 		
 		iconPoint.flip(false, true);
 		iconDown.flip(false, true);

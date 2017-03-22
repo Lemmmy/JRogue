@@ -63,32 +63,32 @@ public class HUDComponent extends RendererComponent {
 		
 		topStats = new Table();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 5, 16, 16, false)));
 		Label hpLabel = new Label("Health: 0 / 0", skin);
 		hpLabel.setName("health");
 		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 5, 16, 16, false)));
 		Label nutritionLabel = new Label("Not hungry", skin);
 		nutritionLabel.setName("nutrition");
 		topStats.add(nutritionLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 5, 16, 16, false)));
 		Label expLabel = new Label("Level: 1", skin);
 		expLabel.setName("exp");
 		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 5, 16, 16, false)));
 		Label energyLabel = new Label("Energy: 0 / 0", skin);
 		energyLabel.setName("energy");
 		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 5, 16, 16, false)));
 		Label goldLabel = new Label("Gold: 0", skin);
 		goldLabel.setName("gold");
 		topStats.add(goldLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 5, 16, 16, false)));
 		Label depthLabel = new Label("Depth: 1", skin);
 		depthLabel.setName("depth");
 		topStats.add(depthLabel).pad(0, 2, 0, 8).left();
@@ -122,7 +122,8 @@ public class HUDComponent extends RendererComponent {
 			String text = String.format("%s: 0", attribute.getName());
 			int sheetX = attribute.ordinal();
 			
-			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
+			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 5, 16, 16,
+				false)));
 			Label attributeLabel = new Label(text, skin);
 			attributeLabel.setName(actorName);
 			attributeTable.add(attributeLabel).pad(0, 2, 0, 8);
@@ -333,7 +334,8 @@ public class HUDComponent extends RendererComponent {
 		
 		int sheetX = player.getLevel().getTileStore().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 		
-		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
+		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 5, 16, 16,
+			false)));
 		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));
 	}
 	

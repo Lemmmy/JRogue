@@ -99,22 +99,22 @@ public class ContainerPartial extends Table {
 						player.getRightHand().getLetter() == character &&
 						player.getLeftHand().getLetter() == character
 					) {
-					suffix = " [P_GREY_3](in both hands)[]";
+					suffix = " [P_GREY_4](in both hands)[]";
 				} else if (player.getRightHand() != null && player.getRightHand().getLetter() == character) {
-					suffix = " [P_GREY_3](in right hand)[]";
+					suffix = " [P_GREY_4](in right hand)[]";
 				} else if (player.getLeftHand() != null && player.getLeftHand().getLetter() == character) {
-					suffix = " [P_GREY_3](in left hand)[]";
+					suffix = " [P_GREY_4](in left hand)[]";
 				}
 			}
 			
 			itemTable.add(new Image(renderer.getDrawable(itemStack, item))).left().padRight(6);
 			itemTable.add(new Label(
-				"[P_GREY_3]" + character.toString(),
+				"[P_GREY_4]" + character.toString(),
 				getSkin(),
 				"windowStyleMarkup"
 			)).left().padRight(6);
 			itemTable.add(new Label(
-				"[BLACK]" + itemStack.getName(entity.getDungeon().getPlayer(), true) + suffix,
+				"[WHITE]" + itemStack.getName(entity.getDungeon().getPlayer(), true) + suffix,
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();

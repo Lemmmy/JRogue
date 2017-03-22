@@ -24,7 +24,7 @@ public class MessageWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		Label label = new Label("[P_GREY_0]" + message + "[]", getSkin(), "windowStyleMarkup");
+		Label label = new Label("[WHITE]" + message + "[]", getSkin(), "windowStyleMarkup");
 		label.setWrap(true);
 		getWindow().getContentTable().add(label).pad(16).prefWidth(350);
 		getWindow().button("OK");
