@@ -384,21 +384,21 @@ public class HUDSkin extends Skin {
 	
 	private void addWindowStyle() {
 		Button.ButtonStyle windowCloseButtonStyle = new Button.ButtonStyle();
-		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 5, 10, 18, 18));
-		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 23, 10, 18, 18));
-		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 41, 10, 18, 18));
+		windowCloseButtonStyle.up = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 84, 31, 17, 17));
+		windowCloseButtonStyle.over = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 84, 48, 17, 17));
+		windowCloseButtonStyle.down = new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 84, 65, 17, 17));
 		add("windowCloseButton", windowCloseButtonStyle);
 		
 		Window.WindowStyle windowStyle = new Window.WindowStyle();
 		windowStyle.background = new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 32, 80, 34),
-			6,
-			6,
-			6,
-			6
+			ImageLoader.getSubimage("textures/hud.png", 0, 32, 84, 57),
+			8,
+			8,
+			27,
+			8
 		);
-		windowStyle.titleFont = getFont("defaultNoShadow");
-		windowStyle.titleFontColor = Colors.get("P_GREY_0");
+		windowStyle.titleFont = getFont("default");
+		windowStyle.titleFontColor = Colors.get("P_WHITE");
 		add("default", windowStyle);
 	}
 }

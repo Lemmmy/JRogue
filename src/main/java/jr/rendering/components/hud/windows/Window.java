@@ -33,7 +33,8 @@ public class Window extends Dialog {
 			}
 		});
 		
-		getTitleTable().add(closeButton).size(18, 18).padRight(-3).padTop(0);
+		getTitleTable().getCell(getTitleLabel()).padLeft(-3).padTop(-2);
+		getTitleTable().add(closeButton).size(18, 18).padRight(-4).padTop(-4);
 	}
 	
 	public Window(String title, Skin skin, String styleName, PopupWindow owner) {

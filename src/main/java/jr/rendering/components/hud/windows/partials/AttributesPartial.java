@@ -43,8 +43,7 @@ public class AttributesPartial extends Table {
 	}
 	
 	private void addArmourClass(Table container) {
-		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 15, 5, 16, 16, false)))
-			.padRight(6);
+		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 15, 10, 16, 16, false))).padRight(6);
 		
 		String label = String.format("[WHITE]Armour Class:  [P_GREEN_3]%,d[][]", player.getArmourClass());
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(243).left();
@@ -65,8 +64,7 @@ public class AttributesPartial extends Table {
 		boolean canSpend = player.getAttributes().canIncrementAttribute(attribute, player);
 		
 		int sheetX = attribute.ordinal();
-		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 5, 16, 16, false)))
-			.padRight(6);
+		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16, false))).padRight(6);
 		
 		String label = String.format("[WHITE]%s:  [P_GREEN_3]%,d[][]", attribute.getName(), level);
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(180).left();

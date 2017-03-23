@@ -40,17 +40,17 @@ public class PathComponent extends RendererComponent {
 	}
 	
 	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 0, 6);
-		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 1, 6);
-		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 2, 6);
-		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 3, 6);
-		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 4, 6);
-		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 5, 6);
-		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 6, 6);
-		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 7, 6);
-		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 8, 6);
-		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 9, 6);
-		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 10, 6);
+		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 0, 11);
+		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 1, 11);
+		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 2, 11);
+		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 3, 11);
+		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 4, 11);
+		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 5, 11);
+		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 6, 11);
+		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 7, 11);
+		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 8, 11);
+		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 9, 11);
+		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 10, 11);
 	}
 	
 	@DungeonEventHandler

@@ -39,7 +39,7 @@ public abstract class PopupWindow implements Window.ResultListener {
 		
 		window.setMovable(true);
 		window.setModal(true);
-		window.pad(18, 3, 3, 3);
+		window.pad(28, 10, 10, 10);
 		
 		window.key(Input.Keys.ESCAPE, false);
 		

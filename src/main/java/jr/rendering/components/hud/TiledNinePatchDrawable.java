@@ -61,7 +61,7 @@ public class TiledNinePatchDrawable extends BaseDrawable {
 		td.draw(
 			batch,
 			x + left,
-			y + top,
+			y + bottom,
 			width - left - right,
 			height - top - bottom
 		);
