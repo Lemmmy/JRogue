@@ -2,10 +2,7 @@ package jr.rendering.components.hud.windows;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
@@ -32,7 +29,7 @@ public class ContainerWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setSize(560, 400);
+		getWindow().setSize(580, 400);
 
 		val ec = EntityHelper.getContainer(entity);
 		String containerName = ec.isPresent() ? ec.get().getName() : "Container";
@@ -45,16 +42,22 @@ public class ContainerWindow extends PopupWindow {
 		getWindow().getContentTable().row();
 		
 		ContainerPartial containerPartial = new ContainerPartial(getSkin(), entity, player, true);
-		ScrollPane containerScrollPane = new ScrollPane(containerPartial, getSkin());
-		getWindow().getContentTable().add(containerScrollPane).left().top();
+		Table containerTable = new Table();
+		containerTable.add(containerPartial).left().top();
+		ScrollPane containerScrollPane = new ScrollPane(containerTable, getSkin(), "lowered");
+		getWindow().getContentTable().add(containerScrollPane).growY().left().top();
+		containerTable.top();
 		
 		Container<Actor> splitter = new Container<>();
 		splitter.setBackground(getSkin().getDrawable("grey4"));
 		getWindow().getContentTable().add(splitter).left().top().bottom().growY();
 		
 		ContainerPartial inventoryContainerPartial = new ContainerPartial(getSkin(), player, entity, true);
-		ScrollPane inventoryScrollPane = new ScrollPane(inventoryContainerPartial, getSkin());
-		getWindow().getContentTable().add(inventoryScrollPane).left().top();
+		Table inventoryTable = new Table();
+		inventoryTable.add(inventoryContainerPartial).left().top();
+		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, getSkin(), "lowered");
+		getWindow().getContentTable().add(inventoryScrollPane).growY().left().top();
+		inventoryTable.top();
 		
 		containerPartial.addRelatedComponent(inventoryContainerPartial);
 		inventoryContainerPartial.addRelatedComponent(containerPartial);

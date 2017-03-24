@@ -78,6 +78,11 @@ public class Wishes {
 		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+		registerWish("fill inventory", (d, p, a) -> {
+			for (int j = 0; j < 40; j++) {
+				makeWish(d, "bread");
+			}
+		});
 
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));

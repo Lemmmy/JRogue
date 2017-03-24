@@ -311,29 +311,48 @@ public class HUDSkin extends Skin {
 	private void addScrollPaneStyle() {
 		scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
 		scrollPaneStyle.hScroll = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 87, 21, 7, 4),
+			ImageLoader.getSubimage("textures/hud.png", 101, 31, 7, 3),
 			2,
 			1,
 			1,
 			1
 		));
-		scrollPaneStyle.vScroll = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 87, 17, 7, 4),
-			1,
-			1,
-			2,
-			1
-		));
+		scrollPaneStyle.vScroll = scrollPaneStyle.hScroll;
 		scrollPaneStyle.hScrollKnob = new NinePatchDrawable(new NinePatch(
-			ImageLoader
-				.getSubimage("textures/hud.png", 87, 10, 7, 7),
+			ImageLoader.getSubimage("textures/hud.png", 101, 34, 7, 6),
 			2,
-			2,
-			2,
-			2
+			1,
+			1,
+			1
 		));
 		scrollPaneStyle.vScrollKnob = scrollPaneStyle.hScrollKnob;
 		add("default", scrollPaneStyle);
+		
+		ScrollPane.ScrollPaneStyle loweredScrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+		loweredScrollPaneStyle.background = new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
+			1,
+			1,
+			1,
+			1
+		);
+		loweredScrollPaneStyle.hScroll = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 41, 7, 3),
+			2,
+			1,
+			1,
+			1
+		));
+		loweredScrollPaneStyle.vScroll = scrollPaneStyle.hScroll;
+		loweredScrollPaneStyle.hScrollKnob = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 443, 6, 5),
+			2,
+			1,
+			1,
+			1
+		));
+		loweredScrollPaneStyle.vScrollKnob = scrollPaneStyle.hScrollKnob;
+		add("lowered", loweredScrollPaneStyle);
 	}
 	
 	private void addSelectBoxStyle() {

@@ -2,10 +2,7 @@ package jr.rendering.components.hud.windows;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
@@ -44,7 +41,7 @@ public class PlayerWindow extends PopupWindow {
 		
 		if (entity instanceof Player) {
 			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), (Player) entity);
-			ScrollPane statisticsScrollPane = new ScrollPane(attributesPartial, getSkin());
+			ScrollPane statisticsScrollPane = new ScrollPane(attributesPartial, getSkin(), "lowered");
 			getWindow().getContentTable().add(statisticsScrollPane).width(276).left().top().padRight(8);
 		}
 		
@@ -53,7 +50,10 @@ public class PlayerWindow extends PopupWindow {
 		getWindow().getContentTable().add(splitter).left().top().bottom().growY();
 		
 		ContainerPartial inventoryComponent = new ContainerPartial(getSkin(), entity, null, true);
-		ScrollPane inventoryScrollPane = new ScrollPane(inventoryComponent, getSkin());
-		getWindow().getContentTable().add(inventoryScrollPane).left().top().padLeft(8);
+		Table inventoryTable = new Table();
+		inventoryTable.add(inventoryComponent).left().top();
+		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, getSkin(), "lowered");
+		getWindow().getContentTable().add(inventoryScrollPane).growY().left().top().padLeft(8);
+		inventoryTable.top();
 	}
 }
