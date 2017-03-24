@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.utils.ImageLoader;
@@ -38,8 +39,8 @@ public class AttributesPartial extends Table {
 	
 	private void addSeparator(Table container) {
 		Container<Actor> splitter = new Container<>();
-		splitter.setBackground(getSkin().getDrawable("grey4"));
-		container.add(splitter).growX().pad(8, 0, 8, 0).row();
+		splitter.setBackground(getSkin().get("splitterHorizontalDarkLowered", NinePatchDrawable.class));
+		container.add(splitter).growX().pad(8, 4, 8, 4 ).row();
 	}
 	
 	private void addArmourClass(Table container) {

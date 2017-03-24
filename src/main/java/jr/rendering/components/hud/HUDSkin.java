@@ -66,6 +66,7 @@ public class HUDSkin extends Skin {
 		addScrollPaneStyle();
 		addSelectBoxStyle();
 		addWindowStyle();
+		addSplitterStyles();
 	}
 	
 	private void addColours() {
@@ -419,5 +420,47 @@ public class HUDSkin extends Skin {
 		windowStyle.titleFont = getFont("default");
 		windowStyle.titleFontColor = Colors.get("P_WHITE");
 		add("default", windowStyle);
+	}
+	
+	private void addSplitterStyles() {
+		add("splitterHorizontalRaised", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 48, 4, 2),
+			1, 1, 0, 0
+		)));
+		
+		add("splitterHorizontalLowered", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 50, 4, 2),
+			1, 1, 0, 0
+		)));
+		
+		add("splitterHorizontalDarkRaised", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 52, 4, 2),
+			1, 1, 0, 0
+		)));
+		
+		add("splitterHorizontalDarkLowered", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 101, 54, 4, 2),
+			1, 1, 0, 0
+		)));
+		
+		add("splitterVerticalRaised", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 105, 48, 2, 3),
+			0, 0, 1, 1
+		)));
+		
+		add("splitterVerticalLowered", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 105, 51, 2, 3),
+			0, 0, 1, 1
+		)));
+		
+		add("splitterVerticalDarkRaised", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 105, 54, 2, 3),
+			0, 0, 1, 1
+		)));
+		
+		add("splitterVerticalDarkLowered", new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 105, 57, 2, 3),
+			0, 0, 1, 1
+		)));
 	}
 }

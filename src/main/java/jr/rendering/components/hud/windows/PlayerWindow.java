@@ -3,6 +3,7 @@ package jr.rendering.components.hud.windows;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
@@ -45,8 +46,8 @@ public class PlayerWindow extends PopupWindow {
 			getWindow().getContentTable().add(statisticsScrollPane).width(276).left().top().padRight(8);
 		}
 		
-		Container<Actor> splitter = new Container<>();
-		splitter.setBackground(getSkin().getDrawable("grey4"));
+ 		Container<Actor> splitter = new Container<>();
+		splitter.setBackground(getSkin().get("splitterVerticalLowered", NinePatchDrawable.class));
 		getWindow().getContentTable().add(splitter).left().top().bottom().growY();
 		
 		ContainerPartial inventoryComponent = new ContainerPartial(getSkin(), entity, null, true);
