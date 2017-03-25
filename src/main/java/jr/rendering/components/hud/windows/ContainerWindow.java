@@ -38,7 +38,6 @@ public class ContainerWindow extends PopupWindow {
 		
 		getWindow().getContentTable().padTop(4);
 		getWindow().getContentTable().add(new Label(containerName, getSkin(), "windowStyle"));
-		getWindow().getContentTable().add(new Label("", getSkin(), "windowStyle"));
 		getWindow().getContentTable().add(new Label(inventoryName, getSkin(), "windowStyle"));
 		getWindow().getContentTable().row();
 		
@@ -48,10 +47,6 @@ public class ContainerWindow extends PopupWindow {
 		ScrollPane containerScrollPane = new ScrollPane(containerTable, getSkin(), "lowered");
 		getWindow().getContentTable().add(containerScrollPane).growY().left().top();
 		containerTable.top();
-		
-		Container<Actor> splitter = new Container<>();
-		splitter.setBackground(getSkin().get("splitterVerticalLowered", NinePatchDrawable.class));
-		getWindow().getContentTable().add(splitter).left().top().bottom().growY();
 		
 		ContainerPartial inventoryContainerPartial = new ContainerPartial(getSkin(), player, entity, true);
 		Table inventoryTable = new Table();
