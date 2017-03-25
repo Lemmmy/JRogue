@@ -28,7 +28,7 @@ public class PlayerWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(600);
+		getWindow().setWidth(592);
 		getWindow().setHeight(400);
 
 		val ec = EntityHelper.getContainer(entity);
@@ -42,8 +42,11 @@ public class PlayerWindow extends PopupWindow {
 		
 		if (entity instanceof Player) {
 			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), (Player) entity);
-			ScrollPane statisticsScrollPane = new ScrollPane(attributesPartial, getSkin(), "lowered");
-			getWindow().getContentTable().add(statisticsScrollPane).width(276).left().top().padRight(8);
+			Table attributesTable = new Table();
+			attributesTable.add(attributesPartial).left().top();
+			ScrollPane statisticsScrollPane = new ScrollPane(attributesTable, getSkin(), "lowered");
+			getWindow().getContentTable().add(statisticsScrollPane).growY().width(276).left().top();
+			attributesTable.top();
 		}
 		
  		Container<Actor> splitter = new Container<>();
@@ -54,7 +57,7 @@ public class PlayerWindow extends PopupWindow {
 		Table inventoryTable = new Table();
 		inventoryTable.add(inventoryComponent).left().top();
 		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, getSkin(), "lowered");
-		getWindow().getContentTable().add(inventoryScrollPane).growY().left().top().padLeft(8);
+		getWindow().getContentTable().add(inventoryScrollPane).growY().left().top();
 		inventoryTable.top();
 	}
 }
