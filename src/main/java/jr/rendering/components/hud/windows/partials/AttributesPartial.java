@@ -52,7 +52,7 @@ public class AttributesPartial extends Table {
 	
 	private void addAvailableLabel(Table container) {
 		String label = String.format(
-			"[P_GREY_4]Skill points available:  [%s]%,d[][]",
+			"[P_GREY_3]Skill points available:  [%s]%,d[][]",
 			player.getSpendableSkillPoints() == 0 ? "P_RED" : "P_GREEN_3",
 			player.getSpendableSkillPoints()
 		);

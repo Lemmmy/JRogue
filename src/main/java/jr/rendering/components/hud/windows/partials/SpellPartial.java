@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.components.hud.windows.Window;
 
@@ -34,21 +35,23 @@ public class SpellPartial extends Table {
 	
 	private void showSpells() {
 		player.getKnownSpells().forEach((letter, spell) -> {
-			Button spellButton = new Button(getSkin(), "inventory");
+			Button spellButton = new Button(getSkin(), "containerEntry");
 			Table spellTable = new Table();
 			
-			spellTable.add(new Label(
-				"[P_GREY_3]" + letter.toString(),
+			Label letterLabel = new Label(
+				"[WHITE]" + letter.toString(),
 				getSkin(),
-				"windowStyleMarkup"
-			)).left().padRight(6);
+				"windowStyleRaisedMarkup"
+			);
+			letterLabel.setAlignment(Align.center);
+			spellTable.add(letterLabel).left().width(15).height(16).padRight(6);
 			spellTable.add(new Label(
 				String.format("[P_CYAN_1]level %,d", spell.getLevel()),
 				getSkin(),
 				"windowStyleMarkup"
 			)).left().padRight(6);
 			spellTable.add(new Label(
-				"[BLACK]" + spell.getName(true),
+				"[WHITE]" + spell.getName(true),
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();
@@ -58,7 +61,7 @@ public class SpellPartial extends Table {
 				"windowStyleMarkup"
 			)).right().padLeft(6);
 			spellTable.add(new Label(
-				String.format("[P_GREY_2]%.1f%% success", spell.getSuccessChance(player)),
+				String.format("[P_GREY_4]%.1f%% success", spell.getSuccessChance(player)),
 				getSkin(),
 				"windowStyleMarkup"
 			)).right().padLeft(6);
@@ -83,9 +86,9 @@ public class SpellPartial extends Table {
 				}
 			});
 			
-			spellButton.add(spellTable).left().width(389);
+			spellButton.add(spellTable).left().width(374).pad(2);
 			
-			add(spellButton).left().top().width(392).padTop(1).row();
+			add(spellButton).left().top().width(380).row();
 		});
 	}
 	

@@ -1,3 +1,5 @@
+import proguard.gradle.ProGuardTask
+
 buildscript {
 	repositories {
 		mavenLocal()
@@ -78,7 +80,7 @@ task subJar(type: Jar) {
 	with jar
 }
 
-task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
+task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	configuration "proguard.conf"
 
 	injars "$buildDir/tmp/${jarName}-deobf-${version}.jar"

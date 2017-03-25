@@ -59,7 +59,7 @@ public class HUDSkin extends Skin {
 		addFonts();
 		addLabelStyles();
 		addButtonStyle();
-		addInventoryButtonStyle();
+		addContainerButtonStyle();
 		addTextButtonStyle();
 		addTextFieldStyle();
 		addListStyle();
@@ -135,6 +135,22 @@ public class HUDSkin extends Skin {
 		Label.LabelStyle windowLabelStyleMarkup = new Label.LabelStyle();
 		windowLabelStyleMarkup.font = getFont("default");
 		add("windowStyleMarkup", windowLabelStyleMarkup);
+		
+		Label.LabelStyle windowLabelStyleLoweredMarkup = new Label.LabelStyle();
+		windowLabelStyleLoweredMarkup.font = getFont("default");
+		windowLabelStyleLoweredMarkup.background = new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
+			1, 1, 1, 1
+		);
+		add("windowStyleLoweredMarkup", windowLabelStyleLoweredMarkup);
+		
+		Label.LabelStyle windowLabelStyleRaisedMarkup = new Label.LabelStyle();
+		windowLabelStyleRaisedMarkup.font = getFont("default");
+		windowLabelStyleRaisedMarkup.background = new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
+			1, 1, 1, 1
+		);
+		add("windowStyleRaisedMarkup", windowLabelStyleRaisedMarkup);
 	}
 	
 	private void addButtonStyle() {
@@ -160,23 +176,23 @@ public class HUDSkin extends Skin {
 		add("default", buttonStyle);
 	}
 	
-	private void addInventoryButtonStyle() {
-		Button.ButtonStyle inventoryButtonStyle = new Button.ButtonStyle();
+	private void addContainerButtonStyle() {
+		Button.ButtonStyle containerButtonStyle = new Button.ButtonStyle();
 		
-		inventoryButtonStyle.disabled = inventoryButtonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 94, 25, 5, 5),
-			2, 2, 2, 2
+		containerButtonStyle.disabled = containerButtonStyle.up = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 108, 44, 7, 7),
+			3, 3, 3, 3
 		));
-		inventoryButtonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 84, 25, 5, 5),
-			2, 2, 2, 2
+		containerButtonStyle.over = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 116, 44, 7, 7),
+			3, 3, 3, 3
 		));
-		inventoryButtonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 89, 25, 5, 5),
-			2, 2, 2, 2
+		containerButtonStyle.down = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 122, 44, 7, 7),
+			3, 3, 3, 3
 		));
 		
-		add("inventory", inventoryButtonStyle);
+		add("containerEntry", containerButtonStyle);
 	}
 	
 	private void addTextButtonStyle() {
