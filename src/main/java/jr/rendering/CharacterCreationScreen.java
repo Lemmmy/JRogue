@@ -89,6 +89,8 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		goButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				JRogue.getSettings().setPlayerName(nameField.getText());
+				
 				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
 					false,
