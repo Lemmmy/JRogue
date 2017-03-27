@@ -40,32 +40,17 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		container.setFillParent(true);
 		container.row().fill().top();
 		
-		// Title
-		
-		container.add(new Label("Character Creation", skin, "large")).fillX().left().padBottom(8);
-		container.row();
-		
-		// Name Component
-		
-		Table nameTable = new Table();
-		
-		nameTable.add(new Label("Name", skin)).left().padRight(8);
-		nameField = new TextField(StringUtils.capitalize(JRogue.getSettings().getPlayerName()), skin);
-		nameTable.add(nameField).growX().left().row();
-		nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c) && textField.getText().length() < 20);
-		nameField.setTextFieldListener((textField, c) -> {
-			int p = nameField.getCursorPosition();
-			nameField.setText(StringUtils.capitalize(textField.getText()));
-			nameField.setCursorPosition(p);
-		});
-		nameField.setProgrammaticChangeEvents(false);
-		
-		container.add(nameTable).growX().row();
-		
+		initTitle(container);
+		initNameField(container);
 		container.add(new Container<>()).expand().row();
+		initBottomButtons(container);
 		
-		// Bottom Buttons
+		container.top().pad(32);
 		
+		stage.addActor(container);
+	}
+	
+	private void initBottomButtons(Table container) {
 		Table buttonTable = new Table();
 		
 		TextButton tempReloadButton = new TextButton("Reload", skin);
@@ -93,10 +78,28 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		
 		buttonTable.align(Align.right);
 		container.add(buttonTable).growX().row();
+	}
+	
+	private void initNameField(Table container) {
+		Table nameTable = new Table();
 		
-		container.top().pad(32);
+		nameTable.add(new Label("Name", skin)).left().padRight(8);
+		nameField = new TextField(StringUtils.capitalize(JRogue.getSettings().getPlayerName()), skin);
+		nameTable.add(nameField).growX().left().row();
+		nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c) && textField.getText().length() < 20);
+		nameField.setTextFieldListener((textField, c) -> {
+			int p = nameField.getCursorPosition();
+			nameField.setText(StringUtils.capitalize(textField.getText()));
+			nameField.setCursorPosition(p);
+		});
+		nameField.setProgrammaticChangeEvents(false);
 		
-		stage.addActor(container);
+		container.add(nameTable).growX().row();
+	}
+	
+	private void initTitle(Table container) {
+		container.add(new Label("Character Creation", skin, "large")).fillX().left().padBottom(8);
+		container.row();
 	}
 	
 	@Override
