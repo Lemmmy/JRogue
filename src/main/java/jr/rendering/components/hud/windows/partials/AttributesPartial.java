@@ -40,7 +40,7 @@ public class AttributesPartial extends Table {
 	private void addSeparator(Table container) {
 		Container<Actor> splitter = new Container<>();
 		splitter.setBackground(getSkin().get("splitterHorizontalDarkLowered", NinePatchDrawable.class));
-		container.add(splitter).growX().pad(8, 4, 8, 4 ).row();
+		container.add(splitter).growX().pad(8, 4, 8, 4).row();
 	}
 	
 	private void addArmourClass(Table container) {

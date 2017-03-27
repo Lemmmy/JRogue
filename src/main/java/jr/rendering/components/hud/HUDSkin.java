@@ -228,29 +228,20 @@ public class HUDSkin extends Skin {
 		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
 		
 		textFieldStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader
-				.getSubimage("textures/hud.png", 59, 10, 5, 18),
-			2, 2, 2, 2
+			ImageLoader.getSubimage("textures/hud.png", 147, 31, 5, 12),
+			2, 2, 5, 6
 		));
 		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage(
-					"textures/hud.png",
-				64, 10,
-				5, 18
-			),
-			2, 2, 2, 2
+			ImageLoader.getSubimage("textures/hud.png", 152, 31, 5, 12),
+			2, 2, 5, 6
 		));
 		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage(
-					"textures/hud.png",
-				69, 10,
-				5, 18
-			),
-			2, 2, 2, 2
+			ImageLoader.getSubimage("textures/hud.png", 157, 31, 5, 12),
+			2, 2, 5, 6
 		));
 		
 		textFieldStyle.font = getFont("defaultNoShadow");
-		textFieldStyle.fontColor = Colors.get("P_GREY_0");
+		textFieldStyle.fontColor = Colors.get("WHITE");
 		
 		add("default", textFieldStyle);
 	}
