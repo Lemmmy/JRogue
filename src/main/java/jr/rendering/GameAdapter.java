@@ -16,6 +16,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class GameAdapter extends Game {
+	/**
+	 * The game's title in the game window.
+	 */
+	static final String WINDOW_TITLE = "JRogue";
+	
 	private Batch batch;
 	
 	private FrameBuffer oldFBO, newFBO;

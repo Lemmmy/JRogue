@@ -38,11 +38,6 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	public static final float TURN_LERP_DURATION = 0.170f;
 	
 	/**
-	 * The game's title in the game window.
-	 */
-	private static final String WINDOW_TITLE = "JRogue";
-	
-	/**
 	 * The {@link GameAdapter} instance.
 	 */
 	private GameAdapter game;
@@ -172,7 +167,7 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	private void updateWindowTitle() {
 		Gdx.graphics.setTitle(String.format(
 			"%s - %s - Turn %,d",
-			WINDOW_TITLE,
+			GameAdapter.WINDOW_TITLE,
 			dungeon.getName(),
 			dungeon.getTurn()
 		));

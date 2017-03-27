@@ -8,16 +8,20 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.rendering.components.hud.HUDSkin;
+import org.apache.commons.lang3.StringUtils;
 
 public class CharacterCreationScreen extends ScreenAdapter {
 	private Skin skin;
 	private Stage stage;
 	
 	private GameAdapter game;
+	
+	private TextField nameField;
 	
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
@@ -28,21 +32,53 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		stage = new Stage(stageViewport);
 		
 		initLayout(new Table(skin));
+		
+		Gdx.graphics.setTitle(GameAdapter.WINDOW_TITLE);
 	}
 	
 	private void initLayout(Table container) {
 		container.setFillParent(true);
-		
-		container.debug();
-		
 		container.row().fill().top();
 		
-		container.add(new Label("Test", skin)).fillX().left().pad(8);
+		// Title
 		
+		container.add(new Label("Character Creation", skin, "large")).fillX().left().padBottom(8);
 		container.row();
+		
+		// Name Component
+		
+		Table nameTable = new Table();
+		
+		nameTable.add(new Label("Name", skin)).left().padRight(8);
+		nameField = new TextField(StringUtils.capitalize(JRogue.getSettings().getPlayerName()), skin);
+		nameTable.add(nameField).growX().left().row();
+		nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c) && textField.getText().length() < 20);
+		nameField.setTextFieldListener((textField, c) -> {
+			int p = nameField.getCursorPosition();
+			nameField.setText(StringUtils.capitalize(textField.getText()));
+			nameField.setCursorPosition(p);
+		});
+		nameField.setProgrammaticChangeEvents(false);
+		
+		container.add(nameTable).growX().row();
+		
 		container.add(new Container<>()).expand().row();
 		
-		TextButton goButton = new TextButton("Go", skin);
+		// Bottom Buttons
+		
+		Table buttonTable = new Table();
+		
+		TextButton tempReloadButton = new TextButton("Reload", skin);
+		tempReloadButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				stage.clear();
+				initLayout(new Table(skin));
+			}
+		});
+		buttonTable.add(tempReloadButton).right().bottom().padRight(8);
+		
+		TextButton goButton = new TextButton("Create", skin);
 		goButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -53,9 +89,12 @@ public class CharacterCreationScreen extends ScreenAdapter {
 				), 1f);
 			}
 		});
-		container.add(goButton).right().bottom();
+		buttonTable.add(goButton).right().bottom();
 		
-		container.top();
+		buttonTable.align(Align.right);
+		container.add(buttonTable).growX().row();
+		
+		container.top().pad(32);
 		
 		stage.addActor(container);
 	}
