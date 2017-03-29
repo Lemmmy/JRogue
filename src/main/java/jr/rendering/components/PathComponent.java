@@ -11,8 +11,8 @@ import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
 import jr.rendering.GameScreen;
 import jr.rendering.tiles.TileMap;
-import jr.rendering.utils.ImageLoader;
 import jr.rendering.utils.Gradient;
+import jr.rendering.utils.ImageLoader;
 import jr.utils.Path;
 
 import java.util.concurrent.atomic.AtomicInteger;

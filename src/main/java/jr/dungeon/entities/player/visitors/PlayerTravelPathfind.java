@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;

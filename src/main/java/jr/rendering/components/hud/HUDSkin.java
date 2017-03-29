@@ -297,26 +297,19 @@ public class HUDSkin extends Skin {
 	private void addSelectBoxStyle() {
 		SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
 		selectBoxStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader
-				.getSubimage("textures/hud.png", 59, 10, 5, 18),
+			ImageLoader.getSubimage("textures/hud.png", 59, 10, 5, 18),
 			2, 2, 2, 2
 		));
 		selectBoxStyle.backgroundDisabled = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage(
-					"textures/hud.png",
-				69, 10,
-				5, 18
-			),
+			ImageLoader.getSubimage("textures/hud.png", 69, 10, 5, 18),
 			2, 2, 2, 2
 		));
 		selectBoxStyle.backgroundOver = new NinePatchDrawable(new NinePatch(
-			ImageLoader
-				.getSubimage("textures/hud.png", 74, 10, 5, 18),
+			ImageLoader.getSubimage("textures/hud.png", 74, 10, 5, 18),
 			2, 2, 2, 2
 		));
 		selectBoxStyle.backgroundOpen = new NinePatchDrawable(new NinePatch(
-			ImageLoader
-				.getSubimage("textures/hud.png", 79, 10, 5, 18),
+			ImageLoader.getSubimage("textures/hud.png", 79, 10, 5, 18),
 			2, 2, 2, 2
 		));
 		selectBoxStyle.font = getFont("defaultNoShadow");

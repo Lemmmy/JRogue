@@ -2,8 +2,8 @@ package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.events.PlayerWalkedIntoSolidEvent;
 import jr.dungeon.items.weapons.ItemWeaponMelee;

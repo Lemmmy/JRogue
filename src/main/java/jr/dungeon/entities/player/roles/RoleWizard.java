@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RoleWizard extends Role {
+	static {
+		registerRole(RoleWizard.class);
+	}
+	
 	private ItemStack staff;
 	
 	@Override

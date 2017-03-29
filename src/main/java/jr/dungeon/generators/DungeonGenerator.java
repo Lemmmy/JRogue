@@ -2,11 +2,8 @@ package jr.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
-import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Utils;
-import jr.utils.WeightedCollection;
 import lombok.Getter;
 
 import java.util.Random;

@@ -3,16 +3,20 @@ package jr.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.roles.Role;
 import jr.rendering.components.hud.HUDSkin;
+import jr.rendering.entities.RoleMap;
 import org.apache.commons.lang3.StringUtils;
 
 public class CharacterCreationScreen extends ScreenAdapter {
@@ -22,6 +26,10 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private GameAdapter game;
 	
 	private TextField nameField;
+	private Table roleContainer;
+	private TextButton createButton;
+	
+	private Role selectedRole;
 	
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
@@ -42,6 +50,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		
 		initTitle(container);
 		initNameField(container);
+		initClassButtons(container);
 		container.add(new Container<>()).expand().row();
 		initBottomButtons(container);
 		
@@ -69,7 +78,50 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		});
 		nameField.setProgrammaticChangeEvents(false);
 		
-		container.add(nameTable).growX().row();
+		container.add(nameTable).growX().padBottom(8).row();
+	}
+	
+	private void initClassButtons(Table container) {
+		container.add(new Label("Role", skin)).left().padBottom(8).row();
+		
+		roleContainer = new Table();
+		
+		for (RoleMap roleMap : RoleMap.values()) {
+			try {
+				Role roleInstance = roleMap.getRoleClass().newInstance();
+				
+				TextureRegion roleTexture = roleMap.getRoleTexture();
+				TextureRegionDrawable roleDrawable = new TextureRegionDrawable(roleTexture);
+				Image roleImage = new Image(roleDrawable);
+				
+				Button roleButton = new Button(skin);
+				Table roleTable = new Table();
+				roleTable.add(roleImage).size(32, 32).row();
+				roleTable.add(new Label(roleInstance.getName(), skin)).pad(4, 4, 0, 4);
+				roleButton.add(roleTable);
+				
+				roleButton.addListener(new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						roleContainer.getChildren().forEach(c -> {
+							if (c instanceof TextButton) {
+								((TextButton) c).setDisabled(false);
+							}
+						});
+						
+						roleButton.setDisabled(true);
+						selectedRole = roleInstance;
+						createButton.setDisabled(false);
+					}
+				});
+				
+				roleContainer.add(roleButton);
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		container.add(roleContainer).growX().left().row();
 	}
 	
 	private void initBottomButtons(Table container) {
@@ -85,11 +137,13 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		});
 		buttonTable.add(tempReloadButton).right().bottom().padRight(8);
 		
-		TextButton goButton = new TextButton("Create", skin);
-		goButton.addListener(new ChangeListener() {
+		createButton = new TextButton("Create", skin);
+		createButton.setDisabled(true);
+		createButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				JRogue.getSettings().setPlayerName(nameField.getText());
+				JRogue.getSettings().setRole(selectedRole);
 				
 				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
@@ -98,7 +152,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 				), 1f);
 			}
 		});
-		buttonTable.add(goButton).right().bottom();
+		buttonTable.add(createButton).right().bottom();
 		
 		buttonTable.align(Align.right);
 		container.add(buttonTable).growX().row();
