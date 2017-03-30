@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.components.hud.windows.partials.AttributesPartial;
 import jr.rendering.components.hud.windows.partials.ContainerPartial;
 import jr.rendering.components.hud.windows.partials.StatsPartial;

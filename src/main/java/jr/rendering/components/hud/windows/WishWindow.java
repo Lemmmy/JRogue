@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 
 public class WishWindow extends PopupWindow {
 	private TextField wishField;

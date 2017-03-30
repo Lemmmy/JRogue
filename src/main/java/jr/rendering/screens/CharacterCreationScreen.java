@@ -1,4 +1,4 @@
-package jr.rendering;
+package jr.rendering.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -16,6 +16,8 @@ import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
+import jr.rendering.GameAdapter;
+import jr.rendering.SlidingTransition;
 import jr.rendering.components.hud.HUDSkin;
 import jr.rendering.components.hud.windows.partials.AttributesPartial;
 import jr.rendering.entities.RoleMap;

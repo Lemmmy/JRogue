@@ -13,7 +13,7 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.ImageLoader;
 import jr.utils.Colour;
 import jr.utils.Utils;

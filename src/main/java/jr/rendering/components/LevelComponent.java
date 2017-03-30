@@ -7,7 +7,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TilePooledEffect;
 import jr.rendering.tiles.TileRenderer;

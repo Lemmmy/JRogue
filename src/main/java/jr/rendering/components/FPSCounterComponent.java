@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.FontLoader;
 
 import java.util.ArrayList;

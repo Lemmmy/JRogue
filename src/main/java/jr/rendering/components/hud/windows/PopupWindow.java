@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import lombok.Getter;
 
 @Getter

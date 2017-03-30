@@ -11,7 +11,7 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;

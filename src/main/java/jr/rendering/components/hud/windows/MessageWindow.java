@@ -4,7 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 
 public class MessageWindow extends PopupWindow {
 	private String title;

@@ -14,7 +14,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.components.hud.windows.*;
 import jr.rendering.tiles.TileMap;

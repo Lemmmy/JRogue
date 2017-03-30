@@ -12,7 +12,7 @@ import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.ParticleEffectMap;
 import jr.rendering.tiles.TileMap;
 import lombok.Getter;

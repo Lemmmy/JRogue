@@ -9,7 +9,7 @@ import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.Gradient;
 import jr.rendering.utils.ImageLoader;

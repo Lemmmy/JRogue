@@ -9,7 +9,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityRenderer;
 import jr.rendering.utils.ShaderLoader;

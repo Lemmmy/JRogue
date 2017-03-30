@@ -15,7 +15,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.DungeonEventInvocationTime;
 import jr.dungeon.events.DungeonEventListener;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 

@@ -1,4 +1,4 @@
-package jr.rendering;
+package jr.rendering.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -12,6 +12,8 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
+import jr.rendering.GameAdapter;
+import jr.rendering.GameInputProcessor;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.tiles.TileMap;

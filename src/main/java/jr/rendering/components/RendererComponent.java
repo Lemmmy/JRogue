@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.events.DungeonEventListener;
-import jr.rendering.GameScreen;
+import jr.rendering.screens.GameScreen;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.rendering.screens.CharacterCreationScreen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,7 @@ public class GameAdapter extends Game {
 	/**
 	 * The game's title in the game window.
 	 */
-	static final String WINDOW_TITLE = "JRogue";
+	public static final String WINDOW_TITLE = "JRogue";
 	
 	private Batch batch;
 	
