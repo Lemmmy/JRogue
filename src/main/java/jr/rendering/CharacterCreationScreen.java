@@ -14,8 +14,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
 import jr.rendering.components.hud.HUDSkin;
+import jr.rendering.components.hud.windows.partials.AttributesPartial;
 import jr.rendering.entities.RoleMap;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,8 +30,10 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private TextField nameField;
 	private Table roleContainer;
 	private TextButton createButton;
+	private AttributesPartial attributesPartial;
 	
 	private Role selectedRole;
+	private Attributes attributes = new Attributes();
 	
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
@@ -51,6 +55,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		initTitle(container);
 		initNameField(container);
 		initClassButtons(container);
+		initAttributesPartial(container);
 		container.add(new Container<>()).expand().row();
 		initBottomButtons(container);
 		
@@ -112,6 +117,9 @@ public class CharacterCreationScreen extends ScreenAdapter {
 						roleButton.setDisabled(true);
 						selectedRole = roleInstance;
 						createButton.setDisabled(false);
+						
+						roleInstance.assignAttributes(attributes);
+						attributesPartial.update();
 					}
 				});
 				
@@ -122,6 +130,13 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		}
 		
 		container.add(roleContainer).growX().left().row();
+	}
+	
+	private void initAttributesPartial(Table container) {
+		attributesPartial = new AttributesPartial(skin, attributes);
+		attributesPartial.clearChildren();
+		
+		container.add(attributesPartial).row();
 	}
 	
 	private void initBottomButtons(Table container) {
@@ -144,6 +159,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 			public void changed(ChangeEvent event, Actor actor) {
 				JRogue.getSettings().setPlayerName(nameField.getText());
 				JRogue.getSettings().setRole(selectedRole);
+				JRogue.getSettings().setAttributes(attributes);
 				
 				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,

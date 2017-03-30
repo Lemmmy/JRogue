@@ -1,16 +1,16 @@
 package jr.rendering.components.hud.windows;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
 import jr.rendering.GameScreen;
 import jr.rendering.components.hud.windows.partials.AttributesPartial;
 import jr.rendering.components.hud.windows.partials.ContainerPartial;
+import jr.rendering.components.hud.windows.partials.StatsPartial;
 import lombok.val;
 
 public class PlayerWindow extends PopupWindow {
@@ -41,12 +41,21 @@ public class PlayerWindow extends PopupWindow {
 		getWindow().getContentTable().row();
 		
 		if (entity instanceof Player) {
-			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), (Player) entity);
-			Table attributesTable = new Table();
-			attributesTable.add(attributesPartial).left().top();
-			ScrollPane statisticsScrollPane = new ScrollPane(attributesTable, getSkin(), "lowered");
-			getWindow().getContentTable().add(statisticsScrollPane).growY().width(276).left().top();
-			attributesTable.top();
+			Table tempTable = new Table();
+			ScrollPane tempScrollPane = new ScrollPane(tempTable, getSkin(), "lowered");
+			
+			StatsPartial statsPartial = new StatsPartial(getSkin(), (Player) entity);
+			tempTable.add(statsPartial).width(276).left().top().row();
+			
+			Container<Actor> splitter = new Container<>();
+			splitter.setBackground(getSkin().get("splitterHorizontalDarkLowered", NinePatchDrawable.class));
+			tempTable.add(splitter).growX().pad(8, 4, 0, 4).row();
+			
+			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), ((Player) entity).getAttributes());
+			tempTable.add(attributesPartial).width(276);
+			
+			tempTable.top();
+			getWindow().getContentTable().add(tempScrollPane).growY().width(276);
 		}
 		
 		ContainerPartial inventoryComponent = new ContainerPartial(getSkin(), entity, null, true);

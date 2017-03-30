@@ -1,5 +1,6 @@
 package jr;
 
+import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,6 +104,7 @@ public class Settings {
 	private int textPopup = 1;
 	
 	@Setter private Role role;
+	@Setter private Attributes attributes;
 	
 	/**
 	 * Constructor

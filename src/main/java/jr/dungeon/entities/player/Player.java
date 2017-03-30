@@ -19,13 +19,14 @@ import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.GameStartedEvent;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -34,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -49,8 +51,7 @@ public class Player extends EntityLiving {
 	@Getter @Setter private int nutrition;
 	@Getter private NutritionState lastNutritionState;
 	
-	@Getter private int spendableSkillPoints = 3;
-	@Getter private Attributes attributes = new Attributes();
+	@Getter private Attributes attributes;
 	@Getter private Map<Skill, SkillLevel> skills;
 	
 	@Getter private int gold = 0;
@@ -77,7 +78,12 @@ public class Player extends EntityLiving {
 		energy = maxEnergy = role.getMaxEnergy();
 		knownSpells = new HashMap<>(role.getStartingSpells());
 		
-		role.assignAttributes(attributes);
+		if (JRogue.getSettings().getAttributes() != null) {
+			attributes = JRogue.getSettings().getAttributes();
+		} else {
+			attributes = new Attributes();
+			role.assignAttributes(attributes);
+		}
 		
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
@@ -213,10 +219,6 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	public void decrementSpendableSkillPoints() {
-		spendableSkillPoints = Math.max(0, spendableSkillPoints - 1);
-	}
-	
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
@@ -269,22 +271,6 @@ public class Player extends EntityLiving {
 		levelUpEnergy();
 		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
-		getDungeon().greenYou(
-			"have %,d spendable skill point%s.",
-			++spendableSkillPoints,
-			spendableSkillPoints == 1 ? "" : "s"
-		);
-	}
-	
-	@DungeonEventHandler
-	private void onGameStarted(GameStartedEvent event) {
-		if (spendableSkillPoints > 0) {
-			getDungeon().greenYou(
-				"have %,d spendable skill point%s.",
-				spendableSkillPoints,
-				spendableSkillPoints == 1 ? "" : "s"
-			);
-		}
 	}
 	
 	@Override
@@ -366,7 +352,6 @@ public class Player extends EntityLiving {
 		
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
-		obj.put("spendableSkillPoints", getSpendableSkillPoints());
 		obj.put("energy", getEnergy());
 		obj.put("maxEnergy", getMaxEnergy());
 		obj.put("chargingTurns", chargingTurns);
@@ -399,7 +384,6 @@ public class Player extends EntityLiving {
 		super.unserialise(obj);
 		
 		name = obj.getString("name");
-		spendableSkillPoints = obj.getInt("spendableSkillPoints");
 		energy = obj.getInt("energy");
 		maxEnergy = obj.getInt("maxEnergy");
 		chargingTurns = obj.getInt("chargingTurns");
@@ -583,5 +567,12 @@ public class Player extends EntityLiving {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public Set<DungeonEventListener> getSubListeners() {
+		val l = super.getSubListeners();
+		l.add(attributes);
+		return l;
 	}
 }

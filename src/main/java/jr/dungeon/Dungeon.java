@@ -10,7 +10,6 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
