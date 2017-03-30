@@ -30,6 +30,7 @@ public class GameAdapter extends Game {
 	private boolean transitioning;
 	private float transitionDuration;
 	private float currentTransitionTime;
+	private boolean firstTransitionFrame = false;
 	
 	private ScreenTransition transition;
 	
@@ -74,7 +75,10 @@ public class GameAdapter extends Game {
 		if (newScreen == null) {
 			// no other screen
 			screen.render(delta);
-		} else if (transitioning && currentTransitionTime >= transitionDuration) {
+		} else if (transitioning && firstTransitionFrame) {
+			firstTransitionFrame = false;
+		} if (transitioning && currentTransitionTime >=
+			transitionDuration) {
 			// transition is active and time limit reached
 			screen.hide();
 			screen = newScreen;
@@ -82,7 +86,7 @@ public class GameAdapter extends Game {
 			transitioning = false;
 			newScreen = null;
 			screen.render(delta);
-		} else if (transition != null) {
+		} else if (transition != null && newScreen != null) {
 			// transition is active
 			oldFBO.begin();
 			screen.render(delta);
@@ -151,6 +155,7 @@ public class GameAdapter extends Game {
 			this.transition = transition;
 			transitionDuration = duration;
 			transitioning = true;
+			firstTransitionFrame = true;
 		}
 		
 		this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

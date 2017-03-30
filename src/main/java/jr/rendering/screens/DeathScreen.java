@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
+import jr.dungeon.Dungeon;
 import jr.rendering.GameAdapter;
 import jr.rendering.components.hud.HUDSkin;
 
@@ -16,9 +17,11 @@ public class DeathScreen extends ScreenAdapter {
 	private Stage stage;
 	
 	private GameAdapter game;
+	private Dungeon dungeon;
 	
-	public DeathScreen(GameAdapter game) {
+	public DeathScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
+		this.dungeon = dungeon;
 		
 		skin = new HUDSkin();
 		ScreenViewport stageViewport = new ScreenViewport();

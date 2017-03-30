@@ -6,14 +6,17 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.rendering.GameAdapter;
 import jr.rendering.GameInputProcessor;
+import jr.rendering.SlidingTransition;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.tiles.TileMap;
@@ -306,6 +309,21 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 	@DungeonEventHandler
 	private void onSaveAndQuit(SaveAndQuitEvent e) {
 		Gdx.app.exit();
+	}
+	
+	@DungeonEventHandler
+	private void onPlayerDeath(EntityDeathEvent e) {
+		if (!e.isVictimPlayer()) return;
+		
+		game.setScreen(
+			new DeathScreen(game, dungeon),
+			new SlidingTransition(
+				SlidingTransition.Direction.DOWN,
+				false,
+				Interpolation.circle
+			),
+			0.5f
+		);
 	}
 	
 	public Matrix4 getCombinedTransform() {

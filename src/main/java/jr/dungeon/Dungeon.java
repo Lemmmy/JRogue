@@ -171,6 +171,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	private final JSONObject persistence = new JSONObject();
 	
+	private ArrayList<String> history = new ArrayList<>();
+	
 	/**
 	 * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
 	 * levels, and player.
@@ -499,7 +501,12 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			triggerEvent(new GameStartedEvent(false));
 		}
 	}
-
+	
+	@Override
+	public ArrayList<String> getHistory() {
+		return history;
+	}
+	
 	/**
 	 * Displays a message in the dungeon's event log.
 	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
@@ -520,6 +527,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		printedLogString = printedLogString + "\u001b[0m";
 		JRogue.getLogger().log(gameLogLevel, printedLogString);
 		
+		history.add(logString);
 		triggerEvent(new LogEvent(logString));
 	}
 
