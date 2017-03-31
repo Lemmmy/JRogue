@@ -15,10 +15,7 @@ import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
-import jr.utils.Path;
-import jr.utils.RandomUtils;
-import jr.utils.Utils;
-import jr.utils.WeightedCollection;
+import jr.utils.*;
 import lombok.Getter;
 
 import java.lang.reflect.Constructor;
@@ -310,6 +307,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 				level.getTileStore().setTileType(nx, ny, TileType.TILE_CORRIDOR);
 			}
 		}
+	}
+
+	protected void safePlaceDoor(Point p) {
+		safePlaceDoor(p.getX(), p.getY());
 	}
 	
 	/**
@@ -692,6 +693,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		return false;
 	}
+
+	public boolean canPlaceDoor(Point p) {
+		return canPlaceDoor(p.getX(), p.getY());
+	}
 	
 	/**
 	 * @param adjacentTiles The list of adjacent tile types from
@@ -722,6 +727,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected Orientation getWallOrientation(int x, int y) {
 		return getWallOrientation(level.getTileStore().getAdjacentTileTypes(x, y));
+	}
+
+	protected Orientation getWallOrientation(Point p) {
+		return getWallOrientation(p.getX(), p.getY());
 	}
 	
 	/**

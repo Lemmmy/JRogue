@@ -171,15 +171,10 @@ public class TileStore implements Serialisable {
 		setTileType(p.getX(), p.getY(), tile);
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> T[] getAdjacent(int x, int y, int[][] dirs, BiFunction<Integer, Integer, T> f) {
-		return (T[]) Arrays.stream(dirs)
-			.map(d -> f.apply(x + d[0], y + d[1]))
-			.toArray();
-	}
-
 	public Tile[] getAdjacentTiles(int x, int y) {
-		return getAdjacent(x, y, Utils.DIRECTIONS, this::getTile);
+		return Arrays.stream(Utils.DIRECTIONS)
+			.map(d -> getTile(x + d[0], y + d[1]))
+			.toArray(Tile[]::new);
 	}
 
 	public Tile[] getAdjacentTiles(Point p) {
@@ -187,7 +182,9 @@ public class TileStore implements Serialisable {
 	}
 
 	public TileType[] getAdjacentTileTypes(int x, int y) {
-		return getAdjacent(x, y, Utils.DIRECTIONS, this::getTileType);
+		return Arrays.stream(Utils.DIRECTIONS)
+			.map(d -> getTileType(x + d[0], y + d[1]))
+			.toArray(TileType[]::new);
 	}
 
 	public TileType[] getAdjacentTileTypes(Point p) {
@@ -195,7 +192,9 @@ public class TileStore implements Serialisable {
 	}
 	
 	public Tile[] getOctAdjacentTiles(int x, int y) {
-		return getAdjacent(x, y, Utils.OCT_DIRECTIONS, this::getTile);
+		return Arrays.stream(Utils.OCT_DIRECTIONS)
+			.map(d -> getTile(x + d[0], y + d[1]))
+			.toArray(Tile[]::new);
 	}
 
 	public Tile[] getOctAdjacentTiles(Point p) {
@@ -203,7 +202,9 @@ public class TileStore implements Serialisable {
 	}
 	
 	public TileType[] getOctAdjacentTileTypes(int x, int y) {
-		return getAdjacent(x, y, Utils.OCT_DIRECTIONS, this::getTileType);
+		return Arrays.stream(Utils.OCT_DIRECTIONS)
+			.map(d -> getTileType(x + d[0], y + d[1]))
+			.toArray(TileType[]::new);
 	}
 
 	public TileType[] getOctAdjacentTileTypes(Point p) {
@@ -226,5 +227,9 @@ public class TileStore implements Serialisable {
 		}
 		
 		return found;
+	}
+
+	public List<Tile> getTilesInRadius(Point p, int r) {
+		return getTilesInRadius(p.getX(), p.getY(), r);
 	}
 }
