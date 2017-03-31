@@ -22,7 +22,10 @@ public class AttributesPartial extends Table {
 	
 	public void update() {
 		clearChildren();
-		populate();
+		
+		if (attributes.getAttributeMap().values().stream().mapToInt(Integer::intValue).sum() > 0) {
+			populate();
+		}
 	}
 	
 	private void populate() {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
@@ -21,6 +22,7 @@ import jr.dungeon.items.Item;
 import jr.rendering.GameAdapter;
 import jr.rendering.SlidingTransition;
 import jr.rendering.components.hud.HUDSkin;
+import jr.rendering.components.hud.windows.partials.ContainerPartial;
 import jr.rendering.utils.HUDUtils;
 
 public class DeathScreen extends ScreenAdapter {
@@ -30,6 +32,9 @@ public class DeathScreen extends ScreenAdapter {
 	private GameAdapter game;
 	private Dungeon dungeon;
 	private EntityDeathEvent event;
+	
+	private Cell screenCell;
+	private Table logScreen, inventoryScreen;
 	
 	public DeathScreen(GameAdapter game, Dungeon dungeon, EntityDeathEvent event) {
 		this.game = game;
@@ -51,12 +56,61 @@ public class DeathScreen extends ScreenAdapter {
 		container.row().fill().top();
 		
 		initDeathMessage(container);
-		initLog(container);
+		
+		Container<Actor> splitter = new Container<>();
+		splitter.setBackground(skin.get("splitterHorizontalRaised", NinePatchDrawable.class));
+		container.add(splitter).growX().pad(16, 0, 4, 0).row();
+		
+		Table buttonContainer = new Table();
+		container.add(buttonContainer).left().pad(8, 0, 8, 0).row();
+		
+		screenCell = container.add().expand().padBottom(8);
+		container.row();
+		
+		initScreenTabs(buttonContainer);
+		switchScreen(logScreen);
+		
 		initBottomButtons(container);
 		
 		container.top().pad(32);
 		
 		stage.addActor(container);
+	}
+	
+	private void initScreenTabs(Table container) {
+		ButtonGroup<TextButton> screenTabs = new ButtonGroup<>();
+		screenTabs.setMaxCheckCount(1);
+		screenTabs.setMinCheckCount(0);
+		screenTabs.setUncheckLast(true);
+		
+		initScreenTab(container, screenTabs, "Log", logScreen = new Table());
+		initLogScreen(logScreen);
+		
+		Player player = dungeon.getPlayer();
+		
+		player.getContainer().ifPresent(inventory -> {
+			initScreenTab(container, screenTabs, "Inventory", inventoryScreen = new Table());
+			initInventoryScreen(inventoryScreen);
+		});
+	}
+	
+	private void initScreenTab(Table container, ButtonGroup<TextButton> group, String name, Table screen) {
+		TextButton button = new TextButton(name, skin, "checkable");
+		button.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!button.isChecked()) return;
+				
+				switchScreen(screen);
+			}
+		});
+		
+		group.add(button);
+		container.add(button).left().padRight(8);
+	}
+	
+	private void switchScreen(Table screen) {
+		screenCell.setActor(screen);
 	}
 	
 	private void initDeathMessage(Table container) {
@@ -104,7 +158,7 @@ public class DeathScreen extends ScreenAdapter {
 		}
 	}
 	
-	private void initLog(Table container) {
+	private void initLogScreen(Table container) {
 		Table logTable = new Table(skin);
 		
 		dungeon.getLogHistory().forEach(entry -> {
@@ -113,8 +167,15 @@ public class DeathScreen extends ScreenAdapter {
 		});
 		
 		ScrollPane logScrollPane = new ScrollPane(logTable, skin);
-		container.add(logScrollPane).expand().growX().padBottom(8).row();
+		container.add(logScrollPane).expand().growX().row();
 		logScrollPane.setScrollPercentY(100);
+		
+		container.add(new Container<>()).expand().row();
+	}
+	
+	private void initInventoryScreen(Table container) {
+		ContainerPartial inventoryPartial = new ContainerPartial(skin, dungeon.getPlayer(), null);
+		container.add(inventoryPartial);
 	}
 	
 	private void initBottomButtons(Table container) {

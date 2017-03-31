@@ -18,6 +18,11 @@ public class Attributes implements EventListener {
 	@Getter private int spendableSkillPoints = 3;
 	
 	public Attributes() {
+		clear();
+	}
+	
+	public void clear() {
+		spendableSkillPoints = 3;
 		Arrays.stream(Attribute.values()).forEach(a -> { attributes.put(a, 0); defaults.put(a, 0); });
 	}
 	

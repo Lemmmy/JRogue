@@ -95,6 +95,11 @@ public class CharacterCreationScreen extends ScreenAdapter {
 		
 		roleContainer = new Table();
 		
+		ButtonGroup<Button> roleButtonGroup = new ButtonGroup<>();
+		roleButtonGroup.setMaxCheckCount(1);
+		roleButtonGroup.setMinCheckCount(0);
+		roleButtonGroup.setUncheckLast(true);
+		
 		for (RoleMap roleMap : RoleMap.values()) {
 			try {
 				Role roleInstance = roleMap.getRoleClass().newInstance();
@@ -103,7 +108,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 				TextureRegionDrawable roleDrawable = new TextureRegionDrawable(roleTexture);
 				Image roleImage = new Image(roleDrawable);
 				
-				Button roleButton = new Button(skin);
+				Button roleButton = new Button(skin, "checkable");
 				Table roleTable = new Table();
 				roleTable.add(roleImage).size(32, 32).row();
 				roleTable.add(new Label(roleInstance.getName(), skin)).pad(4, 4, 0, 4);
@@ -112,21 +117,28 @@ public class CharacterCreationScreen extends ScreenAdapter {
 				roleButton.addListener(new ChangeListener() {
 					@Override
 					public void changed(ChangeEvent event, Actor actor) {
-						roleContainer.getChildren().forEach(c -> {
-							if (c instanceof TextButton) {
-								((TextButton) c).setDisabled(false);
-							}
-						});
+						if (createButton == null) return; // ButtonGroup.add fires change events - we're not ready!
 						
-						roleButton.setDisabled(true);
-						selectedRole = roleInstance;
-						createButton.setDisabled(false);
+						if (roleButton.isChecked()) {
+							selectedRole = roleInstance;
+							createButton.setDisabled(false);
+							
+							attributes.clear();
+							roleInstance.assignAttributes(attributes);
+							attributesPartial.update();
+						}
 						
-						roleInstance.assignAttributes(attributes);
-						attributesPartial.update();
+						if (roleButtonGroup.getChecked() == null) {
+							selectedRole = null;
+							createButton.setDisabled(true);
+							
+							attributes.clear();
+							attributesPartial.update();
+						}
 					}
 				});
 				
+				roleButtonGroup.add(roleButton);
 				roleContainer.add(roleButton);
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();

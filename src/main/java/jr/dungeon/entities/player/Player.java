@@ -21,6 +21,7 @@ import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.EventPriority;
+import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.utils.RandomUtils;
@@ -446,6 +447,18 @@ public class Player extends EntityLiving {
 		} else {
 			getDungeon().redYou("die.");
 		}
+		
+		getContainer().ifPresent(inv -> inv.getItems().forEach((character, itemStack) -> {
+			Item i = itemStack.getItem();
+			
+			i.getAspects().forEach((aClass, aspect) -> {
+				if (aspect.isPersistent()) {
+					observeAspect(i, aClass);
+				} else {
+					i.observeAspect(this, aClass);
+				}
+			});
+		}));
 		
 		getDungeon().deleteSave();
 	}

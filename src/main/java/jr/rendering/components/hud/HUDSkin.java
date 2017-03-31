@@ -157,23 +157,41 @@ public class HUDSkin extends Skin {
 		Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
 		
 		buttonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 108, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 108, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		buttonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 113, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 118, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		buttonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 118, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 128, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		buttonStyle.disabled = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 147, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		
 		add("default", buttonStyle);
+		
+		Button.ButtonStyle buttonStyleCheckable = new Button.ButtonStyle();
+		
+		buttonStyleCheckable.up = buttonStyle.up;
+		buttonStyleCheckable.over = buttonStyle.over;
+		buttonStyleCheckable.down = buttonStyle.down;
+		buttonStyleCheckable.disabled = buttonStyle.disabled;
+		
+		buttonStyleCheckable.checked = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 169, 31, 10, 12),
+			4, 5, 5, 6
+		));
+		buttonStyleCheckable.checkedOver = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 179, 31, 10, 12),
+			4, 5, 5, 6
+		));
+		
+		add("checkable", buttonStyleCheckable);
 	}
 	
 	private void addContainerButtonStyle() {
@@ -199,20 +217,20 @@ public class HUDSkin extends Skin {
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		
 		textButtonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 108, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 108, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		textButtonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 113, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 118, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		textButtonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 118, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 128, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		textButtonStyle.disabled = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 147, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		
 		textButtonStyle.font = getFont("defaultNoShadow");
@@ -222,22 +240,48 @@ public class HUDSkin extends Skin {
 		textButtonStyle.disabledFontColor = Colors.get("WHITE");
 		
 		add("default", textButtonStyle);
+		
+		TextButton.TextButtonStyle textButtonStyleCheckable = new TextButton.TextButtonStyle();
+		
+		textButtonStyleCheckable.up = textButtonStyle.up;
+		textButtonStyleCheckable.over = textButtonStyle.over;
+		textButtonStyleCheckable.down = textButtonStyle.down;
+		textButtonStyleCheckable.disabled = textButtonStyle.disabled;
+		textButtonStyleCheckable.font = textButtonStyle.font;
+		textButtonStyleCheckable.fontColor = textButtonStyle.fontColor;
+		textButtonStyleCheckable.downFontColor = textButtonStyle.downFontColor;
+		textButtonStyleCheckable.overFontColor = textButtonStyle.overFontColor;
+		textButtonStyleCheckable.disabledFontColor = textButtonStyle.disabledFontColor;
+		
+		textButtonStyleCheckable.checked = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 169, 31, 10, 12),
+			4, 5, 5, 6
+		));
+		textButtonStyleCheckable.checkedOver = new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 179, 31, 10, 12),
+			4, 5, 5, 6
+		));
+		
+		textButtonStyleCheckable.checkedFontColor = Colors.get("WHITE");
+		textButtonStyleCheckable.checkedOverFontColor = Colors.get("WHITE");
+		
+		add("checkable", textButtonStyleCheckable);
 	}
 	
 	private void addTextFieldStyle() {
 		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
 		
 		textFieldStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 147, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 152, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 148, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 157, 31, 5, 12),
-			2, 2, 5, 6
+			ImageLoader.getSubimage("textures/hud.png", 158, 31, 10, 12),
+			4, 5, 5, 6
 		));
 		
 		textFieldStyle.font = getFont("defaultNoShadow");
