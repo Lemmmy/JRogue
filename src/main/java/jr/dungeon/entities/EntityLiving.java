@@ -11,7 +11,7 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
@@ -263,7 +263,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	}
 	
 	@Override
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		getContainer().ifPresent(c -> {

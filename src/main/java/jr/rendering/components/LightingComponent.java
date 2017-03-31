@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
@@ -116,7 +116,7 @@ public class LightingComponent extends RendererComponent {
 		lightSpriteBatch.dispose();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 	}

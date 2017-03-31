@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BeforeGameStartedEvent extends DungeonEvent {
+public class BeforeGameStartedEvent extends Event {
 	private boolean newDungeon;
 }

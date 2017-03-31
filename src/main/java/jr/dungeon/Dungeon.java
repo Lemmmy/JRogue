@@ -11,6 +11,7 @@ import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
@@ -20,6 +21,7 @@ import jr.utils.OperatingSystem;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Range;
@@ -75,14 +77,14 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
 	/**
-	 * List of {@link DungeonEventListener}s that the Dungeon should send events to.
+	 * List of {@link EventListener}s that the Dungeon should send events to.
 	 */
-	private final Set<DungeonEventListener> listeners = new HashSet<>();
+	private final Set<EventListener> listeners = new HashSet<>();
 	/**
-	 * List of {@link DungeonEvent}s to be sent to {@link DungeonEventListener}s with the flag
-	 * {@link DungeonEventHandler#invocationTime()} set to {@link DungeonEventInvocationTime#TURN_COMPLETE}.
+	 * List of {@link Event}s to be sent to {@link EventListener}s with the flag
+	 * {@link EventHandler#invocationTime()} set to {@link EventInvocationTime#TURN_COMPLETE}.
 	 */
-	private final List<DungeonEvent> eventQueueNextTurn = new LinkedList<>();
+	private final List<Event> eventQueueNextTurn = new LinkedList<>();
 	
 	/**
 	 * rand
@@ -461,7 +463,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 * Adds an event listener to this dungeon.
 	 * @param listener The event listener to add.
 	 */
-	public void addListener(DungeonEventListener listener) {
+	public void addListener(EventListener listener) {
 		listeners.add(listener);
 	}
 
@@ -469,7 +471,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 * Removes an event listener from this dungeon.
 	 * @param listener The event listener to remove.
 	 */
-	public void removeListener(DungeonEventListener listener) {
+	public void removeListener(EventListener listener) {
 		listeners.remove(listener);
 	}
 	
@@ -590,6 +592,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	public void turn() {
 		if (!player.isAlive()) {
+			triggerTurnCompleteEvents();
 			return;
 		}
 		
@@ -647,6 +650,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		if (player.isAlive()) {
 			player.move();
 		} else {
+			triggerTurnCompleteEvents();
 			return;
 		}
 		
@@ -655,11 +659,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getVisibilityStore().updateSight(player);
 		level.getLightStore().buildLight(false);
 		
-		for (Iterator<DungeonEvent> iterator = eventQueueNextTurn.iterator(); iterator.hasNext(); ) {
-			DungeonEvent event = iterator.next();
-			triggerEvent(event, DungeonEventInvocationTime.TURN_COMPLETE);
-			iterator.remove();
-		}
+		triggerTurnCompleteEvents();
 		
 		triggerEvent(new TurnEvent(turn));
 	}
@@ -759,14 +759,22 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public JSONObject getPersistence() {
 		return persistence;
 	}
+	
+	private void triggerTurnCompleteEvents() {
+		for (Iterator<Event> iterator = eventQueueNextTurn.iterator(); iterator.hasNext(); ) {
+			Event event = iterator.next();
+			triggerEvent(event, EventInvocationTime.TURN_COMPLETE);
+			iterator.remove();
+		}
+	}
 
 	/**
 	 * Triggers a dungeon event, notifying all listeners.
 	 * @param event The event to trigger.
 	 */
-	public void triggerEvent(DungeonEvent event) {
+	public void triggerEvent(Event event) {
 		eventQueueNextTurn.add(event);
-		triggerEvent(event, DungeonEventInvocationTime.IMMEDIATELY);
+		triggerEvent(event, EventInvocationTime.IMMEDIATELY);
 	}
 
 	/**
@@ -775,23 +783,34 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>TURN_COMPLETE</code> to delay it to the next turn.
 	 */
 	@SuppressWarnings("unchecked")
-	public void triggerEvent(DungeonEvent event, DungeonEventInvocationTime invocationTime) {
-		listeners.forEach(l -> invokeEvent(l, event, invocationTime));
+	public void triggerEvent(Event event, EventInvocationTime invocationTime) {
+		Set<EventHandlerMethodInstance> handlers = new HashSet<>();
+		
+		listeners.forEach(l -> fetchEventMethods(handlers, l, event, invocationTime));
 		
 		if (level != null) {
 			level.getEntityStore().getEntities().forEach(e -> {
-				invokeEvent(e, event, invocationTime);
+				fetchEventMethods(handlers, e, event, invocationTime);
+				
 				e.getSubListeners().forEach(l2 -> {
 					if (l2 != null) {
-						invokeEvent(l2, event, invocationTime);
+						fetchEventMethods(handlers, l2, event, invocationTime);
 					}
 				});
 			});
 		}
+		
+		handlers.stream().sorted(Comparator.comparing(h -> h.getHandler().priority())).forEach(h -> {
+			try {
+				h.getMethod().invoke(h.getListener(), event);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				JRogue.getLogger().error("Error triggering event " + event.getClass().getSimpleName(), e);
+			}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
+	private void fetchEventMethods(Set<EventHandlerMethodInstance> handlers, EventListener listener, Event event, EventInvocationTime invocationTime) {
 		event.setDungeon(this);
 		
 		Class<?> listenerClass = listener.getClass();
@@ -802,7 +821,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			
 			for (Method method : methods) {
 				if (
-					method.isAnnotationPresent(DungeonEventHandler.class) &&
+					method.isAnnotationPresent(EventHandler.class) &&
 					method.getParameterCount() == 1 &&
 					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
 				) {
@@ -813,14 +832,14 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			listenerClass = listenerClass.getSuperclass();
 		}
 		
-		listenerMethods.forEach(m -> {
-			m.setAccessible(true); // ha ha
+		listenerMethods.forEach(method -> {
+			method.setAccessible(true); // ha ha
 			
 			if (event.isCancelled()) {
 				return;
 			}
 			
-			DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
+			EventHandler annotation = method.getAnnotation(EventHandler.class);
 			
 			if (annotation.selfOnly() && !event.isSelf(listener)) {
 				return;
@@ -830,11 +849,15 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 				return;
 			}
 			
-			try {
-				m.invoke(listener, event);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
-			}
+			handlers.add(new EventHandlerMethodInstance(method, annotation, listener));
 		});
+	}
+	
+	@Getter
+	@AllArgsConstructor
+	private class EventHandlerMethodInstance {
+		private Method method;
+		private EventHandler handler;
+		private EventListener listener;
 	}
 }

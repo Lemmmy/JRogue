@@ -9,7 +9,7 @@ import jr.dungeon.entities.effects.MercuryPoisoning;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
@@ -61,7 +61,7 @@ public class EntityItem extends Entity {
 		itemStack.getItem().update(this);
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		int x = getX() + e.getDeltaX();
 		int y = getY() + e.getDeltaY();
@@ -93,7 +93,7 @@ public class EntityItem extends Entity {
 		return itemStack.getName(observer, requiresCapitalisation);
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
 		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 			.filter(e -> e != this)

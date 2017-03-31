@@ -5,7 +5,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.*;
+import jr.dungeon.events.EventListener;
 import jr.utils.Persisting;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
@@ -22,11 +23,11 @@ import java.util.*;
 /**
  * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
  * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
- * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+ * {@link jr.dungeon.events.EventListener}, and can listen to dungeon events with {@link EventHandler}
  * methods.
  */
 @Getter
-public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
+public abstract class Entity implements Serialisable, Persisting, EventListener {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
 	 */
@@ -109,7 +110,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	/**
 	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
 	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
-	 * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler}
 	 * methods.
 	 *
 	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
@@ -355,13 +356,13 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 	
 	/**
-	 * This is a set of objects related to the Entity which should receive {@link jr.dungeon.events.DungeonEvent
+	 * This is a set of objects related to the Entity which should receive {@link Event
 	 * dungeon events}. When overriding this to add your own, you must always concatenate super's getSubListeners()
 	 * to the list that you return.
 	 *
-	 * @return A set of {@link DungeonEventListener DunegonEventListeners} to receive events.
+	 * @return A set of {@link EventListener DunegonEventListeners} to receive events.
 	 */
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		return new HashSet<>(statusEffects);
 	}
 }

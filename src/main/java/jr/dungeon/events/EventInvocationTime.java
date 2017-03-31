@@ -1,6 +1,6 @@
 package jr.dungeon.events;
 
-public enum DungeonEventInvocationTime {
+public enum EventInvocationTime {
 	/**
 	 * Handler will handle the event as soon as it is triggered.
 	 */

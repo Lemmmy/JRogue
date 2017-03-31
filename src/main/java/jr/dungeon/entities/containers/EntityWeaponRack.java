@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 		return Optional.of(String.format("You browse the %s.", getName(getDungeon().getPlayer(), false)));
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));

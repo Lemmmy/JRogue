@@ -9,7 +9,7 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityStatusEffectChangedEvent;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.TurnEvent;
 import jr.rendering.screens.GameScreen;
@@ -69,12 +69,12 @@ public abstract class ParticlesComponent extends RendererComponent {
 		pooledEffects.forEach(p -> p.getPooledEffect().dispose());
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		pooledEffects.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		for (Iterator<PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
 			PooledEffect effect = iterator.next();
@@ -187,7 +187,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 			return 15;
 		}
 		
-		@DungeonEventHandler
+		@EventHandler
 		private void onEntityMoved(EntityMovedEvent event) {
 			Entity e = event.getEntity();
 			
@@ -212,7 +212,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 			return 35;
 		}
 		
-		@DungeonEventHandler
+		@EventHandler
 		private void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
 			switch (e.getChange()) {
 				case ADDED:

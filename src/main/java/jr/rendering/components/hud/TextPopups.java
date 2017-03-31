@@ -12,14 +12,14 @@ import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.events.EntityEnergyChangedEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventInvocationTime;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventInvocationTime;
+import jr.dungeon.events.EventListener;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 
-public class TextPopups implements DungeonEventListener {
+public class TextPopups implements EventListener {
 	private static final float TEXT_POPUP_DURATION = 0.4f;
 	
 	public HUDComponent hudComponent;
@@ -38,7 +38,7 @@ public class TextPopups implements DungeonEventListener {
 		settings = hudComponent.settings;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityHealthChanged(EntityHealthChangedEvent e) {
 		Entity entity = e.getEntity();
 		int delta = e.getNewHealth() - e.getOldHealth();
@@ -52,7 +52,7 @@ public class TextPopups implements DungeonEventListener {
 		));
 	}
 	
-	@DungeonEventHandler(invocationTime = DungeonEventInvocationTime.TURN_COMPLETE)
+	@EventHandler(invocationTime = EventInvocationTime.TURN_COMPLETE)
 	public void onPlayerEnergyChanged(EntityEnergyChangedEvent e) {
 		Entity entity = e.getEntity();
 		int delta = e.getNewEnergy() - e.getOldEnergy();
@@ -66,7 +66,7 @@ public class TextPopups implements DungeonEventListener {
 		));
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityAttackMissed(EntityAttackMissedEvent e) {
 		showTextPopup(e.getAttacker().getPosition(), "[P_ORANGE_2]missed[]");
 	}

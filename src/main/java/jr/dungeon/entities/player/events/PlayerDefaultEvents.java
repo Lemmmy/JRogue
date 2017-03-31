@@ -8,15 +8,15 @@ import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
 
-public class PlayerDefaultEvents implements DungeonEventListener {
-	@DungeonEventHandler
+public class PlayerDefaultEvents implements EventListener {
+	@EventHandler
 	public void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
 		Player player = e.getPlayer();
 		Tile tile = e.getTile();
@@ -75,7 +75,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 		player.getDungeon().You("open the door.");
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	public void onPlayerKickedTileEvent(EntityKickedTileEvent e) {
 		if (!e.isKickerPlayer()) {
 			return;

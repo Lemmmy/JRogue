@@ -18,8 +18,9 @@ import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
 import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
+import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.utils.RandomUtils;
@@ -266,7 +267,7 @@ public class Player extends EntityLiving {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onLevelUp(EntityLevelledUpEvent event) {
 		levelUpEnergy();
 		
@@ -286,7 +287,7 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onHealthChanged(EntityHealthChangedEvent event) {
 		if (event.getOldHealth() > event.getNewHealth()) {
 			getDungeon().markSomethingHappened();
@@ -436,7 +437,7 @@ public class Player extends EntityLiving {
 		});
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true, priority = EventPriority.HIGHEST)
 	public void onDie(EntityDeathEvent e) {
 		DamageType type = e.getDamageSource().getType();
 		
@@ -574,7 +575,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		val l = super.getSubListeners();
 		l.add(attributes);
 		return l;

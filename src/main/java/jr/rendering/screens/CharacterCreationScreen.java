@@ -35,7 +35,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private AttributesPartial attributesPartial;
 	
 	private Role selectedRole;
-	private Attributes attributes = new Attributes();
+	private Attributes attributes;
 	
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
@@ -51,6 +51,8 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	}
 	
 	private void initLayout(Table container) {
+		attributes = new Attributes();
+		
 		container.setFillParent(true);
 		container.row().fill().top();
 		
@@ -135,7 +137,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	}
 	
 	private void initAttributesPartial(Table container) {
-		attributesPartial = new AttributesPartial(skin, attributes);
+		attributesPartial = new AttributesPartial(skin, attributes, true);
 		attributesPartial.clearChildren();
 		
 		container.add(attributesPartial).row();

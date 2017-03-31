@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface DungeonEventHandler {
+public @interface EventHandler {
 	boolean selfOnly() default false;
-	DungeonEventInvocationTime invocationTime() default DungeonEventInvocationTime.IMMEDIATELY;
+	EventInvocationTime invocationTime() default EventInvocationTime.IMMEDIATELY;
+	EventPriority priority() default EventPriority.NORMAL;
 }

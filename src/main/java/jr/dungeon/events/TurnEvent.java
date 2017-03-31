@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TurnEvent extends DungeonEvent {
+public class TurnEvent extends Event {
 	private long turn;
 }

@@ -13,7 +13,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
@@ -84,7 +84,7 @@ public class MinimapComponent extends RendererComponent {
 		xOffset = width - level.getWidth() * tileWidth;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

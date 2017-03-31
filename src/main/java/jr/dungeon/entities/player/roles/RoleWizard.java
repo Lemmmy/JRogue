@@ -81,13 +81,13 @@ public class RoleWizard extends Role {
 	
 	@Override
 	public void assignAttributes(Attributes attributes) {
-		attributes.setAttribute(Attribute.STRENGTH, 7);
-		attributes.setAttribute(Attribute.AGILITY, 7);
-		attributes.setAttribute(Attribute.DEXTERITY, 7);
-		attributes.setAttribute(Attribute.CONSTITUTION, 7);
-		attributes.setAttribute(Attribute.INTELLIGENCE, 10);
-		attributes.setAttribute(Attribute.WISDOM, 7);
-		attributes.setAttribute(Attribute.CHARISMA, 7);
+		attributes.initialiseAttribute(Attribute.STRENGTH, 7);
+		attributes.initialiseAttribute(Attribute.AGILITY, 7);
+		attributes.initialiseAttribute(Attribute.DEXTERITY, 7);
+		attributes.initialiseAttribute(Attribute.CONSTITUTION, 7);
+		attributes.initialiseAttribute(Attribute.INTELLIGENCE, 10);
+		attributes.initialiseAttribute(Attribute.WISDOM, 7);
+		attributes.initialiseAttribute(Attribute.CHARISMA, 7);
 	}
 	
 	@Override

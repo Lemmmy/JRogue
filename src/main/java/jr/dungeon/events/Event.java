@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class DungeonEvent {
+public abstract class Event {
 	private boolean cancelled;
 	private Dungeon dungeon;
 	

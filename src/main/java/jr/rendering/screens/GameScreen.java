@@ -36,7 +36,7 @@ import java.util.List;
  * batch and camera.
  */
 @Getter
-public class GameScreen extends ScreenAdapter implements DungeonEventListener {
+public class GameScreen extends ScreenAdapter implements EventListener {
 	/**
 	 * The time in seconds to animate movement between turns.
 	 */
@@ -281,13 +281,13 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 		LogManager.shutdown();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		turnLerpTime = 0;
 		turnLerping = false;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onBeforeTurn(BeforeTurnEvent e) {
 		if (settings.isShowTurnAnimations()) {
 			turnLerpTime = 0;
@@ -295,23 +295,23 @@ public class GameScreen extends ScreenAdapter implements DungeonEventListener {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		updateWindowTitle();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onQuit(QuitEvent e) {
 		dontSave = true;
 		Gdx.app.exit();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onSaveAndQuit(SaveAndQuitEvent e) {
 		Gdx.app.exit();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onPlayerDeath(EntityDeathEvent e) {
 		if (!e.isVictimPlayer()) return;
 		

@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.utils.Colour;
 
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
@@ -56,7 +56,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 		return true;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));

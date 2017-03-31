@@ -5,7 +5,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
@@ -230,7 +230,7 @@ public class StatefulAI extends AI {
 	}
 	
 	@Override
-	public List<DungeonEventListener> getSubListeners() {
+	public List<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		subListeners.add(currentState);

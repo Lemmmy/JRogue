@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PromptEvent extends DungeonEvent {
+public class PromptEvent extends Event {
 	private Prompt prompt;
 }

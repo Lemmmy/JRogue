@@ -9,8 +9,8 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
@@ -54,14 +54,14 @@ public abstract class Monster extends EntityLiving {
 		super.update();
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
 		if (e.isAttackerPlayer()) {
 			if (
@@ -152,7 +152,7 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		if (ai != null) {

@@ -4,7 +4,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.RandomUtils;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public class TraitExtrinsicFear extends AITrait {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onMonsterDamaged(EntityDamagedEvent e) {
 		if (e.getVictim() != getMonster()) {
 			return;

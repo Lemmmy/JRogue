@@ -9,7 +9,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.entities.EntityMap;
@@ -140,14 +140,14 @@ public class EntityComponent extends RendererComponent {
 		
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		
 		entityPooledEffects.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityAdded(EntityAddedEvent e) {
 		Entity entity = e.getEntity();
 		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
@@ -182,7 +182,7 @@ public class EntityComponent extends RendererComponent {
 		entityPooledEffects.add(entityPooledEffect);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityMoved(EntityMovedEvent event) {
 		entityParticleCheck(event.getEntity());
 		
@@ -228,7 +228,7 @@ public class EntityComponent extends RendererComponent {
 		event.getEntity().getPersistence().put("lerpY", -dy);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityRemoved(EntityRemovedEvent event) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
 	}

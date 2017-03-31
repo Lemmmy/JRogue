@@ -1,8 +1,8 @@
 package jr.dungeon.entities.player;
 
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.events.GameStartedEvent;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -10,14 +10,15 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.EnumMap;
 
-public class Attributes implements DungeonEventListener {
+public class Attributes implements EventListener {
 	private static final int MAX_ATTRIBUTE_LEVEL = 30;
 	
 	private EnumMap<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
+	private EnumMap<Attribute, Integer> defaults = new EnumMap<>(Attribute.class);
 	@Getter private int spendableSkillPoints = 3;
 	
 	public Attributes() {
-		Arrays.stream(Attribute.values()).forEach(a -> attributes.put(a, 0));
+		Arrays.stream(Attribute.values()).forEach(a -> { attributes.put(a, 0); defaults.put(a, 0); });
 	}
 	
 	public EnumMap<Attribute, Integer> getAttributeMap() {
@@ -34,6 +35,24 @@ public class Attributes implements DungeonEventListener {
 	
 	public void setAttribute(Attribute attribute, int level) {
 		attributes.put(attribute, level);
+	}
+	
+	public void initialiseAttribute(Attribute attribute, int level) {
+		attributes.put(attribute, level);
+		defaults.put(attribute, level);
+	}
+	
+	public void decrementAttribute(Attribute attribute) {
+		if (!canDecrementAttribute(attribute)) {
+			return;
+		}
+		
+		spendableSkillPoints++;
+		setAttribute(attribute, getAttribute(attribute) - 1);
+	}
+	
+	public boolean canDecrementAttribute(Attribute attribute) {
+		return getAttribute(attribute) > defaults.get(attribute);
 	}
 	
 	public void incrementAttribute(Attribute attribute) {
@@ -72,7 +91,7 @@ public class Attributes implements DungeonEventListener {
 	}
 	
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onGameStarted(GameStartedEvent event) {
 		if (spendableSkillPoints > 0) {
 			event.getDungeon().greenYou(
@@ -83,7 +102,7 @@ public class Attributes implements DungeonEventListener {
 		}
 	}
 	
-	@DungeonEventHandler()
+	@EventHandler()
 	public void onLevelUp(EntityLevelledUpEvent event) {
 		if (!(event.getEntity() instanceof Player)) {
 			return;

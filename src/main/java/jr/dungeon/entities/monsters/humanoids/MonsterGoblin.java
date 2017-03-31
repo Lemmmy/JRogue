@@ -15,7 +15,7 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
@@ -138,7 +138,7 @@ public class MonsterGoblin extends Monster {
 		));
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom(
 			"It yelps.",
@@ -148,7 +148,7 @@ public class MonsterGoblin extends Monster {
 		);
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
 		if (getRightHand() != null && RandomUtils.randomFloat() < DAGGER_DROP_CHANCE) {
 			dropItem(getRightHand().getStack());

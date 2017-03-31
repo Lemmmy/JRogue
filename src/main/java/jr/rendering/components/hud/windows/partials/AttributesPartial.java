@@ -9,11 +9,13 @@ import jr.rendering.utils.ImageLoader;
 
 public class AttributesPartial extends Table {
 	private Attributes attributes;
+	private boolean canDecrement;
 	
-	public AttributesPartial(Skin skin, Attributes attributes) {
+	public AttributesPartial(Skin skin, Attributes attributes, boolean canDecrement) {
 		super(skin);
 		
 		this.attributes = attributes;
+		this.canDecrement = canDecrement;
 		
 		update();
 	}
@@ -42,13 +44,23 @@ public class AttributesPartial extends Table {
 	}
 	
 	private void addAttribute(Table container, Attribute attribute, int level) {
-		boolean canSpend = attributes.canIncrementAttribute(attribute);
-		
 		int sheetX = attribute.ordinal();
 		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16, false))).padRight(6);
 		
 		String label = String.format("[WHITE]%s:  [P_GREEN_3]%,d[][]", attribute.getName(), level);
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(180).left();
+		
+		if (!canDecrement) {
+			addSpendButton(container, attribute, level);
+		} else {
+			addAdjustButtons(container, attribute, level);
+		}
+		
+		container.row().padBottom(4);
+	}
+	
+	private void addSpendButton(Table container, Attribute attribute, int level) {
+		boolean canSpend = attributes.canIncrementAttribute(attribute);
 		
 		Button button = new TextButton("Spend", getSkin());
 		button.setDisabled(!canSpend);
@@ -63,6 +75,38 @@ public class AttributesPartial extends Table {
 		});
 		
 		container.add(button).width(60).right();
-		container.row().padBottom(4);
+	}
+	
+	private void addAdjustButtons(Table container, Attribute attribute, int level) {
+		boolean canIncrement = attributes.canIncrementAttribute(attribute);
+		boolean canDecrement = attributes.canDecrementAttribute(attribute);
+		
+		Button decrement = new TextButton("-", getSkin());
+		decrement.setDisabled(!canDecrement);
+		decrement.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				
+				attributes.decrementAttribute(attribute);
+				update();
+			}
+		});
+		
+		container.add(decrement).width(22).padRight(4).right();
+		
+		Button increment = new TextButton("+", getSkin());
+		increment.setDisabled(!canIncrement);
+		increment.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				
+				attributes.incrementAttribute(attribute);
+				update();
+			}
+		});
+		
+		container.add(increment).width(22).right();
 	}
 }

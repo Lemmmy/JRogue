@@ -5,13 +5,13 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.Hit;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEvent;
+import jr.dungeon.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityAttackMissedEvent extends DungeonEvent {
+public class EntityAttackMissedEvent extends Event {
 	private EntityLiving victim;
 	private Entity attacker;
 	private DamageSource damageSource;

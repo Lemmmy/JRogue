@@ -3,12 +3,12 @@ package jr.rendering.components;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.rendering.screens.GameScreen;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class RendererComponent implements DungeonEventListener {
+public abstract class RendererComponent implements EventListener {
 	public GameScreen renderer;
 	public Dungeon dungeon;
 	public Settings settings;

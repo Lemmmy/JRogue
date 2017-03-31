@@ -7,7 +7,7 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
@@ -27,7 +27,7 @@ import java.util.List;
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
 @RequiredArgsConstructor
-public abstract class AI implements Serialisable, Persisting, DungeonEventListener {
+public abstract class AI implements Serialisable, Persisting, EventListener {
 	@NonNull @Getter private Monster monster;
 	
 	private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -281,7 +281,7 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 		return "";
 	}
 	
-	public List<DungeonEventListener> getSubListeners() {
+	public List<EventListener> getSubListeners() {
 		return new ArrayList<>();
 	}
 }

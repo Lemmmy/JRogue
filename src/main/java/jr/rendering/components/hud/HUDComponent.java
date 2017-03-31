@@ -195,7 +195,7 @@ public class HUDComponent extends RendererComponent {
 		skin.dispose();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		if (dungeon.getPlayer() != null) {
 			player = dungeon.getPlayer();
@@ -206,13 +206,13 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onBeforeTurn(BeforeTurnEvent e) {
 		singleTurnActors.forEach(Actor::remove);
 		singleTurnActors.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		updatePlayerLine(player);
 		updateAttributes(player);
@@ -351,7 +351,7 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLog(LogEvent event) {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
@@ -372,7 +372,7 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onPrompt(PromptEvent e) {
 		Prompt prompt = e.getPrompt();
 		
@@ -402,7 +402,7 @@ public class HUDComponent extends RendererComponent {
 		windows.remove(window);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onContainerShow(ContainerShowEvent e) {
 		Entity containerEntity = e.getContainerEntity();
 		

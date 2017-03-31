@@ -2,7 +2,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.JRogue;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
  * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
  */
 @Getter
-public abstract class AITrait implements Serialisable, DungeonEventListener {
+public abstract class AITrait implements Serialisable, EventListener {
 	private Monster monster;
 	private StatefulAI ai;
 	

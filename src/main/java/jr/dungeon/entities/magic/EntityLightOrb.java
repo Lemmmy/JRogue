@@ -7,7 +7,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
@@ -55,7 +55,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		int x = getX() + e.getDeltaY();
 		int y = getY() + e.getDeltaY();

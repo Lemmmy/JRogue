@@ -51,7 +51,8 @@ public class PlayerWindow extends PopupWindow {
 			splitter.setBackground(getSkin().get("splitterHorizontalDarkLowered", NinePatchDrawable.class));
 			tempTable.add(splitter).growX().pad(8, 4, 0, 4).row();
 			
-			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), ((Player) entity).getAttributes());
+			AttributesPartial attributesPartial = new AttributesPartial(getSkin(), ((Player) entity).getAttributes(),
+				false);
 			tempTable.add(attributesPartial).width(276);
 			
 			tempTable.top();
