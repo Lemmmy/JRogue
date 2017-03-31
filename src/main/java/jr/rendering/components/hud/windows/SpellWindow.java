@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.screens.GameScreen;
 import jr.rendering.components.hud.windows.partials.SpellPartial;
+import jr.rendering.screens.GameScreen;
 
 public class SpellWindow extends PopupWindow {
 	private Player player;

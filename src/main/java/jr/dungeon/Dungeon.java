@@ -30,7 +30,6 @@ import org.json.JSONTokener;
 
 import javax.swing.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -814,7 +813,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		event.setDungeon(this);
 		
 		Class<?> listenerClass = listener.getClass();
-		ArrayList<Method> listenerMethods = new ArrayList<>();
+		List<Method> listenerMethods = new LinkedList<>();
 		
 		while (listenerClass != null) {
 			Method[] methods = listenerClass.getDeclaredMethods();
