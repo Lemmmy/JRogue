@@ -5,6 +5,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -35,11 +36,9 @@ public class PlayerCastSpellDirectional implements PlayerVisitor {
 	}
 	
 	private void cast(char response, Player player) {
-		Integer[] d = response == '5' || response == '.' ?
-					  new Integer[]{0, 0} :
-					  Utils.MOVEMENT_CHARS.get(response);
-		int dx = d[0];
-		int dy = d[1];
+		VectorInt d = response == '5' || response == '.' ? VectorInt.ZERO : Utils.MOVEMENT_CHARS.get(response);
+		int dx = d.getX();
+		int dy = d.getY();
 		
 		player.setNutrition(player.getNutrition() - spell.getNutritionCost());
 		

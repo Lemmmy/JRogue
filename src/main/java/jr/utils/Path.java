@@ -22,9 +22,9 @@ public class Path implements Iterable<Tile> {
 		boolean[] adjacentSteps = new boolean[Utils.DIRECTIONS.length];
 		
 		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			int[] direction = Utils.DIRECTIONS[i];
-			int dx = x + direction[0];
-			int dy = y + direction[1];
+			VectorInt direction = Utils.DIRECTIONS[i];
+			int dx = x + direction.getX();
+			int dy = y + direction.getY();
 			
 			adjacentSteps[i] = steps.stream()
 				.filter(step -> step.getX() == dx && step.getY() == dy)

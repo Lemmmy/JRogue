@@ -15,10 +15,7 @@ import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
-import jr.utils.Path;
-import jr.utils.RandomUtils;
-import jr.utils.Utils;
-import jr.utils.WeightedCollection;
+import jr.utils.*;
 import lombok.Getter;
 
 import java.lang.reflect.Constructor;
@@ -232,21 +229,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected void createRooms(int roomX, int roomY, int roomWidth, int roomHeight) {
 		buildRoom(roomTypes.next(), roomX, roomY, roomWidth, roomHeight);
 		
-		for (int[] direction : Utils.DIRECTIONS) {
+		for (VectorInt direction : Utils.DIRECTIONS) {
 			for (int attempts = 1; attempts < 5; ++attempts) {
 				int newRoomWidth = nextInt(minRoomWidth, maxRoomWidth);
 				int newRoomHeight = nextInt(minRoomHeight, maxRoomHeight);
 				
-				int newRoomX = roomX + direction[0] * roomWidth +
-					direction[0] * nextInt(minRoomDistanceX, maxRoomDistanceX) +
-					direction[1] * nextInt(minRoomOffsetX, maxRoomOffsetX);
-				int newRoomY = roomY + direction[1] * roomHeight +
-					direction[1] * nextInt(minRoomDistanceY, maxRoomDistanceY) +
-					direction[0] * nextInt(minRoomOffsetY, maxRoomOffsetY);
+				int newRoomX = roomX + direction.getX() * roomWidth +
+					direction.getX() * nextInt(minRoomDistanceX, maxRoomDistanceX) +
+					direction.getY() * nextInt(minRoomOffsetX, maxRoomOffsetX);
+				int newRoomY = roomY + direction.getY() * roomHeight +
+					direction.getY() * nextInt(minRoomDistanceY, maxRoomDistanceY) +
+					direction.getX() * nextInt(minRoomOffsetY, maxRoomOffsetY);
 				
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRooms(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
-					
 					break;
 				}
 			}
@@ -299,10 +295,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void safePlaceDoor(int x, int y) {
 		level.getTileStore().setTileType(x, y, doorTypes.next());
-		
-		for (int[] direction : Utils.DIRECTIONS) {
-			int nx = x + direction[0];
-			int ny = y + direction[1];
+
+		for (VectorInt direction : Utils.DIRECTIONS) {
+			int nx = x + direction.getX();
+			int ny = y + direction.getY();
 			
 			TileType t = level.getTileStore().getTileType(nx, ny);
 			
@@ -310,6 +306,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 				level.getTileStore().setTileType(nx, ny, TileType.TILE_CORRIDOR);
 			}
 		}
+	}
+
+	protected void safePlaceDoor(Point p) {
+		safePlaceDoor(p.getX(), p.getY());
 	}
 	
 	/**
@@ -692,6 +692,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		return false;
 	}
+
+	public boolean canPlaceDoor(Point p) {
+		return canPlaceDoor(p.getX(), p.getY());
+	}
 	
 	/**
 	 * @param adjacentTiles The list of adjacent tile types from
@@ -722,6 +726,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected Orientation getWallOrientation(int x, int y) {
 		return getWallOrientation(level.getTileStore().getAdjacentTileTypes(x, y));
+	}
+
+	protected Orientation getWallOrientation(Point p) {
+		return getWallOrientation(p.getX(), p.getY());
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
+import jr.utils.VectorInt;
 
 /**
  * Kick action.
@@ -18,7 +19,7 @@ import jr.utils.RandomUtils;
  * @see Action
  */
 public class ActionKick extends Action {
-	private final Integer[] direction;
+	private final VectorInt direction;
 	private final Entity kickedEntity;
 	
 	/**
@@ -29,9 +30,7 @@ public class ActionKick extends Action {
 	 * @param callback Callback to call when action-related events occur. See
 	 * {@link Action.ActionCallback}.
 	 */
-	public ActionKick(Integer[] direction, ActionCallback callback) {
-		// TODO: replace these silly Integer[] directions with arbitrary directions?
-		
+	public ActionKick(VectorInt direction, ActionCallback callback) {
 		this(direction, null, callback);
 	}
 	
@@ -44,18 +43,15 @@ public class ActionKick extends Action {
 	 * @param callback Callback to call when action-related events occur. See
 	 * {@link Action.ActionCallback}.
 	 */
-	public ActionKick(Integer[] direction, Entity kicked, ActionCallback callback) {
+	public ActionKick(VectorInt direction, Entity kicked, ActionCallback callback) {
 		super(callback);
-		this.direction = direction;
+		this.direction = direction.normalised();
 		this.kickedEntity = kicked;
 	}
 	
 	@Override
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
-		
-		int x = entity.getX() + direction[0];
-		int y = entity.getY() + direction[1];
 		
 		boolean isLivingEntity = entity instanceof EntityLiving;
 		
@@ -67,15 +63,16 @@ public class ActionKick extends Action {
 		EntityLiving entityLiving = (EntityLiving) entity;
 		
 		if (kickedEntity != null) {
-			entityKick(msg, entity, entityLiving, isPlayer, direction[0], direction[1]);
+			entityKick(msg, entity, entityLiving, isPlayer, direction);
 		} else {
-			tileKick(msg, entity, entityLiving, isPlayer, x, y);
+			VectorInt kickPos = entity.getPositionVector().add(direction);
+			tileKick(msg, entity, entityLiving, isPlayer, kickPos);
 		}
 		
 		runOnCompleteCallback(entity);
 	}
 	
-	private void entityKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int dx, int dy) {
+	private void entityKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, VectorInt direction) {
 		if (kickedEntity.isStatic()) {
 			if (isPlayer) {
 				entity.getDungeon().You("kick the %s!", kickedEntity.getName(kicker, false));
@@ -84,10 +81,13 @@ public class ActionKick extends Action {
 			}
 		}
 		
-		kickedEntity.kick(kicker, dx, dy);
+		kickedEntity.kick(kicker, direction.getX(), direction.getY());
 	}
 	
-	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, int x, int y) {
+	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, VectorInt pos) {
+		int x = pos.getX();
+		int y = pos.getY();
+
 		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
 		TileType tileType = entity.getLevel().getTileStore().getTileType(x, y);
 		

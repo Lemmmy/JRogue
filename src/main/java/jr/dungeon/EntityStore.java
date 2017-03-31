@@ -205,7 +205,7 @@ public class EntityStore implements Serialisable {
 	public List<Entity> getAdjacentEntities(int x, int y) {
 		List<Entity> entities = new ArrayList<>();
 		
-		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d[0], y + d[1])));
+		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY())));
 		
 		return entities;
 	}
