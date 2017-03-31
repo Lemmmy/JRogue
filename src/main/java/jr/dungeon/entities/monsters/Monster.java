@@ -2,12 +2,14 @@ package jr.dungeon.entities.monsters;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.ItemStack;
@@ -67,7 +69,7 @@ public abstract class Monster extends EntityLiving {
 				e.getAttacker().getLevel() == getLevel() &&
 				e.getAttacker().getLevel().getVisibilityStore().isTileVisible(getX(), getY())
 			) {
-				getDungeon().You("kill the %s!", getName(e.getAttacker(), false));
+				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
 			} else {
 				getDungeon().You("kill it!");
 			}
@@ -75,9 +77,13 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public void kill(DamageSourceType damageSource, int damage, EntityLiving attacker) {
-		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
-			attacker.addExperience(
+	public void kill(DamageSource damageSource, int damage) {
+		if (
+			damageSource.getAttacker() != null &&
+			damageSource.getAttacker() instanceof EntityLiving &&
+			getExperienceLevel() > 0 && getExperienceRewarded() > 0
+		) {
+			((EntityLiving) damageSource.getAttacker()).addExperience(
 				RandomUtils.roll(RandomUtils.roll(getExperienceLevel()), getExperienceRewarded())
 			);
 		}
@@ -86,7 +92,7 @@ public abstract class Monster extends EntityLiving {
 			dropItem(new ItemStack(new ItemCorpse(this)));
 		}
 		
-		super.kill(damageSource, damage, attacker);
+		super.kill(damageSource, damage);
 	}
 	
 	@Override
