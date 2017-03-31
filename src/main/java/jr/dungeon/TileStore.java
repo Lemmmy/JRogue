@@ -15,6 +15,8 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Getter
 public class TileStore implements Serialisable {
@@ -140,7 +142,7 @@ public class TileStore implements Serialisable {
 	public Tile[] getTiles() {
 		return tiles;
 	}
-	
+
 	public Tile getTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return tiles[width * y + x];
@@ -164,54 +166,52 @@ public class TileStore implements Serialisable {
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
 		tiles[width * y + x].setType(tile);
 	}
-	
-	public Tile[] getAdjacentTiles(int x, int y) {
-		Tile[] t = new Tile[Utils.DIRECTIONS.length];
-		
-		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			int[] direction = Utils.DIRECTIONS[i];
-			t[i] = getTile(x + direction[0], y + direction[1]);
-		}
-		
-		return t;
+
+	public void setTileType(Point p, TileType tile) {
+		setTileType(p.getX(), p.getY(), tile);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	private <T> T[] getAdjacent(int x, int y, int[][] dirs, BiFunction<Integer, Integer, T> f) {
+		return (T[]) Arrays.stream(dirs)
+			.map(d -> f.apply(x + d[0], y + d[1]))
+			.toArray();
+	}
+
+	public Tile[] getAdjacentTiles(int x, int y) {
+		return getAdjacent(x, y, Utils.DIRECTIONS, this::getTile);
+	}
+
+	public Tile[] getAdjacentTiles(Point p) {
+		return getAdjacentTiles(p.getX(), p.getY());
+	}
+
 	public TileType[] getAdjacentTileTypes(int x, int y) {
-		TileType[] t = new TileType[Utils.DIRECTIONS.length];
-		
-		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			int[] direction = Utils.DIRECTIONS[i];
-			
-			t[i] = getTileType(x + direction[0], y + direction[1]);
-		}
-		
-		return t;
+		return getAdjacent(x, y, Utils.DIRECTIONS, this::getTileType);
+	}
+
+	public TileType[] getAdjacentTileTypes(Point p) {
+		return getAdjacentTileTypes(p.getX(), p.getY());
 	}
 	
 	public Tile[] getOctAdjacentTiles(int x, int y) {
-		Tile[] t = new Tile[Utils.OCT_DIRECTIONS.length];
-		
-		for (int i = 0; i < Utils.OCT_DIRECTIONS.length; i++) {
-			int[] direction = Utils.OCT_DIRECTIONS[i];
-			t[i] = getTile(x + direction[0], y + direction[1]);
-		}
-		
-		return t;
+		return getAdjacent(x, y, Utils.OCT_DIRECTIONS, this::getTile);
+	}
+
+	public Tile[] getOctAdjacentTiles(Point p) {
+		return getOctAdjacentTiles(p.getX(), p.getY());
 	}
 	
 	public TileType[] getOctAdjacentTileTypes(int x, int y) {
-		TileType[] t = new TileType[Utils.OCT_DIRECTIONS.length];
-		
-		for (int i = 0; i < Utils.OCT_DIRECTIONS.length; i++) {
-			int[] direction = Utils.OCT_DIRECTIONS[i];
-			t[i] = getTileType(x + direction[0], y + direction[1]);
-		}
-		
-		return t;
+		return getAdjacent(x, y, Utils.OCT_DIRECTIONS, this::getTileType);
+	}
+
+	public TileType[] getOctAdjacentTileTypes(Point p) {
+		return getOctAdjacentTileTypes(p.getX(), p.getY());
 	}
 	
 	public List<Tile> getTilesInRadius(int x, int y, int r) {
-		List<Tile> found = new ArrayList<>();
+		List<Tile> found = new LinkedList<>();
 		
 		for (int j = y - r; j < y + r; j++) {
 			for (int i = x - r; i < x + r; i++) {
