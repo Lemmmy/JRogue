@@ -1,7 +1,7 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.entities.DamageSource;
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
 
@@ -48,9 +48,9 @@ public class Ablaze extends StatusEffect {
 			}
 
 			if (getDamage() >= el.getMaxHealth()) {
-				el.kill(new DamageSource(null, null, DamageSourceType.FIRE), getDamage());
+				el.kill(new DamageSource(null, null, DamageType.FIRE), getDamage());
 			} else {
-				el.damage(new DamageSource(null, null, DamageSourceType.FIRE), getDamage());
+				el.damage(new DamageSource(null, null, DamageType.FIRE), getDamage());
 			}
 		}
 	}

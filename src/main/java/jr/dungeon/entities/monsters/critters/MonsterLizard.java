@@ -2,7 +2,8 @@ package jr.dungeon.entities.monsters.critters;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
@@ -107,7 +108,7 @@ public class MonsterLizard extends Monster {
 	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
-			DamageSourceType.SPIDER_BITE,
+			new DamageSource(this, null, DamageType.SPIDER_BITE),
 			1,
 			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));

@@ -58,7 +58,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 				
 				// TODO: pass staff item to it too
 				
-				living.damage(new DamageSource(livingSource, null, DamageSourceType.STRIKE_SPELL), damage);
+				living.damage(new DamageSource(livingSource, null, DamageType.STRIKE_SPELL), damage);
 			}
 		}
 		

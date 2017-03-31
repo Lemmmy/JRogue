@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
@@ -45,7 +46,8 @@ public class TraitExtrinsicFear extends AITrait {
 		
 		if (
 			getMonster().getHealth() < getMonster().getMaxHealth() / 2.5f &&
-			e.getAttacker().getHealth() > e.getAttacker().getMaxHealth() / 1.5f
+			e.getAttacker() instanceof EntityLiving &&
+			((EntityLiving) e.getAttacker()).getHealth() > ((EntityLiving) e.getAttacker()).getMaxHealth() / 1.5f
 		) {
 			fear += (1 - getMonster().getHealth() / getMonster().getMaxHealth()) * RandomUtils.randomFloat();
 		}

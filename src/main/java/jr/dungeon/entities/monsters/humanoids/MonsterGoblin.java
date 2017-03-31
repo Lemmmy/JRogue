@@ -2,7 +2,8 @@ package jr.dungeon.entities.monsters.humanoids;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
@@ -119,10 +120,11 @@ public class MonsterGoblin extends Monster {
 	
 	@Override
 	public void meleeAttack(EntityLiving victim) {
-		DamageSourceType source = DamageSourceType.UNKNOWN;
+		DamageSource source = new DamageSource(this, DamageType.GOBLIN_HIT);
 		
 		if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-			source = ((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSourceType();
+			source.setType(((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSourceType());
+			source.setItem(getRightHand().getItem());
 		}
 		
 		setAction(new ActionMelee(

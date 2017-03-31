@@ -50,7 +50,7 @@ public class EntityArrow extends EntityProjectile {
 				
 				// TODO: pass bow item
 				
-				living.damage(new DamageSource(source, null, DamageSourceType.ARROW), getArrowDamage());
+				living.damage(new DamageSource(source, null, DamageType.ARROW), getArrowDamage());
 				
 				if (!canPenetrate) {
 					killProjectile();

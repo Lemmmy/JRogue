@@ -2,7 +2,7 @@ package jr.dungeon.wishes;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.DamageSource;
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
@@ -58,12 +58,12 @@ public class Wishes {
 
 	private Wishes() {
 		// Basic wishes
-		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageSourceType.WISH_FOR_DEATH), 0));
+		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0));
 		registerWish("kill\\s+all", (d, p, a) ->
 			d.getLevel().getEntityStore().getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.map(e -> (EntityLiving) e)
-				.forEach(e -> e.kill(new DamageSource(null, null, DamageSourceType.WISH_FOR_DEATH), 0)));
+				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
 		registerWish("(?:ds|downstairs)", (d, p, a) ->

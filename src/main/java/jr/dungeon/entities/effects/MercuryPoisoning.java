@@ -1,6 +1,6 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageType;
 
 public class MercuryPoisoning extends Poison {
 	@Override
@@ -9,8 +9,8 @@ public class MercuryPoisoning extends Poison {
 	}
 	
 	@Override
-	public DamageSourceType getDamageSource() {
-		return DamageSourceType.MERCURY;
+	public DamageType getDamageSourceType() {
+		return DamageType.MERCURY;
 	}
 	
 	@Override

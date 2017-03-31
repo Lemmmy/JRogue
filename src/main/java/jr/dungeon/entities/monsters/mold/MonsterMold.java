@@ -2,7 +2,8 @@ package jr.dungeon.entities.monsters.mold;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSourceType;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
@@ -89,10 +90,12 @@ public abstract class MonsterMold extends Monster {
 	@DungeonEventHandler(selfOnly = true)
 	public void onDamage(EntityDamagedEvent e) {
 		if (
-			e.getDamageSource().getDamageType() == DamageSourceType.DamageType.MELEE &&
+			e.getAttacker() != null &&
+			e.getAttacker() instanceof EntityLiving &&
+			e.getDamageSource().getDamageClass() == DamageType.DamageClass.MELEE &&
 			RandomUtils.jroll(1, 4) == 1
 		) {
-			e.getAttacker().damage(DamageSourceType.MOLD_RETALIATION, 1, this);
+			((EntityLiving) e.getAttacker()).damage(new DamageSource(this, null, DamageType.MOLD_RETALIATION), 1);
 		}
 	}
 }
