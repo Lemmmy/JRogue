@@ -146,7 +146,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private void initBottomButtons(Table container) {
 		Table buttonTable = new Table();
 		
-		TextButton tempReloadButton = new TextButton("Reload", skin);
+		TextButton tempReloadButton = new TextButton("Reload (temporary)", skin);
 		tempReloadButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

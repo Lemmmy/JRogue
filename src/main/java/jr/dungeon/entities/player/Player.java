@@ -443,10 +443,8 @@ public class Player extends EntityLiving {
 		
 		if (type.getDeathString() != null) {
 			getDungeon().log("[RED]" + type.getDeathString() + "[]");
-			getDungeon().setDeathMessage(type.getDeathStringPastTense());
 		} else {
 			getDungeon().redYou("die.");
-			getDungeon().setDeathMessage("You died.");
 		}
 		
 		getDungeon().deleteSave();

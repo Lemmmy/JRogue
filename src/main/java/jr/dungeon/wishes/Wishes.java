@@ -15,6 +15,7 @@ import jr.dungeon.entities.monsters.critters.MonsterLizard;
 import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
+import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
@@ -81,8 +82,13 @@ public class Wishes {
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
 		registerWish("fill inventory", (d, p, a) -> {
-			for (int j = 0; j < 40; j++) {
+			for (int i = 0; i < 40; i++) {
 				makeWish(d, "bread");
+			}
+		});
+		registerWish("fill log", (d, p, a) -> {
+			for (int i = 0; i < 200; i++) {
+				d.log("Message " + i);
 			}
 		});
 
@@ -113,6 +119,7 @@ public class Wishes {
 		registerWish("rat", new WishSpawn<>(MonsterRat.class));
 		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
 		registerWish("pufferfish", new WishSpawn<>(MonsterPufferfish.class));
+		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {

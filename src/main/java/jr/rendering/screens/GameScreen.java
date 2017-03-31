@@ -316,7 +316,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		if (!e.isVictimPlayer()) return;
 		
 		game.setScreen(
-			new DeathScreen(game, dungeon),
+			new DeathScreen(game, dungeon, e),
 			new SlidingTransition(
 				SlidingTransition.Direction.DOWN,
 				false,

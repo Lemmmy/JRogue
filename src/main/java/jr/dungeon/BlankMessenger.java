@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class BlankMessenger implements Messenger {
 	@Override
-	public List<String> getHistory() {
+	public List<String> getLogHistory() {
 		return new LinkedList<>();
 	}
 	
