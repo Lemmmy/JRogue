@@ -129,7 +129,7 @@ public class ItemCorpse extends ItemComestible {
 			}
 			
 			if (getRottenness() > 7) {
-				effects.add(new FoodPoisoning(entity.getDungeon(), entity));
+				effects.add(new FoodPoisoning(entity.getDungeon(), entity, this));
 			}
 		}
 		
