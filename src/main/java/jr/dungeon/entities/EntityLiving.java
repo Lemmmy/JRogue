@@ -294,16 +294,16 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		}
 	}
 	
-	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker) {
+	public boolean damage(DamageSource damageSource, int damage) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
 		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDamagedEvent(this, attacker, damageSource, damage));
+		getDungeon().triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
 		
 		if (health <= 0) {
-			kill(damageSource, damage, attacker);
+			kill(damageSource, damage);
 		}
 		
 		return health <= 0;
@@ -313,11 +313,11 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		return damage;
 	}
 	
-	public void kill(DamageSource damageSource, int damage, EntityLiving attacker) {
+	public void kill(DamageSource damageSource, int damage) {
 		health = 0;
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDeathEvent(this, attacker, damageSource, damage));
+		getDungeon().triggerEvent(new EntityDeathEvent(this, damageSource, damage));
 		
 		getLevel().getEntityStore().removeEntity(this);
 	}

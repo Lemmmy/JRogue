@@ -111,7 +111,7 @@ public class ActionKick extends Action {
 					);
 				}
 				
-				kicker.damage(new DamageSource(null, null, DamageSourceType.KICKING_THIN_AIR), 1, kicker);
+				kicker.damage(new DamageSource(kicker, null, DamageSourceType.KICKING_THIN_AIR), 1);
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {

@@ -51,7 +51,7 @@ public class ActionMelee extends Action {
 		
 		switch (hit.getHitType()) {
 			case JUST_MISS:
-				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, attacker, damageSource, hit));
+				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
 				
 				if (isAttackerPlayer) {
 					msg.orangeYou("just miss the %s.", victim.getName((EntityLiving) entity, false));
@@ -60,7 +60,7 @@ public class ActionMelee extends Action {
 				}
 				break;
 			case MISS:
-				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, attacker, damageSource, hit));
+				victim.getDungeon().triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
 				
 				if (isAttackerPlayer) {
 					msg.orangeYou("miss the %s.", victim.getName((EntityLiving) entity, false));
@@ -70,7 +70,7 @@ public class ActionMelee extends Action {
 				break;
 			case SUCCESS:
 				runBeforeRunCallback(entity);
-				victim.damage(damageSource, damage, attacker);
+				victim.damage(damageSource, damage);
 				runOnCompleteCallback(entity);
 				break;
 			default:

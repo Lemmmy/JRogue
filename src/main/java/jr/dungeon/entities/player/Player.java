@@ -184,7 +184,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	public int getDamageModifier(DamageSourceType damageSource, int damage) {
+	public int getDamageModifier(DamageSource damageSource, int damage) {
 		return godmode ? 0 : super.getDamageModifier(damageSource, damage);
 	}
 	
@@ -336,7 +336,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(DamageSourceType.CHOKING, 1, this);
+			damage(new DamageSource(null, null, DamageSourceType.CHOKING), 1, this);
 		}
 		
 		nutrition--;
@@ -438,9 +438,11 @@ public class Player extends EntityLiving {
 	
 	@DungeonEventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
-		if (e.getDamageSource().getDeathString() != null) {
-			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
-			getDungeon().setDeathMessage(e.getDamageSource().getDeathStringPastTense());
+		DamageSourceType type = e.getDamageSource().getType();
+		
+		if (type.getDeathString() != null) {
+			getDungeon().log("[RED]" + type.getDeathString() + "[]");
+			getDungeon().setDeathMessage(type.getDeathStringPastTense());
 		} else {
 			getDungeon().redYou("die.");
 			getDungeon().setDeathMessage("You died.");
@@ -533,17 +535,17 @@ public class Player extends EntityLiving {
 		
 		// TODO: rings of increase accuracy enchantment levels
 		
-		if (damageSource.getDamageType() == DamageSourceType.DamageType.MELEE) {
+		if (damageSource.getType().getDamageType() == DamageSourceType.DamageType.MELEE) {
 			toHit += 1;
 			toHit += getStrengthHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSourceType.DamageType.MELEE ||
-			damageSource.getDamageType() == DamageSourceType.DamageType.RANGED) {
+		if (damageSource.getType().getDamageType() == DamageSourceType.DamageType.MELEE ||
+			damageSource.getType().getDamageType() == DamageSourceType.DamageType.RANGED) {
 			toHit += getDexterityHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSourceType.DamageType.RANGED) {
+		if (damageSource.getType().getDamageType() == DamageSourceType.DamageType.RANGED) {
 			toHit += getSizeHitBonus(victim.getSize());
 		}
 		
