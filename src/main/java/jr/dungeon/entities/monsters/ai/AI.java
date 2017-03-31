@@ -56,7 +56,11 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 			y < 0 || y > monster.getLevel().getHeight()) &&
 			monster.getLevel().getTileStore().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
-	
+
+	public boolean canMoveTo(Point p) {
+		return canMoveTo(p.getX(), p.getY());
+	}
+
 	/**
 	 * @return Whether or not the player is within the monster's {@link Monster#getVisibilityRange() visibility range}.
 	 */

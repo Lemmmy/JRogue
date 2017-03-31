@@ -12,6 +12,7 @@ import jr.utils.Persisting;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
+import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -160,7 +161,14 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	public Point getPosition() {
 		return Point.getPoint(x, y);
 	}
-	
+
+	/**
+	 * @return The Entity's X and Y coordinates in the {@link Level} as a {@link VectorInt}.
+	 */
+	public VectorInt getPositionVector() {
+		return new VectorInt(x, y);
+	}
+
 	/**
 	 * Sets the Entity's X and Y coordinates in the {@link Level}, updates the Entity's lastX and lastY coordinates,
 	 * and triggers an {@link EntityMovedEvent},

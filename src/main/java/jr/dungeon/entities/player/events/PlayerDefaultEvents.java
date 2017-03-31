@@ -14,6 +14,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
+import jr.utils.VectorInt;
 
 public class PlayerDefaultEvents implements EventListener {
 	@EventHandler
@@ -48,7 +49,7 @@ public class PlayerDefaultEvents implements EventListener {
 						player.getDungeon().setDoingBulkAction(true);
 					}
 					
-					player.setAction(new ActionKick(new Integer[]{dx, dy}, null));
+					player.setAction(new ActionKick(new VectorInt(dx, dy), null));
 					player.getDungeon().turn();
 					
 					if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
