@@ -315,6 +315,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 						
 						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
 						System.exit(0);
+						break;
 					default:
 						System.exit(0);
 						break;

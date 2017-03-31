@@ -33,7 +33,7 @@ public class DeathScreen extends ScreenAdapter {
 	private Dungeon dungeon;
 	private EntityDeathEvent event;
 	
-	private Cell screenCell;
+	private Cell<? extends Actor> screenCell;
 	private Table logScreen, inventoryScreen;
 	
 	public DeathScreen(GameAdapter game, Dungeon dungeon, EntityDeathEvent event) {
@@ -59,16 +59,16 @@ public class DeathScreen extends ScreenAdapter {
 		
 		Container<Actor> splitter = new Container<>();
 		splitter.setBackground(skin.get("splitterHorizontalRaised", NinePatchDrawable.class));
-		container.add(splitter).growX().pad(16, 0, 4, 0).row();
+		container.add(splitter).growX().minHeight(2).pad(16, 0, 4, 0).row();
 		
 		Table buttonContainer = new Table();
 		container.add(buttonContainer).left().pad(8, 0, 8, 0).row();
 		
-		screenCell = container.add().expand().padBottom(8);
+		screenCell = container.add(new Actor()).left().top().grow().padBottom(8);
 		container.row();
 		
 		initScreenTabs(buttonContainer);
-		switchScreen(logScreen);
+		switchScreen(inventoryScreen);
 		
 		initBottomButtons(container);
 		
@@ -92,6 +92,8 @@ public class DeathScreen extends ScreenAdapter {
 			initScreenTab(container, screenTabs, "Inventory", inventoryScreen = new Table());
 			initInventoryScreen(inventoryScreen);
 		});
+		
+		screenTabs.getButtons().get(1).setChecked(true);
 	}
 	
 	private void initScreenTab(Table container, ButtonGroup<TextButton> group, String name, Table screen) {
@@ -111,6 +113,7 @@ public class DeathScreen extends ScreenAdapter {
 	
 	private void switchScreen(Table screen) {
 		screenCell.setActor(screen);
+		screenCell.expand();
 	}
 	
 	private void initDeathMessage(Table container) {
@@ -167,19 +170,34 @@ public class DeathScreen extends ScreenAdapter {
 		});
 		
 		ScrollPane logScrollPane = new ScrollPane(logTable, skin);
-		container.add(logScrollPane).expand().growX().row();
+		container.add(logScrollPane).bottom().left().grow().row();
+		logScrollPane.layout();
 		logScrollPane.setScrollPercentY(100);
-		
-		container.add(new Container<>()).expand().row();
 	}
 	
 	private void initInventoryScreen(Table container) {
+		Table inventoryTable = new Table(skin);
+		
 		ContainerPartial inventoryPartial = new ContainerPartial(skin, dungeon.getPlayer(), null);
-		container.add(inventoryPartial);
+		inventoryTable.add(inventoryPartial).top().left().row();
+		inventoryTable.top().left();
+		
+		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, skin);
+		container.add(inventoryScrollPane).top().left().grow().row();
 	}
 	
 	private void initBottomButtons(Table container) {
 		Table buttonTable = new Table();
+		
+		TextButton tempReloadButton = new TextButton("Reload (temporary)", skin);
+		tempReloadButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				stage.clear();
+				initLayout(new Table(skin));
+			}
+		});
+		buttonTable.add(tempReloadButton).right().bottom().padRight(8);
 		
 		TextButton newCharacterButton = new TextButton("New character", skin);
 		newCharacterButton.addListener(new ChangeListener() {

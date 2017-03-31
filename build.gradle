@@ -24,6 +24,8 @@ version = "alpha-0.3"
 
 sourceCompatibility = 1.8
 
+applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
+
 task createProperties(dependsOn: processResources) {
 	if (new File("$buildDir/resources/main").exists()) {
 		new File("$buildDir/resources/main/version.properties").withWriter { w ->
@@ -109,4 +111,10 @@ javadoc {
 	source = sourceSets.main.allJava
 	title = "JRogue API Documentation"
 	destinationDir = file("docs/")
+}
+
+gradle.projectsEvaluated {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes"
+	}
 }
