@@ -122,7 +122,7 @@ public class MonsterGoblin extends Monster {
 		DamageSourceType source = DamageSourceType.UNKNOWN;
 		
 		if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-			source = ((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSource();
+			source = ((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSourceType();
 		}
 		
 		setAction(new ActionMelee(

@@ -1,5 +1,6 @@
 package jr.dungeon.items.magical.spells;
 
+import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.projectiles.EntityStrike;
@@ -73,6 +74,6 @@ public class SpellStrike extends Spell {
 		caster.getLevel().getEntityStore().getEntities().stream()
 			.filter(e -> Utils.distance(x, y, e.getX(), e.getY()) <= getSplashRange())
 			.map(e -> (EntityLiving) e)
-			.forEach(e -> e.damage(DamageSourceType.STRIKE_SPELL, getDamage(), caster));
+			.forEach(e -> e.damage(new DamageSource(caster, null, DamageSourceType.STRIKE_SPELL), getDamage()));
 	}
 }

@@ -336,7 +336,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(new DamageSource(null, null, DamageSourceType.CHOKING), 1, this);
+			damage(new DamageSource(this, null, DamageSourceType.CHOKING), 1);
 		}
 		
 		nutrition--;

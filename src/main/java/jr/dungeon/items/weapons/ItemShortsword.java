@@ -30,7 +30,7 @@ public class ItemShortsword extends ItemSword {
 	}
 	
 	@Override
-	public DamageSourceType getMeleeDamageSource() {
+	public DamageSourceType getMeleeDamageSourceType() {
 		return DamageSourceType.SHORTSWORD;
 	}
 	

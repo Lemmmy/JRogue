@@ -2,10 +2,7 @@ package jr.dungeon.entities.projectiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSourceType;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.EntityAppearance;
-import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
 import jr.utils.RandomUtils;
 
@@ -51,7 +48,9 @@ public class EntityArrow extends EntityProjectile {
 					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(living, false));
 				}
 				
-				living.damage(DamageSourceType.ARROW, getArrowDamage(), (EntityLiving) source);
+				// TODO: pass bow item
+				
+				living.damage(new DamageSource(source, null, DamageSourceType.ARROW), getArrowDamage());
 				
 				if (!canPenetrate) {
 					killProjectile();

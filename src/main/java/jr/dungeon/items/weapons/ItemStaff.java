@@ -58,7 +58,7 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public DamageSourceType getMeleeDamageSource() {
+	public DamageSourceType getMeleeDamageSourceType() {
 		return DamageSourceType.STAFF_BASH;
 	}
 	
