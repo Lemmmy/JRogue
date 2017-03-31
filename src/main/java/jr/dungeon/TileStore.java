@@ -173,7 +173,7 @@ public class TileStore implements Serialisable {
 
 	public Tile[] getAdjacentTiles(int x, int y) {
 		return Arrays.stream(Utils.DIRECTIONS)
-			.map(d -> getTile(x + d[0], y + d[1]))
+			.map(d -> getTile(x + d.getX(), y + d.getY()))
 			.toArray(Tile[]::new);
 	}
 
@@ -183,7 +183,7 @@ public class TileStore implements Serialisable {
 
 	public TileType[] getAdjacentTileTypes(int x, int y) {
 		return Arrays.stream(Utils.DIRECTIONS)
-			.map(d -> getTileType(x + d[0], y + d[1]))
+			.map(d -> getTileType(x + d.getX(), y + d.getY()))
 			.toArray(TileType[]::new);
 	}
 
@@ -193,7 +193,7 @@ public class TileStore implements Serialisable {
 	
 	public Tile[] getOctAdjacentTiles(int x, int y) {
 		return Arrays.stream(Utils.OCT_DIRECTIONS)
-			.map(d -> getTile(x + d[0], y + d[1]))
+			.map(d -> getTile(x + d.getX(), y + d.getY()))
 			.toArray(Tile[]::new);
 	}
 
@@ -203,7 +203,7 @@ public class TileStore implements Serialisable {
 	
 	public TileType[] getOctAdjacentTileTypes(int x, int y) {
 		return Arrays.stream(Utils.OCT_DIRECTIONS)
-			.map(d -> getTileType(x + d[0], y + d[1]))
+			.map(d -> getTileType(x + d.getX(), y + d.getY()))
 			.toArray(TileType[]::new);
 	}
 

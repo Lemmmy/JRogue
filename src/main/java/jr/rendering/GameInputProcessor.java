@@ -8,6 +8,7 @@ import jr.dungeon.Dungeon;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
@@ -25,8 +26,8 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
-			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
-			dungeon.getPlayer().defaultVisitors.walk(d[0], d[1]);
+			VectorInt d = Utils.MOVEMENT_KEYS.get(keycode);
+			dungeon.getPlayer().defaultVisitors.walk(d.getX(), d.getY());
 			return true;
 		}
 		

@@ -229,21 +229,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected void createRooms(int roomX, int roomY, int roomWidth, int roomHeight) {
 		buildRoom(roomTypes.next(), roomX, roomY, roomWidth, roomHeight);
 		
-		for (int[] direction : Utils.DIRECTIONS) {
+		for (VectorInt direction : Utils.DIRECTIONS) {
 			for (int attempts = 1; attempts < 5; ++attempts) {
 				int newRoomWidth = nextInt(minRoomWidth, maxRoomWidth);
 				int newRoomHeight = nextInt(minRoomHeight, maxRoomHeight);
 				
-				int newRoomX = roomX + direction[0] * roomWidth +
-					direction[0] * nextInt(minRoomDistanceX, maxRoomDistanceX) +
-					direction[1] * nextInt(minRoomOffsetX, maxRoomOffsetX);
-				int newRoomY = roomY + direction[1] * roomHeight +
-					direction[1] * nextInt(minRoomDistanceY, maxRoomDistanceY) +
-					direction[0] * nextInt(minRoomOffsetY, maxRoomOffsetY);
+				int newRoomX = roomX + direction.getX() * roomWidth +
+					direction.getX() * nextInt(minRoomDistanceX, maxRoomDistanceX) +
+					direction.getY() * nextInt(minRoomOffsetX, maxRoomOffsetX);
+				int newRoomY = roomY + direction.getY() * roomHeight +
+					direction.getY() * nextInt(minRoomDistanceY, maxRoomDistanceY) +
+					direction.getX() * nextInt(minRoomOffsetY, maxRoomOffsetY);
 				
 				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
 					createRooms(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
-					
 					break;
 				}
 			}
@@ -296,10 +295,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void safePlaceDoor(int x, int y) {
 		level.getTileStore().setTileType(x, y, doorTypes.next());
-		
-		for (int[] direction : Utils.DIRECTIONS) {
-			int nx = x + direction[0];
-			int ny = y + direction[1];
+
+		for (VectorInt direction : Utils.DIRECTIONS) {
+			int nx = x + direction.getX();
+			int ny = y + direction.getY();
 			
 			TileType t = level.getTileStore().getTileType(nx, ny);
 			

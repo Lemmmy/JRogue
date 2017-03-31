@@ -10,6 +10,7 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
 import jr.utils.Point;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 
 public class PlayerTravelDirectional implements PlayerVisitor {
 	@Override
@@ -32,9 +33,9 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 	private void travel(char response, Player player) {
 		Path pathTaken = new Path();
 		
-		Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-		int dx = d[0];
-		int dy = d[1];
+		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
+		int dx = d.getX();
+		int dy = d.getY();
 		
 		for (int i = 0; i < 50; i++) { // max 50 steps in one move
 			Tile destTile = player.getLevel().getTileStore()

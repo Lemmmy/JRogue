@@ -8,6 +8,7 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.items.weapons.ItemProjectileLauncher;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 
 public class PlayerThrowItem extends PlayerItemVisitor {
 	@Override
@@ -51,9 +52,9 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 						   ItemStack stack,
 						   Container inv,
 						   Container.ContainerEntry ce) {
-		Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-		int dx = d[0];
-		int dy = d[1];
+		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
+		int dx = d.getX();
+		int dy = d.getY();
 		
 		if (
 			item instanceof ItemProjectile &&

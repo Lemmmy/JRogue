@@ -8,6 +8,7 @@ import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 
 public class PlayerKick implements PlayerVisitor {
 	@Override
@@ -42,9 +43,9 @@ public class PlayerKick implements PlayerVisitor {
 			}
 		}
 		
-		Integer[] d = Utils.MOVEMENT_CHARS.get(response);
-		int dx = d[0];
-		int dy = d[1];
+		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
+		int dx = d.getX();
+		int dy = d.getY();
 		
 		if (player.getLevel().getEntityStore().getEntitiesAt(player.getX() + dx, player.getY() + dy).size() > 0) {
 			player.setAction(new ActionKick(
