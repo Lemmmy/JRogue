@@ -69,6 +69,7 @@ dependencies {
 
 task subJar(type: Jar) {
 	baseName = jarName + "-deobf"
+	destinationDir = file("$buildDir/tmp")
 
 	manifest {
 		attributes "Main-Class": mainClassName
@@ -80,8 +81,8 @@ task subJar(type: Jar) {
 task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
 	configuration "proguard.conf"
 
-	injars "$buildDir/libs/${jarName}-deobf-${version}.jar"
-	outjars "$buildDir/libs/${jarName}-obf-${version}.jar"
+	injars "$buildDir/tmp/${jarName}-deobf-${version}.jar"
+	outjars "$buildDir/tmp/${jarName}-obf-${version}.jar"
 
 	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
 	libraryjars files(configurations.compile.collect())
@@ -92,7 +93,7 @@ task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	baseName = jarName + "-full"
 
-	from zipTree("$buildDir/libs/${jarName}-obf-${version}.jar")
+	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)
 	}
@@ -100,4 +101,10 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	manifest {
 		attributes "Main-Class": mainClassName
 	}
+}
+
+javadoc {
+	source = sourceSets.main.allJava
+	title = "JRogue API Documentation"
+	destinationDir = file("docs/")
 }

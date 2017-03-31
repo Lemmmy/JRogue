@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface DungeonEventHandler {
 	boolean selfOnly() default false;
+	DungeonEventInvocationTime invocationTime() default DungeonEventInvocationTime.IMMEDIATELY;
 }

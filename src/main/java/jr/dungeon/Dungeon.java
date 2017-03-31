@@ -28,6 +28,7 @@ import org.json.JSONTokener;
 import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -36,18 +37,55 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
+ * levels, and player.
+ */
 public class Dungeon implements Messenger, Serialisable, Persisting {
+	/**
+	 * The amount of 'ticks' in a turn.
+	 *
+	 * @see EntityLiving
+	 */
 	public static final int NORMAL_SPEED = 12;
 	
+	/**
+	 * The default {@link Level} width. This may not be the Level's actual width. Use {@link TileStore#getWidth()}
+	 * for that instead.
+	 */
 	public static final int LEVEL_WIDTH = 90;
+	/**
+	 * The default {@link Level} height. This may not be the Level's actual height. Use {@link TileStore#getHeight()}
+	 * for that instead.
+	 */
 	public static final int LEVEL_HEIGHT = 40;
 	
+	/**
+	 * The random range of turns in which a random {@link jr.dungeon.entities.monsters.Monster} will spawn somewhere on
+	 * the {@link Level}.
+	 *
+	 * @see MonsterSpawner#spawnNewMonsters()
+	 */
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
+	/**
+	 * The 'GAME' log level.
+	 */
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
-	private final List<DungeonEventListener> listeners = new ArrayList<>();
+	/**
+	 * List of {@link DungeonEventListener}s that the Dungeon should send events to.
+	 */
+	private final Set<DungeonEventListener> listeners = new HashSet<>();
+	/**
+	 * List of {@link DungeonEvent}s to be sent to {@link DungeonEventListener}s with the flag
+	 * {@link DungeonEventHandler#invocationTime()} set to {@link DungeonEventInvocationTime#TURN_COMPLETE}.
+	 */
+	private final List<DungeonEvent> eventQueueNextTurn = new LinkedList<>();
 	
+	/**
+	 * rand
+	 */
 	private Pcg32 rand = new Pcg32();
 	
 	/**
@@ -60,28 +98,91 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	@Getter @Setter private String name;
 	
+	/**
+	 * Map of the Dungeon's {@link Level}s with unique UUIDs as keys for serialisation reference.
+	 */
 	private Map<UUID, Level> levels = new HashMap<>();
+	/**
+	 * The {@link Level} that the {@link Player} is currently on.
+	 */
 	@Getter private Level level;
+	/**
+	 * The actual {@link Player} entity.
+	 */
 	@Getter @Setter private Player player;
 	
+	/**
+	 * The number of turns that have passed.
+	 */
 	@Getter private long turn = 0;
-	@Getter private long exerciseCounter = 500;
+	/**
+	 * Random counter for ambient dungeon 'sounds'.
+	 *
+	 * @see PassiveSoundEmitter
+	 */
 	@Getter private long passiveSoundCounter = 0;
+	/**
+	 * Random counter for new monster spwans.
+	 *
+	 * @see MonsterSpawner
+	 */
 	@Getter private long monsterSpawnCounter = 50;
 	
+	/**
+	 * A turn in which something happened is usually a turn where something that should interrupt a
+	 * {@link #isDoingBulkAction() bulk action}, for example a {@link jr.dungeon.entities.monsters.Monster} attacking
+	 * the {@link Player}.
+	 *
+	 * @return Whether or not something critical happened in this turn.
+	 */
+	@Getter private boolean somethingHappened;
+	
+	/**
+	 * A bulk action is an action in which multiple turns will pass, and the action is repeated. For example, when
+	 * you walk to a locked door, and confirm you want to automatically kick it down, the bulk action of kicking the
+	 * door will occur. Bulk actions can be interrupted by marking the turn as a turn in which 'something happened'.
+	 *
+	 * @see #markSomethingHappened()
+	 *
+	 * @param doingBulkAction Sets whether or not a bulk action is currently happening.
+	 * @return Whether or not a bulk action is currently happening.
+	 */
+	@Getter @Setter private boolean doingBulkAction;
+	
+	/**
+	 * @see Prompt
+	 *
+	 * @return The curernt {@link Prompt} or null.
+	 */
 	@Getter private Prompt prompt;
+	/**
+	 * The current user-specified {@link Settings}.
+	 */
 	private Settings settings;
 	
+	/**
+	 * The directory in which user data is saved, including saves and bones.
+	 */
 	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
-
+	
+	/**
+	 * Persistent object for user-defined keys, typically for use by mods or the renderer.
+	 */
 	private final JSONObject persistence = new JSONObject();
-
+	
+	/**
+	 * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
+	 * levels, and player.
+	 */
 	public Dungeon() {
 		this.settings = JRogue.getSettings();
 		
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
-	
+
+	/**
+	 * Randomly generates a level and switches the dungeon to it.
+	 */
 	public void generateLevel() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
@@ -113,7 +214,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		triggerEvent(new LevelChangeEvent(level));
 	}
-	
+
+	/**
+	 * Saves this dungeon as dungeon.save.gz in the game data directory.
+	 */
 	public void save() {
 		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
 			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
@@ -133,7 +237,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			ErrorHandler.error("Error saving dungeon", e);
 		}
 	}
-	
+
+	/**
+	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
+	 */
 	public static Dungeon load() {
 		Dungeon dungeon = new Dungeon();
 		
@@ -164,7 +271,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		obj.put("name", getName());
 		obj.put("originalName", getOriginalName());
 		obj.put("turn", getTurn());
-		obj.put("exerciseCounter", exerciseCounter);
 		obj.put("passiveSoundCounter", passiveSoundCounter);
 		obj.put("monsterSpawnCounter", monsterSpawnCounter);
 		
@@ -214,7 +320,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			name = obj.getString("name");
 			originalName = obj.getString("originalName");
 			turn = obj.getInt("turn");
-			exerciseCounter = obj.getInt("exerciseCounter");
 			passiveSoundCounter = obj.getInt("passiveSoundCounter");
 			monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
 			
@@ -249,7 +354,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 
 		unserialisePersistence(obj);
 	}
-	
+
+	/**
+	 * Deletes the game save file.
+	 */
 	public void deleteSave() {
 		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
 		
@@ -257,14 +365,27 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			JRogue.getLogger().error("Failed to delete save file. Panic!");
 		}
 	}
-	
+
+	/**
+	 * Creates a new level.
+	 * @param depth The depth the level is located at.
+	 * @param sourceTile The tile the player came from (usually a staircase).
+	 * @param generatorClass The {@link jr.dungeon.generators.DungeonGenerator} to use to generate this level.
+	 * @return The generated level.
+	 */
 	public Level newLevel(int depth, Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
 		levels.put(level.getUUID(), level);
 		level.generate(sourceTile, generatorClass);
 		return level;
 	}
-	
+
+	/**
+	 * Switches the level to <code>level</code>.
+	 * @param level The level to switch to.
+	 * @param x The x coordinate to spawn the player at.
+	 * @param y The y coordinate to spawn the player at.
+	 */
 	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 		
@@ -283,7 +404,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e)));
 	}
-	
+
+	/**
+	 * Triggers the "Really quit without saving?" prompt.
+	 */
 	public void quit() {
 		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
@@ -306,7 +430,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}));
 	}
-	
+
+	/**
+	 * Triggers the "Really save and quit?" prompt.
+	 */
 	public void saveAndQuit() {
 		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
 			@Override
@@ -324,20 +451,37 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}));
 	}
-	
+
+	/**
+	 * Adds an event listener to this dungeon.
+	 * @param listener The event listener to add.
+	 */
 	public void addListener(DungeonEventListener listener) {
 		listeners.add(listener);
 	}
-	
+
+	/**
+	 * Removes an event listener from this dungeon.
+	 * @param listener The event listener to remove.
+	 */
 	public void removeListener(DungeonEventListener listener) {
 		listeners.remove(listener);
 	}
 	
-	public void rerollName() {
-		this.originalName = DungeonNameGenerator.generate();
-		this.name = this.originalName;
+	/**
+	 * Mark this turn as a turn that something critical happened in. This usually means that this should interrupt
+	 * bulk-actions, e.g. the player is knocking down a door as a bulk action, but then a monster attacks it. The
+	 * monster attack marks the turn as 'something happened', and the bulk action is cancelled.
+	 */
+	public void markSomethingHappened() {
+		somethingHappened = true;
+		
+		// TODO: trigger event here?
 	}
-	
+
+	/**
+	 * Starts/resumes a game. Should be called after the first level in the session is loaded.
+	 */
 	public void start() {
 		triggerEvent(new LevelChangeEvent(level));
 		triggerEvent(new BeforeGameStartedEvent(turn <= 0));
@@ -354,7 +498,13 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			triggerEvent(new GameStartedEvent(false));
 		}
 	}
-	
+
+	/**
+	 * Displays a message in the dungeon's event log.
+	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
+	 * @param s The format used for the message.
+	 * @param objects The format parameters.
+	 */
 	public void log(String s, Object... objects) {
 		String logString = String.format(s, objects);
 		
@@ -371,12 +521,20 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		triggerEvent(new LogEvent(logString));
 	}
-	
+
+	/**
+	 * Triggers a {@link jr.dungeon.Prompt}.
+	 * @param prompt The prompt to trigger.
+	 */
 	public void prompt(Prompt prompt) {
 		this.prompt = prompt;
 		triggerEvent(new PromptEvent(prompt));
 	}
-	
+
+	/**
+	 * Responds to a prompt.
+	 * @param response The char response to send.
+	 */
 	public void promptRespond(char response) {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
@@ -388,7 +546,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}
 	}
-	
+
+	/**
+	 * Ends a prompt, behaves like pressing ESC in the game.
+	 */
 	public void escapePrompt() {
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
@@ -398,21 +559,32 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			triggerEvent(new PromptEvent(null));
 		}
 	}
-	
+
+	/**
+	 * @return true if there is an active prompt.
+	 */
 	public boolean hasPrompt() {
 		return prompt != null;
 	}
-	
+
+	/**
+	 * @return true if there is an active prompt that cannot be forcefully ended (escaped).
+	 */
 	public boolean isPromptEscapable() {
 		return prompt != null && prompt.isEscapable();
 	}
-	
+
+	/**
+	 * Triggers the next turn, increasing the turn counter, and updating all entities.
+	 */
 	public void turn() {
 		if (!player.isAlive()) {
 			return;
 		}
 		
 		triggerEvent(new BeforeTurnEvent(turn + 1));
+		somethingHappened = false;
+		
 		level.getEntityStore().processEntityQueues();
 		
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
@@ -472,9 +644,19 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getVisibilityStore().updateSight(player);
 		level.getLightStore().buildLight(false);
 		
+		for (Iterator<DungeonEvent> iterator = eventQueueNextTurn.iterator(); iterator.hasNext(); ) {
+			DungeonEvent event = iterator.next();
+			triggerEvent(event, DungeonEventInvocationTime.TURN_COMPLETE);
+			iterator.remove();
+		}
+		
 		triggerEvent(new TurnEvent(turn));
 	}
-	
+
+	/**
+	 * Makes all entities make their next move.
+	 * @return false if nobody moved.
+	 */
 	private boolean moveEntities() {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
@@ -499,7 +681,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		return somebodyCanMove.get();
 	}
-	
+
+	/**
+	 * Updates the dungeon, which includes playing sounds and spawning monsters.
+	 */
 	private void update() {
 		if (--passiveSoundCounter <= 0) {
 			emitPassiveSounds();
@@ -516,7 +701,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
 	}
-	
+
+	/**
+	 * Emits passive sounds.
+	 */
 	private void emitPassiveSounds() {
 		List<Entity> emitters = level.getEntityStore().getEntities().stream()
 			.filter(e -> e instanceof PassiveSoundEmitter)
@@ -535,30 +723,56 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			log(sound);
 		}
 	}
-	
+
+	/**
+	 * Make a wish, used in debug mode.
+	 * @see jr.dungeon.wishes.Wishes
+	 * @param wish The wish to make.
+	 */
 	public void wish(String wish) {
 		Wishes.get().makeWish(this, wish);
 	}
-	
+
+	/**
+	 * @param uuid A level UUID.
+	 * @return The level with the specified UUID.
+	 */
 	public Level getLevelFromUUID(UUID uuid) {
 		return levels.get(uuid);
 	}
 
+	/**
+	 * @return A JSONObject that persists across game sessions.
+	 */
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	/**
+	 * Triggers a dungeon event, notifying all listeners.
+	 * @param event The event to trigger.
+	 */
 	public void triggerEvent(DungeonEvent event) {
-		listeners.forEach(l -> triggerEvent(l, event));
+		eventQueueNextTurn.add(event);
+		triggerEvent(event, DungeonEventInvocationTime.IMMEDIATELY);
+	}
+
+	/**
+	 * Triggers a dungeon event, notifying all listeners.
+	 * @param event The event to trigger.
+	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>TURN_COMPLETE</code> to delay it to the next turn.
+	 */
+	@SuppressWarnings("unchecked")
+	public void triggerEvent(DungeonEvent event, DungeonEventInvocationTime invocationTime) {
+		listeners.forEach(l -> invokeEvent(l, event, invocationTime));
 		
 		if (level != null) {
 			level.getEntityStore().getEntities().forEach(e -> {
-				triggerEvent(e, event);
+				invokeEvent(e, event, invocationTime);
 				e.getSubListeners().forEach(l2 -> {
 					if (l2 != null) {
-						triggerEvent(l2, event);
+						invokeEvent(l2, event, invocationTime);
 					}
 				});
 			});
@@ -566,29 +780,50 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void triggerEvent(DungeonEventListener listener, DungeonEvent event) {
+	private void invokeEvent(DungeonEventListener listener, DungeonEvent event, DungeonEventInvocationTime invocationTime) {
 		event.setDungeon(this);
 		
-		Arrays.stream(listener.getClass().getMethods())
-			.filter(m -> m.isAnnotationPresent(DungeonEventHandler.class))
-			.filter(m -> m.getParameterCount() == 1)
-			.filter(m -> m.getParameterTypes()[0].isAssignableFrom(event.getClass()))
-			.forEach(m -> {
-				m.setAccessible(true); // ha ha
-				
-				if (event.isCancelled()) {
-					return;
+		Class<?> listenerClass = listener.getClass();
+		ArrayList<Method> listenerMethods = new ArrayList<>();
+		
+		while (listenerClass != null) {
+			Method[] methods = listenerClass.getDeclaredMethods();
+			
+			for (Method method : methods) {
+				if (
+					method.isAnnotationPresent(DungeonEventHandler.class) &&
+					method.getParameterCount() == 1 &&
+					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
+				) {
+					listenerMethods.add(method);
 				}
-				
-				if (m.getAnnotation(DungeonEventHandler.class).selfOnly() && !event.isSelf(listener)) {
-					return;
-				}
-				
-				try {
-					m.invoke(listener, event);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
-				}
-			});
+			}
+			
+			listenerClass = listenerClass.getSuperclass();
+		}
+		
+		listenerMethods.forEach(m -> {
+			m.setAccessible(true); // ha ha
+			
+			if (event.isCancelled()) {
+				return;
+			}
+			
+			DungeonEventHandler annotation = m.getAnnotation(DungeonEventHandler.class);
+			
+			if (annotation.selfOnly() && !event.isSelf(listener)) {
+				return;
+			}
+			
+			if (annotation.invocationTime() != invocationTime) {
+				return;
+			}
+			
+			try {
+				m.invoke(listener, event);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				ErrorHandler.error("Error triggering event " + event.getClass().getSimpleName(), e);
+			}
+		});
 	}
 }

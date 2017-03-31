@@ -32,7 +32,9 @@ public class PlayerConsume implements PlayerVisitor {
 					item.getStatusEffects(player).forEach(player::addStatusEffect);
 				}
 			} else {
-				player.getDungeon().You("eat a part of the %s.", item.getName(player, false, false));
+				if (!player.getDungeon().isDoingBulkAction()) {
+					player.getDungeon().You("eat a part of the %s.", item.getName(player, false, false));
+				}
 				
 				player.setNutrition(
 					(int) (player.getNutrition() + Math.floor(item.getNutrition() / item.getTurnsRequiredToEat()))
@@ -47,6 +49,7 @@ public class PlayerConsume implements PlayerVisitor {
 					player.getAttributes().getAttribute(Attribute.WISDOM) > 6
 				) {
 					player.getDungeon().You("feel funny - it might not be a good idea to continue eating.");
+					player.getDungeon().markSomethingHappened();
 				}
 			}
 		}

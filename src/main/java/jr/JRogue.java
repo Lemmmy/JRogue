@@ -3,7 +3,7 @@ package jr;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
-import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.Renderer;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -29,25 +29,52 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class JRogue {
+	/**
+	 * Filename of the config file in the home folder.
+	 */
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
 	
+	/**
+	 * Game version, assigned automatically based on Gradle output.
+	 */
 	public static String VERSION = "unknown";
+	/**
+	 * Build date, assigned automatically based on Gradle output.
+	 */
 	public static String BUILD_DATE = "unknown";
 	
 	@Getter
 	private static Reflections reflections;
 	
+	/**
+	 * The game's logger.
+	 */
 	@Getter
 	private static Logger logger;
-
+	
+	/**
+	 * The user's {@link Settings}.
+	 */
 	@Getter
 	private static Settings settings;
-
-	public Dungeon dungeon;
-	public jr.rendering.Renderer renderer;
 	
+	/**
+	 * The current {@link Dungeon}.
+	 */
+	public Dungeon dungeon;
+	/**
+	 * The {@link Renderer} instance.
+	 */
+	public Renderer renderer;
+	
+	/**
+	 * The time (in milliseconds) that the game was started.
+	 */
 	public static final long START_TIME = TimeUtils.millis();
 	
+	/**
+	 * @param settings The user's {@link Settings}.
+	 */
 	public JRogue(Settings settings) {
 		initialiseReflections();
 		
@@ -81,9 +108,12 @@ public class JRogue {
 
 	private void start(Settings settings) {
 		dungeon = Dungeon.load();
-		renderer = new GDXRenderer(dungeon); // TODO: Make this configurable
+		renderer = new Renderer(dungeon); // TODO: Make this configurable
 	}
 	
+	/**
+	 * @param args bbbbb
+	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

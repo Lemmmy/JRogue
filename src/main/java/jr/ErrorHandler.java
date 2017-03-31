@@ -15,10 +15,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Error reporter dialog.
+ */
 public class ErrorHandler {
+	/**
+	 * URL to post issues to.
+	 */
 	private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue-issues/issues/new?title=%s&body=%s";
 	
-	private static final JTextArea textArea = new JTextArea(7, 30);
+	/**
+	 * The textarea containing error details.
+	 */
+	private static final JTextArea textArea = new JTextArea(7, 50);
 	
 	static {
 		textArea.setEditable(false);
@@ -27,10 +36,19 @@ public class ErrorHandler {
 		textArea.setWrapStyleWord(true);
 	}
 	
+	/**
+	 * Scroll pane containing textarea.
+	 */
 	private static final JScrollPane scrollPane = new JScrollPane(textArea);
 	
+	/**
+	 * Information about the user's GL version and vendor.
+	 */
 	private static String glString;
 	
+	/**
+	 * Sets the {@link #glString}.
+	 */
 	public static void setGLString() {
 		try {
 			String glVersion = GL11.glGetString(GL11.GL_VERSION);
@@ -39,6 +57,12 @@ public class ErrorHandler {
 		} catch (Exception ignored) {}
 	}
 	
+	/**
+	 * Cleanly crash the game with an error dialog, with the option to report it.
+	 *
+	 * @param error A description of the error that occurred.
+	 * @param trace The stack trace related to the error.
+	 */
 	public static void error(String error, Throwable trace) {
 		if (error != null) {
 			JRogue.getLogger().error("An error occurred: {}", error);

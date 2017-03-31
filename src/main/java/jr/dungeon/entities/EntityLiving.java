@@ -8,7 +8,9 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.effects.Paralysis;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -25,13 +27,30 @@ import java.util.*;
 
 @Getter
 @Setter
-public abstract class EntityLiving extends EntityTurnBased {
+public abstract class EntityLiving extends EntityTurnBased implements ContainerOwner {
+	/**
+	 * The Entity's health.
+	 */
 	private int health;
+	/**
+	 * The Entity's maximum health.
+	 */
 	protected int maxHealth;
 	
+	/**
+	 * The Entity's experience level - i.e. how much they've levelled up.
+	 */
 	private int experienceLevel = 1;
+	/**
+	 * The Entity's progress through their current experience level.
+	 *
+	 * @see #getXPForLevel(int)
+	 */
 	private int experience = 0;
 	
+	/**
+	 * The current turn counter for the Entity's
+	 */
 	@Setter(AccessLevel.NONE)
 	private int healingTurns = 0;
 	
@@ -67,8 +86,18 @@ public abstract class EntityLiving extends EntityTurnBased {
 		return health > 0;
 	}
 	
+	public void setHealth(int health) {
+		int oldHealth = this.health;
+		this.health = health;
+		int newHealth = this.health;
+		
+		if (oldHealth != newHealth) {
+			getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+		}
+	}
+	
 	public void heal(int amount) {
-		health = Math.min(maxHealth, health + amount);
+		setHealth(Math.min(maxHealth, health + amount));
 	}
 	
 	public int getHealingRate() {
@@ -234,7 +263,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 	}
 	
 	@Override
-	public List<DungeonEventListener> getSubListeners() {
+	public Set<DungeonEventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		getContainer().ifPresent(c -> {
@@ -268,7 +297,7 @@ public abstract class EntityLiving extends EntityTurnBased {
 	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
-		health = Math.max(0, health - damageModifier);
+		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
 		getDungeon().triggerEvent(new EntityDamagedEvent(this, attacker, damageSource, damage));

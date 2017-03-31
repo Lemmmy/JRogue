@@ -7,14 +7,39 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.tiles.Tile;
+import jr.utils.Point;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ActionMove extends EntityAction {
+/**
+ * Move/walk action.
+ *
+ * @see Action
+ */
+public class ActionMove extends Action {
 	private int x;
 	private int y;
 	
+	/**
+	 * Move/walk action.
+	 *
+	 * @param point The position to move to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
+	public ActionMove(Point point, ActionCallback callback) {
+		this(point.getX(), point.getY(), callback);
+	}
+	
+	/**
+	 * Move/walk action.
+	 *
+	 * @param x The X position to move to.
+	 * @param y The Y position to move to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
 	public ActionMove(int x, int y, ActionCallback callback) {
 		super(callback);
 		this.x = x;

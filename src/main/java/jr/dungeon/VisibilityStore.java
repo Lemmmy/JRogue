@@ -2,6 +2,7 @@ package jr.dungeon;
 
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 import jr.utils.Serialisable;
 import jr.utils.SerialisationUtils;
 import lombok.Getter;
@@ -70,8 +71,16 @@ public class VisibilityStore implements Serialisable {
 		return !isTileInvisible(x, y);
 	}
 	
+	public boolean isTileVisible(Point p) {
+		return isTileVisible(p.getX(), p.getY());
+	}
+	
 	public boolean isTileInvisible(int x, int y) {
 		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[width * y + x];
+	}
+	
+	public boolean isTileInvisible(Point p) {
+		return isTileInvisible(p.getX(), p.getY());
 	}
 	
 	public void seeTile(int x, int y) {

@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
@@ -62,7 +62,7 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			Point oldPos = player.getPosition();
 			
 			pathTaken.addStep(step);
-			player.setAction(new ActionMove(step.getX(), step.getY(), new EntityAction.NoCallback()));
+			player.setAction(new ActionMove(step.getX(), step.getY(), new Action.NoCallback()));
 			player.getDungeon().turn();
 			
 			if (oldPos.equals(player.getPosition())) {

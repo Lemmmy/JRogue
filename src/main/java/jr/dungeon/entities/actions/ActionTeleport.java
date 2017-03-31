@@ -5,13 +5,38 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
+import jr.utils.Point;
 
 import java.util.List;
 
-public class ActionTeleport extends EntityAction {
+/**
+ * Teleport action.
+ *
+ * @see Action
+ */
+public class ActionTeleport extends Action {
 	private int x;
 	private int y;
 	
+	/**
+	 * Teleport action.
+	 *
+	 * @param point The point to teleport to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
+	public ActionTeleport(Point point, ActionCallback callback) {
+		this(point.getX(), point.getY(), callback);
+	}
+	
+	/**
+	 * Teleport action.
+	 *
+	 * @param x The X position to teleport to.
+	 * @param y The Y position to teleport to.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
 	public ActionTeleport(int x, int y, ActionCallback callback) {
 		super(callback);
 		this.x = x;

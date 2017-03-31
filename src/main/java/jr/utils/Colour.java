@@ -1,15 +1,31 @@
 package jr.utils;
 
+/**
+ * A class representing a colour.
+ */
 public class Colour {
+	/** Pure white (0xFFFFFFFF). */
 	public static final Colour WHITE = new Colour(0xFFFFFFFF);
+	/** Pure black (0x000000FF). */
 	public static final Colour BLACK = new Colour(0x000000FF);
 	
 	public float r, g, b, a;
-	
+
+	/**
+	 * A copy constructor. Creates a {@link Colour} that matches the given {@link Colour}.
+	 * @param colour The colour to copy.
+	 */
 	public Colour(Colour colour) {
 		set(colour);
 	}
-	
+
+	/**
+	 * Constructs a Colour from RGBA components ranging from 0.0f to 1.0f.
+	 * @param r The red component (0.0 - 1.0).
+	 * @param g The green component (0.0 - 1.0).
+	 * @param b The blue component (0.0 - 1.0).
+	 * @param a The alpha component (0.0 - 1.0).
+	 */
 	public Colour(float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
@@ -18,7 +34,14 @@ public class Colour {
 		
 		clamp();
 	}
-	
+
+	/**
+	 * Constructs a Colour from RGBA components ranging from 0 to 255.
+	 * @param r The red component (0 - 255).
+	 * @param g The green component (0 - 255).
+	 * @param b The blue component (0 - 255).
+	 * @param a The alpha component (0 - 255).
+	 */
 	public Colour(int r, int g, int b, int a) {
 		this.r = (float) r / 255f;
 		this.g = (float) g / 255f;
@@ -27,11 +50,20 @@ public class Colour {
 		
 		clamp();
 	}
-	
+
+	/**
+	 * Constructs a Colour from an RGBA8888 bitfield.
+	 * @param rgba8888 The colour bitfield in the format <code>0xRRGGBBAA</code>.
+	 */
 	public Colour(int rgba8888) {
 		rgba8888ToColour(this, rgba8888);
 	}
-	
+
+	/**
+	 * Copies the given colour's attributes into the colour.
+	 * @param colour The colour to copy.
+	 * @return <code>this</code>, can be used for method chaining.
+	 */
 	public Colour set(Colour colour) {
 		this.r = colour.r;
 		this.g = colour.g;
@@ -76,7 +108,11 @@ public class Colour {
 		
 		return clamp();
 	}
-	
+
+	/**
+	 * Ensures no colour component is out of range.
+	 * @return <code>this</code>, can be used for method chaining.
+	 */
 	public Colour clamp() {
 		if (r < 0) { r = 0; } else if (r > 1) { r = 1; }
 		if (g < 0) { g = 0; } else if (g > 1) { g = 1; }

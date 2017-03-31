@@ -28,18 +28,17 @@ public class FeatureAltar extends SpecialRoomFeature {
 		}
 		
 		if (rand.nextDouble() < PROBABILITY_ALTAR_CANDLESTICK) {
-			int x = altarX - 1;
-			int y = altarY;
+			int currentX = altarX - 1;
 			
-			if (room.getLevel().getTileStore().getTileType(x, y).isFloor()) {
-				EntityCandlestick cs1 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
+			if (room.getLevel().getTileStore().getTileType(currentX, altarY).isFloor()) {
+				EntityCandlestick cs1 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), currentX, altarY);
 				room.getLevel().getEntityStore().addEntity(cs1);
 			}
 			
-			x = altarX + 1;
+			currentX = altarX + 1;
 			
-			if (room.getLevel().getTileStore().getTileType(x, y).isFloor()) {
-				EntityCandlestick cs2 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), x, y);
+			if (room.getLevel().getTileStore().getTileType(currentX, altarY).isFloor()) {
+				EntityCandlestick cs2 = new EntityCandlestick(room.getLevel().getDungeon(), room.getLevel(), currentX, altarY);
 				room.getLevel().getEntityStore().addEntity(cs2);
 			}
 		}

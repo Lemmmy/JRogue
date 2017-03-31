@@ -3,7 +3,6 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.utils.MultiLineNoPrefixToStringStyle;
-import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;

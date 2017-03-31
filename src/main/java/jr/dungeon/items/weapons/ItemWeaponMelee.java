@@ -3,8 +3,8 @@ package jr.dungeon.items.weapons;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.utils.RandomUtils;
@@ -19,7 +19,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 			victim,
 			getMeleeDamageSource(),
 			damage,
-			new EntityAction.ActionCallback() {
+			new Action.ActionCallback() {
 				@Override
 				public void beforeRun(Entity entity) {
 					onHit(attacker, victim);
