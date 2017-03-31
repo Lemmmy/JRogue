@@ -173,7 +173,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	private final JSONObject persistence = new JSONObject();
 	
-	private ArrayList<String> history = new ArrayList<>();
+	private List<String> history = new LinkedList<>();
 	
 	@Getter @Setter private String deathMessage;
 	
@@ -507,7 +507,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	@Override
-	public ArrayList<String> getHistory() {
+	public List<String> getHistory() {
 		return history;
 	}
 	
@@ -803,7 +803,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		handlers.stream().sorted(Comparator.comparing(h -> h.getHandler().priority())).forEach(h -> {
 			try {
 				h.getMethod().invoke(h.getListener(), event);
-			} catch (IllegalAccessException | InvocationTargetException e) {
+			} catch (Exception e) {
 				JRogue.getLogger().error("Error triggering event " + event.getClass().getSimpleName(), e);
 			}
 		});
