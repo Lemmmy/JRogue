@@ -173,6 +173,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	private ArrayList<String> history = new ArrayList<>();
 	
+	@Getter @Setter private String deathMessage;
+	
 	/**
 	 * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
 	 * levels, and player.

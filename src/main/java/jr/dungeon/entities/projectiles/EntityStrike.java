@@ -2,7 +2,7 @@ package jr.dungeon.entities.projectiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
@@ -59,7 +59,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 			if (roll < 10 + living.getArmourClass()) {
 				int damage = RandomUtils.roll(2, 12);
 				
-				living.damage(DamageSource.STRIKE_SPELL, damage, livingSource);
+				living.damage(DamageSourceType.STRIKE_SPELL, damage, livingSource);
 			}
 		}
 		

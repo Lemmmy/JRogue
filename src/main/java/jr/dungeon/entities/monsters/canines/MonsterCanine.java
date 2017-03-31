@@ -2,7 +2,7 @@ package jr.dungeon.entities.monsters.canines;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
@@ -78,7 +78,7 @@ public abstract class MonsterCanine extends Monster {
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
+			damage(DamageSourceType.PLAYER_KICK, 1, e.getKicker());
 		}
 		
 		if (isAlive()) {
@@ -92,7 +92,7 @@ public abstract class MonsterCanine extends Monster {
 						getDungeon().redThe("bite was pretty deep!");
 					}
 					
-					e.getKicker().damage(DamageSource.KICK_REVENGE, 1, e.getKicker());
+					e.getKicker().damage(DamageSourceType.KICK_REVENGE, 1, e.getKicker());
 					e.getKicker().addStatusEffect(new InjuredFoot(getDungeon(), e.getKicker(), RandomUtils.roll(3, 6)));
 				}
 			} else if (RandomUtils.roll(1, 5) == 1) {
@@ -105,7 +105,7 @@ public abstract class MonsterCanine extends Monster {
 						getDungeon().log("[RED]It strains your leg!");
 					}
 					
-					e.getKicker().damage(DamageSource.KICK_REVENGE, 1, e.getKicker());
+					e.getKicker().damage(DamageSourceType.KICK_REVENGE, 1, e.getKicker());
 					e.getKicker().addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 				}
 			}
@@ -136,7 +136,7 @@ public abstract class MonsterCanine extends Monster {
 	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
-			DamageSource.CANINE_BITE,
+			DamageSourceType.CANINE_BITE,
 			1,
 			(Action.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));

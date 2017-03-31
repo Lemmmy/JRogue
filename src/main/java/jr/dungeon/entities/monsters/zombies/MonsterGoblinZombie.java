@@ -2,7 +2,7 @@ package jr.dungeon.entities.monsters.zombies;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
@@ -73,7 +73,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
-			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
+			damage(DamageSourceType.PLAYER_KICK, 1, e.getKicker());
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
-			DamageSource.GOBLIN_ZOMBIE_HIT,
+			DamageSourceType.GOBLIN_ZOMBIE_HIT,
 			1,
 			(Action.CompleteCallback) entity -> getDungeon().logRandom(
 				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),

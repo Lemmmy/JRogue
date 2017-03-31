@@ -1,6 +1,6 @@
 package jr.dungeon.items.weapons;
 
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
@@ -43,7 +43,7 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		return damage;
 	}
 	
-	public abstract DamageSource getMeleeDamageSource();
+	public abstract DamageSourceType getMeleeDamageSource();
 	
 	public abstract void onHit(EntityLiving attacker, EntityLiving victim);
 	

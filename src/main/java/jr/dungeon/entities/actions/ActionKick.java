@@ -2,6 +2,7 @@ package jr.dungeon.entities.actions;
 
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StrainedLeg;
@@ -110,7 +111,7 @@ public class ActionKick extends Action {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker);
+				kicker.damage(new DamageSource(null, null, DamageSourceType.KICKING_THIN_AIR), 1, kicker);
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {

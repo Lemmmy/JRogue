@@ -1,6 +1,6 @@
 package jr.dungeon.items.weapons;
 
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
@@ -58,8 +58,8 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public DamageSource getMeleeDamageSource() {
-		return DamageSource.STAFF_BASH;
+	public DamageSourceType getMeleeDamageSource() {
+		return DamageSourceType.STAFF_BASH;
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package jr.dungeon.entities.projectiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
@@ -51,7 +51,7 @@ public class EntityArrow extends EntityProjectile {
 					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(living, false));
 				}
 				
-				living.damage(DamageSource.ARROW, getArrowDamage(), (EntityLiving) source);
+				living.damage(DamageSourceType.ARROW, getArrowDamage(), (EntityLiving) source);
 				
 				if (!canPenetrate) {
 					killProjectile();

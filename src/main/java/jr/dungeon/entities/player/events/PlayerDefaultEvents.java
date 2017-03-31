@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.events;
 
 import jr.dungeon.Prompt;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.actions.ActionKick;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.events.EntityKickedTileEvent;
@@ -127,7 +127,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 				"[RED]Ouch! That caused some bad damage to your foot!"
 			);
 			
-			player.damage(DamageSource.KICKING_A_WALL, 1, player);
+			player.damage(DamageSourceType.KICKING_A_WALL, 1, player);
 			player.addStatusEffect(new InjuredFoot(player.getDungeon(), player, RandomUtils.roll(3, 6)));
 		} else {
 			player.getDungeon().log("[ORANGE]Ouch! That hurt!");

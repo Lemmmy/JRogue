@@ -1,7 +1,7 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.Messenger;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
@@ -30,7 +30,7 @@ public class FoodPoisoning extends StatusEffect {
 		if (getEntity() instanceof EntityLiving) {
 			EntityLiving living /* well, not anymore */ = (EntityLiving) getEntity();
 			
-			living.kill(DamageSource.FOOD_POISONING, living.getHealth(), null);
+			living.kill(DamageSourceType.FOOD_POISONING, living.getHealth(), null);
 		}
 	}
 }

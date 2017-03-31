@@ -1,6 +1,6 @@
 package jr.dungeon.entities.events;
 
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.Hit;
 import jr.dungeon.entities.player.Player;
@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class EntityAttackMissedEvent extends DungeonEvent {
 	private EntityLiving victim, attacker;
-	private DamageSource damageSource;
+	private DamageSourceType damageSource;
 	private Hit hit;
 	
 	public boolean isVictimPlayer() {

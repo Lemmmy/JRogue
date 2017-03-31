@@ -1,7 +1,7 @@
 package jr.dungeon.items.weapons;
 
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.Material;
@@ -30,8 +30,8 @@ public class ItemLongsword extends ItemSword {
 	}
 	
 	@Override
-	public DamageSource getMeleeDamageSource() {
-		return DamageSource.LONGSWORD;
+	public DamageSourceType getMeleeDamageSource() {
+		return DamageSourceType.LONGSWORD;
 	}
 	
 	@Override

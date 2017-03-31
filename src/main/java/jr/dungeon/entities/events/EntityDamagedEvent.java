@@ -1,6 +1,7 @@
 package jr.dungeon.entities.events;
 
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.DungeonEvent;

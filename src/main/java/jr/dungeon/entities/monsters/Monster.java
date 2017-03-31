@@ -2,7 +2,7 @@ package jr.dungeon.entities.monsters;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
@@ -75,7 +75,7 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public void kill(DamageSource damageSource, int damage, EntityLiving attacker) {
+	public void kill(DamageSourceType damageSource, int damage, EntityLiving attacker) {
 		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
 			attacker.addExperience(
 				RandomUtils.roll(RandomUtils.roll(getExperienceLevel()), getExperienceRewarded())

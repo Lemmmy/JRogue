@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -37,9 +38,16 @@ public class DeathScreen extends ScreenAdapter {
 		container.setFillParent(true);
 		container.row().fill().top();
 		
+		initDeathMessage(container);
+		
 		container.top().pad(32);
 		
 		stage.addActor(container);
+	}
+	
+	private void initDeathMessage(Table container) {
+		String deathMessage = "[RED]" + dungeon.getDeathMessage();
+		container.add(new Label(deathMessage, skin, "large")).growX().top().row();
 	}
 	
 	@Override

@@ -184,7 +184,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	public int getDamageModifier(DamageSource damageSource, int damage) {
+	public int getDamageModifier(DamageSourceType damageSource, int damage) {
 		return godmode ? 0 : super.getDamageModifier(damageSource, damage);
 	}
 	
@@ -336,7 +336,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(DamageSource.CHOKING, 1, this);
+			damage(DamageSourceType.CHOKING, 1, this);
 		}
 		
 		nutrition--;
@@ -440,8 +440,10 @@ public class Player extends EntityLiving {
 	public void onDie(EntityDeathEvent e) {
 		if (e.getDamageSource().getDeathString() != null) {
 			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
+			getDungeon().setDeathMessage(e.getDamageSource().getDeathStringPastTense());
 		} else {
 			getDungeon().redYou("die.");
+			getDungeon().setDeathMessage("You died.");
 		}
 		
 		getDungeon().deleteSave();
@@ -531,17 +533,17 @@ public class Player extends EntityLiving {
 		
 		// TODO: rings of increase accuracy enchantment levels
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE) {
+		if (damageSource.getDamageType() == DamageSourceType.DamageType.MELEE) {
 			toHit += 1;
 			toHit += getStrengthHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE ||
-			damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+		if (damageSource.getDamageType() == DamageSourceType.DamageType.MELEE ||
+			damageSource.getDamageType() == DamageSourceType.DamageType.RANGED) {
 			toHit += getDexterityHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+		if (damageSource.getDamageType() == DamageSourceType.DamageType.RANGED) {
 			toHit += getSizeHitBonus(victim.getSize());
 		}
 		

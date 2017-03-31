@@ -1,6 +1,6 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageSourceType;
 import jr.dungeon.entities.EntityLiving;
 
 public class Poison extends StatusEffect {
@@ -42,8 +42,8 @@ public class Poison extends StatusEffect {
 		}
 	}
 	
-	public DamageSource getDamageSource() {
-		return DamageSource.POISON;
+	public DamageSourceType getDamageSource() {
+		return DamageSourceType.POISON;
 	}
 	
 	@Override
