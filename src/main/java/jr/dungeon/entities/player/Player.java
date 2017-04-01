@@ -74,7 +74,7 @@ public class Player extends EntityLiving {
 		this.name = name;
 		this.role = role;
 		
-		nutrition = 1500;
+		nutrition = 1400;
 		maxHealth = getMaxHealth();
 		
 		energy = maxEnergy = role.getMaxEnergy();
@@ -112,7 +112,7 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public int getMaxHealth() {
-		return 5 * (2 + getExperienceLevel()) + getConstitutionBonus();
+		return 4 * (2 + getExperienceLevel()) + getConstitutionBonus();
 	}
 	
 	public int getConstitutionBonus() {
@@ -125,16 +125,16 @@ public class Player extends EntityLiving {
 		
 		switch (getNutritionState()) {
 			case FAINTING:
-				return 100 - constitution;
+				return Math.max(100 - constitution, 4);
 			case STARVING:
-				return 40 - constitution / 3;
+				return Math.max(40 - constitution / 3, 4);
 			default:
-				return 20 - constitution / 2;
+				return Math.max(20 - constitution / 2, 4);
 		}
 	}
 	
 	public int getChargingRate() {
-		return (int) Math.floor((38 - getExperienceLevel()) * (3.5f / 6f));
+		return (int) Math.max(Math.floor((38 - getExperienceLevel()) * (3.5f / 6f)), 4);
 	}
 	
 	public void charge(int amount) {
@@ -206,9 +206,9 @@ public class Player extends EntityLiving {
 	}
 	
 	public NutritionState getNutritionState() {
-		if (nutrition >= 2250) {
+		if (nutrition >= 2000) {
 			return NutritionState.CHOKING;
-		} else if (nutrition >= 1750) {
+		} else if (nutrition >= 1500) {
 			return NutritionState.STUFFED;
 		} else if (nutrition >= 750) {
 			return NutritionState.NOT_HUNGRY;
@@ -256,7 +256,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public SkillLevel getSkillLevel(Skill skill) {
-		return !skills.containsKey(skill) ? SkillLevel.UNSKILLED : skills.get(skill);
+		return skills.getOrDefault(skill, SkillLevel.UNSKILLED);
 	}
 	
 	public boolean isDebugger() {
@@ -289,7 +289,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@EventHandler(selfOnly = true)
-	public void onHealthChanged(EntityHealthChangedEvent event) {
+	private void onHealthChanged(EntityHealthChangedEvent event) {
 		if (event.getOldHealth() > event.getNewHealth()) {
 			getDungeon().markSomethingHappened();
 		}
@@ -439,7 +439,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@EventHandler(selfOnly = true, priority = EventPriority.HIGHEST)
-	public void onDie(EntityDeathEvent e) {
+	private void onDie(EntityDeathEvent e) {
 		DamageType type = e.getDamageSource().getType();
 		
 		if (type.getDeathString() != null) {
