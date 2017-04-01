@@ -68,8 +68,6 @@ public class GameAdapter extends Game {
 	
 	@Override
 	public void render() {
-		super.render();
-		
 		float delta = Gdx.graphics.getDeltaTime();
 		
 		if (newScreen == null) {
