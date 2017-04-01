@@ -241,6 +241,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			ErrorHandler.error("Error saving dungeon", e);
 		}
 	}
+	
+	public static boolean canLoad() {
+		return new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString()).exists();
+	}
 
 	/**
 	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
@@ -307,7 +311,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 					case JOptionPane.YES_OPTION:
 						break;
 					case JOptionPane.NO_OPTION:
-						File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+						File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 						
 						if (file.exists() && !file.delete()) {
 							JRogue.getLogger().error("Failed to delete save file. Panic!");
@@ -336,7 +340,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			});
 			
 			if (player == null) {
-				File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+				File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 				
 				if (file.exists() && !file.delete()) {
 					JRogue.getLogger().error("Failed to delete save file. Panic!");
@@ -364,10 +368,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 * Deletes the game save file.
 	 */
 	public void deleteSave() {
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 		
 		if (file.exists() && !file.delete()) {
-			JRogue.getLogger().error("Failed to delete save file. Panic!");
+			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
 		}
 	}
 

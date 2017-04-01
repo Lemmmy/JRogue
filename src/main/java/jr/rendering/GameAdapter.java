@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.dungeon.Dungeon;
 import jr.rendering.screens.CharacterCreationScreen;
+import jr.rendering.screens.GameScreen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,7 +64,12 @@ public class GameAdapter extends Game {
 		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	
-		screen = new CharacterCreationScreen(this);
+		if (Dungeon.canLoad()) {
+			screen = new GameScreen(this, Dungeon.load());
+		} else {
+			screen = new CharacterCreationScreen(this);
+		}
+		
 		screen.show();
 	}
 	
