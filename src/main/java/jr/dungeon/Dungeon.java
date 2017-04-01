@@ -428,10 +428,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'y') {
-					File file = new File(Paths.get(dataDir.toString(), "dungeon.save").toString());
+					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 					
 					if (file.exists() && !file.delete()) {
-						JRogue.getLogger().error("Failed to delete save file. Panic!"); // fuck you
+						ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
 					}
 					
 					triggerEvent(new QuitEvent());
