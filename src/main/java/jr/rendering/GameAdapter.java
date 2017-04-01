@@ -77,12 +77,12 @@ public class GameAdapter extends Game {
 			screen.render(delta);
 		} else if (transitioning && firstTransitionFrame) {
 			firstTransitionFrame = false;
-		} if (transitioning && currentTransitionTime >=
-			transitionDuration) {
+		} if (transitioning && currentTransitionTime >= transitionDuration) {
 			// transition is active and time limit reached
 			screen.hide();
 			screen = newScreen;
 			screen.resume();
+			screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			transitioning = false;
 			newScreen = null;
 			screen.render(delta);

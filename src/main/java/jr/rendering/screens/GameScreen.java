@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
@@ -94,6 +95,10 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
+	private SpriteBatch debugBatch;
+	private OrthographicCamera debugCamera;
+	private BitmapFont debugFont;
+	
 	/**
 	 * The game's main OpenGL renderer using LibGDX.
 	 *
@@ -113,6 +118,10 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		
 		initialiseCamera();
 		initialiseRendererComponents();
+		
+		debugBatch = new SpriteBatch();
+		debugCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
 		
 		dungeon.start();
 	}
@@ -233,6 +242,22 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
 		
+		debugCamera.update();
+		debugBatch.setProjectionMatrix(debugCamera.combined);
+		debugBatch.begin();
+		debugFont.draw(
+			debugBatch,
+			String.format(
+				"[P_ORANGE_2]dt: %.6fs\nisTurnLerping: %b\nturnLerpTime:%.6fs",
+				delta,
+				turnLerping,
+				turnLerpTime
+			),
+			Gdx.graphics.getWidth() - 150,
+			0
+		);
+		debugBatch.end();
+		
 		if (settings.isShowTurnAnimations()) {
 			updateCamera();
 		}
@@ -250,6 +275,8 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		}
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
+		
+		debugCamera.setToOrtho(true, width, height);
 	}
 	
 	@Override
