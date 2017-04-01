@@ -110,7 +110,12 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 javadoc {
 	source = sourceSets.main.allJava
 	title = "JRogue API Documentation"
-	destinationDir = file("docs/")
+
+	if (project.hasProperty("javadocDir")) {
+		destinationDir = file(project.getProperty("javadocDir"));
+	} else {
+		destinationDir = file("docs/")
+	}
 }
 
 gradle.projectsEvaluated {
