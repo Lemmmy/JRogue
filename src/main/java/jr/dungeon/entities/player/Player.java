@@ -66,6 +66,8 @@ public class Player extends EntityLiving {
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
+		
+		dungeon.addListener(new PlayerDefaultEvents());
 	}
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {

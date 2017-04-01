@@ -18,7 +18,7 @@ import jr.utils.VectorInt;
 
 public class PlayerDefaultEvents implements EventListener {
 	@EventHandler
-	public void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
+	private void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
 		Player player = e.getPlayer();
 		Tile tile = e.getTile();
 		int x = e.getX();
