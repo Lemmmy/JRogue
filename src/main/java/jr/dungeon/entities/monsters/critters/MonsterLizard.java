@@ -60,7 +60,7 @@ public class MonsterLizard extends Monster {
 	
 	@Override
 	public float getCorpseChance() {
-		return 1;
+		return 0.9f;
 	}
 	
 	@Override
