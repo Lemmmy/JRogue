@@ -73,6 +73,11 @@ public class FeatureChest extends SpecialRoomFeature {
 		room.getLevel().getEntityStore().addEntity(chest);
 	}
 	
+	@Override
+	public String getName(boolean plural) {
+		return plural ? "chests" : "chest";
+	}
+	
 	private void populateChest(Room room, EntityChest chest) {
 		if (!chest.getContainer().isPresent()) {
 			return;

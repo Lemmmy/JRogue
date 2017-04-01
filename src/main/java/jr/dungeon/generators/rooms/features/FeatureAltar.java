@@ -43,4 +43,9 @@ public class FeatureAltar extends SpecialRoomFeature {
 			}
 		}
 	}
+	
+	@Override
+	public String getName(boolean plural) {
+		return plural ? "altars" : "altar";
+	}
 }

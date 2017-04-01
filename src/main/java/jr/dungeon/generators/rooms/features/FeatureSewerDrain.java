@@ -29,4 +29,9 @@ public class FeatureSewerDrain extends SpecialRoomFeature {
 			}
 		}
 	}
+	
+	@Override
+	public String getName(boolean plural) {
+		return null;
+	}
 }

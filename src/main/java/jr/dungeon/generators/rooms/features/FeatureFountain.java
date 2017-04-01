@@ -15,4 +15,9 @@ public class FeatureFountain extends SpecialRoomFeature {
 		EntityFountain fountain = new EntityFountain(room.getLevel().getDungeon(), room.getLevel(), fountainX, fountainY);
 		room.getLevel().getEntityStore().addEntity(fountain);
 	}
+	
+	@Override
+	public String getName(boolean plural) {
+		return plural ? "fountains" : "fountain";
+	}
 }
