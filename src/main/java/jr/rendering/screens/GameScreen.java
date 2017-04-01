@@ -242,22 +242,6 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
 		
-		debugCamera.update();
-		debugBatch.setProjectionMatrix(debugCamera.combined);
-		debugBatch.begin();
-		debugFont.draw(
-			debugBatch,
-			String.format(
-				"[P_ORANGE_2]dt: %.6fs\nisTurnLerping: %b\nturnLerpTime:%.6fs",
-				delta,
-				turnLerping,
-				turnLerpTime
-			),
-			Gdx.graphics.getWidth() - 150,
-			0
-		);
-		debugBatch.end();
-		
 		if (settings.isShowTurnAnimations()) {
 			updateCamera();
 		}
