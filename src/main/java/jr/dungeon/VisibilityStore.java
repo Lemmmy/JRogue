@@ -56,9 +56,13 @@ public class VisibilityStore implements Serialisable {
 	}
 	
 	public boolean isTileDiscovered(int x, int y) {
-		return !(x < 0 || y < 0 || x >= width || y >= height) && discoveredTiles[y * width + x];
+		return x >= 0 && y >= 0 && x < width && y < height && discoveredTiles[y * width + x];
 	}
-	
+
+	public boolean isTileDiscovered(Point p) {
+		return isTileDiscovered(p.getX(), p.getY());
+	}
+
 	public void discoverTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return;
@@ -66,7 +70,11 @@ public class VisibilityStore implements Serialisable {
 		
 		discoveredTiles[width * y + x] = true;
 	}
-	
+
+	public void discoverTile(Point p) {
+		discoverTile(p.getX(), p.getY());
+	}
+
 	public boolean isTileVisible(int x, int y) {
 		return !isTileInvisible(x, y);
 	}
@@ -96,6 +104,10 @@ public class VisibilityStore implements Serialisable {
 				e.setLastSeenX(x);
 				e.setLastSeenY(y);
 			});
+	}
+
+	public void seeTile(Point p) {
+		seeTile(p.getX(), p.getY());
 	}
 	
 	public void updateSight(Player player) {

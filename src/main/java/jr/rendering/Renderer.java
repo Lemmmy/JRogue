@@ -236,6 +236,10 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 		
 		rendererComponents.forEach(r -> r.update(delta));
 		
+		if (settings.isShowTurnAnimations()) {
+			updateCamera();
+		}
+		
 		mainBatch.setProjectionMatrix(camera.combined);
 		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

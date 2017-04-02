@@ -49,6 +49,7 @@ public class PlayerConsume implements PlayerVisitor {
 					player.getAttributes().getAttribute(Attribute.WISDOM) > 6
 				) {
 					player.getDungeon().You("feel funny - it might not be a good idea to continue eating.");
+					player.getDungeon().markSomethingHappened();
 				}
 			}
 		}

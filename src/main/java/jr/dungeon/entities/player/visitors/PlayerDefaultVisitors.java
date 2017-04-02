@@ -4,6 +4,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.tiles.Tile;
+import jr.utils.Point;
 
 public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 	public PlayerDefaultVisitors(Player player) {
@@ -12,6 +13,10 @@ public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 	
 	public void teleport(int x, int y) {
 		getPlayer().acceptVisitor(new PlayerTeleport(x, y));
+	}
+
+	public void teleport(Point p) {
+		teleport(p.getX(), p.getY());
 	}
 	
 	public void walk(int dx, int dy) {
