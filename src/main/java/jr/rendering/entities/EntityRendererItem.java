@@ -51,7 +51,7 @@ public class EntityRendererItem extends EntityRenderer {
 					item.getItemStack(),
 					item.getItem(),
 					entity.getLastSeenX() * width,
-					entity.getLastSeenY() * height
+					entity.getLastSeenY() * height + 1
 						- (int)(8 * Math.sin(Math.min(System.currentTimeMillis() - entity.getCreateTime(), 225) / 75)),
 					isDrawingReflection()
 				);
