@@ -17,9 +17,9 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
 import jr.rendering.GameAdapter;
-import jr.rendering.SlidingTransition;
-import jr.rendering.components.hud.HUDSkin;
-import jr.rendering.components.hud.windows.partials.AttributesPartial;
+import jr.rendering.screens.utils.SlidingTransition;
+import jr.rendering.ui.UISkin;
+import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.entities.RoleMap;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,7 +40,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
 		
-		skin = new HUDSkin();
+		skin = new UISkin();
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / JRogue.getSettings().getHudScale());
 		stage = new Stage(stageViewport);

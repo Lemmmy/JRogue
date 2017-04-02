@@ -1,4 +1,4 @@
-package jr.rendering.components.hud;
+package jr.rendering.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.FontLoader;
 import jr.rendering.utils.ImageLoader;
 
-public class HUDSkin extends Skin {
+public class UISkin extends Skin {
 	static {
 		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
 		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
@@ -54,7 +55,7 @@ public class HUDSkin extends Skin {
 	private List.ListStyle listStyle;
 	private ScrollPane.ScrollPaneStyle scrollPaneStyle;
 	
-	public HUDSkin() {
+	public UISkin() {
 		addColours();
 		addFonts();
 		addLabelStyles();

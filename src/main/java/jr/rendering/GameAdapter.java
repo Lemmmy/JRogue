@@ -15,6 +15,7 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
+import jr.rendering.screens.utils.ScreenTransition;
 import lombok.Getter;
 import lombok.Setter;
 

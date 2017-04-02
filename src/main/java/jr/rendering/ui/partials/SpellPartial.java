@@ -1,4 +1,4 @@
-package jr.rendering.components.hud.windows.partials;
+package jr.rendering.ui.partials;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.components.hud.windows.Window;
+import jr.rendering.ui.windows.Window;
 
 public class SpellPartial extends Table {
 	private Window parentWindow;

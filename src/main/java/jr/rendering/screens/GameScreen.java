@@ -17,7 +17,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.rendering.GameAdapter;
 import jr.rendering.GameInputProcessor;
-import jr.rendering.SlidingTransition;
+import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.tiles.TileMap;

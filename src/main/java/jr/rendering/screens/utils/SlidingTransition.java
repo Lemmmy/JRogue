@@ -1,4 +1,4 @@
-package jr.rendering;
+package jr.rendering.screens.utils;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;

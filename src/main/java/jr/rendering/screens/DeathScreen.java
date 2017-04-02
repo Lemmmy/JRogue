@@ -20,9 +20,9 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.rendering.GameAdapter;
-import jr.rendering.SlidingTransition;
-import jr.rendering.components.hud.HUDSkin;
-import jr.rendering.components.hud.windows.partials.ContainerPartial;
+import jr.rendering.screens.utils.SlidingTransition;
+import jr.rendering.ui.UISkin;
+import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.utils.HUDUtils;
 
 public class DeathScreen extends ScreenAdapter {
@@ -34,14 +34,14 @@ public class DeathScreen extends ScreenAdapter {
 	private EntityDeathEvent event;
 	
 	private Cell<? extends Actor> screenCell;
-	private Table logScreen, inventoryScreen;
+	private Table logScreen, inventoryScreen, dungeonScreen;
 	
 	public DeathScreen(GameAdapter game, Dungeon dungeon, EntityDeathEvent event) {
 		this.game = game;
 		this.dungeon = dungeon;
 		this.event = event;
 		
-		skin = new HUDSkin();
+		skin = new UISkin();
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / JRogue.getSettings().getHudScale());
 		stage = new Stage(stageViewport);
@@ -68,7 +68,6 @@ public class DeathScreen extends ScreenAdapter {
 		container.row();
 		
 		initScreenTabs(buttonContainer);
-		switchScreen(inventoryScreen);
 		
 		initBottomButtons(container);
 		
@@ -93,7 +92,11 @@ public class DeathScreen extends ScreenAdapter {
 			initInventoryScreen(inventoryScreen);
 		});
 		
-		screenTabs.getButtons().get(1).setChecked(true);
+		initScreenTab(container, screenTabs, "Dungeon", dungeonScreen = new Table());
+		initDungeonScreen(container);
+		
+		switchScreen(dungeonScreen);
+		screenTabs.getButtons().get(2).setChecked(true);
 	}
 	
 	private void initScreenTab(Table container, ButtonGroup<TextButton> group, String name, Table screen) {
@@ -184,6 +187,10 @@ public class DeathScreen extends ScreenAdapter {
 		
 		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, skin);
 		container.add(inventoryScrollPane).top().left().grow().row();
+	}
+	
+	private void initDungeonScreen(Table container) {
+	
 	}
 	
 	private void initBottomButtons(Table container) {

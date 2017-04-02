@@ -1,4 +1,4 @@
-package jr.rendering;
+package jr.rendering.particles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;

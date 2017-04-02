@@ -1,4 +1,4 @@
-package jr.rendering.components.hud.windows.partials;
+package jr.rendering.ui.partials;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;

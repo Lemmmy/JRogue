@@ -1,4 +1,4 @@
-package jr.rendering.components.hud.windows;
+package jr.rendering.ui.windows;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
-import jr.rendering.components.hud.windows.partials.AttributesPartial;
-import jr.rendering.components.hud.windows.partials.ContainerPartial;
-import jr.rendering.components.hud.windows.partials.StatsPartial;
+import jr.rendering.ui.partials.AttributesPartial;
+import jr.rendering.ui.partials.ContainerPartial;
+import jr.rendering.ui.partials.StatsPartial;
 import jr.rendering.screens.GameScreen;
 import lombok.val;
 

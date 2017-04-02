@@ -1,4 +1,4 @@
-package jr.rendering.components.hud;
+package jr.rendering.ui.utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;

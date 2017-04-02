@@ -1,4 +1,4 @@
-package jr.rendering.components.hud.windows;
+package jr.rendering.ui.windows;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
