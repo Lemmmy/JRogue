@@ -6,10 +6,10 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
@@ -22,8 +22,9 @@ public class MonsterSkeleton extends Monster {
 	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		setAI(new StatefulAI(this));
-		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override
@@ -112,7 +113,7 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
@@ -129,7 +130,7 @@ public class MonsterSkeleton extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.SKELETON_HIT,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().logRandom(
+			(Action.CompleteCallback) entity -> getDungeon().logRandom(
 				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
 				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false)),
 				String.format("[ORANGE]The %s kicks you!", getName(getDungeon().getPlayer(), false)),

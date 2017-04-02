@@ -6,12 +6,14 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.interfaces.ContainerOwner;
+import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.DungeonEventHandler;
 import org.json.JSONObject;
 
 import java.util.Optional;
 
-public class EntityWeaponRack extends Entity {
+public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
 	private Container container;
 	
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
@@ -45,19 +47,14 @@ public class EntityWeaponRack extends Entity {
 	public Optional<Container> getContainer() {
 		return Optional.ofNullable(container);
 	}
-	
+
 	@Override
-	public boolean lootable() {
-		return true;
-	}
-	
-	@Override
-	public Optional<String> lootSuccessString() {
+	public Optional<String> getLootSuccessString() {
 		return Optional.of(String.format("You browse the %s.", getName(getDungeon().getPlayer(), false)));
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onWalk(EntityWalkedOnEvent e) {
+	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
 		}

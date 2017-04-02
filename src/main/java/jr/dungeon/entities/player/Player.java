@@ -7,19 +7,18 @@ import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
-import jr.dungeon.entities.events.EntityAttackedToHitRollEvent;
-import jr.dungeon.entities.events.EntityDeathEvent;
-import jr.dungeon.entities.events.EntityLevelledUpEvent;
+import jr.dungeon.entities.events.*;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
+import jr.dungeon.entities.player.events.PlayerDefaultEvents;
 import jr.dungeon.entities.player.roles.Role;
-import jr.dungeon.entities.player.visitors.*;
+import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
+import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.events.GameStartedEvent;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
-import jr.dungeon.tiles.Tile;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -39,7 +38,7 @@ public class Player extends EntityLiving {
 	private String name;
 	@Getter private Role role;
 	
-	@Getter @Setter private int energy;
+	@Getter private int energy;
 	@Getter private int maxEnergy;
 	@Getter private int chargingTurns = 0;
 	@Getter private Map<Character, Spell> knownSpells;
@@ -69,7 +68,7 @@ public class Player extends EntityLiving {
 		this.name = name;
 		this.role = role;
 		
-		nutrition = 1000;
+		nutrition = 1500;
 		maxHealth = getMaxHealth();
 		
 		energy = maxEnergy = role.getMaxEnergy();
@@ -96,6 +95,8 @@ public class Player extends EntityLiving {
 		
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
+		
+		dungeon.addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
@@ -126,7 +127,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public void charge(int amount) {
-		energy = Math.min(maxEnergy, energy + amount);
+		setEnergy(Math.min(maxEnergy, energy + amount));
 	}
 	
 	private void levelUpEnergy() {
@@ -136,6 +137,16 @@ public class Player extends EntityLiving {
 		
 		maxEnergy += gain;
 		charge(gain);
+	}
+	
+	public void setEnergy(int energy) {
+		int oldEnergy = this.energy;
+		this.energy = energy;
+		int newEnergy = this.energy;
+		
+		if (oldEnergy != newEnergy) {
+			getDungeon().triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
+		}
 	}
 	
 	public char getAvailableSpellLetter() {
@@ -150,7 +161,7 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public int getMovementSpeed() {
-		int speed = Dungeon.NORMAL_SPEED;
+		int speed = super.getMovementSpeed();
 		
 		if (hasStatusEffect(InjuredFoot.class)) {
 			speed -= 1;
@@ -159,7 +170,7 @@ public class Player extends EntityLiving {
 		if (hasStatusEffect(StrainedLeg.class)) {
 			speed -= 1;
 		}
-		
+
 		return speed;
 	}
 	
@@ -184,11 +195,11 @@ public class Player extends EntityLiving {
 	}
 	
 	public NutritionState getNutritionState() {
-		if (nutrition >= 1500) {
+		if (nutrition >= 2250) {
 			return NutritionState.CHOKING;
-		} else if (nutrition >= 1000) {
+		} else if (nutrition >= 1750) {
 			return NutritionState.STUFFED;
-		} else if (nutrition >= 600) {
+		} else if (nutrition >= 750) {
 			return NutritionState.NOT_HUNGRY;
 		} else if (nutrition >= 300) {
 			return NutritionState.HUNGRY;
@@ -262,6 +273,17 @@ public class Player extends EntityLiving {
 		);
 	}
 	
+	@DungeonEventHandler
+	private void onGameStarted(GameStartedEvent event) {
+		if (spendableSkillPoints > 0) {
+			getDungeon().greenYou(
+				"have %,d spendable skill point%s.",
+				spendableSkillPoints,
+				spendableSkillPoints == 1 ? "" : "s"
+			);
+		}
+	}
+	
 	@Override
 	public void update() {
 		super.update();
@@ -275,8 +297,15 @@ public class Player extends EntityLiving {
 		}
 	}
 	
+	@DungeonEventHandler(selfOnly = true)
+	public void onHealthChanged(EntityHealthChangedEvent event) {
+		if (event.getOldHealth() > event.getNewHealth()) {
+			getDungeon().markSomethingHappened();
+		}
+	}
+	
 	private void updateEnergy() {
-		energy = Math.max(0, Math.min(maxEnergy, energy));
+		setEnergy(Math.max(0, Math.min(maxEnergy, energy)));
 		
 		if (energy < maxEnergy) {
 			chargingTurns++;
@@ -421,7 +450,7 @@ public class Player extends EntityLiving {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDie(EntityDeathEvent e) {
+	public void onDie(EntityDeathEvent e) {
 		if (e.getDamageSource().getDeathString() != null) {
 			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
 		} else {
@@ -539,7 +568,6 @@ public class Player extends EntityLiving {
 		
 		// TODO: ranged and spell
 		
-		getDungeon().triggerEvent(new EntityAttackedToHitRollEvent(victim, victim.getX(), victim.getY(), roll, toHit));
 		return toHit > roll ? new Hit(HitType.SUCCESS, damage) : new Hit(HitType.MISS, damage);
 	}
 	

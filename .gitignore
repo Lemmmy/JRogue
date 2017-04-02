@@ -1,13 +1,16 @@
 *.iml
 *.ipr
+*.iws
 .idea/
 .gradle/
 out/
 build/
 classes/
 bin/
+docs/
 .settings/
 .project
 .classpath
 *.log
 proguard.map
+*.class

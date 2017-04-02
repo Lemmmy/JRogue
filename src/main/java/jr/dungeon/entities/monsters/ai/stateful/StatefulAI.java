@@ -3,14 +3,23 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,15 +28,22 @@ public class StatefulAI extends AI {
 	private AIState currentState;
 	
 	private EntityLiving currentTarget;
-	private int targetLastX, targetLastY;
+	private Point targetLastPos;
 	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private boolean shouldTargetPlayer = true;
 	private int visibilityRange = 15;
 	
+	private Map<Class<? extends AITrait>, AITrait> traits = new HashMap<>();
+	
+	private Set<Point> safePoints = new HashSet<>();
+	
 	public StatefulAI(Monster monster) {
 		super(monster);
+		
+		addTrait(new TraitIntrinsicFear(this));
+		addTrait(new TraitExtrinsicFear(this));
 	}
 	
 	@Override
@@ -43,6 +59,8 @@ public class StatefulAI extends AI {
 		if (currentState == null) {
 			currentState = defaultState;
 		}
+		
+		traits.values().forEach(AITrait::update);
 		
 		if (currentState != null) {
 			currentState.update();
@@ -109,8 +127,7 @@ public class StatefulAI extends AI {
 		}
 		
 		if (canSeeTarget()) {
-			targetLastX = getCurrentTarget().getX();
-			targetLastY = getCurrentTarget().getY();
+			targetLastPos = getCurrentTarget().getLastPosition();
 		}
 	}
 	
@@ -136,12 +153,23 @@ public class StatefulAI extends AI {
 		
 		if (currentTarget != null) {
 			obj.put("currentTarget", currentTarget.getUUID().toString());
-			obj.put("targetLastX", targetLastX);
-			obj.put("targetLastY", targetLastY);
+			obj.put("targetLastPos", targetLastPos);
 		}
 		
 		obj.put("shouldTargetPlayer", shouldTargetPlayer);
 		obj.put("visibilityRange", visibilityRange);
+		
+		JSONObject serialisedTraits = new JSONObject();
+		
+		traits.forEach((c, t) -> {
+			JSONObject serialisedTrait = new JSONObject();
+			t.serialise(serialisedTrait);
+			serialisedTraits.put(c.getName(), serialisedTrait);
+		});
+		
+		obj.put("traits", serialisedTraits);
+		
+		obj.put("safePoints", new JSONArray(safePoints));
 	}
 	
 	@Override
@@ -157,19 +185,87 @@ public class StatefulAI extends AI {
 		
 		if (obj.has("currentTarget")) {
 			currentTarget = (EntityLiving) getMonster().getLevel().getEntityStore().getEntityByUUID(obj.optString("currentTarget"));
-			targetLastX = obj.optInt("targetLastX");
-			targetLastY = obj.optInt("targetLastY");
+
+			if (obj.has("targetLastPos")) {
+				JSONObject serialisedPoint = obj.getJSONObject("targetLastPos");
+				targetLastPos = Point.getPoint(serialisedPoint.optInt("x"), serialisedPoint.optInt("y"));
+			}
 		}
 		
 		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
 		visibilityRange = obj.optInt("visibilityRange");
+		
+		if (obj.has("traits")) {
+			JSONObject serialisedTraits = obj.getJSONObject("traits");
+			
+			serialisedTraits.keySet().forEach(traitClassName -> {
+				JSONObject serialisedTrait = serialisedTraits.getJSONObject(traitClassName);
+				AITrait unserialisedTrait = AITrait.createFromJSON(traitClassName, serialisedTrait, this);
+				assert unserialisedTrait != null;
+				traits.put(unserialisedTrait.getClass(), unserialisedTrait);
+			});
+		}
+		
+		if (obj.has("safePoints")) {
+			obj.getJSONArray("safePoints").forEach(safePointObj -> {
+				JSONObject serialisedSafePoint = (JSONObject) safePointObj;
+				Point point = Point.getPoint(serialisedSafePoint.getInt("x"), serialisedSafePoint.getInt("y"));
+				safePoints.add(point);
+			});
+		}
 	}
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
 			.append(currentState == null ? "no state" : currentState.toString())
+			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
-			.toString();
+			.append("safePoints", safePoints.size())
+			.append("");
+		
+		traits.values().forEach(t -> tsb.append(t.toString()));
+		
+		return tsb.toString();
+	}
+	
+	@Override
+	public List<DungeonEventListener> getSubListeners() {
+		val subListeners = super.getSubListeners();
+		
+		subListeners.add(currentState);
+		subListeners.add(defaultState);
+		subListeners.addAll(traits.values());
+		
+		return subListeners;
+	}
+	
+	public void addSafePoint(Point p) {
+		safePoints.add(p);
+	}
+	
+	public Optional<Point> getSafePoint() {
+		if (currentTarget == null) {
+			return Optional.empty();
+		}
+		
+		int tx = currentTarget.getX();
+		int ty = currentTarget.getY();
+		
+		val ps = safePoints.stream()
+			.sorted(Comparator.comparingDouble(p -> Utils.chebyshevDistance(p.getX(), p.getY(), tx, ty)))
+			.collect(Collectors.toList());
+		
+		Collections.reverse(ps);
+		
+		return Optional.ofNullable(ps.get(0));
+	}
+	
+	public void addTrait(AITrait trait) {
+		traits.put(trait.getClass(), trait);
+	}
+	
+	public AITrait getTrait(Class<? extends AITrait> traitClass) {
+		return traits.get(traitClass);
 	}
 }

@@ -1,8 +1,9 @@
 package jr;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
-import jr.rendering.gdx.GDXRenderer;
+import jr.rendering.Renderer;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -28,20 +29,52 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class JRogue {
+	/**
+	 * Filename of the config file in the home folder.
+	 */
 	public static final String CONFIG_FILE_NAME = ".jroguerc";
 	
+	/**
+	 * Game version, assigned automatically based on Gradle output.
+	 */
 	public static String VERSION = "unknown";
+	/**
+	 * Build date, assigned automatically based on Gradle output.
+	 */
 	public static String BUILD_DATE = "unknown";
 	
 	@Getter
 	private static Reflections reflections;
 	
+	/**
+	 * The game's logger.
+	 */
 	@Getter
 	private static Logger logger;
 	
-	public Dungeon dungeon;
-	public jr.rendering.Renderer renderer;
+	/**
+	 * The user's {@link Settings}.
+	 */
+	@Getter
+	private static Settings settings;
 	
+	/**
+	 * The current {@link Dungeon}.
+	 */
+	public Dungeon dungeon;
+	/**
+	 * The {@link Renderer} instance.
+	 */
+	public Renderer renderer;
+	
+	/**
+	 * The time (in milliseconds) that the game was started.
+	 */
+	public static final long START_TIME = TimeUtils.millis();
+	
+	/**
+	 * @param settings The user's {@link Settings}.
+	 */
 	public JRogue(Settings settings) {
 		initialiseReflections();
 		
@@ -72,12 +105,15 @@ public class JRogue {
 		
 		reflections = new Reflections(cb);
 	}
-	
+
 	private void start(Settings settings) {
-		dungeon = Dungeon.load(settings);
-		renderer = new GDXRenderer(settings, dungeon); // TODO: Make this configurable
+		dungeon = Dungeon.load();
+		renderer = new Renderer(dungeon); // TODO: Make this configurable
 	}
 	
+	/**
+	 * @param args bbbbb
+	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -127,8 +163,6 @@ public class JRogue {
 		
 		String homeDirectory = System.getProperty("user.home");
 		File configFile = Paths.get(homeDirectory, CONFIG_FILE_NAME).toFile();
-
-		Settings settings;
 
 		if (cmd.hasOption("config")) {
 			settings = loadConfig(new File(cmd.getOptionValue("config")));

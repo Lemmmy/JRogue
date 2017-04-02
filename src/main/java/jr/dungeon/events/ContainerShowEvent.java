@@ -2,6 +2,7 @@ package jr.dungeon.events;
 
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.Container;
+import jr.dungeon.entities.interfaces.ContainerOwner;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,8 +14,11 @@ public class ContainerShowEvent extends DungeonEvent {
 	
 	public ContainerShowEvent(Entity containerEntity) {
 		this.containerEntity = containerEntity;
-		
-		containerEntity.getContainer().ifPresent(c -> container = c);
+
+		if (containerEntity instanceof ContainerOwner) {
+			ContainerOwner co = (ContainerOwner)containerEntity;
+			co.getContainer().ifPresent(c -> container = c);
+		}
 	}
 	
 	public ContainerShowEvent(Container container) {

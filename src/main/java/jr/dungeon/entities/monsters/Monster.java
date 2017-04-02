@@ -6,17 +6,18 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
-import jr.dungeon.entities.events.EntityKickedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.val;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class Monster extends EntityLiving {
 	private AI ai;
@@ -45,15 +46,15 @@ public abstract class Monster extends EntityLiving {
 	
 	@Override
 	public void update() {
-		super.update();
-		
 		if (ai != null) {
 			ai.update();
 		}
+		
+		super.update();
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onKick(EntityKickedEvent e) {
+	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
@@ -143,5 +144,17 @@ public abstract class Monster extends EntityLiving {
 		super.unserialise(obj);
 		
 		ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+	}
+	
+	@Override
+	public Set<DungeonEventListener> getSubListeners() {
+		val subListeners = super.getSubListeners();
+		
+		if (ai != null) {
+			subListeners.add(ai);
+			subListeners.addAll(ai.getSubListeners());
+		}
+		
+		return subListeners;
 	}
 }

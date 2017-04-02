@@ -4,23 +4,46 @@ import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
+import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
 
-public class ActionKick extends EntityAction {
+/**
+ * Kick action.
+ *
+ * @see Action
+ */
+public class ActionKick extends Action {
 	private final Integer[] direction;
 	private final Entity kickedEntity;
 	
+	/**
+	 * Kick action. Explicitly kicks a tile.
+	 *
+	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
+	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
 	public ActionKick(Integer[] direction, ActionCallback callback) {
+		// TODO: replace these silly Integer[] directions with arbitrary directions?
+		
 		this(direction, null, callback);
 	}
 	
+	/**
+	 * Kick action. Explicitly kicks an entity.
+	 *
+	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
+	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
+	 * @param kicked The entity that was kicked.
+	 * @param callback Callback to call when action-related events occur. See
+	 * {@link Action.ActionCallback}.
+	 */
 	public ActionKick(Integer[] direction, Entity kicked, ActionCallback callback) {
 		super(callback);
 		this.direction = direction;
@@ -98,62 +121,6 @@ public class ActionKick extends EntityAction {
 			return;
 		}
 		
-		if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
-			int damage = 1;
-			
-			if (isPlayer) {
-				Player player = (Player) kicker;
-				int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-				damage = RandomUtils.roll((int) Math.ceil(strength / 8) + 1);
-			}
-			
-			TileStateDoor doorState = (TileStateDoor) tile.getState();
-			
-			if (doorState.damage(damage) > 0) {
-				msg.logRandom(
-					"WHAMM!!",
-					"CRASH!!"
-				);
-			} else {
-				if (isPlayer) {
-					msg.logRandom(
-						"The door crashes open!",
-						"The door falls off its hinges!",
-						"You kick the door off its hinges!",
-						"You kick the door down!"
-					);
-				}
-			}
-		} else if (tileType.isWallTile()) {
-			if (isPlayer) {
-				msg.You("kick the wall!");
-			}
-			
-			if (RandomUtils.roll(5) == 1) {
-				if (isPlayer) {
-					Player player = (Player) kicker;
-					
-					if (player.getAttributes().getAttribute(Attribute.STRENGTH) >= 12) {
-						return;
-					}
-					
-					msg.logRandom(
-						"[RED]Ouch! That hurt a lot!",
-						"[RED]Ouch! That caused some bad damage to your foot!"
-					);
-				}
-				
-				kicker.damage(DamageSource.KICKING_A_WALL, 1, kicker);
-				kicker.addStatusEffect(new InjuredFoot(entity.getDungeon(), kicker, RandomUtils.roll(3, 6)));
-			} else {
-				if (isPlayer) {
-					msg.log("[ORANGE]Ouch! That hurt!");
-				}
-			}
-		} else {
-			if (isPlayer) {
-				msg.You("kick it!");
-			}
-		}
+		kicker.getDungeon().triggerEvent(new EntityKickedTileEvent(kicker, tile));
 	}
 }

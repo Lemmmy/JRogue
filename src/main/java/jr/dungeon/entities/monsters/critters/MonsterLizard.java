@@ -5,12 +5,12 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.GhoulAI;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 
 import java.util.List;
 
@@ -18,8 +18,9 @@ public class MonsterLizard extends Monster {
 	public MonsterLizard(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
 		
-		setAI(new GhoulAI(this));
-		((GhoulAI) getAI()).setAttackProbability(1f / 6f);
+		StatefulAI ai = new StatefulAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
 	@Override
@@ -108,7 +109,7 @@ public class MonsterLizard extends Monster {
 			getDungeon().getPlayer(),
 			DamageSource.SPIDER_BITE,
 			1,
-			(EntityAction.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
+			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));
 	}
 }

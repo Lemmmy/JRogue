@@ -266,6 +266,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		
 		try {
 			Class<? extends Spell> spellClass = RandomUtils.randomFrom(spells);
+			assert spellClass != null;
 			Constructor spellConstructor = spellClass.getConstructor();
 			spell = (Spell) spellConstructor.newInstance();
 			ItemStack stack = new ItemStack(this, 1);

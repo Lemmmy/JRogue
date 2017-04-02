@@ -7,6 +7,7 @@ import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityFountain;
+import jr.dungeon.entities.effects.*;
 import jr.dungeon.entities.magic.EntityAltar;
 import jr.dungeon.entities.monsters.canines.*;
 import jr.dungeon.entities.monsters.critters.MonsterLizard;
@@ -14,7 +15,6 @@ import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.entities.player.visitors.PlayerTeleport;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
@@ -63,19 +63,37 @@ public class Wishes {
 				.map(e -> (EntityLiving) e)
 				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
-		registerWish("downstairs", (d, p, a) ->
+		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
+		registerWish("(?:ds|downstairs)", (d, p, a) ->
 			Arrays.stream(p.getLevel().getTileStore().getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst()
-				.ifPresent(t -> p.defaultVisitors.teleport(t.getX(), t.getY())));
+				.ifPresent(t -> {
+					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.defaultVisitors.climbDown();
+				}));
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
 		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+
+		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
+		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
+		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
+
+
+		// Status effects
+		// NOTE: Please add a new wish here for any status effects you implement.
+		registerWish("paralysis", new WishEffect(Paralysis.class));
+		registerWish("food poisoning", new WishEffect(FoodPoisoning.class));
+		registerWish("injured foot", new WishEffect(InjuredFoot.class));
+		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
+		registerWish("strained leg", new WishEffect(StrainedLeg.class));
+		registerWish("fire", new WishEffect(Ablaze.class));
 
 		// Monsters
 		registerWish("jackal", new WishSpawn<>(MonsterJackal.class));

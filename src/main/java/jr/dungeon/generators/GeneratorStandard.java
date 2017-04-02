@@ -14,18 +14,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GeneratorStandard extends GeneratorRooms {
-	private static final double THRESHOLD_WATER_NOISE = 0.2;
-	private static final double THRESHOLD_WATER_NOISE_PUDDLE = 0.5;
-	private static final double SCALE_WATER_NOISE = 0.2;
+	protected double thresholdWaterNoise = 0.2;
+	protected double thresholdWaterNoisePuddle = 0.5;
+	protected double scaleWaterNoise = 0.2;
 	
-	private static final double PROBABILITY_FISH = 0.35;
-	private static final double PROBABILITY_PUFFERFISH = 0.15;
-	private static final int MIN_FISH_SWARMS = 10;
-	private static final int MAX_FISH_SWARMS = 25;
+	protected double probabilityFish = 0.35;
+	protected double probabilityPufferfish = 0.15;
+	protected int minFishSwarms = 10;
+	protected int maxFishSwarms = 25;
 	
-	private static final int SEWER_START_DEPTH = -3;
+	protected int sewerStartDepth = -3;
 	
-	private OpenSimplexNoise simplexNoise;
+	protected OpenSimplexNoise simplexNoise;
+	
+	protected boolean spawnSewers = true;
+	protected boolean spawnWater = true;
 	
 	public GeneratorStandard(Level level, Tile sourceTile) {
 		super(level, sourceTile);
@@ -55,37 +58,42 @@ public class GeneratorStandard extends GeneratorRooms {
 		
 		simplexNoise = new OpenSimplexNoise(rand.nextLong());
 		
-		addWaterBodies();
-		spawnFish();
-		
-		if (level.getDepth() == SEWER_START_DEPTH) {
-			addSewerStart();
+		if (spawnWater) {
+			addWaterBodies();
+			spawnFish();
 		}
+		
+		if (spawnSewers && level.getDepth() == sewerStartDepth) addSewerStart();
 		
 		return verify();
 	}
 	
-	@Override
-	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_TORCH_FIRE;
+	public TileType getPuddleTileType() {
+		return TileType.TILE_ROOM_PUDDLE;
+	}
+	
+	public TileType getGroundWaterTileType() {
+		return TileType.TILE_GROUND_WATER;
 	}
 	
 	private void addWaterBodies() {
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
-				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
+				double noise = simplexNoise.eval(x * scaleWaterNoise, y * scaleWaterNoise);
 				
-				if (noise > THRESHOLD_WATER_NOISE && (level.getTileStore()
-					.getTileType(x, y) == TileType.TILE_GROUND || level.getTileStore().getTileType(x, y) == TileType.TILE_ROOM_FLOOR)) {
-					if (level.getTileStore().getTileType(x, y) == TileType.TILE_ROOM_FLOOR && noise > THRESHOLD_WATER_NOISE_PUDDLE) {
-						level.getTileStore().setTileType(x, y, TileType.TILE_ROOM_PUDDLE);
+				if (noise > thresholdWaterNoise && (level.getTileStore()
+					.getTileType(x, y) == getGroundTileType() || level.getTileStore().getTileType(x, y) ==
+					getFloorTileType())
+				) {
+					if (level.getTileStore().getTileType(x, y) == getFloorTileType() && noise > thresholdWaterNoisePuddle) {
+						level.getTileStore().setTileType(x, y, getPuddleTileType());
 					} else {
 						TileType[] adjacentTiles = level.getTileStore().getAdjacentTileTypes(x, y);
 						
 						boolean skip = false;
 						
 						for (TileType tile : adjacentTiles) {
-							if (tile != null && tile != TileType.TILE_GROUND && tile != TileType.TILE_GROUND_WATER) {
+							if (tile != null && tile != getGroundTileType() && tile != getGroundWaterTileType()) {
 								skip = true;
 							}
 						}
@@ -94,7 +102,7 @@ public class GeneratorStandard extends GeneratorRooms {
 							continue;
 						}
 						
-						level.getTileStore().setTileType(x, y, TileType.TILE_GROUND_WATER);
+						level.getTileStore().setTileType(x, y, getGroundWaterTileType());
 					}
 				}
 			}
@@ -103,12 +111,12 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	private void spawnFish() {
 		Tile[] waterTiles = Arrays.stream(level.getTileStore().getTiles())
-			.filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
+			.filter(t -> t.getType() == getGroundWaterTileType())
 			.toArray(Tile[]::new);
 		
-		if (waterTiles.length < 5) { return; }
+		if (waterTiles.length < 5) return;
 		
-		int swarmCount = jrand.nextInt(MAX_FISH_SWARMS - MIN_FISH_SWARMS) + MIN_FISH_SWARMS;
+		int swarmCount = jrand.nextInt(maxFishSwarms - minFishSwarms) + minFishSwarms;
 		int colourCount = MonsterFish.FishColour.values().length;
 		
 		for (int i = 0; i < swarmCount; i++) {
@@ -119,8 +127,8 @@ public class GeneratorStandard extends GeneratorRooms {
 			
 			if (RandomUtils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
-					if (tile.getType() == TileType.TILE_GROUND_WATER &&
-						jrand.nextDouble() <= PROBABILITY_PUFFERFISH &&
+					if (tile.getType() == getGroundWaterTileType() &&
+						jrand.nextDouble() <= probabilityPufferfish &&
 						level.getEntityStore().getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 						
 						level.getEntityStore()
@@ -135,8 +143,8 @@ public class GeneratorStandard extends GeneratorRooms {
 				MonsterFish.FishColour fishColour2 = MonsterFish.FishColour.values()[f2];
 				
 				for (Tile tile : surroundingTiles) {
-					if (tile.getType() == TileType.TILE_GROUND_WATER &&
-						jrand.nextDouble() < PROBABILITY_FISH &&
+					if (tile.getType() == getGroundWaterTileType() &&
+						jrand.nextDouble() < probabilityFish &&
 						level.getEntityStore().getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
 						
 						MonsterFish.FishColour colour = rand.nextFloat() < 0.5f ? fishColour1 : fishColour2;
@@ -150,12 +158,13 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	private void addSewerStart() {
 		Room room = RandomUtils.randomFrom(rooms);
+		if (room == null) return;
 		
 		int ladderX = rand.nextInt(room.getWidth() - 2) + room.getX() + 1;
 		int ladderY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		Tile ladderTile = level.getTileStore().getTile(ladderX, ladderY);
-		ladderTile.setType(TileType.TILE_ROOM_LADDER_DOWN);
+		ladderTile.setType(TileType.TILE_LADDER_DOWN);
 		
 		if (ladderTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();

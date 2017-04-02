@@ -5,13 +5,16 @@ import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
 public class StateLurk extends AIState {
-	private int destX, destY;
+	private Point dest;
 	
 	public StateLurk(StatefulAI ai, int duration) {
 		super(ai, duration);
@@ -28,20 +31,26 @@ public class StateLurk extends AIState {
 		
 		Monster m = getAI().getMonster();
 		
-		if (m.getX() == destX && m.getY() == destY || m.getX() == m.getLastX() && m.getY() == m.getLastY()) {
-			Tile t = getRandomDestination();
-			destX = t.getX();
-			destY = t.getY();
+		if (dest == null) {
+			dest = getRandomDestination();
 		}
 		
-		getAI().moveTowards(destX, destY);
+		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
+			dest = getRandomDestination();
+			
+			Point safePoint = Point.getPoint(m.getX(), m.getY());
+			getAI().addSafePoint(safePoint);
+		}
+		
+		getAI().moveTowards(dest);
 	}
 	
-	private Tile getRandomDestination() {
+	private Point getRandomDestination() {
 		Monster m = getAI().getMonster();
 		
 		return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
+			.map(Tile::getPosition)
 			.collect(Collectors.toList()));
 	}
 	
@@ -49,15 +58,27 @@ public class StateLurk extends AIState {
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		
-		obj.put("destX", destX);
-		obj.put("destY", destY);
+		if (dest != null) {
+			obj.put("dest", new JSONObject().put("x", dest.getX()).put("y", dest.getY()));
+		}
 	}
 	
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 		
-		destX = obj.optInt("destX", destX);
-		destY = obj.optInt("destY", destY);
+		if (obj.has("dest")) {
+			JSONObject serialisedPoint = obj.getJSONObject("dest");
+			dest = Point.getPoint(serialisedPoint.optInt("x"), serialisedPoint.optInt("y"));
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("duration", getDuration())
+			.append("turnsTaken", getTurnsTaken())
+			.append("dest", dest)
+			.toString();
 	}
 }

@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.zombies;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.FoodPoisoning;
 import jr.dungeon.entities.effects.StatusEffect;
@@ -58,7 +57,7 @@ public abstract class MonsterZombie extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDamage(EntityDamagedEvent e) {
+	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom(
 			"It grunts.",
 			"It growls."

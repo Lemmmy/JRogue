@@ -8,15 +8,13 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Colour;
 import jr.utils.RandomUtils;
 
-import java.awt.*;
-
 public class EntityStrike extends EntityProjectile implements LightEmitter {
-	private static final Color LIGHT_COLOUR = new Color(0x75e5f6);
+	private static final Colour LIGHT_COLOUR = new Colour(0x75E5F6FF);
 	
 	public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
@@ -71,7 +69,7 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	public Color getLightColour() {
+	public Colour getLightColour() {
 		return LIGHT_COLOUR;
 	}
 	

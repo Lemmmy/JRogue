@@ -5,8 +5,8 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
@@ -129,7 +129,7 @@ public class MonsterGoblin extends Monster {
 			getDungeon().getPlayer(),
 			source,
 			RandomUtils.roll(3),
-			(EntityAction.CompleteCallback) entity -> getDungeon().orangeThe(
+			(Action.CompleteCallback) entity -> getDungeon().orangeThe(
 				"%s hits you with a dagger!",
 				getName(getDungeon().getPlayer(), false)
 			)

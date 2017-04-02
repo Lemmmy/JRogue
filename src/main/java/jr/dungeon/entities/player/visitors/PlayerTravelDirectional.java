@@ -1,13 +1,14 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
-import jr.dungeon.entities.actions.EntityAction;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
+import jr.utils.Point;
 import jr.utils.Utils;
 
 public class PlayerTravelDirectional implements PlayerVisitor {
@@ -47,14 +48,13 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 				break;
 			}
 			
-			int oldX = player.getX();
-			int oldY = player.getY();
+			Point oldPos = player.getPosition();
 			
 			pathTaken.addStep(destTile);
-			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new EntityAction.NoCallback()));
+			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new Action.NoCallback()));
 			player.getDungeon().turn();
 			
-			if (oldX == player.getX() && oldY == player.getY()) { // we didn't go anywhere, so stop
+			if (oldPos.equals(player.getPosition())) { // we didn't go anywhere, so stop
 				break;
 			}
 			

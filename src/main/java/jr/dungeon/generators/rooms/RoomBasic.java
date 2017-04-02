@@ -53,10 +53,12 @@ public class RoomBasic extends Room {
 			return TileType.TILE_ROOM_TORCH_FIRE;
 		}
 		
-		if (generator.getTorchTileType() == null) {
+		TileType torchType = generator.getTorchTileType();
+		
+		if (torchType == null || torchType == TileType.TILE_IDENTITY) {
 			return getWallTileType(generator);
 		} else {
-			return generator.getTorchTileType();
+			return torchType;
 		}
 	}
 }

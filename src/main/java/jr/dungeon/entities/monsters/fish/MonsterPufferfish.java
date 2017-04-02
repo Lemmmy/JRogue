@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.fish;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.Poison;
@@ -68,7 +67,7 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	protected void onDamage(EntityDamagedEvent e) {
+	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}
 	

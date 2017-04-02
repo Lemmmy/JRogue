@@ -1,9 +1,9 @@
 package jr.dungeon.entities.interfaces;
 
-import java.awt.*;
+import jr.utils.Colour;
 
 public interface LightEmitter {
-	Color getLightColour();
+	Colour getLightColour();
 	
 	int getLightIntensity();
 }
