@@ -51,6 +51,8 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	@Override
 	public boolean generate() {
+		level.setLevelName("Caves");
+		
 		airPass();
 		
 		for (int i = 0; i < 6; i++) {

@@ -9,7 +9,7 @@ public class PlayerClimbUp implements PlayerVisitor {
 	public void visit(Player player) {
 		Tile tile = player.getLevel().getTileStore().getTile(player.getX(), player.getY());
 		
-		if ((tile.getType().getFlags() & TileFlag.UP) == TileFlag.UP) {
+		if (!((tile.getType().getFlags() & TileFlag.UP) == TileFlag.UP)) {
 			player.getDungeon().log("[YELLOW]There is nothing to climb up here.[]");
 			return;
 		}

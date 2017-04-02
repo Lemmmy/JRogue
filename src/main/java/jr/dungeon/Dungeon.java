@@ -17,10 +17,7 @@ import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
-import jr.utils.OperatingSystem;
-import jr.utils.Persisting;
-import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
+import jr.utils.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -187,7 +184,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	/**
 	 * Randomly generates a level and switches the dungeon to it.
 	 */
-	public void generateLevel() {
+	public Level generateLevel() {
 		this.originalName = DungeonNameGenerator.generate();
 		this.name = this.originalName;
 		
@@ -217,6 +214,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		level.getEntityStore().addEntity(player);
 		
 		triggerEvent(new LevelChangeEvent(level));
+		
+		return level;
 	}
 
 	/**
@@ -269,7 +268,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			}
 		}
 		
-		dungeon.generateLevel();
+		Level firstLevel = dungeon.generateLevel();
+		dungeon.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
 		return dungeon;
 	}
 
@@ -412,6 +412,16 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		triggerEvent(new LevelChangeEvent(level));
 		
 		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e)));
+	}
+	
+	
+	/**
+	 * Switches the level to <code>level</code>.
+	 * @param level The level to switch to.
+	 * @param point The position to spawn the player at.
+	 */
+	public void changeLevel(Level level, Point point) {
+		changeLevel(level, point.getX(), point.getY());
 	}
 
 	/**

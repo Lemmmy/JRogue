@@ -9,7 +9,7 @@ public class PlayerClimbDown implements PlayerVisitor {
 	public void visit(Player player) {
 		Tile tile = player.getLevel().getTileStore().getTile(player.getX(), player.getY());
 		
-		if ((tile.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN) {
+		if (!((tile.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)) {
 			player.getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
 			return;
 		}

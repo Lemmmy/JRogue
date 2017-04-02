@@ -9,6 +9,7 @@ import jr.dungeon.tiles.Tile;
 import jr.utils.Persisting;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,10 @@ public class Level implements Serialisable, Persisting {
 	
 	private int spawnX;
 	private int spawnY;
+	
+	private long turnCreated;
+	
+	@Setter private String levelName;
 	
 	private TileStore tileStore;
 	private EntityStore entityStore;
@@ -81,6 +86,8 @@ public class Level implements Serialisable, Persisting {
 		monsterSpawner = new MonsterSpawner(this);
 
 		lightStore.initialiseLight();
+		
+		turnCreated = dungeon.getTurn();
 
 		persistence = new JSONObject();
 	}
@@ -150,6 +157,7 @@ public class Level implements Serialisable, Persisting {
 		obj.put("spawnX", getSpawnX());
 		obj.put("spawnY", getSpawnY());
 		obj.put("climate", getClimate().name());
+		obj.put("turnCreated", turnCreated);
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
@@ -169,6 +177,8 @@ public class Level implements Serialisable, Persisting {
 			spawnY = obj.getInt("spawnY");
 			
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
+			
+			turnCreated = obj.optInt("turnCreated", 0);
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
@@ -208,5 +218,10 @@ public class Level implements Serialisable, Persisting {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s %,d", levelName, depth);
 	}
 }

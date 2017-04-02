@@ -23,6 +23,7 @@ import jr.rendering.GameAdapter;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.ui.UISkin;
 import jr.rendering.ui.partials.ContainerPartial;
+import jr.rendering.ui.partials.DungeonOverviewPartial;
 import jr.rendering.utils.HUDUtils;
 
 public class DeathScreen extends ScreenAdapter {
@@ -93,7 +94,7 @@ public class DeathScreen extends ScreenAdapter {
 		});
 		
 		initScreenTab(container, screenTabs, "Dungeon", dungeonScreen = new Table());
-		initDungeonScreen(container);
+		initDungeonScreen(dungeonScreen);
 		
 		switchScreen(dungeonScreen);
 		screenTabs.getButtons().get(2).setChecked(true);
@@ -190,7 +191,11 @@ public class DeathScreen extends ScreenAdapter {
 	}
 	
 	private void initDungeonScreen(Table container) {
-	
+		container.debugAll();
+		DungeonOverviewPartial dungeonOverview = new DungeonOverviewPartial(skin, dungeon);
+		ScrollPane dungeonOverviewScrollPane = new ScrollPane(dungeonOverview, skin);
+		container.add(dungeonOverviewScrollPane).top().left().grow().row();
+		dungeonOverviewScrollPane.debugAll();
 	}
 	
 	private void initBottomButtons(Table container) {

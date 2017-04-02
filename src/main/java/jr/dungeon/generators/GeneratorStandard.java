@@ -52,6 +52,8 @@ public class GeneratorStandard extends GeneratorRooms {
 	
 	@Override
 	public boolean generate() {
+		level.setLevelName("Dungeon");
+		
 		if (!super.generate()) {
 			return false;
 		}
