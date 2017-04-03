@@ -1,5 +1,6 @@
 package jr.rendering.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
@@ -43,12 +44,17 @@ public class EntityRendererItem extends EntityRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 			
-			float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("offsetX", 0);
-			float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("offsetY", 0);
-			
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
 			if (renderer != null) {
+				float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
+				float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+				
+				float[] ac = getAnimationColour(entity);
+				
+				Color c = batch.getColor();
+				batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
+				
 				renderer.draw(
 					batch,
 					dungeon,
@@ -58,6 +64,8 @@ public class EntityRendererItem extends EntityRenderer {
 					(int) (y * height),
 					isDrawingReflection()
 				);
+				
+				batch.setColor(c);
 			}
 		}
 	}

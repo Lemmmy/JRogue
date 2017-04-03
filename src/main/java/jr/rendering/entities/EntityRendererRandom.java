@@ -1,15 +1,16 @@
 package jr.rendering.entities;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 
-public class EntityRendererRandom extends EntityRenderer {
+public class EntityRendererRandom extends EntityRendererBasic {
 	protected TextureRegion[] images;
 	private int count;
 	
 	public EntityRendererRandom(int sheetX, int sheetY, int count) {
+		super("textures/entities.png", sheetX, sheetY);
+		
 		images = new TextureRegion[count];
 		this.count = count;
 		
@@ -21,13 +22,5 @@ public class EntityRendererRandom extends EntityRenderer {
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
 		return images[entity.getVisualID() % count];
-	}
-	
-	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("offsetX", 0);
-		float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("offsetY", 0);
-		
-		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
 	}
 }

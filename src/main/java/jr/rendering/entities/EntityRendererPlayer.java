@@ -1,5 +1,6 @@
 package jr.rendering.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
@@ -31,14 +32,19 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getX() + (float) entity.getPersistence().optDouble("offsetX", 0);
-		float y = entity.getY() + (float) entity.getPersistence().optDouble("offsetY", 0);
+		float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
+		float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+		
+		float[] ac = getAnimationColour(entity);
 		
 		if (!isDrawingReflection()) {
 			drawEntity(batch, playerHighlight, x, y);
 		}
 		
+		Color c = batch.getColor();
+		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
 		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
+		batch.setColor(c);
 	}
 	
 	private TextureRegion getTextureFromPlayer(Player player) {

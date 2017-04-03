@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,15 +16,11 @@ public abstract class EntityAnimation {
 	private Entity entity;
 	
 	/**
-	 * Updates the animation. Set entity properties here.
+	 * Updates the animation.
 	 *
 	 * @param t The animation progress, between 0 and 1.
 	 */
-	public abstract void update(float t);
+	public abstract Map<String, Object> update(float t);
 	
-	public abstract void onTurnLerpStop();
-	
-	public void setOffset(float x, float y) {
-		entity.getPersistence().put("offsetX", x).put("offsetY", y);
-	}
+	public void onTurnLerpStop() {};
 }

@@ -25,11 +25,13 @@ public class EntityRendererFish extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("offsetX", 0);
-		float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("offsetY", 0);
+		float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
+		float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+		
+		float[] ac = getAnimationColour(entity);
 		
 		Color c = batch.getColor();
-		batch.setColor(c.r, c.g, c.b, 0.7f);
+		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3] * 0.7f);
 		drawEntity(batch, image, x, y);
 		batch.setColor(c);
 	}
