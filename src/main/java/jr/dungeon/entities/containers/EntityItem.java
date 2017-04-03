@@ -100,7 +100,7 @@ public class EntityItem extends Entity {
 			getDungeon().triggerEvent(new ItemDroppedEvent(this));
 			
 			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
-				.filter(e -> e != this)
+				.filter(e -> !e.equals(this))
 				.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
 		}
 	}
