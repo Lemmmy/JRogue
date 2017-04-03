@@ -96,11 +96,13 @@ public class EntityItem extends Entity {
 	
 	@DungeonEventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
-		getDungeon().triggerEvent(new ItemDroppedEvent(this));
-		
-		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
-			.filter(e -> e != this)
-			.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+		if (event.isNew()) {
+			getDungeon().triggerEvent(new ItemDroppedEvent(this));
+			
+			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
+				.filter(e -> e != this)
+				.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+		}
 	}
 	
 	@Override
