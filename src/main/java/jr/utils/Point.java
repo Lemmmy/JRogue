@@ -61,6 +61,13 @@ public class Point implements Pool.Poolable {
 		return this.x == x && this.y == y;
 	}
 	
+	public Point clampedDelta(Point point) {
+		return new Point(
+			Math.max(-1, Math.min(this.getX() - point.getX(), 1)),
+			Math.max(-1, Math.min(this.getY() - point.getY(), 1))
+		);
+	}
+	
 	@Override
 	public int hashCode() {
 		int result = x;

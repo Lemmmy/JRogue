@@ -66,11 +66,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 * visualID % 2.
 	 */
 	private int visualID;
-
-	/**
-	 * The system time recorded when the entity was first created, for use in special effects. (in millis)
-	 */
-	private long createTime;
 	
 	/**
 	 * Assigned by the {@link jr.dungeon.EntityStore} when the Entity is in the removal queue. Do not set this yourself,
@@ -133,7 +128,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		this.lastSeenY = y;
 		
 		this.visualID = RandomUtils.random(1000);
-		this.createTime = System.currentTimeMillis();
 	}
 
 	/**
@@ -243,7 +237,6 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		obj.put("lastSeenX", getLastSeenX());
 		obj.put("lastSeenY", getLastSeenY());
 		obj.put("visualID", getVisualID());
-		obj.put("createTime", getCreateTime());
 		
 		statusEffects.forEach(e -> {
 			JSONObject serialisedStatusEffect = new JSONObject();

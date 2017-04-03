@@ -180,7 +180,7 @@ public class Level implements Serialisable, Persisting {
 			JRogue.getLogger().error(e);
 		}
 		
-		dungeon.triggerEvent(new EntityAddedEvent(dungeon.getPlayer()));
+		dungeon.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
 
 		unserialisePersistence(obj);
 	}

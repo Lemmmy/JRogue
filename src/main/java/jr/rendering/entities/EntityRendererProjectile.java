@@ -1,5 +1,6 @@
 package jr.rendering.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
@@ -30,12 +31,17 @@ public class EntityRendererProjectile extends EntityRenderer {
 		int originY = height / 2;
 		float rotation = 0;
 		
+		float[] ac = getAnimationColour(entity);
+		
 		if (entity instanceof EntityProjectile) {
 			int dx = ((EntityProjectile) entity).getDeltaX();
 			int dy = ((EntityProjectile) entity).getDeltaY();
 			
 			rotation = (float) (Math.atan2(dy, dx) * (180 / Math.PI));
 		}
+		
+		Color c = batch.getColor();
+		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
 		
 		if (isDrawingReflection()) {
 			batch.draw(
@@ -56,5 +62,7 @@ public class EntityRendererProjectile extends EntityRenderer {
 				rotation
 			);
 		}
+		
+		batch.setColor(c);
 	}
 }
