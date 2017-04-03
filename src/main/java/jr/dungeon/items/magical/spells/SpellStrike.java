@@ -72,6 +72,7 @@ public class SpellStrike extends Spell {
 	private void splash(EntityLiving caster, int x, int y) {
 		caster.getLevel().getEntityStore().getEntities().stream()
 			.filter(e -> Utils.distance(x, y, e.getX(), e.getY()) <= getSplashRange())
+			.filter(EntityLiving.class::isInstance)
 			.map(e -> (EntityLiving) e)
 			.forEach(e -> e.damage(DamageSource.STRIKE_SPELL, getDamage(), caster));
 	}
