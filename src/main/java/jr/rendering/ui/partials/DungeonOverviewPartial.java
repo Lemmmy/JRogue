@@ -34,7 +34,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	}
 	
 	private Node analyseDungeon() {
-		UUID firstLevelUUID = UUID.fromString(dungeon.getPersistence().getString("firstLevel"));
+		UUID firstLevelUUID = UUID.fromString(dungeon.getSerialiser().getPersistence().getString("firstLevel"));
 		Level firstLevel = dungeon.getLevelFromUUID(firstLevelUUID);
 		
 		Node rootNode = new Node(firstLevel, null);
