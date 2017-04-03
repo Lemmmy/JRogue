@@ -10,9 +10,6 @@ import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;
 import jr.utils.VectorInt;
-import lombok.AccessLevel;
-import lombok.Value;
-import lombok.experimental.FieldDefaults;
 import lombok.val;
 
 import java.util.HashMap;
