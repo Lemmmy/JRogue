@@ -25,8 +25,8 @@ public class EntityRendererRandom extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("lerpX", 0);
-		float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("lerpY", 0);
+		float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("offsetX", 0);
+		float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("offsetY", 0);
 		
 		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
 	}

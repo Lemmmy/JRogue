@@ -6,22 +6,23 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
+import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.Renderer;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
+import jr.rendering.entities.animations.AnimationItemDrop;
+import jr.rendering.entities.animations.EntityAnimation;
+import jr.rendering.entities.animations.AnimationEntityMove;
 import jr.rendering.tiles.TileMap;
-import jr.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class EntityComponent extends RendererComponent {
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
@@ -29,6 +30,8 @@ public class EntityComponent extends RendererComponent {
 	private SpriteBatch mainBatch;
 	
 	private Level level;
+	
+	private List<EntityAnimation> entityAnimations = new ArrayList<>();
 	
 	public EntityComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -112,25 +115,13 @@ public class EntityComponent extends RendererComponent {
 				
 				float t = lerpTime / lerpDuration;
 				
-				level.getEntityStore().getEntities().forEach(e -> {
-					float dx = (float) e.getPersistence().optDouble("lerpDX", 0);
-					float dy = (float) e.getPersistence().optDouble("lerpDY", 0);
-					
-					float x = Utils.easeInOut(t, -dx, dx, 1);
-					float y = Utils.easeInOut(t, -dy, dy, 1);
-					
-					e.getPersistence().put("lerpX", x);
-					e.getPersistence().put("lerpY", y);
-					
-					entityParticleCheck(e);
+				entityAnimations.forEach(anim -> {
+					anim.update(t);
+					entityParticleCheck(anim.getEntity());
 				});
-			} else {
-				level.getEntityStore().getEntities().forEach(e -> {
-					e.getPersistence().put("lerpDX", 0);
-					e.getPersistence().put("lerpDY", 0);
-					e.getPersistence().put("lerpX", 0);
-					e.getPersistence().put("lerpY", 0);
-				});
+			} else if (renderer.isWasTurnLerping()) {
+				entityAnimations.forEach(EntityAnimation::onTurnLerpStop);
+				entityAnimations.clear();
 			}
 		}
 	}
@@ -140,11 +131,18 @@ public class EntityComponent extends RendererComponent {
 		
 	}
 	
+	// TODO: when gamestates is merged here, make this high priority?
+	@DungeonEventHandler
+	private void onBeforeTurn(BeforeTurnEvent e) {
+		entityAnimations.clear();
+	}
+	
 	@DungeonEventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		
 		entityPooledEffects.clear();
+		entityAnimations.clear();
 	}
 	
 	@DungeonEventHandler
@@ -206,8 +204,8 @@ public class EntityComponent extends RendererComponent {
 					return;
 				}
 				
-				float lerpX = (float) entity.getPersistence().optDouble("lerpX", 0);
-				float lerpY = (float) entity.getPersistence().optDouble("lerpY", 0);
+				float lerpX = (float) entity.getPersistence().optDouble("offsetX", 0);
+				float lerpY = (float) entity.getPersistence().optDouble("offsetY", 0);
 				
 				e.getPooledEffect().setPosition(
 					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + lerpX,
@@ -217,20 +215,27 @@ public class EntityComponent extends RendererComponent {
 		}
 	}
 	
-	private void entityBeginLerp(EntityMovedEvent event) {
-		int dx = event.getLastX() - event.getNewX();
-		int dy = event.getLastY() - event.getNewY();
+	private void entityBeginLerp(EntityMovedEvent e) {
+		int dx = e.getNewX() - e.getLastX();
+		int dy = e.getNewY() - e.getLastY();
 		
-		event.getEntity().getPersistence().put("lerpDX", -dx);
-		event.getEntity().getPersistence().put("lerpDY", -dy);
-		
-		event.getEntity().getPersistence().put("lerpX", -dx);
-		event.getEntity().getPersistence().put("lerpY", -dy);
+		addAnimation(new AnimationEntityMove(renderer, e.getEntity(), dx, dy));
 	}
 	
 	@DungeonEventHandler
 	private void onEntityRemoved(EntityRemovedEvent event) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
+	}
+	
+	@DungeonEventHandler
+	private void onItemDropped(EntityAddedEvent e) {
+		if (!(e.getEntity() instanceof EntityItem)) return;
+		
+		addAnimation(new AnimationItemDrop(renderer, e.getEntity()));
+	}
+
+	public void addAnimation(EntityAnimation animation) {
+		entityAnimations.add(animation);
 	}
 	
 	@Override

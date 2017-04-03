@@ -31,8 +31,8 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getX() + (float) entity.getPersistence().optDouble("lerpX", 0);
-		float y = entity.getY() + (float) entity.getPersistence().optDouble("lerpY", 0);
+		float x = entity.getX() + (float) entity.getPersistence().optDouble("offsetX", 0);
+		float y = entity.getY() + (float) entity.getPersistence().optDouble("offsetY", 0);
 		
 		if (!isDrawingReflection()) {
 			drawEntity(batch, playerHighlight, x, y);

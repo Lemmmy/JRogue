@@ -3,6 +3,7 @@ package jr.rendering.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityItem;
@@ -42,6 +43,9 @@ public class EntityRendererItem extends EntityRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 			
+			float x = entity.getLastSeenX() + (float) entity.getPersistence().optDouble("offsetX", 0);
+			float y = entity.getLastSeenY() + (float) entity.getPersistence().optDouble("offsetY", 0);
+			
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
 			if (renderer != null) {
@@ -50,9 +54,8 @@ public class EntityRendererItem extends EntityRenderer {
 					dungeon,
 					item.getItemStack(),
 					item.getItem(),
-					entity.getLastSeenX() * width,
-					entity.getLastSeenY() * height + 1
-						- (int)(8 * Math.sin(Math.min(System.currentTimeMillis() - entity.getCreateTime(), 225) / 75)),
+					(int) (x * width),
+					(int) (y * height),
 					isDrawingReflection()
 				);
 			}

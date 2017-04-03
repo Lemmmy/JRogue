@@ -86,6 +86,7 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 	private float renderTime;
 	
 	private float turnLerpTime;
+	private boolean wasTurnLerping = false;
 	private boolean turnLerping = false;
 	
 	@Getter(AccessLevel.NONE)
@@ -201,8 +202,8 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 		Player p = dungeon.getPlayer();
 		
 		if (p != null && !settings.isShowLevelDebug()) {
-			float worldX = p.getX() + (float) p.getPersistence().optDouble("lerpX", 0);
-			float worldY = p.getY() + (float) p.getPersistence().optDouble("lerpY", 0);
+			float worldX = p.getX() + (float) p.getPersistence().optDouble("offsetX", 0);
+			float worldY = p.getY() + (float) p.getPersistence().optDouble("offsetY", 0);
 			
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
 			float camY = worldY * TileMap.TILE_HEIGHT;
@@ -228,6 +229,9 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 		if (turnLerpTime >= TURN_LERP_DURATION) {
 			turnLerping = false;
 			turnLerpTime = 0;
+			wasTurnLerping = true;
+		} else {
+			wasTurnLerping = false;
 		}
 		
 		if (!settings.isShowTurnAnimations()) {
