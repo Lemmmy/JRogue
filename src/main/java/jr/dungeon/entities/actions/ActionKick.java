@@ -122,6 +122,6 @@ public class ActionKick extends Action {
 			return;
 		}
 		
-		kicker.getDungeon().triggerEvent(new EntityKickedTileEvent(kicker, tile));
+		kicker.getDungeon().getEventSystem().triggerEvent(new EntityKickedTileEvent(kicker, tile));
 	}
 }

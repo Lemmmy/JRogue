@@ -67,7 +67,7 @@ public class Player extends EntityLiving {
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
 		
-		dungeon.addListener(new PlayerDefaultEvents());
+		dungeon.getEventSystem().addListener(new PlayerDefaultEvents());
 	}
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
@@ -109,7 +109,7 @@ public class Player extends EntityLiving {
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 		
-		dungeon.addListener(new PlayerDefaultEvents());
+		dungeon.getEventSystem().addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
@@ -158,7 +158,8 @@ public class Player extends EntityLiving {
 		int newEnergy = this.energy;
 		
 		if (oldEnergy != newEnergy) {
-			getDungeon().triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
+			getDungeon().getEventSystem()
+				.triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
 		}
 	}
 	

@@ -92,7 +92,8 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		int newHealth = this.health;
 		
 		if (oldHealth != newHealth) {
-			getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+			getDungeon().getEventSystem()
+				.triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
 		}
 	}
 	
@@ -124,7 +125,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 				
 				xpForLevel = getXPForLevel(experienceLevel);
 				
-				getDungeon().triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
+				getDungeon().getEventSystem().triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
 			}
 		}
 	}
@@ -300,7 +301,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
+		getDungeon().getEventSystem().triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
 		
 		if (health <= 0) {
 			kill(damageSource, damage);
@@ -317,7 +318,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		health = 0;
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDeathEvent(this, damageSource, damage));
+		getDungeon().getEventSystem().triggerEvent(new EntityDeathEvent(this, damageSource, damage));
 		
 		getLevel().getEntityStore().removeEntity(this);
 	}

@@ -110,7 +110,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	public GameScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
 		this.dungeon = dungeon;
-		this.dungeon.addListener(this);
+		this.dungeon.getEventSystem().addListener(this);
 
 		settings = JRogue.getSettings();
 		
@@ -166,7 +166,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		rendererComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
 		
 		rendererComponents.forEach(r -> r.setCamera(camera));
-		rendererComponents.forEach(r -> dungeon.addListener(r));
+		rendererComponents.forEach(r -> dungeon.getEventSystem().addListener(r));
 		rendererComponents.forEach(RendererComponent::initialise);
 		
 		for (TileMap tmap : TileMap.values()) {

@@ -63,7 +63,8 @@ public class PlayerWalk implements PlayerVisitor {
 		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
 			player.setAction(new ActionMove(x, y, new Action.NoCallback()));
 		} else {
-			player.getDungeon().triggerEvent(new PlayerWalkedIntoSolidEvent(player, tile, x, y, dx, dy));
+			player.getDungeon().getEventSystem()
+				.triggerEvent(new PlayerWalkedIntoSolidEvent(player, tile, x, y, dx, dy));
 		}
 	}
 }

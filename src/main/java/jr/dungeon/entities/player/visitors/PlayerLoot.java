@@ -35,7 +35,7 @@ public class PlayerLoot implements PlayerVisitor {
 			}
 
 			l.getLootSuccessString().ifPresent(s -> player.getDungeon().log(s));
-			player.getDungeon().triggerEvent(new ContainerShowEvent(containerEntity));
+			player.getDungeon().getEventSystem().triggerEvent(new ContainerShowEvent(containerEntity));
 		} else {
 			player.getDungeon().yellowYou("can't loot that!");
 		}

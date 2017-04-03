@@ -76,6 +76,6 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			}
 		});
 		
-		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
+		player.getDungeon().getEventSystem().triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

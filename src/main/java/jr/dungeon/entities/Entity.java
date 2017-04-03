@@ -178,7 +178,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		setX(x);
 		setY(y);
 		
-		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+		dungeon.getEventSystem().triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
 	}
 	
 	/**
@@ -223,7 +223,9 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 			if (effect.getDuration() >= 0 && effect.getTurnsPassed() >= effect.getDuration()) {
 				effect.onEnd();
 				iterator.remove();
-				dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED));
+				dungeon.getEventSystem()
+					.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED)
+					);
 			}
 		}
 	}
@@ -310,7 +312,9 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
-		dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED));
+		dungeon.getEventSystem()
+			.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED)
+			);
 	}
 
 	/**
@@ -328,7 +332,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 * @param dy The y direction to kick in.
 	 */
 	public void kick(EntityLiving kicker, int dx, int dy) {
-		getDungeon().triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
+		getDungeon().getEventSystem().triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
 	}
 
 	/**
@@ -336,7 +340,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 * @param walker The entity walking on top of this entity.
 	 */
 	public void walk(EntityLiving walker) {
-		getDungeon().triggerEvent(new EntityWalkedOnEvent(this, walker));
+		getDungeon().getEventSystem().triggerEvent(new EntityWalkedOnEvent(this, walker));
 	}
 
 	/**
@@ -344,7 +348,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 * @param teleporter The entity to teleport to.
 	 */
 	public void teleport(EntityLiving teleporter) {
-		getDungeon().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
+		getDungeon().getEventSystem().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
 
 	/**

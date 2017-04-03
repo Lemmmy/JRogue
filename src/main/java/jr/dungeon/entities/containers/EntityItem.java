@@ -97,11 +97,11 @@ public class EntityItem extends Entity {
 	@EventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
 		if (event.isNew()) {
-			getDungeon().triggerEvent(new ItemDroppedEvent(this));
+			getDungeon().getEventSystem().triggerEvent(new ItemDroppedEvent(this));
 			
 			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
 				.filter(e -> !e.equals(this))
-				.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+				.forEach(e -> getDungeon().getEventSystem().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
 		}
 	}
 	
