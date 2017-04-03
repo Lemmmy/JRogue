@@ -1,8 +1,10 @@
 package jr.rendering.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityItem;
@@ -45,15 +47,25 @@ public class EntityRendererItem extends EntityRenderer {
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
 			if (renderer != null) {
+				float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
+				float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+				
+				float[] ac = getAnimationColour(entity);
+				
+				Color c = batch.getColor();
+				batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
+				
 				renderer.draw(
 					batch,
 					dungeon,
 					item.getItemStack(),
 					item.getItem(),
-					entity.getLastSeenX() * width,
-					entity.getLastSeenY() * height,
+					(int) (x * width),
+					(int) (y * height),
 					isDrawingReflection()
 				);
+				
+				batch.setColor(c);
 			}
 		}
 	}
