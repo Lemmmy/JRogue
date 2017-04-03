@@ -6,11 +6,9 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.events.EntityAddedEvent;
-import jr.dungeon.entities.events.EntityMovedEvent;
-import jr.dungeon.entities.events.EntityRemovedEvent;
-import jr.dungeon.entities.events.ItemDroppedEvent;
+import jr.dungeon.entities.events.*;
 import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
@@ -18,6 +16,7 @@ import jr.rendering.Renderer;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
+import jr.rendering.entities.animations.AnimationChestKick;
 import jr.rendering.entities.animations.AnimationItemDrop;
 import jr.rendering.entities.animations.EntityAnimation;
 import jr.rendering.entities.animations.AnimationEntityMove;
@@ -231,6 +230,13 @@ public class EntityComponent extends RendererComponent {
 	@DungeonEventHandler
 	private void onItemDropped(ItemDroppedEvent e) {
 		addAnimation(new AnimationItemDrop(renderer, e.getItemEntity()));
+	}
+	
+	@DungeonEventHandler
+	private void onChestKicked(EntityKickedEntityEvent e) {
+		if (e.getVictim() instanceof EntityChest) {
+			addAnimation(new AnimationChestKick(renderer, e.getVictim()));
+		}
 	}
 
 	public void addAnimation(EntityAnimation animation) {
