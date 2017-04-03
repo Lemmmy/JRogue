@@ -30,7 +30,7 @@ public class EntityComponent extends RendererComponent {
 	
 	private Level level;
 	
-	private List<EntityAnimation> entityAnimations = new ArrayList<>();
+	private List<EntityAnimation> entityAnimations = new LinkedList<>();
 	private Map<Entity, Map<String, Object>> animationValues = new HashMap<>();
 	
 	public EntityComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
