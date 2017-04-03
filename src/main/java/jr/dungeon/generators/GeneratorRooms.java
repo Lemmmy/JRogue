@@ -112,7 +112,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	/**
 	 * Probability of a pile of gold spawning in any room.
 	 */
-	private static final double PROBABILITY_GOLD_DROP = 1;
+	private static final double PROBABILITY_GOLD_DROP = 0.08;
 	
 	/**
 	 * {@link WeightedCollection Weighted probability} of the count of special features in on level.
