@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.generators.Climate;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.entities.EntityMap;
@@ -67,6 +68,14 @@ public class TileRendererReflective extends TileRendererBasic {
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()).shouldBeReflected(e))
 			.forEach(e -> {
+				if (
+					!e.isStatic() &&
+					e.getLevel().getVisibilityStore().isTileInvisible(e.getPosition()) &&
+					!(e.getLevel().getClimate() == Climate.__)
+				) {
+					return;
+				}
+				
 				EntityRenderer r = EntityMap.getRenderer(e.getAppearance());
 				r.setDrawingReflection(true);
 				r.draw(batch, dungeon, e);

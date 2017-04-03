@@ -27,13 +27,24 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
 
 task createProperties(dependsOn: processResources) {
-	if (new File("$buildDir/resources/main").exists()) {
-		new File("$buildDir/resources/main/version.properties").withWriter { w ->
-			Properties p = new Properties()
-			p["version"] = project.version.toString()
-			p["buildDate"] = new Date().toString()
-			p.store w, null
+	file("$buildDir/tmp").mkdirs()
+	file("$buildDir/tmp/version.properties").createNewFile()
+	file("$buildDir/tmp/version.properties").withWriter { w ->
+		Properties p = new Properties()
+		p["version"] = project.version.toString()
+		p["buildDate"] = new Date().toString()
+
+		["buildRevision", "buildBranch", "buildNumber"].each {
+			if (project.hasProperty(it)) {
+				p[it] = project.getProperty(it)
+			}
 		}
+
+		if (project.hasProperty("buildRevision")) {
+			p["buildRevision"] = project.getProperty("buildRevision")
+		}
+
+		p.store w, null
 	}
 }
 
@@ -59,6 +70,8 @@ dependencies {
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.1"
 	compile group: "org.json", name: "json", version: "20160810"
 	compile group: "org.reflections", name: "reflections", version: "0.9.10"
+
+	compile group: "org.fusesource.jansi", name: "jansi", version: "1.8"
 
 	compile "com.badlogicgames.gdx:gdx:1.9.5"
 	compile "com.badlogicgames.gdx:gdx-freetype:1.9.5"
@@ -97,6 +110,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	baseName = jarName + "-full"
 
+	from file("$buildDir/tmp/version.properties")
 	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)
@@ -112,7 +126,7 @@ javadoc {
 	title = "JRogue API Documentation"
 
 	if (project.hasProperty("javadocDir")) {
-		destinationDir = file(project.getProperty("javadocDir"));
+		destinationDir = file(project.getProperty("javadocDir"))
 	} else {
 		destinationDir = file("docs/")
 	}

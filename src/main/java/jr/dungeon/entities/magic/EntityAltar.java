@@ -29,6 +29,11 @@ public class EntityAltar extends Entity {
 		return EntityAppearance.APPEARANCE_ALTAR;
 	}
 	
+	@Override
+	public boolean isStatic() {
+		return true;
+	}
+	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		// TODO: player alignment and luck penalty
