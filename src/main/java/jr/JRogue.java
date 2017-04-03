@@ -13,6 +13,7 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.fusesource.jansi.AnsiConsole;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -154,7 +155,9 @@ public class JRogue {
 		logger.info("---- Game started ----");
 		logger.info("JRogue {} - Build Information:", VERSION);
 		logger.info("Build #{}, built {} - Branch: {} rev {}", BUILD_NUMBER, BUILD_DATE, BUILD_BRANCH, BUILD_HASH);
-
+		
+		AnsiConsole.systemInstall();
+		
 		Options opts = new Options();
 		
 		opts.addOption("h", "help", false, "Shows the help information");

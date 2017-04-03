@@ -29,8 +29,8 @@ task createProperties(dependsOn: processResources) {
 		p["buildDate"] = new Date().toString()
 
 		["buildRevision", "buildBranch", "buildNumber"].each {
-			if (project.hasProperty(prop)) {
-				p[prop] = project.getProperty(prop);
+			if (project.hasProperty(it)) {
+				p[it] = project.getProperty(it);
 			}
 		}
 
@@ -64,6 +64,8 @@ dependencies {
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.1"
 	compile group: "org.json", name: "json", version: "20160810"
 	compile group: "org.reflections", name: "reflections", version: "0.9.10"
+
+	compile group: "org.fusesource.jansi", name: "jansi", version: "1.8"
 
 	compile "com.badlogicgames.gdx:gdx:1.9.5"
 	compile "com.badlogicgames.gdx:gdx-freetype:1.9.5"

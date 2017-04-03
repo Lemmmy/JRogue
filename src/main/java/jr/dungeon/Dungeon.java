@@ -22,6 +22,7 @@ import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Range;
+import org.fusesource.jansi.AnsiConsole;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -36,6 +37,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 
 /**
  * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
