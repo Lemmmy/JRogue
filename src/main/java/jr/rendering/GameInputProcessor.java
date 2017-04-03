@@ -47,7 +47,7 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.read(), 'r');
 		registerKeyMapping(dungeon::saveAndQuit, 'S');
 		registerKeyMapping(p -> p.defaultVisitors.throwItem(), 't');
-		registerKeyMapping(p -> p.defaultVisitors.wield());
+		registerKeyMapping(p -> p.defaultVisitors.wield(), 'w');
 		registerKeyMapping(Player::swapHands, 'x');
 		registerKeyMapping(() -> renderer.getHudComponent().showSpellWindow(), 'Z');
 		registerKeyMapping(p -> p.defaultVisitors.pickup(), ',');
