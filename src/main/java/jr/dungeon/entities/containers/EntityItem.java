@@ -7,8 +7,9 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.MercuryPoisoning;
 import jr.dungeon.entities.events.EntityAddedEvent;
-import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
+import jr.dungeon.entities.events.ItemDroppedEvent;
+import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -95,9 +96,13 @@ public class EntityItem extends Entity {
 	
 	@EventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
-		getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
-			.filter(e -> e != this)
-			.forEach(e -> getDungeon().triggerEvent(new EntityItemDroppedOnEvent(e, this)));
+		if (event.isNew()) {
+			getDungeon().triggerEvent(new ItemDroppedEvent(this));
+			
+			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
+				.filter(e -> !e.equals(this))
+				.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+		}
 	}
 	
 	@Override

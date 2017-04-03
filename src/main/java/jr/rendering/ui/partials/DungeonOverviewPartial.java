@@ -1,6 +1,9 @@
 package jr.rendering.ui.partials;
 
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileFlag;
@@ -8,7 +11,6 @@ import jr.dungeon.tiles.states.TileStateClimbable;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DungeonOverviewPartial extends WidgetGroup {

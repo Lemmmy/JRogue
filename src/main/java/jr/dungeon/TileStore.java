@@ -15,8 +15,6 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Getter
 public class TileStore implements Serialisable {

@@ -17,9 +17,9 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.rendering.GameAdapter;
 import jr.rendering.GameInputProcessor;
-import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
+import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.FontLoader;
 import jr.rendering.utils.ImageLoader;
@@ -27,6 +27,7 @@ import jr.rendering.utils.ShaderLoader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -90,6 +91,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	private float renderTime;
 	
 	private float turnLerpTime;
+	private boolean wasTurnLerping = false;
 	private boolean turnLerping = false;
 	
 	@Getter(AccessLevel.NONE)
@@ -194,8 +196,15 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		Player p = dungeon.getPlayer();
 		
 		if (p != null && !settings.isShowLevelDebug()) {
-			float worldX = p.getX() + (float) p.getPersistence().optDouble("lerpX", 0);
-			float worldY = p.getY() + (float) p.getPersistence().optDouble("lerpY", 0);
+			float worldX = p.getX();
+			float worldY = p.getY();
+			
+			if (p.getPersistence().has("animationData")) {
+				JSONObject ad = p.getPersistence().getJSONObject("animationData");
+				
+				worldX = p.getX() + (float) ad.optDouble("cameraX", 0);
+				worldY = p.getY() + (float) ad.optDouble("cameraY", 0);
+			}
 			
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
 			float camY = worldY * TileMap.TILE_HEIGHT;
@@ -217,6 +226,9 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		if (turnLerpTime >= TURN_LERP_DURATION) {
 			turnLerping = false;
 			turnLerpTime = 0;
+			wasTurnLerping = true;
+		} else {
+			wasTurnLerping = false;
 		}
 		
 		if (!settings.isShowTurnAnimations()) {

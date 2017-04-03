@@ -17,10 +17,10 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
 import jr.rendering.GameAdapter;
+import jr.rendering.entities.RoleMap;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.ui.UISkin;
 import jr.rendering.ui.partials.AttributesPartial;
-import jr.rendering.entities.RoleMap;
 import org.apache.commons.lang3.StringUtils;
 
 public class CharacterCreationScreen extends ScreenAdapter {

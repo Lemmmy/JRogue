@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
-import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.screens.GameScreen;
+import jr.rendering.ui.partials.ContainerPartial;
 import lombok.val;
 
 public class ContainerWindow extends PopupWindow {

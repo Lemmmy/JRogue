@@ -6,9 +6,9 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
+import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -52,7 +52,7 @@ public class EntityAltar extends Entity {
 	}
 	
 	@EventHandler(selfOnly = true)
-	public void onItemDropped(EntityItemDroppedOnEvent e) {
+	public void onItemDropped(ItemDroppedOnEntityEvent e) {
 		EntityItem itemEntity = e.getItemEntity();
 		Item item = e.getItem();
 		ItemStack itemStack = e.getItemStack();

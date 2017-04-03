@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.StatsPartial;
-import jr.rendering.screens.GameScreen;
 import lombok.val;
 
 public class PlayerWindow extends PopupWindow {
