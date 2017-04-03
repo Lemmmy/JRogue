@@ -18,10 +18,8 @@ import lombok.Setter;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import javax.swing.*;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -30,7 +28,7 @@ import java.util.zip.GZIPOutputStream;
  * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
  * levels, and player.
  */
-public class Dungeon implements Messenger, Serialisable, Persisting {
+public class Dungeon implements Messenger {
 	/**
 	 * The amount of 'ticks' in a turn.
 	 *
@@ -67,11 +65,11 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	/**
 	 * Map of the Dungeon's {@link Level}s with unique UUIDs as keys for serialisation reference.
 	 */
-	private Map<UUID, Level> levels = new HashMap<>();
+	@Getter private Map<UUID, Level> levels = new HashMap<>();
 	/**
 	 * The {@link Level} that the {@link Player} is currently on.
 	 */
-	@Getter private Level level;
+	@Getter Level level;
 	/**
 	 * The actual {@link Player} entity.
 	 */
@@ -80,6 +78,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	@Getter private EventSystem eventSystem;
 	
 	@Getter private TurnSystem turnSystem;
+	
+	@Getter private DungeonSerialiser serialiser;
 	
 	/**
 	 * @see Prompt
@@ -92,16 +92,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	private Settings settings;
 	
-	/**
-	 * The directory in which user data is saved, including saves and bones.
-	 */
-	private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
-	
-	/**
-	 * Persistent object for user-defined keys, typically for use by mods or the renderer.
-	 */
-	private final JSONObject persistence = new JSONObject();
-	
 	private List<String> logHistory = new LinkedList<>();
 	
 	/**
@@ -111,6 +101,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public Dungeon() {
 		this.settings = JRogue.getSettings();
 		
+		serialiser = new DungeonSerialiser(this);
 		eventSystem = new EventSystem(this);
 		turnSystem = new TurnSystem(this);
 		
@@ -148,6 +139,43 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		Level level = new Level(UUID.randomUUID(), this, LEVEL_WIDTH, LEVEL_HEIGHT, depth);
 		levels.put(level.getUUID(), level);
 		level.generate(sourceTile, generatorClass);
+		return level;
+	}
+	
+	/**
+	 * Randomly generates a level and switches the dungeon to it.
+	 */
+	public Level generateFirstLevel() {
+		this.originalName = DungeonNameGenerator.generate();
+		this.name = this.originalName;
+		
+		if (level != null) {
+			level.getEntityStore().removeEntity(player);
+		} else {
+			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+			levels.put(level.getUUID(), level);
+		}
+		
+		level.generate(null, GeneratorStandard.class);
+		
+		if (player == null) {
+			player = new Player(
+				this,
+				level,
+				level.getSpawnX(),
+				level.getSpawnY(),
+				settings.getPlayerName(),
+				settings.getRole()
+			);
+		} else {
+			player.setPosition(level.getSpawnX(), level.getSpawnY());
+		}
+		
+		player.setLevel(level);
+		level.getEntityStore().addEntity(player);
+		
+		eventSystem.triggerEvent(new LevelChangeEvent(level));
+		
 		return level;
 	}
 
@@ -283,14 +311,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public Level getLevelFromUUID(UUID uuid) {
 		return levels.get(uuid);
 	}
-
-	/**
-	 * @return A JSONObject that persists across game sessions.
-	 */
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
 	
 	/**
 	 * Triggers the "Really quit without saving?" prompt.
@@ -306,7 +326,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'y') {
-					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+					File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
 					
 					if (file.exists() && !file.delete()) {
 						ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
@@ -340,47 +360,13 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	/**
-	 * Randomly generates a level and switches the dungeon to it.
-	 */
-	public Level generateLevel() {
-		this.originalName = DungeonNameGenerator.generate();
-		this.name = this.originalName;
-		
-		if (level != null) {
-			level.getEntityStore().removeEntity(player);
-		} else {
-			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-			levels.put(level.getUUID(), level);
-		}
-		
-		level.generate(null, GeneratorStandard.class);
-		
-		if (player == null) {
-			player = new Player(
-				this,
-				level,
-				level.getSpawnX(),
-				level.getSpawnY(),
-				settings.getPlayerName(),
-				settings.getRole()
-			);
-		} else {
-			player.setPosition(level.getSpawnX(), level.getSpawnY());
-		}
-		
-		player.setLevel(level);
-		level.getEntityStore().addEntity(player);
-		
-		eventSystem.triggerEvent(new LevelChangeEvent(level));
-		
-		return level;
-	}
-	
-	/**
 	 * Saves this dungeon as dungeon.save.gz in the game data directory.
 	 */
 	public void save() {
-		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
+		java.nio.file.Path dataDir = DungeonSerialiser.getDataDir();
+		
+		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs
+			()) {
 			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
 			return;
 		}
@@ -392,7 +378,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
 		) {
 			JSONObject serialisedDungeon = new JSONObject();
-			serialise(serialisedDungeon);
+			serialiser.serialise(serialisedDungeon);
 			writer.append(serialisedDungeon.toString());
 		} catch (Exception e) {
 			ErrorHandler.error("Error saving dungeon", e);
@@ -400,7 +386,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	}
 	
 	public static boolean canLoad() {
-		return new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString()).exists();
+		return new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString()).exists();
 	}
 	
 	/**
@@ -409,7 +395,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static Dungeon load() {
 		Dungeon dungeon = new Dungeon();
 		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
 		
 		if (file.exists()) {
 			try (
@@ -419,108 +405,23 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 				JSONTokener tokener = new JSONTokener(reader);
 				JSONObject serialisedDungeon = new JSONObject(tokener);
 				
-				dungeon.unserialise(serialisedDungeon);
+				dungeon.serialiser.unserialise(serialisedDungeon);
 				return dungeon;
 			} catch (Exception e) {
 				ErrorHandler.error("Error loading dungeon", e);
 			}
 		}
 		
-		Level firstLevel = dungeon.generateLevel();
-		dungeon.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
+		Level firstLevel = dungeon.generateFirstLevel();
+		dungeon.serialiser.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
 		return dungeon;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("version", JRogue.VERSION);
-		obj.put("name", getName());
-		obj.put("originalName", getOriginalName());
-		
-		JSONObject serialisedLevels = new JSONObject();
-		levels.forEach((uuid, level) -> {
-			JSONObject j = new JSONObject();
-			level.serialise(j);
-			serialisedLevels.put(uuid.toString(), j);
-		});
-		obj.put("levels", serialisedLevels);
-		
-		serialisePersistence(obj);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		try {
-			String version = obj.optString("version");
-			
-			if (!version.equals(JRogue.VERSION)) {
-				int dialogResult = JOptionPane.showConfirmDialog(
-					null,
-					"This save was made in a different version of " +
-						"JRogue. Would you still like to try and load it?",
-					"JRogue",
-					JOptionPane.YES_NO_CANCEL_OPTION
-				);
-				
-				switch (dialogResult) {
-					case JOptionPane.YES_OPTION:
-						break;
-					case JOptionPane.NO_OPTION:
-						File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-						
-						if (file.exists() && !file.delete()) {
-							JRogue.getLogger().error("Failed to delete save file. Panic!");
-						}
-						
-						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-						System.exit(0);
-						break;
-					default:
-						System.exit(0);
-						break;
-				}
-			}
-			
-			name = obj.getString("name");
-			originalName = obj.getString("originalName");
-			
-			JSONObject serialisedLevels = obj.getJSONObject("levels");
-			serialisedLevels.keySet().forEach(k -> {
-				UUID uuid = UUID.fromString(k);
-				JSONObject serialisedLevel = serialisedLevels.getJSONObject(k);
-				Level.createFromJSON(uuid, serialisedLevel, this).ifPresent(level -> levels.put(uuid, level));
-			});
-			
-			if (player == null) {
-				File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-				
-				if (file.exists() && !file.delete()) {
-					JRogue.getLogger().error("Failed to delete save file. Panic!");
-				}
-				
-				JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-				System.exit(0);
-				
-				return;
-			}
-			
-			level = player.getLevel();
-			eventSystem.triggerEvent(new LevelChangeEvent(level));
-			
-			level.getLightStore().buildLight(true);
-			level.getVisibilityStore().updateSight(player);
-		} catch (Exception e) {
-			ErrorHandler.error("Error loading dungeon", e);
-		}
-		
-		unserialisePersistence(obj);
 	}
 	
 	/**
 	 * Deletes the game save file.
 	 */
 	public void deleteSave() {
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
 		
 		if (file.exists() && !file.delete()) {
 			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
