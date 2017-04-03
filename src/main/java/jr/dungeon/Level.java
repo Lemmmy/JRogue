@@ -87,7 +87,7 @@ public class Level implements Serialisable, Persisting {
 
 		lightStore.initialiseLight();
 		
-		turnCreated = dungeon.getTurn();
+		turnCreated = dungeon.getTurnSystem().getTurn();
 
 		persistence = new JSONObject();
 	}

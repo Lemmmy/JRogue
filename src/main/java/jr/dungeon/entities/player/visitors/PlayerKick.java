@@ -57,6 +57,6 @@ public class PlayerKick implements PlayerVisitor {
 			player.setAction(new ActionKick(d, new Action.NoCallback()));
 		}
 		
-		player.getDungeon().turn();
+		player.getDungeon().getTurnSystem().turn(player.getDungeon());
 	}
 }

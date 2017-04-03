@@ -12,6 +12,6 @@ public class PlayerTeleport implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
 		player.setAction(new ActionTeleport(x, y, new Action.NoCallback()));
-		player.getDungeon().turn();
+		player.getDungeon().getTurnSystem().turn(player.getDungeon());
 	}
 }

@@ -294,7 +294,7 @@ public class Player extends EntityLiving {
 	@EventHandler(selfOnly = true)
 	private void onHealthChanged(EntityHealthChangedEvent event) {
 		if (event.getOldHealth() > event.getNewHealth()) {
-			getDungeon().markSomethingHappened();
+			getDungeon().getTurnSystem().markSomethingHappened();
 		}
 	}
 	

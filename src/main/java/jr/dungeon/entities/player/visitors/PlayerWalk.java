@@ -56,7 +56,7 @@ public class PlayerWalk implements PlayerVisitor {
 			walkAction(player, tile, newX, newY);
 		} // TODO: Restructure this mess
 		
-		player.getDungeon().turn();
+		player.getDungeon().getTurnSystem().turn(player.getDungeon());
 	}
 	
 	private void walkAction(Player player, Tile tile, int x, int y) {

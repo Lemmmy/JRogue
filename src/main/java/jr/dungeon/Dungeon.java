@@ -1,14 +1,10 @@
 package jr.dungeon;
 
-import com.github.alexeyr.pcg.Pcg32;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
-import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityAddedEvent;
-import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
@@ -19,7 +15,6 @@ import jr.dungeon.wishes.Wishes;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.Range;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -28,8 +23,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -57,22 +50,9 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public static final int LEVEL_HEIGHT = 40;
 	
 	/**
-	 * The random range of turns in which a random {@link jr.dungeon.entities.monsters.Monster} will spawn somewhere on
-	 * the {@link Level}.
-	 *
-	 * @see MonsterSpawner#spawnNewMonsters()
-	 */
-	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
-	
-	/**
 	 * The 'GAME' log level.
 	 */
 	private static org.apache.logging.log4j.Level gameLogLevel;
-	
-	/**
-	 * rand
-	 */
-	private Pcg32 rand = new Pcg32();
 	
 	/**
 	 * Randomly generated name of this dungeon
@@ -99,43 +79,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	
 	@Getter private EventSystem eventSystem;
 	
-	/**
-	 * The number of turns that have passed.
-	 */
-	@Getter private long turn = 0;
-	/**
-	 * Random counter for ambient dungeon 'sounds'.
-	 *
-	 * @see PassiveSoundEmitter
-	 */
-	@Getter private long passiveSoundCounter = 0;
-	/**
-	 * Random counter for new monster spwans.
-	 *
-	 * @see MonsterSpawner
-	 */
-	@Getter private long monsterSpawnCounter = 50;
-	
-	/**
-	 * A turn in which something happened is usually a turn where something that should interrupt a
-	 * {@link #isDoingBulkAction() bulk action}, for example a {@link jr.dungeon.entities.monsters.Monster} attacking
-	 * the {@link Player}.
-	 *
-	 * @return Whether or not something critical happened in this turn.
-	 */
-	@Getter private boolean somethingHappened;
-	
-	/**
-	 * A bulk action is an action in which multiple turns will pass, and the action is repeated. For example, when
-	 * you walk to a locked door, and confirm you want to automatically kick it down, the bulk action of kicking the
-	 * door will occur. Bulk actions can be interrupted by marking the turn as a turn in which 'something happened'.
-	 *
-	 * @see #markSomethingHappened()
-	 *
-	 * @param doingBulkAction Sets whether or not a bulk action is currently happening.
-	 * @return Whether or not a bulk action is currently happening.
-	 */
-	@Getter @Setter private boolean doingBulkAction;
+	@Getter private TurnSystem turnSystem;
 	
 	/**
 	 * @see Prompt
@@ -168,201 +112,28 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		this.settings = JRogue.getSettings();
 		
 		eventSystem = new EventSystem(this);
+		turnSystem = new TurnSystem(this);
 		
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
-
-	/**
-	 * Randomly generates a level and switches the dungeon to it.
-	 */
-	public Level generateLevel() {
-		this.originalName = DungeonNameGenerator.generate();
-		this.name = this.originalName;
-		
-		if (level != null) {
-			level.getEntityStore().removeEntity(player);
-		} else {
-			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
-			levels.put(level.getUUID(), level);
-		}
-		
-		level.generate(null, GeneratorStandard.class);
-		
-		if (player == null) {
-			player = new Player(
-				this,
-				level,
-				level.getSpawnX(),
-				level.getSpawnY(),
-				settings.getPlayerName(),
-				settings.getRole()
-			);
-		} else {
-			player.setPosition(level.getSpawnX(), level.getSpawnY());
-		}
-		
-		player.setLevel(level);
-		level.getEntityStore().addEntity(player);
-		
-		eventSystem.triggerEvent(new LevelChangeEvent(level));
-		
-		return level;
-	}
-
-	/**
-	 * Saves this dungeon as dungeon.save.gz in the game data directory.
-	 */
-	public void save() {
-		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
-			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
-			return;
-		}
-		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-		
-		try (
-			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
-		) {
-			JSONObject serialisedDungeon = new JSONObject();
-			serialise(serialisedDungeon);
-			writer.append(serialisedDungeon.toString());
-		} catch (Exception e) {
-			ErrorHandler.error("Error saving dungeon", e);
-		}
-	}
 	
-	public static boolean canLoad() {
-		return new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString()).exists();
-	}
-
 	/**
-	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
+	 * Starts/resumes a game. Should be called after the first level in the session is loaded.
 	 */
-	public static Dungeon load() {
-		Dungeon dungeon = new Dungeon();
+	public void start() {
+		eventSystem.triggerEvent(new LevelChangeEvent(level));
+		eventSystem.triggerEvent(new BeforeGameStartedEvent(turnSystem.getTurn() <= 0));
 		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-		
-		if (file.exists()) {
-			try (
-				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))
-			) {
-				JSONTokener tokener = new JSONTokener(reader);
-				JSONObject serialisedDungeon = new JSONObject(tokener);
-				
-				dungeon.unserialise(serialisedDungeon);
-				return dungeon;
-			} catch (Exception e) {
-				ErrorHandler.error("Error loading dungeon", e);
-			}
-		}
-		
-		Level firstLevel = dungeon.generateLevel();
-		dungeon.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
-		return dungeon;
-	}
-
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("version", JRogue.VERSION);
-		obj.put("name", getName());
-		obj.put("originalName", getOriginalName());
-		obj.put("turn", getTurn());
-		obj.put("passiveSoundCounter", passiveSoundCounter);
-		obj.put("monsterSpawnCounter", monsterSpawnCounter);
-		
-		JSONObject serialisedLevels = new JSONObject();
-		levels.forEach((uuid, level) -> {
-			JSONObject j = new JSONObject();
-			level.serialise(j);
-			serialisedLevels.put(uuid.toString(), j);
-		});
-		obj.put("levels", serialisedLevels);
-
-		serialisePersistence(obj);
-	}
-
-	@Override
-	public void unserialise(JSONObject obj) {
-		try {
-			String version = obj.optString("version");
-			
-			if (!version.equals(JRogue.VERSION)) {
-				int dialogResult = JOptionPane.showConfirmDialog(
-					null,
-					"This save was made in a different version of " +
-					"JRogue. Would you still like to try and load it?",
-					"JRogue",
-					JOptionPane.YES_NO_CANCEL_OPTION
-				);
-				
-				switch (dialogResult) {
-					case JOptionPane.YES_OPTION:
-						break;
-					case JOptionPane.NO_OPTION:
-						File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-						
-						if (file.exists() && !file.delete()) {
-							JRogue.getLogger().error("Failed to delete save file. Panic!");
-						}
-						
-						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-						System.exit(0);
-						break;
-					default:
-						System.exit(0);
-						break;
-				}
-			}
-			
-			name = obj.getString("name");
-			originalName = obj.getString("originalName");
-			turn = obj.getInt("turn");
-			passiveSoundCounter = obj.getInt("passiveSoundCounter");
-			monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
-			
-			JSONObject serialisedLevels = obj.getJSONObject("levels");
-			serialisedLevels.keySet().forEach(k -> {
-				UUID uuid = UUID.fromString(k);
-				JSONObject serialisedLevel = serialisedLevels.getJSONObject(k);
-				Level.createFromJSON(uuid, serialisedLevel, this).ifPresent(level -> levels.put(uuid, level));
-			});
-			
-			if (player == null) {
-				File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-				
-				if (file.exists() && !file.delete()) {
-					JRogue.getLogger().error("Failed to delete save file. Panic!");
-				}
-				
-				JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-				System.exit(0);
-				
-				return;
-			}
-
-			level = player.getLevel();
-			eventSystem.triggerEvent(new LevelChangeEvent(level));
-			
-			level.getLightStore().buildLight(true);
-			level.getVisibilityStore().updateSight(player);
-		} catch (Exception e) {
-			ErrorHandler.error("Error loading dungeon", e);
-		}
-
-		unserialisePersistence(obj);
-	}
-
-	/**
-	 * Deletes the game save file.
-	 */
-	public void deleteSave() {
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-		
-		if (file.exists() && !file.delete()) {
-			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
+		if (turnSystem.getTurn() <= 0) {
+			You("drop down into [CYAN]%s[].", this.name);
+			turnSystem.turn(true);
+			eventSystem.triggerEvent(new GameStartedEvent(true));
+		} else {
+			eventSystem.triggerEvent(new BeforeTurnEvent(turnSystem.getTurn()));
+			log("Welcome back to [CYAN]%s[].", this.name);
+			level.getEntityStore().processEntityQueues(false);
+			eventSystem.triggerEvent(new TurnEvent(turnSystem.getTurn()));
+			eventSystem.triggerEvent(new GameStartedEvent(false));
 		}
 	}
 
@@ -398,7 +169,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		getPlayer().setPosition(x, y);
 		
-		turn(true);
+		turnSystem.turn(true);
 		
 		eventSystem.triggerEvent(new LevelChangeEvent(level));
 		
@@ -413,84 +184,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 */
 	public void changeLevel(Level level, Point point) {
 		changeLevel(level, point.getX(), point.getY());
-	}
-
-	/**
-	 * Triggers the "Really quit without saving?" prompt.
-	 */
-	public void quit() {
-		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
-			@Override
-			public void onResponse(char response) {
-				if (response == 'y') {
-					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-					
-					if (file.exists() && !file.delete()) {
-						ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
-					}
-					
-					eventSystem.triggerEvent(new QuitEvent());
-				}
-			}
-		}));
-	}
-
-	/**
-	 * Triggers the "Really save and quit?" prompt.
-	 */
-	public void saveAndQuit() {
-		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
-			@Override
-			public void onResponse(char response) {
-				if (response == 'y' && player.isAlive()) {
-					save();
-					eventSystem.triggerEvent(new SaveAndQuitEvent());
-				}
-			}
-		}));
-	}
-	
-	/**
-	 * Mark this turn as a turn that something critical happened in. This usually means that this should interrupt
-	 * bulk-actions, e.g. the player is knocking down a door as a bulk action, but then a monster attacks it. The
-	 * monster attack marks the turn as 'something happened', and the bulk action is cancelled.
-	 */
-	public void markSomethingHappened() {
-		somethingHappened = true;
-		
-		// TODO: trigger event here?
-	}
-
-	/**
-	 * Starts/resumes a game. Should be called after the first level in the session is loaded.
-	 */
-	public void start() {
-		eventSystem.triggerEvent(new LevelChangeEvent(level));
-		eventSystem.triggerEvent(new BeforeGameStartedEvent(turn <= 0));
-		
-		if (turn <= 0) {
-			You("drop down into [CYAN]%s[].", this.name);
-			turn(true);
-			eventSystem.triggerEvent(new GameStartedEvent(true));
-		} else {
-			eventSystem.triggerEvent(new BeforeTurnEvent(turn));
-			log("Welcome back to [CYAN]%s[].", this.name);
-			level.getEntityStore().processEntityQueues(false);
-			eventSystem.triggerEvent(new TurnEvent(turn));
-			eventSystem.triggerEvent(new GameStartedEvent(false));
-		}
 	}
 	
 	@Override
@@ -574,158 +267,6 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		return prompt != null && prompt.isEscapable();
 	}
 	
-	public void turn() {
-		turn(false);
-	}
-
-	/**
-	 * Triggers the next turn, increasing the turn counter, and updating all entities.
-	 */
-	public void turn(boolean isStart) {
-		if (!player.isAlive()) {
-			eventSystem.triggerTurnCompleteEvents();
-			return;
-		}
-		
-		eventSystem.triggerEvent(new BeforeTurnEvent(turn + 1));
-		somethingHappened = false;
-		
-		level.getEntityStore().processEntityQueues(!isStart);
-		
-		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
-		
-		do {
-			boolean entitiesCanMove = false;
-			
-			do {
-				if (!player.isAlive()) {
-					break;
-				}
-				
-				entitiesCanMove = moveEntities();
-				
-				if (player.getMovementPoints() > NORMAL_SPEED) {
-					break;
-				}
-			} while (entitiesCanMove);
-			
-			if (!entitiesCanMove && player.getMovementPoints() < NORMAL_SPEED) {
-				for (Entity entity : level.getEntityStore().getEntities()) {
-					if (!player.isAlive()) {
-						break;
-					}
-					
-					if (entity instanceof EntityLiving && !((EntityLiving) entity).isAlive()) {
-						continue;
-					}
-					
-					entity.update();
-					
-					if (entity instanceof EntityTurnBased) {
-						EntityTurnBased turnBasedEntity = (EntityTurnBased) entity;
-						
-						turnBasedEntity.applyMovementPoints();
-					}
-				}
-				
-				if (player.getMovementPoints() < 0) {
-					player.setMovementPoints(0);
-				}
-				
-				turn++;
-				
-				update();
-			}
-		} while (player.isAlive() && player.getMovementPoints() < NORMAL_SPEED);
-		
-		if (player.isAlive()) {
-			player.move();
-		} else {
-			eventSystem.triggerTurnCompleteEvents();
-			return;
-		}
-		
-		level.getEntityStore().processEntityQueues(!isStart);
-		
-		level.getVisibilityStore().updateSight(player);
-		level.getLightStore().buildLight(false);
-		
-		eventSystem.triggerTurnCompleteEvents();
-		
-		eventSystem.triggerEvent(new TurnEvent(turn));
-	}
-
-	/**
-	 * Makes all entities make their next move.
-	 * @return false if nobody moved.
-	 */
-	private boolean moveEntities() {
-		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
-		
-		level.getEntityStore().getEntities().stream()
-			.filter(e -> e instanceof EntityTurnBased)
-			.filter(e -> !(e instanceof Player))
-			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < NORMAL_SPEED))
-			.forEach(e -> {
-				if (e instanceof EntityLiving && !((EntityLiving) e).isAlive()) {
-					return;
-				}
-				
-				EntityTurnBased tbe = (EntityTurnBased) e;
-				tbe.setMovementPoints(tbe.getMovementPoints() - NORMAL_SPEED);
-				
-				if (tbe.getMovementPoints() >= NORMAL_SPEED) {
-					somebodyCanMove.set(true);
-				}
-				
-				tbe.move();
-			});
-		
-		return somebodyCanMove.get();
-	}
-
-	/**
-	 * Updates the dungeon, which includes playing sounds and spawning monsters.
-	 */
-	private void update() {
-		if (--passiveSoundCounter <= 0) {
-			emitPassiveSounds();
-			
-			passiveSoundCounter = RandomUtils.roll(3, 4);
-		}
-		
-		if (
-			level.getEntityStore().getHostileMonsters().size() < Math.abs(level.getDepth() * 2 + 10) &&
-				--monsterSpawnCounter <= 0
-			) {
-			level.getMonsterSpawner().spawnNewMonsters();
-			
-			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
-		}
-	}
-
-	/**
-	 * Emits passive sounds.
-	 */
-	private void emitPassiveSounds() {
-		List<Entity> emitters = level.getEntityStore().getEntities().stream()
-			.filter(e -> e instanceof PassiveSoundEmitter)
-			.collect(Collectors.toList());
-		
-		if (emitters.isEmpty()) {
-			return;
-		}
-		
-		Collections.shuffle(emitters);
-		PassiveSoundEmitter soundEmitter = (PassiveSoundEmitter) emitters.get(0);
-		
-		if (rand.nextFloat() <= soundEmitter.getSoundProbability()) {
-			String sound = RandomUtils.randomFrom(soundEmitter.getSounds());
-			
-			log(sound);
-		}
-	}
-
 	/**
 	 * Make a wish, used in debug mode.
 	 * @see jr.dungeon.wishes.Wishes
@@ -749,5 +290,240 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	/**
+	 * Triggers the "Really quit without saving?" prompt.
+	 */
+	public void quit() {
+		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {}
+			
+			@Override
+			public void onInvalidResponse(char response) {}
+			
+			@Override
+			public void onResponse(char response) {
+				if (response == 'y') {
+					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+					
+					if (file.exists() && !file.delete()) {
+						ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
+					}
+					
+					eventSystem.triggerEvent(new QuitEvent());
+				}
+			}
+		}));
+	}
+	
+	/**
+	 * Triggers the "Really save and quit?" prompt.
+	 */
+	public void saveAndQuit() {
+		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
+			@Override
+			public void onNoResponse() {}
+			
+			@Override
+			public void onInvalidResponse(char response) {}
+			
+			@Override
+			public void onResponse(char response) {
+				if (response == 'y' && player.isAlive()) {
+					save();
+					eventSystem.triggerEvent(new SaveAndQuitEvent());
+				}
+			}
+		}));
+	}
+	
+	/**
+	 * Randomly generates a level and switches the dungeon to it.
+	 */
+	public Level generateLevel() {
+		this.originalName = DungeonNameGenerator.generate();
+		this.name = this.originalName;
+		
+		if (level != null) {
+			level.getEntityStore().removeEntity(player);
+		} else {
+			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
+			levels.put(level.getUUID(), level);
+		}
+		
+		level.generate(null, GeneratorStandard.class);
+		
+		if (player == null) {
+			player = new Player(
+				this,
+				level,
+				level.getSpawnX(),
+				level.getSpawnY(),
+				settings.getPlayerName(),
+				settings.getRole()
+			);
+		} else {
+			player.setPosition(level.getSpawnX(), level.getSpawnY());
+		}
+		
+		player.setLevel(level);
+		level.getEntityStore().addEntity(player);
+		
+		eventSystem.triggerEvent(new LevelChangeEvent(level));
+		
+		return level;
+	}
+	
+	/**
+	 * Saves this dungeon as dungeon.save.gz in the game data directory.
+	 */
+	public void save() {
+		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs()) {
+			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
+			return;
+		}
+		
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		
+		try (
+			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
+		) {
+			JSONObject serialisedDungeon = new JSONObject();
+			serialise(serialisedDungeon);
+			writer.append(serialisedDungeon.toString());
+		} catch (Exception e) {
+			ErrorHandler.error("Error saving dungeon", e);
+		}
+	}
+	
+	public static boolean canLoad() {
+		return new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString()).exists();
+	}
+	
+	/**
+	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
+	 */
+	public static Dungeon load() {
+		Dungeon dungeon = new Dungeon();
+		
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		
+		if (file.exists()) {
+			try (
+				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))
+			) {
+				JSONTokener tokener = new JSONTokener(reader);
+				JSONObject serialisedDungeon = new JSONObject(tokener);
+				
+				dungeon.unserialise(serialisedDungeon);
+				return dungeon;
+			} catch (Exception e) {
+				ErrorHandler.error("Error loading dungeon", e);
+			}
+		}
+		
+		Level firstLevel = dungeon.generateLevel();
+		dungeon.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
+		return dungeon;
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		obj.put("version", JRogue.VERSION);
+		obj.put("name", getName());
+		obj.put("originalName", getOriginalName());
+		
+		JSONObject serialisedLevels = new JSONObject();
+		levels.forEach((uuid, level) -> {
+			JSONObject j = new JSONObject();
+			level.serialise(j);
+			serialisedLevels.put(uuid.toString(), j);
+		});
+		obj.put("levels", serialisedLevels);
+		
+		serialisePersistence(obj);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		try {
+			String version = obj.optString("version");
+			
+			if (!version.equals(JRogue.VERSION)) {
+				int dialogResult = JOptionPane.showConfirmDialog(
+					null,
+					"This save was made in a different version of " +
+						"JRogue. Would you still like to try and load it?",
+					"JRogue",
+					JOptionPane.YES_NO_CANCEL_OPTION
+				);
+				
+				switch (dialogResult) {
+					case JOptionPane.YES_OPTION:
+						break;
+					case JOptionPane.NO_OPTION:
+						File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+						
+						if (file.exists() && !file.delete()) {
+							JRogue.getLogger().error("Failed to delete save file. Panic!");
+						}
+						
+						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+						System.exit(0);
+						break;
+					default:
+						System.exit(0);
+						break;
+				}
+			}
+			
+			name = obj.getString("name");
+			originalName = obj.getString("originalName");
+			
+			JSONObject serialisedLevels = obj.getJSONObject("levels");
+			serialisedLevels.keySet().forEach(k -> {
+				UUID uuid = UUID.fromString(k);
+				JSONObject serialisedLevel = serialisedLevels.getJSONObject(k);
+				Level.createFromJSON(uuid, serialisedLevel, this).ifPresent(level -> levels.put(uuid, level));
+			});
+			
+			if (player == null) {
+				File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+				
+				if (file.exists() && !file.delete()) {
+					JRogue.getLogger().error("Failed to delete save file. Panic!");
+				}
+				
+				JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+				System.exit(0);
+				
+				return;
+			}
+			
+			level = player.getLevel();
+			eventSystem.triggerEvent(new LevelChangeEvent(level));
+			
+			level.getLightStore().buildLight(true);
+			level.getVisibilityStore().updateSight(player);
+		} catch (Exception e) {
+			ErrorHandler.error("Error loading dungeon", e);
+		}
+		
+		unserialisePersistence(obj);
+	}
+	
+	/**
+	 * Deletes the game save file.
+	 */
+	public void deleteSave() {
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		
+		if (file.exists() && !file.delete()) {
+			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
+		}
 	}
 }

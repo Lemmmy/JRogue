@@ -185,7 +185,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			"%s - %s - Turn %,d",
 			GameAdapter.WINDOW_TITLE,
 			dungeon.getName(),
-			dungeon.getTurn()
+			dungeon.getTurnSystem().getTurn()
 		));
 	}
 	

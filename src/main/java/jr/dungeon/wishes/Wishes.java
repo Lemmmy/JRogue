@@ -204,7 +204,7 @@ public class Wishes {
 
 			if (item != null && p.getContainer().isPresent()) {
 				p.getContainer().get().add(new ItemStack(item));
-				d.turn();
+				d.getTurnSystem().turn(d);
 			}
 		});
 

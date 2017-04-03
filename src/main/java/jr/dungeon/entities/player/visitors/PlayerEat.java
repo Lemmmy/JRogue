@@ -104,22 +104,22 @@ public class PlayerEat extends PlayerItemVisitor {
 	private void eatTurns(Player player, ItemComestible item) {
 		for (int i = 0; i < 15; i++) {
 			if (i != 0) {
-				player.getDungeon().setDoingBulkAction(true);
+				player.getDungeon().getTurnSystem().setDoingBulkAction(true);
 			}
 			
 			player.setAction(new ActionEat(item,null));
-			player.getDungeon().turn();
+			player.getDungeon().getTurnSystem().turn(player.getDungeon());
 			
 			if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
 				break;
 			}
 			
-			if (player.getDungeon().isSomethingHappened()) {
+			if (player.getDungeon().getTurnSystem().isSomethingHappened()) {
 				player.getDungeon().log("You stop eating.");
 				break;
 			}
 		}
 		
-		player.getDungeon().setDoingBulkAction(false);
+		player.getDungeon().getTurnSystem().setDoingBulkAction(false);
 	}
 }

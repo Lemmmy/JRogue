@@ -63,7 +63,7 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			
 			pathTaken.addStep(step);
 			player.setAction(new ActionMove(step.getX(), step.getY(), new Action.NoCallback()));
-			player.getDungeon().turn();
+			player.getDungeon().getTurnSystem().turn(player.getDungeon());
 			
 			if (oldPos.equals(player.getPosition())) {
 				stop.set(true);

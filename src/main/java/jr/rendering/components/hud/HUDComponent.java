@@ -357,7 +357,7 @@ public class HUDComponent extends RendererComponent {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
 		
-		log.add(new LogEntry(dungeon.getTurn(), entry));
+		log.add(new LogEntry(dungeon.getTurnSystem().getTurn(), entry));
 		
 		gameLog.clearChildren();
 		
@@ -365,7 +365,7 @@ public class HUDComponent extends RendererComponent {
 		
 		for (int i = 0; i < logSize; i++) {
 			LogEntry logEntry = log.get(log.size() - (logSize - i));
-			String text = logEntry.getTurn() != dungeon.getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
+			String text = logEntry.getTurn() != dungeon.getTurnSystem().getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
 			
 			Label newEntry = new Label(text, skin, "default");
 			gameLog.add(newEntry).left().growX();

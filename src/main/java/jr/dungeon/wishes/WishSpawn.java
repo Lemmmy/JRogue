@@ -19,7 +19,7 @@ public class WishSpawn<T extends Entity> implements Wish {
 								.newInstance(dungeon, dungeon.getLevel(), player.getX(), player.getY());
 
 			dungeon.getLevel().getEntityStore().addEntity(ent);
-			dungeon.turn();
+			dungeon.getTurnSystem().turn(dungeon);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

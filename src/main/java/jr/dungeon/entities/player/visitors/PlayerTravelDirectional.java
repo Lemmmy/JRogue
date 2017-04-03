@@ -53,7 +53,7 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 			
 			pathTaken.addStep(destTile);
 			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new Action.NoCallback()));
-			player.getDungeon().turn();
+			player.getDungeon().getTurnSystem().turn(player.getDungeon());
 			
 			if (oldPos.equals(player.getPosition())) { // we didn't go anywhere, so stop
 				break;
