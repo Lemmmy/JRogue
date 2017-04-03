@@ -10,6 +10,7 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
+import jr.dungeon.entities.events.ItemDroppedEvent;
 import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.DungeonEventHandler;
 import jr.dungeon.events.LevelChangeEvent;
@@ -228,10 +229,8 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	@DungeonEventHandler
-	private void onItemDropped(EntityAddedEvent e) {
-		if (!(e.getEntity() instanceof EntityItem)) return;
-		
-		addAnimation(new AnimationItemDrop(renderer, e.getEntity()));
+	private void onItemDropped(ItemDroppedEvent e) {
+		addAnimation(new AnimationItemDrop(renderer, e.getItemEntity()));
 	}
 
 	public void addAnimation(EntityAnimation animation) {
