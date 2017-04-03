@@ -1,6 +1,7 @@
 package jr.rendering.entities.animations;
 
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.player.Player;
 import jr.rendering.Renderer;
 import jr.utils.Utils;
 import jr.utils.Vector;
@@ -22,10 +23,19 @@ public class AnimationEntityMove extends EntityAnimation {
 	@Override
 	public Map<String, Object> update(float t) {
 		val values = new HashMap<String, Object>();
+		
 		values.put("offset", new Vector(
 			Utils.easeInOut(t, -dx, dx, 1),
 			Utils.easeInOut(t, -dy, dy, 1)
 		));
+		
+		if (getEntity() instanceof Player) {
+			values.put("camera", new Vector(
+				Utils.easeInOut(t, -dx, dx, 1),
+				Utils.easeInOut(t, -dy, dy, 1)
+			));
+		}
+		
 		return values;
 	}
 }

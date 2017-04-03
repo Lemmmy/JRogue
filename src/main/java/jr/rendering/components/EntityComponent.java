@@ -15,10 +15,7 @@ import jr.rendering.Renderer;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
-import jr.rendering.entities.animations.AnimationChestKick;
-import jr.rendering.entities.animations.AnimationItemDrop;
-import jr.rendering.entities.animations.EntityAnimation;
-import jr.rendering.entities.animations.AnimationEntityMove;
+import jr.rendering.entities.animations.*;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Vector;
 import lombok.val;
@@ -304,6 +301,11 @@ public class EntityComponent extends RendererComponent {
 		if (e.getVictim() instanceof EntityChest) {
 			addAnimation(new AnimationChestKick(renderer, e.getVictim()));
 		}
+	}
+	
+	@DungeonEventHandler
+	private void onEntityDamaged(EntityDamagedEvent e) {
+		addAnimation(new AnimationEntityDamaged(renderer, e.getVictim(), e.getAttacker()));
 	}
 
 	public void addAnimation(EntityAnimation animation) {

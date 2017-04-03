@@ -209,8 +209,8 @@ public class Renderer extends ApplicationAdapter implements DungeonEventListener
 			if (p.getPersistence().has("animationData")) {
 				JSONObject ad = p.getPersistence().getJSONObject("animationData");
 				
-				worldX = p.getX() + (float) ad.optDouble("offsetX", 0);
-				worldY = p.getY() + (float) ad.optDouble("offsetY", 0);
+				worldX = p.getX() + (float) ad.optDouble("cameraX", 0);
+				worldY = p.getY() + (float) ad.optDouble("cameraY", 0);
 			}
 			
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;

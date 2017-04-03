@@ -22,9 +22,11 @@ public class AnimationEntityDamaged extends EntityAnimation {
 	public Map<String, Object> update(float t) {
 		val values = new HashMap<String, Object>();
 		values.put("offset", new Vector(
-			(float) Math.sin(t * Math.PI) / 2 * delta.getX(),
-			(float) Math.sin(t * Math.PI) / 2 * delta.getY()
+			(float) Math.sin(t * Math.PI) / 4 * delta.getX(),
+			(float) Math.sin(t * Math.PI) / 4 * delta.getY()
 		));
+		values.put("g", 1f - (float) Math.sin(t * Math.PI) / 4);
+		values.put("b", 1f - (float) Math.sin(t * Math.PI) / 4);
 		return values;
 	}
 }
