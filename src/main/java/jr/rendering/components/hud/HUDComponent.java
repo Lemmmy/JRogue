@@ -17,7 +17,7 @@ import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
-import jr.rendering.ui.UISkin;
+import jr.rendering.ui.skin.UISkin;
 import jr.rendering.ui.windows.*;
 import jr.rendering.utils.HUDUtils;
 import jr.rendering.utils.ImageLoader;
@@ -143,7 +143,7 @@ public class HUDComponent extends RendererComponent {
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
 		stage = new Stage(stageViewport);
-		skin = new UISkin();
+		skin = UISkin.instance;
 		
 		Table root = new Table();
 		root.setFillParent(true);

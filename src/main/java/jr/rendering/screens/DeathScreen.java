@@ -21,7 +21,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.rendering.GameAdapter;
 import jr.rendering.screens.utils.SlidingTransition;
-import jr.rendering.ui.UISkin;
+import jr.rendering.ui.skin.UISkin;
 import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.DungeonOverviewPartial;
 import jr.rendering.utils.HUDUtils;
@@ -42,7 +42,7 @@ public class DeathScreen extends ScreenAdapter {
 		this.dungeon = dungeon;
 		this.event = event;
 		
-		skin = new UISkin();
+		skin = UISkin.instance;
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / JRogue.getSettings().getHudScale());
 		stage = new Stage(stageViewport);

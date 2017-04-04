@@ -1,64 +1,26 @@
-package jr.rendering.ui;
+package jr.rendering.ui.skin;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
-import jr.rendering.utils.FontLoader;
 import jr.rendering.utils.ImageLoader;
 
 public class UISkin extends Skin {
-	static {
-		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
-		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
-		Colors.put("P_GREY_2", new Color(0x777777ff));
-		Colors.put("P_GREY_3", new Color(0xacacacff));
-		Colors.put("P_GREY_4", new Color(0xd4d4d4ff));
-		
-		Colors.put("P_RED", new Color(0xc91616ff));
-		Colors.put("P_ORANGE_0", new Color(0xd0391bff));
-		Colors.put("P_ORANGE_1", new Color(0xe0762fff));
-		Colors.put("P_ORANGE_2", new Color(0xf8981bff));
-		Colors.put("P_ORANGE_3", new Color(0xf8bc1bff));
-		Colors.put("P_YELLOW", new Color(0xf8eb1bff));
-		
-		Colors.put("P_GREEN_0", new Color(0x1d7907ff));
-		Colors.put("P_GREEN_1", new Color(0x2b9f10ff));
-		Colors.put("P_GREEN_2", new Color(0x3bba1eff));
-		Colors.put("P_GREEN_3", new Color(0x52d234ff));
-		Colors.put("P_GREEN_4", new Color(0x85ed6dff));
-		
-		Colors.put("P_CYAN_0", new Color(0x047ca4ff));
-		Colors.put("P_CYAN_1", new Color(0x28b5e3ff));
-		
-		Colors.put("P_BLUE_0", new Color(0x0b1b93ff));
-		Colors.put("P_BLUE_1", new Color(0x0b4fb5ff));
-		Colors.put("P_BLUE_2", new Color(0x3177e0ff));
-		
-		Colors.put("P_PURPLE_0", new Color(0x560670ff));
-		Colors.put("P_PURPLE_1", new Color(0x720d93ff));
-		Colors.put("P_PURPLE_2", new Color(0x8e25b1ff));
-		Colors.put("P_PURPLE_3", new Color(0xae3fd2ff));
-		
-		Colors.put("P_PINK_0", new Color(0x77026dff));
-		Colors.put("P_PINK_1", new Color(0x980c8cff));
-		Colors.put("P_PINK_2", new Color(0xb81eabff));
-		Colors.put("P_PINK_3", new Color(0xe13ed4ff));
-		Colors.put("P_PINK_4", new Color(0xf356e6ff));
-	}
+	public static UISkin instance;
 	
 	private List.ListStyle listStyle;
 	private ScrollPane.ScrollPaneStyle scrollPaneStyle;
 	
 	public UISkin() {
-		addColours();
-		addFonts();
-		addLabelStyles();
+		instance = this;
+		
+		UIColours.addColours(this);
+		UIFonts.addFonts(this);
+		UILabelStyles.addLabelStyles(this);
 		addButtonStyle();
 		addContainerButtonStyle();
 		addTextButtonStyle();
@@ -68,90 +30,6 @@ public class UISkin extends Skin {
 		addSelectBoxStyle();
 		addWindowStyle();
 		addSplitterStyles();
-	}
-	
-	private void addColours() {
-		Pixmap white = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		white.setColor(Color.WHITE);
-		white.fill();
-		add("white", new Texture(white));
-		
-		Pixmap blackTransparent = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		blackTransparent.setColor(new Color(0f, 0f, 0f, 0.5f));
-		blackTransparent.fill();
-		add("blackTransparent", new Texture(blackTransparent));
-		
-		Pixmap grey4 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		grey4.setColor(Colors.get("P_GREY_4"));
-		grey4.fill();
-		add("grey4", new Texture(grey4));
-		
-		Pixmap blue = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		blue.setColor(Colors.get("P_BLUE_2"));
-		blue.fill();
-		add("blue", new Texture(blue));
-		
-		Pixmap red = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		red.setColor(new Color(0xc82020ff));
-		red.fill();
-		add("redBackground", new Texture(red));
-		
-		Pixmap green = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		green.setColor(new Color(0x6cdb00ff));
-		green.fill();
-		add("greenBackground", new Texture(green));
-	}
-	
-	private void addFonts() {
-		add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true, false));
-		add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false, false));
-		add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true, false));
-		add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false, false));
-	}
-	
-	private void addLabelStyles() {
-		Label.LabelStyle labelStyle = new Label.LabelStyle();
-		labelStyle.font = getFont("default");
-		add("default", labelStyle);
-		
-		Label.LabelStyle redBackgroundStyle = new Label.LabelStyle();
-		redBackgroundStyle.font = getFont("default");
-		redBackgroundStyle.background = getDrawable("redBackground");
-		add("redBackground", redBackgroundStyle);
-		
-		Label.LabelStyle greenBackgroundStyle = new Label.LabelStyle();
-		greenBackgroundStyle.font = getFont("default");
-		greenBackgroundStyle.background = getDrawable("greenBackground");
-		add("greenBackground", greenBackgroundStyle);
-		
-		Label.LabelStyle largeLabelStyle = new Label.LabelStyle();
-		largeLabelStyle.font = getFont("large");
-		add("large", largeLabelStyle);
-		
-		Label.LabelStyle windowLabelStyle = new Label.LabelStyle();
-		windowLabelStyle.font = getFont("default");
-		windowLabelStyle.fontColor = Colors.get("WHITE");
-		add("windowStyle", windowLabelStyle);
-		
-		Label.LabelStyle windowLabelStyleMarkup = new Label.LabelStyle();
-		windowLabelStyleMarkup.font = getFont("default");
-		add("windowStyleMarkup", windowLabelStyleMarkup);
-		
-		Label.LabelStyle windowLabelStyleLoweredMarkup = new Label.LabelStyle();
-		windowLabelStyleLoweredMarkup.font = getFont("default");
-		windowLabelStyleLoweredMarkup.background = new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
-			1, 1, 1, 1
-		);
-		add("windowStyleLoweredMarkup", windowLabelStyleLoweredMarkup);
-		
-		Label.LabelStyle windowLabelStyleRaisedMarkup = new Label.LabelStyle();
-		windowLabelStyleRaisedMarkup.font = getFont("default");
-		windowLabelStyleRaisedMarkup.background = new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
-			1, 1, 1, 1
-		);
-		add("windowStyleRaisedMarkup", windowLabelStyleRaisedMarkup);
 	}
 	
 	private void addButtonStyle() {
