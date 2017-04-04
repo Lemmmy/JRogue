@@ -164,7 +164,7 @@ public class Wishes {
 		registerWish(Pattern.compile("^" + pattern + "$"), wish);
 	}
 
-	public boolean makeWish(Dungeon dungeon, String _wish) {
+	private boolean wish(Dungeon dungeon, String _wish) {
 		final String wish = _wish.toLowerCase();
 		final Player player = dungeon.getPlayer();
 
@@ -186,12 +186,10 @@ public class Wishes {
 			int gc = m.groupCount();
 			String[] args = new String[gc];
 
-			for (int i = 1; i < gc + 1; ++i) {
+			for (int i = 1; i < gc + 1; ++i)
 				args[i - 1] = m.group(i);
-			}
 
 			w.grant(dungeon, player, args);
-
 			return true;
 		} else {
 			dungeon.logRandom(
@@ -200,8 +198,16 @@ public class Wishes {
 				"[RED]You speak in riddles.",
 				"[RED]You are undecipherable."
 			);
-
 			return false;
 		}
+	}
+
+	public boolean makeWish(Dungeon dungeon, String wish) {
+		String[] wishes = wish.split("\\s*;\\s*");
+
+		return Arrays.stream(wishes)
+			.filter(w -> !w.isEmpty())
+			.map(w -> wish(dungeon, w))
+			.reduce(true, (a, b) -> a && b);
 	}
 }
