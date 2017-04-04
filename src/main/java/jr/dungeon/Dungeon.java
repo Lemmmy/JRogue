@@ -75,11 +75,11 @@ public class Dungeon implements Messenger {
 	 */
 	@Getter @Setter private Player player;
 	
-	@Getter private EventSystem eventSystem;
+	public final EventSystem eventSystem;
 	
-	@Getter private TurnSystem turnSystem;
+	public final TurnSystem turnSystem;
 	
-	@Getter private DungeonSerialiser serialiser;
+	public final DungeonSerialiser serialiser;
 	
 	/**
 	 * @see Prompt
@@ -122,7 +122,7 @@ public class Dungeon implements Messenger {
 		} else {
 			eventSystem.triggerEvent(new BeforeTurnEvent(turnSystem.getTurn()));
 			log("Welcome back to [CYAN]%s[].", this.name);
-			level.getEntityStore().processEntityQueues(false);
+			level.entityStore.processEntityQueues(false);
 			eventSystem.triggerEvent(new TurnEvent(turnSystem.getTurn()));
 			eventSystem.triggerEvent(new GameStartedEvent(false));
 		}
@@ -152,7 +152,7 @@ public class Dungeon implements Messenger {
 		this.name = this.originalName;
 		
 		if (level != null) {
-			level.getEntityStore().removeEntity(player);
+			level.entityStore.removeEntity(player);
 		} else {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 			levels.put(level.getUUID(), level);
@@ -174,7 +174,7 @@ public class Dungeon implements Messenger {
 		}
 		
 		player.setLevel(level);
-		level.getEntityStore().addEntity(player);
+		level.entityStore.addEntity(player);
 		
 		eventSystem.triggerEvent(new LevelChangeEvent(level));
 		
@@ -190,12 +190,12 @@ public class Dungeon implements Messenger {
 	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 		
-		getPlayer().getLevel().getEntityStore().removeEntity(player);
-		getPlayer().getLevel().getEntityStore().processEntityQueues(false);
+		getPlayer().getLevel().entityStore.removeEntity(player);
+		getPlayer().getLevel().entityStore.processEntityQueues(false);
 		
 		getPlayer().setLevel(level);
-		level.getEntityStore().addEntity(player);
-		level.getEntityStore().processEntityQueues(false);
+		level.entityStore.addEntity(player);
+		level.entityStore.processEntityQueues(false);
 		
 		getPlayer().setPosition(x, y);
 		
@@ -203,7 +203,7 @@ public class Dungeon implements Messenger {
 		
 		eventSystem.triggerEvent(new LevelChangeEvent(level));
 		
-		level.getEntityStore().getEntities().forEach(e -> eventSystem.triggerEvent(new EntityAddedEvent(e, false)));
+		level.entityStore.getEntities().forEach(e -> eventSystem.triggerEvent(new EntityAddedEvent(e, false)));
 	}
 	
 	

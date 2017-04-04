@@ -92,7 +92,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		int newHealth = this.health;
 		
 		if (oldHealth != newHealth) {
-			getDungeon().getEventSystem()
+			getDungeon().eventSystem
 				.triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
 		}
 	}
@@ -125,7 +125,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 				
 				xpForLevel = getXPForLevel(experienceLevel);
 				
-				getDungeon().getEventSystem().triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
+				getDungeon().eventSystem.triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
 			}
 		}
 	}
@@ -301,7 +301,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
-		getDungeon().getEventSystem().triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
+		getDungeon().eventSystem.triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
 		
 		if (health <= 0) {
 			kill(damageSource, damage);
@@ -318,9 +318,9 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		health = 0;
 		healingTurns = 0;
 		
-		getDungeon().getEventSystem().triggerEvent(new EntityDeathEvent(this, damageSource, damage));
+		getDungeon().eventSystem.triggerEvent(new EntityDeathEvent(this, damageSource, damage));
 		
-		getLevel().getEntityStore().removeEntity(this);
+		getLevel().entityStore.removeEntity(this);
 	}
 	
 	public void dropItem(ItemStack item) {
@@ -332,7 +332,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			rightHand = null;
 		}
 		
-		List<Entity> entities = getLevel().getEntityStore().getEntitiesAt(getX(), getY());
+		List<Entity> entities = getLevel().entityStore.getEntitiesAt(getX(), getY());
 		
 		Optional<Entity> ent = entities.stream()
 			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
@@ -343,7 +343,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			entItem.getItemStack().addCount(item.getCount());
 		} else {
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
-			getLevel().getEntityStore().addEntity(entityItem);
+			getLevel().entityStore.addEntity(entityItem);
 		}
 	}
 	

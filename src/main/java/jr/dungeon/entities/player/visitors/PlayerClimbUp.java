@@ -7,7 +7,7 @@ import jr.dungeon.tiles.TileFlag;
 public class PlayerClimbUp implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		Tile tile = player.getLevel().getTileStore().getTile(player.getX(), player.getY());
+		Tile tile = player.getLevel().tileStore.getTile(player.getX(), player.getY());
 		
 		if (!((tile.getType().getFlags() & TileFlag.UP) == TileFlag.UP)) {
 			player.getDungeon().log("[YELLOW]There is nothing to climb up here.[]");

@@ -59,7 +59,7 @@ public class SpellStrike extends Spell {
 		strike.setTravelDirection(dx, dy);
 		strike.setTravelRange(3);
 		strike.setSource(caster);
-		caster.getLevel().getEntityStore().addEntity(strike);
+		caster.getLevel().entityStore.addEntity(strike);
 	}
 	
 	private int getDamage() {
@@ -71,7 +71,7 @@ public class SpellStrike extends Spell {
 	}
 	
 	private void splash(EntityLiving caster, int x, int y) {
-		caster.getLevel().getEntityStore().getEntities().stream()
+		caster.getLevel().entityStore.getEntities().stream()
 			.filter(e -> Utils.distance(x, y, e.getX(), e.getY()) <= getSplashRange())
 			.filter(EntityLiving.class::isInstance)
 			.map(e -> (EntityLiving) e)

@@ -152,13 +152,13 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 				
 				if (reader.getHealth() < lastHealth) {
 					dungeon.You("stop reading the book.");
-					dungeon.getTurnSystem().turn(dungeon);
+					dungeon.turnSystem.turn(dungeon);
 					return;
 				}
 				
 				lastHealth = reader.getHealth();
 				
-				dungeon.getTurnSystem().turn(dungeon);
+				dungeon.turnSystem.turn(dungeon);
 			}
 			
 			dungeon.greenYou("finish reading the book.");

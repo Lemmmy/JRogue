@@ -90,8 +90,8 @@ public abstract class DungeonGenerator {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (level.getTileStore().getTileType(x, y).isBuildable()) {
-				level.getTileStore().setTileType(x, y, tile);
+			if (level.tileStore.getTileType(x, y).isBuildable()) {
+				level.tileStore.setTileType(x, y, tile);
 			}
 		}
 	}

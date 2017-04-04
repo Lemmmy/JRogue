@@ -37,7 +37,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	@Override
 	public void render(float dt) {
 		pooledEffects.forEach(p -> {
-			if (dungeon.getLevel().getVisibilityStore().isTileInvisible(p.getX(), p.getY())) {
+			if (dungeon.getLevel().visibilityStore.isTileInvisible(p.getX(), p.getY())) {
 				return;
 			}
 			
@@ -193,7 +193,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 			
 			if (
 				e.getLevel() == dungeon.getLevel() &&
-				e.getLevel().getTileStore().getTileType(e.getPosition()).isWater() &&
+				e.getLevel().tileStore.getTileType(e.getPosition()).isWater() &&
 				!(e instanceof MonsterFish) &&
 				!(e instanceof MonsterPufferfish)
 			) {

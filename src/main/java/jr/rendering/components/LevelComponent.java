@@ -51,12 +51,12 @@ public class LevelComponent extends RendererComponent {
 					continue;
 				}
 				
-				if (!settings.isShowLevelDebug() && !level.getVisibilityStore().isTileDiscovered(x, y)) {
+				if (!settings.isShowLevelDebug() && !level.visibilityStore.isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					if (extra) {
@@ -75,7 +75,7 @@ public class LevelComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * 0.25f);
 			
-			if (!level.getVisibilityStore().isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!level.visibilityStore.isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
 			}
 			
@@ -118,7 +118,7 @@ public class LevelComponent extends RendererComponent {
 		
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() == null) {
 					continue;
@@ -149,7 +149,7 @@ public class LevelComponent extends RendererComponent {
 		findTilePooledParticles();
 		
 		if (settings.isShowLevelDebug()) {
-			level.getVisibilityStore().seeAll();
+			level.visibilityStore.seeAll();
 		}
 	}
 }

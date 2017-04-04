@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class PlayerLoot implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> containerEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
+		List<Entity> containerEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(EntityHelper::hasContainer)
 			.collect(Collectors.toList());
@@ -22,7 +22,7 @@ public class PlayerLoot implements PlayerVisitor {
 			return;
 		}
 		
-		player.getDungeon().getTurnSystem().turn(player.getDungeon());
+		player.getDungeon().turnSystem.turn(player.getDungeon());
 		
 		Entity containerEntity = containerEntities.get(0);
 
@@ -35,7 +35,7 @@ public class PlayerLoot implements PlayerVisitor {
 			}
 
 			l.getLootSuccessString().ifPresent(s -> player.getDungeon().log(s));
-			player.getDungeon().getEventSystem().triggerEvent(new ContainerShowEvent(containerEntity));
+			player.getDungeon().eventSystem.triggerEvent(new ContainerShowEvent(containerEntity));
 		} else {
 			player.getDungeon().yellowYou("can't loot that!");
 		}

@@ -51,7 +51,7 @@ public class ActionMelee extends Action {
 		
 		switch (hit.getHitType()) {
 			case JUST_MISS:
-				victim.getDungeon().getEventSystem()
+				victim.getDungeon().eventSystem
 					.triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
 				
 				if (isAttackerPlayer) {
@@ -61,7 +61,7 @@ public class ActionMelee extends Action {
 				}
 				break;
 			case MISS:
-				victim.getDungeon().getEventSystem()
+				victim.getDungeon().eventSystem
 					.triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
 				
 				if (isAttackerPlayer) {

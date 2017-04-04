@@ -122,18 +122,18 @@ public class TurnSystem implements Serialisable {
 	public void turn(boolean isStart) {
 		Level l = dungeon.getLevel();
 		Player p = dungeon.getPlayer();
-		EventSystem ev = dungeon.getEventSystem();
-		EntityStore es = l.getEntityStore();
+		EventSystem ev = dungeon.eventSystem;
+		EntityStore es = l.entityStore;
 		
 		if (!p.isAlive()) {
-			dungeon.getEventSystem().triggerTurnCompleteEvents();
+			dungeon.eventSystem.triggerTurnCompleteEvents();
 			return;
 		}
 		
 		ev.triggerEvent(new BeforeTurnEvent(turn + 1));
 		somethingHappened = false;
 		
-		l.getEntityStore().processEntityQueues(!isStart);
+		l.entityStore.processEntityQueues(!isStart);
 		
 		p.setMovementPoints(p.getMovementPoints() - Dungeon.NORMAL_SPEED);
 		
@@ -190,8 +190,8 @@ public class TurnSystem implements Serialisable {
 		
 		es.processEntityQueues(!isStart);
 		
-		l.getVisibilityStore().updateSight(dungeon.getPlayer());
-		l.getLightStore().buildLight(false);
+		l.visibilityStore.updateSight(dungeon.getPlayer());
+		l.lightStore.buildLight(false);
 		
 		ev.triggerTurnCompleteEvents();
 		
@@ -205,7 +205,7 @@ public class TurnSystem implements Serialisable {
 	public boolean moveEntities() {
 		AtomicBoolean somebodyCanMove = new AtomicBoolean(false);
 		
-		dungeon.getLevel().getEntityStore().getEntities().stream()
+		dungeon.getLevel().entityStore.getEntities().stream()
 			.filter(e -> e instanceof EntityTurnBased)
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < Dungeon.NORMAL_SPEED))
@@ -240,10 +240,10 @@ public class TurnSystem implements Serialisable {
 		}
 		
 		if (
-			l.getEntityStore().getHostileMonsters().size() < Math.abs(l.getDepth() * 2 + 10) &&
+			l.entityStore.getHostileMonsters().size() < Math.abs(l.getDepth() * 2 + 10) &&
 			--monsterSpawnCounter <= 0
 		) {
-			l.getMonsterSpawner().spawnNewMonsters();
+			l.monsterSpawner.spawnNewMonsters();
 			
 			monsterSpawnCounter = RandomUtils.random(PROBABILITY_MONSTER_SPAWN_COUNTER);
 		}
@@ -253,7 +253,7 @@ public class TurnSystem implements Serialisable {
 	 * Emits passive sounds.
 	 */
 	public void emitPassiveSounds() {
-		List<Entity> emitters = dungeon.getLevel().getEntityStore().getEntities().stream()
+		List<Entity> emitters = dungeon.getLevel().entityStore.getEntities().stream()
 			.filter(e -> e instanceof PassiveSoundEmitter)
 			.collect(Collectors.toList());
 		

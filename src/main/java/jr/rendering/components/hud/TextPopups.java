@@ -72,7 +72,7 @@ public class TextPopups implements EventListener {
 	}
 	
 	private void showTextPopup(Point worldPos, String text) {
-		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(worldPos)) {
+		if (dungeon.getLevel().visibilityStore.isTileInvisible(worldPos)) {
 			return;
 		}
 		

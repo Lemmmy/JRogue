@@ -14,7 +14,7 @@ import java.util.Optional;
 public class PlayerPickup implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY());
+		List<Entity> floorEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY());
 		
 		for (Entity entity : floorEntities) {
 			if (entity instanceof EntityItem) { // TODO: Prompt if there are multiple items
@@ -23,8 +23,8 @@ public class PlayerPickup implements PlayerVisitor {
 				
 				if (item instanceof ItemGold) {
 					player.giveGold(stack.getCount());
-					player.getLevel().getEntityStore().removeEntity(entity);
-					player.getDungeon().getTurnSystem().turn(player.getDungeon());
+					player.getLevel().entityStore.removeEntity(entity);
+					player.getDungeon().turnSystem.turn(player.getDungeon());
 					player.getDungeon().You("pick up [YELLOW]%s[].", stack.getName(player, false));
 				} else if (player.getContainer().isPresent()) {
 					Optional<Container.ContainerEntry> result = player.getContainer().get().add(stack);
@@ -34,8 +34,8 @@ public class PlayerPickup implements PlayerVisitor {
 						return;
 					}
 					
-					player.getLevel().getEntityStore().removeEntity(entity);
-					player.getDungeon().getTurnSystem().turn(player.getDungeon());
+					player.getLevel().entityStore.removeEntity(entity);
+					player.getDungeon().turnSystem.turn(player.getDungeon());
 					
 					if (item.isis() || stack.getCount() > 1) {
 						player.getDungeon().You(

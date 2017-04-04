@@ -42,7 +42,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		
 		reflectionShader.setUniformf("u_time", 0.0f);
 		
-		TileType tileAbove = dungeon.getLevel().getTileStore().getTileType(x, y - 1);
+		TileType tileAbove = dungeon.getLevel().tileStore.getTileType(x, y - 1);
 		
 		final boolean doReflect = (tileAbove.getFlags() & TileFlag.DONT_REFLECT) != TileFlag.DONT_REFLECT;
 		final boolean isWall = (tileAbove.getFlags() & TileFlag.WALL) == TileFlag.WALL;
@@ -62,7 +62,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		final float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
 		reflectionShader.setUniformf("u_time", time);
 		
-		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
+		List<Entity> entities = dungeon.getLevel().entityStore.getEntitiesAt(x, y - 1);
 		entities.stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
@@ -70,7 +70,7 @@ public class TileRendererReflective extends TileRendererBasic {
 			.forEach(e -> {
 				if (
 					!e.isStatic() &&
-					e.getLevel().getVisibilityStore().isTileInvisible(e.getPosition()) &&
+					e.getLevel().visibilityStore.isTileInvisible(e.getPosition()) &&
 					!(e.getLevel().getClimate() == Climate.__)
 				) {
 					return;

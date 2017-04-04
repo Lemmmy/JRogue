@@ -46,25 +46,25 @@ public class PlayerDefaultEvents implements EventListener {
 				
 				for (int i = 0; i < 15; i++) {
 					if (i != 0) {
-						player.getDungeon().getTurnSystem().setDoingBulkAction(true);
+						player.getDungeon().turnSystem.setDoingBulkAction(true);
 					}
 					
 					player.setAction(new ActionKick(new VectorInt(dx, dy), null));
-					player.getDungeon().getTurnSystem().turn(player.getDungeon());
+					player.getDungeon().turnSystem.turn(player.getDungeon());
 					
 					if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
-						player.getDungeon().getTurnSystem().setDoingBulkAction(false);
+						player.getDungeon().turnSystem.setDoingBulkAction(false);
 						return;
 					}
 					
-					if (player.getDungeon().getTurnSystem().isSomethingHappened()) {
-						player.getDungeon().getTurnSystem().setDoingBulkAction(false);
+					if (player.getDungeon().turnSystem.isSomethingHappened()) {
+						player.getDungeon().turnSystem.setDoingBulkAction(false);
 						player.getDungeon().log("You stop kicking the door.");
 						return;
 					}
 				}
 				
-				player.getDungeon().getTurnSystem().setDoingBulkAction(false);
+				player.getDungeon().turnSystem.setDoingBulkAction(false);
 				
 				player.getDungeon().log("Unable to kick the door down after 15 turns.");
 			}

@@ -48,7 +48,7 @@ public class LightingComponent extends RendererComponent {
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
@@ -81,7 +81,7 @@ public class LightingComponent extends RendererComponent {
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);

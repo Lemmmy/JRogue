@@ -25,7 +25,9 @@ public class VisibilityStore implements Serialisable {
 		
 		width = level.getWidth();
 		height = level.getHeight();
-		
+	}
+	
+	public void initialise() {
 		discoveredTiles = new Boolean[width * height];
 		visibleTiles = new Boolean[width * height];
 		
@@ -98,7 +100,7 @@ public class VisibilityStore implements Serialisable {
 		
 		visibleTiles[y * width + x] = true;
 		
-		level.getEntityStore().getEntities().stream()
+		level.entityStore.getEntities().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)
 			.forEach(e -> {
 				e.setLastSeenX(x);
@@ -124,7 +126,7 @@ public class VisibilityStore implements Serialisable {
 				double a = Math.toRadians(r);
 				int dx = (int) Math.floor(x + i * Math.cos(a));
 				int dy = (int) Math.floor(y + i * Math.sin(a));
-				TileType type = level.getTileStore().getTileType(dx, dy);
+				TileType type = level.tileStore.getTileType(dx, dy);
 				
 				if (type == TileType.TILE_CORRIDOR) {
 					corridorVisibility += 1;

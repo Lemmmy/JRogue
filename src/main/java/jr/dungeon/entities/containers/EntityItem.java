@@ -74,11 +74,11 @@ public class EntityItem extends Entity {
 				e.getKicker().addStatusEffect(new MercuryPoisoning());
 			}
 			
-			getLevel().getEntityStore().removeEntity(this);
+			getLevel().entityStore.removeEntity(this);
 			return;
 		}
 		
-		TileType tile = getLevel().getTileStore().getTileType(x, y);
+		TileType tile = getLevel().tileStore.getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
@@ -97,11 +97,11 @@ public class EntityItem extends Entity {
 	@EventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
 		if (event.isNew()) {
-			getDungeon().getEventSystem().triggerEvent(new ItemDroppedEvent(this));
+			getDungeon().eventSystem.triggerEvent(new ItemDroppedEvent(this));
 			
-			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
+			getLevel().entityStore.getEntitiesAt(getX(), getY()).stream()
 				.filter(e -> !e.equals(this))
-				.forEach(e -> getDungeon().getEventSystem().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+				.forEach(e -> getDungeon().eventSystem.triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
 		}
 	}
 	

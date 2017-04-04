@@ -37,7 +37,7 @@ public class TileRendererLadder extends TileRendererBasic {
 	}
 	
 	public TileRenderer getFloorRenderer(Dungeon dungeon, int x, int y) {
-		TileType t = Arrays.stream(dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y))
+		TileType t = Arrays.stream(dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y))
 			.filter(TileType::isFloor)
 			.findAny()
 			.orElse(TileType.TILE_ROOM_FLOOR);

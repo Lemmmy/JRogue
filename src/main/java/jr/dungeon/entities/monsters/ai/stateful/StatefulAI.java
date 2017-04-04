@@ -113,7 +113,7 @@ public class StatefulAI extends AI {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (getMonster().getLevel().getTileStore().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
+			if (getMonster().getLevel().tileStore.getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				return false;
 			}
 		}
@@ -184,7 +184,7 @@ public class StatefulAI extends AI {
 		currentState = AIState.createFromJSON(obj.getJSONObject("currentState"), this);
 		
 		if (obj.has("currentTarget")) {
-			currentTarget = (EntityLiving) getMonster().getLevel().getEntityStore().getEntityByUUID(obj.optString("currentTarget"));
+			currentTarget = (EntityLiving) getMonster().getLevel().entityStore.getEntityByUUID(obj.optString("currentTarget"));
 
 			if (obj.has("targetLastPos")) {
 				JSONObject serialisedPoint = obj.getJSONObject("targetLastPos");

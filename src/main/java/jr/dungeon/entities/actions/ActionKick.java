@@ -89,8 +89,8 @@ public class ActionKick extends Action {
 		int x = pos.getX();
 		int y = pos.getY();
 
-		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
-		TileType tileType = entity.getLevel().getTileStore().getTileType(x, y);
+		Tile tile = entity.getLevel().tileStore.getTile(x, y);
+		TileType tileType = entity.getLevel().tileStore.getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
@@ -122,6 +122,6 @@ public class ActionKick extends Action {
 			return;
 		}
 		
-		kicker.getDungeon().getEventSystem().triggerEvent(new EntityKickedTileEvent(kicker, tile));
+		kicker.getDungeon().eventSystem.triggerEvent(new EntityKickedTileEvent(kicker, tile));
 	}
 }

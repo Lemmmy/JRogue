@@ -75,6 +75,6 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 			// TODO: regular item throwing
 		}
 		
-		player.getDungeon().getTurnSystem().turn(player.getDungeon());
+		player.getDungeon().turnSystem.turn(player.getDungeon());
 	}
 }

@@ -47,7 +47,7 @@ public class DebugWindow extends PopupWindow {
 		seeAllButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				getLevel().getVisibilityStore().seeAll();
+				getLevel().visibilityStore.seeAll();
 			}
 		});
 		getWindow().getContentTable().add(seeAllButton).width(50f);

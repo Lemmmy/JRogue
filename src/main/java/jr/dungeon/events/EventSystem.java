@@ -72,7 +72,7 @@ public class EventSystem {
 		listeners.forEach(l -> fetchEventMethods(handlers, l, event, invocationTime));
 		
 		if (dungeon.getLevel() != null) {
-			dungeon.getLevel().getEntityStore().getEntities().forEach(e -> {
+			dungeon.getLevel().entityStore.getEntities().forEach(e -> {
 				fetchEventMethods(handlers, e, event, invocationTime);
 				
 				e.getSubListeners().forEach(l2 -> {

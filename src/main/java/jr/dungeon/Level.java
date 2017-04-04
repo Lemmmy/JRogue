@@ -8,6 +8,7 @@ import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Persisting;
 import jr.utils.Serialisable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -37,11 +38,11 @@ public class Level implements Serialisable, Persisting {
 	
 	@Setter private String levelName;
 	
-	private TileStore tileStore;
-	private EntityStore entityStore;
-	private LightStore lightStore;
-	private VisibilityStore visibilityStore;
-	private MonsterSpawner monsterSpawner;
+	@Getter(AccessLevel.NONE) public final TileStore tileStore;
+	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
+	@Getter(AccessLevel.NONE) public final LightStore lightStore;
+	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
+	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
 	
 	private JSONObject persistence;
 
@@ -73,21 +74,27 @@ public class Level implements Serialisable, Persisting {
 		this.height = height;
 		
 		this.depth = depth;
+		
+		tileStore = new TileStore();
+		entityStore = new EntityStore(this);
+		visibilityStore = new VisibilityStore(this);
+		lightStore = new LightStore(this);
+		monsterSpawner = new MonsterSpawner(this);
 	}
 
 	/**
 	 * Initialises the Level, including the initialisation of its stores.
 	 */
 	private void initialise() {
-		tileStore = new TileStore(this);
-		entityStore = new EntityStore(this);
-		visibilityStore = new VisibilityStore(this);
-		lightStore = new LightStore(this);
-		monsterSpawner = new MonsterSpawner(this);
-
+		tileStore.initialise(this);
+		entityStore.initialise();
+		visibilityStore.initialise();
+		lightStore.initialise();
+		monsterSpawner.initialise();
+		
 		lightStore.initialiseLight();
 		
-		turnCreated = dungeon.getTurnSystem().getTurn();
+		turnCreated = dungeon.turnSystem.getTurn();
 
 		persistence = new JSONObject();
 	}
@@ -112,9 +119,9 @@ public class Level implements Serialisable, Persisting {
 				}
 				
 				climate = generator.getClimate();
-				getMonsterSpawner().setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
+				monsterSpawner.setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
 				
-				getLightStore().buildLight(true);
+				lightStore.buildLight(true);
 				
 				gotLevel = true;
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -122,7 +129,7 @@ public class Level implements Serialisable, Persisting {
 			}
 		} while (!gotLevel);
 		
-		getMonsterSpawner().spawnMonsters();
+		monsterSpawner.spawnMonsters();
 	}
 
 	/**
@@ -190,7 +197,7 @@ public class Level implements Serialisable, Persisting {
 			JRogue.getLogger().error(e);
 		}
 		
-		dungeon.getEventSystem().triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
+		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
 
 		unserialisePersistence(obj);
 	}

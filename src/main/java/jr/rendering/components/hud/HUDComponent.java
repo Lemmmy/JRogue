@@ -161,7 +161,7 @@ public class HUDComponent extends RendererComponent {
 		root.top();
 		stage.addActor(root);
 		
-		dungeon.getEventSystem().addListener(new TextPopups(this));
+		dungeon.eventSystem.addListener(new TextPopups(this));
 	}
 	
 	@Override
@@ -233,7 +233,7 @@ public class HUDComponent extends RendererComponent {
 			return;
 		}
 		
-		dungeon.getLevel().getEntityStore().getEntities().stream()
+		dungeon.getLevel().entityStore.getEntities().stream()
 			.filter(Monster.class::isInstance)
 			.map(e -> (Monster) e)
 			.filter(m -> m.getAI() != null)
@@ -333,7 +333,7 @@ public class HUDComponent extends RendererComponent {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 		
-		int sheetX = player.getLevel().getTileStore().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
+		int sheetX = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 		
 		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
 			false)));
@@ -357,7 +357,7 @@ public class HUDComponent extends RendererComponent {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
 		
-		log.add(new LogEntry(dungeon.getTurnSystem().getTurn(), entry));
+		log.add(new LogEntry(dungeon.turnSystem.getTurn(), entry));
 		
 		gameLog.clearChildren();
 		
@@ -365,7 +365,7 @@ public class HUDComponent extends RendererComponent {
 		
 		for (int i = 0; i < logSize; i++) {
 			LogEntry logEntry = log.get(log.size() - (logSize - i));
-			String text = logEntry.getTurn() != dungeon.getTurnSystem().getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
+			String text = logEntry.getTurn() != dungeon.turnSystem.getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
 			
 			Label newEntry = new Label(text, skin, "default");
 			gameLog.add(newEntry).left().growX();

@@ -34,7 +34,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	}
 	
 	private Node analyseDungeon() {
-		UUID firstLevelUUID = UUID.fromString(dungeon.getSerialiser().getPersistence().getString("firstLevel"));
+		UUID firstLevelUUID = UUID.fromString(dungeon.serialiser.getPersistence().getString("firstLevel"));
 		Level firstLevel = dungeon.getLevelFromUUID(firstLevelUUID);
 		
 		Node rootNode = new Node(firstLevel, null);
@@ -50,7 +50,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	}
 	
 	private void initialiseNodes(Node node) {
-		Arrays.stream(node.level.getTileStore().getTiles())
+		Arrays.stream(node.level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 			.filter(t -> t.hasState() && t.getState() instanceof TileStateClimbable)
 			.forEach(t -> {

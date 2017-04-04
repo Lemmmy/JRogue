@@ -48,7 +48,7 @@ public class StateFlee extends AIState {
 		if (safePoint.isPresent()) {
 			return safePoint.get();
 		} else {
-			return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
+			return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
 				.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 				.map(Tile::getPosition)
 				.collect(Collectors.toList()));

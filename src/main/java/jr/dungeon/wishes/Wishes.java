@@ -66,14 +66,14 @@ public class Wishes {
 		// Basic wishes
 		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0));
 		registerWish("kill\\s+all", (d, p, a) ->
-			d.getLevel().getEntityStore().getEntities().stream()
+			d.getLevel().entityStore.getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.map(e -> (EntityLiving) e)
 				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
 		registerWish("(?:us|upstairs)", (d, p, a) ->
-			Arrays.stream(p.getLevel().getTileStore().getTiles())
+			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
 				.findFirst().ifPresent(t -> {
 					p.defaultVisitors.teleport(t.getX(), t.getY());
@@ -81,7 +81,7 @@ public class Wishes {
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
 		registerWish("(?:ds|downstairs)", (d, p, a) ->
-			Arrays.stream(p.getLevel().getTileStore().getTiles())
+			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst().ifPresent(t -> {
 					p.defaultVisitors.teleport(t.getX(), t.getY());
@@ -99,12 +99,12 @@ public class Wishes {
 			
 			for (int i = 0; i < 7; i++) {
 				if (firstSewerDown.get() == null) {
-					Arrays.stream(p.getLevel().getTileStore().getTiles())
+					Arrays.stream(p.getLevel().tileStore.getTiles())
 						.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
 						.findFirst().ifPresent(firstSewerDown::set);
 				}
 				
-				Arrays.stream(p.getLevel().getTileStore().getTiles())
+				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 					.findFirst().ifPresent(t -> {
 						p.defaultVisitors.teleport(t.getX(), t.getY());
@@ -118,7 +118,7 @@ public class Wishes {
 				
 				d.changeLevel(fsdt.getLevel(), fsdt.getPosition());
 				
-				Arrays.stream(p.getLevel().getTileStore().getTiles())
+				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
 					.findFirst().ifPresent(t -> {
 						p.defaultVisitors.teleport(t.getX(), t.getY());
@@ -127,7 +127,7 @@ public class Wishes {
 					});
 				
 				for (int i = 0; i < 7; i++) {
-					Arrays.stream(p.getLevel().getTileStore().getTiles())
+					Arrays.stream(p.getLevel().tileStore.getTiles())
 						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 						.findFirst().ifPresent(t -> {
 							p.defaultVisitors.teleport(t.getX(), t.getY());
@@ -204,7 +204,7 @@ public class Wishes {
 
 			if (item != null && p.getContainer().isPresent()) {
 				p.getContainer().get().add(new ItemStack(item));
-				d.getTurnSystem().turn(d);
+				d.turnSystem.turn(d);
 			}
 		});
 

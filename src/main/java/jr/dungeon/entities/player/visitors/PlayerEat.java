@@ -14,7 +14,7 @@ import java.util.Optional;
 public class PlayerEat extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY());
+		List<Entity> floorEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY());
 		
 		Optional<Entity> floorFood = floorEntities.stream()
 			/* health and safety note: floor food is dangerous */
@@ -49,7 +49,7 @@ public class PlayerEat extends PlayerItemVisitor {
 				}
 				
 				if (stack.getCount() == 1) {
-					entity.getLevel().getEntityStore().removeEntity(entity);
+					entity.getLevel().entityStore.removeEntity(entity);
 				} else {
 					stack.subtractCount(1);
 				}
@@ -65,7 +65,7 @@ public class PlayerEat extends PlayerItemVisitor {
 						new ItemStack(item, 1)
 					);
 					
-					player.getLevel().getEntityStore().addEntity(newStack);
+					player.getLevel().entityStore.addEntity(newStack);
 				}
 			}
 		}));
@@ -104,22 +104,22 @@ public class PlayerEat extends PlayerItemVisitor {
 	private void eatTurns(Player player, ItemComestible item) {
 		for (int i = 0; i < 15; i++) {
 			if (i != 0) {
-				player.getDungeon().getTurnSystem().setDoingBulkAction(true);
+				player.getDungeon().turnSystem.setDoingBulkAction(true);
 			}
 			
 			player.setAction(new ActionEat(item,null));
-			player.getDungeon().getTurnSystem().turn(player.getDungeon());
+			player.getDungeon().turnSystem.turn(player.getDungeon());
 			
 			if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
 				break;
 			}
 			
-			if (player.getDungeon().getTurnSystem().isSomethingHappened()) {
+			if (player.getDungeon().turnSystem.isSomethingHappened()) {
 				player.getDungeon().log("You stop eating.");
 				break;
 			}
 		}
 		
-		player.getDungeon().getTurnSystem().setDoingBulkAction(false);
+		player.getDungeon().turnSystem.setDoingBulkAction(false);
 	}
 }

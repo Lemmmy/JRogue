@@ -66,7 +66,7 @@ public abstract class Monster extends EntityLiving {
 		if (e.isAttackerPlayer()) {
 			if (
 				e.getAttacker().getLevel() == getLevel() &&
-				e.getAttacker().getLevel().getVisibilityStore().isTileVisible(getX(), getY())
+				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
 			) {
 				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
 			} else {

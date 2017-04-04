@@ -67,7 +67,7 @@ public class Player extends EntityLiving {
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
 		
-		dungeon.getEventSystem().addListener(new PlayerDefaultEvents());
+		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
 	}
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
@@ -109,7 +109,7 @@ public class Player extends EntityLiving {
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 		
-		dungeon.getEventSystem().addListener(new PlayerDefaultEvents());
+		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class Player extends EntityLiving {
 		int newEnergy = this.energy;
 		
 		if (oldEnergy != newEnergy) {
-			getDungeon().getEventSystem()
+			getDungeon().eventSystem
 				.triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
 		}
 	}
@@ -251,7 +251,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getLightLevel() {
-		return getLevel().getTileStore().getTile(getX(), getY()).getLightIntensity();
+		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
 	}
 	
 	public int getCorridorVisibilityRange() {
@@ -294,7 +294,7 @@ public class Player extends EntityLiving {
 	@EventHandler(selfOnly = true)
 	private void onHealthChanged(EntityHealthChangedEvent event) {
 		if (event.getOldHealth() > event.getNewHealth()) {
-			getDungeon().getTurnSystem().markSomethingHappened();
+			getDungeon().turnSystem.markSomethingHappened();
 		}
 	}
 	

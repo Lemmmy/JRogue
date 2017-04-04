@@ -40,7 +40,7 @@ public class Ablaze extends StatusEffect {
 		if (getEntity() instanceof EntityLiving) {
 			EntityLiving el = (EntityLiving) getEntity();
 
-			if (el.getLevel().getTileStore().getTileType(el.getX(), el.getY()).isWater()) {
+			if (el.getLevel().tileStore.getTileType(el.getX(), el.getY()).isWater()) {
 				putOut = true;
 				setTurnsPassed(getDuration());
 				getMessenger().greenYou("douse the flames in the water!");
