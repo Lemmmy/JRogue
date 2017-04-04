@@ -144,6 +144,8 @@ public class Dungeon implements Messenger {
 	
 	/**
 	 * Randomly generates a level and switches the dungeon to it.
+	 *
+	 * @return The level that was generated.
 	 */
 	public Level generateFirstLevel() {
 		this.originalName = DungeonNameGenerator.generate();

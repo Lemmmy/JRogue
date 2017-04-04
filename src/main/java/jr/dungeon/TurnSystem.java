@@ -4,6 +4,7 @@ import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
+import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.BeforeTurnEvent;
@@ -113,8 +114,10 @@ public class TurnSystem implements Serialisable {
 	
 	/**
 	 * Triggers the next turn, increasing the turn counter, and updating all entities.
-	 * @param isStart
 	 *
+	 * @param isStart Whether or not this turn occurs during the start of a new level, or after loading a level. This
+	 *                  is used to ensure that when processing entity queues, isNew is correctly passed to
+	 *                  {@link EntityAddedEvent EntityAddedEvents}.
 	 */
 	public void turn(boolean isStart) {
 		Level l = dungeon.getLevel();
