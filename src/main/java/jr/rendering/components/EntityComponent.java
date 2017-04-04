@@ -198,6 +198,7 @@ public class EntityComponent extends RendererComponent {
 		animationValues.clear();
 	}
 	
+	@EventHandler()
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		
