@@ -136,7 +136,7 @@ public class DeathScreen extends ScreenAdapter {
 			dungeon.getName()
 		), skin);
 		deathLocationLabel.setAlignment(Align.center);
-		container.add(deathLocationLabel).top().padBottom(8).row();
+		container.add(deathLocationLabel).top().padBottom(4).row();
 		
 		String deathCauseString = "";
 		
