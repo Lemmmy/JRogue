@@ -199,11 +199,9 @@ public class DeathScreen extends ScreenAdapter {
 	}
 	
 	private void initDungeonScreen(Table container) {
-		container.debugAll();
 		DungeonOverviewPartial dungeonOverview = new DungeonOverviewPartial(skin, dungeon);
 		ScrollPane dungeonOverviewScrollPane = new ScrollPane(dungeonOverview, skin);
 		container.add(dungeonOverviewScrollPane).top().left().grow().row();
-		dungeonOverviewScrollPane.debugAll();
 	}
 	
 	private void initBottomButtons(Table container) {

@@ -20,5 +20,6 @@ public class UISkin extends Skin {
 		UIListStyles.add(this);
 		UIWindowStyles.add(this);
 		UISplitterStyles.add(this);
+		UIDungeonOverviewStyles.add(this);
 	}
 }

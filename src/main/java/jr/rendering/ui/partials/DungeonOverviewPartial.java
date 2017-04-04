@@ -4,18 +4,30 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.generators.Climate;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.states.TileStateClimbable;
+import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DungeonOverviewPartial extends WidgetGroup {
-	private static final int NODE_WIDTH = 125;
-	private static final int NODE_PADDING = 20;
+	private static final int NODE_WIDTH = 200;
+	private static final int NODE_SPACING = 20;
+	
+	private static final Map<Climate, String> climateDrawableMap = new HashMap<>();
+	
+	static {
+		climateDrawableMap.put(Climate.WARM, "warm");
+		climateDrawableMap.put(Climate.MID, "mid");
+		climateDrawableMap.put(Climate.COLD, "cold");
+	}
 	
 	private Skin skin;
 	
@@ -82,7 +94,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			node.getPreviousSibling().ifPresent(previousNode -> node.x = previousNode.x + 1);
 		} else if (node.children.size() == 1) {
 			if (node.getPreviousSibling().isPresent()) {
-				node.x = node.getPreviousSibling().get().x + 1;
+				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING;
 				node.mod = node.x - node.children.get(0).x;
 			} else {
 				node.x = node.children.get(0).x;
@@ -93,7 +105,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			float mid = (leftX + rightX) / 2;
 			
 			if (node.getPreviousSibling().isPresent()) {
-				node.x = node.getPreviousSibling().get().x + 1;
+				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING;
 				node.mod = node.x - mid;
 			} else {
 				node.x = mid;
@@ -151,7 +163,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		int leftIndex = leftNode.parent.children.indexOf(leftNode);
 		int rightIndex = leftNode.parent.children.indexOf(rightNode);
 		
-		int nodesBetween = (rightIndex - leftIndex) - 1;
+		int nodesBetween = rightIndex - leftIndex - 1;
 		
 		if (nodesBetween > 0) {
 			float distanceBetweenNodes = (leftNode.x - rightNode.x) / (nodesBetween + 1);
@@ -161,7 +173,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			for (int i = leftIndex + 1; i < rightIndex; i++) {
 				Node middleNode = leftNode.parent.children.get(i);
 				
-				float desiredX = rightNode.x + (distanceBetweenNodes * count);
+				float desiredX = rightNode.x + distanceBetweenNodes * count;
 				float offset = desiredX - middleNode.x;
 				middleNode.x += offset;
 				middleNode.mod += offset;
@@ -215,25 +227,43 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		addTreePart(rootNode);
 		
 		height += rowHeights.values().stream().mapToInt(Integer::intValue).sum();
-		height += rowHeights.size() * (NODE_PADDING * 2);
+		height += rowHeights.size() * NODE_SPACING * 2;
 		
 		positionTreePart(rootNode);
-		
-		System.out.println(rootNode);
+	}
+	
+	private Drawable getNodeBackground(Level level) {
+		if (climateDrawableMap.containsKey(level.getClimate())) {
+			return skin.get(climateDrawableMap.get(level.getClimate()), NinePatchDrawable.class);
+		} else {
+			return skin.get(climateDrawableMap.get(Climate.WARM), NinePatchDrawable.class);
+		}
 	}
 	
 	private void addTreePart(Node node) {
 		Table nodeTable = new Table(skin);
 		node.table = nodeTable;
 		
-		nodeTable.add(new Label(node.level.toString(), skin));
+		nodeTable.add(new Label(node.level.toString(), skin, "large"));
+		nodeTable.setBackground(getNodeBackground(node.level));
 		
+		if (
+			node.level.getPersistence().has("generatorPersistence") &&
+			node.level.getPersistence().getJSONObject("generatorPersistence").has("roomFeatures")
+		) {
+			JSONObject generatorPersistence = node.level.getPersistence().getJSONObject("generatorPersistence");
+			JSONObject roomFeatures = generatorPersistence.getJSONObject("roomFeatures");
+			
+			Table featuresTable = new Table(skin);
+		}
+		
+		nodeTable.setX(node.x);
+		nodeTable.pack();
 		nodeTable.setWidth(NODE_WIDTH);
 		nodeTable.layout();
-		nodeTable.setX(node.x * NODE_WIDTH);
 		
-		if (width < (node.x * (NODE_WIDTH + NODE_PADDING)) + (NODE_PADDING * 2)) {
-			width = (int) ((node.x * (NODE_WIDTH + NODE_PADDING)) + (NODE_PADDING * 2));
+		if (width < node.x) {
+			width = (int) node.x;
 		}
 		
 		if (nodeTable.getPrefHeight() > rowHeights.getOrDefault(node.depth, 0)) {
@@ -252,7 +282,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		int tableHeight = (int) nodeTable.getPrefHeight();
 		int localY = rowHeight - tableHeight / 2;
 		
-		nodeTable.setY(height - ((node.depth * (rowHeight + NODE_PADDING)) + localY));
+		nodeTable.setY(height - (node.depth * (rowHeight + NODE_SPACING * 2) + localY));
 		
 		node.children.forEach(this::positionTreePart);
 	}
