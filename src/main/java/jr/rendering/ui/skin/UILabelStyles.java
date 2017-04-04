@@ -15,14 +15,8 @@ public class UILabelStyles {
 		addSimpleStyle(skin, "large", "large");
 		addSimpleStyle(skin, "windowStyle", "default", Color.WHITE, null);
 		addSimpleStyle(skin, "windowStyleMarkup", "default");
-		addSimpleStyle(skin, "windowStyleLoweredMarkup", "default", null, new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
-			1, 1, 1, 1
-		));
-		addSimpleStyle(skin, "windowStyleRaisedMarkup", "default", null, new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
-			1, 1, 1, 1
-		));
+		addSimpleStyle(skin, "windowStyleLoweredMarkup", "default", null, getLoweredWindowDrawable());
+		addSimpleStyle(skin, "windowStyleRaisedMarkup", "default", null, getRaisedWindowDrawable());
 	}
 	
 	public static void addSimpleStyle(Skin skin, String name, String font) {
@@ -43,5 +37,19 @@ public class UILabelStyles {
 		}
 		
 		skin.add(name, labelStyle);
+	}
+	
+	public static Drawable getLoweredWindowDrawable() {
+		return new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
+			1, 1, 1, 1
+		);
+	}
+	
+	public static Drawable getRaisedWindowDrawable() {
+		return new TiledNinePatchDrawable(
+			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
+			1, 1, 1, 1
+		);
 	}
 }
