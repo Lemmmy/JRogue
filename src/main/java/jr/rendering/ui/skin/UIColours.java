@@ -46,7 +46,7 @@ public class UIColours {
 		Colors.put("P_PINK_4", new Color(0xf356e6ff));
 	}
 	
-	public static void addColours(Skin skin) {
+	public static void add(Skin skin) {
 		Colors.getColors().forEach(stringColorEntry -> addColour(
 			skin,
 			stringColorEntry.key.toLowerCase().replace("p_", ""),

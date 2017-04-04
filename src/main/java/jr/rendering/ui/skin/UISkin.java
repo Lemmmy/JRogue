@@ -18,58 +18,18 @@ public class UISkin extends Skin {
 	public UISkin() {
 		instance = this;
 		
-		UIColours.addColours(this);
-		UIFonts.addFonts(this);
-		UILabelStyles.addLabelStyles(this);
-		UIButtonStyles.addButtonStyles(this);
-		UITextButtonStyles.addTextButtonStyles(this);
-		addContainerButtonStyle();
-		addTextFieldStyle();
+		UIColours.add(this);
+		UIFonts.add(this);
+		UILabelStyles.add(this);
+		UIButtonStyles.add(this);
+		UITextButtonStyles.add(this);
+		UIContainerButtonStyles.add(this);
+		UITextFieldStyle.add(this);
 		addListStyle();
 		addScrollPaneStyle();
 		addSelectBoxStyle();
 		addWindowStyle();
 		addSplitterStyles();
-	}
-	
-	private void addContainerButtonStyle() {
-		Button.ButtonStyle containerButtonStyle = new Button.ButtonStyle();
-		
-		containerButtonStyle.disabled = containerButtonStyle.up = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 108, 44, 7, 7),
-			3, 3, 3, 3
-		));
-		containerButtonStyle.over = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 116, 44, 7, 7),
-			3, 3, 3, 3
-		));
-		containerButtonStyle.down = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 122, 44, 7, 7),
-			3, 3, 3, 3
-		));
-		
-		add("containerEntry", containerButtonStyle);
-	}
-	private void addTextFieldStyle() {
-		TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-		
-		textFieldStyle.background = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
-			4, 5, 5, 6
-		));
-		textFieldStyle.focusedBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 148, 31, 10, 12),
-			4, 5, 5, 6
-		));
-		textFieldStyle.disabledBackground = new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 158, 31, 10, 12),
-			4, 5, 5, 6
-		));
-		
-		textFieldStyle.font = getFont("defaultNoShadow");
-		textFieldStyle.fontColor = Colors.get("WHITE");
-		
-		add("default", textFieldStyle);
 	}
 	
 	private void addListStyle() {

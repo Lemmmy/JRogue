@@ -8,7 +8,7 @@ import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
 public class UILabelStyles {
-	public static void addLabelStyles(Skin skin) {
+	public static void add(Skin skin) {
 		addSimpleStyle(skin, "default", "default");
 		addSimpleStyle(skin, "redBackground", "default", "redBackground");
 		addSimpleStyle(skin, "greenBackground", "default", "greenBackground");

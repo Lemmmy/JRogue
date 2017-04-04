@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
 public class UIButtonStyles {
-	public static void addButtonStyles(Skin skin) {
+	public static void add(Skin skin) {
 		skin.add("default", getButtonStyle());
 		skin.add("checkable", getCheckableButtonStyle());
 	}
