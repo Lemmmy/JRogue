@@ -135,8 +135,6 @@ public class EntityComponent extends RendererComponent {
 							// TODO: more type merging here
 							
 							if (v instanceof Float) {
-								System.out.println("its a float");
-								
 								float oldV = (float) originalValueMap.get(k);
 								float newV = (float) newValueMap.get(k);
 								
