@@ -584,6 +584,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 
 	/**
 	 * Triggers the next turn, increasing the turn counter, and updating all entities.
+	 *
+	 * @param isStart Whether or not this turn occurs during the start of a new level, or after loading a level. This
+	 *                  is used to ensure that when processing entity queues, isNew is correctly passed to
+	 *                  {@link EntityAddedEvent EntityAddedEvents}.
 	 */
 	public void turn(boolean isStart) {
 		if (!player.isAlive()) {

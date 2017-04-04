@@ -110,6 +110,8 @@ public class EntityStore implements Serialisable {
 	 * Goes through the {@link #entityAddQueue} and {@link #entityRemoveQueue}, adding new {@link Entity Entities} to
 	 * the level and store, and removing ones that should be removed. Queues are processed at the start and end of
 	 * every turn. Queue processing triggers {@link EntityAddedEvent}s and {@link EntityRemovedEvent}s.
+	 *
+	 * @param isNew Whether or not the entities were created, and not just spawned from a new level or unserialisation.
 	 */
 	public void processEntityQueues(boolean isNew) {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
