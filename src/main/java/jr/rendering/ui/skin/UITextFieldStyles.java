@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-public class UITextFieldStyle {
+public class UITextFieldStyles {
 	public static void add(Skin skin) {
 		skin.add("default", getTextFieldStyle(skin));
 	}

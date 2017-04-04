@@ -24,7 +24,7 @@ public class UILabelStyles {
 	}
 	
 	public static void addSimpleStyle(Skin skin, String name, String font, String background) {
-		addSimpleStyle(skin, name, font, null, skin.getDrawable(background));
+		addSimpleStyle(skin, name, font, null, background != null ? skin.getDrawable(background) : null);
 	}
 	
 	public static void addSimpleStyle(Skin skin, String name, String font, Color fontColour, Drawable background) {
