@@ -130,6 +130,14 @@ public class DeathScreen extends ScreenAdapter {
 		deathMessageLabel.setAlignment(Align.center);
 		container.add(deathMessageLabel).top().padBottom(8).row();
 		
+		Label deathLocationLabel = new Label(String.format(
+			"[P_RED]Died in [P_ORANGE_3]%s[], in [P_ORANGE_3]%s[].",
+			dungeon.getLevel().toString(),
+			dungeon.getName()
+		), skin);
+		deathLocationLabel.setAlignment(Align.center);
+		container.add(deathLocationLabel).top().padBottom(8).row();
+		
 		String deathCauseString = "";
 		
 		if (source.getAttacker() != null && !(source.getAttacker() instanceof Player)) {
