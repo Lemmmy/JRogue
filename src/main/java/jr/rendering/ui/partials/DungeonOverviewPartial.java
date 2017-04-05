@@ -238,7 +238,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		node.table = nodeTable;
 		
 		nodeTable.setBackground(getNodeBackground(node.level));
-		nodeTable.add(new Label(node.level.toString(), skin, "large")).row();
+		nodeTable.add(new Label(node.level.toString(), skin, "large")).left().row();
 		
 		if (
 			node.level.getPersistence().has("generatorPersistence") &&
@@ -260,8 +260,9 @@ public class DungeonOverviewPartial extends WidgetGroup {
 					if (name == null) return;
 					
 					Label featureLabel = new Label(String.format(
-						"[P_YELLOW]%,d[] %s",
-						count, name
+						"[P_YELLOW]%s[] %s",
+						count == 1 ? "a" : String.format("%,d", count),
+						name
 					), skin);
 					
 					featuresTable.add(featureLabel).left().row();
@@ -271,6 +272,11 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			});
 			
 			nodeTable.add(featuresTable).left().row();
+		}
+		
+		if (dungeon.getPlayer().getLevel() == node.level) {
+			nodeTable.add(new Label("[WHITE]You died here", skin, "redBackground"))
+				.padTop(4).padBottom(4).growX().row();
 		}
 		
 		nodeTable.setX(node.x);
