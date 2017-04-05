@@ -41,6 +41,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	int height;
 	
 	private Map<Integer, Integer> rowHeights = new HashMap<>();
+	private int yOffset;
 	
 	private Node rootNode;
 	
@@ -314,7 +315,12 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			localY += NODE_SPACING_V + 1;
 		}
 		
-		nodeTable.setY(height - (rowY - localY) - NODE_SPACING_V * 3);
+		if (node.parent == null) {
+			yOffset = height - (height - (rowY - localY));
+			yOffset -= tableHeight;
+		}
+		
+		nodeTable.setY(height - (rowY - localY) + yOffset);
 		
 		node.children.forEach(this::positionTreePart);
 	}
