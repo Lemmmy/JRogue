@@ -303,7 +303,8 @@ public class Dungeon implements Messenger {
 	 * @param wish The wish to make.
 	 */
 	public void wish(String wish) {
-		Wishes.get().makeWish(this, wish);
+		if (!Wishes.get().makeWish(this, wish))
+			log("[RED]One or more wishes have failed.");
 	}
 
 	/**
