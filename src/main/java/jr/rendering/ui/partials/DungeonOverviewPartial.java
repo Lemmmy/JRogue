@@ -260,8 +260,8 @@ public class DungeonOverviewPartial extends WidgetGroup {
 					if (name == null) return;
 					
 					Label featureLabel = new Label(String.format(
-						"[P_YELLOW]%s[] %s",
-						count == 1 ? "a" : String.format("%,d", count),
+						"%s %s",
+						count == 1 ? "a" : String.format("[P_YELLOW]%,d[]", count),
 						name
 					), skin);
 					
