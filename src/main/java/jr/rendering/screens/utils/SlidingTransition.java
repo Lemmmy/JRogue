@@ -1,5 +1,7 @@
 package jr.rendering.screens.utils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
@@ -24,6 +26,8 @@ public class SlidingTransition implements ScreenTransition {
 		float width = oldTex.getWidth();
 		float height = oldTex.getHeight();
 		float x1 = 0f, y1 = 0f, x2 = 0f, y2 = 0f;
+		
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if (interpolation != null) percent = interpolation.apply(percent);
 		
