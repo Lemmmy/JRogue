@@ -136,6 +136,8 @@ public class GameAdapter extends Game {
 		if (screen != null) screen.resize(width, height);
 		if (newScreen != null) newScreen.resize(width, height);
 		
+		batch = new SpriteBatch();
+		
 		oldFBO.dispose();
 		newFBO.dispose();
 		
