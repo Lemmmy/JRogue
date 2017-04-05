@@ -21,9 +21,9 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.rendering.GameAdapter;
 import jr.rendering.screens.utils.SlidingTransition;
-import jr.rendering.ui.skin.UISkin;
 import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.DungeonOverviewPartial;
+import jr.rendering.ui.skin.UISkin;
 import jr.rendering.utils.HUDUtils;
 
 public class DeathScreen extends ScreenAdapter {
@@ -247,7 +247,7 @@ public class DeathScreen extends ScreenAdapter {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 	
 	@Override

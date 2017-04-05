@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Attributes;
@@ -19,8 +20,8 @@ import jr.dungeon.entities.player.roles.Role;
 import jr.rendering.GameAdapter;
 import jr.rendering.entities.RoleMap;
 import jr.rendering.screens.utils.SlidingTransition;
-import jr.rendering.ui.skin.UISkin;
 import jr.rendering.ui.partials.AttributesPartial;
+import jr.rendering.ui.skin.UISkin;
 import org.apache.commons.lang3.StringUtils;
 
 public class CharacterCreationScreen extends ScreenAdapter {
@@ -141,7 +142,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 				roleButtonGroup.add(roleButton);
 				roleContainer.add(roleButton);
 			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
+				ErrorHandler.error("Error in character creation screen", e);
 			}
 		}
 		
@@ -203,7 +204,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 	
 	@Override

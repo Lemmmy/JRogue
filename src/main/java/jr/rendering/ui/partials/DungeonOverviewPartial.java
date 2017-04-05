@@ -1,25 +1,29 @@
 package jr.rendering.ui.partials;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.generators.Climate;
+import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DungeonOverviewPartial extends WidgetGroup {
 	private static final int NODE_WIDTH = 200;
-	private static final int NODE_SPACING = 20;
+	private static final int NODE_SPACING_H = 50;
+	private static final int NODE_SPACING_V = 20;
 	
 	private static final Map<Climate, String> climateDrawableMap = new HashMap<>();
 	
@@ -38,9 +42,15 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	
 	private Map<Integer, Integer> rowHeights = new HashMap<>();
 	
+	private Node rootNode;
+	
+	private Texture whiteTexture;
+	
 	public DungeonOverviewPartial(Skin skin, Dungeon dungeon) {
 		this.skin = skin;
 		this.dungeon = dungeon;
+		
+		whiteTexture = skin.get("white", Texture.class);
 		
 		drawTree(analyseDungeon());
 	}
@@ -49,7 +59,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		UUID firstLevelUUID = UUID.fromString(dungeon.serialiser.getPersistence().getString("firstLevel"));
 		Level firstLevel = dungeon.getLevelFromUUID(firstLevelUUID);
 		
-		Node rootNode = new Node(firstLevel, null);
+		rootNode = new Node(firstLevel, null);
 		
 		initialiseNodes(rootNode);
 		sortChildren(rootNode);
@@ -94,7 +104,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			node.getPreviousSibling().ifPresent(previousNode -> node.x = previousNode.x + 1);
 		} else if (node.children.size() == 1) {
 			if (node.getPreviousSibling().isPresent()) {
-				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING;
+				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING_H;
 				node.mod = node.x - node.children.get(0).x;
 			} else {
 				node.x = node.children.get(0).x;
@@ -105,7 +115,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			float mid = (leftX + rightX) / 2;
 			
 			if (node.getPreviousSibling().isPresent()) {
-				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING;
+				node.x = node.getPreviousSibling().get().x + NODE_WIDTH + NODE_SPACING_H;
 				node.mod = node.x - mid;
 			} else {
 				node.x = mid;
@@ -185,24 +195,6 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		}
 	}
 	
-	private void checkAllChildren(Node node) {
-		Map<Integer, Float> nodeContour = new HashMap<>();
-		getLeftContour(node, 0, nodeContour);
-		
-		AtomicReference<Float> shiftAmount = new AtomicReference<>(0f);
-		
-		nodeContour.forEach((k, v) -> {
-			if (v + shiftAmount.get() < 0) {
-				shiftAmount.set(v * -1);
-			}
-		});
-		
-		if (shiftAmount.get() > 0) {
-			node.x += shiftAmount.get();
-			node.mod += shiftAmount.get();
-		}
-	}
-	
 	private void getLeftContour(Node node, float modSum, Map<Integer, Float> nodeContour) {
 		if (!nodeContour.containsKey(node.depth)) {
 			nodeContour.put(node.depth, node.x + modSum);
@@ -227,7 +219,6 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		addTreePart(rootNode);
 		
 		height += rowHeights.values().stream().mapToInt(Integer::intValue).sum();
-		height += rowHeights.size() * NODE_SPACING * 2;
 		
 		positionTreePart(rootNode);
 	}
@@ -240,12 +231,13 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void addTreePart(Node node) {
 		Table nodeTable = new Table(skin);
 		node.table = nodeTable;
 		
-		nodeTable.add(new Label(node.level.toString(), skin, "large"));
 		nodeTable.setBackground(getNodeBackground(node.level));
+		nodeTable.add(new Label(node.level.toString(), skin, "large")).row();
 		
 		if (
 			node.level.getPersistence().has("generatorPersistence") &&
@@ -255,19 +247,49 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			JSONObject roomFeatures = generatorPersistence.getJSONObject("roomFeatures");
 			
 			Table featuresTable = new Table(skin);
+			
+			roomFeatures.keySet().forEach(k -> {
+				try {
+					Class featureClass = Class.forName(k);
+					SpecialRoomFeature feature = (SpecialRoomFeature) featureClass.newInstance();
+					
+					int count = roomFeatures.getInt(k);
+					String name = feature.getName(count != 1);
+					
+					if (name == null) return;
+					
+					Label featureLabel = new Label(String.format(
+						"[P_YELLOW]%,d[] %s",
+						count, name
+					), skin);
+					
+					featuresTable.add(featureLabel).left().row();
+				} catch (Exception e) {
+					ErrorHandler.error("Error in dungeon overview partial", e);
+				}
+			});
+			
+			nodeTable.add(featuresTable).left().row();
 		}
 		
 		nodeTable.setX(node.x);
 		nodeTable.pack();
+		nodeTable.pad(8);
+		nodeTable.left();
 		nodeTable.setWidth(NODE_WIDTH);
-		nodeTable.layout();
 		
 		if (width < node.x) {
 			width = (int) node.x;
 		}
 		
-		if (nodeTable.getPrefHeight() > rowHeights.getOrDefault(node.depth, 0)) {
-			rowHeights.put(node.depth, (int) nodeTable.getPrefHeight());
+		int prefHeight = (int) (nodeTable.getPrefHeight() + NODE_SPACING_V);
+		
+		if (node.children.size() > 1) {
+			prefHeight += NODE_SPACING_V + 1;
+		}
+		
+		if (prefHeight > rowHeights.getOrDefault(node.depth, 0)) {
+			rowHeights.put(node.depth, prefHeight);
 		}
 		
 		addActor(nodeTable);
@@ -278,13 +300,80 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	private void positionTreePart(Node node) {
 		Table nodeTable = node.table;
 		
+		int rowY = 0;
+		
+		for (int i = node.depth; i > 0; i--) {
+			rowY += rowHeights.get(i);
+		}
+		
 		int rowHeight = rowHeights.get(node.depth);
 		int tableHeight = (int) nodeTable.getPrefHeight();
-		int localY = rowHeight - tableHeight / 2;
+		int localY = (rowHeight - tableHeight) / 2;
 		
-		nodeTable.setY(height - (node.depth * (rowHeight + NODE_SPACING * 2) + localY));
+		if (node.children.size() > 1) {
+			localY += NODE_SPACING_V + 1;
+		}
+		
+		nodeTable.setY(height - (rowY - localY) - NODE_SPACING_V * 3);
 		
 		node.children.forEach(this::positionTreePart);
+	}
+	
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		validate();
+		
+		if (isTransform()) {
+			applyTransform(batch, computeTransform());
+			drawNodeLines(rootNode, batch);
+			resetTransform(batch);
+		} else {
+			drawNodeLines(rootNode, batch);
+		}
+		
+		super.draw(batch, parentAlpha);
+	}
+	
+	private void drawNodeLines(Node node, Batch batch) {
+		node.children.forEach(n -> drawNodeLines(n, batch));
+		
+		if (node.children.size() == 0) return;
+		if (node.children.size() == 1) {
+			Node child = node.children.get(0);
+			
+			int x = (int) (node.table.getX() + NODE_WIDTH / 2);
+			int startY = (int) node.table.getY(); int endY = (int) child.table.getY();
+			int width = 1; int height = endY - startY;
+			
+			batch.draw(whiteTexture, x, startY, width, height);
+		} else {
+			Node firstChild = node.children.get(0);
+			Node lastChild = node.children.get(node.children.size() - 1);
+			
+			// top line stemming from node
+			
+			int x = (int) (node.table.getX() + NODE_WIDTH / 2);
+			int startY = (int) node.table.getY(); int endY = (int) firstChild.table.getY();
+			int width = 1; int height = (int) ((endY + firstChild.table.getPrefHeight() - startY) / 2);
+			
+			batch.draw(whiteTexture, x, startY, width, height);
+			
+			// horizontal line spanning all children
+			
+			int startX = (int) (firstChild.table.getX() + NODE_WIDTH / 2);
+			int endX = (int) (lastChild.table.getX() + NODE_WIDTH / 2);
+			int y = startY + height;
+			width = endX - startX;
+			
+			batch.draw(whiteTexture, startX, y, width + 1, 1);
+			
+			// vertical lines going into children
+			
+			node.children.forEach(child -> {
+				int cx = (int) (child.table.getX() + NODE_WIDTH / 2);
+				batch.draw(whiteTexture, cx, y, 1, height - child.table.getPrefHeight() / 2);
+			});
+		}
 	}
 	
 	@Override
