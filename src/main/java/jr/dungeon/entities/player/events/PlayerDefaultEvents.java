@@ -86,7 +86,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 		
 		if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
 			onPlayerKickedDoor(tile, tileType, player);
-		} else if (tileType.isWallTile()) {
+		} else if (tileType.isWall()) {
 			onPlayerKickedWall(player);
 		} else {
 			player.getDungeon().You("kick it!");

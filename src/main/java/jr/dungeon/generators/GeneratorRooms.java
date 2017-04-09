@@ -678,7 +678,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * not doors, and this tile is not a wall corner.
 	 */
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTileStore().getTileType(x, y).isWallTile()) {
+		if (level.getTileStore().getTileType(x, y).isWall()) {
 			TileType[] adjacentTiles = level.getTileStore().getAdjacentTileTypes(x, y);
 			
 			for (TileType tile : adjacentTiles) {
@@ -702,8 +702,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * @see Orientation
 	 */
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
+		boolean v = adjacentTiles[2].isWall() || adjacentTiles[3].isWall();
 		
 		if (h && !v) {
 			return Orientation.HORIZONTAL;
