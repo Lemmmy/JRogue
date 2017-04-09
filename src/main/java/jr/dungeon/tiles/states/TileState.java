@@ -1,5 +1,6 @@
 package jr.dungeon.tiles.states;
 
+import jr.dungeon.events.DungeonEventListener;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Serialisable;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,7 @@ import org.json.JSONObject;
 
 @Getter
 @AllArgsConstructor
-public abstract class TileState implements Serialisable {
+public abstract class TileState implements Serialisable, DungeonEventListener {
 	private Tile tile;
 	
 	@Override

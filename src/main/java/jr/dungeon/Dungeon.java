@@ -789,6 +789,10 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 					}
 				});
 			});
+			
+			Arrays.stream(level.getTileStore().getTiles())
+				.filter(Tile::hasState)
+				.forEach(t -> invokeEvent(t.getState(), event, invocationTime));
 		}
 	}
 	
