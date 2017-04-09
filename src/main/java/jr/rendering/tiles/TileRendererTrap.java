@@ -26,8 +26,11 @@ public class TileRendererTrap extends TileRenderer {
 			} else {
 				// The player doesn't know that this is a trap, we'll look up the renderer for the disguise and
 				// forward the call to that.
-				TileRenderer renderer = TileMap.valueOf(trap.getDisguise().name()).getRenderer();
-				renderer.draw(batch, dungeon, x, y);
+
+				if (trap.getDisguise() != null) {
+					TileRenderer renderer = TileMap.valueOf(trap.getDisguise().name()).getRenderer();
+					renderer.draw(batch, dungeon, x, y);
+				}
 			}
 		}
 	}
@@ -42,8 +45,10 @@ public class TileRendererTrap extends TileRenderer {
 			if (trap.isIdentified()) {
 				return trapImage;
 			} else {
-				TileRenderer renderer = TileMap.valueOf(trap.getDisguise().name()).getRenderer();
-				return renderer.getTextureRegion(dungeon, x, y);
+				if (trap.getDisguise() != null) {
+					TileRenderer renderer = TileMap.valueOf(trap.getDisguise().name()).getRenderer();
+					return renderer.getTextureRegion(dungeon, x, y);
+				}
 			}
 		}
 

@@ -15,6 +15,7 @@ public class TileStateTrap extends TileState {
 
 	public TileStateTrap(Tile tile) {
 		super(tile);
+		disguise = TileType.TILE_ROOM_RUG;
 	}
 
 	@Override
