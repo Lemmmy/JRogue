@@ -63,8 +63,7 @@ public enum TileType {
 	TILE__FLOOR(34, FLOOR, Solidity.WALK_ON),
 	TILE__BRIDGE(37, FLOOR, Solidity.WALK_ON),
 
-	// TODO: Should this have the INNER_ROOM flag?
-	TILE_TRAP(38, FLOOR | INNER_ROOM, Solidity.WALK_ON, TileStateTrap.class);
+	TILE_TRAP(38, FLOOR, Solidity.WALK_ON, TileStateTrap.class);
 	
 	private short id;
 	private int flags;
