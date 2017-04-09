@@ -5,9 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.Player;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
+import lombok.val;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
@@ -17,16 +25,55 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean mouseMoved = false;
 	
 	private boolean teleporting = false;
+
+	private final Map<Character, BiConsumer<Player, Character>> playerCommands = new HashMap<>();
 	
 	public GameInputProcessor(Dungeon dungeon, Renderer renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
+
+		registerDefaultKeys();
+	}
+
+	private void registerDefaultKeys() {
+		registerKeyMapping(p -> p.defaultVisitors.travelDirectional(), '5', 'g');
+		registerKeyMapping(p -> p.defaultVisitors.drop(), 'd');
+		registerKeyMapping(p -> p.defaultVisitors.eat(), 'e');
+		registerKeyMapping(p -> p.defaultVisitors.fire(), 'f');
+		registerKeyMapping(() -> renderer.getHudComponent().showInventoryWindow(), 'i');
+		registerKeyMapping(p -> p.defaultVisitors.loot(), 'l');
+		registerKeyMapping(p -> p.defaultVisitors.quaff(), 'q');
+		registerKeyMapping(dungeon::quit, 'Q');
+		registerKeyMapping(p -> p.defaultVisitors.read(), 'r');
+		registerKeyMapping(dungeon::saveAndQuit, 'S');
+		registerKeyMapping(p -> p.defaultVisitors.throwItem(), 't');
+		registerKeyMapping(p -> p.defaultVisitors.wield(), 'w');
+		registerKeyMapping(Player::swapHands, 'x');
+		registerKeyMapping(() -> renderer.getHudComponent().showSpellWindow(), 'Z');
+		registerKeyMapping(p -> p.defaultVisitors.pickup(), ',');
+		registerKeyMapping(p -> p.defaultVisitors.climbAny(), '.');
+		registerKeyMapping(p -> p.defaultVisitors.climbUp(), '<');
+		registerKeyMapping(p -> p.defaultVisitors.climbDown(), '>');
+	}
+
+	private void registerKeyMapping(BiConsumer<Player, Character> callback, char ...inputs) {
+		for (char input : inputs) {
+			playerCommands.put(input, callback);
+		}
+	}
+
+	private void registerKeyMapping(Consumer<Player> callback, char ...inputs) {
+		registerKeyMapping((p, i) -> callback.accept(p), inputs);
+	}
+
+	private void registerKeyMapping(Runnable callback, char ...inputs) {
+		registerKeyMapping((p, i) -> callback.run(), inputs);
 	}
 	
 	private boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
-			Integer[] d = Utils.MOVEMENT_KEYS.get(keycode);
-			dungeon.getPlayer().defaultVisitors.walk(d[0], d[1]);
+			VectorInt d = Utils.MOVEMENT_KEYS.get(keycode);
+			dungeon.getPlayer().defaultVisitors.walk(d.getX(), d.getY());
 			return true;
 		}
 		
@@ -57,63 +104,16 @@ public class GameInputProcessor implements InputProcessor {
 		if (renderer.isTurnLerping()) {
 			return false;
 		}
-		
-		if (key == '5' || key == 'g') {
-			dungeon.getPlayer().defaultVisitors.travelDirectional();
-			return true;
-		} else if (key == 'd') {
-			dungeon.getPlayer().defaultVisitors.drop();
-			return true;
-		} else if (key == 'e') {
-			dungeon.getPlayer().defaultVisitors.eat();
-			return true;
-		} else if (key == 'f') {
-			dungeon.getPlayer().defaultVisitors.fire();
-			return true;
-		} else if (key == 'i') {
-			renderer.getHudComponent().showInventoryWindow();
-			return true;
-		} else if (key == 'l') {
-			dungeon.getPlayer().defaultVisitors.loot();
-			return true;
-		} else if (key == 'q') {
-			dungeon.getPlayer().defaultVisitors.quaff();
-			return true;
-		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'Q') {
-			dungeon.quit();
-			return true;
-		} else if (key == 'r') {
-			dungeon.getPlayer().defaultVisitors.read();
-			return true;
-		} else if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && key == 'S') {
-			dungeon.saveAndQuit();
-			return true;
-		} else if (key == 't') {
-			dungeon.getPlayer().defaultVisitors.throwItem();
-			return true;
-		} else if (key == 'w') {
-			dungeon.getPlayer().defaultVisitors.wield();
-			return true;
-		} else if (key == 'x') {
-			dungeon.getPlayer().swapHands();
-			return true;
-		} else if (key == 'Z') {
-			renderer.getHudComponent().showSpellWindow();
-			return true;
-		} else if (key == ',') {
-			dungeon.getPlayer().defaultVisitors.pickup();
-			return true;
-		} else if (key == '.') {
-			dungeon.getPlayer().defaultVisitors.climbAny();
-			return true;
-		} else if (key == '<') {
-			dungeon.getPlayer().defaultVisitors.climbUp();
-			return true;
-		} else if (key == '>') {
-			dungeon.getPlayer().defaultVisitors.climbDown();
-			return true;
+
+		if (playerCommands.containsKey(key)) {
+			val action = playerCommands.get(key);
+
+			if (action != null) {
+				action.accept(dungeon.getPlayer(), key);
+				return true;
+			}
 		}
-		
+
 		return false;
 	}
 	

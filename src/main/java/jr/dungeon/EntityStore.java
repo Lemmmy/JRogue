@@ -111,12 +111,14 @@ public class EntityStore implements Serialisable {
 	 * Goes through the {@link #entityAddQueue} and {@link #entityRemoveQueue}, adding new {@link Entity Entities} to
 	 * the level and store, and removing ones that should be removed. Queues are processed at the start and end of
 	 * every turn. Queue processing triggers {@link EntityAddedEvent}s and {@link EntityRemovedEvent}s.
+	 *
+	 * @param isNew Whether or not the entities were created, and not just spawned from a new level or unserialisation.
 	 */
-	public void processEntityQueues() {
+	public void processEntityQueues(boolean isNew) {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
 			entities.put(entity.getUUID(), entity);
-			dungeon.triggerEvent(new EntityAddedEvent(entity));
+			dungeon.triggerEvent(new EntityAddedEvent(entity, isNew));
 			iterator.remove();
 		}
 		
@@ -206,7 +208,7 @@ public class EntityStore implements Serialisable {
 	public List<Entity> getAdjacentEntities(int x, int y) {
 		List<Entity> entities = new ArrayList<>();
 		
-		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d[0], y + d[1])));
+		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY())));
 		
 		return entities;
 	}
@@ -254,7 +256,7 @@ public class EntityStore implements Serialisable {
 	
 	/**
 	 * Adds an {@link Entity} to the {@link #entityAddQueue}. It will be added to the store when the queues are
-	 * {@link #processEntityQueues() next processed}.
+	 * {@link #processEntityQueues(boolean) next processed}.
 	 *
 	 * @param entity The {@link Entity} to add.
 	 *
@@ -266,9 +268,9 @@ public class EntityStore implements Serialisable {
 	
 	/**
 	 * Adds an {@link Entity} to the {@link #entityRemoveQueue}. It will be removed from the store when the queues are
-	 * {@link #processEntityQueues() next processed}. The {@link Entity}'s {@link Entity#beingRemoved} flag will be
+	 * {@link #processEntityQueues(boolean) next processed}. The {@link Entity}'s {@link Entity#beingRemoved} flag will be
 	 * assigned instantly, so the {@link Entity} knows it will be removed from the store/{@link Level} when the queues
-	 * are {@link #processEntityQueues() next processed}.
+	 * are {@link #processEntityQueues(boolean) next processed}.
 	 *
 	 * @param entity The {@link Entity} to remove.
 	 *

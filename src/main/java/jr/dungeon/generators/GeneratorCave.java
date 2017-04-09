@@ -10,6 +10,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.utils.Path;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 
@@ -237,13 +238,17 @@ public class GeneratorCave extends DungeonGenerator {
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return tempTiles[width * y + x];
 	}
+
+	public Tile getTempTile(Point p) {
+		return getTempTile(p.getX(), p.getY());
+	}
 	
 	public TileType getTempTileType(int x, int y) {
-		int width = level.getWidth();
-		int height = level.getHeight();
-		
-		if (x < 0 || y < 0 || x >= width || y >= height) return null;
-		return tempTiles[width * y + x].getType();
+		return getTempTile(x, y).getType();
+	}
+
+	public TileType getTempTileType(Point p) {
+		return getTempTileType(p.getX(), p.getY());
 	}
 	
 	public void setTempTileType(int x, int y, TileType tile) {
@@ -254,12 +259,20 @@ public class GeneratorCave extends DungeonGenerator {
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
 		tempTiles[width * y + x].setType(tile);
 	}
+
+	public void setTempTileType(Point p, TileType tile) {
+		setTempTileType(p.getX(), p.getY(), tile);
+	}
 	
 	private int getAdjacentCountR1(int x, int y) {
 		return (int) Arrays.stream(level.getTileStore().getOctAdjacentTiles(x, y))
 			.filter(Objects::nonNull)
 			.filter(t -> t.getType().getSolidity() == TileType.Solidity.SOLID)
 			.count();
+	}
+
+	private int getAdjacentCountR1(Point p) {
+		return getAdjacentCountR1(p.getX(), p.getY());
 	}
 	
 	private int getAdjacentCountR2(int x, int y) {
@@ -284,6 +297,10 @@ public class GeneratorCave extends DungeonGenerator {
 		}
 		
 		return c;
+	}
+
+	private int getAdjacentCountR2(Point p) {
+		return getAdjacentCountR2(p.getX(), p.getY());
 	}
 	
 	private boolean isTileInBounds(Tile t) {

@@ -13,6 +13,7 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.fusesource.jansi.AnsiConsole;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -42,6 +43,18 @@ public class JRogue {
 	 * Build date, assigned automatically based on Gradle output.
 	 */
 	public static String BUILD_DATE = "unknown";
+	/**
+	 * Build number, assigned automatically based on Gradle output.
+	 */
+	public static int BUILD_NUMBER = -1;
+	/**
+	 * Build branch, assigned automatically based on Gradle output.
+	 */
+	public static String BUILD_BRANCH = "unknown";
+	/**
+	 * Build hash, assigned automatically based on Gradle output.
+	 */
+	public static String BUILD_HASH = "unknown";
 	
 	@Getter
 	private static Reflections reflections;
@@ -134,11 +147,17 @@ public class JRogue {
 			
 			VERSION = versionProperties.getProperty("version");
 			BUILD_DATE = versionProperties.getProperty("buildDate");
+			BUILD_NUMBER = Integer.parseInt(versionProperties.getProperty("buildNumber"));
+			BUILD_BRANCH = versionProperties.getProperty("buildBranch");
+			BUILD_HASH = versionProperties.getProperty("buildRevision");
 		} catch (Exception ignored) {}
 		
 		logger.info("---- Game started ----");
-		logger.info("JRogue version {}, built {}", VERSION, BUILD_DATE);
-
+		logger.info("JRogue {} - Build Information:", VERSION);
+		logger.info("Build #{}, built {} - Branch: {} rev {}", BUILD_NUMBER, BUILD_DATE, BUILD_BRANCH, BUILD_HASH);
+		
+		AnsiConsole.systemInstall();
+		
 		Options opts = new Options();
 		
 		opts.addOption("h", "help", false, "Shows the help information");

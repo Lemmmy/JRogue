@@ -22,6 +22,7 @@ import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Range;
+import org.fusesource.jansi.AnsiConsole;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -36,6 +37,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 
 /**
  * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
@@ -390,19 +394,19 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		this.level = level;
 		
 		getPlayer().getLevel().getEntityStore().removeEntity(player);
-		getPlayer().getLevel().getEntityStore().processEntityQueues();
+		getPlayer().getLevel().getEntityStore().processEntityQueues(false);
 		
 		getPlayer().setLevel(level);
 		level.getEntityStore().addEntity(player);
-		level.getEntityStore().processEntityQueues();
+		level.getEntityStore().processEntityQueues(false);
 		
 		getPlayer().setPosition(x, y);
 		
-		turn();
+		turn(true);
 		
 		triggerEvent(new LevelChangeEvent(level));
 		
-		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e)));
+		level.getEntityStore().getEntities().forEach(e -> triggerEvent(new EntityAddedEvent(e, false)));
 	}
 
 	/**
@@ -488,12 +492,12 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		
 		if (turn <= 0) {
 			You("drop down into [CYAN]%s[].", this.name);
-			turn();
+			turn(true);
 			triggerEvent(new GameStartedEvent(true));
 		} else {
 			triggerEvent(new BeforeTurnEvent(turn));
 			log("Welcome back to [CYAN]%s[].", this.name);
-			level.getEntityStore().processEntityQueues();
+			level.getEntityStore().processEntityQueues(false);
 			triggerEvent(new TurnEvent(turn));
 			triggerEvent(new GameStartedEvent(false));
 		}
@@ -573,11 +577,19 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	public boolean isPromptEscapable() {
 		return prompt != null && prompt.isEscapable();
 	}
+	
+	public void turn() {
+		turn(false);
+	}
 
 	/**
 	 * Triggers the next turn, increasing the turn counter, and updating all entities.
+	 *
+	 * @param isStart Whether or not this turn occurs during the start of a new level, or after loading a level. This
+	 *                  is used to ensure that when processing entity queues, isNew is correctly passed to
+	 *                  {@link EntityAddedEvent EntityAddedEvents}.
 	 */
-	public void turn() {
+	public void turn(boolean isStart) {
 		if (!player.isAlive()) {
 			return;
 		}
@@ -585,7 +597,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 		triggerEvent(new BeforeTurnEvent(turn + 1));
 		somethingHappened = false;
 		
-		level.getEntityStore().processEntityQueues();
+		level.getEntityStore().processEntityQueues(!isStart);
 		
 		player.setMovementPoints(player.getMovementPoints() - NORMAL_SPEED);
 		
@@ -639,7 +651,7 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 			return;
 		}
 		
-		level.getEntityStore().processEntityQueues();
+		level.getEntityStore().processEntityQueues(!isStart);
 		
 		level.getVisibilityStore().updateSight(player);
 		level.getLightStore().buildLight(false);
@@ -730,7 +742,8 @@ public class Dungeon implements Messenger, Serialisable, Persisting {
 	 * @param wish The wish to make.
 	 */
 	public void wish(String wish) {
-		Wishes.get().makeWish(this, wish);
+		if (!Wishes.get().makeWish(this, wish))
+			log("[RED]One or more wishes have failed.");
 	}
 
 	/**

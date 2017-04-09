@@ -69,4 +69,19 @@ public abstract class EntityRenderer {
 	public float getParticleDeltaMultiplier(Dungeon dungeon, Entity entity, int x, int y) {
 		return 0.25f;
 	}
+	
+	public float getAnimationFloat(Entity entity, String name, float def) {
+		if (!entity.getPersistence().has("animationData")) return def;
+		
+		return (float) entity.getPersistence().getJSONObject("animationData").optDouble(name, (double) def);
+	}
+	
+	public float[] getAnimationColour(Entity entity) {
+		return new float[] {
+			getAnimationFloat(entity, "r", 1),
+			getAnimationFloat(entity, "g", 1),
+			getAnimationFloat(entity, "b", 1),
+			getAnimationFloat(entity, "a", 1)
+		};
+	}
 }

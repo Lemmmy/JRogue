@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityItemDroppedOnEvent extends DungeonEvent {
+public class ItemDroppedOnEntityEvent extends DungeonEvent {
 	private Entity droppedOn;
 	private EntityItem itemEntity;
 	

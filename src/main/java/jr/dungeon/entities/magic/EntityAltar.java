@@ -6,7 +6,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.events.EntityItemDroppedOnEvent;
+import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.events.DungeonEventHandler;
@@ -29,6 +29,11 @@ public class EntityAltar extends Entity {
 		return EntityAppearance.APPEARANCE_ALTAR;
 	}
 	
+	@Override
+	public boolean isStatic() {
+		return true;
+	}
+	
 	@DungeonEventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		// TODO: player alignment and luck penalty
@@ -47,7 +52,7 @@ public class EntityAltar extends Entity {
 	}
 	
 	@DungeonEventHandler(selfOnly = true)
-	public void onItemDropped(EntityItemDroppedOnEvent e) {
+	public void onItemDropped(ItemDroppedOnEntityEvent e) {
 		EntityItem itemEntity = e.getItemEntity();
 		Item item = e.getItem();
 		ItemStack itemStack = e.getItemStack();
