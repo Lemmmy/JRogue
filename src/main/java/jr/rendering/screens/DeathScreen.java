@@ -96,8 +96,8 @@ public class DeathScreen extends ScreenAdapter {
 		initScreenTab(container, screenTabs, "Dungeon", dungeonScreen = new Table());
 		initDungeonScreen(dungeonScreen);
 		
-		switchScreen(dungeonScreen);
-		screenTabs.getButtons().get(2).setChecked(true);
+		switchScreen(logScreen);
+		screenTabs.getButtons().get(0).setChecked(true);
 	}
 	
 	private void initScreenTab(Table container, ButtonGroup<TextButton> group, String name, Table screen) {
@@ -180,6 +180,8 @@ public class DeathScreen extends ScreenAdapter {
 			entry = HUDUtils.replaceMarkupString(entry);
 			logTable.add(entry).left().growX().row();
 		});
+		
+		logTable.top().left();
 		
 		ScrollPane logScrollPane = new ScrollPane(logTable, skin);
 		container.add(logScrollPane).bottom().left().grow().row();
