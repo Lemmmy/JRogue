@@ -2,6 +2,7 @@ package jr.dungeon.events;
 
 import jr.JRogue;
 import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -81,6 +82,10 @@ public class EventSystem {
 					}
 				});
 			});
+			
+			Arrays.stream(dungeon.getLevel().tileStore.getTiles())
+				.filter(Tile::hasState)
+				.forEach(t -> fetchEventMethods(handlers, t.getState(), event, invocationTime));
 		}
 		
 		handlers.stream().sorted(Comparator.comparing(h -> h.getHandler().priority())).forEach(h -> {

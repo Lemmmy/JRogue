@@ -162,7 +162,7 @@ public class Wishes {
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
 		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
 		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
-
+		registerWish("trap", new WishTile(TileType.TILE_TRAP));
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.

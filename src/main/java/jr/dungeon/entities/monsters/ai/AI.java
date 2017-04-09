@@ -26,7 +26,6 @@ import java.util.List;
  *
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
-@RequiredArgsConstructor
 public abstract class AI implements Serialisable, Persisting, EventListener {
 	@NonNull @Getter private Monster monster;
 	
@@ -34,6 +33,12 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
 	private JSONObject persistence = new JSONObject();
+	
+	public AI(Monster monster) {
+		this.monster = monster;
+		
+		avoidTiles.add(TileType.TILE_TRAP);
+	}
 	
 	/**
 	 * Adds a tile to the list of tiles to avoid during pathfinding. The AI will absolutely never try to step on this

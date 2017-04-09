@@ -3,6 +3,7 @@ package jr.dungeon.tiles;
 import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.dungeon.tiles.states.TileStateDoor;
+import jr.dungeon.tiles.states.TileStateTrap;
 import jr.utils.Colour;
 import lombok.Getter;
 
@@ -60,7 +61,9 @@ public enum TileType {
 
 	TILE__NOISE(32, BUILDABLE, Solidity.SOLID),
 	TILE__FLOOR(34, FLOOR, Solidity.WALK_ON),
-	TILE__BRIDGE(37, FLOOR, Solidity.WALK_ON);
+	TILE__BRIDGE(37, FLOOR, Solidity.WALK_ON),
+
+	TILE_TRAP(38, FLOOR, Solidity.WALK_ON, TileStateTrap.class);
 	
 	private short id;
 	private int flags;
