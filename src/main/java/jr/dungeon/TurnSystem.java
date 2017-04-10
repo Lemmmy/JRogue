@@ -209,11 +209,8 @@ public class TurnSystem implements Serialisable {
 			.filter(e -> e instanceof EntityTurnBased)
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(((EntityTurnBased) e).getMovementPoints() < Dungeon.NORMAL_SPEED))
+			.filter(e -> !(e instanceof EntityLiving) || ((EntityLiving) e).isAlive())
 			.forEach(e -> {
-				if (e instanceof EntityLiving && !((EntityLiving) e).isAlive()) {
-					return;
-				}
-				
 				EntityTurnBased tbe = (EntityTurnBased) e;
 				tbe.setMovementPoints(tbe.getMovementPoints() - Dungeon.NORMAL_SPEED);
 				
