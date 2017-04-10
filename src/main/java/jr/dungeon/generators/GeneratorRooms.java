@@ -687,7 +687,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * not doors, and this tile is not a wall corner.
 	 */
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.tileStore.getTileType(x, y).isWallTile()) {
+		if (level.tileStore.getTileType(x, y).isWall()) {
 			TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(x, y);
 			
 			for (TileType tile : adjacentTiles) {

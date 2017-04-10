@@ -29,7 +29,7 @@ public class TileRendererDoor extends TileRenderer {
 		switch (state) {
 			case OPEN:
 				TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-				boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+				boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
 				return h ? openH : openV;
 			
 			case BROKEN:

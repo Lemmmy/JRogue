@@ -9,6 +9,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
+import jr.dungeon.generators.GeneratorCave;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
