@@ -76,11 +76,9 @@ public class EventSystem {
 			dungeon.getLevel().entityStore.getEntities().forEach(e -> {
 				fetchEventMethods(handlers, e, event, invocationTime);
 				
-				e.getSubListeners().forEach(l2 -> {
-					if (l2 != null) {
-						fetchEventMethods(handlers, l2, event, invocationTime);
-					}
-				});
+				e.getSubListeners().stream()
+					.filter(Objects::nonNull)
+					.forEach(l -> fetchEventMethods(handlers, l, event, invocationTime));
 			});
 			
 			Arrays.stream(dungeon.getLevel().tileStore.getTiles())
@@ -101,10 +99,9 @@ public class EventSystem {
 	private void fetchEventMethods(Set<EventHandlerMethodInstance> handlers, EventListener listener, Event event, EventInvocationTime invocationTime) {
 		event.setDungeon(dungeon);
 		
-		Class<?> listenerClass = listener.getClass();
 		List<Method> listenerMethods = new LinkedList<>();
 		
-		while (listenerClass != null) {
+		for (Class<?> listenerClass = listener.getClass(); listenerClass != null; listenerClass = listenerClass.getSuperclass()) {
 			Method[] methods = listenerClass.getDeclaredMethods();
 			
 			for (Method method : methods) {
@@ -116,8 +113,6 @@ public class EventSystem {
 					listenerMethods.add(method);
 				}
 			}
-			
-			listenerClass = listenerClass.getSuperclass();
 		}
 		
 		listenerMethods.forEach(method -> {
