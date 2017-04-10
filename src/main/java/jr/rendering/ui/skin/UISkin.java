@@ -3,11 +3,9 @@ package jr.rendering.ui.skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class UISkin extends Skin {
-	public static UISkin instance;
+	private static UISkin INSTANCE;
 	
-	public UISkin() {
-		instance = this;
-		
+	private UISkin() {
 		UIColours.add(this);
 		UIFonts.add(this);
 		UILabelStyles.add(this);
@@ -21,5 +19,13 @@ public class UISkin extends Skin {
 		UIWindowStyles.add(this);
 		UISplitterStyles.add(this);
 		UIDungeonOverviewStyles.add(this);
+	}
+	
+	public static UISkin getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new UISkin();
+		}
+		
+		return INSTANCE;
 	}
 }

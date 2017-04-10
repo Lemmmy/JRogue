@@ -41,7 +41,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	public CharacterCreationScreen(GameAdapter game) {
 		this.game = game;
 		
-		skin = UISkin.instance;
+		skin = UISkin.getInstance();
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / JRogue.getSettings().getHudScale());
 		stage = new Stage(stageViewport);

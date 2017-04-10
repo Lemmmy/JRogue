@@ -16,7 +16,6 @@ import jr.dungeon.Dungeon;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.screens.utils.ScreenTransition;
-import jr.rendering.ui.skin.UISkin;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,8 +64,6 @@ public class GameAdapter extends Game {
 		
 		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		
-		new UISkin(); // assigns the UISkin singleton
 		
 		if (Dungeon.canLoad()) {
 			screen = new GameScreen(this, Dungeon.load());

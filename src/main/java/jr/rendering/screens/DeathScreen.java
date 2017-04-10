@@ -42,7 +42,7 @@ public class DeathScreen extends ScreenAdapter {
 		this.dungeon = dungeon;
 		this.event = event;
 		
-		skin = UISkin.instance;
+		skin = UISkin.getInstance();
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / JRogue.getSettings().getHudScale());
 		stage = new Stage(stageViewport);

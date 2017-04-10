@@ -143,7 +143,7 @@ public class HUDComponent extends RendererComponent {
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
 		stage = new Stage(stageViewport);
-		skin = UISkin.instance;
+		skin = UISkin.getInstance();
 		
 		Table root = new Table();
 		root.setFillParent(true);
