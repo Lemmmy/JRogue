@@ -124,11 +124,10 @@ public class EventSystem {
 			
 			EventHandler annotation = method.getAnnotation(EventHandler.class);
 			
-			if (annotation.selfOnly() && !event.isSelf(listener)) {
-				return;
-			}
-			
-			if (annotation.invocationTime() != invocationTime) {
+			if (
+				annotation.selfOnly() && !event.isSelf(listener) ||
+				annotation.invocationTime() != invocationTime
+			) {
 				return;
 			}
 			
