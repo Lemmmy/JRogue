@@ -9,7 +9,7 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class MonsterPufferfish extends Monster {
 		return 8;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().logRandom("Bloop.", "Glug.", "Splash!", "Sploosh!");
 	}

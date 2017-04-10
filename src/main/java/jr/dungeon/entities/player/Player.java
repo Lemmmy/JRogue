@@ -7,7 +7,10 @@ import jr.dungeon.entities.*;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
-import jr.dungeon.entities.events.*;
+import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.events.EntityEnergyChangedEvent;
+import jr.dungeon.entities.events.EntityHealthChangedEvent;
+import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
 import jr.dungeon.entities.player.events.PlayerDefaultEvents;
 import jr.dungeon.entities.player.roles.Role;
@@ -15,14 +18,17 @@ import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
 import jr.dungeon.entities.player.visitors.PlayerVisitor;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.GameStartedEvent;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
+import jr.dungeon.events.EventPriority;
+import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -31,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -46,8 +53,7 @@ public class Player extends EntityLiving {
 	@Getter @Setter private int nutrition;
 	@Getter private NutritionState lastNutritionState;
 	
-	@Getter private int spendableSkillPoints = 3;
-	@Getter private Attributes attributes = new Attributes();
+	@Getter private Attributes attributes;
 	@Getter private Map<Skill, SkillLevel> skills;
 	
 	@Getter private int gold = 0;
@@ -60,6 +66,8 @@ public class Player extends EntityLiving {
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
+		
+		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
 	}
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
@@ -74,7 +82,12 @@ public class Player extends EntityLiving {
 		energy = maxEnergy = role.getMaxEnergy();
 		knownSpells = new HashMap<>(role.getStartingSpells());
 		
-		role.assignAttributes(attributes);
+		if (JRogue.getSettings().getAttributes() != null) {
+			attributes = JRogue.getSettings().getAttributes();
+		} else {
+			attributes = new Attributes();
+			role.assignAttributes(attributes);
+		}
 		
 		setInventoryContainer(new Container("Inventory"));
 		skills = new HashMap<>(role.getStartingSkills());
@@ -96,7 +109,7 @@ public class Player extends EntityLiving {
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 		
-		dungeon.addListener(new PlayerDefaultEvents());
+		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
@@ -145,7 +158,8 @@ public class Player extends EntityLiving {
 		int newEnergy = this.energy;
 		
 		if (oldEnergy != newEnergy) {
-			getDungeon().triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
+			getDungeon().eventSystem
+				.triggerEvent(new EntityEnergyChangedEvent(this, oldEnergy, newEnergy));
 		}
 	}
 	
@@ -210,10 +224,6 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	public void decrementSpendableSkillPoints() {
-		spendableSkillPoints = Math.max(0, spendableSkillPoints - 1);
-	}
-	
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
@@ -241,7 +251,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getLightLevel() {
-		return getLevel().getTileStore().getTile(getX(), getY()).getLightIntensity();
+		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
 	}
 	
 	public int getCorridorVisibilityRange() {
@@ -261,27 +271,11 @@ public class Player extends EntityLiving {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onLevelUp(EntityLevelledUpEvent event) {
 		levelUpEnergy();
 		
 		getDungeon().greenYou("levelled up! You are now experience level %,d.", getExperienceLevel());
-		getDungeon().greenYou(
-			"have %,d spendable skill point%s.",
-			++spendableSkillPoints,
-			spendableSkillPoints == 1 ? "" : "s"
-		);
-	}
-	
-	@DungeonEventHandler
-	private void onGameStarted(GameStartedEvent event) {
-		if (spendableSkillPoints > 0) {
-			getDungeon().greenYou(
-				"have %,d spendable skill point%s.",
-				spendableSkillPoints,
-				spendableSkillPoints == 1 ? "" : "s"
-			);
-		}
 	}
 	
 	@Override
@@ -297,10 +291,10 @@ public class Player extends EntityLiving {
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	private void onHealthChanged(EntityHealthChangedEvent event) {
 		if (event.getOldHealth() > event.getNewHealth()) {
-			getDungeon().markSomethingHappened();
+			getDungeon().turnSystem.markSomethingHappened();
 		}
 	}
 	
@@ -347,7 +341,7 @@ public class Player extends EntityLiving {
 		}
 		
 		if (getNutritionState() == NutritionState.CHOKING) {
-			damage(DamageSource.CHOKING, 1, this);
+			damage(new DamageSource(this, null, DamageType.CHOKING), 1);
 		}
 		
 		nutrition--;
@@ -363,7 +357,6 @@ public class Player extends EntityLiving {
 		
 		obj.put("name", name);
 		obj.put("role", role.getClass().getName());
-		obj.put("spendableSkillPoints", getSpendableSkillPoints());
 		obj.put("energy", getEnergy());
 		obj.put("maxEnergy", getMaxEnergy());
 		obj.put("chargingTurns", chargingTurns);
@@ -396,7 +389,6 @@ public class Player extends EntityLiving {
 		super.unserialise(obj);
 		
 		name = obj.getString("name");
-		spendableSkillPoints = obj.getInt("spendableSkillPoints");
 		energy = obj.getInt("energy");
 		maxEnergy = obj.getInt("maxEnergy");
 		chargingTurns = obj.getInt("chargingTurns");
@@ -449,13 +441,27 @@ public class Player extends EntityLiving {
 		});
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true, priority = EventPriority.HIGHEST)
 	private void onDie(EntityDeathEvent e) {
-		if (e.getDamageSource().getDeathString() != null) {
-			getDungeon().log("[RED]" + e.getDamageSource().getDeathString() + "[]");
+		DamageType type = e.getDamageSource().getType();
+		
+		if (type.getDeathString() != null) {
+			getDungeon().log("[RED]" + type.getDeathString() + "[]");
 		} else {
 			getDungeon().redYou("die.");
 		}
+		
+		getContainer().ifPresent(inv -> inv.getItems().forEach((character, itemStack) -> {
+			Item i = itemStack.getItem();
+			
+			i.getAspects().forEach((aClass, aspect) -> {
+				if (aspect.isPersistent()) {
+					observeAspect(i, aClass);
+				} else {
+					i.observeAspect(this, aClass);
+				}
+			});
+		}));
 		
 		getDungeon().deleteSave();
 	}
@@ -544,17 +550,17 @@ public class Player extends EntityLiving {
 		
 		// TODO: rings of increase accuracy enchantment levels
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE) {
+		if (damageSource.getType().getDamageClass() == DamageType.DamageClass.MELEE) {
 			toHit += 1;
 			toHit += getStrengthHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.MELEE ||
-			damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+		if (damageSource.getType().getDamageClass() == DamageType.DamageClass.MELEE ||
+			damageSource.getType().getDamageClass() == DamageType.DamageClass.RANGED) {
 			toHit += getDexterityHitBonus();
 		}
 		
-		if (damageSource.getDamageType() == DamageSource.DamageType.RANGED) {
+		if (damageSource.getType().getDamageClass() == DamageType.DamageClass.RANGED) {
 			toHit += getSizeHitBonus(victim.getSize());
 		}
 		
@@ -580,5 +586,12 @@ public class Player extends EntityLiving {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public Set<EventListener> getSubListeners() {
+		val l = super.getSubListeners();
+		l.add(attributes);
+		return l;
 	}
 }

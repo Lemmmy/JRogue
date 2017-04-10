@@ -36,6 +36,10 @@ public class MonsterSpawner implements Serialisable {
 		this.level = level;
 	}
 	
+	public void initialise() {
+		//
+	}
+	
 	@Override
 	public void serialise(JSONObject obj) {
 		if (monsterSpawningStrategy != null) {
@@ -100,14 +104,14 @@ public class MonsterSpawner implements Serialisable {
 				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
 			
 			Entity monster = constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY());
-			level.getEntityStore().addEntity(monster);
+			level.entityStore.addEntity(monster);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			JRogue.getLogger().error("Error spawning monsters", e);
 		}
 	}
 	
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
-		List<Tile> validTiles = Arrays.stream(level.getTileStore().getTiles())
+		List<Tile> validTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
@@ -123,7 +127,7 @@ public class MonsterSpawner implements Serialisable {
 	}
 	
 	private jr.utils.Point getMonsterSpawnPoint() {
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
@@ -137,12 +141,12 @@ public class MonsterSpawner implements Serialisable {
 	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
-		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.getTileStore().getTiles())
+		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
 				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !level.getVisibilityStore().getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
+			.filter(t -> !level.visibilityStore.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
 			.filter(t -> Utils.distance(
 				t.getX(),
 				t.getY(),

@@ -45,7 +45,7 @@ public class AStarPathfinder {
 						 List<TileType> avoidTiles) {
 		// For full description of algorithm, see https://en.wikipedia.org/wiki/A*_search_algorithm
 		
-		if (level.getTileStore().getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
+		if (level.tileStore.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}
 		
@@ -157,12 +157,12 @@ public class AStarPathfinder {
 		// Since we know the path we can traverse the parents of the target node until we reach the source to build
 		// the path. Since we work backwards, we prepend the steps.
 		while (target != nodes[width * sy + sx]) {
-			path.prependStep(level.getTileStore().getTile(target.x, target.y));
+			path.prependStep(level.tileStore.getTile(target.x, target.y));
 			target = target.parent;
 		}
 		
 		// Finally add the source to the path too.
-		path.prependStep(level.getTileStore().getTile(sx, sy));
+		path.prependStep(level.tileStore.getTile(sx, sy));
 		
 		path.lock();
 		
@@ -183,9 +183,9 @@ public class AStarPathfinder {
 	public boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
 		return !(x < 0 || x >= level.getWidth() ||
 			y < 0 || y >= level.getHeight()) &&
-			level.getTileStore().getTile(x, y) != null &&
-			level.getTileStore().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
-			!avoidTiles.contains(level.getTileStore().getTileType(x, y));
+			level.tileStore.getTile(x, y) != null &&
+			level.tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
+			!avoidTiles.contains(level.tileStore.getTileType(x, y));
 	}
 	
 	/**

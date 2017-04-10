@@ -70,7 +70,12 @@ public class FeatureChest extends SpecialRoomFeature {
 		
 		EntityChest chest = new EntityChest(room.getLevel().getDungeon(), room.getLevel(), chestX, chestY);
 		populateChest(room, chest);
-		room.getLevel().getEntityStore().addEntity(chest);
+		room.getLevel().entityStore.addEntity(chest);
+	}
+	
+	@Override
+	public String getName(boolean plural) {
+		return plural ? "chests" : "chest";
 	}
 	
 	private void populateChest(Room room, EntityChest chest) {

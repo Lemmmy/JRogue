@@ -2,17 +2,33 @@ package jr.dungeon.entities.effects;
 
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.items.Item;
+import jr.dungeon.items.comestibles.ItemComestible;
 import jr.utils.RandomUtils;
+import org.json.JSONObject;
 
 public class FoodPoisoning extends StatusEffect {
+	private ItemComestible sourceFood;
+	
 	public FoodPoisoning() {
 		super(RandomUtils.random(10, 20));
 	}
 	
+	public FoodPoisoning(int duration, ItemComestible sourceFood) {
+		super(duration);
+		this.sourceFood = sourceFood;
+	}
+	
 	public FoodPoisoning(Messenger messenger, Entity entity) {
 		super(messenger, entity, RandomUtils.random(10, 20));
+	}
+	
+	public FoodPoisoning(Messenger messenger, Entity entity, ItemComestible sourceFood) {
+		super(messenger, entity, RandomUtils.random(10, 20));
+		this.sourceFood = sourceFood;
 	}
 	
 	@Override
@@ -30,7 +46,23 @@ public class FoodPoisoning extends StatusEffect {
 		if (getEntity() instanceof EntityLiving) {
 			EntityLiving living /* well, not anymore */ = (EntityLiving) getEntity();
 			
-			living.kill(DamageSource.FOOD_POISONING, living.getHealth(), null);
+			living.kill(new DamageSource(null, null, DamageType.FOOD_POISONING), living.getHealth());
+		}
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		obj.put("sourceFood", sourceFood);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+		
+		if (obj.has("sourceFood")) {
+			Item.createFromJSON(obj.getJSONObject("sourceFood")).ifPresent(i -> sourceFood = (ItemComestible) i);
 		}
 	}
 }

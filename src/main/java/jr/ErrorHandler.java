@@ -74,7 +74,7 @@ public class ErrorHandler {
 		String traceString = "";
 		
 		if (trace != null) {
-			JRogue.getLogger().error(trace);
+			JRogue.getLogger().error("Error caught:", trace);
 			
 			StringWriter sw = new StringWriter();
 			trace.printStackTrace(new PrintWriter(sw));

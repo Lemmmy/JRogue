@@ -6,10 +6,10 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.AspectBeatitude;
@@ -34,12 +34,12 @@ public class EntityAltar extends Entity {
 		return true;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		// TODO: player alignment and luck penalty
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
@@ -51,7 +51,7 @@ public class EntityAltar extends Entity {
 		return true;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onItemDropped(ItemDroppedOnEntityEvent e) {
 		EntityItem itemEntity = e.getItemEntity();
 		Item item = e.getItem();

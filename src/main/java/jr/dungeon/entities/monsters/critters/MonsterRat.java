@@ -3,10 +3,11 @@ package jr.dungeon.entities.monsters.critters;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
@@ -14,7 +15,7 @@ import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -83,7 +84,7 @@ public class MonsterRat extends Monster {
 		return 9;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
@@ -98,7 +99,7 @@ public class MonsterRat extends Monster {
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
+			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
 		}
 	}
 	
@@ -131,7 +132,7 @@ public class MonsterRat extends Monster {
 	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
-			DamageSource.RAT_BITE,
+			new DamageSource(this, null, DamageType.RAT_BITE),
 			1,
 			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
 		));

@@ -24,7 +24,9 @@ public class LightStore implements Serialisable {
 	
 	public LightStore(Level level) {
 		this.level = level;
-		
+	}
+	
+	public void initialise() {
 		lightTiles = new ArrayList<>();
 	}
 	
@@ -38,7 +40,7 @@ public class LightStore implements Serialisable {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos)
 		) {
-			Arrays.stream(level.getTileStore().getTiles()).forEach(t -> {
+			Arrays.stream(level.tileStore.getTiles()).forEach(t -> {
 				try {
 					dos.writeInt(Colour.rgba8888(t.getLightColour()));
 					dos.writeByte(t.getLightIntensity());
@@ -69,7 +71,7 @@ public class LightStore implements Serialisable {
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis)
 		) {
-			Arrays.stream(level.getTileStore().getTiles()).forEach(t -> {
+			Arrays.stream(level.tileStore.getTiles()).forEach(t -> {
 				try {
 					int colourInt = dis.readInt();
 					int intensity = dis.readByte();
@@ -113,7 +115,7 @@ public class LightStore implements Serialisable {
 	public void buildLight(boolean isInitial) {
 		resetLight();
 		
-		for (Tile tile : level.getTileStore().getTiles()) {
+		for (Tile tile : level.tileStore.getTiles()) {
 			int index = tile.getLightIntensity() - 1;
 			
 			if (index < 0) { continue; }
@@ -122,7 +124,7 @@ public class LightStore implements Serialisable {
 			lightTiles.get(index).add(tile);
 		}
 		
-		Stream.concat(level.getEntityStore().getEntities().stream(), level.getEntityStore().getEntityAddQueue().stream())
+		Stream.concat(level.entityStore.getEntities().stream(), level.entityStore.getEntityAddQueue().stream())
 			.filter(e -> e instanceof LightEmitter)
 			.forEach(e -> {
 				LightEmitter lightEmitter = (LightEmitter) e;
@@ -132,7 +134,7 @@ public class LightStore implements Serialisable {
 				
 				Tile tile = new Tile(level, TileType.TILE_DUMMY, e.getX(), e.getY());
 				
-				if (!level.getVisibilityStore().isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+				if (!level.visibilityStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour().copy());
 					tile.setLightIntensity(lightEmitter.getLightIntensity());
 				}
@@ -161,7 +163,7 @@ public class LightStore implements Serialisable {
 			lightTiles.add(i, new ArrayList<>());
 		}
 		
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.forEach(Tile::resetLight);
 	}
 	
@@ -172,8 +174,8 @@ public class LightStore implements Serialisable {
 			lightTiles.add(i, new ArrayList<>());
 		}
 		
-		Arrays.stream(level.getTileStore().getTiles())
-			.filter(t -> !level.getVisibilityStore().isTileInvisible(t.getX(), t.getY()))
+		Arrays.stream(level.tileStore.getTiles())
+			.filter(t -> !level.visibilityStore.isTileInvisible(t.getX(), t.getY()))
 			.forEach(Tile::resetLight);
 	}
 	
@@ -190,10 +192,10 @@ public class LightStore implements Serialisable {
 		workingColour.set(tile.getLightColour());
 		reapplyIntensity(workingColour, tile.getLightIntensity(), intensity);
 		
-		if (x > 0) { setIntensity(level.getTileStore().getTile(x - 1, y), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1) { setIntensity(level.getTileStore().getTile(x + 1, y), intensity, workingColour, isInitial); }
-		if (y > 0) { setIntensity(level.getTileStore().getTile(x, y - 1), intensity, workingColour, isInitial); }
-		if (y < level.getHeight() - 1) { setIntensity(level.getTileStore().getTile(x, y + 1), intensity, workingColour, isInitial); }
+		if (x > 0) { setIntensity(level.tileStore.getTile(x - 1, y), intensity, workingColour, isInitial); }
+		if (x < level.getWidth() - 1) { setIntensity(level.tileStore.getTile(x + 1, y), intensity, workingColour, isInitial); }
+		if (y > 0) { setIntensity(level.tileStore.getTile(x, y - 1), intensity, workingColour, isInitial); }
+		if (y < level.getHeight() - 1) { setIntensity(level.tileStore.getTile(x, y + 1), intensity, workingColour, isInitial); }
 		
 		workingColour.set(
 			workingColour.r * 0.9f,
@@ -202,10 +204,10 @@ public class LightStore implements Serialisable {
 			workingColour.a
 		);
 		
-		if (x > 0 && y < level.getWidth() - 1) { setIntensity(level.getTileStore().getTile(x - 1, y + 1), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1 && y > 0) { setIntensity(level.getTileStore().getTile(x + 1, y - 1), intensity, workingColour, isInitial); }
-		if (x > 0 && y < 0) { setIntensity(level.getTileStore().getTile(x - 1, y - 1), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1 && y < level.getHeight() - 1) { setIntensity(level.getTileStore().getTile(x + 1, y + 1), intensity, workingColour, isInitial);}
+		if (x > 0 && y < level.getWidth() - 1) { setIntensity(level.tileStore.getTile(x - 1, y + 1), intensity, workingColour, isInitial); }
+		if (x < level.getWidth() - 1 && y > 0) { setIntensity(level.tileStore.getTile(x + 1, y - 1), intensity, workingColour, isInitial); }
+		if (x > 0 && y < 0) { setIntensity(level.tileStore.getTile(x - 1, y - 1), intensity, workingColour, isInitial); }
+		if (x < level.getWidth() - 1 && y < level.getHeight() - 1) { setIntensity(level.tileStore.getTile(x + 1, y + 1), intensity, workingColour, isInitial);}
 	}
 	
 	public void reapplyIntensity(Colour colour, int intensityOld, int intensityNew) {
@@ -223,7 +225,7 @@ public class LightStore implements Serialisable {
 	}
 	
 	public void setIntensity(Tile tile, int intensity, Colour colour, boolean isInitial) {
-		if (tile == null || level.getVisibilityStore().isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+		if (tile == null || level.visibilityStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
 			return;
 		}
 		

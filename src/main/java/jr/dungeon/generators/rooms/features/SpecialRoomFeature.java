@@ -4,4 +4,6 @@ import jr.dungeon.generators.rooms.Room;
 
 public abstract class SpecialRoomFeature {
 	public abstract void generate(Room room);
+	
+	public abstract String getName(boolean plural);
 }

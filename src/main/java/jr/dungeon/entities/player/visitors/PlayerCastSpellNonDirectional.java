@@ -28,6 +28,6 @@ public class PlayerCastSpellNonDirectional implements PlayerVisitor {
 			player.getDungeon().orangeYou("fail to cast the spell correctly.");
 		}
 		
-		player.getDungeon().turn();
+		player.getDungeon().turnSystem.turn(player.getDungeon());
 	}
 }

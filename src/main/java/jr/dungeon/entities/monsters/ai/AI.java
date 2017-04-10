@@ -7,7 +7,7 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
@@ -26,14 +26,19 @@ import java.util.List;
  *
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
-@RequiredArgsConstructor
-public abstract class AI implements Serialisable, Persisting, DungeonEventListener {
+public abstract class AI implements Serialisable, Persisting, EventListener {
 	@NonNull @Getter private Monster monster;
 	
 	private AStarPathfinder pathfinder = new AStarPathfinder();
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
 	private JSONObject persistence = new JSONObject();
+	
+	public AI(Monster monster) {
+		this.monster = monster;
+		
+		avoidTiles.add(TileType.TILE_TRAP);
+	}
 	
 	/**
 	 * Adds a tile to the list of tiles to avoid during pathfinding. The AI will absolutely never try to step on this
@@ -54,7 +59,7 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 	public boolean canMoveTo(int x, int y) {
 		return !(x < 0 || x > monster.getLevel().getWidth() ||
 			y < 0 || y > monster.getLevel().getHeight()) &&
-			monster.getLevel().getTileStore().getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
+			monster.getLevel().tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
 	}
 
 	public boolean canMoveTo(Point p) {
@@ -285,7 +290,7 @@ public abstract class AI implements Serialisable, Persisting, DungeonEventListen
 		return "";
 	}
 	
-	public List<DungeonEventListener> getSubListeners() {
+	public List<EventListener> getSubListeners() {
 		return new ArrayList<>();
 	}
 }

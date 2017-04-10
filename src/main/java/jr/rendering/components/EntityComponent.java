@@ -9,13 +9,14 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.events.*;
 import jr.dungeon.events.BeforeTurnEvent;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
 import jr.rendering.entities.animations.*;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Vector;
 import lombok.val;
@@ -33,7 +34,7 @@ public class EntityComponent extends RendererComponent {
 	private List<EntityAnimation> entityAnimations = new LinkedList<>();
 	private Map<Entity, Map<String, Object>> animationValues = new HashMap<>();
 	
-	public EntityComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public EntityComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -77,7 +78,7 @@ public class EntityComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * deltaMultiplier);
 			
-			if (!settings.isShowLevelDebug() && dungeon.getLevel().getVisibilityStore().isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
+			if (!settings.isShowLevelDebug() && dungeon.getLevel().visibilityStore.isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 			
@@ -91,10 +92,10 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	private void drawEntities() {
-		dungeon.getLevel().getEntityStore().getEntities().stream()
+		dungeon.getLevel().entityStore.getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!e.isStatic() && dungeon.getLevel().getVisibilityStore().isTileInvisible(e.getX(), e.getY())) {
+				if (!e.isStatic() && dungeon.getLevel().visibilityStore.isTileInvisible(e.getX(), e.getY())) {
 					return;
 				}
 				
@@ -111,7 +112,7 @@ public class EntityComponent extends RendererComponent {
 		if (settings.isShowTurnAnimations()) {
 			if (renderer.isTurnLerping()) {
 				float lerpTime = renderer.getTurnLerpTime();
-				float lerpDuration = Renderer.TURN_LERP_DURATION;
+				float lerpDuration = GameScreen.TURN_LERP_DURATION;
 				
 				float t = lerpTime / lerpDuration;
 				
@@ -191,14 +192,13 @@ public class EntityComponent extends RendererComponent {
 		
 	}
 	
-	// TODO: when gamestates is merged here, make this high priority?
-	@DungeonEventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private void onBeforeTurn(BeforeTurnEvent e) {
 		entityAnimations.clear();
 		animationValues.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler()
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		
@@ -207,7 +207,7 @@ public class EntityComponent extends RendererComponent {
 		animationValues.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityAdded(EntityAddedEvent e) {
 		Entity entity = e.getEntity();
 		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
@@ -242,7 +242,7 @@ public class EntityComponent extends RendererComponent {
 		entityPooledEffects.add(entityPooledEffect);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityMoved(EntityMovedEvent event) {
 		entityParticleCheck(event.getEntity());
 		
@@ -284,24 +284,24 @@ public class EntityComponent extends RendererComponent {
 		addAnimation(new AnimationEntityMove(renderer, e.getEntity(), dx, dy));
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityRemoved(EntityRemovedEvent event) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onItemDropped(ItemDroppedEvent e) {
 		addAnimation(new AnimationItemDrop(renderer, e.getItemEntity()));
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onChestKicked(EntityKickedEntityEvent e) {
 		if (e.getVictim() instanceof EntityChest) {
 			addAnimation(new AnimationChestKick(renderer, e.getVictim()));
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onEntityDamaged(EntityDamagedEvent e) {
 		addAnimation(new AnimationEntityDamaged(renderer, e.getVictim(), e.getAttacker()));
 	}

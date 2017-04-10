@@ -2,11 +2,8 @@ package jr.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
-import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Utils;
-import jr.utils.WeightedCollection;
 import lombok.Getter;
 
 import java.util.Random;
@@ -93,8 +90,8 @@ public abstract class DungeonGenerator {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (level.getTileStore().getTileType(x, y).isBuildable()) {
-				level.getTileStore().setTileType(x, y, tile);
+			if (level.tileStore.getTileType(x, y).isBuildable()) {
+				level.tileStore.setTileType(x, y, tile);
 			}
 		}
 	}

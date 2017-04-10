@@ -17,6 +17,7 @@ import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.utils.*;
 import lombok.Getter;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -190,13 +191,16 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		if (getGroundTileType() != TileType.TILE_GROUND) {
 			for (int y = 0; y < level.getHeight(); ++y) {
 				for (int x = 0; x < level.getWidth(); ++x) {
-					level.getTileStore().setTileType(x, y, getGroundTileType());
+					level.tileStore.setTileType(x, y, getGroundTileType());
 				}
 			}
 		}
 		
 		int width = nextInt(minRoomWidth, maxRoomWidth);
 		int height = nextInt(minRoomHeight, maxRoomHeight);
+		
+		level.getPersistence().remove("generatorPersistence");
+		level.getPersistence().put("generatorPersistence", new JSONObject());
 
 		createRooms(
 			nextInt(1, level.getWidth() - width - 1),
@@ -294,16 +298,16 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * @param y The Y coordinate to place the door.
 	 */
 	protected void safePlaceDoor(int x, int y) {
-		level.getTileStore().setTileType(x, y, doorTypes.next());
+		level.tileStore.setTileType(x, y, doorTypes.next());
 
 		for (VectorInt direction : Utils.DIRECTIONS) {
 			int nx = x + direction.getX();
 			int ny = y + direction.getY();
 			
-			TileType t = level.getTileStore().getTileType(nx, ny);
+			TileType t = level.tileStore.getTileType(nx, ny);
 			
 			if (t == TileType.TILE_GROUND) {
-				level.getTileStore().setTileType(nx, ny, TileType.TILE_CORRIDOR);
+				level.tileStore.setTileType(nx, ny, TileType.TILE_CORRIDOR);
 			}
 		}
 	}
@@ -340,8 +344,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			int x = Math.round(startX + dx * i);
 			int y = Math.round(startY + dy * i);
 			
-			if (level.getTileStore().getTileType(x, y).isBuildable()) {
-				level.getTileStore().setTileType(x, y, tile);
+			if (level.tileStore.getTileType(x, y).isBuildable()) {
+				level.tileStore.setTileType(x, y, tile);
 			} else if (canPlaceDoor(x, y)) {
 				safePlaceDoor(x, y);
 			}
@@ -467,16 +471,21 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		int featureCount = probabilitySpecialFeatureCount.next();
 		
+		JSONObject featuresJSON = new JSONObject();
+		
 		for (int i = 0; i < featureCount; i++) {
 			try {
 				Class<? extends SpecialRoomFeature> featureClass = probabilitySpecialFeatures.next();
 				Constructor featureConstructor = featureClass.getConstructor();
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
 				feature.generate(RandomUtils.randomFrom(rooms));
+				featuresJSON.increment(feature.getClass().getName());
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				ErrorHandler.error("Error adding room features", e);
 			}
 		}
+		
+		level.getPersistence().getJSONObject("generatorPersistence").put("roomFeatures", featuresJSON);
 	}
 	
 	/**
@@ -521,7 +530,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		int stairY = nextInt(spawnRoom.getY() + 2, spawnRoom.getY() + spawnRoom.getHeight() - 2);
 		
 		if (sourceTile != null) {
-			Tile spawnTile = level.getTileStore().getTile(stairX, stairY);
+			Tile spawnTile = level.tileStore.getTile(stairX, stairY);
 			spawnTile.setType(getUpstairsTileType());
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
@@ -536,7 +545,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		}
 		
 		spawnRoom.setSpawn(true);
-		startTile = level.getTileStore().getTile(stairX, stairY);
+		startTile = level.tileStore.getTile(stairX, stairY);
 		level.setSpawnPoint(stairX, stairY);
 		
 		return true;
@@ -578,20 +587,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			nextStairsRoom.getY() + nextStairsRoom.getHeight() - 2
 		);
 		
-		level.getTileStore().setTileType(stairX, stairY, getDownstairsTileType());
+		level.tileStore.setTileType(stairX, stairY, getDownstairsTileType());
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.getTileStore().setTileType(stairX, stairY, getUpstairsTileType());
+			level.tileStore.setTileType(stairX, stairY, getUpstairsTileType());
 		}
 		
-		Tile stairTile = level.getTileStore().getTile(stairX, stairY);
+		Tile stairTile = level.tileStore.getTile(stairX, stairY);
 		
 		if (stairTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
 			tsc.setDestinationGenerator(getNextGenerator());
 		}
 		
-		endTile = level.getTileStore().getTile(stairX, stairY);
+		endTile = level.tileStore.getTile(stairX, stairY);
 	}
 	
 	/**
@@ -632,7 +641,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
 			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.getTileStore().getTileType(x, y) == null || !level.getTileStore().getTileType(x, y).isBuildable()) {
+				if (level.tileStore.getTileType(x, y) == null || !level.tileStore.getTileType(x, y).isBuildable()) {
 					return false;
 				}
 			}
@@ -678,8 +687,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * not doors, and this tile is not a wall corner.
 	 */
 	public boolean canPlaceDoor(int x, int y) {
-		if (level.getTileStore().getTileType(x, y).isWall()) {
-			TileType[] adjacentTiles = level.getTileStore().getAdjacentTileTypes(x, y);
+		if (level.tileStore.getTileType(x, y).isWallTile()) {
+			TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(x, y);
 			
 			for (TileType tile : adjacentTiles) {
 				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
@@ -725,7 +734,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * @return The {@link Orientation} of the wall.
 	 */
 	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.getTileStore().getAdjacentTileTypes(x, y));
+		return getWallOrientation(level.tileStore.getAdjacentTileTypes(x, y));
 	}
 
 	protected Orientation getWallOrientation(Point p) {

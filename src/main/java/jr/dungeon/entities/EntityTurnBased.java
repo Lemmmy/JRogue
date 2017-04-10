@@ -66,8 +66,8 @@ public abstract class EntityTurnBased extends Entity {
 	}
 	
 	/**
-	 * Called during the {@link Dungeon#moveEntities() Dungeon's turn loop - performs the next {@link Action}} if the
-	 * Entity has one to perform.
+	 * Called during the {@link jr.dungeon.TurnSystem#moveEntities() Dungeon's turn loop - performs the next
+	 * {@link Action}} if the Entity has one to perform.
 	 */
 	public void move() {
 		if (hasAction()) {

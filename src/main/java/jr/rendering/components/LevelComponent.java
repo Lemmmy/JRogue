@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TilePooledEffect;
 import jr.rendering.tiles.TileRenderer;
@@ -23,7 +23,7 @@ public class LevelComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public LevelComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public LevelComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -51,12 +51,12 @@ public class LevelComponent extends RendererComponent {
 					continue;
 				}
 				
-				if (!settings.isShowLevelDebug() && !level.getVisibilityStore().isTileDiscovered(x, y)) {
+				if (!settings.isShowLevelDebug() && !level.visibilityStore.isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					if (extra) {
@@ -75,7 +75,7 @@ public class LevelComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * 0.25f);
 			
-			if (!level.getVisibilityStore().isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!level.visibilityStore.isTileDiscovered(effect.getX(), effect.getY())) {
 				continue;
 			}
 			
@@ -118,7 +118,7 @@ public class LevelComponent extends RendererComponent {
 		
 		for (int y = 0; y < level.getHeight(); y++) {
 			for (int x = 0; x < level.getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() == null) {
 					continue;
@@ -143,13 +143,13 @@ public class LevelComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		findTilePooledParticles();
 		
 		if (settings.isShowLevelDebug()) {
-			level.getVisibilityStore().seeAll();
+			level.visibilityStore.seeAll();
 		}
 	}
 }

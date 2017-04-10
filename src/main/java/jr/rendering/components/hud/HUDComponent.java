@@ -14,10 +14,11 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
 import jr.rendering.components.RendererComponent;
-import jr.rendering.components.hud.windows.*;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
+import jr.rendering.ui.skin.UISkin;
+import jr.rendering.ui.windows.*;
 import jr.rendering.utils.HUDUtils;
 import jr.rendering.utils.ImageLoader;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class HUDComponent extends RendererComponent {
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
-	public HUDComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public HUDComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -63,32 +64,32 @@ public class HUDComponent extends RendererComponent {
 		
 		topStats = new Table();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 10, 16, 16, false)));
 		Label hpLabel = new Label("Health: 0 / 0", skin);
 		hpLabel.setName("health");
 		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 10, 16, 16, false)));
 		Label nutritionLabel = new Label("Not hungry", skin);
 		nutritionLabel.setName("nutrition");
 		topStats.add(nutritionLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 10, 16, 16, false)));
 		Label expLabel = new Label("Level: 1", skin);
 		expLabel.setName("exp");
 		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 10, 16, 16, false)));
 		Label energyLabel = new Label("Energy: 0 / 0", skin);
 		energyLabel.setName("energy");
 		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 10, 16, 16, false)));
 		Label goldLabel = new Label("Gold: 0", skin);
 		goldLabel.setName("gold");
 		topStats.add(goldLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 2, 16, 16, false)));
+		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 10, 16, 16, false)));
 		Label depthLabel = new Label("Depth: 1", skin);
 		depthLabel.setName("depth");
 		topStats.add(depthLabel).pad(0, 2, 0, 8).left();
@@ -122,7 +123,8 @@ public class HUDComponent extends RendererComponent {
 			String text = String.format("%s: 0", attribute.getName());
 			int sheetX = attribute.ordinal();
 			
-			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
+			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
+				false)));
 			Label attributeLabel = new Label(text, skin);
 			attributeLabel.setName(actorName);
 			attributeTable.add(attributeLabel).pad(0, 2, 0, 8);
@@ -141,7 +143,7 @@ public class HUDComponent extends RendererComponent {
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
 		stage = new Stage(stageViewport);
-		skin = new HUDSkin();
+		skin = UISkin.getInstance();
 		
 		Table root = new Table();
 		root.setFillParent(true);
@@ -159,7 +161,7 @@ public class HUDComponent extends RendererComponent {
 		root.top();
 		stage.addActor(root);
 		
-		dungeon.addListener(new TextPopups(this));
+		dungeon.eventSystem.addListener(new TextPopups(this));
 	}
 	
 	@Override
@@ -194,7 +196,7 @@ public class HUDComponent extends RendererComponent {
 		skin.dispose();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		if (dungeon.getPlayer() != null) {
 			player = dungeon.getPlayer();
@@ -205,13 +207,13 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onBeforeTurn(BeforeTurnEvent e) {
 		singleTurnActors.forEach(Actor::remove);
 		singleTurnActors.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		updatePlayerLine(player);
 		updateAttributes(player);
@@ -231,7 +233,7 @@ public class HUDComponent extends RendererComponent {
 			return;
 		}
 		
-		dungeon.getLevel().getEntityStore().getEntities().stream()
+		dungeon.getLevel().entityStore.getEntities().stream()
 			.filter(Monster.class::isInstance)
 			.map(e -> (Monster) e)
 			.filter(m -> m.getAI() != null)
@@ -331,9 +333,10 @@ public class HUDComponent extends RendererComponent {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 		
-		int sheetX = player.getLevel().getTileStore().getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
+		int sheetX = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
 		
-		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 2, 16, 16, false)));
+		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
+			false)));
 		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));
 	}
 	
@@ -349,12 +352,12 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLog(LogEvent event) {
 		String entry = event.getEntry();
 		entry = HUDUtils.replaceMarkupString(entry);
 		
-		log.add(new LogEntry(dungeon.getTurn(), entry));
+		log.add(new LogEntry(dungeon.turnSystem.getTurn(), entry));
 		
 		gameLog.clearChildren();
 		
@@ -362,7 +365,7 @@ public class HUDComponent extends RendererComponent {
 		
 		for (int i = 0; i < logSize; i++) {
 			LogEntry logEntry = log.get(log.size() - (logSize - i));
-			String text = logEntry.getTurn() != dungeon.getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
+			String text = logEntry.getTurn() != dungeon.turnSystem.getTurn() ? "[#CCCCCCEE]" + logEntry.getText() : logEntry.getText();
 			
 			Label newEntry = new Label(text, skin, "default");
 			gameLog.add(newEntry).left().growX();
@@ -370,7 +373,7 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onPrompt(PromptEvent e) {
 		Prompt prompt = e.getPrompt();
 		
@@ -400,7 +403,7 @@ public class HUDComponent extends RendererComponent {
 		windows.remove(window);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onContainerShow(ContainerShowEvent e) {
 		Entity containerEntity = e.getContainerEntity();
 		

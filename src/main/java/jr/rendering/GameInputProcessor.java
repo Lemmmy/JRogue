@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
 import jr.utils.Utils;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
-	private Renderer renderer;
+	private GameScreen renderer;
 	
 	private boolean dontHandleNext = false;
 	private boolean mouseMoved = false;
@@ -28,7 +29,7 @@ public class GameInputProcessor implements InputProcessor {
 
 	private final Map<Character, BiConsumer<Player, Character>> playerCommands = new HashMap<>();
 	
-	public GameInputProcessor(Dungeon dungeon, Renderer renderer) {
+	public GameInputProcessor(Dungeon dungeon, GameScreen renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
 
@@ -126,7 +127,7 @@ public class GameInputProcessor implements InputProcessor {
 				renderer.getHudComponent().showWishWindow();
 				return true;
 			} else if (keycode == Input.Keys.R) {
-				dungeon.generateLevel();
+				dungeon.generateFirstLevel();
 				return true;
 			}
 		}

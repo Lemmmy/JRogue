@@ -2,10 +2,14 @@ package jr.dungeon;
 
 import jr.utils.RandomUtils;
 
+import java.util.List;
+
 /**
  * A messenger is something that can be logged to. Has lots of utility methods for printing common strings with colours.
  */
 public interface Messenger {
+	List<String> getLogHistory();
+	
 	/**
 	 * Log a formatted string.
 	 *

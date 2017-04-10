@@ -2,7 +2,7 @@ package jr.rendering.entities.animations;
 
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.utils.Utils;
 import jr.utils.Vector;
 import lombok.val;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class AnimationEntityMove extends EntityAnimation {
 	private int dx, dy;
 	
-	public AnimationEntityMove(Renderer renderer, Entity entity, int dx, int dy) {
+	public AnimationEntityMove(GameScreen renderer, Entity entity, int dx, int dy) {
 		super(renderer, entity);
 		
 		this.dx = dx;

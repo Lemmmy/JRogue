@@ -3,14 +3,14 @@ package jr.dungeon.entities.events;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEvent;
+import jr.dungeon.events.Event;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityKickedEntityEvent extends DungeonEvent {
+public class EntityKickedEntityEvent extends Event {
 	private Entity victim;
 	private EntityLiving kicker;
 	

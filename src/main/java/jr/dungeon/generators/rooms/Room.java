@@ -1,7 +1,6 @@
 package jr.dungeon.generators.rooms;
 
 import jr.dungeon.Level;
-import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.GeneratorRooms;
 import lombok.Getter;
 import lombok.Setter;

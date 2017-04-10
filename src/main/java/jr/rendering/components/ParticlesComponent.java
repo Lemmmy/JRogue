@@ -9,11 +9,11 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityStatusEffectChangedEvent;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.ParticleEffectMap;
-import jr.rendering.Renderer;
+import jr.rendering.particles.ParticleEffectMap;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class ParticlesComponent extends RendererComponent {
 	@Getter private List<PooledEffect> pooledEffects = new ArrayList<>();
 	
-	public ParticlesComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public ParticlesComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -37,7 +37,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	@Override
 	public void render(float dt) {
 		pooledEffects.forEach(p -> {
-			if (dungeon.getLevel().getVisibilityStore().isTileInvisible(p.getX(), p.getY())) {
+			if (dungeon.getLevel().visibilityStore.isTileInvisible(p.getX(), p.getY())) {
 				return;
 			}
 			
@@ -69,12 +69,12 @@ public abstract class ParticlesComponent extends RendererComponent {
 		pooledEffects.forEach(p -> p.getPooledEffect().dispose());
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		pooledEffects.clear();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		for (Iterator<PooledEffect> iterator = pooledEffects.iterator(); iterator.hasNext(); ) {
 			PooledEffect effect = iterator.next();
@@ -178,7 +178,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	public static class Below extends ParticlesComponent {
-		public Below(Renderer renderer, Dungeon dungeon, Settings settings) {
+		public Below(GameScreen renderer, Dungeon dungeon, Settings settings) {
 			super(renderer, dungeon, settings);
 		}
 		
@@ -187,13 +187,13 @@ public abstract class ParticlesComponent extends RendererComponent {
 			return 15;
 		}
 		
-		@DungeonEventHandler
+		@EventHandler
 		private void onEntityMoved(EntityMovedEvent event) {
 			Entity e = event.getEntity();
 			
 			if (
 				e.getLevel() == dungeon.getLevel() &&
-				e.getLevel().getTileStore().getTileType(e.getPosition()).isWater() &&
+				e.getLevel().tileStore.getTileType(e.getPosition()).isWater() &&
 				!(e instanceof MonsterFish) &&
 				!(e instanceof MonsterPufferfish)
 			) {
@@ -203,7 +203,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	public static class Above extends ParticlesComponent {
-		public Above(Renderer renderer, Dungeon dungeon, Settings settings) {
+		public Above(GameScreen renderer, Dungeon dungeon, Settings settings) {
 			super(renderer, dungeon, settings);
 		}
 		
@@ -212,7 +212,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 			return 35;
 		}
 		
-		@DungeonEventHandler
+		@EventHandler
 		private void onEntityStatusEffectChanged(EntityStatusEffectChangedEvent e) {
 			switch (e.getChange()) {
 				case ADDED:

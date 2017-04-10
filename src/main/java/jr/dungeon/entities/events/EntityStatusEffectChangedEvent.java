@@ -2,13 +2,13 @@ package jr.dungeon.entities.events;
 
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.events.DungeonEvent;
+import jr.dungeon.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class EntityStatusEffectChangedEvent extends DungeonEvent {
+public class EntityStatusEffectChangedEvent extends Event {
 	private Entity entity;
 	private StatusEffect effect;
 	

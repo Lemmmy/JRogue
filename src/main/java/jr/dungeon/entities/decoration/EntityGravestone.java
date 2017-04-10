@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -37,12 +37,12 @@ public class EntityGravestone extends Entity implements Readable {
 		return EntityAppearance.APPEARANCE_GRAVESTONE;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		// TODO: shit on the player's luck
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));

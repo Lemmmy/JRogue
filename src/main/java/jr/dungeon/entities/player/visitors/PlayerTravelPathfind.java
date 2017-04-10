@@ -1,7 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.tiles.Tile;
@@ -20,9 +20,9 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 	
 	@Override
 	public void visit(Player player) {
-		Tile destTile = player.getLevel().getTileStore().getTile(tx, ty);
+		Tile destTile = player.getLevel().tileStore.getTile(tx, ty);
 		
-		if (destTile == null || !player.getLevel().getVisibilityStore().isTileDiscovered(tx, ty)) {
+		if (destTile == null || !player.getLevel().visibilityStore.isTileDiscovered(tx, ty)) {
 			player.getDungeon().You("can't travel there.");
 			return;
 		}
@@ -63,19 +63,19 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			
 			pathTaken.addStep(step);
 			player.setAction(new ActionMove(step.getX(), step.getY(), new Action.NoCallback()));
-			player.getDungeon().turn();
+			player.getDungeon().turnSystem.turn(player.getDungeon());
 			
 			if (oldPos.equals(player.getPosition())) {
 				stop.set(true);
 				return;
 			}
 			
-			if (i.get() > 2 && player.getLevel().getEntityStore()
+			if (i.get() > 2 && player.getLevel().entityStore
 				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
 				stop.set(true);
 			}
 		});
 		
-		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
+		player.getDungeon().eventSystem.triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

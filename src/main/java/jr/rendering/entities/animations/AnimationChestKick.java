@@ -1,7 +1,7 @@
 package jr.rendering.entities.animations;
 
 import jr.dungeon.entities.Entity;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.utils.Vector;
 import lombok.val;
 
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AnimationChestKick extends EntityAnimation {
-	public AnimationChestKick(Renderer renderer, Entity entity) {
+	public AnimationChestKick(GameScreen renderer, Entity entity) {
 		super(renderer, entity);
 	}
 	

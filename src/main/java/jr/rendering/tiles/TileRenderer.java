@@ -13,7 +13,7 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.ImageLoader;
 import jr.utils.Colour;
 import jr.utils.Utils;
@@ -45,7 +45,7 @@ public abstract class TileRenderer {
 	private static TextureRegion dimLight;
 	
 	@Getter @Setter
-	protected Renderer renderer;
+	protected GameScreen renderer;
 	
 	@Getter @Setter
 	private boolean drawingReflection = false;
@@ -118,14 +118,14 @@ public abstract class TileRenderer {
 		Colour cbl = Colour.BLACK;
 
 		Level lvl = dungeon.getLevel();
-		TileStore ts = lvl.getTileStore();
+		TileStore ts = lvl.tileStore;
 
 		Tile tl = ts.getTile(x, y);
 		Tile tr = ts.getTile(x + 1, y);
 		Tile br = ts.getTile(x + 1, y + 1);
 		Tile bl = ts.getTile(x, y + 1);
 
-		VisibilityStore vs = lvl.getVisibilityStore();
+		VisibilityStore vs = lvl.visibilityStore;
 
 		if (tl != null && vs.isTileDiscovered(x, y)) ctl = tl.getLightColour();
 		if (tr != null && vs.isTileDiscovered(x + 1, y)) ctr = tr.getLightColour();
@@ -146,14 +146,14 @@ public abstract class TileRenderer {
 
 		// Ambient occlusion
 		if (AO_ENABLED && tl != null && (tl.getType().getFlags() & TileFlag.WALL) != TileFlag.WALL) {
-			Tile al = dungeon.getLevel().getTileStore().getTile(x - 1, y);
-			Tile ar = dungeon.getLevel().getTileStore().getTile(x + 1, y);
-			Tile at = dungeon.getLevel().getTileStore().getTile(x, y - 1);
-			Tile ab = dungeon.getLevel().getTileStore().getTile(x, y + 1);
-			Tile atl = dungeon.getLevel().getTileStore().getTile(x - 1, y - 1);
-			Tile atr = dungeon.getLevel().getTileStore().getTile(x + 1, y - 1);
-			Tile abl = dungeon.getLevel().getTileStore().getTile(x - 1, y + 1);
-			Tile abr = dungeon.getLevel().getTileStore().getTile(x + 1, y + 1);
+			Tile al = dungeon.getLevel().tileStore.getTile(x - 1, y);
+			Tile ar = dungeon.getLevel().tileStore.getTile(x + 1, y);
+			Tile at = dungeon.getLevel().tileStore.getTile(x, y - 1);
+			Tile ab = dungeon.getLevel().tileStore.getTile(x, y + 1);
+			Tile atl = dungeon.getLevel().tileStore.getTile(x - 1, y - 1);
+			Tile atr = dungeon.getLevel().tileStore.getTile(x + 1, y - 1);
+			Tile abl = dungeon.getLevel().tileStore.getTile(x - 1, y + 1);
+			Tile abr = dungeon.getLevel().tileStore.getTile(x + 1, y + 1);
 
 			int aotl = vAO(al, at, atl);
 			int aotr = vAO(ar, at, atr);
@@ -179,8 +179,8 @@ public abstract class TileRenderer {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 		
-		if (dungeon.getLevel().getVisibilityStore().isTileInvisible(x, y)) {
-			if (dungeon.getLevel().getTileStore().getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
+		if (dungeon.getLevel().visibilityStore.isTileInvisible(x, y)) {
+			if (dungeon.getLevel().tileStore.getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
 				batch.draw(dimLight, x * width, y * height, width, height);
 			} else {
 				batch.draw(dim, x * width, y * height, width, height);

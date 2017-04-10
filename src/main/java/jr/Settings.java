@@ -1,5 +1,7 @@
 package jr;
 
+import jr.dungeon.entities.player.Attributes;
+import jr.dungeon.entities.player.roles.Role;
 import lombok.Getter;
 import lombok.Setter;
 import ninja.leaping.configurate.objectmapping.Setting;
@@ -100,6 +102,9 @@ public class Settings {
 	 */
 	@Setting(comment="Show text popups when stats change. 0=none, 1=small, 2=large")
 	private int textPopup = 1;
+	
+	@Setter private Role role;
+	@Setter private Attributes attributes;
 	
 	/**
 	 * Constructor

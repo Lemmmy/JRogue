@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
 
@@ -19,7 +19,7 @@ public class LightingComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public LightingComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public LightingComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -48,7 +48,7 @@ public class LightingComponent extends RendererComponent {
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawLight(lightBatch, dungeon, x, y);
@@ -81,7 +81,7 @@ public class LightingComponent extends RendererComponent {
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.getTileStore().getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
 				
 				if (tm.getRenderer() != null) {
 					tm.getRenderer().drawDim(lightSpriteBatch, dungeon, x, y);
@@ -116,7 +116,7 @@ public class LightingComponent extends RendererComponent {
 		lightSpriteBatch.dispose();
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 	}

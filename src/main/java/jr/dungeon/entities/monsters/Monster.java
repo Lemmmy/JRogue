@@ -8,8 +8,9 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.AI;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.entities.player.Player;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.utils.RandomUtils;
@@ -53,21 +54,21 @@ public abstract class Monster extends EntityLiving {
 		super.update();
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
 		if (e.isAttackerPlayer()) {
 			if (
 				e.getAttacker().getLevel() == getLevel() &&
-				e.getAttacker().getLevel().getVisibilityStore().isTileVisible(getX(), getY())
+				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
 			) {
-				getDungeon().You("kill the %s!", getName(e.getAttacker(), false));
+				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
 			} else {
 				getDungeon().You("kill it!");
 			}
@@ -75,9 +76,13 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public void kill(DamageSource damageSource, int damage, EntityLiving attacker) {
-		if (attacker != null && getExperienceLevel() > 0 && getExperienceRewarded() > 0) {
-			attacker.addExperience(
+	public void kill(DamageSource damageSource, int damage) {
+		if (
+			damageSource.getAttacker() != null &&
+			damageSource.getAttacker() instanceof EntityLiving &&
+			getExperienceLevel() > 0 && getExperienceRewarded() > 0
+		) {
+			((EntityLiving) damageSource.getAttacker()).addExperience(
 				RandomUtils.roll(RandomUtils.roll(getExperienceLevel()), getExperienceRewarded())
 			);
 		}
@@ -86,7 +91,7 @@ public abstract class Monster extends EntityLiving {
 			dropItem(new ItemStack(new ItemCorpse(this)));
 		}
 		
-		super.kill(damageSource, damage, attacker);
+		super.kill(damageSource, damage);
 	}
 	
 	@Override
@@ -147,7 +152,7 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		if (ai != null) {

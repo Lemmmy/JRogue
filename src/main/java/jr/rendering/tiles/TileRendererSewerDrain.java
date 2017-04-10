@@ -34,7 +34,7 @@ public class TileRendererSewerDrain extends TileRenderer {
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		super.drawExtra(batch, dungeon, x, y);
 		
-		if (dungeon.getLevel().getTileStore().getTileType(x, y + 1).isWater()) {
+		if (dungeon.getLevel().tileStore.getTileType(x, y + 1).isWater()) {
 			drawTile(batch, getTextureRegionExtra(dungeon, x, y), x, y + 1);
 		}
 	}

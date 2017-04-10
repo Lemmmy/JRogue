@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ContainerShowEvent extends DungeonEvent {
+public class ContainerShowEvent extends Event {
 	private Entity containerEntity;
 	private Container container;
 	

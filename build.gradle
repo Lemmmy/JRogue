@@ -1,3 +1,5 @@
+import proguard.gradle.ProGuardTask
+
 buildscript {
 	repositories {
 		mavenLocal()
@@ -21,6 +23,8 @@ mainClassName = "jr.JRogue"
 version = "alpha-0.3"
 
 sourceCompatibility = 1.8
+
+applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
 
 task createProperties(dependsOn: processResources) {
 	file("$buildDir/tmp").mkdirs()
@@ -69,11 +73,11 @@ dependencies {
 
 	compile group: "org.fusesource.jansi", name: "jansi", version: "1.8"
 
-	compile "com.badlogicgames.gdx:gdx:1.9.5"
-	compile "com.badlogicgames.gdx:gdx-freetype:1.9.5"
-	compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:1.9.5"
-	compile "com.badlogicgames.gdx:gdx-platform:1.9.5:natives-desktop"
-	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.5:natives-desktop"
+	compile "com.badlogicgames.gdx:gdx:1.9.6"
+	compile "com.badlogicgames.gdx:gdx-freetype:1.9.6"
+	compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:1.9.6"
+	compile "com.badlogicgames.gdx:gdx-platform:1.9.6:natives-desktop"
+	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.6:natives-desktop"
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 
@@ -91,7 +95,7 @@ task subJar(type: Jar) {
 	with jar
 }
 
-task obfuscate(type: proguard.gradle.ProGuardTask, dependsOn: "subJar") {
+task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	configuration "proguard.conf"
 
 	injars "$buildDir/tmp/${jarName}-deobf-${version}.jar"
@@ -125,5 +129,11 @@ javadoc {
 		destinationDir = file(project.getProperty("javadocDir"))
 	} else {
 		destinationDir = file("docs/")
+	}
+}
+
+gradle.projectsEvaluated {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes"
 	}
 }

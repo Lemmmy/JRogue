@@ -48,7 +48,7 @@ public class StateLurk extends AIState {
 	private Point getRandomDestination() {
 		Monster m = getAI().getMonster();
 		
-		return RandomUtils.randomFrom(m.getLevel().getTileStore().getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.map(Tile::getPosition)
 			.collect(Collectors.toList()));

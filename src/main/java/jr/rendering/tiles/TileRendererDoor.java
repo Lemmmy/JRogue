@@ -28,9 +28,8 @@ public class TileRendererDoor extends TileRenderer {
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
 		switch (state) {
 			case OPEN:
-				TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
-				boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
-				
+				TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
+				boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 				return h ? openH : openV;
 			
 			case BROKEN:

@@ -45,11 +45,11 @@ public class Tile {
 		absorb = type.getAbsorb();
 		
 		if (lightColour == null) {
-			lightColour = level.getLightStore().getAmbientLight();
-			lightIntensity = level.getLightStore().getAmbientLightIntensity();
+			lightColour = level.lightStore.getAmbientLight();
+			lightIntensity = level.lightStore.getAmbientLightIntensity();
 		}
 		
-		lightColour = level.getLightStore().applyIntensity(lightColour, lightIntensity).copy();
+		lightColour = level.lightStore.applyIntensity(lightColour, lightIntensity).copy();
 	}
 	
 	private void initialiseState() {

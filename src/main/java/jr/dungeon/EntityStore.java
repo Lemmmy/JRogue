@@ -55,7 +55,9 @@ public class EntityStore implements Serialisable {
 	public EntityStore(Level level) {
 		this.dungeon = level.getDungeon();
 		this.level = level;
-		
+	}
+	
+	public void initialise() {
 		entities = new HashMap<>();
 		entityAddQueue = new ArrayList<>();
 		entityRemoveQueue = new ArrayList<>();
@@ -118,14 +120,14 @@ public class EntityStore implements Serialisable {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
 			entities.put(entity.getUUID(), entity);
-			dungeon.triggerEvent(new EntityAddedEvent(entity, isNew));
+			dungeon.eventSystem.triggerEvent(new EntityAddedEvent(entity, isNew));
 			iterator.remove();
 		}
 		
 		for (Iterator<Entity> iterator = entityRemoveQueue.iterator(); iterator.hasNext(); ) {
 			Entity entity = iterator.next();
 			entities.remove(entity.getUUID());
-			dungeon.triggerEvent(new EntityRemovedEvent(entity));
+			dungeon.eventSystem.triggerEvent(new EntityRemovedEvent(entity));
 			iterator.remove();
 		}
 	}

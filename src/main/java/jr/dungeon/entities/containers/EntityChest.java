@@ -9,7 +9,7 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.utils.RandomUtils;
@@ -73,7 +73,7 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			boolean somethingShattered = false;
@@ -105,7 +105,7 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 		}
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));

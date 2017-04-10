@@ -1,7 +1,9 @@
 package jr.dungeon.wishes;
 
 import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
@@ -14,6 +16,7 @@ import jr.dungeon.entities.monsters.critters.MonsterLizard;
 import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
+import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
@@ -28,7 +31,10 @@ import jr.dungeon.items.quaffable.potions.ItemPotion;
 import jr.dungeon.items.quaffable.potions.PotionType;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.*;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -36,6 +42,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,35 +64,105 @@ public class Wishes {
 
 	private Wishes() {
 		// Basic wishes
-		registerWish("death", (d, p, a) -> p.kill(DamageSource.WISH_FOR_DEATH, 0, null));
+		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0));
 		registerWish("kill\\s+all", (d, p, a) ->
-			d.getLevel().getEntityStore().getEntities().stream()
+			d.getLevel().entityStore.getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.map(e -> (EntityLiving) e)
-				.forEach(e -> e.kill(DamageSource.WISH_FOR_DEATH, 0, null)));
+				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
-		registerWish("(?:ds|downstairs)", (d, p, a) ->
-			Arrays.stream(p.getLevel().getTileStore().getTiles())
-				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
-				.findFirst()
-				.ifPresent(t -> {
+		registerWish("(?:us|upstairs)", (d, p, a) ->
+			Arrays.stream(p.getLevel().tileStore.getTiles())
+				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
+				.findFirst().ifPresent(t -> {
 					p.defaultVisitors.teleport(t.getX(), t.getY());
 					p.defaultVisitors.climbDown();
+					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
+		registerWish("(?:ds|downstairs)", (d, p, a) ->
+			Arrays.stream(p.getLevel().tileStore.getTiles())
+				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
+				.findFirst().ifPresent(t -> {
+					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.defaultVisitors.climbDown();
+					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
+				}));
+		registerWish("explore", (d, p, a) -> {
+			boolean isGod = p.isGodmode();
+			p.setGodmode(true);
+			
+			Level firstLevel = d.getLevel();
+			Point firstLevelSpawn = p.getPosition();
+			
+			AtomicReference<Tile> firstSewerDown = new AtomicReference<>();
+			
+			for (int i = 0; i < 7; i++) {
+				if (firstSewerDown.get() == null) {
+					Arrays.stream(p.getLevel().tileStore.getTiles())
+						.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
+						.findFirst().ifPresent(firstSewerDown::set);
+				}
+				
+				Arrays.stream(p.getLevel().tileStore.getTiles())
+					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
+					.findFirst().ifPresent(t -> {
+						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.defaultVisitors.climbDown();
+						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
+					});
+			}
+			
+			if (firstSewerDown.get() != null) {
+				Tile fsdt = firstSewerDown.get();
+				
+				d.changeLevel(fsdt.getLevel(), fsdt.getPosition());
+				
+				Arrays.stream(p.getLevel().tileStore.getTiles())
+					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
+					.findFirst().ifPresent(t -> {
+						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.defaultVisitors.climbDown();
+						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
+					});
+				
+				for (int i = 0; i < 7; i++) {
+					Arrays.stream(p.getLevel().tileStore.getTiles())
+						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
+						.findFirst().ifPresent(t -> {
+							p.defaultVisitors.teleport(t.getX(), t.getY());
+							p.defaultVisitors.climbDown();
+							d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
+						});
+				}
+			}
+			
+			d.changeLevel(firstLevel, firstLevelSpawn);
+			p.setGodmode(isGod);
+		});
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
 		registerWish("candlestick", new WishSpawn<>(EntityCandlestick.class));
 		registerWish("weapon rack", new WishSpawn<>(EntityWeaponRack.class));
 		registerWish("altar", new WishSpawn<>(EntityAltar.class));
+		registerWish("fill inventory", (d, p, a) -> {
+			for (int i = 0; i < 40; i++) {
+				makeWish(d, "bread");
+			}
+		});
+		registerWish("fill log", (d, p, a) -> {
+			for (int i = 0; i < 200; i++) {
+				d.log("Message " + i);
+			}
+		});
 
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
 		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
 		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
-
+		registerWish("trap", new WishTile(TileType.TILE_TRAP));
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
@@ -107,6 +184,7 @@ public class Wishes {
 		registerWish("rat", new WishSpawn<>(MonsterRat.class));
 		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
 		registerWish("pufferfish", new WishSpawn<>(MonsterPufferfish.class));
+		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
@@ -126,7 +204,7 @@ public class Wishes {
 
 			if (item != null && p.getContainer().isPresent()) {
 				p.getContainer().get().add(new ItemStack(item));
-				d.turn();
+				d.turnSystem.turn(d);
 			}
 		});
 

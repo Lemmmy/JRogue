@@ -2,22 +2,23 @@ package jr.dungeon.entities.player.events;
 
 import jr.dungeon.Prompt;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.actions.ActionKick;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
 import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 
-public class PlayerDefaultEvents implements DungeonEventListener {
-	@DungeonEventHandler
-	public void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
+public class PlayerDefaultEvents implements EventListener {
+	@EventHandler
+	private void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
 		Player player = e.getPlayer();
 		Tile tile = e.getTile();
 		int x = e.getX();
@@ -45,25 +46,25 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 				
 				for (int i = 0; i < 15; i++) {
 					if (i != 0) {
-						player.getDungeon().setDoingBulkAction(true);
+						player.getDungeon().turnSystem.setDoingBulkAction(true);
 					}
 					
 					player.setAction(new ActionKick(new VectorInt(dx, dy), null));
-					player.getDungeon().turn();
+					player.getDungeon().turnSystem.turn(player.getDungeon());
 					
 					if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
-						player.getDungeon().setDoingBulkAction(false);
+						player.getDungeon().turnSystem.setDoingBulkAction(false);
 						return;
 					}
 					
-					if (player.getDungeon().isSomethingHappened()) {
-						player.getDungeon().setDoingBulkAction(false);
+					if (player.getDungeon().turnSystem.isSomethingHappened()) {
+						player.getDungeon().turnSystem.setDoingBulkAction(false);
 						player.getDungeon().log("You stop kicking the door.");
 						return;
 					}
 				}
 				
-				player.getDungeon().setDoingBulkAction(false);
+				player.getDungeon().turnSystem.setDoingBulkAction(false);
 				
 				player.getDungeon().log("Unable to kick the door down after 15 turns.");
 			}
@@ -75,7 +76,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 		player.getDungeon().You("open the door.");
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	public void onPlayerKickedTileEvent(EntityKickedTileEvent e) {
 		if (!e.isKickerPlayer()) {
 			return;
@@ -128,7 +129,7 @@ public class PlayerDefaultEvents implements DungeonEventListener {
 				"[RED]Ouch! That caused some bad damage to your foot!"
 			);
 			
-			player.damage(DamageSource.KICKING_A_WALL, 1, player);
+			player.damage(new DamageSource(player, null, DamageType.KICKING_A_WALL), 1);
 			player.addStatusEffect(new InjuredFoot(player.getDungeon(), player, RandomUtils.roll(3, 6)));
 		} else {
 			player.getDungeon().log("[ORANGE]Ouch! That hurt!");

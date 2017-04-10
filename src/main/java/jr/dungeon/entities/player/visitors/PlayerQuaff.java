@@ -1,9 +1,9 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Prompt;
+import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionQuaffEntity;
 import jr.dungeon.entities.actions.ActionQuaffItem;
-import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.entities.player.Player;
@@ -18,7 +18,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	public void visit(Player player) {
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		
-		player.getLevel().getEntityStore().getEntitiesAt(player.getX(), player.getY()).stream()
+		player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
 			.filter(Quaffable.class::isInstance)
 			.map(e -> (Quaffable) e)
 			.filter(q -> q.canQuaff(player))
@@ -51,7 +51,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	private void quaffEntity(Player player, Quaffable quaffable) {
 		player.setAction(new ActionQuaffEntity(quaffable, null));
 		
-		player.getDungeon().turn();
+		player.getDungeon().turnSystem.turn(player.getDungeon());
 	}
 	
 	private void quaffItem(Player player) {
@@ -69,7 +69,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 					(Action.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
 				);
 				
-				player.getDungeon().turn();
+				player.getDungeon().turnSystem.turn(player.getDungeon());
 			}
 		);
 		

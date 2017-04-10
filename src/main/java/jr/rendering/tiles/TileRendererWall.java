@@ -26,7 +26,7 @@ public class TileRendererWall extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
 		boolean v = adjacentTiles[2].isWall() || adjacentTiles[3].isWall();
@@ -45,7 +45,7 @@ public class TileRendererWall extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
 		boolean top = adjacentTiles[2].isInnerRoomTile();

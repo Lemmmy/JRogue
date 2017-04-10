@@ -1,6 +1,7 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
 
@@ -39,7 +40,7 @@ public class Ablaze extends StatusEffect {
 		if (getEntity() instanceof EntityLiving) {
 			EntityLiving el = (EntityLiving) getEntity();
 
-			if (el.getLevel().getTileStore().getTileType(el.getX(), el.getY()).isWater()) {
+			if (el.getLevel().tileStore.getTileType(el.getX(), el.getY()).isWater()) {
 				putOut = true;
 				setTurnsPassed(getDuration());
 				getMessenger().greenYou("douse the flames in the water!");
@@ -47,9 +48,9 @@ public class Ablaze extends StatusEffect {
 			}
 
 			if (getDamage() >= el.getMaxHealth()) {
-				el.kill(DamageSource.FIRE, getDamage(), null);
+				el.kill(new DamageSource(null, null, DamageType.FIRE), getDamage());
 			} else {
-				el.damage(DamageSource.FIRE, getDamage(), null);
+				el.damage(new DamageSource(null, null, DamageType.FIRE), getDamage());
 			}
 		}
 	}

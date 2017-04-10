@@ -1,4 +1,4 @@
 package jr.dungeon.events;
 
-public class SaveAndQuitEvent extends DungeonEvent {
+public class SaveAndQuitEvent extends Event {
 }
