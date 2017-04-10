@@ -15,7 +15,7 @@ public class TileStateTrap extends TileState {
 
 	public TileStateTrap(Tile tile) {
 		super(tile);
-		disguise = TileType.TILE_ROOM_RUG;
+		disguise = TileType.TILE_ROOM_FLOOR;
 	}
 
 	@Override
@@ -27,6 +27,6 @@ public class TileStateTrap extends TileState {
 	@Override
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
-		disguise = TileType.fromID((short) obj.optInt("disguise", TileType.TILE_DEBUG_A.getID()));
+		disguise = TileType.fromID((short) obj.optInt("disguise", TileType.TILE_ROOM_FLOOR.getID()));
 	}
 }
