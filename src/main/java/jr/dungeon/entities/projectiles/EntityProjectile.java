@@ -63,11 +63,11 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		int x = getX() + dx;
 		int y = getY() + dy;
 		
-		if (getLevel().getTileStore().getTile(x, y).getType().getSolidity() != TileType.Solidity.SOLID) {
+		if (getLevel().tileStore.getTile(x, y).getType().getSolidity() != TileType.Solidity.SOLID) {
 			setPosition(x, y);
 			distanceTravelled++;
 			
-			getLevel().getEntityStore().getEntitiesAt(x, y).stream()
+			getLevel().entityStore.getEntitiesAt(x, y).stream()
 				.filter(e -> !(e == this))
 				.forEach(this::onHitEntity);
 			
@@ -75,7 +75,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				killProjectile();
 			}
 		} else {
-			onHitTile(getLevel().getTileStore().getTile(x, y));
+			onHitTile(getLevel().tileStore.getTile(x, y));
 			killProjectile();
 		}
 	}
@@ -95,7 +95,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				"%s shatters into a thousand pieces!",
 				((EntityItem) victim).getItem().getName(getDungeon().getPlayer(), false, false)
 			);
-			getLevel().getEntityStore().removeEntity(victim);
+			getLevel().entityStore.removeEntity(victim);
 		}
 	}
 	
@@ -104,7 +104,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			return;
 		}
 		
-		Optional<EntityItem> existingItem = getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
+		Optional<EntityItem> existingItem = getLevel().entityStore.getEntitiesAt(getX(), getY()).stream()
 			.filter(EntityItem.class::isInstance)
 			.map(e -> (EntityItem) e)
 			.filter(e -> e.getItem().equals(originalItem))
@@ -121,7 +121,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				new ItemStack(originalItem, 1)
 			);
 			
-			getLevel().getEntityStore().addEntity(droppedItem);
+			getLevel().entityStore.addEntity(droppedItem);
 		}
 	}
 	
@@ -130,7 +130,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			return;
 		}
 		
-		getLevel().getEntityStore().removeEntity(this);
+		getLevel().entityStore.removeEntity(this);
 	}
 	
 	@Override

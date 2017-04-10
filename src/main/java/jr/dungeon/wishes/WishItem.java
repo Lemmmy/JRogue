@@ -31,7 +31,6 @@ public class WishItem<T extends Item> implements Wish {
 				}
 
 				player.getContainer().get().add(new ItemStack(item));
-				dungeon.turn();
 			} else {
 				dungeon.redYou("have no inventory!");
 			}

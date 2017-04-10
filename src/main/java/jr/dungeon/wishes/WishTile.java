@@ -13,7 +13,7 @@ public class WishTile implements Wish {
 
 	@Override
 	public void grant(Dungeon dungeon, Player player, String... args) {
-		dungeon.getLevel().getTileStore().setTileType(player.getX(), player.getY(), tile);
-		dungeon.turn();
+		dungeon.getLevel().tileStore.setTileType(player.getX(), player.getY(), tile);
+		dungeon.turnSystem.turn(dungeon);
 	}
 }

@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LogEvent extends DungeonEvent {
+public class LogEvent extends Event {
 	private String entry;
 }

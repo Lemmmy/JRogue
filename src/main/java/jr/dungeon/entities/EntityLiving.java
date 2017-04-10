@@ -11,7 +11,7 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
@@ -92,7 +92,8 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		int newHealth = this.health;
 		
 		if (oldHealth != newHealth) {
-			getDungeon().triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+			getDungeon().eventSystem
+				.triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
 		}
 	}
 	
@@ -124,7 +125,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 				
 				xpForLevel = getXPForLevel(experienceLevel);
 				
-				getDungeon().triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
+				getDungeon().eventSystem.triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
 			}
 		}
 	}
@@ -263,7 +264,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	}
 	
 	@Override
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();
 		
 		getContainer().ifPresent(c -> {
@@ -294,16 +295,16 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		}
 	}
 	
-	public boolean damage(DamageSource damageSource, int damage, EntityLiving attacker) {
+	public boolean damage(DamageSource damageSource, int damage) {
 		int damageModifier = getDamageModifier(damageSource, damage);
 		
 		setHealth(Math.max(0, health - damageModifier));
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDamagedEvent(this, attacker, damageSource, damage));
+		getDungeon().eventSystem.triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
 		
 		if (health <= 0) {
-			kill(damageSource, damage, attacker);
+			kill(damageSource, damage);
 		}
 		
 		return health <= 0;
@@ -313,13 +314,13 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		return damage;
 	}
 	
-	public void kill(DamageSource damageSource, int damage, EntityLiving attacker) {
+	public void kill(DamageSource damageSource, int damage) {
 		health = 0;
 		healingTurns = 0;
 		
-		getDungeon().triggerEvent(new EntityDeathEvent(this, attacker, damageSource, damage));
+		getDungeon().eventSystem.triggerEvent(new EntityDeathEvent(this, damageSource, damage));
 		
-		getLevel().getEntityStore().removeEntity(this);
+		getLevel().entityStore.removeEntity(this);
 	}
 	
 	public void dropItem(ItemStack item) {
@@ -331,7 +332,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			rightHand = null;
 		}
 		
-		List<Entity> entities = getLevel().getEntityStore().getEntitiesAt(getX(), getY());
+		List<Entity> entities = getLevel().entityStore.getEntitiesAt(getX(), getY());
 		
 		Optional<Entity> ent = entities.stream()
 			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
@@ -342,7 +343,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			entItem.getItemStack().addCount(item.getCount());
 		} else {
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
-			getLevel().getEntityStore().addEntity(entityItem);
+			getLevel().entityStore.addEntity(entityItem);
 		}
 	}
 	

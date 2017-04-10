@@ -5,7 +5,9 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.Event;
+import jr.dungeon.events.EventHandler;
+import jr.dungeon.events.EventListener;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,11 +21,11 @@ import java.util.*;
 /**
  * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
  * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
- * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+ * {@link jr.dungeon.events.EventListener}, and can listen to dungeon events with {@link EventHandler}
  * methods.
  */
 @Getter
-public abstract class Entity implements Serialisable, Persisting, DungeonEventListener {
+public abstract class Entity implements Serialisable, Persisting, EventListener {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
 	 */
@@ -106,7 +108,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	/**
 	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
 	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
-	 * {@link DungeonEventListener}, and can listen to dungeon events with {@link jr.dungeon.events.DungeonEventHandler}
+	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler}
 	 * methods.
 	 *
 	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
@@ -176,7 +178,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		setX(x);
 		setY(y);
 		
-		dungeon.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
 	}
 	
 	/**
@@ -221,7 +223,9 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 			if (effect.getDuration() >= 0 && effect.getTurnsPassed() >= effect.getDuration()) {
 				effect.onEnd();
 				iterator.remove();
-				dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED));
+				dungeon.eventSystem
+					.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED)
+					);
 			}
 		}
 	}
@@ -308,7 +312,9 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
-		dungeon.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED));
+		dungeon.eventSystem
+			.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED)
+			);
 	}
 
 	/**
@@ -326,7 +332,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 * @param dy The y direction to kick in.
 	 */
 	public void kick(EntityLiving kicker, int dx, int dy) {
-		getDungeon().triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
+		getDungeon().eventSystem.triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
 	}
 
 	/**
@@ -334,7 +340,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 * @param walker The entity walking on top of this entity.
 	 */
 	public void walk(EntityLiving walker) {
-		getDungeon().triggerEvent(new EntityWalkedOnEvent(this, walker));
+		getDungeon().eventSystem.triggerEvent(new EntityWalkedOnEvent(this, walker));
 	}
 
 	/**
@@ -342,7 +348,7 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	 * @param teleporter The entity to teleport to.
 	 */
 	public void teleport(EntityLiving teleporter) {
-		getDungeon().triggerEvent(new EntityTeleportedToEvent(this, teleporter));
+		getDungeon().eventSystem.triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
 
 	/**
@@ -359,13 +365,13 @@ public abstract class Entity implements Serialisable, Persisting, DungeonEventLi
 	}
 	
 	/**
-	 * This is a set of objects related to the Entity which should receive {@link jr.dungeon.events.DungeonEvent
+	 * This is a set of objects related to the Entity which should receive {@link Event
 	 * dungeon events}. When overriding this to add your own, you must always concatenate super's getSubListeners()
 	 * to the list that you return.
 	 *
-	 * @return A set of {@link DungeonEventListener DunegonEventListeners} to receive events.
+	 * @return A set of {@link EventListener DunegonEventListeners} to receive events.
 	 */
-	public Set<DungeonEventListener> getSubListeners() {
+	public Set<EventListener> getSubListeners() {
 		return new HashSet<>(statusEffects);
 	}
 }

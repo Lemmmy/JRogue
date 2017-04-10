@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
-import jr.rendering.utils.ImageLoader;
 import jr.rendering.utils.Gradient;
+import jr.rendering.utils.ImageLoader;
 import jr.utils.Path;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +28,7 @@ public class PathComponent extends RendererComponent {
 	
 	private SpriteBatch mainBatch;
 	
-	public PathComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public PathComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
 	
@@ -40,30 +40,30 @@ public class PathComponent extends RendererComponent {
 	}
 	
 	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 6, 0);
-		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 7, 0);
-		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 8, 0);
-		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 9, 0);
-		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 10, 0);
-		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 11, 0);
-		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 12, 0);
-		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 13, 0);
-		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 14, 0);
-		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 15, 0);
-		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 16, 0);
+		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 0, 11);
+		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 1, 11);
+		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 2, 11);
+		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 3, 11);
+		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 4, 11);
+		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 5, 11);
+		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 6, 11);
+		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 7, 11);
+		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 8, 11);
+		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 9, 11);
+		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 10, 11);
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		lastPath = null;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onTurn(TurnEvent e) {
 		lastPath = null;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onPathShow(PathShowEvent e) {
 		lastPath = e.getPath();
 	}

@@ -3,17 +3,18 @@ package jr.dungeon.entities.monsters.humanoids;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -107,12 +108,12 @@ public class MonsterSkeleton extends Monster {
 		return EntityLiving.Size.LARGE;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onDamage(EntityDamagedEvent e) {
 		getDungeon().log("It rattles.");
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
 			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
@@ -120,7 +121,7 @@ public class MonsterSkeleton extends Monster {
 		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
-			damage(DamageSource.PLAYER_KICK, 1, e.getKicker());
+			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
 		}
 	}
 	
@@ -128,7 +129,7 @@ public class MonsterSkeleton extends Monster {
 	public void meleeAttack(EntityLiving victim) {
 		setAction(new ActionMelee(
 			getDungeon().getPlayer(),
-			DamageSource.SKELETON_HIT,
+			new DamageSource(this, null, DamageType.SKELETON_HIT),
 			1,
 			(Action.CompleteCallback) entity -> getDungeon().logRandom(
 				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),

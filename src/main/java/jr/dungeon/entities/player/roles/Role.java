@@ -6,11 +6,20 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.magical.spells.Spell;
+import lombok.Getter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class Role {
+	@Getter private static final Set<Class<? extends Role>> roles = new HashSet<>();
+	
+	public static void registerRole(Class<? extends Role> roleClass) {
+		roles.add(roleClass);
+	}
+	
 	public abstract String getName();
 	
 	public abstract int getStartingHealth();

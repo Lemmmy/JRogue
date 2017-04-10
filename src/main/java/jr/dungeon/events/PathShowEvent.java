@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PathShowEvent extends DungeonEvent {
+public class PathShowEvent extends Event {
 	private Path path;
 }

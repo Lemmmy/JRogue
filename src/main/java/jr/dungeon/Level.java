@@ -8,7 +8,9 @@ import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Persisting;
 import jr.utils.Serialisable;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,11 +34,15 @@ public class Level implements Serialisable, Persisting {
 	private int spawnX;
 	private int spawnY;
 	
-	private TileStore tileStore;
-	private EntityStore entityStore;
-	private LightStore lightStore;
-	private VisibilityStore visibilityStore;
-	private MonsterSpawner monsterSpawner;
+	private long turnCreated;
+	
+	@Setter private String levelName;
+	
+	@Getter(AccessLevel.NONE) public final TileStore tileStore;
+	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
+	@Getter(AccessLevel.NONE) public final LightStore lightStore;
+	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
+	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
 	
 	private JSONObject persistence;
 
@@ -68,19 +74,27 @@ public class Level implements Serialisable, Persisting {
 		this.height = height;
 		
 		this.depth = depth;
+		
+		tileStore = new TileStore();
+		entityStore = new EntityStore(this);
+		visibilityStore = new VisibilityStore(this);
+		lightStore = new LightStore(this);
+		monsterSpawner = new MonsterSpawner(this);
 	}
 
 	/**
 	 * Initialises the Level, including the initialisation of its stores.
 	 */
 	private void initialise() {
-		tileStore = new TileStore(this);
-		entityStore = new EntityStore(this);
-		visibilityStore = new VisibilityStore(this);
-		lightStore = new LightStore(this);
-		monsterSpawner = new MonsterSpawner(this);
-
+		tileStore.initialise(this);
+		entityStore.initialise();
+		visibilityStore.initialise();
+		lightStore.initialise();
+		monsterSpawner.initialise();
+		
 		lightStore.initialiseLight();
+		
+		turnCreated = dungeon.turnSystem.getTurn();
 
 		persistence = new JSONObject();
 	}
@@ -105,9 +119,9 @@ public class Level implements Serialisable, Persisting {
 				}
 				
 				climate = generator.getClimate();
-				getMonsterSpawner().setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
+				monsterSpawner.setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
 				
-				getLightStore().buildLight(true);
+				lightStore.buildLight(true);
 				
 				gotLevel = true;
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -115,7 +129,7 @@ public class Level implements Serialisable, Persisting {
 			}
 		} while (!gotLevel);
 		
-		getMonsterSpawner().spawnMonsters();
+		monsterSpawner.spawnMonsters();
 	}
 
 	/**
@@ -150,6 +164,7 @@ public class Level implements Serialisable, Persisting {
 		obj.put("spawnX", getSpawnX());
 		obj.put("spawnY", getSpawnY());
 		obj.put("climate", getClimate().name());
+		obj.put("turnCreated", turnCreated);
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
@@ -170,6 +185,8 @@ public class Level implements Serialisable, Persisting {
 			
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
 			
+			turnCreated = obj.optInt("turnCreated", 0);
+			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
 			lightStore.unserialise(obj);
@@ -180,7 +197,7 @@ public class Level implements Serialisable, Persisting {
 			JRogue.getLogger().error(e);
 		}
 		
-		dungeon.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
+		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
 
 		unserialisePersistence(obj);
 	}
@@ -208,5 +225,10 @@ public class Level implements Serialisable, Persisting {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s %,d", levelName, depth);
 	}
 }

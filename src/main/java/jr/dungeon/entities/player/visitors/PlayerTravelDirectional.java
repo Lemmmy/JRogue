@@ -38,7 +38,7 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 		int dy = d.getY();
 		
 		for (int i = 0; i < 50; i++) { // max 50 steps in one move
-			Tile destTile = player.getLevel().getTileStore()
+			Tile destTile = player.getLevel().tileStore
 				.getTile(player.getX() + dx, player.getY() + dy);
 			
 			if (
@@ -53,18 +53,18 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 			
 			pathTaken.addStep(destTile);
 			player.setAction(new ActionMove(player.getX() + dx, player.getY() + dy, new Action.NoCallback()));
-			player.getDungeon().turn();
+			player.getDungeon().turnSystem.turn(player.getDungeon());
 			
 			if (oldPos.equals(player.getPosition())) { // we didn't go anywhere, so stop
 				break;
 			}
 			
-			if (i > 2 && player.getLevel().getEntityStore()
+			if (i > 2 && player.getLevel().entityStore
 				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
 				break;
 			}
 		}
 		
-		player.getDungeon().triggerEvent(new PathShowEvent(pathTaken));
+		player.getDungeon().eventSystem.triggerEvent(new PathShowEvent(pathTaken));
 	}
 }

@@ -7,8 +7,16 @@ import jr.dungeon.tiles.TileType;
 public class Generator_ extends GeneratorStandard {
 	public Generator_(Level level, Tile sourceTile) {
 		super(level, sourceTile);
+		
 		spawnWater = false;
 		spawnSewers = false;
+	}
+	
+	@Override
+	public boolean generate() {
+		level.setLevelName("________");
+		
+		return super.generate();
 	}
 	
 	@Override

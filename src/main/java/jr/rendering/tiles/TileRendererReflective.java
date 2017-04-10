@@ -10,9 +10,9 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityRenderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.ShaderLoader;
 import lombok.NonNull;
 
@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TileRendererReflective extends TileRendererBasic {
-	public static void drawReflection(SpriteBatch batch, Renderer renderer, Dungeon dungeon, int x, int y, @NonNull
+	public static void drawReflection(SpriteBatch batch, GameScreen renderer, Dungeon dungeon, int x, int y, @NonNull
 		ReflectionSettings s) {
 		if (y - 1 < 0) return;
 		
@@ -42,7 +42,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		
 		reflectionShader.setUniformf("u_time", 0.0f);
 		
-		TileType tileAbove = dungeon.getLevel().getTileStore().getTileType(x, y - 1);
+		TileType tileAbove = dungeon.getLevel().tileStore.getTileType(x, y - 1);
 		
 		final boolean doReflect = (tileAbove.getFlags() & TileFlag.DONT_REFLECT) != TileFlag.DONT_REFLECT;
 		final boolean isWall = (tileAbove.getFlags() & TileFlag.WALL) == TileFlag.WALL;
@@ -62,7 +62,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		final float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
 		reflectionShader.setUniformf("u_time", time);
 		
-		List<Entity> entities = dungeon.getLevel().getEntityStore().getEntitiesAt(x, y - 1);
+		List<Entity> entities = dungeon.getLevel().entityStore.getEntitiesAt(x, y - 1);
 		entities.stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)
@@ -70,7 +70,7 @@ public class TileRendererReflective extends TileRendererBasic {
 			.forEach(e -> {
 				if (
 					!e.isStatic() &&
-					e.getLevel().getVisibilityStore().isTileInvisible(e.getPosition()) &&
+					e.getLevel().visibilityStore.isTileInvisible(e.getPosition()) &&
 					!(e.getLevel().getClimate() == Climate.__)
 				) {
 					return;

@@ -1,7 +1,7 @@
 package jr.rendering.entities.animations;
 
 import jr.dungeon.entities.Entity;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.utils.Point;
 import jr.utils.Vector;
 import lombok.val;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class AnimationEntityDamaged extends EntityAnimation {
 	private Point delta;
 	
-	public AnimationEntityDamaged(Renderer renderer, Entity entity, Entity attacker) {
+	public AnimationEntityDamaged(GameScreen renderer, Entity entity, Entity attacker) {
 		super(renderer, entity);
 		
 		delta = entity.getPosition().clampedDelta(attacker.getPosition());

@@ -10,7 +10,10 @@ import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GeneratorCave extends DungeonGenerator {
@@ -48,6 +51,8 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	@Override
 	public boolean generate() {
+		level.setLevelName("Caves");
+		
 		airPass();
 		
 		for (int i = 0; i < 6; i++) {
@@ -75,18 +80,18 @@ public class GeneratorCave extends DungeonGenerator {
 			tempTiles[i] = new Tile(
 				level,
 				firstPass ? TileType.TILE_GROUND
-						  : level.getTileStore().getTileType(x, y),
+						  : level.tileStore.getTileType(x, y),
 				x, y
 			);
 		}
 	}
 	
 	private void flushTempTiles() {
-		Arrays.stream(tempTiles).forEach(t -> level.getTileStore().setTileType(t.getX(), t.getY(), t.getType()));
+		Arrays.stream(tempTiles).forEach(t -> level.tileStore.setTileType(t.getX(), t.getY(), t.getType()));
 	}
 	
 	private void airPass() {
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.filter(this::isTileInBounds)
 			.forEach(t -> {
 				if (rand.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
@@ -98,7 +103,7 @@ public class GeneratorCave extends DungeonGenerator {
 	private void pass(boolean firstPass) {
 		initialiseTempTiles(firstPass);
 		
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.filter(this::isTileInBounds)
 			.forEach(t -> setTempTileType(
 				t.getX(), t.getY(),
@@ -119,10 +124,10 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void wallPass() {
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> t.getType() == TileType.TILE_GROUND)
 			.forEach(t -> {
-				TileType[] adjacentTileTypes = level.getTileStore().getOctAdjacentTileTypes(t.getX(), t.getY());
+				TileType[] adjacentTileTypes = level.tileStore.getOctAdjacentTileTypes(t.getX(), t.getY());
 				
 				Arrays.stream(adjacentTileTypes)
 					.filter(t2 -> t2 == TileType.TILE_CAVE_FLOOR)
@@ -132,9 +137,9 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void chooseSpawn() {
-		List<Tile> validSpawnTiles = Arrays.stream(level.getTileStore().getTiles())
+		List<Tile> validSpawnTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> t.getType().isFloor())
-			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+			.filter(t -> Arrays.stream(level.tileStore.getAdjacentTileTypes(t.getX(), t.getY()))
 				.filter(TileType::isFloor)
 				.count() == 4)
 			.collect(Collectors.toList());
@@ -163,9 +168,9 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void chooseExit() {
-		List<Tile> validExitTiles = Arrays.stream(level.getTileStore().getTiles())
+		List<Tile> validExitTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> t.getType().isFloor())
-			.filter(t -> Arrays.stream(level.getTileStore().getAdjacentTileTypes(t.getX(), t.getY()))
+			.filter(t -> Arrays.stream(level.tileStore.getAdjacentTileTypes(t.getX(), t.getY()))
 							.filter(TileType::isFloor)
 							.count() == 4)
 			.filter(t -> Utils.chebyshevDistance(t.getX(), t.getY(), spawnTile.getX(), spawnTile.getY()) > DISTANCE_SPAWN_EXIT)
@@ -177,13 +182,13 @@ public class GeneratorCave extends DungeonGenerator {
 		int exitX = exitTile.getX();
 		int exitY = exitTile.getY();
 		
-		level.getTileStore().setTileType(exitX, exitY, TileType.TILE_LADDER_DOWN);
+		level.tileStore.setTileType(exitX, exitY, TileType.TILE_LADDER_DOWN);
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.getTileStore().setTileType(exitX, exitY, TileType.TILE_LADDER_UP);
+			level.tileStore.setTileType(exitX, exitY, TileType.TILE_LADDER_UP);
 		}
 		
-		exitTile = level.getTileStore().getTile(exitX, exitY);
+		exitTile = level.tileStore.getTile(exitX, exitY);
 		
 		if (exitTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) exitTile.getState();
@@ -225,7 +230,7 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private int getAdjacentCountR1(int x, int y) {
-		return (int) Arrays.stream(level.getTileStore().getOctAdjacentTiles(x, y))
+		return (int) Arrays.stream(level.tileStore.getOctAdjacentTiles(x, y))
 			.filter(Objects::nonNull)
 			.filter(t -> t.getType().getSolidity() == TileType.Solidity.SOLID)
 			.count();
@@ -244,7 +249,7 @@ public class GeneratorCave extends DungeonGenerator {
 					continue;
 				}
 				
-				TileType t = level.getTileStore().getTileType(i, j);
+				TileType t = level.tileStore.getTileType(i, j);
 				
 				if (t == null) {
 					continue;

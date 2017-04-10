@@ -8,7 +8,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.interfaces.Quaffable;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.generators.Climate;
 
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
@@ -41,7 +41,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 		return true;
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
 			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));

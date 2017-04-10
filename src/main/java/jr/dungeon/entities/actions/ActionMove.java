@@ -50,7 +50,7 @@ public class ActionMove extends Action {
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		
-		List<Entity> unwalkable = entity.getLevel().getEntityStore().getUnwalkableEntitiesAt(x, y);
+		List<Entity> unwalkable = entity.getLevel().entityStore.getUnwalkableEntitiesAt(x, y);
 		
 		if (unwalkable.size() > 0) {
 			if (entity instanceof Player) {
@@ -70,14 +70,14 @@ public class ActionMove extends Action {
 		entity.setPosition(x, y);
 		
 		if (entity instanceof Player) {
-			Tile tile = entity.getLevel().getTileStore().getTile(x, y);
+			Tile tile = entity.getLevel().tileStore.getTile(x, y);
 			
 			if (tile.getType().onWalk() != null) {
 				msg.log(tile.getType().onWalk());
 			}
 		}
 		
-		List<Entity> walkable = entity.getLevel().getEntityStore().getWalkableEntitiesAt(x, y);
+		List<Entity> walkable = entity.getLevel().entityStore.getWalkableEntitiesAt(x, y);
 		walkable.forEach(e -> e.walk((EntityLiving) entity));
 		
 		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)

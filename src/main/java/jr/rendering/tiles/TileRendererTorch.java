@@ -32,7 +32,7 @@ public class TileRendererTorch extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
@@ -48,7 +48,7 @@ public class TileRendererTorch extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
@@ -81,7 +81,7 @@ public class TileRendererTorch extends TileRenderer {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().getTileStore().getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();

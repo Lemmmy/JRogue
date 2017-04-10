@@ -2,6 +2,7 @@ package jr.dungeon.entities.actions;
 
 import jr.dungeon.Messenger;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StrainedLeg;
@@ -88,8 +89,8 @@ public class ActionKick extends Action {
 		int x = pos.getX();
 		int y = pos.getY();
 
-		Tile tile = entity.getLevel().getTileStore().getTile(x, y);
-		TileType tileType = entity.getLevel().getTileStore().getTileType(x, y);
+		Tile tile = entity.getLevel().tileStore.getTile(x, y);
+		TileType tileType = entity.getLevel().tileStore.getTileType(x, y);
 		
 		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
@@ -110,7 +111,7 @@ public class ActionKick extends Action {
 					);
 				}
 				
-				kicker.damage(DamageSource.KICKING_THIN_AIR, 1, kicker);
+				kicker.damage(new DamageSource(kicker, null, DamageType.KICKING_THIN_AIR), 1);
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
@@ -121,6 +122,6 @@ public class ActionKick extends Action {
 			return;
 		}
 		
-		kicker.getDungeon().triggerEvent(new EntityKickedTileEvent(kicker, tile));
+		kicker.getDungeon().eventSystem.triggerEvent(new EntityKickedTileEvent(kicker, tile));
 	}
 }

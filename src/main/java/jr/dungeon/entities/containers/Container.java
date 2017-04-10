@@ -3,7 +3,7 @@ package jr.dungeon.entities.containers;
 import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventListener;
+import jr.dungeon.events.EventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Wieldable;
@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Container implements Serialisable, DungeonEventListener {
+public class Container implements Serialisable, EventListener {
 	@Getter @Setter	private String name;
 	
 	@Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
@@ -208,8 +208,8 @@ public class Container implements Serialisable, DungeonEventListener {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<DungeonEventListener> getSubListeners() {
-		List<DungeonEventListener> subListeners = new ArrayList<>();
+	public List<EventListener> getSubListeners() {
+		List<EventListener> subListeners = new ArrayList<>();
 		
 		items.values().forEach(i -> subListeners.add(i.getItem()));
 		

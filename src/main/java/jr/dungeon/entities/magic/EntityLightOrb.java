@@ -7,7 +7,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
@@ -46,7 +46,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 				"%s flashes brightly and then disappears into thin air.",
 				getName(getDungeon().getPlayer(), false)
 			);
-			getLevel().getEntityStore().removeEntity(this);
+			getLevel().entityStore.removeEntity(this);
 		}
 	}
 	
@@ -55,12 +55,12 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		setMovementPoints(getMovementPoints() + getMovementSpeed());
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		int x = getX() + e.getDeltaY();
 		int y = getY() + e.getDeltaY();
 		
-		TileType tile = getLevel().getTileStore().getTileType(x, y);
+		TileType tile = getLevel().tileStore.getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));

@@ -7,10 +7,10 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.MercuryPoisoning;
 import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.ItemDroppedEvent;
 import jr.dungeon.entities.events.ItemDroppedOnEntityEvent;
-import jr.dungeon.entities.events.EntityKickedEntityEvent;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
@@ -62,7 +62,7 @@ public class EntityItem extends Entity {
 		itemStack.getItem().update(this);
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		int x = getX() + e.getDeltaX();
 		int y = getY() + e.getDeltaY();
@@ -74,11 +74,11 @@ public class EntityItem extends Entity {
 				e.getKicker().addStatusEffect(new MercuryPoisoning());
 			}
 			
-			getLevel().getEntityStore().removeEntity(this);
+			getLevel().entityStore.removeEntity(this);
 			return;
 		}
 		
-		TileType tile = getLevel().getTileStore().getTileType(x, y);
+		TileType tile = getLevel().tileStore.getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
 			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
@@ -94,14 +94,14 @@ public class EntityItem extends Entity {
 		return itemStack.getName(observer, requiresCapitalisation);
 	}
 	
-	@DungeonEventHandler(selfOnly = true)
+	@EventHandler(selfOnly = true)
 	public void onSpawn(EntityAddedEvent event) {
 		if (event.isNew()) {
-			getDungeon().triggerEvent(new ItemDroppedEvent(this));
+			getDungeon().eventSystem.triggerEvent(new ItemDroppedEvent(this));
 			
-			getLevel().getEntityStore().getEntitiesAt(getX(), getY()).stream()
+			getLevel().entityStore.getEntitiesAt(getX(), getY()).stream()
 				.filter(e -> !e.equals(this))
-				.forEach(e -> getDungeon().triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+				.forEach(e -> getDungeon().eventSystem.triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
 		}
 	}
 	

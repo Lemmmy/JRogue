@@ -13,12 +13,12 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.DungeonEventHandler;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.Renderer;
+import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.ImageLoader;
 import jr.utils.Utils;
 
@@ -49,7 +49,7 @@ public class MinimapComponent extends RendererComponent {
 	
 	private Level level;
 	
-	public MinimapComponent(Renderer renderer, Dungeon dungeon, Settings settings) {
+	public MinimapComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 		
 		tileWidth = settings.getMinimapTileWidth();
@@ -69,9 +69,9 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void loadIcons() {
-		iconPoint = ImageLoader.getSubimage("textures/hud.png", 272, 0, 4, 5);
-		iconDown = ImageLoader.getSubimage("textures/hud.png", 276, 0, 3, 5);
-		iconUp = ImageLoader.getSubimage("textures/hud.png", 279, 0, 3, 5);
+		iconPoint = ImageLoader.getSubimage("textures/hud.png", 176, 176, 4, 5);
+		iconDown = ImageLoader.getSubimage("textures/hud.png", 180, 176, 3, 5);
+		iconUp = ImageLoader.getSubimage("textures/hud.png", 183, 176, 3, 5);
 		
 		iconPoint.flip(false, true);
 		iconDown.flip(false, true);
@@ -84,7 +84,7 @@ public class MinimapComponent extends RendererComponent {
 		xOffset = width - level.getWidth() * tileWidth;
 	}
 	
-	@DungeonEventHandler
+	@EventHandler
 	private void onLevelChange(LevelChangeEvent e) {
 		this.level = e.getLevel();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -122,10 +122,10 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void drawMap() {
-		for (Tile tile : level.getTileStore().getTiles()) {
-			boolean discovered = level.getVisibilityStore()
+		for (Tile tile : level.tileStore.getTiles()) {
+			boolean discovered = level.visibilityStore
 				.isTileDiscovered(tile.getX(), tile.getY());
-			boolean visible = !level.getVisibilityStore()
+			boolean visible = !level.visibilityStore
 				.isTileInvisible(tile.getX(), tile.getY());
 			
 			if (discovered) {
@@ -162,36 +162,36 @@ public class MinimapComponent extends RendererComponent {
 	}
 	
 	private void drawStairIcons() {
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.UP) == TileFlag.UP)
-			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
 		
-		Arrays.stream(level.getTileStore().getTiles())
+		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
-			.filter(t -> level.getVisibilityStore().isTileDiscovered(t.getX(), t.getY()))
+			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
 			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
 	}
 	
 	private void drawEntityIcons() {
-		level.getEntityStore().getEntities().stream()
+		level.entityStore.getEntities().stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
 			.filter(
-				e -> e.isStatic() && level.getVisibilityStore()
+				e -> e.isStatic() && level.visibilityStore
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!level.getVisibilityStore().isTileInvisible(e.getX(), e.getY())
+				!level.visibilityStore.isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
-		level.getEntityStore().getMonsters().stream()
+		level.entityStore.getMonsters().stream()
 			.filter(
-				e -> e.isStatic() && level.getVisibilityStore()
+				e -> e.isStatic() && level.visibilityStore
 					.isTileDiscovered(e.getX(), e.getY()) ||
-				!level.getVisibilityStore().isTileInvisible(e.getX(), e.getY())
+				!level.visibilityStore.isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.map(e -> (Monster) e)

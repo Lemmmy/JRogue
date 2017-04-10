@@ -39,6 +39,8 @@ public class GeneratorSewer extends GeneratorRooms {
 	
 	@Override
 	public boolean generate() {
+		level.setLevelName("Sewers");
+		
 		if (!super.generate()) {
 			return false;
 		}
@@ -55,8 +57,8 @@ public class GeneratorSewer extends GeneratorRooms {
 			for (int x = 0; x < level.getWidth(); x++) {
 				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
 				
-				if (noise > THRESHOLD_WATER_NOISE && level.getTileStore().getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
-					level.getTileStore().setTileType(x, y, TileType.TILE_SEWER_WATER);
+				if (noise > THRESHOLD_WATER_NOISE && level.tileStore.getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
+					level.tileStore.setTileType(x, y, TileType.TILE_SEWER_WATER);
 				}
 			}
 		}

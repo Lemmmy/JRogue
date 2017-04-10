@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LevelChangeEvent extends DungeonEvent {
+public class LevelChangeEvent extends Event {
 	private Level level;
 }

@@ -47,16 +47,16 @@ public class PlayerKick implements PlayerVisitor {
 		int dx = d.getX();
 		int dy = d.getY();
 		
-		if (player.getLevel().getEntityStore().getEntitiesAt(player.getX() + dx, player.getY() + dy).size() > 0) {
+		if (player.getLevel().entityStore.getEntitiesAt(player.getX() + dx, player.getY() + dy).size() > 0) {
 			player.setAction(new ActionKick(
 				d,
-				player.getLevel().getEntityStore().getEntitiesAt(player.getX() + dx, player.getY() + dy).get(0),
+				player.getLevel().entityStore.getEntitiesAt(player.getX() + dx, player.getY() + dy).get(0),
 				new Action.NoCallback()
 			));
 		} else {
 			player.setAction(new ActionKick(d, new Action.NoCallback()));
 		}
 		
-		player.getDungeon().turn();
+		player.getDungeon().turnSystem.turn(player.getDungeon());
 	}
 }

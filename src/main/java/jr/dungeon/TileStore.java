@@ -15,8 +15,6 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @Getter
 public class TileStore implements Serialisable {
@@ -25,7 +23,7 @@ public class TileStore implements Serialisable {
 	private int width;
 	private int height;
 	
-	public TileStore(Level level) {
+	public void initialise(Level level) {
 		this.width = level.getWidth();
 		this.height = level.getHeight();
 		
