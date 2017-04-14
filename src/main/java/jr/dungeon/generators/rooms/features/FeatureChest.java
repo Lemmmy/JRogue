@@ -36,7 +36,7 @@ public class FeatureChest extends SpecialRoomFeature {
 			ItemBanana.class,
 			ItemBread.class,
 			ItemCarrot.class,
-			ItemCherries.class,
+			ItemCherry.class,
 			ItemCorn.class,
 			ItemLemon.class,
 			ItemOrange.class

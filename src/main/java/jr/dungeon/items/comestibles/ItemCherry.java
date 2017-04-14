@@ -3,7 +3,7 @@ package jr.dungeon.items.comestibles;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.ItemAppearance;
 
-public class ItemCherries extends ItemComestible {
+public class ItemCherry extends ItemComestible {
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
 		String s = getBeatitudePrefix(observer, requiresCapitalisation);
@@ -35,6 +35,6 @@ public class ItemCherries extends ItemComestible {
 	
 	@Override
 	public ItemAppearance getAppearance() {
-		return ItemAppearance.APPEARANCE_CHERRIES;
+		return ItemAppearance.APPEARANCE_CHERRY;
 	}
 }
