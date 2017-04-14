@@ -40,12 +40,8 @@ public class ItemRendererCherry extends ItemRenderer {
 	private TextureRegion getImageFromAmount(int count, boolean flipped) {
 		int value = 1;
 		
-		for (int i = 0; i < values.length; i++) {
-			if (count >= values[i]) {
-				value = i;
-			} else {
-				break;
-			}
+		if (count == 1) {
+			value = 0;
 		}
 		
 		if (flipped) {
