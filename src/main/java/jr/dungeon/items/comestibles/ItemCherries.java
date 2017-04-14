@@ -12,8 +12,8 @@ public class ItemCherries extends ItemComestible {
 			requiresCapitalisation = false;
 		}
 		
-		s += plural ? requiresCapitalisation ? "Pairs of cherries" : "pairs of cherries" :
-			 		  requiresCapitalisation ? "Pair of cherries" : "pair of cherries";
+		s += plural ? requiresCapitalisation ? "Cherries" : "cherries" :
+			 		  requiresCapitalisation ? "Cherry" : "cherry";
 		
 		return s;
 	}
