@@ -36,12 +36,8 @@ public class ItemRendererCherry extends ItemRenderer {
 	}
 	
 	private TextureRegion getImageFromAmount(int count, boolean flipped) {
-		int value = count > 1 ? 1 : 0;
-		if (flipped) {
-			return images.get(value);
-		} else {
-			return imagesDrawable.get(value);
-		}
+		int value = Math.min(count, 1);
+		return flipped ? images.get(value) : imagesDrawable.get(value);
 	}
 	
 	@Override

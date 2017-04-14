@@ -46,12 +46,8 @@ public class ItemRendererGold extends ItemRenderer {
 				break;
 			}
 		}
-		
-		if (flipped) {
-			return images.get(value);
-		} else {
-			return imagesDrawable.get(value);
-		}
+
+		return flipped ? images.get(value) : imagesDrawable.get(value);
 	}
 	
 	@Override
