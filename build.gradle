@@ -111,7 +111,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	printmapping "proguard.map"
 }
 
-task fullDistBuild(type: Jar, dependsOn: "obfu") {
+task fullDistBuild(type: Jar, dependsOn: "subJar") {
 	baseName = jarName + "-full"
 
 	println file("$buildDir/tmp/version.properties").text
