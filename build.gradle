@@ -26,32 +26,6 @@ sourceCompatibility = 1.8
 
 applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
 
-task createProperties(dependsOn: processResources) {
-	file("$buildDir/resources/main").mkdirs()
-	file("$buildDir/resources/main/buildinfo").createNewFile()
-	file("$buildDir/resources/main/buildinfo").withWriter { w ->
-		Properties p = new Properties()
-		p["version"] = project.version.toString()
-		p["buildDate"] = new Date().toString()
-
-		["buildRevision", "buildBranch", "buildNumber"].each {
-			if (project.hasProperty(it)) {
-				p[it] = project.getProperty(it)
-			}
-		}
-
-		if (project.hasProperty("buildRevision")) {
-			p["buildRevision"] = project.getProperty("buildRevision")
-		}
-
-		p.store w, null
-	}
-}
-
-classes {
-	dependsOn createProperties
-}
-
 repositories {
 	mavenLocal()
 	mavenCentral()
@@ -120,7 +94,14 @@ task fullDistBuild(type: Jar, dependsOn: "subJar") {
 	}
 
 	manifest {
-		attributes "Main-Class": mainClassName
+		attributes(
+			"Main-Class": mainClassName,
+			"Version": project.version.toString(),
+			"Build-Date": new Date().toString(),
+			"Build-Revision": project.hasProperty("buildRevision") ? project.getProperty("buildRevision") : "unknown",
+			"Build-Branch": project.hasProperty("buildBranch") ? project.getProperty("buildBranch") : "unknown",
+			"Build-Number": project.hasProperty("buildNumber") ? project.getProperty("buildNumber") : "-1"
+		)
 	}
 }
 
