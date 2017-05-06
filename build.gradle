@@ -110,7 +110,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	baseName = jarName + "-full"
 
-	from file("$buildDir/tmp/version.properties")
+	from "$buildDir/tmp/version.properties"
 	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)
