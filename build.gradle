@@ -27,9 +27,9 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
 
 task createProperties(dependsOn: processResources) {
-	file("$buildDir/tmp").mkdirs()
-	file("$buildDir/tmp/version.properties").createNewFile()
-	file("$buildDir/tmp/version.properties").withWriter { w ->
+	file("$buildDir/resources/main").mkdirs()
+	file("$buildDir/resources/main/buildinfo").createNewFile()
+	file("$buildDir/resources/main/buildinfo").withWriter { w ->
 		Properties p = new Properties()
 		p["version"] = project.version.toString()
 		p["buildDate"] = new Date().toString()
@@ -114,9 +114,6 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 task fullDistBuild(type: Jar, dependsOn: "subJar") {
 	baseName = jarName + "-full"
 
-	println file("$buildDir/tmp/version.properties").text
-
-	from "$buildDir/tmp/version.properties"
 	from zipTree("$buildDir/tmp/${jarName}-deobf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)

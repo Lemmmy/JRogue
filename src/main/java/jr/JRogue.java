@@ -136,7 +136,7 @@ public class JRogue {
 		logger = LogManager.getLogger("JRogue");
 		
 		try (
-			InputStream is = JRogue.class.getResourceAsStream("/version.properties")
+			InputStream is = JRogue.class.getResourceAsStream("/buildinfo")
 		) {
 			Properties versionProperties = new Properties();
 			versionProperties.load(is);
