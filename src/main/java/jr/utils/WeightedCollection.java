@@ -3,6 +3,7 @@ package jr.utils;
 import com.github.alexeyr.pcg.Pcg32;
 
 import java.util.NavigableMap;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class WeightedCollection<E> {
@@ -19,6 +20,17 @@ public class WeightedCollection<E> {
 	
 	public E next() {
 		int value = rand.nextInt(total) + 1;
+		return map.ceilingEntry(value).getValue();
+	}
+	
+	/**
+	 * Allows you to pass your own seeded random.
+	 *
+	 * @param random Custom Random object.
+	 * @return A random item from the collection.
+	 */
+	public E next(Random random) {
+		int value = random.nextInt(total) + 1;
 		return map.ceilingEntry(value).getValue();
 	}
 	

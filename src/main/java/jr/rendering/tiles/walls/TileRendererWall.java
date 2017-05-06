@@ -1,14 +1,25 @@
-package jr.rendering.tiles;
+package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.tiles.TileRenderer;
+import jr.utils.WeightedCollection;
 
 import java.util.Random;
 
 public class TileRendererWall extends TileRenderer {
 	private static final int PROBABILITY_GRATE = 6;
+	private static final int PROBABILITY_COBWEB = 22;
+	
+	protected final WeightedCollection<WallDecoration> wallDecoration = new WeightedCollection<>();
+	
+	{
+		wallDecoration.add(100, new WallDecoration()); // no decoration
+		wallDecoration.add(30, new WallDecorationCobweb());
+		wallDecoration.add(10, new WallDecorationGrate());
+	}
 	
 	private static TextureRegion wallH;
 	private static TextureRegion wallHPillar;
@@ -16,7 +27,6 @@ public class TileRendererWall extends TileRenderer {
 	private static TextureRegion wallV;
 	private static TextureRegion wallCT;
 	private static TextureRegion wallCB;
-	private static TextureRegion wallGrate;
 	
 	private Random rand = new Random();
 	
@@ -28,7 +38,6 @@ public class TileRendererWall extends TileRenderer {
 			wallV = getImageFromSheet("textures/tiles.png", 0, 0);
 			wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
 			wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
-			wallGrate = getImageFromSheet("textures/tiles.png", 8, 2);
 		}
 	}
 	
@@ -74,19 +83,32 @@ public class TileRendererWall extends TileRenderer {
 		
 		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 		
-		rand.setSeed(x * y);
-		
-		if (h && top && rand.nextInt(100) <= PROBABILITY_GRATE) {
-			drawTile(batch, wallGrate, x, y);
+		if (h && top && x % 2 != 0) {
+			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
+			
+			WallDecoration decoration = wallDecoration.next(rand);
+			decoration.draw(this, batch, dungeon, x, y, rand);
 		}
 	}
 	
 	@Override
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
+		
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean top = adjacentTiles[2].isInnerRoomTile();
+		
 		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
 		
 		if (t != null) {
 			drawTile(batch, t, x, y + 1);
+		}
+		
+		if (h && top && x % 2 != 0) {
+			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
+			
+			WallDecoration decoration = wallDecoration.next(rand);
+			decoration.drawExtra(this, batch, dungeon, x, y, rand);
 		}
 	}
 }

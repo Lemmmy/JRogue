@@ -1,9 +1,10 @@
-package jr.rendering.tiles;
+package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.tiles.TileRenderer;
 
 public class TileRendererSewerWall extends TileRenderer {
 	private static TextureRegion wallH;

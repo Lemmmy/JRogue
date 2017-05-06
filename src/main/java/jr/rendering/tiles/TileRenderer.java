@@ -75,7 +75,7 @@ public abstract class TileRenderer {
 		return effectPool;
 	}
 	
-	protected void drawTile(SpriteBatch batch, TextureRegion image, int x, int y) {
+	public void drawTile(SpriteBatch batch, TextureRegion image, float x, float y) {
 		if (image != null) {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;

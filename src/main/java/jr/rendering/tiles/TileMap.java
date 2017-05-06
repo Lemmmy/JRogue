@@ -2,6 +2,8 @@ package jr.rendering.tiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.tiles.walls.TileRendererSewerWall;
+import jr.rendering.tiles.walls.TileRendererWall;
 import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
