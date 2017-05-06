@@ -111,13 +111,13 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	printmapping "proguard.map"
 }
 
-task fullDistBuild(type: Jar, dependsOn: "subJar") {
+task fullDistBuild(type: Jar, dependsOn: "obfu") {
 	baseName = jarName + "-full"
 
 	println file("$buildDir/tmp/version.properties").text
 
 	from "$buildDir/tmp/version.properties"
-	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
+	from zipTree("$buildDir/tmp/${jarName}-deobf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)
 	}
