@@ -84,6 +84,10 @@ dependencies {
 	compile "org.projectlombok:lombok:1.16.12"
 }
 
+tasks.withType(JavaCompile) {
+	options.incremental = true
+}
+
 task subJar(type: Jar) {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
@@ -107,8 +111,10 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	printmapping "proguard.map"
 }
 
-task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
+task fullDistBuild(type: Jar, dependsOn: "subJar") {
 	baseName = jarName + "-full"
+
+	println file("$buildDir/tmp/version.properties").text
 
 	from "$buildDir/tmp/version.properties"
 	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
