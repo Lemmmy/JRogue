@@ -56,6 +56,8 @@ public class DeathScreen extends ScreenAdapter {
 		container.setFillParent(true);
 		container.row().fill().top();
 		
+		container.setBackground(skin.getTiledDrawable("darkBricks"));
+		
 		initDeathMessage(container);
 		
 		Container<Actor> splitter = new Container<>();

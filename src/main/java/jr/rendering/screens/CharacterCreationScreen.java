@@ -54,6 +54,8 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private void initLayout(Table container) {
 		attributes = new Attributes();
 		
+		container.setBackground(skin.getTiledDrawable("darkBricks"));
+		
 		container.setFillParent(true);
 		container.row().fill().top();
 		
