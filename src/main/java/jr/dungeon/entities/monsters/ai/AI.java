@@ -34,6 +34,8 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	
 	private JSONObject persistence = new JSONObject();
 	
+	protected int suppressTurns = 0;
+	
 	public AI(Monster monster) {
 		this.monster = monster;
 		
@@ -301,5 +303,9 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	
 	public List<EventListener> getSubListeners() {
 		return new ArrayList<>();
+	}
+	
+	public void suppress(int turns) {
+		suppressTurns = turns;
 	}
 }

@@ -48,9 +48,8 @@ public class StatefulAI extends AI {
 	
 	@Override
 	public void update() {
-		if (getMonster() == null) {
-			return;
-		}
+		if (suppressTurns-- > 0) return;
+		if (getMonster() == null) return;
 		
 		if (shouldTargetPlayer && currentTarget == null) {
 			currentTarget = getMonster().getDungeon().getPlayer();

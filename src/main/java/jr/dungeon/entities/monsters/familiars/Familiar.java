@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.familiars;
 
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityLiving;
@@ -9,10 +10,13 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
+import jr.dungeon.events.TurnEvent;
 import lombok.Getter;
 
+import javax.xml.bind.util.JAXBResult;
 import java.util.List;
 
 /**
@@ -81,7 +85,8 @@ public abstract class Familiar extends Monster {
 			e.getSrc().isAdjacentTo(getPosition())
 		) {
 			setLevel(e.getDest().getLevel());
-			setPosition(e.getDest().getPosition());
+			setPositionFresh(e.getDest().getPosition());
+			getAI().suppress(2);
 		}
 	}
 }

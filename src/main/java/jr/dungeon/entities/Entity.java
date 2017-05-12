@@ -182,6 +182,22 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	}
 	
 	/**
+	 * Sets the Entity's X and Y coordinates in the {@link Level}, resets the last position,
+	 * and triggers an {@link EntityMovedEvent},
+	 *
+	 * @param x The Entity's new X position.
+	 * @param y The Entity's new Y position.
+	 */
+	public void setPositionFresh(int x, int y) {
+		setLastX(x);
+		setLastY(y);
+		setX(x);
+		setY(y);
+		
+		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, x, y, x, y));
+	}
+	
+	/**
 	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates,
 	 * and triggers an {@link EntityMovedEvent},
 	 *
@@ -189,6 +205,16 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 */
 	public void setPosition(Point point) {
 		setPosition(point.getX(), point.getY());
+	}
+	
+	/**
+	 * Sets the Entity's position in the {@link Level}, resets the last position, and triggers an
+	 * {@link EntityMovedEvent},
+	 *
+	 * @param point The entity's new position.
+	 */
+	public void setPositionFresh(Point point) {
+		setPositionFresh(point.getX(), point.getY());
 	}
 	
 	/**
