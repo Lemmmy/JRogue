@@ -62,7 +62,12 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-task subJar(type: Jar) {
+task dirs {
+	mkdir("$buildDir/tmp");
+	mkdir("$buildDir/libs");
+}
+
+task subJar(type: Jar, dependsOn: "libsDir") {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
 
