@@ -4,6 +4,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.entities.events.EntityChangeLevelEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
@@ -69,5 +70,18 @@ public abstract class Familiar extends Monster {
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
 		return name != null ? name : getDefaultName(observer, requiresCapitalisation);
+	}
+	
+	@EventHandler
+	public void onPlayerChangeLevel(EntityChangeLevelEvent e) {
+		if (!e.isEntityPlayer()) return;
+		
+		if (
+			e.getSrc().getLevel().equals(getLevel()) &&
+			e.getSrc().isAdjacentTo(getPosition())
+		) {
+			setLevel(e.getDest().getLevel());
+			setPosition(e.getDest().getPosition());
+		}
 	}
 }

@@ -88,7 +88,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 * {@link jr.dungeon.EntityStore} and placing it in the new Level's one. This value is not automatically synced
 	 * with {@link jr.dungeon.EntityStore EntityStores}.
 	 */
-	@Setter private Level level;
+	private Level level;
 	
 	/**
 	 * List of extrinsic {@link StatusEffect status effects} that the Entity has. These are typically temporary
@@ -179,6 +179,16 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		setY(y);
 		
 		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+	}
+	
+	/**
+	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates,
+	 * and triggers an {@link EntityMovedEvent},
+	 *
+	 * @param point The entity's new position.
+	 */
+	public void setPosition(Point point) {
+		setPosition(point.getX(), point.getY());
 	}
 	
 	/**
@@ -373,5 +383,15 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 */
 	public Set<EventListener> getSubListeners() {
 		return new HashSet<>(statusEffects);
+	}
+	
+	public void setLevel(Level level) {
+		this.level.entityStore.removeEntity(this);
+		this.level.entityStore.processEntityQueues(false);
+		
+		this.level = level;
+		
+		level.entityStore.addEntity(this);
+		level.entityStore.processEntityQueues(false);
 	}
 }

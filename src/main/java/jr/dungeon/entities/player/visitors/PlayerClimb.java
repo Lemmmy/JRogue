@@ -45,13 +45,14 @@ public class PlayerClimb implements PlayerVisitor {
 		
 		if (tsc.getLinkedLevel().isPresent()) {
 			Level level = tsc.getLinkedLevel().get();
-			player.getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
 			
 			player.getDungeon().eventSystem.triggerEvent(new EntityChangeLevelEvent(
 				player,
 				tile,
 				tsc.getLinkedLevel().get().tileStore.getTile(tsc.getDestX(), tsc.getDestY())
 			));
+			
+			player.getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
 		}
 	}
 }

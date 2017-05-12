@@ -190,13 +190,7 @@ public class Dungeon implements Messenger {
 	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 		
-		getPlayer().getLevel().entityStore.removeEntity(player);
-		getPlayer().getLevel().entityStore.processEntityQueues(false);
-		
 		getPlayer().setLevel(level);
-		level.entityStore.addEntity(player);
-		level.entityStore.processEntityQueues(false);
-		
 		getPlayer().setPosition(x, y);
 		
 		turnSystem.turn(true);

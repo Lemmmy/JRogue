@@ -2,8 +2,11 @@ package jr.dungeon.tiles;
 
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Colour;
+import jr.utils.Point;
+import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -77,6 +80,26 @@ public class Tile {
 		} else {
 			this.type = type;
 		}
+	}
+	
+	/**
+	 * @param target The target to check adjacency to.
+	 *
+	 * @return Whether or not the tile is adjacent to the target - checks for a
+	 * {@link Utils#chebyshevDistance(int, int, int, int) Chebyshev distance} of 1 or less.
+	 */
+	public boolean isAdjacentTo(Tile target) {
+		return Utils.chebyshevDistance(x, y, target.getX(), target.getY()) <= 1;
+	}
+	
+	/**
+	 * @param target The target to check adjacency to.
+	 *
+	 * @return Whether or not the tile is adjacent to the target - checks for a
+	 * {@link Utils#octileDistance(int, int, int, int, float, float)} Octile distance} of 1 or less.
+	 */
+	public boolean isAdjacentTo(Point target) {
+		return Utils.octileDistance(x, y, target.getX(), target.getY(), 1, 1) <= 1;
 	}
 	
 	@Override
