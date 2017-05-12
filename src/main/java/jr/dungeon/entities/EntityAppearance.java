@@ -3,6 +3,9 @@ package jr.dungeon.entities;
 public enum EntityAppearance {
 	APPEARANCE_PLAYER,
 	
+	APPEARANCE_TAME_CAT,
+	APPEARANCE_TAME_DOG,
+	
 	APPEARANCE_JACKAL,
 	APPEARANCE_FOX,
 	APPEARANCE_HOUND,

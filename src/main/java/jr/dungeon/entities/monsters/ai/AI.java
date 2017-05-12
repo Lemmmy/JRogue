@@ -74,13 +74,22 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	}
 	
 	/**
+	 * @param entity Entity
+	 *
+	 * @return Returns the linear distance between the entity and the monster.
+	 */
+	public float distanceFrom(Entity entity) {
+		return Utils.distance(
+			(float) monster.getX(), (float) monster.getY(),
+			(float) entity.getX(), (float) entity.getY()
+		);
+	}
+	
+	/**
 	 * @return Returns the linear distance between the player and the monster.
 	 */
 	public float distanceFromPlayer() {
-		return Utils.distance(
-			(float) monster.getX(), (float) monster.getY(),
-			(float) monster.getDungeon().getPlayer().getX(), (float) monster.getDungeon().getPlayer().getY()
-		);
+		return distanceFrom(monster.getDungeon().getPlayer());
 	}
 	
 	/**
