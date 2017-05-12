@@ -67,7 +67,7 @@ task dirs {
 	mkdir("$buildDir/libs");
 }
 
-task subJar(type: Jar, dependsOn: "libsDir") {
+task subJar(type: Jar, dependsOn: "dirs") {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
 
