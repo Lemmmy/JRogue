@@ -1,4 +1,4 @@
-# JRogue
+# JRogue ![https://teamcity.chinky.club/project.html?projectId=JRogue&tab=projectOverview](https://teamcity.chinky.club/app/rest/builds/buildType:JRogue_Build/statusIcon)
 JRogue is a roguelike dungeon crawler written in Java using LibGDX.
 
 ## Building
