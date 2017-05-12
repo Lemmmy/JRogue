@@ -6,6 +6,8 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
 import lombok.Getter;
@@ -16,24 +18,21 @@ import java.util.List;
  * An {@link jr.dungeon.entities.Entity} tamed by the {@link jr.dungeon.entities.player.Player}. A Player's companion
  * in the dungeon.
  */
-@Getter
 public abstract class Familiar extends Monster {
 	/**
-	 * The familiar's age from 1 to 3. 1 is youngest, 3 is oldest.
+	 * The familiar's age from 0 to 2. 0 is youngest, 2 is oldest.
 	 */
-	private int age;
+	@Getter private int age;
+	
+	private String name;
 	
 	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor
 		super(dungeon, level, x, y);
 	}
 	
-	public Familiar(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
-	}
-	
 	@Override
 	public int getNutrition() {
-		return 0; // TODO: consider whether your own fucking pets should be edible
+		return getWeight();
 	}
 	
 	@Override
@@ -63,5 +62,12 @@ public abstract class Familiar extends Monster {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true; // why did i write this method
+	}
+	
+	public abstract String getDefaultName(EntityLiving observer, boolean requiresCapitalisation);
+	
+	@Override
+	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
+		return name != null ? name : getDefaultName(observer, requiresCapitalisation);
 	}
 }

@@ -4,6 +4,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateApproachTarget;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
@@ -48,8 +49,9 @@ public class StateLurk extends AIState {
 	
 	private Point getRandomDestination() {
 		Monster m = getAI().getMonster();
+		Player p = getAI().getMonster().getDungeon().getPlayer();
 		
-		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(p.getPosition(), 4).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.map(Tile::getPosition)
 			.collect(Collectors.toList()));

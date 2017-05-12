@@ -4,34 +4,41 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.monsters.ai.stateful.familiar.FamiliarAI;
+import jr.dungeon.entities.monsters.ai.stateful.familiar.StateFollowPlayer;
 
 public class Cat extends Familiar {
 	public Cat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
+		
+		FamiliarAI ai = new FamiliarAI(this);
+		setAI(ai);
+		ai.setDefaultState(new StateFollowPlayer(ai, 0));
 	}
 	
-	public Cat(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
+	@Override
+	public String getDefaultName(EntityLiving observer, boolean requiresCapitalisation) {
+		return requiresCapitalisation ? "Cat" : "cat";
 	}
 	
 	@Override
 	public int getWeight() {
-		return 0;
+		return 100 + (getAge() * 50);
 	}
 	
 	@Override
 	public int getVisibilityRange() {
-		return 0;
+		return 15;
 	}
 	
 	@Override
 	public boolean canMoveDiagonally() {
-		return false;
+		return true;
 	}
 	
 	@Override
 	public boolean canMeleeAttack() {
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -51,16 +58,11 @@ public class Cat extends Familiar {
 	
 	@Override
 	public Size getSize() {
-		return null;
-	}
-	
-	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return null;
+		return Size.SMALL;
 	}
 	
 	@Override
 	public EntityAppearance getAppearance() {
-		return null;
+		return EntityAppearance.APPEARANCE_TAME_CAT;
 	}
 }

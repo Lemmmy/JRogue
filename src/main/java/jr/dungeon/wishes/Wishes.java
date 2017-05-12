@@ -15,6 +15,7 @@ import jr.dungeon.entities.monsters.canines.*;
 import jr.dungeon.entities.monsters.critters.MonsterLizard;
 import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
+import jr.dungeon.entities.monsters.familiars.Cat;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
@@ -185,6 +186,8 @@ public class Wishes {
 		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
 		registerWish("pufferfish", new WishSpawn<>(MonsterPufferfish.class));
 		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
+		
+		registerWish("cat", new WishSpawn<>(Cat.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
