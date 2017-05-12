@@ -82,7 +82,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
 	libraryjars files(configurations.compile.collect())
 
-	printmapping "$buildDir/libs/proguard.map"
+	printmapping "proguard.map"
 }
 
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
