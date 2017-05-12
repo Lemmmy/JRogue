@@ -62,12 +62,7 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
-task dirs {
-	mkdir("$buildDir/tmp");
-	mkdir("$buildDir/libs");
-}
-
-task subJar(type: Jar, dependsOn: "dirs") {
+task subJar(type: Jar) {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
 
@@ -87,7 +82,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
 	libraryjars files(configurations.compile.collect())
 
-	printmapping "$buildDir/libs/proguard.map"
+	printmapping "proguard.map"
 }
 
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
