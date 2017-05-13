@@ -3,9 +3,10 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateApproachTarget;
 import jr.utils.RandomUtils;
 
-public class StateMeleeAttackTarget extends AIState {
+public class StateMeleeAttackTarget extends AIState<StatefulAI> {
 	public StateMeleeAttackTarget(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}

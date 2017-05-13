@@ -27,4 +27,20 @@ public enum NutritionState {
 	public String toString() {
 		return string;
 	}
+	
+	public static NutritionState fromNutrition(int nutrition) {
+		if (nutrition >= 2000) {
+			return NutritionState.CHOKING;
+		} else if (nutrition >= 1500) {
+			return NutritionState.STUFFED;
+		} else if (nutrition >= 750) {
+			return NutritionState.NOT_HUNGRY;
+		} else if (nutrition >= 300) {
+			return NutritionState.HUNGRY;
+		} else if (nutrition >= 0) {
+			return NutritionState.STARVING;
+		} else {
+			return NutritionState.FAINTING;
+		}
+	}
 }

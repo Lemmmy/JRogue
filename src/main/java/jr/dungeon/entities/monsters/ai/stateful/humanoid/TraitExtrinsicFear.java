@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
-public class TraitExtrinsicFear extends AITrait {
+public class TraitExtrinsicFear extends AITrait<StatefulAI> {
 	private float fear;
 	
 	public TraitExtrinsicFear(StatefulAI ai) {

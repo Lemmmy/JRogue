@@ -11,7 +11,7 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 40;
 	}
 	

@@ -52,7 +52,7 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 50;
 	}
 	

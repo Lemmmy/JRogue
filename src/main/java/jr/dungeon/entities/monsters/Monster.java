@@ -103,7 +103,7 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract int getWeight();
 	
-	public abstract int getNutrition();
+	public abstract int getNutritionalValue();
 	
 	public abstract float getCorpseChance();
 	

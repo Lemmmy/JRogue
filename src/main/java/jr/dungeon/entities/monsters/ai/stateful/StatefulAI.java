@@ -55,11 +55,13 @@ public class StatefulAI extends AI {
 			currentTarget = getMonster().getDungeon().getPlayer();
 		}
 		
+		traits.values().stream()
+			.sorted(Comparator.comparingInt(AITrait::getPriority))
+			.forEach(AITrait::update);
+		
 		if (currentState == null) {
 			currentState = defaultState;
 		}
-		
-		traits.values().forEach(AITrait::update);
 		
 		if (currentState != null) {
 			currentState.update();
@@ -266,5 +268,15 @@ public class StatefulAI extends AI {
 	
 	public AITrait getTrait(Class<? extends AITrait> traitClass) {
 		return traits.get(traitClass);
+	}
+	
+	public void setCurrentState(AIState currentState) {
+		setCurrentState(currentState, false);
+	}
+	
+	public void setCurrentState(AIState currentState, boolean force) {
+		if (!force && this.currentState != null && this.currentState.getClass() == currentState.getClass()) return;
+		
+		this.currentState = currentState;
 	}
 }

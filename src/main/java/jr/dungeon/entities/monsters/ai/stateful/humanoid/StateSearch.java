@@ -2,10 +2,11 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateApproachTarget;
 import jr.utils.MultiLineNoPrefixToStringStyle;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class StateSearch extends AIState {
+public class StateSearch extends AIState<StatefulAI> {
 	public StateSearch(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}

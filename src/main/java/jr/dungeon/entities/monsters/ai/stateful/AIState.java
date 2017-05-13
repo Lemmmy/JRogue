@@ -20,8 +20,8 @@ import java.lang.reflect.InvocationTargetException;
  * This AI system may be replaced soon.
  */
 @Getter
-public class AIState implements Serialisable, EventListener {
-	private StatefulAI ai;
+public class AIState<T extends StatefulAI> implements Serialisable, EventListener {
+	private T ai;
 	
 	private int duration = 0;
 	private int turnsTaken = 0;
@@ -30,12 +30,12 @@ public class AIState implements Serialisable, EventListener {
 	 * @param ai The {@link StatefulAI} that hosts this state.
 	 * @param duration How many turns the state should run for. 0 for indefinite.
 	 */
-	public AIState(StatefulAI ai, int duration) {
+	public AIState(T ai, int duration) {
 		this.ai = ai;
 		this.duration = duration;
 	}
 	
-	public StatefulAI getAI() {
+	public T getAI() {
 		return ai;
 	}
 	

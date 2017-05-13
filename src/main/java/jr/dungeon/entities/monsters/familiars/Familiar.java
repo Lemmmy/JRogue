@@ -1,24 +1,24 @@
 package jr.dungeon.entities.monsters.familiars;
 
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityChangeLevelEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.player.NutritionState;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
-import jr.dungeon.events.TurnEvent;
 import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import javax.xml.bind.util.JAXBResult;
 import java.util.List;
 
 /**
@@ -33,27 +33,26 @@ public abstract class Familiar extends Monster implements Friendly {
 	
 	private String name;
 	
+	@Getter @Setter
+	private int nutrition;
+	@Getter private NutritionState lastNutritionState;
+	
 	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor
 		super(dungeon, level, x, y);
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return getWeight();
+	}
+	
+	public NutritionState getNutritionState() {
+		return NutritionState.fromNutrition(nutrition);
 	}
 	
 	@Override
 	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
 		return null;
-	}
-	
-	@EventHandler(selfOnly = true, priority = EventPriority.LOWEST)
-	public void onDie(EntityDeathEvent e) {
-		getDungeon().You("feel sad for a moment...");
-		
-		if (e.isAttackerPlayer()) {
-			// TODO: cripple player's luck and god relationship. they are a terrible person
-		}
 	}
 	
 	@Override
@@ -84,6 +83,29 @@ public abstract class Familiar extends Monster implements Friendly {
 		}
 	}
 	
+	@Override
+	public void update() {
+		super.update();
+		
+		updateNutrition();
+	}
+	
+	private void updateNutrition() {
+		if (getNutritionState() != lastNutritionState) {
+			lastNutritionState = getNutritionState();
+		}
+		
+		if (getNutritionState() == NutritionState.CHOKING) {
+			damage(new DamageSource(this, null, DamageType.CHOKING), 1);
+		}
+		
+		if (getNutritionState() == NutritionState.STARVING) {
+			damage(new DamageSource(this, null, DamageType.STARVING), 1);
+		}
+		
+		nutrition--;
+	}
+	
 	@EventHandler
 	public void onPlayerChangeLevel(EntityChangeLevelEvent e) {
 		if (!e.isEntityPlayer()) return;
@@ -96,5 +118,32 @@ public abstract class Familiar extends Monster implements Friendly {
 			setPositionFresh(e.getDest().getPosition());
 			getAI().suppress(2);
 		}
+	}
+	
+	@EventHandler(selfOnly = true, priority = EventPriority.LOWEST)
+	public void onDie(EntityDeathEvent e) {
+		getDungeon().You("feel sad for a moment...");
+		
+		if (e.isAttackerPlayer()) {
+			// TODO: cripple player's luck and god relationship. they are a terrible person
+		}
+	}
+	
+	@Override
+	public void serialise(JSONObject obj) {
+		super.serialise(obj);
+		
+		obj.put("age", age);
+		obj.put("nutrition", nutrition);
+		obj.put("name", name);
+	}
+	
+	@Override
+	public void unserialise(JSONObject obj) {
+		super.unserialise(obj);
+
+		age = obj.getInt("age");
+		nutrition = obj.getInt("nutrition");
+		try { name = obj.getString("name"); } catch (JSONException ignored) {}
 	}
 }

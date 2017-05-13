@@ -1,10 +1,10 @@
-package jr.dungeon.entities.monsters.ai.stateful.familiar;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateApproachTarget;
-import jr.dungeon.entities.player.Player;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateApproachTarget;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.MultiLineNoPrefixToStringStyle;
@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
-public class StateLurk extends AIState {
+public class StateLurk extends AIState<StatefulAI> {
 	private Point dest;
 	
 	public StateLurk(StatefulAI ai, int duration) {
@@ -26,16 +26,10 @@ public class StateLurk extends AIState {
 	public void update() {
 		super.update();
 		
-		if (getAI().distanceFromPlayer() > 4) {
-			getAI().setCurrentState(new StateFollowPlayer(getAI(), 0));
-			return;
-		}
-		
 		Monster m = getAI().getMonster();
 		
-		if (dest == null) {
-			dest = getRandomDestination();
-		}
+		if (dest == null) dest = getRandomDestination();
+		if (dest == null) return;
 		
 		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
 			dest = getRandomDestination();
@@ -44,14 +38,29 @@ public class StateLurk extends AIState {
 			getAI().addSafePoint(safePoint);
 		}
 		
+		if (dest == null) return;
+		
 		getAI().moveTowards(dest);
 	}
 	
 	private Point getRandomDestination() {
 		Monster m = getAI().getMonster();
-		Player p = getAI().getMonster().getDungeon().getPlayer();
+		Entity target = m;
+		int r = getAI().getPersistence().optInt("lurkRadius", 7);
+		float p = (float) getAI().getPersistence().optDouble("lurkMoveProbability", 0.8);
 		
-		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(p.getPosition(), 4).stream()
+		if (RandomUtils.randomFloat() > p) return null;
+		
+		if (getAI().getPersistence().has("lurkTarget")) {
+			String uuid = getAI().getPersistence().getString("lurkTarget");
+			Entity e = m.getDungeon().getLevel().entityStore.getEntityByUUID(uuid);
+			
+			if (e != null) {
+				target = e;
+			}
+		}
+		
+		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(target.getPosition(), r).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.map(Tile::getPosition)
 			.collect(Collectors.toList()));

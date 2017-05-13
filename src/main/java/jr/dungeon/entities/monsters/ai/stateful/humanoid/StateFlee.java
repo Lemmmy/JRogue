@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
-public class StateFlee extends AIState {
+public class StateFlee extends AIState<StatefulAI> {
 	private Point dest;
 	
 	public StateFlee(StatefulAI ai, int duration) {
@@ -45,14 +45,11 @@ public class StateFlee extends AIState {
 		val safePoint = getAI().getSafePoint();
 		Monster m = getAI().getMonster();
 		
-		if (safePoint.isPresent()) {
-			return safePoint.get();
-		} else {
-			return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		return safePoint.orElseGet(() -> RandomUtils
+			.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
 				.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 				.map(Tile::getPosition)
-				.collect(Collectors.toList()));
-		}
+				.collect(Collectors.toList())));
 	}
 	
 	@Override

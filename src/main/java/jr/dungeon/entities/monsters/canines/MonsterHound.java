@@ -39,7 +39,7 @@ public class MonsterHound extends MonsterCanine {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 200;
 	}
 	

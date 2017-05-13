@@ -102,7 +102,7 @@ public class ItemCorpse extends ItemComestible {
 	@Override
 	public int getNutrition() {
 		if (entity instanceof Monster) {
-			return ((Monster) entity).getNutrition();
+			return ((Monster) entity).getNutritionalValue();
 		} else {
 			return 0;
 		}

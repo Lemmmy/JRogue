@@ -3,8 +3,10 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.JRogue;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.events.EventListener;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -14,16 +16,16 @@ import java.lang.reflect.InvocationTargetException;
  * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
  */
 @Getter
-public abstract class AITrait implements Serialisable, EventListener {
+public abstract class AITrait<T extends StatefulAI> implements Serialisable, EventListener {
 	private Monster monster;
-	private StatefulAI ai;
+	private T ai;
 	
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
 	 *
 	 * @param ai The {@link StatefulAI} that hosts this trait.
 	 */
-	public AITrait(StatefulAI ai) {
+	public AITrait(T ai) {
 		this.ai = ai;
 		this.monster = ai.getMonster();
 	}
@@ -33,7 +35,7 @@ public abstract class AITrait implements Serialisable, EventListener {
 	 */
 	public abstract void update();
 	
-	public StatefulAI getAI() {
+	public T getAI() {
 		return ai;
 	}
 	
@@ -65,5 +67,15 @@ public abstract class AITrait implements Serialisable, EventListener {
 		}
 		
 		return null;
+	}
+	
+	public int getPriority() {
+		return 0;
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.toString();
 	}
 }

@@ -10,7 +10,7 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
 import jr.utils.RandomUtils;
 
@@ -52,7 +52,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 25;
 	}
 	

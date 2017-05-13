@@ -74,7 +74,7 @@ public class MonsterFish extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 50;
 	}
 	

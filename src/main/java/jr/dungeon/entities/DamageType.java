@@ -56,6 +56,10 @@ public enum DamageType {
 		"It was a bad idea to eat that food. You die of food poisoning.",
 		"It was a bad idea to eat that food. You died of food poisoning."
 	),
+	STARVING(
+		"You starve to death.",
+		"You starved to death."
+	),
 	CHOKING(
 		"You choke to death.",
 		"You choked to death."
