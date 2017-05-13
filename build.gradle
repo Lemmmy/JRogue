@@ -1,4 +1,6 @@
 import proguard.gradle.ProGuardTask
+import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.internal.file.IdentityFileResolver
 
 buildscript {
 	repositories {
@@ -62,12 +64,43 @@ tasks.withType(JavaCompile) {
 	options.incremental = true
 }
 
+def makeManifest() {
+	return (Map<String, Object>) [
+		"Main-Class": mainClassName,
+		"Version": project.version.toString(),
+		"Build-Date": new Date().toString(),
+		"Build-Revision": project.hasProperty("buildRevision") ? project.getProperty("buildRevision") : "unknown",
+		"Build-Branch": project.hasProperty("buildBranch") ? project.getProperty("buildBranch") : "unknown",
+		"Build-Number": project.hasProperty("buildNumber") ? project.getProperty("buildNumber") : "-1"
+	]
+}
+
+processResources {
+	def manifest = new DefaultManifest(new IdentityFileResolver())
+	manifest.attributes(makeManifest())
+	mkdir("$buildDir/generated")
+	mkdir("$buildDir/generated/META-INF")
+	manifest.writeTo("$buildDir/generated/META-INF/MANIFEST.MF")
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ["src/main/java"]
+		}
+
+		resources {
+			srcDirs = ["src/main/resources", "$buildDir/generated"]
+		}
+	}
+}
+
 task subJar(type: Jar) {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
 
 	manifest {
-		attributes "Main-Class": mainClassName
+		attributes makeManifest()
 	}
 
 	with jar
@@ -94,14 +127,7 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	}
 
 	manifest {
-		attributes(
-			"Main-Class": mainClassName,
-			"Version": project.version.toString(),
-			"Build-Date": new Date().toString(),
-			"Build-Revision": project.hasProperty("buildRevision") ? project.getProperty("buildRevision") : "unknown",
-			"Build-Branch": project.hasProperty("buildBranch") ? project.getProperty("buildBranch") : "unknown",
-			"Build-Number": project.hasProperty("buildNumber") ? project.getProperty("buildNumber") : "-1"
-		)
+		attributes makeManifest()
 	}
 }
 
