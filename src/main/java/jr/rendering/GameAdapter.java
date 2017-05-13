@@ -158,6 +158,7 @@ public class GameAdapter extends Game {
 			this.screen = screen;
 		} else {
 			this.newScreen = screen;
+			this.newScreen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			this.screen.pause();
 			currentTransitionTime = 0;
 			this.transition = transition;
