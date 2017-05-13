@@ -1,6 +1,6 @@
 package jr.dungeon.entities.player.events;
 
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.actions.ActionKick;

@@ -1,6 +1,6 @@
 package jr.dungeon.events;
 
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

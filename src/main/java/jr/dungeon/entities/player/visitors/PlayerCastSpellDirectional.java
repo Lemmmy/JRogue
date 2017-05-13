@@ -1,6 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.utils.RandomUtils;

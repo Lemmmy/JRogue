@@ -4,8 +4,11 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
+import jr.dungeon.entities.interfaces.Friendly;
+import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.events.PlayerWalkedIntoSolidEvent;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
@@ -34,29 +37,61 @@ public class PlayerWalk implements PlayerVisitor {
 		
 		List<Entity> destEntities = player.getLevel().entityStore.getEntitiesAt(newX, newY);
 		
+		boolean acted = true;
+		
 		if (destEntities.size() > 0) {
-			// TODO: Ask the player to confirm if they want to attack something silly (e.g. their familiar or a clerk)
-			
-			Optional<Entity> ent = destEntities.stream()
+			Optional<Entity> optionalEnt = destEntities.stream()
 				.filter(e -> e instanceof EntityLiving)
 				.findFirst();
 			
-			if (ent.isPresent()) {
-				if (player.getRightHand() != null && player.getRightHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) player.getRightHand().getItem()).hit(player, (EntityLiving) ent.get());
-				} else if (player.getLeftHand() != null && player.getLeftHand().getItem() instanceof ItemWeaponMelee) {
-					((ItemWeaponMelee) player.getLeftHand().getItem()).hit(player, (EntityLiving) ent.get());
+			// TODO: if multiple entities occupy this tile, popup a dialog asking which one to attack
+			
+			if (optionalEnt.isPresent()) {
+				Entity ent = optionalEnt.get();
+				
+				if (ent instanceof Friendly && ((Friendly) ent).isFriendly()) {
+					friendlyQuery(player, ent);
+					acted = false;
 				} else {
-					player.getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
+					meleeAction(player, ent);
 				}
 			} else {
 				walkAction(player, tile, newX, newY);
 			}
 		} else {
 			walkAction(player, tile, newX, newY);
-		} // TODO: Restructure this mess
+		}
 		
-		player.getDungeon().turnSystem.turn(player.getDungeon());
+		if (acted) {
+			player.getDungeon().turnSystem.turn(player.getDungeon());
+		}
+	}
+	
+	private void friendlyQuery(Player player, Entity ent) {
+		String msg = "Are you sure you want to attack [WHITE]" + ent.getName(player, true) + "[]?";
+		
+		player.getDungeon().prompt(new Prompt(
+			msg, new char[]{'y', 'n'}, true,
+			new Prompt.SimplePromptCallback(player.getDungeon()) {
+				@Override
+				public void onResponse(char response) {
+					if (response == 'y') {
+						meleeAction(player, ent);
+						player.getDungeon().turnSystem.turn(player.getDungeon());
+					}
+				}
+			}
+		));
+	}
+	
+	private void meleeAction(Player player, Entity ent) {
+		if (player.getRightHand() != null && player.getRightHand().getItem() instanceof ItemWeaponMelee) {
+			((ItemWeaponMelee) player.getRightHand().getItem()).hit(player, (EntityLiving) ent);
+		} else if (player.getLeftHand() != null && player.getLeftHand().getItem() instanceof ItemWeaponMelee) {
+			((ItemWeaponMelee) player.getLeftHand().getItem()).hit(player, (EntityLiving) ent);
+		} else {
+			player.getDungeon().You("have no weapon equipped!"); // TODO: Make it possible to attack bare-handed
+		}
 	}
 	
 	private void walkAction(Player player, Tile tile, int x, int y) {

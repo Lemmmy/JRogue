@@ -1,6 +1,6 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.Messenger;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 
 /**

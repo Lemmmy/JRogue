@@ -7,6 +7,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityChangeLevelEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
+import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
@@ -23,7 +24,7 @@ import java.util.List;
  * An {@link jr.dungeon.entities.Entity} tamed by the {@link jr.dungeon.entities.player.Player}. A Player's companion
  * in the dungeon.
  */
-public abstract class Familiar extends Monster {
+public abstract class Familiar extends Monster implements Friendly {
 	/**
 	 * The familiar's age from 0 to 2. 0 is youngest, 2 is oldest.
 	 */

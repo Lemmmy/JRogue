@@ -3,7 +3,7 @@ package jr.dungeon.items.magical;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityChest;

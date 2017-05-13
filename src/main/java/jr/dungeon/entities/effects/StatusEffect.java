@@ -1,7 +1,7 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.BlankMessenger;
-import jr.dungeon.Messenger;
+import jr.dungeon.io.BlankMessenger;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventListener;
 import jr.utils.Serialisable;

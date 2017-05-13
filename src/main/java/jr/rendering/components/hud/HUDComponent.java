@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;

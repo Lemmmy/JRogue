@@ -10,6 +10,8 @@ import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.io.Messenger;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.*;
@@ -240,7 +242,7 @@ public class Dungeon implements Messenger {
 	}
 
 	/**
-	 * Triggers a {@link jr.dungeon.Prompt}.
+	 * Triggers a {@link Prompt}.
 	 * @param prompt The prompt to trigger.
 	 */
 	public void prompt(Prompt prompt) {

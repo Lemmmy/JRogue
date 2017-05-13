@@ -1,6 +1,6 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.Messenger;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;

@@ -1,4 +1,4 @@
-package jr.dungeon;
+package jr.dungeon.io;
 
 import jr.utils.RandomUtils;
 
