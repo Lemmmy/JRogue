@@ -58,6 +58,7 @@ public class SlidingTransition implements ScreenTransition {
 		Texture texTop = slideOut ? oldTex : newTex;
 		
 		batch.begin();
+		batch.disableBlending();
 		batch.draw(
 			texBottom,
 			(int) x1, (int) y1,
