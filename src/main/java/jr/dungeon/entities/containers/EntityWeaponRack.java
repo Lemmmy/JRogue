@@ -9,6 +9,8 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -23,8 +25,8 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Weapon rack" : "weapon rack";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.weaponRack.clone();
 	}
 	
 	@Override

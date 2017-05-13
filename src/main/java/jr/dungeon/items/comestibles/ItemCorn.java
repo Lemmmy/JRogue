@@ -2,19 +2,13 @@ package jr.dungeon.items.comestibles;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 
 public class ItemCorn extends ItemComestible {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += (requiresCapitalisation ? "Ear" : "ear") + (plural ? "s" : "") + " of corn";
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.corn.clone();
 	}
 	
 	@Override

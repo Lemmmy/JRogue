@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
  * http://www.englisch-hilfen.de/en/grammar/plural.htm
  */
 public class Plural implements TransformerType {
+	public static final Transformer none = (s, m) -> s;
+	
 	/**
 	 * 1.1, 1.3.2, 1.4.1, 1.5.1
 	 */

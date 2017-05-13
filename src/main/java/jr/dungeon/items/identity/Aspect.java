@@ -1,5 +1,6 @@
 package jr.dungeon.items.identity;
 
+import jr.dungeon.language.Noun;
 import jr.utils.Serialisable;
 import org.json.JSONObject;
 
@@ -15,6 +16,10 @@ import org.json.JSONObject;
  */
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();
+	
+	public Noun applyNameTransformers(Noun name) {
+		return name;
+	}
 	
 	/**
 	 * persistent aspects are known by all livingents of the same type permanently:

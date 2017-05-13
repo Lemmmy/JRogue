@@ -13,6 +13,8 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 
 public class EntityAltar extends Entity {
 	public EntityAltar(Dungeon dungeon, Level level, int x, int y) {
@@ -20,8 +22,8 @@ public class EntityAltar extends Entity {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return (requiresCapitalisation ? "H" : "h") + "oly altar";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.holyAltar.clone();
 	}
 	
 	@Override

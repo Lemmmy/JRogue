@@ -39,7 +39,7 @@ public class Noun {
 		return this;
 	}
 	
-	public Noun addInstanceTransformer(Class<? extends TransformerType> transformerType, Object transformer) {
+	public Noun addInstanceTransformer(Class<? extends TransformerType> transformerType, Transformer transformer) {
 		if (transformer == null) return this;
 		instanceTransformers.put(transformerType, transformer);
 		return this;

@@ -16,6 +16,8 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -35,8 +37,8 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Rat" : "rat";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.rat.clone(); // science
 	}
 	
 	@Override

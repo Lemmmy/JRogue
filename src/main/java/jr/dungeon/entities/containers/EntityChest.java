@@ -12,6 +12,8 @@ import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -34,8 +36,8 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Chest" : "chest";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.chest.clone();
 	}
 	
 	@Override

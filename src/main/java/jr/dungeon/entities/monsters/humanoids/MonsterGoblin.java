@@ -20,6 +20,8 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -44,8 +46,8 @@ public class MonsterGoblin extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Goblin" : "goblin";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.goblin.clone();
 	}
 	
 	@Override

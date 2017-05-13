@@ -10,6 +10,8 @@ import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.generators.Climate;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
 	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {
@@ -21,8 +23,8 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fountain" : "fountain";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.fountain.clone();
 	}
 	
 	@Override

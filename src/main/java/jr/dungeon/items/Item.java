@@ -6,6 +6,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.language.Noun;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
@@ -49,27 +50,16 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		return false;
 	}
 	
-	public boolean beginsWithVowel(EntityLiving observer) {
-		return StringUtils.startsWithAny(getName(observer, false, false), "a", "e", "i", "o", "u", "8");
+	public abstract Noun getName(EntityLiving observer);
+	
+	public Noun getTransformedName(EntityLiving observer) {
+		Noun name = getName(observer);
+		applyNameTransformers(observer, name);
+		return name;
 	}
 	
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural);
-	
-	public String getBeatitudePrefix(EntityLiving observer, boolean requiresCapitalisation) {
-		if (!isAspectKnown(observer, AspectBeatitude.class)) {
-			return "";
-		}
-		
-		AtomicReference<String> out = new AtomicReference<>("");
-		
-		getAspect(AspectBeatitude.class).ifPresent(a -> {
-			AspectBeatitude.Beatitude beatitude = ((AspectBeatitude) a).getBeatitude();
-			String s = beatitude.name().toLowerCase();
-			
-			out.set((requiresCapitalisation ? StringUtils.capitalize(s) : s) + " ");
-		});
-		
-		return out.get();
+	public void applyNameTransformers(EntityLiving observer, Noun noun) {
+		getKnownAspects().forEach(c -> getAspect(c).ifPresent(a -> a.applyNameTransformers(noun)));
 	}
 	
 	public abstract float getWeight();

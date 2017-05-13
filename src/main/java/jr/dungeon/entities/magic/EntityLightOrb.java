@@ -8,6 +8,8 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
@@ -30,8 +32,8 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return (requiresCapitalisation ? "L" : "l") + "ight orb";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.lightOrb.clone();
 	}
 	
 	@Override

@@ -24,6 +24,7 @@ import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -213,12 +214,8 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		if (observer == this) {
-			return requiresCapitalisation ? "You": "you";
-		} else {
-			return requiresCapitalisation ? StringUtils.capitalize(name) : name;
-		}
+	public Noun getName(EntityLiving observer) {
+		return new Noun(name);
 	}
 	
 	@Override

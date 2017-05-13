@@ -4,6 +4,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.language.Lexicon;
+import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 
 public class EntityArrow extends EntityProjectile {
@@ -14,8 +16,8 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Arrow" : "arrow";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.arrow.clone();
 	}
 	
 	@Override

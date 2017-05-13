@@ -159,12 +159,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	}
 	
 	@Override
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
-	
-	@Override
-	public abstract EntityAppearance getAppearance();
-	
-	@Override
 	public boolean canBeWalkedOn() {
 		return true;
 	}

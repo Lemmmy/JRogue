@@ -4,7 +4,6 @@ import jr.dungeon.language.Noun;
 import jr.dungeon.language.transformations.Article;
 import jr.dungeon.language.transformations.Capitalize;
 import jr.dungeon.language.transformations.Plural;
-import jr.dungeon.language.transformations.Possessive;
 
 public class NLGTest {
 	public static void main(String[] args) {
