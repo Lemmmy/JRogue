@@ -59,7 +59,11 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	}
 	
 	public void applyNameTransformers(EntityLiving observer, Noun noun) {
-		getKnownAspects().forEach(c -> getAspect(c).ifPresent(a -> a.applyNameTransformers(noun)));
+		getKnownAspects().stream()
+			.map(c -> getAspect(c).orElse(null))
+			.filter(Objects::nonNull)
+			.sorted(Comparator.comparingInt(Aspect::getNamePriority))
+			.forEach(a -> a.applyNameTransformers(this, noun));
 	}
 	
 	public abstract float getWeight();

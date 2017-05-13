@@ -16,6 +16,9 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
+import jr.dungeon.language.Noun;
+import jr.dungeon.language.transformations.Article;
+import jr.dungeon.language.transformations.Capitalize;
 import jr.utils.RandomUtils;
 import lombok.val;
 import org.json.JSONObject;
@@ -60,7 +63,7 @@ public abstract class Monster extends EntityLiving {
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
 		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
+			getDungeon().You("kick the %s!", getName(e.getKicker()).build(Capitalize.first));
 		}
 	}
 	
@@ -71,7 +74,7 @@ public abstract class Monster extends EntityLiving {
 				e.getAttacker().getLevel() == getLevel() &&
 				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
 			) {
-				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
+				getDungeon().You("kill the %s!", getName((Player) e.getAttacker()).build(Capitalize.first));
 			} else {
 				getDungeon().You("kill it!");
 			}
@@ -126,21 +129,22 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract boolean canMagicAttack();
 	
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s attacks %s!";
+	public String getMeleeAttackVerb(EntityLiving victim) {
+		return "attacks";
 	}
 	
 	public void logMeleeAttackString(EntityLiving victim) {
-		String prefix = "";
+		Noun myNoun = getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(myNoun, false);
 		
-		if (victim instanceof Player) {
-			prefix += "[ORANGE] ";
-		}
+		Noun victimNoun = victim.getName(getDungeon().getPlayer());
 		
 		getDungeon().log(
-			prefix + getMeleeAttackString(victim),
-			getName(getDungeon().getPlayer(), false),
-			victim.getName(getDungeon().getPlayer(), false)
+			"%s%s %s %s!",
+			victim instanceof Player ? "[ORANGE]" : "",
+			myNoun,
+			getMeleeAttackDamage(victim),
+			victimNoun
 		);
 	}
 	

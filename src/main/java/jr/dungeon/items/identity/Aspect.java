@@ -1,5 +1,6 @@
 package jr.dungeon.items.identity;
 
+import jr.dungeon.items.Item;
 import jr.dungeon.language.Noun;
 import jr.utils.Serialisable;
 import org.json.JSONObject;
@@ -17,8 +18,12 @@ import org.json.JSONObject;
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();
 	
-	public Noun applyNameTransformers(Noun name) {
+	public Noun applyNameTransformers(Item item, Noun name) {
 		return name;
+	}
+	
+	public int getNamePriority() {
+		return 0;
 	}
 	
 	/**

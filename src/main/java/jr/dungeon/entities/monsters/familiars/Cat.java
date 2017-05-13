@@ -77,7 +77,7 @@ public class Cat extends Familiar {
 	}
 	
 	@Override
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s bites %s!";
+	public String getMeleeAttackVerb(EntityLiving victim) {
+		return "bites";
 	}
 }

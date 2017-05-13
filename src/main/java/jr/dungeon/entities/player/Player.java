@@ -24,6 +24,7 @@ import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.language.Lexicon;
 import jr.dungeon.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
@@ -215,7 +216,11 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
-		return new Noun(name);
+		if (observer == this) {
+			return Lexicon.you.clone();
+		} else {
+			return new Noun(name);
+		}
 	}
 	
 	@Override

@@ -23,4 +23,5 @@ public class Lexicon {
 	public static final Noun corpse = new Noun("corpse");
 	public static final Noun lemon = new Noun("lemon");
 	public static final Noun orange = new Noun("orange");
+	public static final Noun you = new Noun("you");
 }

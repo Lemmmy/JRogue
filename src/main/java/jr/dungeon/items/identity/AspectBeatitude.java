@@ -1,5 +1,6 @@
 package jr.dungeon.items.identity;
 
+import jr.dungeon.items.Item;
 import jr.dungeon.language.Noun;
 import jr.dungeon.language.transformations.TransformerType;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class AspectBeatitude extends Aspect {
 	}
 	
 	@Override
-	public Noun applyNameTransformers(Noun name) {
+	public Noun applyNameTransformers(Item item, Noun name) {
 		return name.addInstanceTransformer(Transformer.class, (s, m) -> beatitude.name().toLowerCase());
 	}
 	

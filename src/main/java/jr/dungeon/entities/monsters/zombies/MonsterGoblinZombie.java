@@ -84,7 +84,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@Override
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s " + RandomUtils.randomFrom("punches", "hits") + " %s!";
+	public String getMeleeAttackVerb(EntityLiving victim) {
+		return RandomUtils.randomFrom("punches", "hits");
 	}
 }
