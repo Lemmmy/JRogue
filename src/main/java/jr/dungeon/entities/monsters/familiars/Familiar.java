@@ -11,6 +11,7 @@ import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
@@ -74,7 +75,13 @@ public abstract class Familiar extends Monster implements Friendly {
 	
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return name != null ? name : getDefaultName(observer, requiresCapitalisation);
+		if (name != null) {
+			return name;
+		} else if (observer instanceof Player) {
+			return (requiresCapitalisation ? "Your " : "your ") + getDefaultName(observer, false);
+		} else {
+			return getDefaultName(observer, requiresCapitalisation);
+		}
 	}
 	
 	@EventHandler

@@ -12,6 +12,7 @@ import jr.dungeon.io.Prompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -50,8 +51,12 @@ public class PlayerWalk implements PlayerVisitor {
 				Entity ent = optionalEnt.get();
 				
 				if (ent instanceof Friendly && ((Friendly) ent).isFriendly()) {
-					friendlyQuery(player, ent);
-					acted = false;
+					if (ent instanceof Familiar) {
+						swapPlaces(player, (Familiar) ent, tile, newX, newY);
+					} else {
+						friendlyQuery(player, ent);
+						acted = false;
+					}
 				} else {
 					meleeAction(player, ent);
 				}
@@ -67,8 +72,15 @@ public class PlayerWalk implements PlayerVisitor {
 		}
 	}
 	
+	private void swapPlaces(Player player, EntityLiving ent, Tile tile, int newX, int newY) {
+		walkAction(player, tile, newX, newY);
+		ent.setAction(new ActionMove(player.getLastPosition(), new Action.NoCallback()));
+		
+		player.getDungeon().You("swap places with [CYAN]%s[].", ent.getName(player, false));
+	}
+	
 	private void friendlyQuery(Player player, Entity ent) {
-		String msg = "Are you sure you want to attack [WHITE]" + ent.getName(player, true) + "[]?";
+		String msg = "Are you sure you want to attack [CYAN]" + ent.getName(player, false) + "[]?";
 		
 		player.getDungeon().prompt(new Prompt(
 			msg, new char[]{'y', 'n'}, true,

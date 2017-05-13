@@ -218,17 +218,19 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	 * @see AStarPathfinder
 	 */
 	public void moveTowards(int destX, int destY) {
+		if (monster.hasAction()) return;
+		
 		int sourceX = getMonster().getX();
 		int sourceY = getMonster().getY();
 		
 		Path path = pathfinder.findPath(
-			getMonster().getLevel(),
+			monster.getLevel(),
 			sourceX,
 			sourceY,
 			destX,
 			destY,
-			getMonster().getVisibilityRange(),
-			getMonster().canMoveDiagonally(),
+			monster.getVisibilityRange(),
+			monster.canMoveDiagonally(),
 			avoidTiles
 		);
 		
@@ -236,7 +238,7 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 			path.getSteps().stream()
 				.filter(t -> t.getX() != sourceX || t.getY() != sourceY)
 				.findFirst()
-				.ifPresent(t -> getMonster().setAction(new ActionMove(
+				.ifPresent(t -> monster.setAction(new ActionMove(
 					t.getX(),
 					t.getY(),
 					new Action.NoCallback()
