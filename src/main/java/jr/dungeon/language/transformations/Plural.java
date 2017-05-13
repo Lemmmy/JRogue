@@ -1,5 +1,7 @@
 package jr.dungeon.language.transformations;
 
+import jr.dungeon.language.Noun;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,11 +41,13 @@ public class Plural implements TransformerType {
 	 */
 	public static final Transformer oes = (s, m) -> s + "es";
 	
-	public static String optionalGroup(Matcher matcher, int group) {
-		try {
-			return matcher.group(group);
-		} catch (Exception ignored) {
-			return "";
+	public static void addCount(Noun n, int count) {
+		if (count == 1) {
+			n.addInstanceTransformer(Article.class, Article.a);
+		} else {
+			n.addInstanceTransformer(Count.class, Count.build(count))
+			 .addInstanceTransformer(Plural.class);
 		}
 	}
+	
 }

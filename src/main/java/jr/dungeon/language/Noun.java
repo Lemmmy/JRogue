@@ -19,7 +19,7 @@ public class Noun {
 	private String noun;
 	
 	private Map<Class<? extends TransformerType>, Transformer> transformerMap = new LinkedHashMap<>();
-	private List<Object> instanceTransformers = new ArrayList<>();
+	private Map<Class<? extends TransformerType>, Object> instanceTransformers = new LinkedHashMap<>();
 	
 	{ // default transformers
 		transformerMap.put(Plural.class, Plural.s);
@@ -31,19 +31,31 @@ public class Noun {
 	
 	public Noun addTransformer(Class<? extends TransformerType> transformerType, Transformer transformer) {
 		transformerMap.put(transformerType, transformer);
-		
 		return this;
 	}
 	
-	public Noun addInstanceTransformer(Object transformer) {
-		instanceTransformers.add(transformer);
-		
+	public Noun addInstanceTransformer(Class<? extends TransformerType> transformerType) {
+		instanceTransformers.put(transformerType, transformerType);
+		return this;
+	}
+	
+	public Noun addInstanceTransformer(Class<? extends TransformerType> transformerType, Object transformer) {
+		if (transformer == null) return this;
+		instanceTransformers.put(transformerType, transformer);
+		return this;
+	}
+	
+	public boolean hasInstanceTransformer(Class<? extends TransformerType> transformerType) {
+		return instanceTransformers.containsKey(transformerType);
+	}
+	
+	public Noun removeInstanceTransformer(Class<? extends TransformerType> transformerType) {
+		instanceTransformers.remove(transformerType);
 		return this;
 	}
 	
 	public Noun clearInstanceTransformers() {
 		instanceTransformers.clear();
-		
 		return this;
 	}
 	
@@ -51,7 +63,7 @@ public class Noun {
 		AtomicReference<String> t = new AtomicReference<>(noun);
 		
 		Stream.concat(
-			instanceTransformers.stream(),
+			instanceTransformers.values().stream(),
 			Arrays.stream(transformers)
 		).forEach(m -> {
 			if (m instanceof Class && TransformerType.class.isAssignableFrom((Class) m)) {
@@ -70,7 +82,7 @@ public class Noun {
 	public Noun clone() {
 		Noun newNoun = new Noun(noun);
 		newNoun.setTransformerMap(new LinkedHashMap<>(transformerMap));
-		newNoun.setInstanceTransformers(new ArrayList<>(instanceTransformers));
+		newNoun.setInstanceTransformers(new LinkedHashMap<>(instanceTransformers));
 		return newNoun;
 	}
 }
