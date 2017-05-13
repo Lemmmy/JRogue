@@ -3,6 +3,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
 import jr.dungeon.events.EventListener;
@@ -42,6 +43,7 @@ public class StatefulAI extends AI {
 	public StatefulAI(Monster monster) {
 		super(monster);
 		
+		addTrait(new TraitBewareTarget(this));
 		addTrait(new TraitIntrinsicFear(this));
 		addTrait(new TraitExtrinsicFear(this));
 	}

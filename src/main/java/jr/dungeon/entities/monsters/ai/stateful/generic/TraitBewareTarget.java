@@ -16,7 +16,10 @@ public class TraitBewareTarget extends AITrait<StatefulAI> {
 	
 	@Override
 	public void update() {
-		if (getAI().canSeeTarget()) {
+		if (
+			(getAI().getCurrentState() == null || getAI().getCurrentState().getDuration() == 0) &&
+			getAI().canSeeTarget()
+		) {
 			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
 		}
 	}
@@ -31,4 +34,8 @@ public class TraitBewareTarget extends AITrait<StatefulAI> {
 	
 	}
 	
+	@Override
+	public int getPriority() {
+		return 20;
+	}
 }
