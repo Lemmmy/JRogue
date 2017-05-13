@@ -47,9 +47,7 @@ public class FontLoader {
 		fontCache.forEach((s, f) -> {
 			try {
 				f.dispose();
-			} catch (GdxRuntimeException e) {
-				JRogue.getLogger().warn("Font \"{}\" has already been disposed!", s);
-			}
+			} catch (GdxRuntimeException ignored) {}
 		});
 	}
 }
