@@ -105,12 +105,12 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.SPIDER_BITE),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.LIZARD_BITE;
+	}
+	
+	@Override
+	public String getMeleeAttackString(EntityLiving victim) {
+		return "The %s bites %s!";
 	}
 }

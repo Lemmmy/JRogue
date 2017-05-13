@@ -2,8 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateMeleeAttackTarget;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateSearch;
 import jr.utils.RandomUtils;
 
 public class StateApproachTarget extends AIState<StatefulAI> {

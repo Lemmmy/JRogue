@@ -132,8 +132,9 @@ public class MonsterGoblin extends Monster {
 			source,
 			RandomUtils.roll(3),
 			(Action.CompleteCallback) entity -> getDungeon().orangeThe(
-				"%s hits you with a dagger!",
-				getName(getDungeon().getPlayer(), false)
+				"%s hits %s with a dagger!",
+				getName(getDungeon().getPlayer(), false),
+				victim.getName(getDungeon().getPlayer(), false)
 			)
 		));
 	}

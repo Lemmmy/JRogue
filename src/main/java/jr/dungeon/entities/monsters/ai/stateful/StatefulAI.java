@@ -268,6 +268,10 @@ public class StatefulAI extends AI {
 		traits.put(trait.getClass(), trait);
 	}
 	
+	public void removeTrait(Class<? extends AITrait> traitClass) {
+		traits.remove(traitClass);
+	}
+	
 	public AITrait getTrait(Class<? extends AITrait> traitClass) {
 		return traits.get(traitClass);
 	}
@@ -277,6 +281,7 @@ public class StatefulAI extends AI {
 	}
 	
 	public void setCurrentState(AIState currentState, boolean force) {
+		if (currentState == null) return;
 		if (!force && this.currentState != null && this.currentState.getClass() == currentState.getClass()) return;
 		
 		this.currentState = currentState;

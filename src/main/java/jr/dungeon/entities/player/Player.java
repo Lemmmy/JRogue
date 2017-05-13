@@ -214,7 +214,11 @@ public class Player extends EntityLiving {
 	
 	@Override
 	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? StringUtils.capitalize(name) : name;
+		if (observer == this) {
+			return requiresCapitalisation ? "You": "you";
+		} else {
+			return requiresCapitalisation ? StringUtils.capitalize(name) : name;
+		}
 	}
 	
 	@Override

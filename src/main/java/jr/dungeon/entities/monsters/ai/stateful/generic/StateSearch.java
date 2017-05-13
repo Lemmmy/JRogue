@@ -1,4 +1,4 @@
-package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;

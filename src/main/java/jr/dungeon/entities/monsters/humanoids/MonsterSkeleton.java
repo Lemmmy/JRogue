@@ -126,17 +126,12 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.SKELETON_HIT),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().logRandom(
-				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
-				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false)),
-				String.format("[ORANGE]The %s kicks you!", getName(getDungeon().getPlayer(), false)),
-				String.format("[ORANGE]The %s headbutts you!", getName(getDungeon().getPlayer(), false))
-			)
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.SKELETON_HIT;
+	}
+	
+	@Override
+	public String getMeleeAttackString(EntityLiving victim) {
+		return "The %s " + RandomUtils.randomFrom("punches", "hits", "kicks", "headbutts") + " %s!";
 	}
 }

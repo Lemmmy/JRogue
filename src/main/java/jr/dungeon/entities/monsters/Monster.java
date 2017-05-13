@@ -3,7 +3,10 @@ package jr.dungeon.entities.monsters;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
@@ -123,7 +126,42 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract boolean canMagicAttack();
 	
-	public void meleeAttack(EntityLiving victim) {}
+	public String getMeleeAttackString(EntityLiving victim) {
+		return "The %s attacks %s!";
+	}
+	
+	public void logMeleeAttackString(EntityLiving victim) {
+		String prefix = "";
+		
+		if (victim instanceof Player) {
+			prefix += "[ORANGE] ";
+		}
+		
+		getDungeon().log(
+			prefix + getMeleeAttackString(victim),
+			getName(getDungeon().getPlayer(), false),
+			victim.getName(getDungeon().getPlayer(), false)
+		);
+	}
+	
+	public int getMeleeAttackDamage(EntityLiving victim) {
+		return 1;
+	}
+	
+	public DamageType getMeleeDamageType() {
+		return DamageType.UNKNOWN;
+	}
+	
+	public void meleeAttack(EntityLiving victim) {
+		if (!canMeleeAttack()) return;
+		
+		setAction(new ActionMelee(
+			getDungeon().getPlayer(),
+			new DamageSource(this, null, DamageType.CANINE_BITE),
+			getMeleeAttackDamage(victim),
+			(Action.CompleteCallback) e -> logMeleeAttackString(victim)
+		));
+	}
 	
 	public void rangedAttack(EntityLiving victim) {}
 	

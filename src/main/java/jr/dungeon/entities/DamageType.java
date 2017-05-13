@@ -18,6 +18,16 @@ public enum DamageType {
 		"The bite pierces an artery. You bleed to death.",
 		"The bite pierced an artery, and you bled to death."
 	),
+	FELINE_BITE(
+		DamageClass.MELEE,
+		"The bite pierces an artery. You bleed to death.",
+		"The bite pierced an artery, and you bled to death."
+	),
+	LIZARD_BITE(
+		DamageClass.MELEE,
+		"The bite pierces an artery. You bleed to death.",
+		"The bite pierced an artery, and you bled to death."
+	),
 	SPIDER_BITE(
 		DamageClass.MELEE,
 		"The bite pierces an artery. You bleed to death.",

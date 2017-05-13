@@ -79,15 +79,12 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.GOBLIN_ZOMBIE_HIT),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().logRandom(
-				String.format("[ORANGE]The %s punches you!", getName(getDungeon().getPlayer(), false)),
-				String.format("[ORANGE]The %s hits you!", getName(getDungeon().getPlayer(), false))
-			)
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.GOBLIN_ZOMBIE_HIT;
+	}
+	
+	@Override
+	public String getMeleeAttackString(EntityLiving victim) {
+		return "The %s " + RandomUtils.randomFrom("punches", "hits") + " %s!";
 	}
 }

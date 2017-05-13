@@ -1,9 +1,8 @@
-package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.generic.StateApproachTarget;
 import jr.utils.RandomUtils;
 
 public class StateMeleeAttackTarget extends AIState<StatefulAI> {
@@ -17,7 +16,7 @@ public class StateMeleeAttackTarget extends AIState<StatefulAI> {
 		
 		Monster m = getAI().getMonster();
 		
-		if (getAI().getCurrentTarget() == null) {
+		if (getAI().getCurrentTarget() == null || !getAI().getCurrentTarget().isAlive()) {
 			getAI().setCurrentState(null);
 			return;
 		}
@@ -31,18 +30,13 @@ public class StateMeleeAttackTarget extends AIState<StatefulAI> {
 			getAI().meleeAttack(getAI().getCurrentTarget());
 		} else if (RandomUtils.rollD2()) {
 			// use this turn to move
-			
-			int destX = getAI().getCurrentTarget().getX();
-			int destY = getAI().getCurrentTarget().getY();
-			
-			getAI().moveTowards(destX, destY);
+			getAI().moveTowards(getAI().getCurrentTarget().getPosition());
 		} else {
 			// move next turn
-			
 			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
 		}
 		
-		float intrinsicFear = ((TraitIntrinsicFear) getAI().getTrait(TraitIntrinsicFear.class)).getFear();
+		/*float intrinsicFear = ((TraitIntrinsicFear) getAI().getTrait(TraitIntrinsicFear.class)).getFear();
 		float extrinsicFear = ((TraitExtrinsicFear) getAI().getTrait(TraitExtrinsicFear.class)).getFear();
 		
 		float fear = intrinsicFear + extrinsicFear;
@@ -56,6 +50,6 @@ public class StateMeleeAttackTarget extends AIState<StatefulAI> {
 			if (m.getDungeon().getPlayer().getLevel() == m.getLevel()) {
 				m.getDungeon().The("%s turns to flee!", m.getName(m.getDungeon().getPlayer(), false));
 			}
-		}
+		}*/
 	}
 }

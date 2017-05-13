@@ -129,13 +129,13 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.RAT_BITE),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.RAT_BITE;
+	}
+	
+	@Override
+	public String getMeleeAttackString(EntityLiving victim) {
+		return "The %s bites %s!";
 	}
 	
 	@Override
