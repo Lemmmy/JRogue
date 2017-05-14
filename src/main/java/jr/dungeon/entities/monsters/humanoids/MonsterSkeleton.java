@@ -15,6 +15,9 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -34,8 +37,8 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Skeleton" : "skeleton";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.skeleton.clone();
 	}
 	
 	@Override
@@ -115,10 +118,6 @@ public class MonsterSkeleton extends Monster {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
-		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
 			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
@@ -131,7 +130,12 @@ public class MonsterSkeleton extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return RandomUtils.randomFrom("punches", "hits", "kicks", "headbutts");
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return RandomUtils.randomFrom(
+			Lexicon.punch.clone(),
+			Lexicon.headbutt.clone(),
+			Lexicon.hit.clone(),
+			Lexicon.kick.clone()
+		);
 	}
 }

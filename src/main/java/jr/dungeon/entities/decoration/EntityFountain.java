@@ -10,6 +10,7 @@ import jr.dungeon.entities.interfaces.PassiveSoundEmitter;
 import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.generators.Climate;
+import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
@@ -46,7 +47,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
 		}
 	}
 	
@@ -80,7 +81,7 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	public void quaff(EntityLiving quaffer) {
 		// TODO: fountain magic
 		
-		quaffer.getDungeon().You("drink from the %s.", getName(quaffer, false));
+		quaffer.getDungeon().You("drink from %s.", LanguageUtils.object(this));
 	}
 	
 	@Override
@@ -90,6 +91,6 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 	
 	@Override
 	public String getQuaffConfirmationMessage(EntityLiving quaffer) {
-		return String.format("Drink from the %s?", getName(quaffer, false));
+		return String.format("Drink from %s?", LanguageUtils.object(this));
 	}
 }

@@ -8,11 +8,9 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.skills.SkillLevel;
-import jr.dungeon.io.Messenger;
 import jr.language.LanguageUtils;
-import jr.language.Person;
 import jr.language.Verb;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 
 public abstract class ItemWeaponMelee extends ItemWeapon {
@@ -70,8 +68,8 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		
 		victim.getDungeon().log(
 			"%s %s %s!",
-			LanguageUtils.subject(attacker).build(Capitalize.first),
-			getMeleeAttackVerb().setPerson(Person.SECOND_SINGULAR),
+			LanguageUtils.subject(attacker).build(Capitalise.first),
+			LanguageUtils.autoTense(getMeleeAttackVerb(), attacker),
 			LanguageUtils.object(victim)
 		);
 	}

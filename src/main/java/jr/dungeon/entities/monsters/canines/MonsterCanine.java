@@ -16,9 +16,11 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.language.LanguageUtils;
+import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.language.Verb;
 import jr.language.transformations.Article;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 
 public abstract class MonsterCanine extends Monster {
@@ -75,7 +77,7 @@ public abstract class MonsterCanine extends Monster {
 			if (e.isKickerPlayer()) {
 				getDungeon().orange(
 					"%s dodges %s kick!",
-					LanguageUtils.subject(this).build(Capitalize.first),
+					LanguageUtils.subject(this).build(Capitalise.first),
 					LanguageUtils.victim(kicker)
 				);
 			}
@@ -99,7 +101,7 @@ public abstract class MonsterCanine extends Monster {
 			if (RandomUtils.roll(1, 5) == 1) {
 				getDungeon().orange(
 					"%s bites %s foot!",
-					LanguageUtils.subject(this).build(Capitalize.first),
+					LanguageUtils.subject(this).build(Capitalise.first),
 					LanguageUtils.victim(kicker)
 				);
 				
@@ -114,7 +116,7 @@ public abstract class MonsterCanine extends Monster {
 			} else if (RandomUtils.roll(1, 5) == 1) {
 				getDungeon().orange(
 					"%s yanks %s leg!",
-					LanguageUtils.subject(this).build(Capitalize.first),
+					LanguageUtils.subject(this).build(Capitalise.first),
 					LanguageUtils.victim(kicker)
 				);
 				
@@ -156,7 +158,7 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return "bites";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 }

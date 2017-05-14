@@ -20,8 +20,10 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
+import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -133,10 +135,11 @@ public class MonsterGoblin extends Monster {
 			getDungeon().getPlayer(),
 			source,
 			RandomUtils.roll(3),
-			(Action.CompleteCallback) entity -> getDungeon().orangeThe(
-				"%s hits %s with a dagger!",
-				getName(getDungeon().getPlayer(), false),
-				victim.getName(getDungeon().getPlayer(), false)
+			(Action.CompleteCallback) entity -> getDungeon().orange(
+				"%s %s %s with a dagger!",
+				LanguageUtils.subject(this).build(Capitalise.first),
+				LanguageUtils.autoTense(Lexicon.hit.clone(), this),
+				LanguageUtils.object(victim)
 			)
 		));
 	}

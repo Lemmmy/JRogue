@@ -9,6 +9,7 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		container = new WeaponRackContainer(getName(null, true));
+		container = new WeaponRackContainer(getName(null));
 	}
 	
 	@Override
@@ -52,13 +53,13 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 
 	@Override
 	public Optional<String> getLootSuccessString() {
-		return Optional.of(String.format("You browse the %s.", getName(getDungeon().getPlayer(), false)));
+		return Optional.of(String.format("You browse %s.", LanguageUtils.object(this)));
 	}
 	
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
 		}
 	}
 	

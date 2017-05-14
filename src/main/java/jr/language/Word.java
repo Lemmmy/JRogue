@@ -1,5 +1,6 @@
 package jr.language;
 
+import jr.ErrorHandler;
 import jr.language.transformations.Transformer;
 import jr.language.transformations.TransformerType;
 import jr.language.transformations.Plural;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -62,7 +64,7 @@ public class Word<T> {
 	}
 	
 	public String build(Object... transformers) {
-		return build(word);
+		return build(word, transformers);
 	}
 	
 	public String build(String s, Object... transformers) {
@@ -85,10 +87,26 @@ public class Word<T> {
 		return t.get();
 	}
 	
+	public Class<? extends Word> getCloneClass() {
+		return Word.class;
+	}
+	
 	public T clone() {
-		Word newWord = new Word(word);
-		newWord.setTransformerMap(new LinkedHashMap<>(transformerMap));
-		newWord.setInstanceTransformers(new LinkedHashMap<>(instanceTransformers));
-		return (T) newWord;
+		try {
+			Constructor c = getCloneClass().getConstructor(String.class);
+			Word newWord = (Word) c.newInstance(getWord());
+			newWord.setTransformerMap(new LinkedHashMap<>(transformerMap));
+			newWord.setInstanceTransformers(new LinkedHashMap<>(instanceTransformers));
+			return (T) newWord;
+		} catch (Exception e) {
+			ErrorHandler.error("Error cloning word", e);
+			return null;
+		}
+	}
+	
+	@Override
+	
+	public String toString() {
+		return build();
 	}
 }

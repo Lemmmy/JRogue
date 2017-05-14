@@ -10,7 +10,7 @@ import jr.dungeon.items.Wieldable;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.language.Noun;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class Container implements Serialisable, EventListener {
 	private List<ContainerListener> listeners = new ArrayList<>();
 	
 	public Container(Noun name) {
-		this.name = name.build(Capitalize.first);
+		this.name = name.build(Capitalise.first);
 	}
 	
 	public Container(String name) {

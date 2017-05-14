@@ -16,6 +16,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.language.Verb;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -86,10 +87,6 @@ public class MonsterRat extends Monster {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
-				
 		int damageChance = 2;
 		
 		if (e.isKickerPlayer()) {
@@ -134,8 +131,8 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return "bites";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 	
 	@Override

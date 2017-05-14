@@ -9,7 +9,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.tiles.Tile;
 import jr.language.LanguageUtils;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.utils.Point;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class ActionMove extends Action {
 				) {
 					msg.log(
 						"%s beats you to it!",
-						LanguageUtils.subject(unwalkableEnt).build(Capitalize.first)
+						LanguageUtils.subject(unwalkableEnt).build(Capitalise.first)
 					);
 				}
 			}

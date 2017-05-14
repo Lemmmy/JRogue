@@ -14,8 +14,11 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -84,11 +87,15 @@ public class MonsterSpider extends Monster {
 		return 9;
 	}
 	
+	@Override
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("step on the %s!", getName(e.getKicker(), false));
-		}
+		getDungeon().log(
+			"%s %s on %s!",
+			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.step.clone(), e.getKicker()),
+			LanguageUtils.object(e.getVictim())
+		);
 		
 		int damageChance = 2;
 		
@@ -134,8 +141,8 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return "bites";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 	
 	@Override

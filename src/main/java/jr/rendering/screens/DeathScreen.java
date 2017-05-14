@@ -20,8 +20,7 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.language.LanguageUtils;
-import jr.language.transformations.Capitalize;
-import jr.language.transformations.Possessive;
+import jr.language.transformations.Capitalise;
 import jr.rendering.GameAdapter;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.ui.partials.ContainerPartial;
@@ -153,13 +152,13 @@ public class DeathScreen extends ScreenAdapter {
 				
 				deathCauseString = String.format(
 					"Killed by [WHITE]%s %s[].",
-					LanguageUtils.subjectPossessive(attacker).build(Capitalize.first),
-					item.getName(dungeon.getPlayer()).build(Capitalize.first)
+					LanguageUtils.subjectPossessive(attacker).build(Capitalise.first),
+					item.getName(dungeon.getPlayer()).build(Capitalise.first)
 				);
 			} else {
 				deathCauseString = String.format(
 					"Killed by [WHITE]%s[].",
-					attacker.getName(dungeon.getPlayer()).build(Capitalize.first)
+					attacker.getName(dungeon.getPlayer()).build(Capitalise.first)
 				);
 			}
 		} else if (source.getItem() != null) {
@@ -167,7 +166,7 @@ public class DeathScreen extends ScreenAdapter {
 			
 			deathCauseString = String.format(
 				"Killed by [WHITE]%s[].",
-				item.getName(dungeon.getPlayer()).build(Capitalize.first)
+				item.getName(dungeon.getPlayer()).build(Capitalise.first)
 			);
 		}
 		

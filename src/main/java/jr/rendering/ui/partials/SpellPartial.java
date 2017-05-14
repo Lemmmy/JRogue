@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.rendering.ui.windows.Window;
 
 public class SpellPartial extends Table {
@@ -52,7 +52,7 @@ public class SpellPartial extends Table {
 				"windowStyleMarkup"
 			)).left().padRight(6);
 			spellTable.add(new Label(
-				"[WHITE]" + spell.getName().build(Capitalize.first),
+				"[WHITE]" + spell.getName().build(Capitalise.first),
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();

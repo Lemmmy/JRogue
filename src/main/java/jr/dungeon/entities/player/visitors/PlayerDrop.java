@@ -3,6 +3,7 @@ package jr.dungeon.entities.player.visitors;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
+import jr.language.LanguageUtils;
 
 public class PlayerDrop extends PlayerItemVisitor {
 	@Override
@@ -16,15 +17,11 @@ public class PlayerDrop extends PlayerItemVisitor {
 			inv.remove(c);
 			player.dropItem(stack);
 			
-			if (item.isis() || stack.getCount() > 1) {
-				player.getDungeon().You("drop [YELLOW]%s[] ([YELLOW]%s[]).", stack.getName(player, false), c);
-			} else {
-				player.getDungeon().You("drop %s [YELLOW]%s[] ([YELLOW]%s[]).",
-					stack.beginsWithVowel(player) ? "an" : "a",
-					stack.getName(player, false),
-					c
-				);
-			}
+			player.getDungeon().You(
+				"drop [YELLOW]%s[] ([YELLOW]%s[]).",
+				LanguageUtils.anObject(player, stack),
+				c
+			);
 			
 			player.getDungeon().turnSystem.turn(player.getDungeon());
 		});

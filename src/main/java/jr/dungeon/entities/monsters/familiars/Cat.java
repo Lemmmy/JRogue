@@ -10,6 +10,9 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.FamiliarAI;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.StateFollowPlayer;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 import jr.utils.RandomUtils;
 
 public class Cat extends Familiar {
@@ -22,8 +25,8 @@ public class Cat extends Familiar {
 	}
 	
 	@Override
-	public String getDefaultName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Cat" : "cat";
+	public Noun getDefaultName(EntityLiving observer) {
+		return Lexicon.cat.clone();
 	}
 	
 	@Override
@@ -77,7 +80,7 @@ public class Cat extends Familiar {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return "bites";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 }

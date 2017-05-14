@@ -9,6 +9,7 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
@@ -47,7 +48,7 @@ public class EntityGravestone extends Entity implements Readable {
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
 		}
 	}
 	

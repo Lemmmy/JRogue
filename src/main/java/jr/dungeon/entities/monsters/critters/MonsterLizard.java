@@ -12,6 +12,9 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 
 import java.util.List;
 
@@ -25,8 +28,8 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Lizard" : "lizard";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.lizard.clone();
 	}
 	
 	@Override
@@ -110,7 +113,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackVerb(EntityLiving victim) {
-		return "bites";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 }

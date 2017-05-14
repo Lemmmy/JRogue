@@ -50,6 +50,11 @@ public class Verb extends Word<Verb> {
 	}
 	
 	@Override
+	public Class<? extends Word> getCloneClass() {
+		return Verb.class;
+	}
+	
+	@Override
 	public Verb clone() {
 		return super.clone().setPerson(person).setTense(tense);
 	}

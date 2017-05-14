@@ -2,7 +2,7 @@ package jr;
 
 import jr.language.Noun;
 import jr.language.transformations.Article;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.language.transformations.Plural;
 
 public class NLGTest {
@@ -18,6 +18,6 @@ public class NLGTest {
 		// somewhere that builds and logs the noun
 		Plural.addCount(myNoun, 5);
 		Article.addTheIfPossible(myNoun, false); // prefixes 'the' if it's not possessive or plural
-		System.out.println(myNoun.build(Capitalize.first));
+		System.out.println(myNoun.build(Capitalise.first));
 	}
 }

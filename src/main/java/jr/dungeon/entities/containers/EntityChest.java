@@ -15,7 +15,7 @@ import jr.dungeon.items.Shatterable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.Capitalize;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -79,7 +79,7 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	public Optional<String> getLootFailedString() {
 		return Optional.of(String.format(
 			"%s is locked.",
-			LanguageUtils.object(this).build(Capitalize.first)
+			LanguageUtils.object(this).build(Capitalise.first)
 		));
 	}
 	
@@ -111,7 +111,7 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 			if (locked && RandomUtils.roll(4) == 1) {
 				getDungeon().green(
 					"%s breaks open!",
-					LanguageUtils.object(this).build(Capitalize.first)
+					LanguageUtils.object(this).build(Capitalise.first)
 				);
 				locked = false;
 			}

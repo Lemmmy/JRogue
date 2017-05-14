@@ -1,6 +1,7 @@
 package jr.language.transformations;
 
 import jr.language.Noun;
+import jr.language.Pronoun;
 import org.apache.commons.lang3.StringUtils;
 
 public class Article implements TransformerType {
@@ -22,6 +23,8 @@ public class Article implements TransformerType {
 	}
 	
 	public static Noun addTheIfPossible(Noun n, boolean pluralAware) {
+		if (n instanceof Pronoun) return n; // articles don't follow pronouns
+		
 		if (!n.hasInstanceTransformer(Possessive.class)) {
 			if (pluralAware) {
 				if (n.hasInstanceTransformer(Plural.class)) return n;

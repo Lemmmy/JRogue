@@ -3,8 +3,6 @@ package jr.dungeon.entities.projectiles;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.EntityAppearance;
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
@@ -12,6 +10,8 @@ import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.language.LanguageUtils;
+import jr.language.transformations.Capitalise;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -91,9 +91,10 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	public void onHitEntity(Entity victim) {
 		if (victim instanceof EntityItem && ((EntityItem) victim).getItem() instanceof Shatterable) {
-			getDungeon().The(
+			getDungeon().log(
 				"%s shatters into a thousand pieces!",
-				((EntityItem) victim).getItem().getName(getDungeon().getPlayer(), false, false)
+				LanguageUtils.object(getDungeon().getPlayer(), ((EntityItem) victim).getItem())
+					.build(Capitalise.first)
 			);
 			getLevel().entityStore.removeEntity(victim);
 		}
