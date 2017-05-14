@@ -11,7 +11,7 @@ public class Article implements TransformerType {
 	
 	public static final Transformer the = (s, m) -> "the " + s;
 	
-	public static final Transformer autoA = (s, m) -> StringUtils.startsWithAny("aeiou8", s) ?
+	public static final Transformer autoA = (s, m) -> StringUtils.startsWithAny(s, "aeiou8".split("(?!^)")) ?
 													  an.apply(s, m) : a.apply(s, m);
 	
 	public static Noun addAIfPossible(Noun n) {

@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,6 +142,22 @@ public class Wishes {
 			d.changeLevel(firstLevel, firstLevelSpawn);
 			p.setGodmode(isGod);
 		});
+		registerWish("find chest", (d, p, a) -> {
+			AtomicBoolean found = new AtomicBoolean(false);
+			
+			for (int i = 0; i < 40; i++) {
+				d.wish("ds");
+				
+				p.getLevel().entityStore.getEntities().stream()
+					.filter(EntityChest.class::isInstance)
+					.findFirst().ifPresent(e -> {
+						p.defaultVisitors.teleport(e.getPosition());
+						found.set(true);
+					});
+				
+				if (found.get()) break;
+			}
+		});
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
@@ -156,6 +173,12 @@ public class Wishes {
 			for (int i = 0; i < 200; i++) {
 				d.log("Message " + i);
 			}
+		});
+		registerWish("identify all", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
+				i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
+				i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
+			}));
 		});
 
 		// Tiles

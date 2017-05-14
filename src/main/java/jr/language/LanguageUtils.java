@@ -29,7 +29,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun object(EntityLiving observer, Item item) {
-		if (item.isis()) {
+		if (item.isNonCountable()) {
 			return item.getName(observer).clone();
 		} else {
 			return Article.addTheIfPossible(item.getName(observer).clone(), false);
@@ -37,7 +37,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun object(EntityLiving observer, ItemStack itemStack) {
-		if (itemStack.getItem().isis()) {
+		if (itemStack.getItem().isNonCountable()) {
 			return itemStack.getName(observer).clone();
 		} else {
 			return Article.addTheIfPossible(itemStack.getName(observer).clone(), false);
@@ -51,7 +51,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun anObject(EntityLiving observer, Item item) {
-		if (item.isis()) {
+		if (item.isNonCountable()) {
 			return item.getName(observer).clone();
 		} else {
 			return Article.addAIfPossible(item.getName(observer).clone());
@@ -59,7 +59,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun anObject(EntityLiving observer, ItemStack itemStack) {
-		if (itemStack.getItem().isis()) {
+		if (itemStack.getItem().isNonCountable()) {
 			return itemStack.getName(observer).clone();
 		} else {
 			return Article.addAIfPossible(itemStack.getName(observer).clone());

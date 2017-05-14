@@ -144,6 +144,7 @@ public abstract class Monster extends EntityLiving {
 		Article.addTheIfPossible(myNoun, false);
 		
 		Noun victimNoun = victim.getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(victimNoun, false);
 		
 		getDungeon().log(
 			"%s%s %s %s!",

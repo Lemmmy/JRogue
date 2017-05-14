@@ -44,7 +44,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		return true;
 	}
 	
-	public boolean isis() {
+	public boolean isNonCountable() {
 		return false;
 	}
 	

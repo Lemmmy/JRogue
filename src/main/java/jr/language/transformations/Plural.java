@@ -41,15 +41,19 @@ public class Plural implements TransformerType {
 	};
 	
 	public static Noun addCount(Noun n, int count) {
-		return addCount(n, count, true);
+		return addCount(n, count, false);
 	}
 	
-	public static Noun addCount(Noun n, int count, boolean addA) {
-		if (count == 1 && addA) {
-			n.addInstanceTransformer(Article.class, Article.a);
-		} else if (count > 1) {
-			n.addInstanceTransformer(Count.class, Count.build(count))
-			 .addInstanceTransformer(Plural.class);
+	public static Noun addCount(Noun n, int count, boolean isNonCountable) {
+		if (isNonCountable) {
+			n.addInstanceTransformer(Count.class, Count.build(count));
+		} else {
+			if (count == 1) {
+				n.addInstanceTransformer(Article.class, Article.autoA);
+			} else if (count > 1) {
+				n.addInstanceTransformer(Count.class, Count.build(count))
+					.addInstanceTransformer(Plural.class);
+			}
 		}
 		
 		return n;

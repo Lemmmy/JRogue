@@ -8,7 +8,7 @@ import jr.language.Lexicon;
 import jr.language.Noun;
 
 public class ItemGold extends Item {
-	public boolean isis() {
+	public boolean isNonCountable() {
 		return true;
 	}
 	

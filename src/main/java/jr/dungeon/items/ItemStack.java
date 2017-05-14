@@ -24,7 +24,7 @@ public class ItemStack {
 	}
 	
 	public Noun getName(EntityLiving observer) {
-		return Plural.addCount(item.getName(observer), count, !item.isis());
+		return Plural.addCount(item.getName(observer), count, item.isNonCountable());
 	}
 	
 	public ItemAppearance getAppearance() {
