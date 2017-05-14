@@ -94,7 +94,7 @@ public class ActionMove extends Action {
 			if (items.size() == 1) {
 				ItemStack stack = items.get(0).getItemStack();
 				Item item = stack.getItem();
-				String verb = !item.isNonCountable() && stack.getCount() > 1 ? "are" : "is";
+				String verb = !item.isUncountable() && stack.getCount() > 1 ? "are" : "is";
 				
 				msg.log("There %s [YELLOW]%s[] here.", verb, stack.getName((EntityLiving) entity));
 			} else if (items.size() > 1) {
