@@ -16,6 +16,7 @@ import jr.dungeon.items.identity.AspectEatenState;
 import jr.dungeon.items.identity.AspectRottenness;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.language.transformations.TransformerType;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -64,7 +65,8 @@ public class ItemCorpse extends ItemComestible {
 	public Noun getName(EntityLiving observer) {
 		observeAspect(observer, AspectEatenState.class);
 		
-		return Lexicon.corpse.clone();
+		return Lexicon.corpse.clone()
+			.addInstanceTransformer(CorpseTransformer.class, (s, m) -> entity.getName(observer) + " " + s);
 	}
 	
 	@Override
@@ -199,4 +201,6 @@ public class ItemCorpse extends ItemComestible {
 			ErrorHandler.error("Error loading entity class " + entityClassName, e);
 		}
 	}
+	
+	public class CorpseTransformer implements TransformerType {}
 }
