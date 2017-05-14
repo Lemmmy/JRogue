@@ -16,7 +16,8 @@ import java.util.stream.Stream;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Word<T> {
+@SuppressWarnings("unchecked")
+public class Word<T extends Word> {
 	/**
 	 * The actual word.
 	 */
@@ -34,6 +35,7 @@ public class Word<T> {
 	}
 	
 	public T addTransformer(Class<? extends TransformerType> transformerType, Transformer transformer) {
+		if (transformer == null) return (T) this;
 		transformerMap.put(transformerType, transformer);
 		return (T) this;
 	}
