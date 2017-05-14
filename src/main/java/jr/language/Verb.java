@@ -15,8 +15,8 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 public class Verb extends Word<Verb> {
-	private Person person;
-	private Tense tense;
+	private Person person = Person.THIRD_SINGULAR;
+	private Tense tense = Tense.SIMPLE_PRESENT;
 	private boolean negative = false;
 	
 	private Map<VerbStateCombination, Transformer> conjugationRules = new HashMap<>();

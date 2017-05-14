@@ -149,7 +149,7 @@ public abstract class Monster extends EntityLiving {
 			"%s%s %s %s!",
 			victim instanceof Player ? "[ORANGE]" : "",
 			myNoun.build(Capitalise.first),
-			getMeleeAttackVerb(victim),
+			LanguageUtils.autoTense(getMeleeAttackVerb(victim), this),
 			victimNoun
 		);
 	}

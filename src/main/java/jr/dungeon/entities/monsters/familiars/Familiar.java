@@ -11,11 +11,13 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.NutritionState;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
 import jr.language.transformations.Capitalise;
+import jr.language.transformations.Possessive;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -78,8 +80,14 @@ public abstract class Familiar extends Monster implements Friendly {
 	public Noun getName(EntityLiving observer) {
 		if (name != null) {
 			return new Noun(name).addTransformer(Capitalise.class, Capitalise.first);
+		} else if (observer instanceof Player) {
+			return getDefaultName(observer)
+				.addInstanceTransformer(Possessive.class, Possessive.your);
 		} else {
-			return LanguageUtils.subjectPossessive(this);
+			return getDefaultName(observer)
+				.addInstanceTransformer(Possessive.class, Possessive.build(
+					getDungeon().getPlayer().getName(observer).build(Capitalise.first)
+				));
 		}
 	}
 	
