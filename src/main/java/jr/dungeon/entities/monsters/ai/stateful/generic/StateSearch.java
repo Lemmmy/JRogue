@@ -25,7 +25,9 @@ public class StateSearch extends AIState<StatefulAI> {
 			return;
 		}
 		
-		getAI().moveTowards(getAI().getTargetLastPos());
+		if (getAI().getTargetLastPos() != null) {
+			getAI().moveTowards(getAI().getTargetLastPos());
+		}
 	}
 	
 	@Override
