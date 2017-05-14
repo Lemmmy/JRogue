@@ -8,6 +8,7 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.language.Noun;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public abstract class Spell implements Serialisable {
 	private int knowledgeTimeout = 20000;
 	private boolean known = false;
 	
-	public abstract String getName(boolean requiresCapitalisation);
+	public abstract Noun getName();
 	
 	public abstract MagicalSchool getMagicalSchool();
 	

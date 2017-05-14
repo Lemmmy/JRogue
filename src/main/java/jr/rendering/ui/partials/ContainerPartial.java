@@ -9,6 +9,7 @@ import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
 import jr.dungeon.items.Item;
+import jr.language.transformations.Capitalize;
 import jr.rendering.items.ItemMap;
 import jr.rendering.items.ItemRenderer;
 import lombok.val;
@@ -114,7 +115,7 @@ public class ContainerPartial extends Table {
 				"windowStyleMarkup"
 			)).left().width(16);
 			itemTable.add(new Label(
-				"[WHITE]" + itemStack.getName(entity.getDungeon().getPlayer(), true) + suffix,
+				"[WHITE]" + itemStack.getName(entity.getDungeon().getPlayer()).build(Capitalize.first) + suffix,
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();

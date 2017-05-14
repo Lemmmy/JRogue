@@ -5,6 +5,8 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +33,8 @@ public class ItemBow extends ItemProjectileLauncher {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += (requiresCapitalisation ? "B" : "b") + "ow" + (plural ? "s" : "");
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.bow.clone();
 	}
 	
 	@Override

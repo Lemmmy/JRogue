@@ -15,6 +15,9 @@ import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformations.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,24 +53,13 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-			
+	public Noun getName(EntityLiving observer) {
 		if (!isAspectKnown(observer, AspectBookContents.class)) {
-			s += (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
-			
-			return s;
+			return Lexicon.book.clone();
+		} else {
+			return Lexicon.spellbook.clone()
+				.addInstanceTransformer(SpellbookTransformer.class, (s, m) -> s + " of " + spell.getName());
 		}
-		
-		s += (requiresCapitalisation ? "S" : "s") + "pellbook of ";
-		s += spell.getName(false);
-		s += plural ? "s" : "";
-		
-		return s;
 	}
 	
 	@Override
@@ -101,7 +93,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 				letter.set(e.getKey());
 				
 				if (e.getValue().getKnowledgeTimeout() >= 1000) {
-					reader.getDungeon().yellowYou("know [CYAN]%s[] well enough already.", spell.getName(false));
+					reader.getDungeon().yellowYou("know [CYAN]%s[] well enough already.", spell.getName());
 					cancelled.set(true);
 				}
 			});
@@ -179,13 +171,13 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 				playerSpell.setKnowledgeTimeout(20000);
 				playerSpell.setKnown(true);
 				
-				dungeon.greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName());
 			} else {
 				spell.setKnowledgeTimeout(20000);
 				spell.setKnown(true);
 				reader.getKnownSpells().put(letter, spell);
 				
-				dungeon.greenYou("learned [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("learned [CYAN]%s[]!", spell.getName());
 			}
 			
 		} else {
@@ -275,4 +267,6 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 			ErrorHandler.error("Error spawning spellbook", e);
 		}
 	}
+	
+	public class SpellbookTransformer implements TransformerType {}
 }

@@ -8,6 +8,11 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.skills.SkillLevel;
+import jr.dungeon.io.Messenger;
+import jr.language.LanguageUtils;
+import jr.language.Person;
+import jr.language.Verb;
+import jr.language.transformations.Capitalize;
 import jr.utils.RandomUtils;
 
 public abstract class ItemWeaponMelee extends ItemWeapon {
@@ -50,29 +55,24 @@ public abstract class ItemWeaponMelee extends ItemWeapon {
 		return new DamageSource(attacker, this, getMeleeDamageSourceType());
 	}
 	
-	public abstract void onHit(EntityLiving attacker, EntityLiving victim);
-	
 	public abstract int getSmallDamage();
 	
 	public abstract int getLargeDamage();
 	
-	public void hitLog(String attackerString,
-					   String victimString,
-					   String neitherString,
-					   EntityLiving attacker,
-					   EntityLiving victim) {
+	public abstract Verb getMeleeAttackVerb();
+	
+	public void onHit(EntityLiving attacker, EntityLiving victim) {
+		hitLog(attacker, victim);
+	}
+	
+	public void hitLog(EntityLiving attacker, EntityLiving victim) {
 		if (victim.getHealth() <= 0) { return; }
 		
-		if (attacker instanceof Player) {
-			attacker.getDungeon().log(attackerString, victim.getName(attacker, false));
-		} else if (victim instanceof Player) {
-			victim.getDungeon().log(victimString, attacker.getName(victim, false));
-		} else {
-			attacker.getDungeon().log(
-				neitherString,
-				attacker.getName(victim.getDungeon().getPlayer(), false),
-				victim.getName(victim.getDungeon().getPlayer(), false)
-			);
-		}
+		victim.getDungeon().log(
+			"%s %s %s!",
+			LanguageUtils.subject(attacker).build(Capitalize.first),
+			getMeleeAttackVerb().setPerson(Person.SECOND_SINGULAR),
+			LanguageUtils.object(victim)
+		);
 	}
 }
