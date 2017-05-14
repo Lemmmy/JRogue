@@ -1,4 +1,4 @@
-package jr.dungeon.language.transformations;
+package jr.language.transformations;
 
 public class Possessive implements TransformerType {
 	public static final Transformer your = (s, m) -> "your " + s;

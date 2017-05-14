@@ -1,6 +1,8 @@
 package jr.dungeon.items;
 
 import jr.dungeon.entities.EntityLiving;
+import jr.language.Noun;
+import jr.language.transformations.Plural;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -21,12 +23,8 @@ public class ItemStack {
 		this.count = count;
 	}
 	
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		if (count > 1) {
-			return String.format("%d %s", count, item.getName(observer, false, true));
-		} else {
-			return item.getName(observer, requiresCapitalisation, false);
-		}
+	public Noun getName(EntityLiving observer) {
+		return Plural.addCount(item.getName(observer), count, !item.isis());
 	}
 	
 	public ItemAppearance getAppearance() {
@@ -47,10 +45,6 @@ public class ItemStack {
 	
 	public float getWeight() {
 		return item.getWeight() * count;
-	}
-	
-	public boolean beginsWithVowel(EntityLiving observer) {
-		return item.beginsWithVowel(observer);
 	}
 	
 	public static Optional<ItemStack> createFromJSON(JSONObject serialisedItemStack) {

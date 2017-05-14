@@ -14,9 +14,8 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.items.identity.AspectEatenState;
 import jr.dungeon.items.identity.AspectRottenness;
-import jr.dungeon.language.Lexicon;
-import jr.dungeon.language.Noun;
-import jr.dungeon.language.transformations.TransformerType;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import lombok.Getter;
 import org.json.JSONObject;
 

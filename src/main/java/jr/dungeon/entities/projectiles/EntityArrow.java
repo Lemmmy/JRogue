@@ -4,8 +4,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.language.Lexicon;
-import jr.dungeon.language.Noun;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 
 public class EntityArrow extends EntityProjectile {

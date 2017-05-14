@@ -1,9 +1,9 @@
 package jr;
 
-import jr.dungeon.language.Noun;
-import jr.dungeon.language.transformations.Article;
-import jr.dungeon.language.transformations.Capitalize;
-import jr.dungeon.language.transformations.Plural;
+import jr.language.Noun;
+import jr.language.transformations.Article;
+import jr.language.transformations.Capitalize;
+import jr.language.transformations.Plural;
 
 public class NLGTest {
 	public static void main(String[] args) {

@@ -2,9 +2,8 @@ package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemComestible;
-import jr.dungeon.items.comestibles.ItemCorpse;
-import jr.dungeon.language.Noun;
-import jr.dungeon.language.transformations.TransformerType;
+import jr.language.Noun;
+import jr.language.transformations.TransformerType;
 
 public class AspectEatenState extends Aspect {
 	@Override

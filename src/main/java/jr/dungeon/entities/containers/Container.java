@@ -9,6 +9,8 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Wieldable;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
+import jr.language.Noun;
+import jr.language.transformations.Capitalize;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -26,6 +28,10 @@ public class Container implements Serialisable, EventListener {
 	
 	@Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
 	private List<ContainerListener> listeners = new ArrayList<>();
+	
+	public Container(Noun name) {
+		this.name = name.build(Capitalize.first);
+	}
 	
 	public Container(String name) {
 		this.name = name;

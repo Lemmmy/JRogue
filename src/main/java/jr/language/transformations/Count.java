@@ -1,4 +1,4 @@
-package jr.dungeon.language.transformations;
+package jr.language.transformations;
 
 public class Count implements TransformerType {
 	public static Transformer build(int count) {

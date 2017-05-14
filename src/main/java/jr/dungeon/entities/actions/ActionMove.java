@@ -5,8 +5,11 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.tiles.Tile;
+import jr.language.LanguageUtils;
+import jr.language.transformations.Capitalize;
 import jr.utils.Point;
 
 import java.util.List;
@@ -60,7 +63,10 @@ public class ActionMove extends Action {
 					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
 					unwalkableEnt.getLastY() != unwalkableEnt.getY()
 				) {
-					msg.The("%s beats you to it!", unwalkableEnt.getName((EntityLiving) entity, false));
+					msg.log(
+						"%s beats you to it!",
+						LanguageUtils.subject(unwalkableEnt).build(Capitalize.first)
+					);
 				}
 			}
 			
@@ -87,21 +93,12 @@ public class ActionMove extends Action {
 		if (entity instanceof Player) {
 			if (items.size() == 1) {
 				ItemStack stack = items.get(0).getItemStack();
+				Item item = stack.getItem();
+				String verb = !item.isis() && stack.getCount() > 1 ? "are" : "is";
 				
-				if (stack.getItem().isis()) {
-					msg.log("There is [YELLOW]%s[] here.", stack.getName((EntityLiving) entity, false));
-				} else {
-					if (stack.getCount() > 1) {
-						msg.log("There are [YELLOW]%s[] here.", stack.getName((EntityLiving) entity, false));
-					} else {
-						msg.log(
-							"There is %s [YELLOW]%s[] here.",
-							stack.beginsWithVowel((EntityLiving) entity) ? "an" : "a", stack.getName((EntityLiving) entity, false)
-						);
-					}
-				}
+				msg.log("There %s [YELLOW]%s[] here.", verb, stack.getName((EntityLiving) entity));
 			} else if (items.size() > 1) {
-				msg.log("There are [YELLOW]%d[] items here.", items.size());
+				msg.log("There are [YELLOW]%,d[] items here.", items.size());
 			}
 		}
 		

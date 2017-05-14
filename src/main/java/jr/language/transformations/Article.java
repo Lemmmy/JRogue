@@ -1,6 +1,6 @@
-package jr.dungeon.language.transformations;
+package jr.language.transformations;
 
-import jr.dungeon.language.Noun;
+import jr.language.Noun;
 import org.apache.commons.lang3.StringUtils;
 
 public class Article implements TransformerType {
@@ -13,20 +13,24 @@ public class Article implements TransformerType {
 	public static final Transformer autoA = (s, m) -> StringUtils.startsWithAny("aeiou8", s) ?
 													  an.apply(s, m) : a.apply(s, m);
 	
-	public static void addAIfPossible(Noun n) {
+	public static Noun addAIfPossible(Noun n) {
 		if (!n.hasInstanceTransformer(Possessive.class) && !n.hasInstanceTransformer(Plural.class)) {
 			n.addInstanceTransformer(Article.class, autoA);
 		}
+		
+		return n;
 	}
 	
-	public static void addTheIfPossible(Noun n, boolean pluralAware) {
+	public static Noun addTheIfPossible(Noun n, boolean pluralAware) {
 		if (!n.hasInstanceTransformer(Possessive.class)) {
 			if (pluralAware) {
-				if (n.hasInstanceTransformer(Plural.class)) return;
-				if (n.hasInstanceTransformer(Article.class)) return;
+				if (n.hasInstanceTransformer(Plural.class)) return n;
+				if (n.hasInstanceTransformer(Article.class)) return n;
 			}
 			
 			n.addInstanceTransformer(Article.class, the);
 		}
+		
+		return n;
 	}
 }

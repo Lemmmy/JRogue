@@ -1,8 +1,8 @@
 package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
-import jr.dungeon.language.Noun;
-import jr.dungeon.language.transformations.TransformerType;
+import jr.language.Noun;
+import jr.language.transformations.TransformerType;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;

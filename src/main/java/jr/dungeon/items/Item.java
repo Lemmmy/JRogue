@@ -6,19 +6,17 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
-import jr.dungeon.language.Noun;
+import jr.language.Noun;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Getter

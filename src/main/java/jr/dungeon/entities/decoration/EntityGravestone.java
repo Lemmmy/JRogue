@@ -9,8 +9,8 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.EventHandler;
-import jr.dungeon.language.Lexicon;
-import jr.dungeon.language.Noun;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 

@@ -20,8 +20,8 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
-import jr.dungeon.language.Lexicon;
-import jr.dungeon.language.Noun;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 
 import java.util.List;

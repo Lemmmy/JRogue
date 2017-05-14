@@ -13,7 +13,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
-import jr.dungeon.language.transformations.Capitalize;
+import jr.language.transformations.Capitalize;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.screens.GameScreen;

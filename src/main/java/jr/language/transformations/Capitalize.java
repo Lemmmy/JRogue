@@ -1,4 +1,4 @@
-package jr.dungeon.language.transformations;
+package jr.language.transformations;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;

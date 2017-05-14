@@ -1,8 +1,8 @@
-package jr.dungeon.language;
+package jr.language;
 
-import jr.dungeon.language.transformations.Transformer;
-import jr.dungeon.language.transformations.TransformerType;
-import jr.dungeon.language.transformations.Plural;
+import jr.language.transformations.Transformer;
+import jr.language.transformations.TransformerType;
+import jr.language.transformations.Plural;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -84,5 +84,10 @@ public class Noun {
 		newNoun.setTransformerMap(new LinkedHashMap<>(transformerMap));
 		newNoun.setInstanceTransformers(new LinkedHashMap<>(instanceTransformers));
 		return newNoun;
+	}
+	
+	@Override
+	public String toString() {
+		return build();
 	}
 }

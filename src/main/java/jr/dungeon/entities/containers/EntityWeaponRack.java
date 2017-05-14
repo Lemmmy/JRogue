@@ -9,8 +9,8 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
-import jr.dungeon.language.Lexicon;
-import jr.dungeon.language.Noun;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import org.json.JSONObject;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package jr.dungeon.language.transformations;
+package jr.language.transformations;
 
 import java.util.function.BiFunction;
 

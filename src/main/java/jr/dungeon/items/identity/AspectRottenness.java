@@ -2,8 +2,8 @@ package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemCorpse;
-import jr.dungeon.language.Noun;
-import jr.dungeon.language.transformations.TransformerType;
+import jr.language.Noun;
+import jr.language.transformations.TransformerType;
 
 /**
  * Aspect of knowing whether a {@link jr.dungeon.items.comestibles.ItemComestible comestible} is rotten or not. This

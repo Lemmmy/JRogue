@@ -1,7 +1,7 @@
 package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
-import jr.dungeon.language.Noun;
+import jr.language.Noun;
 import jr.utils.Serialisable;
 import org.json.JSONObject;
 

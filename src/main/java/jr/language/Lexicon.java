@@ -1,6 +1,6 @@
-package jr.dungeon.language;
+package jr.language;
 
-import jr.dungeon.language.transformations.Plural;
+import jr.language.transformations.Plural;
 
 public class Lexicon {
 	public static final Noun arrow = new Noun("arrow");
