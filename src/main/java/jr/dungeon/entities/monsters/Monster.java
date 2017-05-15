@@ -16,6 +16,12 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformations.Article;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.val;
 import org.json.JSONObject;
@@ -59,9 +65,12 @@ public abstract class Monster extends EntityLiving {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
+		getDungeon().log(
+			"%s %s %s!",
+			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.kick.clone(), e.getKicker()),
+			LanguageUtils.object(e.getVictim())
+		);
 	}
 	
 	@EventHandler(selfOnly = true)
@@ -71,7 +80,7 @@ public abstract class Monster extends EntityLiving {
 				e.getAttacker().getLevel() == getLevel() &&
 				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
 			) {
-				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
+				getDungeon().You("kill the %s!", getName((Player) e.getAttacker()));
 			} else {
 				getDungeon().You("kill it!");
 			}
@@ -126,21 +135,23 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract boolean canMagicAttack();
 	
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s attacks %s!";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.attack.clone();
 	}
 	
 	public void logMeleeAttackString(EntityLiving victim) {
-		String prefix = "";
+		Noun myNoun = getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(myNoun, false);
 		
-		if (victim instanceof Player) {
-			prefix += "[ORANGE] ";
-		}
+		Noun victimNoun = victim.getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(victimNoun, false);
 		
 		getDungeon().log(
-			prefix + getMeleeAttackString(victim),
-			getName(getDungeon().getPlayer(), false),
-			victim.getName(getDungeon().getPlayer(), false)
+			"%s%s %s %s!",
+			victim instanceof Player ? "[ORANGE]" : "",
+			myNoun.build(Capitalise.first),
+			LanguageUtils.autoTense(getMeleeAttackVerb(victim), this),
+			victimNoun
 		);
 	}
 	

@@ -7,6 +7,8 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.language.LanguageUtils;
+import jr.language.Noun;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +35,7 @@ public class PlayerEat extends PlayerItemVisitor {
 		ItemStack stack = entity.getItemStack();
 		ItemComestible item = (ItemComestible) entity.getItem();
 		
-		String itemName = item.getName(player, false, false);
-		String article = item.beginsWithVowel(player) ? "an" : "a";
-		String msg = item.isis() ? String.format("There is [YELLOW]%s[] here. Eat it?", itemName) :
-							  String.format("There is %s [YELLOW]%s[] here. Eat it?", article, itemName);
-		
+		String msg = String.format("There is [YELLOW]%s[] here. Eat it?", LanguageUtils.anObject(player, item));
 		char[] options = new char[]{'y', 'n'};
 		
 		player.getDungeon().prompt(new Prompt(msg, options, true, new Prompt.SimplePromptCallback(player.getDungeon()) {

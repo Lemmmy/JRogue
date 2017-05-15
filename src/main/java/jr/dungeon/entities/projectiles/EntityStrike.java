@@ -5,6 +5,8 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
@@ -18,8 +20,8 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Strike" : "strike";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.strike.clone();
 	}
 	
 	@Override

@@ -6,18 +6,17 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.language.Noun;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Getter
@@ -45,31 +44,24 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		return true;
 	}
 	
-	public boolean isis() {
+	public boolean isUncountable() {
 		return false;
 	}
 	
-	public boolean beginsWithVowel(EntityLiving observer) {
-		return StringUtils.startsWithAny(getName(observer, false, false), "a", "e", "i", "o", "u", "8");
+	public abstract Noun getName(EntityLiving observer);
+	
+	public Noun getTransformedName(EntityLiving observer) {
+		Noun name = getName(observer);
+		applyNameTransformers(observer, name);
+		return name;
 	}
 	
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural);
-	
-	public String getBeatitudePrefix(EntityLiving observer, boolean requiresCapitalisation) {
-		if (!isAspectKnown(observer, AspectBeatitude.class)) {
-			return "";
-		}
-		
-		AtomicReference<String> out = new AtomicReference<>("");
-		
-		getAspect(AspectBeatitude.class).ifPresent(a -> {
-			AspectBeatitude.Beatitude beatitude = ((AspectBeatitude) a).getBeatitude();
-			String s = beatitude.name().toLowerCase();
-			
-			out.set((requiresCapitalisation ? StringUtils.capitalize(s) : s) + " ");
-		});
-		
-		return out.get();
+	public void applyNameTransformers(EntityLiving observer, Noun noun) {
+		getKnownAspects().stream()
+			.map(c -> getAspect(c).orElse(null))
+			.filter(Objects::nonNull)
+			.sorted(Comparator.comparingInt(Aspect::getNamePriority))
+			.forEach(a -> a.applyNameTransformers(this, noun));
 	}
 	
 	public abstract float getWeight();

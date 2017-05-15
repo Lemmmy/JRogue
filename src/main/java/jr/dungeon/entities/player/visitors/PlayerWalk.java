@@ -76,11 +76,11 @@ public class PlayerWalk implements PlayerVisitor {
 		walkAction(player, tile, newX, newY);
 		ent.setAction(new ActionMove(player.getLastPosition(), new Action.NoCallback()));
 		
-		player.getDungeon().You("swap places with [CYAN]%s[].", ent.getName(player, false));
+		player.getDungeon().You("swap places with [CYAN]%s[].", ent.getName(player));
 	}
 	
 	private void friendlyQuery(Player player, Entity ent) {
-		String msg = "Are you sure you want to attack [CYAN]" + ent.getName(player, false) + "[]?";
+		String msg = "Are you sure you want to attack [CYAN]" + ent.getName(player) + "[]?";
 		
 		player.getDungeon().prompt(new Prompt(
 			msg, new char[]{'y', 'n'}, true,

@@ -33,7 +33,7 @@ public enum Material {
 		this.flammable = flammable;
 	}
 	
-	public String getName(boolean requiresCapitalisation) {
-		return requiresCapitalisation ? StringUtils.capitalize(this.name().toLowerCase()) : this.name().toLowerCase();
+	public String getName() {
+		return this.name().toLowerCase();
 	}
 }

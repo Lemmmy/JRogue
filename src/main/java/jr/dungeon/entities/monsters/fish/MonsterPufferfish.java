@@ -10,6 +10,8 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.events.EventHandler;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,8 @@ public class MonsterPufferfish extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Pufferfish" : "pufferfish";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.pufferfish.clone();
 	}
 	
 	@Override

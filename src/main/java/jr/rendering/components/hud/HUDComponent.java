@@ -13,6 +13,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
+import jr.language.transformations.Capitalise;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.screens.GameScreen;
@@ -265,7 +266,7 @@ public class HUDComponent extends RendererComponent {
 	private void updatePlayerLine(Player player) {
 		playerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[]",
-			player.getName(player, true),
+			player.getName(null).build(Capitalise.first),
 			player.getRole().getName()
 		));
 		

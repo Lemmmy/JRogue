@@ -11,6 +11,9 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 
@@ -75,11 +78,12 @@ public class ActionKick extends Action {
 	
 	private void entityKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, VectorInt direction) {
 		if (kickedEntity.isStatic()) {
-			if (isPlayer) {
-				entity.getDungeon().You("kick the %s!", kickedEntity.getName(kicker, false));
-			} else {
-				entity.getDungeon().The("%s kicks the %s!", kicker.getName(kicker, false), kickedEntity.getName(kicker, false));
-			}
+			entity.getDungeon().log(
+				"%s %s %s!",
+				LanguageUtils.subject(kicker).build(Capitalise.first),
+				LanguageUtils.autoTense(Lexicon.kick.clone(), kicker),
+				LanguageUtils.object(kickedEntity)
+			);
 		}
 		
 		kickedEntity.kick(kicker, direction.getX(), direction.getY());

@@ -6,8 +6,6 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.Action;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
@@ -16,6 +14,9 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -35,8 +36,8 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Rat" : "rat";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.rat.clone(); // science
 	}
 	
 	@Override
@@ -86,10 +87,6 @@ public class MonsterRat extends Monster {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
-				
 		int damageChance = 2;
 		
 		if (e.isKickerPlayer()) {
@@ -134,8 +131,8 @@ public class MonsterRat extends Monster {
 	}
 	
 	@Override
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s bites %s!";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 	
 	@Override

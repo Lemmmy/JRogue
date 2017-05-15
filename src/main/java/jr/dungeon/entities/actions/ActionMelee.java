@@ -4,6 +4,9 @@ import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.player.Player;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.transformations.Capitalise;
 
 /**
  * Melee attack action.
@@ -51,24 +54,19 @@ public class ActionMelee extends Action {
 		
 		switch (hit.getHitType()) {
 			case JUST_MISS:
-				victim.getDungeon().eventSystem
-					.triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
-				
-				if (isAttackerPlayer) {
-					msg.orangeYou("just miss the %s.", victim.getName((EntityLiving) entity, false));
-				} else if (isVictimPlayer) {
-					msg.The("%s just misses.", attacker.getName((EntityLiving) entity, false));
-				}
-				break;
 			case MISS:
 				victim.getDungeon().eventSystem
 					.triggerEvent(new EntityAttackMissedEvent(victim, damageSource, hit));
 				
-				if (isAttackerPlayer) {
-					msg.orangeYou("miss the %s.", victim.getName((EntityLiving) entity, false));
-				} else if (isVictimPlayer) {
-					msg.The("%s misses.", attacker.getName((EntityLiving) entity, false));
-				}
+				msg.log(
+					"%s%s %s%s %s.",
+					isAttackerPlayer ? "[ORANGE]" : "",
+					LanguageUtils.subject(attacker).build(Capitalise.first),
+					hit.getHitType() == HitType.JUST_MISS ? "just " : "",
+					LanguageUtils.autoTense(Lexicon.miss.clone(), attacker),
+					LanguageUtils.object(victim)
+				);
+				
 				break;
 			case SUCCESS:
 				runBeforeRunCallback(entity);

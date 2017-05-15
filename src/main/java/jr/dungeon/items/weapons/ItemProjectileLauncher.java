@@ -79,14 +79,5 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
 	@Override
 	public abstract Skill getSkill();
 	
-	@Override
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural);
-	
-	@Override
-	public abstract float getWeight();
-	
-	@Override
-	public abstract ItemAppearance getAppearance();
-	
 	public abstract List<Class<? extends ItemProjectile>> getValidProjectiles();
 }

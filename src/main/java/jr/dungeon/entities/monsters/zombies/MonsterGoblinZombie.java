@@ -6,12 +6,15 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.Action;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 
 public class MonsterGoblinZombie extends MonsterZombie {
@@ -27,8 +30,8 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Goblin zombie" : "goblin zombie";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.goblinZombie.clone();
 	}
 	
 	@Override
@@ -68,9 +71,12 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
+		getDungeon().log(
+			"%s %s %s!",
+			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.kick.clone(), e.getKicker()),
+			LanguageUtils.object(e.getVictim())
+		);
 		
 		if (RandomUtils.roll(1, 2) == 1) {
 			// TODO: Make this dependent on player strength and martial arts skill
@@ -84,7 +90,7 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	}
 	
 	@Override
-	public String getMeleeAttackString(EntityLiving victim) {
-		return "The %s " + RandomUtils.randomFrom("punches", "hits") + " %s!";
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return RandomUtils.randomFrom(Lexicon.punch.clone(), Lexicon.hit.clone());
 	}
 }

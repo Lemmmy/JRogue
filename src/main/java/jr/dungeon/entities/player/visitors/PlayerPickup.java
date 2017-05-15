@@ -7,6 +7,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.valuables.ItemGold;
+import jr.language.LanguageUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class PlayerPickup implements PlayerVisitor {
 					player.giveGold(stack.getCount());
 					player.getLevel().entityStore.removeEntity(entity);
 					player.getDungeon().turnSystem.turn(player.getDungeon());
-					player.getDungeon().You("pick up [YELLOW]%s[].", stack.getName(player, false));
+					player.getDungeon().You("pick up [YELLOW]%s[].", LanguageUtils.object(player, stack));
 				} else if (player.getContainer().isPresent()) {
 					Optional<Container.ContainerEntry> result = player.getContainer().get().add(stack);
 					
@@ -37,19 +38,11 @@ public class PlayerPickup implements PlayerVisitor {
 					player.getLevel().entityStore.removeEntity(entity);
 					player.getDungeon().turnSystem.turn(player.getDungeon());
 					
-					if (item.isis() || stack.getCount() > 1) {
-						player.getDungeon().You(
-							"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.getName(player, false),
-							result.get().getLetter()
-						);
-					} else {
-						player.getDungeon().You(
-							"pick up %s [YELLOW]%s[] ([YELLOW]%s[]).",
-							stack.beginsWithVowel(player) ? "an" : "a", stack.getName(player, false), result.get()
-								.getLetter()
-						);
-					}
+					player.getDungeon().You(
+						"pick up [YELLOW]%s[] ([YELLOW]%s[]).",
+						LanguageUtils.anObject(player, stack),
+						result.get().getLetter()
+					);
 					
 					break;
 				} else {

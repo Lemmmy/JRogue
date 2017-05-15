@@ -24,12 +24,13 @@ import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -213,11 +214,11 @@ public class Player extends EntityLiving {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
+	public Noun getName(EntityLiving observer) {
 		if (observer == this) {
-			return requiresCapitalisation ? "You": "you";
+			return Lexicon.you.clone();
 		} else {
-			return requiresCapitalisation ? StringUtils.capitalize(name) : name;
+			return new Noun(name);
 		}
 	}
 	

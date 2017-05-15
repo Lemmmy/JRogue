@@ -8,6 +8,9 @@ import jr.dungeon.entities.events.*;
 import jr.dungeon.events.Event;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.language.Noun;
+import jr.language.transformations.Possessive;
+import jr.language.transformations.Transformer;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -141,10 +144,17 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 
 	/**
 	 * @param observer The entity "reading" the name. Used, for example, to hide aspects the entity does not know about.
-	 * @param requiresCapitalisation Whether the name should have its first letter capitalised.
 	 * @return The name of this entity.
 	 */
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
+	public abstract Noun getName(EntityLiving observer);
+	
+	public Transformer getPossessiveTransformer(EntityLiving observer, Object... transformers) {
+		if (observer == this) {
+			return Possessive.your;
+		} else {
+			return Possessive.build(getName(observer).build(transformers));
+		}
+	}
 
 	/**
 	 * @return The appearance of this entity. Determines which sprite is rendered.

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
+import jr.language.transformations.Capitalise;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.ui.partials.ContainerPartial;
@@ -24,7 +25,7 @@ public class PlayerWindow extends PopupWindow {
 	
 	@Override
 	public String getTitle() {
-		return entity instanceof Player ? entity.getName((Player) entity, true) : "Player";
+		return entity instanceof Player ? entity.getName(null).build(Capitalise.first) : "Player";
 	}
 	
 	@Override

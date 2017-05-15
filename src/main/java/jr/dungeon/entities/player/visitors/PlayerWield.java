@@ -5,6 +5,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Wieldable;
+import jr.language.LanguageUtils;
 
 public class PlayerWield extends PlayerItemVisitor {
 	@Override
@@ -52,18 +53,11 @@ public class PlayerWield extends PlayerItemVisitor {
 			player.setLeftHand(ce);
 		}
 		
-		String name = stack.getName(player, false);
-		
-		if (item.isis() || stack.getCount() > 1) {
-			player.getDungeon().You("wield [YELLOW]%s[] ([YELLOW]%s[]).", name, c);
-		} else {
-			player.getDungeon().You(
-				"wield %s [YELLOW]%s[] ([YELLOW]%s[]).",
-				stack.beginsWithVowel(player) ? "an" : "a",
-				name,
-				c
-			);
-		}
+		player.getDungeon().You(
+			"wield [YELLOW]%s[] ([YELLOW]%s[]).",
+			LanguageUtils.anObject(player, item),
+			c
+		);
 		
 		player.getDungeon().turnSystem.turn(player.getDungeon());
 	}

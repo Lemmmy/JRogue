@@ -12,6 +12,10 @@ import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -29,13 +33,13 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		container = new Container(getName(null, true));
+		container = new Container(getName(null));
 		locked = RandomUtils.rollD2();
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Chest" : "chest";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.chest.clone();
 	}
 	
 	@Override
@@ -65,12 +69,18 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 
 	@Override
 	public Optional<String> getLootSuccessString() {
-		return Optional.of(String.format("You open the %s...", getName(getDungeon().getPlayer(), false)));
+		return Optional.of(String.format(
+			"You open %s...",
+			LanguageUtils.object(this)
+		));
 	}
 	
 	@Override
 	public Optional<String> getLootFailedString() {
-		return Optional.of(String.format("The %s is locked.", getName(getDungeon().getPlayer(), false)));
+		return Optional.of(String.format(
+			"%s is locked.",
+			LanguageUtils.object(this).build(Capitalise.first)
+		));
 	}
 	
 	@EventHandler(selfOnly = true)
@@ -99,7 +109,10 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 			}
 			
 			if (locked && RandomUtils.roll(4) == 1) {
-				getDungeon().greenThe("%s breaks open!", getName(e.getKicker(), false));
+				getDungeon().green(
+					"%s breaks open!",
+					LanguageUtils.object(this).build(Capitalise.first)
+				);
 				locked = false;
 			}
 		}
@@ -108,7 +121,10 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log(
+				"There is %s here.",
+				LanguageUtils.anObject(this)
+			);
 		}
 	}
 	

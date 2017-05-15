@@ -5,6 +5,8 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 import java.util.List;
 
@@ -14,8 +16,8 @@ public class MonsterFox extends MonsterCanine {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fox" : "fox";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.fox.clone();
 	}
 	
 	@Override

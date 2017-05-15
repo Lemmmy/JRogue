@@ -4,6 +4,10 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 
 public class EntityArrow extends EntityProjectile {
@@ -14,8 +18,8 @@ public class EntityArrow extends EntityProjectile {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Arrow" : "arrow";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.arrow.clone();
 	}
 	
 	@Override
@@ -40,13 +44,15 @@ public class EntityArrow extends EntityProjectile {
 			if (source != null && source instanceof EntityLiving) {
 				EntityLiving living = (EntityLiving) victim;
 				
-				if (source instanceof Player) {
-					source.getDungeon().Your("arrow hits the %s!", living.getName((EntityLiving) source, false));
-				}
+				String colour = living instanceof Player ? "[ORANGE]" : "";
 				
-				if (living instanceof Player) {
-					living.getDungeon().orangeYou("get hit by an arrow from %s!" + source.getName(living, false));
-				}
+				getDungeon().log(
+					"%s%s %s %s!",
+					colour,
+					LanguageUtils.subjectPossessive(this).build(Capitalise.first),
+					LanguageUtils.autoTense(Lexicon.hit.clone(), this),
+					LanguageUtils.object(living)
+				);
 				
 				// TODO: pass bow item
 				

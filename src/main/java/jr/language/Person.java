@@ -1,0 +1,7 @@
+package jr.language;
+
+public enum Person {
+	FIRST_SINGULAR, FIRST_PLURAL,
+	SECOND_SINGULAR, SECOND_PLURAL,
+	THIRD_SINGULAR, THIRD_PLURAL
+}
