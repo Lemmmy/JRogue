@@ -27,7 +27,7 @@ public class TraitDefendOwner extends AITrait<FamiliarAI> {
 			m.getDungeon().getLevel().entityStore.getEntities().stream()
 				.filter(e -> !e.equals(m))
 				.filter(Monster.class::isInstance)
-				.map(e -> (Monster) e)
+				.map(Monster.class::cast)
 				.filter(Monster::isHostile)
 				.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
 				.filter(e -> getAI().canSee(e))
