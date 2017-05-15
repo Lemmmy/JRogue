@@ -222,6 +222,7 @@ public class StatefulAI extends AI {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
 			.append(currentState == null ? "no state" : currentState.toString())
+			.append("suppressTurns", suppressTurns)
 			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
 			.append("safePoints", safePoints.size())

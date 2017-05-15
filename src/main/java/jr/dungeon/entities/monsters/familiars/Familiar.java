@@ -14,7 +14,6 @@ import jr.dungeon.entities.player.NutritionState;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
-import jr.language.LanguageUtils;
 import jr.language.Noun;
 import jr.language.transformations.Capitalise;
 import jr.language.transformations.Possessive;
