@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
@@ -53,21 +54,17 @@ public class StatefulAI extends AI {
 		if (suppressTurns > 0 && suppressTurns-- > 0) return;
 		if (getMonster() == null) return;
 		
-		if (shouldTargetPlayer && currentTarget == null) {
+		if (shouldTargetPlayer && currentTarget == null)
 			currentTarget = getMonster().getDungeon().getPlayer();
-		}
+		
+		if (currentTarget != null && !currentTarget.isAlive()) currentTarget = null;
 		
 		traits.values().stream()
 			.sorted(Comparator.comparingInt(AITrait::getPriority))
 			.forEach(AITrait::update);
 		
-		if (currentState == null) {
-			currentState = defaultState;
-		}
-		
-		if (currentState != null) {
-			currentState.update();
-		}
+		if (currentState == null) currentState = defaultState;
+		if (currentState != null) currentState.update();
 				
 		if (
 			currentState != null &&
@@ -88,15 +85,11 @@ public class StatefulAI extends AI {
 		this.shouldTargetPlayer = shouldTargetPlayer;
 	}
 	
-	public boolean canSeeTarget() {
-		if (getCurrentTarget() == null) {
-			return false;
-		}
-		
+	public boolean canSee(Entity e) {
 		int startX = getMonster().getX();
 		int startY = getMonster().getY();
-		int endX = getCurrentTarget().getX();
-		int endY = getCurrentTarget().getY();
+		int endX = e.getX();
+		int endY = e.getY();
 		
 		int preDistance = Utils.distance(startX, startY, endX, endY);
 		
@@ -122,6 +115,10 @@ public class StatefulAI extends AI {
 		}
 		
 		return true;
+	}
+	
+	public boolean canSeeTarget() {
+		return getCurrentTarget() != null && canSee(getCurrentTarget());
 	}
 	
 	public void updateTargetVisibility() {

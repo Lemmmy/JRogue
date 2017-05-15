@@ -30,6 +30,7 @@ public class TraitDefendOwner extends AITrait<FamiliarAI> {
 				.map(e -> (Monster) e)
 				.filter(Monster::isHostile)
 				.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
+				.filter(e -> getAI().canSee(e))
 				.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 				.findFirst().ifPresent(e -> {
 					getAI().setCurrentTarget(e);
