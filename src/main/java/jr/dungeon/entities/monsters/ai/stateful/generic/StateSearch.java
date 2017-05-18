@@ -15,25 +15,17 @@ public class StateSearch extends AIState<StatefulAI> {
 	public void update() {
 		super.update();
 		
-		System.out.println("State search - update 1");
-		
 		if (getAI().canSeeTarget()) {
 			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
 			return;
 		}
-		
-		System.out.println("State search - update 2");
 		
 		if (getAI().getCurrentTarget() == null || getAI().getTargetLastPos() == null) {
 			getAI().setCurrentState(null);
 			return;
 		}
 		
-		System.out.println("State search - update 3");
-		
 		getAI().moveTowards(getAI().getTargetLastPos());
-		
-		System.out.println("State search - update 4");
 	}
 	
 	@Override
