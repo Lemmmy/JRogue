@@ -2,7 +2,9 @@ package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
 import jr.language.Noun;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Serialisable;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 /**
@@ -43,4 +45,12 @@ public abstract class Aspect implements Serialisable {
 	
 	@Override
 	public void unserialise(JSONObject obj) {}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder("[RED]" + getClass().getSimpleName() + "[]", MultiLineNoPrefixToStringStyle.STYLE)
+			.append("persistent", isPersistent() ? "yes" : "no")
+			.append("namePriority", getNamePriority())
+			.toString();
+	}
 }

@@ -181,16 +181,27 @@ public class Wishes {
 				i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
 			}));
 		});
-		registerWish("blessed (.)", (d, p, a) -> {
+		registerWish("bless (.)", (d, p, a) -> {
+			d.log("Blessing [YELLOW]%s[].", a[0].charAt(0));
+			
 			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
 				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
 					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.BLESSED));
+				i.getItem().observeAspect(p, AspectBeatitude.class);
 			}));
 		});
 		registerWish("curse (.)", (d, p, a) -> {
+			d.log("Cursing [YELLOW]%s[].", a[0].charAt(0));
+			
 			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
 				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
 					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.CURSED));
+				i.getItem().observeAspect(p, AspectBeatitude.class);
+			}));
+		});
+		registerWish("debug (.)", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				d.log(i.getItem().toString());
 			}));
 		});
 

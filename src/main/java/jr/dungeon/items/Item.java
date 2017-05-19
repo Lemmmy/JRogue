@@ -7,10 +7,12 @@ import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.language.Noun;
+import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -57,8 +59,9 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	}
 	
 	public void applyNameTransformers(EntityLiving observer, Noun noun) {
-		getKnownAspects().stream()
-			.map(c -> getAspect(c).orElse(null))
+		getAspects().entrySet().stream()
+			.filter(e -> isAspectKnown(observer, e.getKey()))
+			.map(Map.Entry::getValue)
 			.filter(Objects::nonNull)
 			.sorted(Comparator.comparingInt(Aspect::getNamePriority))
 			.forEach(a -> a.applyNameTransformers(this, noun));
@@ -213,5 +216,16 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+			.append("age", String.format("%,d (should age: %s)", age, shouldAge() ? "yes" : "no"))
+			.append("visualID", visualID);
+		
+		getAspects().forEach((ac, a) -> tsb.append(a.toString()));
+		
+		return tsb.toString();
 	}
 }
