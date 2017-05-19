@@ -106,7 +106,7 @@ public class DebugToStringStyle extends ToStringStyle {
 					buffer.append(System.lineSeparator());
 						
 					for (int i = 1; i < lines.length; i++) {
-						String sep = i < lines.length - 2 ? System.lineSeparator() : "";
+						String sep = i < lines.length - 1 ? System.lineSeparator() : "";
 						buffer.append(spacer(spaces - INDENT)).append(lines[i]).append(sep);
 					}
 				}
