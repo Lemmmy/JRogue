@@ -253,7 +253,7 @@ public class HUDComponent extends RendererComponent {
 				Table stateTable = new Table(skin);
 				stateTable.setBackground("blackTransparent");
 				
-				stateTable.add(new Label(m.getAI().toString(), skin));
+				stateTable.add(new Label(HUDUtils.replaceMarkupString(m.getAI().toString()), skin));
 				
 				stage.getRoot().addActor(stateTable);
 				stateTable.pad(4);

@@ -13,6 +13,7 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
@@ -115,6 +116,16 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 		result = 31 * result + (potionColour != null ? potionColour.hashCode() : 0);
 		result = 31 * result + (potency != +0.0f ? Float.floatToIntBits(potency) : 0);
 		return result;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("empty", empty)
+			.append("potency", potency)
+			.append("bottleType", bottleType.name().toLowerCase())
+			.append("potionType", bottleType.name().toLowerCase())
+			.append("potionColour", potionColour.name().toLowerCase());
 	}
 	
 	public class ColourTransformer implements TransformerType {}

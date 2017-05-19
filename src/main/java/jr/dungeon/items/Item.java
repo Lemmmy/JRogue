@@ -7,7 +7,7 @@ import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.language.Noun;
-import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
@@ -220,12 +220,16 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	
 	@Override
 	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+		return toStringBuilder().toString();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
 			.append("age", String.format("%,d (should age: %s)", age, shouldAge() ? "yes" : "no"))
 			.append("visualID", visualID);
 		
-		getAspects().forEach((ac, a) -> tsb.append(a.toString()));
+		getAspects().forEach((ac, a) -> tsb.append(a.toStringBuilder()));
 		
-		return tsb.toString();
+		return tsb;
 	}
 }

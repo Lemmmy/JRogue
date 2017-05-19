@@ -2,7 +2,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.JRogue;
 import jr.dungeon.events.EventListener;
-import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -94,9 +94,12 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
 			.append("duration", duration)
-			.append("turnsTaken", turnsTaken)
-			.toString();
+			.append("turnsTaken", turnsTaken);
 	}
 }

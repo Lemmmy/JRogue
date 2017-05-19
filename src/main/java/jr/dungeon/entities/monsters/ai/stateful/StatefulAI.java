@@ -9,7 +9,6 @@ import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.TileType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.AccessLevel;
@@ -216,18 +215,17 @@ public class StatefulAI extends AI {
 	}
 	
 	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append(currentState == null ? "no state" : currentState.toString())
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = super.toStringBuilder()
+			.append(currentState == null ? "no state" : currentState.toStringBuilder())
 			.append("suppressTurns", suppressTurns)
 			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
-			.append("safePoints", safePoints.size())
-			.append("");
+			.append("safePoints", safePoints.size());
 		
-		traits.values().forEach(t -> tsb.append(t.toString()));
+		traits.values().forEach(t -> tsb.append(t.toStringBuilder()));
 		
-		return tsb.toString();
+		return tsb;
 	}
 	
 	@Override

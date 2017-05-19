@@ -3,7 +3,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.JRogue;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.events.EventListener;
-import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -75,7 +75,10 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.toString();
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE);
 	}
 }

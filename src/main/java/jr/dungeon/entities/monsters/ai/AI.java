@@ -12,7 +12,7 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -299,8 +299,13 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		return null;
 	}
 	
+	@Override
 	public String toString() {
-		return "";
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE);
 	}
 	
 	public List<EventListener> getSubListeners() {

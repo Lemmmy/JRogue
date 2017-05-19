@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Utils;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -40,9 +39,8 @@ public class TraitIntrinsicFear extends AITrait<StatefulAI> {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("fear", fear)
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("fear", fear);
 	}
 }

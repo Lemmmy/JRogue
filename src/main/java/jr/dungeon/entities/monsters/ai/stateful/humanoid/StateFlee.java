@@ -5,7 +5,6 @@ import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.val;
@@ -72,11 +71,8 @@ public class StateFlee extends AIState<StatefulAI> {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("duration", getDuration())
-			.append("turnsTaken", getTurnsTaken())
-			.append("dest", dest)
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("dest", dest);
 	}
 }

@@ -3,7 +3,6 @@ package jr.dungeon.items.identity;
 import jr.dungeon.items.Item;
 import jr.language.Noun;
 import jr.language.transformations.TransformerType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -61,11 +60,9 @@ public class AspectBeatitude extends Aspect {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.appendSuper(super.toString())
-			.append("beatitude", beatitude.name().toLowerCase())
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("beatitude", beatitude.name().toLowerCase());
 	}
 	
 	/**

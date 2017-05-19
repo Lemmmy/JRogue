@@ -234,6 +234,7 @@ public class Dungeon implements Messenger {
 		printedLogString = printedLogString.replaceAll("\\[GREEN]", "\u001b[32m");
 		printedLogString = printedLogString.replaceAll("\\[BLUE]", "\u001b[34m");
 		printedLogString = printedLogString.replaceAll("\\[CYAN]", "\u001b[36m");
+		printedLogString = printedLogString.replaceAll("\\[GR[AE]Y]", "\u001b[37m");
 		printedLogString = printedLogString + "\u001b[0m";
 		JRogue.getLogger().log(gameLogLevel, printedLogString);
 		
