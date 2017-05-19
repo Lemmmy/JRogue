@@ -24,6 +24,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.comestibles.*;
+import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.items.magical.ItemSpellbook;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.projectiles.ItemArrow;
@@ -178,6 +179,18 @@ public class Wishes {
 			p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
 				i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
 				i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
+			}));
+		});
+		registerWish("blessed (.)", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
+					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.BLESSED));
+			}));
+		});
+		registerWish("curse (.)", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
+					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.CURSED));
 			}));
 		});
 
