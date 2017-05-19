@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -36,20 +37,26 @@ public class DebugToStringStyle extends ToStringStyle {
 	}
 	
 	private void resetIndent() {
-		setArrayStart("{" + System.lineSeparator() + spacer(spaces));
-		setArraySeparator("," + System.lineSeparator() + spacer(spaces));
+		setArrayStart("{" + System.lineSeparator() + spacer());
+		setArraySeparator("," + System.lineSeparator() + spacer());
 		setArrayEnd(System.lineSeparator() + spacer(spaces - INDENT) + "}");
 		
-		setContentStart(spacer(spaces).toString());
-		setFieldSeparator(System.lineSeparator() + spacer(spaces));
-		setContentEnd(System.lineSeparator() + spacer(spaces - INDENT));
+		setContentStart("");
+		setContentEnd("");
+		setFieldSeparator(SystemUtils.LINE_SEPARATOR + spacer());
+		setFieldSeparatorAtStart(true);
+		setFieldSeparatorAtEnd(false);
 	}
 	
 	@Override
 	protected void appendClassName(final StringBuffer buffer, final Object object) {
 		if (object != null) {
-			buffer.append("[CYAN]" + getShortClassName(object.getClass()) + "[]");
+			buffer.append("+[CYAN]").append(getShortClassName(object.getClass())).append("[]");
 		}
+	}
+	
+	private StringBuilder spacer() {
+		return spacer(spaces);
 	}
 	
 	private StringBuilder spacer(final int spaces) {
@@ -81,21 +88,33 @@ public class DebugToStringStyle extends ToStringStyle {
 					}
 				} catch (Exception ignored) {
 					buffer.append(value.toString());
+					spaces -= INDENT;
+					resetIndent();
+					return;
 				}
 			}
 			
 			if (tsb != null) {
-				String cn = tsb.toString().split("(\\r\\n|\\r|\\n)")[0];
-				String s = tsb.toString().replaceFirst(Pattern.quote(cn) + "(\\r\\n|\\r|\\n)", "");
+				String[] lines = Arrays.stream(tsb.toString().split("(\\r?\\n)"))
+					.filter(l -> !l.trim().isEmpty())
+					.toArray(String[]::new);
+				String cn = lines[0];
 				
-				buffer.append(cn + System.lineSeparator());
-				spaces += INDENT;
-				resetIndent();
-				buffer.append(s);
-				spaces -= INDENT;
-				resetIndent();
+				buffer.append(cn);
+				
+				if (lines.length > 1) {
+					buffer.append(System.lineSeparator());
+						
+					for (int i = 1; i < lines.length; i++) {
+						String sep = i < lines.length - 2 ? System.lineSeparator() : "";
+						buffer.append(spacer(spaces - INDENT)).append(lines[i]).append(sep);
+					}
+				}
 			} else {
 				buffer.append(value.toString());
+				spaces -= INDENT;
+				resetIndent();
+				return;
 			}
 			
 			spaces -= INDENT;
