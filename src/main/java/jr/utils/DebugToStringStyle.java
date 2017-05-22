@@ -214,6 +214,13 @@ public class DebugToStringStyle extends ToStringStyle {
 		resetIndent();
 	}
 	
+	protected void appendFieldStart(final StringBuffer buffer, final String fieldName) {
+		if (isUseFieldNames() && fieldName != null) {
+			buffer.append("[GREY]" + fieldName + "[]");
+			buffer.append(getFieldNameValueSeparator());
+		}
+	}
+	
 	private Object readResolve() {
 		return DebugToStringStyle.STYLE;
 	}
