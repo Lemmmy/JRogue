@@ -10,6 +10,8 @@ public class FamiliarAI extends StatefulAI {
 	public FamiliarAI(Monster monster) {
 		super(monster);
 		
+		setPathfinder(new FamiliarPathfinder());
+		
 		setShouldTargetPlayer(false);
 		
 		getPersistence().put("lurkRadius", 4);

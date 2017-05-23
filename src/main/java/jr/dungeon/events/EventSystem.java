@@ -8,6 +8,9 @@ import lombok.Getter;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static jr.language.transformations.Plural.s;
 
 public class EventSystem {
 	private Dungeon dungeon;
@@ -124,8 +127,14 @@ public class EventSystem {
 			
 			EventHandler annotation = method.getAnnotation(EventHandler.class);
 			
+			AtomicBoolean anySelves = new AtomicBoolean(false);
+			
+			listener.getListenerSelves().forEach(s -> {
+				if (event.isSelf(s)) anySelves.set(true);
+			});
+			
 			if (
-				annotation.selfOnly() && !event.isSelf(listener) ||
+				annotation.selfOnly() && !anySelves.get() ||
 				annotation.invocationTime() != invocationTime
 			) {
 				return;

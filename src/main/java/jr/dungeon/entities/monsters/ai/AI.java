@@ -12,13 +12,17 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Artificial 'intelligence' class. Used to automate movement and actions of monsters in the dungeon, for example
@@ -29,7 +33,7 @@ import java.util.List;
 public abstract class AI implements Serialisable, Persisting, EventListener {
 	@NonNull @Getter private Monster monster;
 	
-	private AStarPathfinder pathfinder = new AStarPathfinder();
+	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
 	private JSONObject persistence = new JSONObject();
@@ -297,6 +301,14 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public Set<Object> getListenerSelves() {
+		val selves = new HashSet<>();
+		selves.add(this);
+		selves.add(monster);
+		return selves;
 	}
 	
 	@Override

@@ -92,6 +92,7 @@ public class Lexicon {
 	public static final Verb kick = new Verb("kick");
 	public static final Verb kill = new Verb("kill");
 	public static final Verb miss = new Verb("miss");
+	public static final Verb move = new Verb("move");
 	public static final Verb punch = new Verb("punch");
 	public static final Verb step = new Verb("step");
 }

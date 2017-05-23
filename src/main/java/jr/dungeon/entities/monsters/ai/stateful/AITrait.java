@@ -6,11 +6,14 @@ import jr.dungeon.events.EventListener;
 import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
@@ -71,6 +74,15 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 	
 	public int getPriority() {
 		return 0;
+	}
+	
+	@Override
+	public Set<Object> getListenerSelves() {
+		val selves = new HashSet<>();
+		selves.add(this);
+		selves.add(ai);
+		selves.add(monster);
+		return selves;
 	}
 	
 	@Override

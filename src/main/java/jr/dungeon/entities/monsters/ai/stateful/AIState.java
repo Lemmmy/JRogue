@@ -5,11 +5,14 @@ import jr.dungeon.events.EventListener;
 import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A state for stateful AI. A state is a certain action with intrinsic information that occurs over a specified
@@ -90,6 +93,15 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public Set<Object> getListenerSelves() {
+		val selves = new HashSet<>();
+		selves.add(this);
+		selves.add(ai);
+		selves.add(ai.getMonster());
+		return selves;
 	}
 	
 	@Override
