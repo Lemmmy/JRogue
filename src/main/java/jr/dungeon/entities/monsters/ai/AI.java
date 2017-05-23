@@ -250,6 +250,21 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		}
 	}
 	
+	public boolean canReach(Entity e) {
+		Path path = pathfinder.findPath(
+			monster.getLevel(),
+			getMonster().getX(),
+			getMonster().getY(),
+			e.getX(),
+			e.getY(),
+			monster.getVisibilityRange(),
+			monster.canMoveDiagonally(),
+			avoidTiles
+		);
+		
+		return path != null;
+	}
+	
 	/**
 	 * Called every turn - this is the AI's turn to assign an action to the monster.
 	 */

@@ -23,5 +23,6 @@ public class FamiliarAI extends StatefulAI {
 		
 		addTrait(new TraitFollowOwner(this));
 		addTrait(new TraitDefendOwner(this));
+		addTrait(new TraitAvoidCursed(this));
 	}
 }

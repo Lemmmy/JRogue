@@ -38,14 +38,19 @@ public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 			.filter(EntityItem.class::isInstance)
 			.map(EntityItem.class::cast)
 			.filter(e -> e.getItem().getAspect(AspectBeatitude.class).isPresent())
+			.filter(e -> !e.getItem().isAspectKnown(p, AspectBeatitude.class))
 			.filter(e -> ((AspectBeatitude) e.getItem().getAspect(AspectBeatitude.class).get()).getBeatitude()
 				== AspectBeatitude.Beatitude.CURSED)
 			.findFirst()
-			.ifPresent(e -> d.log(
-				"%s %s only reluctantly.",
-				LanguageUtils.subject(m).build(Capitalise.first),
-				LanguageUtils.autoTense(Lexicon.move.clone(), getMonster())
-			));
+			.ifPresent(e -> {
+				d.log(
+					"%s %s only reluctantly.",
+					LanguageUtils.subject(m).build(Capitalise.first),
+					LanguageUtils.autoTense(Lexicon.move.clone(), getMonster())
+				);
+				
+				e.getItem().observeAspect(p, AspectBeatitude.class);
+			});
 	}
 	
 	@Override
