@@ -34,6 +34,8 @@ public class DebugToStringStyle extends ToStringStyle {
 		this.setUseShortClassName(true);
 		this.setUseIdentityHashCode(false);
 		this.setFieldSeparatorAtStart(true);
+		
+		resetIndent();
 	}
 	
 	private void resetIndent() {
