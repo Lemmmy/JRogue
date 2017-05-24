@@ -24,10 +24,10 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 		
 		if (
 			targetComestible == null ||
-				targetComestible.getLevel() != getAI().getMonster().getLevel() ||
-				targetComestible.getLevel() == null ||
-				!getAI().getMonster().getLevel().entityStore.hasEntity(targetComestible)
-			) {
+			targetComestible.getLevel() != getAI().getMonster().getLevel() ||
+			targetComestible.getLevel() == null ||
+			!getAI().getMonster().getLevel().entityStore.hasEntity(targetComestible)
+		) {
 			getAI().setCurrentState(null);
 			return;
 		}
