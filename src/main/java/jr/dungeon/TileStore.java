@@ -77,10 +77,15 @@ public class TileStore implements Serialisable {
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
-		
-		JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
-		serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
+		try {
+			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
+			
+			JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
+			serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
+		} catch (Exception e) {
+			JRogue.getLogger().error("Error loading level - during TileStore unserialisation:");
+			JRogue.getLogger().error(e);
+		}
 	}
 	
 	private void unserialiseTiles(byte[] bytes) {
@@ -94,12 +99,12 @@ public class TileStore implements Serialisable {
 					TileType type = TileType.fromID(id);
 					t.setType(type);
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level:");
+					JRogue.getLogger().error("Error loading level - during TileStore unserialiseTiles:");
 					JRogue.getLogger().error(e);
 				}
 			});
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error loading level:");
+			JRogue.getLogger().error("IO error loading level - during TileStore unserialiseTiles:");
 			JRogue.getLogger().error(e);
 		}
 	}

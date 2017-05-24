@@ -14,6 +14,7 @@ import jr.language.transformations.Transformer;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -429,5 +430,21 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		
 		level.entityStore.addEntity(this);
 		level.entityStore.processEntityQueues(false);
+	}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("uuid", uuid.toString())
+			.append("level", level.toString())
+			.append("position", getPosition().toString())
+			.append("lastPosition", getLastPosition().toString())
+			.append("lastSeenPosition", getLastSeenPosition().toString())
+			.append("isBeingRemoved", beingRemoved)
+			.append("visualID", visualID); // TODO: more
 	}
 }

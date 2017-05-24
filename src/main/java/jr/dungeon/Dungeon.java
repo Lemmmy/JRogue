@@ -226,18 +226,7 @@ public class Dungeon implements Messenger {
 	public void log(String s, Object... objects) {
 		String logString = String.format(s, objects);
 		
-		String printedLogString = logString;
-		printedLogString = printedLogString.replaceAll("\\[]", "\u001b[0m");
-		printedLogString = printedLogString.replaceAll("\\[RED]", "\u001b[31m");
-		printedLogString = printedLogString.replaceAll("\\[ORANGE]", "\u001b[31m");
-		printedLogString = printedLogString.replaceAll("\\[YELLOW]", "\u001b[33m");
-		printedLogString = printedLogString.replaceAll("\\[GREEN]", "\u001b[32m");
-		printedLogString = printedLogString.replaceAll("\\[BLUE]", "\u001b[34m");
-		printedLogString = printedLogString.replaceAll("\\[CYAN]", "\u001b[36m");
-		printedLogString = printedLogString.replaceAll("\\[GR[AE]Y]", "\u001b[37m");
-		printedLogString = printedLogString + "\u001b[0m";
-		JRogue.getLogger().log(gameLogLevel, printedLogString);
-		
+		JRogue.getLogger().log(gameLogLevel, logString);
 		logHistory.add(logString);
 		eventSystem.triggerEvent(new LogEvent(logString));
 	}

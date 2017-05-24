@@ -140,16 +140,23 @@ public class Level implements Serialisable, Persisting {
 	 * @return The unserialised level.
 	 */
 	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
+		Level level = null;
+		
 		try {
 			int width = obj.getInt("width");
 			int height = obj.getInt("height");
 			int depth = obj.getInt("depth");
 			
-			Level level = new Level(uuid, dungeon, width, height, depth);
+			level = new Level(uuid, dungeon, width, height, depth);
 			level.unserialise(obj);
 			return Optional.of(level);
-		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:");
+		} catch (Exception e) {
+			if (level != null) {
+				JRogue.getLogger().error("Error loading level " + level.toString() + ":");
+			} else {
+				JRogue.getLogger().error("Error loading level:");
+			}
+			
 			JRogue.getLogger().error(e);
 		}
 		
