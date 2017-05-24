@@ -28,7 +28,7 @@ public enum NutritionState {
 		return string;
 	}
 	
-	public static NutritionState fromNutrition(int nutrition) {
+	public static NutritionState fromNutrition(float nutrition) {
 		if (nutrition >= 2000) {
 			return NutritionState.CHOKING;
 		} else if (nutrition >= 1500) {

@@ -281,4 +281,8 @@ public class EntityStore implements Serialisable {
 		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
 	}
+	
+	public boolean hasEntity(Entity entity) {
+		return entities.containsValue(entity);
+	}
 }
