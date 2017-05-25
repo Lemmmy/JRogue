@@ -311,8 +311,7 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AI class {}", aiClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading AI class {}", aiClassName, e);
 		}
 		
 		return null;

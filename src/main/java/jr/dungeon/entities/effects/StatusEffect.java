@@ -4,10 +4,12 @@ import jr.dungeon.io.BlankMessenger;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventListener;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
@@ -53,6 +55,18 @@ public abstract class StatusEffect implements Serialisable, EventListener {
 	//public abstract void onContract(); //TODO: Move "oh no you strained your leg" etc. here
 	
 	public abstract void onEnd();
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("duration", duration)
+			.append("turnsPassed", turnsPassed)
+			.append("severity", getSeverity().name().toLowerCase());
+	}
 	
 	public enum Severity {
 		MINOR,

@@ -78,8 +78,7 @@ public class EntityStore implements Serialisable {
 			JSONArray serialisedEntities = obj.getJSONArray("entities");
 			serialisedEntities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
 		} catch (Exception e) {
-			JRogue.getLogger().error("Error loading level - during EntityStore unserialisation:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading level - during EntityStore unserialisation:", e);
 		}
 	}
 	
@@ -115,13 +114,13 @@ public class EntityStore implements Serialisable {
 			ErrorHandler.error("Error loading entity class " + entityClassName, e);
 		} catch (Exception e) {
 			if (entity != null) {
-				JRogue.getLogger().error("Error loading entity in level " + level.toString() + " - entity information:");
-				JRogue.getLogger().error(entity.toString());
+				JRogue.getLogger().error(
+					"Error loading entity in level " + level.toString() + " - entity information:\n" + entity.toString(),
+					e
+				);
 			} else {
-				JRogue.getLogger().error("Error loading entity:");
+				JRogue.getLogger().error("Error loading entity:", e);
 			}
-			
-			JRogue.getLogger().error(e);
 		}
 	}
 	

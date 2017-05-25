@@ -402,8 +402,7 @@ public class Player extends EntityLiving {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("Role class {} has no unserialisation constructor", roleClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading role class {}", roleClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading role class {}", roleClassName, e);
 		}
 		
 		JSONObject serialisedSkills = obj.getJSONObject("skills");
@@ -428,8 +427,7 @@ public class Player extends EntityLiving {
 			} catch (NoSuchMethodException e) {
 				JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
 			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error loading spell class {}", spellClassName);
-				JRogue.getLogger().error(e);
+				JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
 			}
 		});
 	}

@@ -131,8 +131,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("Item class {} has no unserialisation constructor", itemClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading item class {}", itemClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading item class {}", itemClassName, e);
 		}
 		
 		return Optional.empty();
@@ -182,8 +181,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 			} catch (NoSuchMethodException e) {
 				JRogue.getLogger().error("Aspect class {} has no unserialisation constructor", aspectClassName);
 			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName);
-				JRogue.getLogger().error(e);
+				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName, e);
 			}
 		});
 		
@@ -199,7 +197,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		try {
 			unserialisePersistence(obj);
 		} catch (Exception e) {
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error unserialising item persistence", e);
 		}
 	}
 	

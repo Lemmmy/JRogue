@@ -65,8 +65,7 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("AITrait class {} has no unserialisation constructor", traitClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AITrait class {}", traitClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading AITrait class {}", traitClassName, e);
 		}
 		
 		return null;

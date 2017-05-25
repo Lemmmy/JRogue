@@ -346,8 +346,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 				statusEffectClassName
 			);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName, e);
 		}
 	}
 
@@ -438,13 +437,18 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	}
 	
 	public ToStringBuilder toStringBuilder() {
-		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
 			.append("uuid", uuid.toString())
 			.append("level", level.toString())
 			.append("position", getPosition().toString())
 			.append("lastPosition", getLastPosition().toString())
 			.append("lastSeenPosition", getLastSeenPosition().toString())
 			.append("isBeingRemoved", beingRemoved)
-			.append("visualID", visualID); // TODO: more
+			.append("visualID", visualID)
+			.append("appearance", getAppearance().name().toLowerCase());
+		
+		statusEffects.forEach(s -> tsb.append(s.toStringBuilder()));
+		
+		return tsb;
 	}
 }

@@ -186,8 +186,7 @@ public class StatefulAI extends AI {
 			currentTarget = (EntityLiving) getMonster().getLevel().entityStore.getEntityByUUID(obj.optString("currentTarget"));
 
 			if (obj.has("targetLastPos")) {
-				JSONObject serialisedPoint = obj.getJSONObject("targetLastPos");
-				targetLastPos = Point.getPoint(serialisedPoint.optInt("x"), serialisedPoint.optInt("y"));
+				targetLastPos = Point.unserialise(obj.getString("targetLastPos"));
 			}
 		}
 		

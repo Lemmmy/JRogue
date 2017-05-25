@@ -6,6 +6,7 @@ import jr.dungeon.entities.actions.Action;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 /**
@@ -95,5 +96,12 @@ public abstract class EntityTurnBased extends Entity {
 	 */
 	public void applyMovementPoints() {
 		movementPoints += getMovementSpeed() + Math.max(1, RandomUtils.random(2, 4));
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("movementPoints", movementPoints)
+			.append("nextAction", nextAction);
 	}
 }

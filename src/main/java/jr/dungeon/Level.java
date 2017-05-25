@@ -152,12 +152,10 @@ public class Level implements Serialisable, Persisting {
 			return Optional.of(level);
 		} catch (Exception e) {
 			if (level != null) {
-				JRogue.getLogger().error("Error loading level " + level.toString() + ":");
+				JRogue.getLogger().error("Error loading level " + level.toString() + ":", e);
 			} else {
-				JRogue.getLogger().error("Error loading level:");
+				JRogue.getLogger().error("Error loading level:", e);
 			}
-			
-			JRogue.getLogger().error(e);
 		}
 		
 		return Optional.empty();
@@ -200,8 +198,7 @@ public class Level implements Serialisable, Persisting {
 			visibilityStore.unserialise(obj);
 			monsterSpawner.unserialise(obj);
 		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading level:", e);
 		}
 		
 		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));

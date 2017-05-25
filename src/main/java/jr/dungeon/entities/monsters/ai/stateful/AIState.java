@@ -88,8 +88,7 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("AIState class {} has no unserialisation constructor", stateClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AIState class {}", stateClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading AIState class {}", stateClassName, e);
 		}
 		
 		return null;

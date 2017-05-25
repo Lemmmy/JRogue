@@ -222,8 +222,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading spell class {}", spellClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
 		}
 		
 		timesRead = obj.optInt("timesRead", 0);

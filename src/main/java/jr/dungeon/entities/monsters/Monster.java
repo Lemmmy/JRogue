@@ -24,6 +24,7 @@ import jr.language.transformations.Article;
 import jr.language.transformations.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.val;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -197,7 +198,9 @@ public abstract class Monster extends EntityLiving {
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 		
-		ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+		if (obj.has("ai")) {
+			ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+		}
 	}
 	
 	@Override
@@ -210,5 +213,11 @@ public abstract class Monster extends EntityLiving {
 		}
 		
 		return subListeners;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("ai", ai);
 	}
 }

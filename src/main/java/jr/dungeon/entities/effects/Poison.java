@@ -3,6 +3,7 @@ package jr.dungeon.entities.effects;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Poison extends StatusEffect {
 	public Poison() {
@@ -60,5 +61,13 @@ public class Poison extends StatusEffect {
 	@Override
 	public void onEnd() {
 		getMessenger().greenYou("managed to absorb the deadly poison.");
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("damageLimit", getDamageLimit())
+			.append("healthLimit", getHealthLimit())
+			.append("damageSourceType", getDamageSourceType().name().toLowerCase());
 	}
 }

@@ -59,8 +59,7 @@ public class TileStore implements Serialisable {
 				try {
 					dos.writeShort(t.getType().getID());
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error saving level:");
-					JRogue.getLogger().error(e);
+					JRogue.getLogger().error("Error saving level:", e);
 				}
 			});
 			
@@ -68,8 +67,7 @@ public class TileStore implements Serialisable {
 			
 			return Optional.of(bos.toByteArray());
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error saving level:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error saving level:", e);
 		}
 		
 		return Optional.empty();
@@ -83,8 +81,7 @@ public class TileStore implements Serialisable {
 			JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
 			serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
 		} catch (Exception e) {
-			JRogue.getLogger().error("Error loading level - during TileStore unserialisation:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading level - during TileStore unserialisation:", e);
 		}
 	}
 	
@@ -99,13 +96,11 @@ public class TileStore implements Serialisable {
 					TileType type = TileType.fromID(id);
 					t.setType(type);
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level - during TileStore unserialiseTiles:");
-					JRogue.getLogger().error(e);
+					JRogue.getLogger().error("Error loading level - during TileStore unserialiseTiles:", e);
 				}
 			});
 		} catch (IOException e) {
-			JRogue.getLogger().error("IO error loading level - during TileStore unserialiseTiles:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("IO error loading level - during TileStore unserialiseTiles:", e);
 		}
 	}
 	
@@ -125,12 +120,11 @@ public class TileStore implements Serialisable {
 			tileState.unserialise(serialisedTileState);
 			tile.setState(tileState);
 		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown tile state class {}", tileStateClassName);
+			JRogue.getLogger().error("Unknown tile state class {}", tileStateClassName, e);
 		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Tile state class {} has no unserialisation constructor", tileStateClassName);
+			JRogue.getLogger().error("Tile state class {} has no unserialisation constructor", tileStateClassName, e);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading tile state class {}", tileStateClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading tile state class {}", tileStateClassName, e);
 		}
 	}
 	

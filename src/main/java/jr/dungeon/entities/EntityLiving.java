@@ -20,10 +20,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -345,6 +348,23 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
 			getLevel().entityStore.addEntity(entityItem);
 		}
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = super.toStringBuilder()
+			.append("health", String.format("%,d/%,d", health, maxHealth))
+			.append("healingTurns", String.format("%,d", healingTurns))
+			.append("xp", String.format("lvl %,d, %,d xp", experienceLevel, experience))
+			.append("rightHand", rightHand != null ? rightHand.getItem().toStringBuilder() : "none")
+			.append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
+			.append("hasInventory", getContainer().isPresent());
+		
+		knownAspects.forEach((h, a) -> {
+			tsb.append(h.toString(), StringUtils.join(a.stream().map(Class::getSimpleName).collect(Collectors.toList())));
+		});
+		
+		return tsb;
 	}
 	
 	public enum Size {
