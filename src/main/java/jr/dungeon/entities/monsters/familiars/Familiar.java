@@ -19,6 +19,7 @@ import jr.language.transformations.Capitalise;
 import jr.language.transformations.Possessive;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,8 +37,7 @@ public abstract class Familiar extends Monster implements Friendly {
 	
 	private String name;
 	
-	@Getter @Setter
-	private float nutrition = 1400;
+	@Getter @Setter private float nutrition = 400;
 	@Getter private NutritionState lastNutritionState;
 	
 	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor
@@ -156,5 +156,12 @@ public abstract class Familiar extends Monster implements Friendly {
 		age = obj.getInt("age");
 		nutrition = obj.getInt("nutrition");
 		try { name = obj.getString("name"); } catch (JSONException ignored) {}
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("nutrition", nutrition)
+			.append("age", age);
 	}
 }

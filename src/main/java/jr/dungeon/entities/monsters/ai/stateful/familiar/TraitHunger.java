@@ -3,7 +3,6 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
@@ -34,7 +33,7 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 		
 		if (l != p.getLevel()) return;
 		if (getAI().getCurrentState() != null && getAI().getCurrentState().getDuration() > 0) return;
-		if (m.getNutrition() > 500) return;
+		if (m.getNutrition() > 650) return;
 		
 		l.entityStore.getEntities().stream()
 			.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
@@ -46,7 +45,13 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 			.filter(e -> getAI().canReach(e))
 			.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 			.findFirst()
-			.ifPresent(e -> getAI().setCurrentState(new StateApproachComestible(getAI(), 0, e)));
+			.ifPresent(e -> {
+				if (e.getPosition() == m.getPosition()) {
+					getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, e));
+				} else {
+					getAI().setCurrentState(new StateApproachComestible(getAI(), 5, e));
+				}
+			});
 	}
 	
 	@Override

@@ -204,7 +204,7 @@ public class Wishes {
 				d.log(i.getItem().toString());
 			}));
 		});
-
+		
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));

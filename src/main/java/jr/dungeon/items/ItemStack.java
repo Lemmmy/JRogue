@@ -3,8 +3,10 @@ package jr.dungeon.items;
 import jr.dungeon.entities.EntityLiving;
 import jr.language.Noun;
 import jr.language.transformations.Plural;
+import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -66,5 +68,16 @@ public class ItemStack {
 		JSONObject serialisedItem = new JSONObject();
 		item.serialise(serialisedItem);
 		obj.put("item", serialisedItem);
+	}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("item", item.toStringBuilder())
+			.append("count", count);
 	}
 }

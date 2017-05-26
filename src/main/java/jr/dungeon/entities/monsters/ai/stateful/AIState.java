@@ -5,6 +5,7 @@ import jr.dungeon.events.EventListener;
 import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
@@ -26,8 +27,8 @@ import java.util.Set;
 public class AIState<T extends StatefulAI> implements Serialisable, EventListener {
 	private T ai;
 	
-	private int duration = 0;
-	private int turnsTaken = 0;
+	@Setter private int duration = 0;
+	@Setter private int turnsTaken = 0;
 	
 	/**
 	 * @param ai The {@link StatefulAI} that hosts this state.

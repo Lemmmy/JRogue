@@ -20,6 +20,7 @@ import jr.language.LanguageUtils;
 import jr.language.Noun;
 import jr.language.transformations.Capitalise;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -139,5 +140,11 @@ public class EntityItem extends Entity {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("itemStack", itemStack.toStringBuilder());
 	}
 }

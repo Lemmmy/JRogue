@@ -2,6 +2,7 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
+import jr.utils.Utils;
 import org.json.JSONObject;
 
 public class StateApproachComestible extends AIState<FamiliarAI> {
@@ -32,10 +33,16 @@ public class StateApproachComestible extends AIState<FamiliarAI> {
 			return;
 		}
 		
+		if (Utils.chebyshevDistance(targetComestible.getPosition(), getAI().getMonster().getPosition()) <= 1) {
+			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, targetComestible));
+			return;
+		}
+		
 		getAI().moveTowards(targetComestible);
 		
-		if (getAI().getMonster().getPosition() == targetComestible.getPosition()) {
-			getAI().setCurrentState(new StateConsumeComestible(getAI(), 0, targetComestible));
+		if (Utils.chebyshevDistance(targetComestible.getPosition(), getAI().getMonster().getPosition()) <= 1) {
+			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, targetComestible));
+			return;
 		}
 	}
 	
