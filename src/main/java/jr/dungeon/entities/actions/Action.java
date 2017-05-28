@@ -2,6 +2,8 @@ package jr.dungeon.entities.actions;
 
 import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
+import jr.utils.DebugToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * An action which a {@link jr.dungeon.entities.EntityTurnBased turn-based entity} should perform during a turn.
@@ -48,6 +50,15 @@ public abstract class Action {
 		if (callback != null) {
 			callback.onComplete(entity);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE);
 	}
 	
 	/**

@@ -9,7 +9,6 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
@@ -222,27 +221,24 @@ public class HUDComponent extends RendererComponent {
 		updateStatusEffects(player);
 		
 		if (settings.isShowAIDebug()) {
-			showEntityAIStates();
+			showEntityDebugInformation();
 		}
 		
 		healthLastTurn = player.getHealth();
 		energyLastTurn = player.getEnergy();
 	}
 	
-	private void showEntityAIStates() {
+	private void showEntityDebugInformation() {
 		if (!player.isDebugger()) {
 			return;
 		}
 		
 		dungeon.getLevel().entityStore.getEntities().stream()
-			.filter(Monster.class::isInstance)
-			.map(e -> (Monster) e)
-			.filter(m -> m.getAI() != null)
-			.filter(m -> m.getAI().toString() != null)
-			.filter(m -> !m.getAI().toString().isEmpty())
-			.forEach(m -> {
-				int x = m.getX();
-				int y = m.getY();
+			// .filter(e -> e.getPersistence() != null)
+			// .filter(e -> e.getPersistence().optBoolean("showDebug"))
+			.forEach(e -> {
+				int x = e.getX();
+				int y = e.getY();
 				
 				renderer.updateCamera();
 				
@@ -250,16 +246,21 @@ public class HUDComponent extends RendererComponent {
 					new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
 				);
 				
-				Table stateTable = new Table(skin);
-				stateTable.setBackground("blackTransparent");
+				Table outerDebugTable = new Table(skin);
+				outerDebugTable.setBackground("blackTransparent");
 				
-				stateTable.add(new Label(HUDUtils.replaceMarkupString(m.getAI().toString()), skin));
+				Table innerDebugTable = new Table(skin);
+				innerDebugTable.add(new Label(HUDUtils.replaceMarkupString(e.toString()), skin)).pad(4);
+				innerDebugTable.top().left();
 				
-				stage.getRoot().addActor(stateTable);
-				stateTable.pad(4);
-				stateTable.pack();
-				stateTable.setPosition((int) pos.x - (int) (stateTable.getWidth() / 2), (int) pos.y);
-				singleTurnActors.add(stateTable);
+				ScrollPane scrollPane = new ScrollPane(innerDebugTable, skin);
+				scrollPane.setOverscroll(false, false);
+				
+				stage.getRoot().addActor(outerDebugTable);
+				outerDebugTable.add(scrollPane).top().left().grow().maxWidth(300).maxHeight(200);
+				outerDebugTable.pack();
+				outerDebugTable.setPosition((int) pos.x - (int) (innerDebugTable.getWidth() / 2), (int) pos.y);
+				singleTurnActors.add(outerDebugTable);
 			});
 	}
 	

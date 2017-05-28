@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -89,9 +90,7 @@ public class DebugToStringStyle extends ToStringStyle {
 						tsb = (ToStringBuilder) tsbMethod.invoke(value);
 					}
 				} catch (Exception ignored) {
-					buffer.append(value.toString());
-					spaces -= INDENT;
-					resetIndent();
+					appendRegularDetail(buffer, fieldName, value);
 					return;
 				}
 			}
@@ -113,9 +112,7 @@ public class DebugToStringStyle extends ToStringStyle {
 					}
 				}
 			} else {
-				buffer.append(value.toString());
-				spaces -= INDENT;
-				resetIndent();
+				appendRegularDetail(buffer, fieldName, value);
 				return;
 			}
 			
@@ -124,6 +121,21 @@ public class DebugToStringStyle extends ToStringStyle {
 		} else {
 			super.appendDetail(buffer, fieldName, value);
 		}
+	}
+	
+	private void appendRegularDetail(final StringBuffer buffer, final String fieldName, final Object value) {
+		if (value instanceof UUID) {
+			String s = value.toString();
+			
+			buffer.append(s.substring(0, 4))
+				.append("[GREY] .. []")
+				.append(s.substring(s.length() - 4));
+		} else {
+			buffer.append(value.toString());
+		}
+		
+		spaces -= INDENT;
+		resetIndent();
 	}
 	
 	@Override

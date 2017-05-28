@@ -438,7 +438,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	
 	public ToStringBuilder toStringBuilder() {
 		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
-			.append("uuid", uuid.toString())
+			.append("uuid", uuid)
 			.append("level", level.toString())
 			.append("position", getPosition().toString())
 			.append("lastPosition", getLastPosition().toString())
