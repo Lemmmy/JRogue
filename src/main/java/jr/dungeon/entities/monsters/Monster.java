@@ -80,24 +80,36 @@ public abstract class Monster extends EntityLiving {
 		Player p = getDungeon().getPlayer();
 		
 		Noun attacker = LanguageUtils.subject(e.getAttacker());
+		boolean canSeeAttacker = true;
 		
 		if (
 			e.getAttacker().getLevel() != p.getLevel() ||
 			e.getAttacker().getLevel().visibilityStore.isTileInvisible(e.getAttacker().getPosition())
 		) {
 			attacker = Lexicon.it.clone(); // can't see it, so don't know what it is
+			canSeeAttacker = false;
 		}
 		
 		Noun victim = LanguageUtils.object(e.getVictim());
+		boolean canSeeVictim = true;
 		
 		if (
 			e.getVictim().getLevel() != p.getLevel() ||
 			e.getVictim().getLevel().visibilityStore.isTileInvisible(e.getVictim().getPosition())
 		) {
 			victim = Lexicon.it.clone(); // can't see it, so don't know what it is
+			canSeeVictim = false;
 		}
 		
-		if (attacker == Lexicon.it && victim == Lexicon.it) return;
+		if (!canSeeAttacker && !canSeeVictim) {
+			getDungeon().logRandom(
+				"You hear noises in the distance.",
+				"You hear rustling in the distance.",
+				"You hear fighting in the distance."
+			);
+			
+			return;
+		}
 		
 		getDungeon().log(
 			"%s %s %s!",
