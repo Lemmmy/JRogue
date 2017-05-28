@@ -81,6 +81,8 @@ public class Lexicon {
 	public static final Noun yellowDiamond = new Noun("yellow diamond");
 	public static final Noun yellowMold = new Noun("yellow mold");
 	public static final Noun yellowTopaz = new Noun("yellow topaz");
+	
+	public static final Pronoun it = new Pronoun("it");
 	public static final Pronoun you = new Pronoun("you");
 	
 	public static final Verb attack = new Verb("attack");

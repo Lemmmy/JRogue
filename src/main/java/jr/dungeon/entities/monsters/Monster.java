@@ -14,6 +14,7 @@ import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
 import jr.language.LanguageUtils;
@@ -76,16 +77,34 @@ public abstract class Monster extends EntityLiving {
 	
 	@EventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
-		if (e.isAttackerPlayer()) {
-			if (
-				e.getAttacker().getLevel() == getLevel() &&
-				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
-			) {
-				getDungeon().You("kill the %s!", getName((Player) e.getAttacker()));
-			} else {
-				getDungeon().You("kill it!");
-			}
+		Player p = getDungeon().getPlayer();
+		
+		Noun attacker = LanguageUtils.subject(e.getAttacker());
+		
+		if (
+			e.getAttacker().getLevel() != p.getLevel() ||
+			e.getAttacker().getLevel().visibilityStore.isTileInvisible(e.getAttacker().getPosition())
+		) {
+			attacker = Lexicon.it.clone(); // can't see it, so don't know what it is
 		}
+		
+		Noun victim = LanguageUtils.object(e.getVictim());
+		
+		if (
+			e.getVictim().getLevel() != p.getLevel() ||
+			e.getVictim().getLevel().visibilityStore.isTileInvisible(e.getVictim().getPosition())
+		) {
+			victim = Lexicon.it.clone(); // can't see it, so don't know what it is
+		}
+		
+		if (attacker == Lexicon.it && victim == Lexicon.it) return;
+		
+		getDungeon().log(
+			"%s %s %s!",
+			attacker.build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.kill.clone(), e.getAttacker()),
+			victim
+		);
 	}
 	
 	@Override
@@ -171,7 +190,7 @@ public abstract class Monster extends EntityLiving {
 			victim,
 			new DamageSource(this, null, DamageType.CANINE_BITE),
 			getMeleeAttackDamage(victim),
-			(Action.CompleteCallback) e -> logMeleeAttackString(victim)
+			(Action.BeforeRunCallback) e -> logMeleeAttackString(victim)
 		));
 	}
 	

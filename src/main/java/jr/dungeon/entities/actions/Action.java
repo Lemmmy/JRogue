@@ -95,6 +95,13 @@ public abstract class Action {
 		void onComplete(Entity entity);
 	}
 	
+	
+	@FunctionalInterface
+	public interface BeforeRunCallback extends ActionCallback {
+		@Override
+		void beforeRun(Entity entity);
+	}
+	
 	/**
 	 * An {@link ActionCallback} handler that does nothing for convenience. You can also pass <code>null</code> as the
 	 * callback argument in most cases.

@@ -107,8 +107,30 @@ public class Word<T extends Word> {
 	}
 	
 	@Override
-	
 	public String toString() {
 		return build();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) { return true; }
+		if (o == null || getClass() != o.getClass()) { return false; }
+		
+		Word<?> word1 = (Word<?>) o;
+		
+		if (word != null ? !word.equals(word1.word) : word1.word != null) { return false; }
+		if (transformerMap != null ? !transformerMap.equals(word1.transformerMap) : word1.transformerMap != null) {
+			return false;
+		}
+		return instanceTransformers != null ? instanceTransformers.equals(word1.instanceTransformers)
+											: word1.instanceTransformers == null;
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = word != null ? word.hashCode() : 0;
+		result = 31 * result + (transformerMap != null ? transformerMap.hashCode() : 0);
+		result = 31 * result + (instanceTransformers != null ? instanceTransformers.hashCode() : 0);
+		return result;
 	}
 }
