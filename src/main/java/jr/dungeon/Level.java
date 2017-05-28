@@ -36,7 +36,7 @@ public class Level implements Serialisable, Persisting {
 	
 	private long turnCreated;
 	
-	@Setter private String levelName;
+	@Setter private String name;
 	
 	@Getter(AccessLevel.NONE) public final TileStore tileStore;
 	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
@@ -170,6 +170,7 @@ public class Level implements Serialisable, Persisting {
 		obj.put("spawnY", getSpawnY());
 		obj.put("climate", getClimate().name());
 		obj.put("turnCreated", turnCreated);
+		obj.put("name", name);
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
@@ -191,6 +192,7 @@ public class Level implements Serialisable, Persisting {
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
 			
 			turnCreated = obj.optInt("turnCreated", 0);
+			name = obj.optString("name", "Dungeon");
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
@@ -233,6 +235,6 @@ public class Level implements Serialisable, Persisting {
 	
 	@Override
 	public String toString() {
-		return String.format("%s %,d", levelName, depth);
+		return String.format("%s %,d", name, depth);
 	}
 }

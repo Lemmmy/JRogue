@@ -224,7 +224,9 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	public ToStringBuilder toStringBuilder() {
 		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
 			.append("age", String.format("%,d (should age: %s)", age, shouldAge() ? "yes" : "no"))
-			.append("visualID", visualID);
+			.append("visualID", visualID)
+			.append("appearance", getAppearance().name().toLowerCase().replace("appearance_", ""))
+			.append("category", getCategory().name().toLowerCase());
 		
 		getAspects().forEach((ac, a) -> tsb.append(a.toStringBuilder()));
 		

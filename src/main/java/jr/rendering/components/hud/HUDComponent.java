@@ -15,6 +15,7 @@ import jr.dungeon.events.*;
 import jr.language.transformations.Capitalise;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
+import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.ui.skin.UISkin;
@@ -51,6 +52,7 @@ public class HUDComponent extends RendererComponent {
 	@Getter	private List<PopupWindow> windows = new ArrayList<>();
 	
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
+	private List<Actor> entityDebugActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	public HUDComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
@@ -209,6 +211,8 @@ public class HUDComponent extends RendererComponent {
 	
 	@EventHandler
 	private void onBeforeTurn(BeforeTurnEvent e) {
+		entityDebugActors.forEach(Actor::remove);
+		entityDebugActors.clear();
 		singleTurnActors.forEach(Actor::remove);
 		singleTurnActors.clear();
 	}
@@ -228,14 +232,24 @@ public class HUDComponent extends RendererComponent {
 		energyLastTurn = player.getEnergy();
 	}
 	
+	@EventHandler
+	private void onEntityDebugUpdated(EntityDebugUpdatedEvent e) {
+		entityDebugActors.forEach(Actor::remove);
+		entityDebugActors.clear();
+		showEntityDebugInformation();
+	}
+	
 	private void showEntityDebugInformation() {
 		if (!player.isDebugger()) {
 			return;
 		}
 		
+		int w = dungeon.getLevel().getWidth();
+		
 		dungeon.getLevel().entityStore.getEntities().stream()
-			// .filter(e -> e.getPersistence() != null)
-			// .filter(e -> e.getPersistence().optBoolean("showDebug"))
+			.filter(e -> e.getPersistence() != null)
+			.filter(e -> e.getPersistence().optBoolean("showDebug"))
+			.sorted((e1, e2) -> Integer.compare(e1.getY() * w + e1.getX(), e2.getY() * w + e1.getY()))
 			.forEach(e -> {
 				int x = e.getX();
 				int y = e.getY();
@@ -261,6 +275,7 @@ public class HUDComponent extends RendererComponent {
 				outerDebugTable.pack();
 				outerDebugTable.setPosition((int) pos.x - (int) (innerDebugTable.getWidth() / 2), (int) pos.y);
 				singleTurnActors.add(outerDebugTable);
+				entityDebugActors.add(outerDebugTable);
 			});
 	}
 	

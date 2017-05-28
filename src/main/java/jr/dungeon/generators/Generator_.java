@@ -14,7 +14,7 @@ public class Generator_ extends GeneratorStandard {
 	
 	@Override
 	public boolean generate() {
-		level.setLevelName("________");
+		level.setName("________");
 		
 		return super.generate();
 	}

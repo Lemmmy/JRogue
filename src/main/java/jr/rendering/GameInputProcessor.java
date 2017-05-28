@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.utils.Point;
@@ -15,6 +17,7 @@ import lombok.val;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -146,10 +149,10 @@ public class GameInputProcessor implements InputProcessor {
 		
 		if (
 			pos.getX() < 0 ||
-				pos.getY() < 0 ||
-				pos.getX() > dungeon.getLevel().getWidth() ||
-				pos.getY() > dungeon.getLevel().getHeight()
-			) {
+			pos.getY() < 0 ||
+			pos.getX() > dungeon.getLevel().getWidth() ||
+			pos.getY() > dungeon.getLevel().getHeight()
+		) {
 			return false;
 		}
 		
@@ -161,6 +164,43 @@ public class GameInputProcessor implements InputProcessor {
 			} else {
 				dungeon.getPlayer().defaultVisitors.travelPathfind(pos.getX(), pos.getY());
 				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean handleDebugClicks(Point pos, int button) {
+		if (renderer.isTurnLerping()) {
+			return false;
+		}
+		
+		if (renderer.getHudComponent().getWindows().size() > 0) {
+			return false;
+		}
+		
+		if (
+			pos.getX() < 0 ||
+			pos.getY() < 0 ||
+			pos.getX() > dungeon.getLevel().getWidth() ||
+			pos.getY() > dungeon.getLevel().getHeight()
+		) {
+			return false;
+		}
+		
+		if (button == Input.Buttons.RIGHT) {
+			if (dungeon.getPlayer().isDebugger()) {
+				AtomicBoolean fucked = new AtomicBoolean(false);
+				
+				dungeon.getLevel().entityStore.getEntitiesAt(pos).stream()
+					.findFirst()
+					.ifPresent(e -> {
+						e.getPersistence().put("showDebug", !e.getPersistence().optBoolean("showDebug"));
+						fucked.set(true);
+						dungeon.eventSystem.triggerEvent(new EntityDebugUpdatedEvent());
+					});
+				
+				return fucked.get();
 			}
 		}
 		
@@ -230,7 +270,9 @@ public class GameInputProcessor implements InputProcessor {
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (!mouseMoved) {
 			mouseMoved = false;
-			return handleWorldClicks(screenToWorldPos(screenX, screenY), button);
+			
+			return handleDebugClicks(screenToWorldPos(screenX, screenY), button) ||
+				   handleWorldClicks(screenToWorldPos(screenX, screenY), button);
 		}
 		
 		mouseMoved = false;

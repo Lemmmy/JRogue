@@ -445,7 +445,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 			.append("lastSeenPosition", getLastSeenPosition().toString())
 			.append("isBeingRemoved", beingRemoved)
 			.append("visualID", visualID)
-			.append("appearance", getAppearance().name().toLowerCase());
+			.append("appearance", getAppearance().name().toLowerCase().replace("appearance_", ""));
 		
 		statusEffects.forEach(s -> tsb.append(s.toStringBuilder()));
 		
