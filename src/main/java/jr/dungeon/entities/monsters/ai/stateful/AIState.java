@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,7 +78,9 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		
 		try {
 			Class<? extends AIState> stateClass = (Class<? extends AIState>) Class.forName(stateClassName);
-			Constructor<? extends AIState> stateConstructor = stateClass.getConstructor(StatefulAI.class, int.class);
+			Class<? extends StatefulAI> stateGenericClass = (Class<? extends StatefulAI>) ((ParameterizedType)
+				stateClass.getGenericSuperclass()).getActualTypeArguments()[0];
+			Constructor<? extends AIState> stateConstructor = stateClass.getConstructor(stateGenericClass, int.class);
 			
 			int duration = serialisedState.optInt("duration");
 			

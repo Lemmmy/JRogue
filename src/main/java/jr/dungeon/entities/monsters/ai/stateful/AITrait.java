@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +56,9 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 	public static AITrait createFromJSON(String traitClassName, JSONObject serialisedTrait, StatefulAI ai) {
 		try {
 			Class<? extends AITrait> traitClass = (Class<? extends AITrait>) Class.forName(traitClassName);
-			Constructor<? extends AITrait> traitConstructor = traitClass.getConstructor(StatefulAI.class);
+			Class<? extends StatefulAI> traitGenericClass = (Class<? extends StatefulAI>) ((ParameterizedType)
+				traitClass.getGenericSuperclass()).getActualTypeArguments()[0];
+			Constructor<? extends AITrait> traitConstructor = traitClass.getConstructor(traitGenericClass);
 			
 			AITrait trait = traitConstructor.newInstance(ai);
 			trait.unserialise(serialisedTrait);

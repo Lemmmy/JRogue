@@ -14,8 +14,11 @@ public class FamiliarAI extends StatefulAI {
 		
 		setShouldTargetPlayer(false);
 		
-		getPersistence().put("lurkRadius", 4);
-		getPersistence().put("lurkTarget", monster.getDungeon().getPlayer().getUUID().toString());
+		getPersistence().putOnce("lurkRadius", 4);
+		
+		if (monster.getDungeon().getPlayer() != null) {
+			getPersistence().putOnce("lurkTarget", monster.getDungeon().getPlayer().getUUID().toString());
+		}
 		
 		removeTrait(TraitIntrinsicFear.class);
 		removeTrait(TraitExtrinsicFear.class);

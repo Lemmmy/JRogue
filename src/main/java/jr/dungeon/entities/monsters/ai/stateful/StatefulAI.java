@@ -216,7 +216,8 @@ public class StatefulAI extends AI {
 	@Override
 	public ToStringBuilder toStringBuilder() {
 		ToStringBuilder tsb = super.toStringBuilder()
-			.append(currentState == null ? "no state" : currentState.toStringBuilder())
+			.append("defaultState", defaultState == null ? "no state" : defaultState.toStringBuilder())
+			.append("currentState", currentState == null ? "no state" : currentState.toStringBuilder())
 			.append("suppressTurns", suppressTurns)
 			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
