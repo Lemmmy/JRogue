@@ -168,7 +168,7 @@ public abstract class Monster extends EntityLiving {
 		if (!canMeleeAttack()) return;
 		
 		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
+			victim,
 			new DamageSource(this, null, DamageType.CANINE_BITE),
 			getMeleeAttackDamage(victim),
 			(Action.CompleteCallback) e -> logMeleeAttackString(victim)
