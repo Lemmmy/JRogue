@@ -61,7 +61,7 @@ public class Cat extends Familiar {
 	
 	@Override
 	public int getBaseArmourClass() {
-		return 0;
+		return 6 - getAge();
 	}
 	
 	@Override
