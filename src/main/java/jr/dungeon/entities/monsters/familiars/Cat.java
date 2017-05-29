@@ -31,7 +31,7 @@ public class Cat extends Familiar {
 	
 	@Override
 	public int getWeight() {
-		return 100 + (getAge() * 50);
+		return 100 + getAge() * 50;
 	}
 	
 	@Override
@@ -81,6 +81,6 @@ public class Cat extends Familiar {
 	
 	@Override
 	public Verb getMeleeAttackVerb(EntityLiving victim) {
-		return Lexicon.bite.clone();
+		return RandomUtils.randomFrom(Lexicon.swipe, Lexicon.bite).clone();
 	}
 }
