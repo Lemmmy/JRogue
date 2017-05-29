@@ -212,4 +212,6 @@ public abstract class TileRenderer {
 	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
 		return true;
 	}
+	
+	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {}
 }

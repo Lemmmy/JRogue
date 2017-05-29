@@ -4,6 +4,7 @@ import jr.dungeon.Level;
 import jr.dungeon.generators.rooms.features.FeatureSewerDrain;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Colour;
 import jr.utils.OpenSimplexNoise;
 
 public class GeneratorSewer extends GeneratorRooms {
@@ -79,7 +80,6 @@ public class GeneratorSewer extends GeneratorRooms {
 		return TileType.TILE_SEWER_WALL;
 	}
 	
-	@Override
 	public TileType getTorchTileType() {
 		return TileType.TILE_SEWER_WALL;
 	}

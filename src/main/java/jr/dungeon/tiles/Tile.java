@@ -21,7 +21,7 @@ public class Tile {
 	
 	private Colour lightColour;
 	private int lightIntensity;
-	private int absorb;
+	private int lightAbsorb;
 	
 	private Level level;
 
@@ -40,9 +40,9 @@ public class Tile {
 	}
 	
 	public void resetLight() {
-		lightColour = type.getLightColour();
-		lightIntensity = type.getLightIntensity();
-		absorb = type.getAbsorb();
+		lightColour = state != null && state.getLightColour() != null ? state.getLightColour() : type.getLightColour();
+		lightIntensity = state != null && state.getLightIntensity() != -1 ? state.getLightIntensity() : type.getLightIntensity();
+		lightAbsorb = state != null && state.getLightAbsorb() != -1 ? state.getLightAbsorb() : type.getLightAbsorb();
 		
 		if (lightColour == null) {
 			lightColour = level.lightStore.getAmbientLight();

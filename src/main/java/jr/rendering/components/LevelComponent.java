@@ -132,6 +132,8 @@ public class LevelComponent extends RendererComponent {
 				
 				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
 				
+				renderer.applyParticleChanges(dungeon, x, y, effect);
+				
 				effect.setPosition(
 					x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(),
 					y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset()
