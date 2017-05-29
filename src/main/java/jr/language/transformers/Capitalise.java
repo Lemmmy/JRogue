@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;

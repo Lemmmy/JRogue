@@ -5,8 +5,8 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.language.transformations.Article;
-import jr.language.transformations.Possessive;
+import jr.language.transformers.Article;
+import jr.language.transformers.Possessive;
 
 public class LanguageUtils {
 	public static Noun subject(Entity entity) {
@@ -29,7 +29,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun object(EntityLiving observer, Item item) {
-		if (item.isUncountable()) {
+		if (item.getName(observer).isUncountable()) {
 			return item.getName(observer).clone();
 		} else {
 			return Article.addTheIfPossible(item.getName(observer).clone(), false);
@@ -37,7 +37,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun object(EntityLiving observer, ItemStack itemStack) {
-		if (itemStack.getItem().isUncountable()) {
+		if (itemStack.getItem().getName(observer).isUncountable()) {
 			return itemStack.getName(observer).clone();
 		} else {
 			return Article.addTheIfPossible(itemStack.getName(observer).clone(), false);
@@ -51,7 +51,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun anObject(EntityLiving observer, Item item) {
-		if (item.isUncountable()) {
+		if (item.getName(observer).isUncountable()) {
 			return item.getName(observer).clone();
 		} else {
 			return Article.addAIfPossible(item.getName(observer).clone());
@@ -59,7 +59,7 @@ public class LanguageUtils {
 	}
 	
 	public static Noun anObject(EntityLiving observer, ItemStack itemStack) {
-		if (itemStack.getItem().isUncountable()) {
+		if (itemStack.getItem().getName(observer).isUncountable()) {
 			return itemStack.getName(observer).clone();
 		} else {
 			return Article.addAIfPossible(itemStack.getName(observer).clone());
@@ -78,5 +78,10 @@ public class LanguageUtils {
 	
 	public static Verb autoTense(Verb verb, Entity subject) {
 		return verb.setPerson(subject instanceof Player ? Person.SECOND_SINGULAR : Person.THIRD_SINGULAR);
+	}
+	
+	public static Verb autoTense(EntityLiving observer, Verb verb, ItemStack subject) {
+		return verb.setPerson(subject.getCount() > 1 && !subject.getName(observer).isUncountable() ?
+							  Person.THIRD_PLURAL : Person.THIRD_SINGULAR);
 	}
 }

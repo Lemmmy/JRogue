@@ -2,7 +2,7 @@ package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
 import jr.language.Noun;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;

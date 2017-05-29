@@ -6,7 +6,7 @@ import jr.dungeon.entities.events.EntityAttackMissedEvent;
 import jr.dungeon.entities.player.Player;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 
 /**
  * Melee attack action.

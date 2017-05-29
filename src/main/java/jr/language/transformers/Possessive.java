@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 public class Possessive implements TransformerType {
 	public static final Transformer your = (s, m) -> "your " + s;

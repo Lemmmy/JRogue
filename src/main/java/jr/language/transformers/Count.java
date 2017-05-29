@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 public class Count implements TransformerType {
 	public static Transformer build(int count) {

@@ -9,7 +9,6 @@ import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
 import jr.dungeon.items.Item;
-import jr.language.transformations.Capitalise;
 import jr.rendering.items.ItemMap;
 import jr.rendering.items.ItemRenderer;
 import lombok.val;

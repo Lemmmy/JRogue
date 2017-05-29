@@ -7,7 +7,7 @@ import jr.dungeon.entities.player.Player;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 
 public class EntityArrow extends EntityProjectile {

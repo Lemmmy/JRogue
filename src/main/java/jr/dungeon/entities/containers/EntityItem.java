@@ -18,7 +18,7 @@ import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;

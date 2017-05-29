@@ -13,7 +13,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 

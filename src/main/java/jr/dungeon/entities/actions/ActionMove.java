@@ -9,7 +9,9 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.tiles.Tile;
 import jr.language.LanguageUtils;
-import jr.language.transformations.Capitalise;
+import jr.language.Lexicon;
+import jr.language.Verb;
+import jr.language.transformers.Capitalise;
 import jr.utils.Point;
 
 import java.util.List;
@@ -93,12 +95,14 @@ public class ActionMove extends Action {
 		if (entity instanceof Player) {
 			if (items.size() == 1) {
 				ItemStack stack = items.get(0).getItemStack();
-				Item item = stack.getItem();
-				String verb = !item.isUncountable() && stack.getCount() > 1 ? "are" : "is";
 				
-				msg.log("There %s [YELLOW]%s[] here.", verb, stack.getName((EntityLiving) entity));
+				msg.log(
+					"There %s [YELLOW]%s[] here.",
+					LanguageUtils.autoTense((Player) entity, Lexicon.be.clone(), stack),
+					LanguageUtils.anObject((Player) entity, stack)
+				);
 			} else if (items.size() > 1) {
-				msg.log("There are [YELLOW]%,d[] items here.", items.size());
+				msg.log("There are [YELLOW]%d[] items here.", items.size());
 			}
 		}
 		

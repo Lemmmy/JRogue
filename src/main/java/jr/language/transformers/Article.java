@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 import jr.language.Noun;
 import jr.language.Pronoun;

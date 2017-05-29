@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 import jr.language.Noun;
 
@@ -41,11 +41,7 @@ public class Plural implements TransformerType {
 	};
 	
 	public static Noun addCount(Noun n, int count) {
-		return addCount(n, count, false);
-	}
-	
-	public static Noun addCount(Noun n, int count, boolean isNonCountable) {
-		if (isNonCountable) {
+		if (n.isUncountable()) {
 			n.addInstanceTransformer(Count.class, Count.build(count));
 		} else {
 			if (count == 1) {

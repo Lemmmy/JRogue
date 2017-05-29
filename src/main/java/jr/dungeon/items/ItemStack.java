@@ -2,7 +2,7 @@ package jr.dungeon.items;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.language.Noun;
-import jr.language.transformations.Plural;
+import jr.language.transformers.Plural;
 import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class ItemStack {
 	}
 	
 	public Noun getName(EntityLiving observer) {
-		return Plural.addCount(item.getName(observer), count, item.isUncountable());
+		return Plural.addCount(item.getName(observer), count);
 	}
 	
 	public ItemAppearance getAppearance() {

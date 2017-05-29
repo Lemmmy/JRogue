@@ -1,9 +1,9 @@
 package jr.language;
 
 import jr.ErrorHandler;
-import jr.language.transformations.Transformer;
-import jr.language.transformations.TransformerType;
-import jr.language.transformations.Plural;
+import jr.language.transformers.Transformer;
+import jr.language.transformers.TransformerType;
+import jr.language.transformers.Plural;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

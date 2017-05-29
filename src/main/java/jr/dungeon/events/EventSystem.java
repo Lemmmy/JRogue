@@ -10,8 +10,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static jr.language.transformations.Plural.s;
-
 public class EventSystem {
 	private Dungeon dungeon;
 	

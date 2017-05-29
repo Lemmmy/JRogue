@@ -9,7 +9,7 @@ import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 

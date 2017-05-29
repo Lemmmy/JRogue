@@ -11,7 +11,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import org.json.JSONObject;
 
 public class TraitAvoidCursed extends AITrait<FamiliarAI> {

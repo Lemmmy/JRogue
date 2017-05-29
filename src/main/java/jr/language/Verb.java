@@ -1,7 +1,7 @@
 package jr.language;
 
-import jr.language.transformations.Plural;
-import jr.language.transformations.Transformer;
+import jr.language.transformers.Plural;
+import jr.language.transformers.Transformer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -56,7 +56,10 @@ public class Verb extends Word<Verb> {
 	
 	@Override
 	public Verb clone() {
-		return super.clone().setPerson(person).setTense(tense);
+		return super.clone()
+			.setPerson(person)
+			.setTense(tense)
+			.setConjugationRules(new HashMap<>(conjugationRules));
 	}
 	
 	@Data

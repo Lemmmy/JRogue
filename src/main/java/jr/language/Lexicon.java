@@ -35,7 +35,7 @@ public class Lexicon {
 	public static final Noun glassBottle = new Noun("glass bottle");
 	public static final Noun goblin = new Noun("goblin");
 	public static final Noun goblinZombie = new Noun("goblin zombie");
-	public static final Noun gold = new Noun("gold");
+	public static final Noun gold = new Noun("gold").setUncountable(true);
 	public static final Noun goldenSapphire = new Noun("golden sapphire");
 	public static final Noun gravestone = new Noun("gravestone");
 	public static final Noun greenAmethyst = new Noun("green amethyst");
@@ -87,6 +87,11 @@ public class Lexicon {
 	
 	public static final Verb attack = new Verb("attack");
 	public static final Verb bash = new Verb("bash");
+	public static final Verb be = new Verb("be")
+		.addConjugationRule(Person.THIRD_SINGULAR, Tense.SIMPLE_PRESENT, (s, m) -> "is")
+		.addConjugationRule(Person.THIRD_SINGULAR, Tense.PRESENT_PARTICIPLE, (s, m) -> "is")
+		.addConjugationRule(Person.THIRD_PLURAL, Tense.SIMPLE_PRESENT, (s, m) -> "are")
+		.addConjugationRule(Person.THIRD_PLURAL, Tense.PRESENT_PARTICIPLE, (s, m) -> "are");
 	public static final Verb bite = new Verb("bite");
 	public static final Verb drop = new Verb("drop");
 	public static final Verb headbutt = new Verb("headbutt");

@@ -12,7 +12,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.events.EntityDebugUpdatedEvent;

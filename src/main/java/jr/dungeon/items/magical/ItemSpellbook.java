@@ -17,7 +17,7 @@ import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;

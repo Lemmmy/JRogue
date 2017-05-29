@@ -10,7 +10,7 @@ import jr.dungeon.items.Wieldable;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.language.Noun;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;

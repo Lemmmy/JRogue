@@ -8,11 +8,10 @@ import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.identity.AspectGemValue;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 public class ItemGem extends Item {

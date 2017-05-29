@@ -10,7 +10,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.language.LanguageUtils;
 import jr.language.Verb;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 
 public abstract class ItemWeaponMelee extends ItemWeapon {

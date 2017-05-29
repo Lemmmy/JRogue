@@ -3,7 +3,7 @@ package jr.dungeon.items.identity;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.language.Noun;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 
 public class AspectEatenState extends Aspect {
 	@Override

@@ -1,4 +1,4 @@
-package jr.language.transformations;
+package jr.language.transformers;
 
 public interface TransformerType {
 }

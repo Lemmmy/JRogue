@@ -46,10 +46,6 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		return true;
 	}
 	
-	public boolean isUncountable() {
-		return false;
-	}
-	
 	public abstract Noun getName(EntityLiving observer);
 	
 	public Noun getTransformedName(EntityLiving observer) {

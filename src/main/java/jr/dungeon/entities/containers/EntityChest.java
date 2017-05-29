@@ -15,7 +15,7 @@ import jr.dungeon.items.Shatterable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.json.JSONObject;

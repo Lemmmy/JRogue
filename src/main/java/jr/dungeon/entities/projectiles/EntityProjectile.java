@@ -11,7 +11,7 @@ import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;

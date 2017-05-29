@@ -20,7 +20,7 @@ import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.language.LanguageUtils;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.rendering.GameAdapter;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.ui.partials.ContainerPartial;

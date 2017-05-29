@@ -12,7 +12,7 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.dungeon.tiles.TileType;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;

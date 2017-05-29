@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
-import jr.language.transformations.Capitalise;
+import jr.language.transformers.Capitalise;
 import jr.rendering.ui.windows.Window;
 
 public class SpellPartial extends Table {

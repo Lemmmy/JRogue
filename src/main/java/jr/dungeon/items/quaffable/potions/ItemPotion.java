@@ -8,11 +8,10 @@ import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.transformations.TransformerType;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
