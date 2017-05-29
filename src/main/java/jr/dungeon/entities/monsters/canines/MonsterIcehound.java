@@ -6,6 +6,8 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.Colour;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Icehound" : "icehound";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.icehound.clone();
 	}
 	
 	@Override

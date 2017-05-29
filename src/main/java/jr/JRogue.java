@@ -132,6 +132,8 @@ public class JRogue {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException ignored) {}
 		
+		AnsiConsole.systemInstall();
+		
 		System.setProperty(
 			"jrogue.logs",
 			Paths.get(OperatingSystem.get().getAppDataDir().toString(), "jrogue", "logs").toString()

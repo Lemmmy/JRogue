@@ -9,6 +9,9 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -28,8 +31,8 @@ public class EntityGravestone extends Entity implements Readable {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Gravestone" : "gravestone";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.gravestone.clone();
 	}
 	
 	@Override
@@ -45,7 +48,7 @@ public class EntityGravestone extends Entity implements Readable {
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
 		}
 	}
 	

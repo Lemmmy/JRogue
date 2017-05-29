@@ -4,15 +4,17 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class ItemGold extends Item {
-	public boolean isis() {
+	public boolean isUncountable() {
 		return true;
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		return requiresCapitalisation ? "Gold" : "gold";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.gold.clone();
 	}
 	
 	@Override

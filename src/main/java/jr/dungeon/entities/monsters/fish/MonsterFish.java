@@ -9,6 +9,8 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.events.EventHandler;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -29,8 +31,8 @@ public class MonsterFish extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Fish" : "fish";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.fish.clone();
 	}
 	
 	@Override
@@ -74,7 +76,7 @@ public class MonsterFish extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 50;
 	}
 	

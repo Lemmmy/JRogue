@@ -38,7 +38,7 @@ public class GeneratorIce extends GeneratorRooms {
 	
 	@Override
 	public boolean generate() {
-		level.setLevelName("Icy Dungeon");
+		level.setName("Icy Dungeon");
 		
 		return super.generate() && verify();
 		

@@ -6,10 +6,13 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
@@ -26,25 +29,14 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
+	public Noun getName(EntityLiving observer) {
 		if (empty) {
-			s += requiresCapitalisation ? "Glass bottle" : "glass bottle";
-			
-			return s;
+			return Lexicon.glassBottle.clone();
 		} else {
-			String colourName = requiresCapitalisation ?
-							 StringUtils.capitalize(getPotionColour().getName()) :
-							 getPotionColour().getName();
+			String colourName = getPotionColour().getName();
 			
-			s += colourName + " potion" + (plural ? "s" : "");
-			
-			return s;
+			return Lexicon.potion.clone()
+				.addInstanceTransformer(ColourTransformer.class, (s, m) -> colourName + " " + s);
 		}
 	}
 	
@@ -124,4 +116,16 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 		result = 31 * result + (potency != +0.0f ? Float.floatToIntBits(potency) : 0);
 		return result;
 	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("empty", empty)
+			.append("potency", potency)
+			.append("bottleType", bottleType.name().toLowerCase())
+			.append("potionType", bottleType.name().toLowerCase())
+			.append("potionColour", potionColour.name().toLowerCase());
+	}
+	
+	public class ColourTransformer implements TransformerType {}
 }

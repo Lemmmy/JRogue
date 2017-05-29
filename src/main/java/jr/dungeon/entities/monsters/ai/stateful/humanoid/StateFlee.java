@@ -5,7 +5,6 @@ import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.val;
@@ -14,7 +13,7 @@ import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
-public class StateFlee extends AIState {
+public class StateFlee extends AIState<StatefulAI> {
 	private Point dest;
 	
 	public StateFlee(StatefulAI ai, int duration) {
@@ -45,14 +44,11 @@ public class StateFlee extends AIState {
 		val safePoint = getAI().getSafePoint();
 		Monster m = getAI().getMonster();
 		
-		if (safePoint.isPresent()) {
-			return safePoint.get();
-		} else {
-			return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		return safePoint.orElseGet(() -> RandomUtils
+			.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
 				.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 				.map(Tile::getPosition)
-				.collect(Collectors.toList()));
-		}
+				.collect(Collectors.toList())));
 	}
 	
 	@Override
@@ -75,11 +71,8 @@ public class StateFlee extends AIState {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("duration", getDuration())
-			.append("turnsTaken", getTurnsTaken())
-			.append("dest", dest)
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("dest", dest);
 	}
 }

@@ -5,23 +5,14 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-			
-		if (requiresCapitalisation) {
-			s += plural ? "Staves" : "Staff";
-		} else {
-			s += plural ? "staves" : "staff";
-		}
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.staff.clone();
 	}
 	
 	@Override
@@ -63,8 +54,8 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public void onHit(EntityLiving attacker, EntityLiving victim) {
-		hitLog("You bash the %s!", "The %s bashes you!", "The %s bashes the %s!", attacker, victim);
+	public Verb getMeleeAttackVerb() {
+		return Lexicon.bash.clone();
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package jr.dungeon;
 
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
@@ -73,8 +74,12 @@ public class EntityStore implements Serialisable {
 	
 	@Override
 	public void unserialise(JSONObject obj) {
-		JSONArray serialisedEntities = obj.getJSONArray("entities");
-		serialisedEntities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
+		try {
+			JSONArray serialisedEntities = obj.getJSONArray("entities");
+			serialisedEntities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
+		} catch (Exception e) {
+			JRogue.getLogger().error("Error loading level - during EntityStore unserialisation:", e);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -82,6 +87,8 @@ public class EntityStore implements Serialisable {
 		String entityClassName = serialisedEntity.getString("class");
 		int x = serialisedEntity.getInt("x");
 		int y = serialisedEntity.getInt("y");
+		
+		Entity entity = null;
 		
 		try {
 			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(entityClassName);
@@ -92,7 +99,7 @@ public class EntityStore implements Serialisable {
 				int.class
 			);
 			
-			Entity entity = entityConstructor.newInstance(dungeon, level, x, y);
+			entity = entityConstructor.newInstance(dungeon, level, x, y);
 			entity.unserialise(serialisedEntity);
 			addEntity(entity);
 			
@@ -105,6 +112,15 @@ public class EntityStore implements Serialisable {
 			ErrorHandler.error("Entity class has no unserialisation constructor " + entityClassName, e);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
 			ErrorHandler.error("Error loading entity class " + entityClassName, e);
+		} catch (Exception e) {
+			if (entity != null) {
+				JRogue.getLogger().error(
+					"Error loading entity in level " + level.toString() + " - entity information:\n" + entity.toString(),
+					e
+				);
+			} else {
+				JRogue.getLogger().error("Error loading entity:", e);
+			}
 		}
 	}
 	
@@ -280,5 +296,9 @@ public class EntityStore implements Serialisable {
 	public boolean removeEntity(Entity entity) {
 		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
+	}
+	
+	public boolean hasEntity(Entity entity) {
+		return entities.containsValue(entity);
 	}
 }

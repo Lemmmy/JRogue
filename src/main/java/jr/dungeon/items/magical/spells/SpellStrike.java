@@ -6,13 +6,15 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.projectiles.EntityStrike;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 
 public class SpellStrike extends Spell {
 	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return (requiresCapitalisation ? "S" : "s") + "trike";
+	public Noun getName() {
+		return Lexicon.strike.clone();
 	}
 	
 	@Override

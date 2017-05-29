@@ -5,19 +5,13 @@ import jr.dungeon.entities.projectiles.EntityArrow;
 import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class ItemArrow extends ItemProjectile {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += (requiresCapitalisation ? "A" : "a") + "rrow" + (plural ? "s" : "");
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.arrow.clone();
 	}
 	
 	@Override

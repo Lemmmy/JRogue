@@ -8,9 +8,13 @@ import jr.dungeon.entities.events.*;
 import jr.dungeon.events.Event;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.language.Noun;
+import jr.language.transformers.Possessive;
+import jr.language.transformers.Transformer;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -88,7 +92,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 * {@link jr.dungeon.EntityStore} and placing it in the new Level's one. This value is not automatically synced
 	 * with {@link jr.dungeon.EntityStore EntityStores}.
 	 */
-	@Setter private Level level;
+	private Level level;
 	
 	/**
 	 * List of extrinsic {@link StatusEffect status effects} that the Entity has. These are typically temporary
@@ -141,10 +145,17 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 
 	/**
 	 * @param observer The entity "reading" the name. Used, for example, to hide aspects the entity does not know about.
-	 * @param requiresCapitalisation Whether the name should have its first letter capitalised.
 	 * @return The name of this entity.
 	 */
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation);
+	public abstract Noun getName(EntityLiving observer);
+	
+	public Transformer getPossessiveTransformer(EntityLiving observer, Object... transformers) {
+		if (observer == this) {
+			return Possessive.your;
+		} else {
+			return Possessive.build(getName(observer).build(transformers));
+		}
+	}
 
 	/**
 	 * @return The appearance of this entity. Determines which sprite is rendered.
@@ -179,6 +190,42 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		setY(y);
 		
 		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+	}
+	
+	/**
+	 * Sets the Entity's X and Y coordinates in the {@link Level}, resets the last position,
+	 * and triggers an {@link EntityMovedEvent},
+	 *
+	 * @param x The Entity's new X position.
+	 * @param y The Entity's new Y position.
+	 */
+	public void setPositionFresh(int x, int y) {
+		setLastX(x);
+		setLastY(y);
+		setX(x);
+		setY(y);
+		
+		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, x, y, x, y));
+	}
+	
+	/**
+	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates,
+	 * and triggers an {@link EntityMovedEvent},
+	 *
+	 * @param point The entity's new position.
+	 */
+	public void setPosition(Point point) {
+		setPosition(point.getX(), point.getY());
+	}
+	
+	/**
+	 * Sets the Entity's position in the {@link Level}, resets the last position, and triggers an
+	 * {@link EntityMovedEvent},
+	 *
+	 * @param point The entity's new position.
+	 */
+	public void setPositionFresh(Point point) {
+		setPositionFresh(point.getX(), point.getY());
 	}
 	
 	/**
@@ -299,8 +346,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 				statusEffectClassName
 			);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName, e);
 		}
 	}
 
@@ -373,5 +419,36 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 	 */
 	public Set<EventListener> getSubListeners() {
 		return new HashSet<>(statusEffects);
+	}
+	
+	public void setLevel(Level level) {
+		this.level.entityStore.removeEntity(this);
+		this.level.entityStore.processEntityQueues(false);
+		
+		this.level = level;
+		
+		level.entityStore.addEntity(this);
+		level.entityStore.processEntityQueues(false);
+	}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("uuid", uuid)
+			.append("level", level.toString())
+			.append("position", getPosition().toString())
+			.append("lastPosition", getLastPosition().toString())
+			.append("lastSeenPosition", getLastSeenPosition().toString())
+			.append("isBeingRemoved", beingRemoved)
+			.append("visualID", visualID)
+			.append("appearance", getAppearance().name().toLowerCase().replace("appearance_", ""));
+		
+		statusEffects.forEach(s -> tsb.append(s.toStringBuilder()));
+		
+		return tsb;
 	}
 }

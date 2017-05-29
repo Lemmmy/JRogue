@@ -1,7 +1,9 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.Messenger;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
+import jr.utils.DebugToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * An action which a {@link jr.dungeon.entities.EntityTurnBased turn-based entity} should perform during a turn.
@@ -50,6 +52,15 @@ public abstract class Action {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE);
+	}
+	
 	/**
 	 * Custom action callback handler. Use this to perform anything when something happens related to the action.
 	 */
@@ -82,6 +93,13 @@ public abstract class Action {
 	public interface CompleteCallback extends ActionCallback {
 		@Override
 		void onComplete(Entity entity);
+	}
+	
+	
+	@FunctionalInterface
+	public interface BeforeRunCallback extends ActionCallback {
+		@Override
+		void beforeRun(Entity entity);
 	}
 	
 	/**

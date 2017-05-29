@@ -6,18 +6,19 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.language.Noun;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Persisting;
 import jr.utils.RandomUtils;
 import jr.utils.Serialisable;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Getter
@@ -45,31 +46,21 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		return true;
 	}
 	
-	public boolean isis() {
-		return false;
+	public abstract Noun getName(EntityLiving observer);
+	
+	public Noun getTransformedName(EntityLiving observer) {
+		Noun name = getName(observer);
+		applyNameTransformers(observer, name);
+		return name;
 	}
 	
-	public boolean beginsWithVowel(EntityLiving observer) {
-		return StringUtils.startsWithAny(getName(observer, false, false), "a", "e", "i", "o", "u", "8");
-	}
-	
-	public abstract String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural);
-	
-	public String getBeatitudePrefix(EntityLiving observer, boolean requiresCapitalisation) {
-		if (!isAspectKnown(observer, AspectBeatitude.class)) {
-			return "";
-		}
-		
-		AtomicReference<String> out = new AtomicReference<>("");
-		
-		getAspect(AspectBeatitude.class).ifPresent(a -> {
-			AspectBeatitude.Beatitude beatitude = ((AspectBeatitude) a).getBeatitude();
-			String s = beatitude.name().toLowerCase();
-			
-			out.set((requiresCapitalisation ? StringUtils.capitalize(s) : s) + " ");
-		});
-		
-		return out.get();
+	public void applyNameTransformers(EntityLiving observer, Noun noun) {
+		getAspects().entrySet().stream()
+			.filter(e -> isAspectKnown(observer, e.getKey()))
+			.map(Map.Entry::getValue)
+			.filter(Objects::nonNull)
+			.sorted(Comparator.comparingInt(Aspect::getNamePriority))
+			.forEach(a -> a.applyNameTransformers(this, noun));
 	}
 	
 	public abstract float getWeight();
@@ -136,8 +127,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("Item class {} has no unserialisation constructor", itemClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading item class {}", itemClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading item class {}", itemClassName, e);
 		}
 		
 		return Optional.empty();
@@ -187,8 +177,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 			} catch (NoSuchMethodException e) {
 				JRogue.getLogger().error("Aspect class {} has no unserialisation constructor", aspectClassName);
 			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName);
-				JRogue.getLogger().error(e);
+				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName, e);
 			}
 		});
 		
@@ -204,7 +193,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		try {
 			unserialisePersistence(obj);
 		} catch (Exception e) {
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error unserialising item persistence", e);
 		}
 	}
 	
@@ -221,5 +210,22 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("age", String.format("%,d (should age: %s)", age, shouldAge() ? "yes" : "no"))
+			.append("visualID", visualID)
+			.append("appearance", getAppearance().name().toLowerCase().replace("appearance_", ""))
+			.append("category", getCategory().name().toLowerCase());
+		
+		getAspects().forEach((ac, a) -> tsb.append(a.toStringBuilder()));
+		
+		return tsb;
 	}
 }

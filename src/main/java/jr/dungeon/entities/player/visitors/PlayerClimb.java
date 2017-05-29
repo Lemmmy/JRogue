@@ -1,6 +1,7 @@
 package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.Level;
+import jr.dungeon.entities.events.EntityChangeLevelEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -44,6 +45,13 @@ public class PlayerClimb implements PlayerVisitor {
 		
 		if (tsc.getLinkedLevel().isPresent()) {
 			Level level = tsc.getLinkedLevel().get();
+			
+			player.getDungeon().eventSystem.triggerEvent(new EntityChangeLevelEvent(
+				player,
+				tile,
+				tsc.getLinkedLevel().get().tileStore.getTile(tsc.getDestX(), tsc.getDestY())
+			));
+			
 			player.getDungeon().changeLevel(level, tsc.getDestX(), tsc.getDestY());
 		}
 	}

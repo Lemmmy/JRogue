@@ -1,11 +1,11 @@
-package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
-public class StateLurk extends AIState {
+public class StateLurk extends AIState<StatefulAI> {
 	private Point dest;
 	
 	public StateLurk(StatefulAI ai, int duration) {
@@ -24,16 +24,10 @@ public class StateLurk extends AIState {
 	public void update() {
 		super.update();
 		
-		if (getAI().canSeeTarget()) {
-			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
-			return;
-		}
-		
 		Monster m = getAI().getMonster();
 		
-		if (dest == null) {
-			dest = getRandomDestination();
-		}
+		if (dest == null) dest = getRandomDestination();
+		if (dest == null) return;
 		
 		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
 			dest = getRandomDestination();
@@ -42,13 +36,29 @@ public class StateLurk extends AIState {
 			getAI().addSafePoint(safePoint);
 		}
 		
+		if (dest == null) return;
+		
 		getAI().moveTowards(dest);
 	}
 	
 	private Point getRandomDestination() {
 		Monster m = getAI().getMonster();
+		Entity target = m;
+		int r = getAI().getPersistence().optInt("lurkRadius", 7);
+		float p = (float) getAI().getPersistence().optDouble("lurkMoveProbability", 0.8);
 		
-		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
+		if (RandomUtils.randomFloat() > p) return null;
+		
+		if (getAI().getPersistence().has("lurkTarget")) {
+			String uuid = getAI().getPersistence().getString("lurkTarget");
+			Entity e = m.getDungeon().getLevel().entityStore.getEntityByUUID(uuid);
+			
+			if (e != null) {
+				target = e;
+			}
+		}
+		
+		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(target.getPosition(), r).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.map(Tile::getPosition)
 			.collect(Collectors.toList()));
@@ -74,11 +84,8 @@ public class StateLurk extends AIState {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("duration", getDuration())
-			.append("turnsTaken", getTurnsTaken())
-			.append("dest", dest)
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("dest", dest);
 	}
 }

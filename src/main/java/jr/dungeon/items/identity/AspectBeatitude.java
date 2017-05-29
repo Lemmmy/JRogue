@@ -1,7 +1,11 @@
 package jr.dungeon.items.identity;
 
+import jr.dungeon.items.Item;
+import jr.language.Noun;
+import jr.language.transformers.TransformerType;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 /**
@@ -18,6 +22,11 @@ public class AspectBeatitude extends Aspect {
 	@Override
 	public String getName() {
 		return "Beatitude";
+	}
+	
+	@Override
+	public Noun applyNameTransformers(Item item, Noun name) {
+		return name.addInstanceTransformer(Transformer.class, (s, m) -> beatitude.name().toLowerCase());
 	}
 	
 	@Override
@@ -50,6 +59,12 @@ public class AspectBeatitude extends Aspect {
 		return beatitude != null ? beatitude.hashCode() : 0;
 	}
 	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("beatitude", beatitude.name().toLowerCase());
+	}
+	
 	/**
 	 * Beatitude - the 'holiness' of an item - whether its blessed, uncursed or cursed.
 	 */
@@ -67,4 +82,6 @@ public class AspectBeatitude extends Aspect {
 		 */
 		CURSED
 	}
+	
+	public class Transformer implements TransformerType {}
 }

@@ -5,18 +5,22 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.Action;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformers.Article;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 
 public abstract class MonsterCanine extends Monster {
@@ -50,21 +54,32 @@ public abstract class MonsterCanine extends Monster {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
+		EntityLiving kicker = e.getKicker();
+		Noun name = getName(getDungeon().getPlayer());
+		Noun kickerName = kicker.getName(getDungeon().getPlayer());
+		
 		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
+			getDungeon().You(
+				"kick %s!",
+				Article.addTheIfPossible(name.clone(), false).build()
+			);
 		}
 		
 		int dodgeChance = 5;
 		
 		if (e.isKickerPlayer()) {
-			Player player = (Player) e.getKicker();
+			Player player = (Player) kicker;
 			int agility = player.getAttributes().getAttribute(Attribute.AGILITY);
 			dodgeChance = (int) Math.ceil(agility / 3);
 		}
 		
 		if (RandomUtils.roll(1, dodgeChance) == 1) {
 			if (e.isKickerPlayer()) {
-				getDungeon().orangeThe("%s dodges your kick!", getName(e.getKicker(), false));
+				getDungeon().orange(
+					"%s dodges %s kick!",
+					LanguageUtils.subject(this).build(Capitalise.first),
+					LanguageUtils.victim(kicker)
+				);
 			}
 			
 			return;
@@ -73,41 +88,45 @@ public abstract class MonsterCanine extends Monster {
 		int damageChance = 2;
 		
 		if (e.isKickerPlayer()) {
-			Player player = (Player) e.getKicker();
+			Player player = (Player) kicker;
 			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
 			damageChance = (int) Math.ceil(strength / 6) + 1;
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
+			damage(new DamageSource(kicker, null, DamageType.PLAYER_KICK), 1);
 		}
 		
 		if (isAlive()) {
 			if (RandomUtils.roll(1, 5) == 1) {
-				if (e.isKickerPlayer()) {
-					getDungeon().orangeThe("%s bites your foot!", getName(e.getKicker(), false));
-				}
+				getDungeon().orange(
+					"%s bites %s foot!",
+					LanguageUtils.subject(this).build(Capitalise.first),
+					LanguageUtils.victim(kicker)
+				);
 				
 				if (RandomUtils.roll(1, 4) == 1) {
 					if (e.isKickerPlayer()) {
 						getDungeon().redThe("bite was pretty deep!");
 					}
 					
-					e.getKicker().damage(new DamageSource(e.getKicker(), null, DamageType.KICK_REVENGE), 1);
-					e.getKicker().addStatusEffect(new InjuredFoot(getDungeon(), e.getKicker(), RandomUtils.roll(3, 6)));
+					kicker.damage(new DamageSource(kicker, null, DamageType.KICK_REVENGE), 1);
+					kicker.addStatusEffect(new InjuredFoot(getDungeon(), kicker, RandomUtils.roll(3, 6)));
 				}
 			} else if (RandomUtils.roll(1, 5) == 1) {
-				if (e.isKickerPlayer()) {
-					getDungeon().orangeThe("%s yanks your leg!", getName(e.getKicker(), false));
-				}
+				getDungeon().orange(
+					"%s yanks %s leg!",
+					LanguageUtils.subject(this).build(Capitalise.first),
+					LanguageUtils.victim(kicker)
+				);
 				
 				if (RandomUtils.roll(1, 4) == 1) {
 					if (e.isKickerPlayer()) {
-						getDungeon().log("[RED]It strains your leg!");
+						getDungeon().red("It strains your leg!");
 					}
 					
-					e.getKicker().damage(new DamageSource(e.getKicker(), null, DamageType.KICK_REVENGE), 1);
-					e.getKicker().addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
+					kicker.damage(new DamageSource(kicker, null, DamageType.KICK_REVENGE), 1);
+					kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 				}
 			}
 		}
@@ -134,12 +153,12 @@ public abstract class MonsterCanine extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.CANINE_BITE),
-			1,
-			(Action.CompleteCallback) e -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.CANINE_BITE;
+	}
+	
+	@Override
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 }

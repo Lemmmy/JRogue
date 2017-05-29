@@ -40,7 +40,7 @@ public class GeneratorSewer extends GeneratorRooms {
 	
 	@Override
 	public boolean generate() {
-		level.setLevelName("Sewers");
+		level.setName("Sewers");
 		
 		if (!super.generate()) {
 			return false;

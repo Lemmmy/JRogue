@@ -3,7 +3,7 @@ package jr.dungeon.items.magical;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityChest;
@@ -15,6 +15,9 @@ import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,24 +53,13 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-			
+	public Noun getName(EntityLiving observer) {
 		if (!isAspectKnown(observer, AspectBookContents.class)) {
-			s += (requiresCapitalisation ? "Book" : "book") + (plural ? "s" : "");
-			
-			return s;
+			return Lexicon.book.clone();
+		} else {
+			return Lexicon.spellbook.clone()
+				.addInstanceTransformer(SpellbookTransformer.class, (s, m) -> s + " of " + spell.getName());
 		}
-		
-		s += (requiresCapitalisation ? "S" : "s") + "pellbook of ";
-		s += spell.getName(false);
-		s += plural ? "s" : "";
-		
-		return s;
 	}
 	
 	@Override
@@ -101,7 +93,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 				letter.set(e.getKey());
 				
 				if (e.getValue().getKnowledgeTimeout() >= 1000) {
-					reader.getDungeon().yellowYou("know [CYAN]%s[] well enough already.", spell.getName(false));
+					reader.getDungeon().yellowYou("know [CYAN]%s[] well enough already.", spell.getName());
 					cancelled.set(true);
 				}
 			});
@@ -179,13 +171,13 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 				playerSpell.setKnowledgeTimeout(20000);
 				playerSpell.setKnown(true);
 				
-				dungeon.greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("refreshed your memory on [CYAN]%s[]!", spell.getName());
 			} else {
 				spell.setKnowledgeTimeout(20000);
 				spell.setKnown(true);
 				reader.getKnownSpells().put(letter, spell);
 				
-				dungeon.greenYou("learned [CYAN]%s[]!", spell.getName(false));
+				dungeon.greenYou("learned [CYAN]%s[]!", spell.getName());
 			}
 			
 		} else {
@@ -230,8 +222,7 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading spell class {}", spellClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
 		}
 		
 		timesRead = obj.optInt("timesRead", 0);
@@ -275,4 +266,6 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 			ErrorHandler.error("Error spawning spellbook", e);
 		}
 	}
+	
+	public class SpellbookTransformer implements TransformerType {}
 }
