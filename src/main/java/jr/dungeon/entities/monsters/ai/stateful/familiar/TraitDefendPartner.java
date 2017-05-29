@@ -9,13 +9,13 @@ import org.json.JSONObject;
 
 import java.util.Comparator;
 
-public class TraitDefendOwner extends AITrait<FamiliarAI> {
+public class TraitDefendPartner extends AITrait<FamiliarAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
 	 *
 	 * @param ai The {@link FamiliarAI} that hosts this trait.
 	 */
-	public TraitDefendOwner(FamiliarAI ai) {
+	public TraitDefendPartner(FamiliarAI ai) {
 		super(ai);
 	}
 	

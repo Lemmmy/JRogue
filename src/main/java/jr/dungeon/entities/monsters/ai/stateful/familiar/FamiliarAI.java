@@ -24,8 +24,8 @@ public class FamiliarAI extends StatefulAI {
 		removeTrait(TraitExtrinsicFear.class);
 		removeTrait(TraitBewareTarget.class);
 		
-		addTrait(new TraitFollowOwner(this));
-		addTrait(new TraitDefendOwner(this));
+		addTrait(new TraitFollowPartner(this));
+		addTrait(new TraitDefendPartner(this));
 		addTrait(new TraitAvoidCursed(this));
 		addTrait(new TraitHunger(this));
 	}

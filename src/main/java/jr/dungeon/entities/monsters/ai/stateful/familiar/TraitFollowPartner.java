@@ -5,13 +5,13 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
-public class TraitFollowOwner extends AITrait<FamiliarAI> {
+public class TraitFollowPartner extends AITrait<FamiliarAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
 	 *
 	 * @param ai The {@link FamiliarAI} that hosts this trait.
 	 */
-	public TraitFollowOwner(FamiliarAI ai) {
+	public TraitFollowPartner(FamiliarAI ai) {
 		super(ai);
 	}
 	
