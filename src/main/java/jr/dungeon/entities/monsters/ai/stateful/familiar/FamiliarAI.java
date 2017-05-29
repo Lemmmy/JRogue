@@ -14,7 +14,7 @@ public class FamiliarAI extends StatefulAI {
 		
 		setShouldTargetPlayer(false);
 		
-		getPersistence().putOnce("lurkRadius", 4);
+		getPersistence().putOnce("lurkRadius", 3);
 		
 		if (monster.getDungeon().getPlayer() != null) {
 			getPersistence().putOnce("lurkTarget", monster.getDungeon().getPlayer().getUUID().toString());

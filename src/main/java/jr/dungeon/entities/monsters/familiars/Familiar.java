@@ -123,7 +123,7 @@ public abstract class Familiar extends Monster implements Friendly {
 		
 		if (
 			e.getSrc().getLevel().equals(getLevel()) &&
-			e.getSrc().isAdjacentTo(getPosition())
+			(e.getSrc().isAdjacentTo(getPosition()) || e.getSrc().getPosition() == getPosition())
 		) {
 			setLevel(e.getDest().getLevel());
 			setPositionFresh(e.getDest().getPosition());
