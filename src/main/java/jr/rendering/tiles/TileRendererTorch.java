@@ -10,25 +10,18 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateTorch;
+import jr.rendering.tiles.walls.TileRendererWall;
 import jr.utils.Colour;
 import jr.utils.Utils;
 
 import java.util.Arrays;
 
-public class TileRendererTorch extends TileRenderer {
-	private TextureRegion wallH;
-	private TextureRegion wallV;
-	private TextureRegion wallCT;
-	private TextureRegion wallCB;
-	
+public class TileRendererTorch extends TileRendererWall {
 	private TextureRegion torch;
 	private TextureRegion torchGlow;
 	
 	public TileRendererTorch(int sheetX, int sheetY, int glowX, int glowY, String particleName) {
-		wallH = getImageFromSheet("textures/tiles.png", 1, 0);
-		wallV = getImageFromSheet("textures/tiles.png", 0, 0);
-		wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
-		wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
+		super();
 		
 		torch = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
 		torchGlow = getImageFromSheet("textures/tiles.png", glowX, glowY);
@@ -37,22 +30,6 @@ public class TileRendererTorch extends TileRenderer {
 		torchEffect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
 		
 		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
-	}
-	
-	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		
-		if (h && !v) {
-			return wallH;
-		} else if (!h && v) {
-			return wallV;
-		} else {
-			return adjacentTiles[2].isWallTile() ? wallCT : wallCB;
-		}
 	}
 	
 	@Override
@@ -67,6 +44,11 @@ public class TileRendererTorch extends TileRenderer {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+		return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 	}
 	
 	@Override
