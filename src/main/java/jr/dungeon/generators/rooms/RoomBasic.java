@@ -1,8 +1,13 @@
 package jr.dungeon.generators.rooms;
 
 import jr.dungeon.Level;
+import jr.dungeon.TileStore;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.states.TileStateTorch;
+import jr.utils.Colour;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class RoomBasic extends Room {
 	public RoomBasic(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
@@ -11,6 +16,8 @@ public class RoomBasic extends Room {
 	
 	@Override
 	public void build(GeneratorRooms generator) {
+		TileStore ts = getLevel().tileStore;
+		
 		for (int y = getY(); y < getY() + getHeight(); y++) {
 			for (int x = getX(); x < getX() + getWidth(); x++) {
 				boolean wall = x == getX() || x == getX() + getWidth() - 1 ||
@@ -18,12 +25,18 @@ public class RoomBasic extends Room {
 				
 				if (wall) {
 					if (x > getX() && x < getX() + getWidth() - 1 && x % 4 == 0) {
-						getLevel().tileStore.setTileType(x, y, getTorchTileType(generator));
+						ts.setTileType(x, y, getTorchTileType(generator));
+						
+						if (getTorchTileType(generator) != null
+							&& ts.getTile(x, y).hasState()
+							&& ts.getTile(x, y).getState() instanceof TileStateTorch) {
+							((TileStateTorch) ts.getTile(x, y).getState()).setColours(getTorchColours(generator));
+						}
 					} else {
-						getLevel().tileStore.setTileType(x, y, getWallTileType(generator));
+						ts.setTileType(x, y, getWallTileType(generator));
 					}
 				} else {
-					getLevel().tileStore.setTileType(x, y, getFloorTileType(generator));
+					ts.setTileType(x, y, getFloorTileType(generator));
 				}
 			}
 		}
@@ -50,15 +63,17 @@ public class RoomBasic extends Room {
 	
 	protected TileType getTorchTileType(GeneratorRooms generator) {
 		if (generator == null) {
-			return TileType.TILE_ROOM_TORCH_FIRE;
+			return TileType.TILE_ROOM_TORCH;
 		}
 		
-		TileType torchType = generator.getTorchTileType();
-		
-		if (torchType == null || torchType == TileType.TILE_IDENTITY) {
-			return getWallTileType(generator);
-		} else {
-			return torchType;
+		return generator.getTorchTileType();
+	}
+	
+	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {
+		if (generator == null) {
+			return new ImmutablePair<>(new Colour(0xFF9B26FF), new Colour(0xFF1F0CFF));
 		}
+		
+		return generator.getTorchColours();
 	}
 }

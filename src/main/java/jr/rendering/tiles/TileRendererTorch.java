@@ -1,12 +1,19 @@
 package jr.rendering.tiles;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.states.TileStateTorch;
+import jr.utils.Colour;
+import jr.utils.Utils;
+
+import java.util.Arrays;
 
 public class TileRendererTorch extends TileRenderer {
 	private TextureRegion wallH;
@@ -15,14 +22,16 @@ public class TileRendererTorch extends TileRenderer {
 	private TextureRegion wallCB;
 	
 	private TextureRegion torch;
+	private TextureRegion torchGlow;
 	
-	public TileRendererTorch(int sheetX, int sheetY, String particleName) {
+	public TileRendererTorch(int sheetX, int sheetY, int glowX, int glowY, String particleName) {
 		wallH = getImageFromSheet("textures/tiles.png", 1, 0);
 		wallV = getImageFromSheet("textures/tiles.png", 0, 0);
 		wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
 		wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
 		
 		torch = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
+		torchGlow = getImageFromSheet("textures/tiles.png", glowX, glowY);
 		
 		ParticleEffect torchEffect = new ParticleEffect();
 		torchEffect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
@@ -71,6 +80,17 @@ public class TileRendererTorch extends TileRenderer {
 		
 		if (t != null) {
 			drawTile(batch, t, x, y);
+			
+			Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
+			
+			if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
+				Color c = batch.getColor();
+				batch.setColor(Utils.colourToGdx(tile.getLightColour(), 0));
+				drawTile(batch, torchGlow, x, y);
+				batch.setColor(c);
+			} else {
+				drawTile(batch, torchGlow, x, y);
+			}
 		}
 	}
 	
@@ -87,5 +107,24 @@ public class TileRendererTorch extends TileRenderer {
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 		
 		return h && !v && adjacentTiles[2].isInnerRoomTile();
+	}
+	
+	@Override
+	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {
+		super.applyParticleChanges(dungeon, x, y, effect);
+		
+		Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
+		
+		if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
+			Colour c1 = tile.getLightColour();
+			Colour c2 = ((TileStateTorch) tile.getState()).getParticleDarkColour();
+			
+			Arrays.stream(effect.getEmitters().items)
+				.filter(e -> e.getName().equalsIgnoreCase("Fire"))
+				.findFirst().ifPresent(e -> e.getTint().setColors(new float[] {
+					c1.r, c1.g, c1.b,
+					c2.r, c2.g, c2.b
+				}));
+		}
 	}
 }

@@ -179,7 +179,7 @@ public class LightStore implements Serialisable {
 		int x = tile.getX();
 		int y = tile.getY();
 		
-		int intensity = tile.getLightIntensity() - tile.getAbsorb();
+		int intensity = tile.getLightIntensity() - tile.getLightAbsorb();
 		
 		if (intensity < 0) {
 			return;
