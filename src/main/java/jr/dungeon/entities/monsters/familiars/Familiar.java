@@ -114,7 +114,7 @@ public abstract class Familiar extends Monster implements Friendly {
 	}
 	
 	protected float getNutritionLoss() {
-		return 1f / (2f + (getSize().ordinal() * 2f));
+		return 1f / (2f + getSize().ordinal() * 2f);
 	}
 	
 	@EventHandler
