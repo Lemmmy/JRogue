@@ -1,6 +1,5 @@
 package jr.rendering.entities;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
@@ -10,6 +9,8 @@ public class EntityRendererCat extends EntityRendererBasic {
 	private static final int startX = 0;
 	private static final int startY = 7;
 	private static final int imageCount = 12;
+	private static final int ageCount = 3;
+	private static final int breedCount = imageCount / ageCount;
 	
 	private TextureRegion[] images;
 	
@@ -26,7 +27,9 @@ public class EntityRendererCat extends EntityRendererBasic {
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
 		if (entity instanceof Familiar) {
-			return images[((Familiar) entity).getAge()]; // todo: multiply by breedN
+			int breed = entity.getVisualID() % breedCount;
+			int age = ((Familiar) entity).getAge();
+			return images[breed * ageCount + age];
 		} else {
 			return images[0];
 		}
