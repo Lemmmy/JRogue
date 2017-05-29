@@ -6,43 +6,20 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.tiles.TileRenderer;
 
-public class TileRendererSewerWall extends TileRenderer {
-	private static TextureRegion wallH;
-	private static TextureRegion wallV;
-	private static TextureRegion wallCT;
-	private static TextureRegion wallCB;
-	
+public class TileRendererSewerWall extends TileRendererWall {
 	private static TextureRegion[] mosses;
 	
 	public TileRendererSewerWall() {
-		if (wallH == null || wallV == null || wallCT == null || wallCB == null) {
-			wallH = getImageFromSheet("textures/tiles.png", 1, 0);
-			wallV = getImageFromSheet("textures/tiles.png", 0, 0);
-			wallCT = getImageFromSheet("textures/tiles.png", 2, 0);
-			wallCB = getImageFromSheet("textures/tiles.png", 3, 0);
-			
-			mosses = new TextureRegion[3];
-			
-			mosses[0] = getImageFromSheet("textures/tiles.png", 1, 2);
-			mosses[1] = getImageFromSheet("textures/tiles.png", 2, 2);
-			mosses[2] = getImageFromSheet("textures/tiles.png", 3, 2);
+		mosses = new TextureRegion[3];
+		
+		for (int i = 0; i < mosses.length; i++) {
+			mosses[i] = getImageFromSheet("textures/tiles.png", i + 1, 2);
 		}
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		
-		if (h && !v) {
-			return wallH;
-		} else if (!h && v) {
-			return wallV;
-		} else {
-			return adjacentTiles[2].isWallTile() ? wallCT : wallCB;
-		}
+		return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
 	}
 	
 	@Override
@@ -61,11 +38,6 @@ public class TileRendererSewerWall extends TileRenderer {
 		}
 		
 		return null;
-	}
-	
-	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 	}
 	
 	@Override
