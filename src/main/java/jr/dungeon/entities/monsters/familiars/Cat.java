@@ -2,12 +2,9 @@ package jr.dungeon.entities.monsters.familiars;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.Action;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.FamiliarAI;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.StateFollowPlayer;
 import jr.language.Lexicon;
@@ -71,7 +68,7 @@ public class Cat extends Familiar {
 	
 	@Override
 	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_TAME_CAT;
+		return EntityAppearance.APPEARANCE_TAMED_CAT;
 	}
 	
 	@Override
