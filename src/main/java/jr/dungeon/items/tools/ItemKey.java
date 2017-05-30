@@ -4,19 +4,13 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.*;
 import jr.dungeon.items.Readable;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class ItemKey extends Item {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += (requiresCapitalisation ? "Skeleton key" : "skeleton key") + (plural ? "s" : "");
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.skeletonKey.clone();
 	}
 	
 	@Override

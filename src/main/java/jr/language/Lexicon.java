@@ -65,6 +65,7 @@ public class Lexicon {
 	public static final Noun sapphire = new Noun("sapphire");
 	public static final Noun shortsword = new Noun("shortsword");
 	public static final Noun skeleton = new Noun("skeleton");
+	public static final Noun skeletonKey = new Noun("skeleton key");
 	public static final Noun skyBlueTopaz = new Noun("sky blue topaz");
 	public static final Noun spellbook = new Noun("spellbook");
 	public static final Noun spider = new Noun("spider");
