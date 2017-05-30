@@ -292,8 +292,6 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	
 	@Override
 	public void dispose() {
-		super.dispose();
-		
 		if (settings.isAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
 			dungeon.save();
 		}

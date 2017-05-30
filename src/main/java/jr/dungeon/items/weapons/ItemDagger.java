@@ -5,6 +5,9 @@ import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.Material;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 
 public class ItemDagger extends ItemSword {
 	public ItemDagger() { // unserialisation constructor
@@ -20,8 +23,8 @@ public class ItemDagger extends ItemSword {
 	}
 	
 	@Override
-	public String getSwordName() {
-		return "dagger";
+	public Noun getSwordName() {
+		return Lexicon.dagger.clone();
 	}
 	
 	@Override

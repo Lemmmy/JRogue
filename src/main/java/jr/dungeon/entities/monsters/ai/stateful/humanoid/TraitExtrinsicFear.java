@@ -5,14 +5,13 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.events.EventHandler;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
-public class TraitExtrinsicFear extends AITrait {
+public class TraitExtrinsicFear extends AITrait<StatefulAI> {
 	private float fear;
 	
 	public TraitExtrinsicFear(StatefulAI ai) {
@@ -54,9 +53,8 @@ public class TraitExtrinsicFear extends AITrait {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("fear", fear)
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("fear", fear);
 	}
 }

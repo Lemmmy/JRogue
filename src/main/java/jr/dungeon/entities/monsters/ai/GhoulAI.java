@@ -1,7 +1,7 @@
 package jr.dungeon.entities.monsters.ai;
 
 import jr.dungeon.entities.monsters.Monster;
-import jr.utils.MultiLineNoPrefixToStringStyle;
+import jr.utils.DebugToStringStyle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,7 +72,7 @@ public class GhoulAI extends AI {
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
 			.append("moveProbability", moveProbability)
 			.append("attackProbability", attackProbability)
 			.append("turnsSinceLastAttack", turnsSinceLastAttack)

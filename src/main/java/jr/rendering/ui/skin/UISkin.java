@@ -8,6 +8,7 @@ public class UISkin extends Skin {
 	private UISkin() {
 		UIColours.add(this);
 		UIFonts.add(this);
+		UIBackgroundStyles.add(this);
 		UILabelStyles.add(this);
 		UIButtonStyles.add(this);
 		UITextButtonStyles.add(this);

@@ -27,8 +27,12 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class JRogue {
 	/**
@@ -128,6 +132,8 @@ public class JRogue {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException ignored) {}
 		
+		AnsiConsole.systemInstall();
+		
 		System.setProperty(
 			"jrogue.logs",
 			Paths.get(OperatingSystem.get().getAppDataDir().toString(), "jrogue", "logs").toString()
@@ -135,17 +141,25 @@ public class JRogue {
 		
 		logger = LogManager.getLogger("JRogue");
 		
-		try (
-			InputStream is = JRogue.class.getResourceAsStream("/version.properties")
-		) {
-			Properties versionProperties = new Properties();
-			versionProperties.load(is);
+		try {
+			Enumeration<URL> resources = JRogue.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
 			
-			VERSION = versionProperties.getProperty("version");
-			BUILD_DATE = versionProperties.getProperty("buildDate");
-			BUILD_NUMBER = Integer.parseInt(versionProperties.getProperty("buildNumber"));
-			BUILD_BRANCH = versionProperties.getProperty("buildBranch");
-			BUILD_HASH = versionProperties.getProperty("buildRevision");
+			while (resources.hasMoreElements()) {
+				try {
+					Manifest manifest = new Manifest(resources.nextElement().openStream());
+					Attributes attributes = manifest.getMainAttributes();
+					
+					if (attributes.getValue("Main-Class").equalsIgnoreCase(JRogue.class.getName())) {
+						VERSION = attributes.getValue("version");
+						BUILD_DATE = attributes.getValue("Build-Date");
+						BUILD_NUMBER = Integer.parseInt(attributes.getValue("Build-Number"));
+						BUILD_BRANCH = attributes.getValue("Build-Branch");
+						BUILD_HASH = attributes.getValue("Build-Revision");
+						
+						break;
+					}
+				} catch (Exception ignored) {}
+			}
 		} catch (Exception ignored) {}
 		
 		logger.info("---- Game started ----");

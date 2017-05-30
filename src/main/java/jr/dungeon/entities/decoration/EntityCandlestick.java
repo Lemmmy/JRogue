@@ -9,6 +9,9 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.Colour;
 
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
@@ -27,6 +30,11 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	}
 	
 	@Override
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.candlestick.clone();
+	}
+	
+	@Override
 	public boolean isLit() {
 		return lit;
 	}
@@ -34,11 +42,6 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	@Override
 	public void setLit(boolean lit) {
 		this.lit = lit;
-	}
-	
-	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Candlestick" : "candlestick";
 	}
 	
 	@Override
@@ -59,7 +62,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	@EventHandler(selfOnly = true)
 	public void onWalk(EntityWalkedOnEvent e) {
 		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is a %s here.", getName(e.getWalker(), false));
+			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
 		}
 	}
 	

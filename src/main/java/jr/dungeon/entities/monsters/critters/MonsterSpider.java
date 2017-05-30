@@ -6,16 +6,19 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
-import jr.dungeon.entities.actions.Action;
-import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -35,8 +38,8 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Spider" : "spider";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.spider.clone();
 	}
 	
 	@Override
@@ -65,7 +68,7 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 5;
 	}
 	
@@ -84,11 +87,15 @@ public class MonsterSpider extends Monster {
 		return 9;
 	}
 	
+	@Override
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("step on the %s!", getName(e.getKicker(), false));
-		}
+		getDungeon().log(
+			"%s %s on %s!",
+			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.step.clone(), e.getKicker()),
+			LanguageUtils.object(e.getVictim())
+		);
 		
 		int damageChance = 2;
 		
@@ -129,13 +136,13 @@ public class MonsterSpider extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.SPIDER_BITE),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.SPIDER_BITE;
+	}
+	
+	@Override
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 	
 	@Override

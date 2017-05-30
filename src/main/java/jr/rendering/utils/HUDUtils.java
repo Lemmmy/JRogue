@@ -43,12 +43,14 @@ public class HUDUtils {
 	}
 	
 	public static String replaceMarkupString(String s) {
-		s = s.replace("[RED]", "[P_RED]");
-		s = s.replace("[ORANGE]", "[P_ORANGE_2]");
-		s = s.replace("[YELLOW]", "[P_YELLOW]");
-		s = s.replace("[GREEN]", "[P_GREEN_3]");
-		s = s.replace("[CYAN]", "[P_CYAN_1]");
-		s = s.replace("[BLUE]", "[P_BLUE_1]");
+		s = s.replaceAll("\\[RED]", "[P_RED]");
+		s = s.replaceAll("\\[ORANGE]", "[P_ORANGE_2]");
+		s = s.replaceAll("\\[YELLOW]", "[P_YELLOW]");
+		s = s.replaceAll("\\[GREEN]", "[P_GREEN_3]");
+		s = s.replaceAll("\\[CYAN]", "[P_CYAN_1]");
+		s = s.replaceAll("\\[BLUE]", "[P_BLUE_1]");
+		s = s.replaceAll("\\[BLUE]", "[P_BLUE_1]");
+		s = s.replaceAll("\\[GR[AE]Y]", "[P_GREY_3]");
 		
 		return s;
 	}

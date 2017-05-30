@@ -11,7 +11,10 @@ import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.dungeon.entities.monsters.ai.stateful.humanoid.StateLurk;
+import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
 
 import java.util.List;
 
@@ -25,8 +28,8 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Lizard" : "lizard";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.lizard.clone();
 	}
 	
 	@Override
@@ -55,7 +58,7 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 40;
 	}
 	
@@ -105,12 +108,12 @@ public class MonsterLizard extends Monster {
 	}
 	
 	@Override
-	public void meleeAttack(EntityLiving victim) {
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			new DamageSource(this, null, DamageType.SPIDER_BITE),
-			1,
-			(Action.CompleteCallback) entity -> getDungeon().orangeThe("%s bites you!", getName(getDungeon().getPlayer(), false))
-		));
+	public DamageType getMeleeDamageType() {
+		return DamageType.LIZARD_BITE;
+	}
+	
+	@Override
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.bite.clone();
 	}
 }

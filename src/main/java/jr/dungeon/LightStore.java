@@ -45,8 +45,7 @@ public class LightStore implements Serialisable {
 					dos.writeInt(Colour.rgba8888(t.getLightColour()));
 					dos.writeByte(t.getLightIntensity());
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error saving level:");
-					JRogue.getLogger().error(e);
+					JRogue.getLogger().error("Error saving level:", e);
 				}
 			});
 			
@@ -54,8 +53,7 @@ public class LightStore implements Serialisable {
 			
 			return Optional.of(bos.toByteArray());
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error saving level:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error saving level:", e);
 		}
 		
 		return Optional.empty();
@@ -79,13 +77,11 @@ public class LightStore implements Serialisable {
 					t.setLightColour(new Colour(colourInt));
 					t.setLightIntensity(intensity);
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level:");
-					JRogue.getLogger().error(e);
+					JRogue.getLogger().error("Error loading level:", e);
 				}
 			});
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error loading level:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading level:", e);
 		}
 	}
 	
@@ -183,7 +179,7 @@ public class LightStore implements Serialisable {
 		int x = tile.getX();
 		int y = tile.getY();
 		
-		int intensity = tile.getLightIntensity() - tile.getAbsorb();
+		int intensity = tile.getLightIntensity() - tile.getLightAbsorb();
 		
 		if (intensity < 0) {
 			return;

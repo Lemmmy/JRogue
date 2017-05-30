@@ -115,7 +115,7 @@ public class AStarPathfinder {
 					if (isValidLocation(level, xp, yp, avoidTiles)) {
 						// The cost to get to this node is the current node's cost plus the movement cost to reach
 						// this node. Note that the heuristic value is only used in the sorted open list.
-						float nextStepCost = current.cost + getHeuristicCost(current.x, current.y, xp, yp);
+						float nextStepCost = current.cost + getHeuristicCost(level, current.x, current.y, xp, yp);
 						Node neighbour = nodes[width * yp + xp];
 						
 						// Checks we haven't found a better route to a node we'd previously considered searched (i.e.
@@ -136,7 +136,7 @@ public class AStarPathfinder {
 						// current cost, and add it as a next possible step (i.e. to the open list).
 						if (!open.contains(neighbour) && !closed.contains(neighbour)) {
 							neighbour.cost = nextStepCost;
-							neighbour.heuristic = getHeuristicCost(xp, yp, tx, ty);
+							neighbour.heuristic = getHeuristicCost(level, xp, yp, tx, ty);
 							maxDepth = Math.max(maxDepth, neighbour.setParent(current));
 							open.add(neighbour);
 						}
@@ -193,6 +193,8 @@ public class AStarPathfinder {
 	 * moving from tile <code>A</code> to tile <code>B</code>. Uses the octile distance heuristic, using 1 as a cost
 	 * for cardinal movements, and <code>sqrt(2)</code> (<code>~1.41</code>) for diagonal movements.
 	 *
+	 *
+	 * @param level
 	 * @param ax The source X position.
 	 * @param ay The source Y position.
 	 * @param bx The target X position.
@@ -207,7 +209,7 @@ public class AStarPathfinder {
 	 *
 	 * @see Utils#octileDistance(int, int, int, int, float, float)
 	 */
-	public float getHeuristicCost(int ax, int ay, int bx, int by) {
+	public float getHeuristicCost(Level level, int ax, int ay, int bx, int by) {
 		return Utils.octileDistance(ax, ay, bx, by, d, d2);
 	}
 	
@@ -228,7 +230,7 @@ public class AStarPathfinder {
 		/**
 		 * The heuristic cost of the node.
 		 *
-		 * @see AStarPathfinder#getHeuristicCost(int, int, int, int)
+		 * @see AStarPathfinder#getHeuristicCost(Level, int, int, int, int)
 		 */
 		private float heuristic;
 		/** The parent of the node - how we reached it in the search. */

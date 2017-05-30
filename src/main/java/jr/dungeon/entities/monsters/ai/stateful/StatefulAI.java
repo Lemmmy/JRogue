@@ -1,13 +1,14 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
+import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.TileType;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.AccessLevel;
@@ -42,29 +43,27 @@ public class StatefulAI extends AI {
 	public StatefulAI(Monster monster) {
 		super(monster);
 		
+		addTrait(new TraitBewareTarget(this));
 		addTrait(new TraitIntrinsicFear(this));
 		addTrait(new TraitExtrinsicFear(this));
 	}
 	
 	@Override
 	public void update() {
-		if (getMonster() == null) {
-			return;
-		}
+		if (suppressTurns > 0 && suppressTurns-- > 0) return;
+		if (getMonster() == null) return;
 		
-		if (shouldTargetPlayer && currentTarget == null) {
+		if (shouldTargetPlayer && currentTarget == null)
 			currentTarget = getMonster().getDungeon().getPlayer();
-		}
 		
-		if (currentState == null) {
-			currentState = defaultState;
-		}
+		if (currentTarget != null && !currentTarget.isAlive()) currentTarget = null;
 		
-		traits.values().forEach(AITrait::update);
+		traits.values().stream()
+			.sorted(Comparator.comparingInt(AITrait::getPriority))
+			.forEach(AITrait::update);
 		
-		if (currentState != null) {
-			currentState.update();
-		}
+		if (currentState == null) currentState = defaultState;
+		if (currentState != null) currentState.update();
 				
 		if (
 			currentState != null &&
@@ -85,15 +84,11 @@ public class StatefulAI extends AI {
 		this.shouldTargetPlayer = shouldTargetPlayer;
 	}
 	
-	public boolean canSeeTarget() {
-		if (getCurrentTarget() == null) {
-			return false;
-		}
-		
+	public boolean canSee(Entity e) {
 		int startX = getMonster().getX();
 		int startY = getMonster().getY();
-		int endX = getCurrentTarget().getX();
-		int endY = getCurrentTarget().getY();
+		int endX = e.getX();
+		int endY = e.getY();
 		
 		int preDistance = Utils.distance(startX, startY, endX, endY);
 		
@@ -119,6 +114,10 @@ public class StatefulAI extends AI {
 		}
 		
 		return true;
+	}
+	
+	public boolean canSeeTarget() {
+		return getCurrentTarget() != null && canSee(getCurrentTarget());
 	}
 	
 	public void updateTargetVisibility() {
@@ -187,8 +186,7 @@ public class StatefulAI extends AI {
 			currentTarget = (EntityLiving) getMonster().getLevel().entityStore.getEntityByUUID(obj.optString("currentTarget"));
 
 			if (obj.has("targetLastPos")) {
-				JSONObject serialisedPoint = obj.getJSONObject("targetLastPos");
-				targetLastPos = Point.getPoint(serialisedPoint.optInt("x"), serialisedPoint.optInt("y"));
+				targetLastPos = Point.unserialise(obj.getString("targetLastPos"));
 			}
 		}
 		
@@ -216,17 +214,18 @@ public class StatefulAI extends AI {
 	}
 	
 	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append(currentState == null ? "no state" : currentState.toString())
+	public ToStringBuilder toStringBuilder() {
+		ToStringBuilder tsb = super.toStringBuilder()
+			.append("defaultState", defaultState == null ? "no state" : defaultState.toStringBuilder())
+			.append("currentState", currentState == null ? "no state" : currentState.toStringBuilder())
+			.append("suppressTurns", suppressTurns)
 			.append("pos", getMonster().getPosition())
 			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
-			.append("safePoints", safePoints.size())
-			.append("");
+			.append("safePoints", safePoints.size());
 		
-		traits.values().forEach(t -> tsb.append(t.toString()));
+		traits.values().forEach(t -> tsb.append(t.toStringBuilder()));
 		
-		return tsb.toString();
+		return tsb;
 	}
 	
 	@Override
@@ -265,7 +264,22 @@ public class StatefulAI extends AI {
 		traits.put(trait.getClass(), trait);
 	}
 	
+	public void removeTrait(Class<? extends AITrait> traitClass) {
+		traits.remove(traitClass);
+	}
+	
 	public AITrait getTrait(Class<? extends AITrait> traitClass) {
 		return traits.get(traitClass);
+	}
+	
+	public void setCurrentState(AIState currentState) {
+		setCurrentState(currentState, false);
+	}
+	
+	public void setCurrentState(AIState currentState, boolean force) {
+		if (currentState == null) return;
+		if (!force && this.currentState != null && this.currentState.getClass() == currentState.getClass()) return;
+		
+		this.currentState = currentState;
 	}
 }

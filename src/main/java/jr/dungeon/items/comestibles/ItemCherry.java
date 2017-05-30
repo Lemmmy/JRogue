@@ -2,20 +2,13 @@ package jr.dungeon.items.comestibles;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.ItemAppearance;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class ItemCherry extends ItemComestible {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += plural ? requiresCapitalisation ? "Cherries" : "cherries" :
-			 		  requiresCapitalisation ? "Cherry" : "cherry";
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.cherry.clone();
 	}
 	
 	@Override

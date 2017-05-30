@@ -1,4 +1,6 @@
 import proguard.gradle.ProGuardTask
+import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.internal.file.IdentityFileResolver
 
 buildscript {
 	repositories {
@@ -25,32 +27,6 @@ version = "alpha-0.3"
 sourceCompatibility = 1.8
 
 applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
-
-task createProperties(dependsOn: processResources) {
-	file("$buildDir/tmp").mkdirs()
-	file("$buildDir/tmp/version.properties").createNewFile()
-	file("$buildDir/tmp/version.properties").withWriter { w ->
-		Properties p = new Properties()
-		p["version"] = project.version.toString()
-		p["buildDate"] = new Date().toString()
-
-		["buildRevision", "buildBranch", "buildNumber"].each {
-			if (project.hasProperty(it)) {
-				p[it] = project.getProperty(it)
-			}
-		}
-
-		if (project.hasProperty("buildRevision")) {
-			p["buildRevision"] = project.getProperty("buildRevision")
-		}
-
-		p.store w, null
-	}
-}
-
-classes {
-	dependsOn createProperties
-}
 
 repositories {
 	mavenLocal()
@@ -84,12 +60,47 @@ dependencies {
 	compile "org.projectlombok:lombok:1.16.12"
 }
 
+tasks.withType(JavaCompile) {
+	options.incremental = true
+}
+
+def makeManifest() {
+	return (Map<String, Object>) [
+		"Main-Class": mainClassName,
+		"Version": project.version.toString(),
+		"Build-Date": new Date().toString(),
+		"Build-Revision": project.hasProperty("buildRevision") ? project.getProperty("buildRevision") : "unknown",
+		"Build-Branch": project.hasProperty("buildBranch") ? project.getProperty("buildBranch") : "unknown",
+		"Build-Number": project.hasProperty("buildNumber") ? project.getProperty("buildNumber") : "-1"
+	]
+}
+
+processResources {
+	def manifest = new DefaultManifest(new IdentityFileResolver())
+	manifest.attributes(makeManifest())
+	mkdir("$buildDir/generated")
+	mkdir("$buildDir/generated/META-INF")
+	manifest.writeTo("$buildDir/generated/META-INF/MANIFEST.MF")
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ["src/main/java"]
+		}
+
+		resources {
+			srcDirs = ["src/main/resources", "$buildDir/generated"]
+		}
+	}
+}
+
 task subJar(type: Jar) {
 	baseName = jarName + "-deobf"
 	destinationDir = file("$buildDir/tmp")
 
 	manifest {
-		attributes "Main-Class": mainClassName
+		attributes makeManifest()
 	}
 
 	with jar
@@ -110,14 +121,13 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	baseName = jarName + "-full"
 
-	from file("$buildDir/tmp/version.properties")
 	from zipTree("$buildDir/tmp/${jarName}-obf-${version}.jar")
 	files(configurations.compile.collect()).each { f ->
 		from zipTree(f)
 	}
 
 	manifest {
-		attributes "Main-Class": mainClassName
+		attributes makeManifest()
 	}
 }
 
@@ -134,6 +144,6 @@ javadoc {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes"
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999"
 	}
 }

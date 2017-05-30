@@ -18,6 +18,16 @@ public enum DamageType {
 		"The bite pierces an artery. You bleed to death.",
 		"The bite pierced an artery, and you bled to death."
 	),
+	FELINE_BITE(
+		DamageClass.MELEE,
+		"The bite pierces an artery. You bleed to death.",
+		"The bite pierced an artery, and you bled to death."
+	),
+	LIZARD_BITE(
+		DamageClass.MELEE,
+		"The bite pierces an artery. You bleed to death.",
+		"The bite pierced an artery, and you bled to death."
+	),
 	SPIDER_BITE(
 		DamageClass.MELEE,
 		"The bite pierces an artery. You bleed to death.",
@@ -55,6 +65,10 @@ public enum DamageType {
 	FOOD_POISONING(
 		"It was a bad idea to eat that food. You die of food poisoning.",
 		"It was a bad idea to eat that food. You died of food poisoning."
+	),
+	STARVING(
+		"You starve to death.",
+		"You starved to death."
 	),
 	CHOKING(
 		"You choke to death.",

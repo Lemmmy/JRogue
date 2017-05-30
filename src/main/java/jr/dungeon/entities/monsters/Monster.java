@@ -3,7 +3,10 @@ package jr.dungeon.entities.monsters;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
+import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.Action;
+import jr.dungeon.entities.actions.ActionMelee;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
@@ -13,8 +16,15 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemCorpse;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformers.Article;
+import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.val;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -56,23 +66,56 @@ public abstract class Monster extends EntityLiving {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		if (e.isKickerPlayer()) {
-			getDungeon().You("kick the %s!", getName(e.getKicker(), false));
-		}
+		getDungeon().log(
+			"%s %s %s!",
+			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.kick.clone(), e.getKicker()),
+			LanguageUtils.object(e.getVictim())
+		);
 	}
 	
 	@EventHandler(selfOnly = true)
 	public void onDie(EntityDeathEvent e) {
-		if (e.isAttackerPlayer()) {
-			if (
-				e.getAttacker().getLevel() == getLevel() &&
-				e.getAttacker().getLevel().visibilityStore.isTileVisible(getX(), getY())
-			) {
-				getDungeon().You("kill the %s!", getName((Player) e.getAttacker(), false));
-			} else {
-				getDungeon().You("kill it!");
-			}
+		Player p = getDungeon().getPlayer();
+		
+		Noun attacker = LanguageUtils.subject(e.getAttacker());
+		boolean canSeeAttacker = true;
+		
+		if (
+			e.getAttacker().getLevel() != p.getLevel() ||
+			e.getAttacker().getLevel().visibilityStore.isTileInvisible(e.getAttacker().getPosition())
+		) {
+			attacker = Lexicon.it.clone(); // can't see it, so don't know what it is
+			canSeeAttacker = false;
 		}
+		
+		Noun victim = LanguageUtils.object(e.getVictim());
+		boolean canSeeVictim = true;
+		
+		if (
+			e.getVictim().getLevel() != p.getLevel() ||
+			e.getVictim().getLevel().visibilityStore.isTileInvisible(e.getVictim().getPosition())
+		) {
+			victim = Lexicon.it.clone(); // can't see it, so don't know what it is
+			canSeeVictim = false;
+		}
+		
+		if (!canSeeAttacker && !canSeeVictim) {
+			getDungeon().logRandom(
+				"You hear noises in the distance.",
+				"You hear rustling in the distance.",
+				"You hear fighting in the distance."
+			);
+			
+			return;
+		}
+		
+		getDungeon().log(
+			"%s %s %s!",
+			attacker.build(Capitalise.first),
+			LanguageUtils.autoTense(Lexicon.kill.clone(), e.getAttacker()),
+			victim
+		);
 	}
 	
 	@Override
@@ -103,7 +146,7 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract int getWeight();
 	
-	public abstract int getNutrition();
+	public abstract int getNutritionalValue();
 	
 	public abstract float getCorpseChance();
 	
@@ -123,7 +166,44 @@ public abstract class Monster extends EntityLiving {
 	
 	public abstract boolean canMagicAttack();
 	
-	public void meleeAttack(EntityLiving victim) {}
+	public Verb getMeleeAttackVerb(EntityLiving victim) {
+		return Lexicon.attack.clone();
+	}
+	
+	public void logMeleeAttackString(EntityLiving victim) {
+		Noun myNoun = getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(myNoun, false);
+		
+		Noun victimNoun = victim.getName(getDungeon().getPlayer());
+		Article.addTheIfPossible(victimNoun, false);
+		
+		getDungeon().log(
+			"%s%s %s %s!",
+			victim instanceof Player ? "[ORANGE]" : "",
+			myNoun.build(Capitalise.first),
+			LanguageUtils.autoTense(getMeleeAttackVerb(victim), this),
+			victimNoun
+		);
+	}
+	
+	public int getMeleeAttackDamage(EntityLiving victim) {
+		return 1;
+	}
+	
+	public DamageType getMeleeDamageType() {
+		return DamageType.UNKNOWN;
+	}
+	
+	public void meleeAttack(EntityLiving victim) {
+		if (!canMeleeAttack()) return;
+		
+		setAction(new ActionMelee(
+			victim,
+			new DamageSource(this, null, DamageType.CANINE_BITE),
+			getMeleeAttackDamage(victim),
+			(Action.BeforeRunCallback) e -> logMeleeAttackString(victim)
+		));
+	}
 	
 	public void rangedAttack(EntityLiving victim) {}
 	
@@ -148,7 +228,9 @@ public abstract class Monster extends EntityLiving {
 	public void unserialise(JSONObject obj) {
 		super.unserialise(obj);
 		
-		ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+		if (obj.has("ai")) {
+			ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
+		}
 	}
 	
 	@Override
@@ -161,5 +243,11 @@ public abstract class Monster extends EntityLiving {
 		}
 		
 		return subListeners;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("ai", ai);
 	}
 }

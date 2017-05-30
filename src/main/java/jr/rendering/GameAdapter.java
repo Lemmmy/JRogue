@@ -158,6 +158,7 @@ public class GameAdapter extends Game {
 			this.screen = screen;
 		} else {
 			this.newScreen = screen;
+			this.newScreen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			this.screen.pause();
 			currentTransitionTime = 0;
 			this.transition = transition;
@@ -171,10 +172,15 @@ public class GameAdapter extends Game {
 	
 	@Override
 	public void dispose() {
-		super.dispose();
+		if (screen != null) {
+			screen.hide();
+			screen.dispose();
+		}
 		
-		if (screen != null) { screen.hide(); }
-		if (newScreen != null) { newScreen.hide(); }
+		if (newScreen != null) {
+			newScreen.hide();
+			newScreen.dispose();
+		}
 		
 		oldFBO.dispose();
 		newFBO.dispose();
