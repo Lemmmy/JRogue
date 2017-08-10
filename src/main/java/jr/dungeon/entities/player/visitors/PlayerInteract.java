@@ -7,11 +7,9 @@ import jr.dungeon.entities.actions.ActionInteract;
 import jr.dungeon.entities.interfaces.Interactive;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.io.Prompt;
-import jr.language.transformers.Article;
 import jr.language.transformers.Capitalise;
 import jr.utils.Cardinal;
 import jr.utils.Utils;
-import jr.utils.VectorInt;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +23,11 @@ public class PlayerInteract implements PlayerVisitor {
 			.collect(Collectors.toList());
 		
 		switch (eligible.size()) {
-			case 0: return;
-			case 1: ((Interactive) eligible.get(0)).interact(player); break;
+			case 0:
+				return;
+			case 1:
+				((Interactive) eligible.get(0)).interact(player);
+				break;
 			default: {
 				int eligibleSize = eligible.size();
 				StringBuilder names = new StringBuilder();
@@ -54,6 +55,7 @@ public class PlayerInteract implements PlayerVisitor {
 							@Override
 							public void onResponse(char response) {
 								int i = Character.getNumericValue(response) - 1;
+								
 								player.setAction(new ActionInteract(
 									new Action.NoCallback(),
 									(Interactive) eligible.get(i)
