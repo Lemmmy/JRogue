@@ -15,6 +15,7 @@ import jr.dungeon.entities.monsters.canines.*;
 import jr.dungeon.entities.monsters.critters.MonsterLizard;
 import jr.dungeon.entities.monsters.critters.MonsterRat;
 import jr.dungeon.entities.monsters.critters.MonsterSpider;
+import jr.dungeon.entities.monsters.familiars.Cat;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
@@ -23,6 +24,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.comestibles.*;
+import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.items.magical.ItemSpellbook;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.projectiles.ItemArrow;
@@ -42,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -140,6 +143,22 @@ public class Wishes {
 			d.changeLevel(firstLevel, firstLevelSpawn);
 			p.setGodmode(isGod);
 		});
+		registerWish("find chest", (d, p, a) -> {
+			AtomicBoolean found = new AtomicBoolean(false);
+			
+			for (int i = 0; i < 40; i++) {
+				d.wish("ds");
+				
+				p.getLevel().entityStore.getEntities().stream()
+					.filter(EntityChest.class::isInstance)
+					.findFirst().ifPresent(e -> {
+						p.defaultVisitors.teleport(e.getPosition());
+						found.set(true);
+					});
+				
+				if (found.get()) break;
+			}
+		});
 		registerWish("godmode", (d, p, a) -> p.setGodmode(true));
 		registerWish("chest", new WishSpawn<>(EntityChest.class));
 		registerWish("fountain", new WishSpawn<>(EntityFountain.class));
@@ -156,7 +175,36 @@ public class Wishes {
 				d.log("Message " + i);
 			}
 		});
-
+		registerWish("identify all", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
+				i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
+				i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
+			}));
+		});
+		registerWish("bless (.)", (d, p, a) -> {
+			d.log("Blessing [YELLOW]%s[].", a[0].charAt(0));
+			
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
+					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.BLESSED));
+				i.getItem().observeAspect(p, AspectBeatitude.class);
+			}));
+		});
+		registerWish("curse (.)", (d, p, a) -> {
+			d.log("Cursing [YELLOW]%s[].", a[0].charAt(0));
+			
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				i.getItem().getAspect(AspectBeatitude.class).ifPresent(as ->
+					((AspectBeatitude) as).setBeatitude(AspectBeatitude.Beatitude.CURSED));
+				i.getItem().observeAspect(p, AspectBeatitude.class);
+			}));
+		});
+		registerWish("debug (.)", (d, p, a) -> {
+			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+				d.log(i.getItem().toString());
+			}));
+		});
+		
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
@@ -185,6 +233,8 @@ public class Wishes {
 		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
 		registerWish("pufferfish", new WishSpawn<>(MonsterPufferfish.class));
 		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
+		
+		registerWish("cat", new WishSpawn<>(Cat.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {

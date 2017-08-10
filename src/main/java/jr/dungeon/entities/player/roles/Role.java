@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player.roles;
 
+import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.skills.Skill;
@@ -43,4 +44,8 @@ public abstract class Role {
 	public abstract int getSpellcastingSuccessEscape();
 	
 	public abstract Attribute getSpellcastingSuccessAttribute();
+	
+	public Class<? extends Familiar> getStartingFamiliar() {
+		return null;
+	}
 }

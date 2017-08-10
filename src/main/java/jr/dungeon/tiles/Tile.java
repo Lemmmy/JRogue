@@ -2,8 +2,11 @@ package jr.dungeon.tiles;
 
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Colour;
+import jr.utils.Point;
+import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +24,7 @@ public class Tile {
 	
 	private Colour lightColour;
 	private int lightIntensity;
-	private int absorb;
+	private int lightAbsorb;
 	
 	private Level level;
 
@@ -40,9 +43,9 @@ public class Tile {
 	}
 	
 	public void resetLight() {
-		lightColour = type.getLightColour();
-		lightIntensity = type.getLightIntensity();
-		absorb = type.getAbsorb();
+		lightColour = state != null && state.getLightColour() != null ? state.getLightColour() : type.getLightColour();
+		lightIntensity = state != null && state.getLightIntensity() != -1 ? state.getLightIntensity() : type.getLightIntensity();
+		lightAbsorb = state != null && state.getLightAbsorb() != -1 ? state.getLightAbsorb() : type.getLightAbsorb();
 		
 		if (lightColour == null) {
 			lightColour = level.lightStore.getAmbientLight();
@@ -77,6 +80,26 @@ public class Tile {
 		} else {
 			this.type = type;
 		}
+	}
+	
+	/**
+	 * @param target The target to check adjacency to.
+	 *
+	 * @return Whether or not the tile is adjacent to the target - checks for a
+	 * {@link Utils#chebyshevDistance(int, int, int, int) Chebyshev distance} of 1 or less.
+	 */
+	public boolean isAdjacentTo(Tile target) {
+		return Utils.chebyshevDistance(x, y, target.getX(), target.getY()) <= 1;
+	}
+	
+	/**
+	 * @param target The target to check adjacency to.
+	 *
+	 * @return Whether or not the tile is adjacent to the target - checks for a
+	 * {@link Utils#octileDistance(int, int, int, int, float, float)} Octile distance} of 1 or less.
+	 */
+	public boolean isAdjacentTo(Point target) {
+		return Utils.octileDistance(x, y, target.getX(), target.getY(), 1, 1) <= 1;
 	}
 	
 	@Override

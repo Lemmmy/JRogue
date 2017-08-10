@@ -17,6 +17,8 @@ import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.utils.*;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -910,6 +912,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	
 	public TileType getTorchTileType() {
 		return TileType.TILE_ROOM_TORCH_FIRE;
+	}
+	
+	public Pair<Colour, Colour> getTorchColours() {
+		return new ImmutablePair<>(new Colour(0xFF9B26FF), new Colour(0xFF1F0CFF));
 	}
 	
 	public TileType getCorridorTileType() {

@@ -1,10 +1,10 @@
-package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.utils.RandomUtils;
 
-public class StateApproachTarget extends AIState {
+public class StateApproachTarget extends AIState<StatefulAI> {
 	public StateApproachTarget(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}

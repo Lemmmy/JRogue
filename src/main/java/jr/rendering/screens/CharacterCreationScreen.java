@@ -54,6 +54,8 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private void initLayout(Table container) {
 		attributes = new Attributes();
 		
+		container.setBackground(skin.getTiledDrawable("darkBricks"));
+		
 		container.setFillParent(true);
 		container.row().fill().top();
 		
@@ -77,7 +79,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private void initNameField(Table container) {
 		Table nameTable = new Table();
 		
-		nameTable.add(new Label("Name", skin)).left().padRight(8);
+		nameTable.add(new Label("Noun", skin)).left().padRight(8);
 		nameField = new TextField(StringUtils.capitalize(JRogue.getSettings().getPlayerName()), skin);
 		nameTable.add(nameField).growX().left().row();
 		nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c) && textField.getText().length() < 20);

@@ -1,9 +1,6 @@
 package jr.dungeon.tiles;
 
-import jr.dungeon.tiles.states.TileState;
-import jr.dungeon.tiles.states.TileStateClimbable;
-import jr.dungeon.tiles.states.TileStateDoor;
-import jr.dungeon.tiles.states.TileStateTrap;
+import jr.dungeon.tiles.states.*;
 import jr.utils.Colour;
 import lombok.Getter;
 
@@ -29,9 +26,11 @@ public enum TileType {
 	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
 	
 	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
+
 	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Colour(0xFF9B26FF), 100, 0),
 	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Colour(0x8BD1ECFF), 100, 0),
 	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
+
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
 	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
 	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM | SPAWNABLE, Solidity.WALK_ON),
@@ -73,7 +72,7 @@ public enum TileType {
 	
 	private Colour lightColour;
 	private int lightIntensity = 0;
-	private int absorb;
+	private int lightAbsorb;
 	
 	TileType(int id, Solidity solidity) {
 		this(id, 0, solidity, null);
@@ -91,8 +90,8 @@ public enum TileType {
 		this(id, flags, solidity, stateClass, null, 0, 0);
 	}
 	
-	TileType(int id, int flags, Solidity solidity, Colour lightColour, int lightIntensity, int absorb) {
-		this(id, flags, solidity, null, lightColour, lightIntensity, absorb);
+	TileType(int id, int flags, Solidity solidity, Colour lightColour, int lightIntensity, int lightAbsorb) {
+		this(id, flags, solidity, null, lightColour, lightIntensity, lightAbsorb);
 	}
 	
 	TileType(int id,
@@ -101,7 +100,7 @@ public enum TileType {
 			 Class<? extends TileState> stateClass,
 			 Colour lightColour,
 			 int lightIntensity,
-			 int absorb) {
+			 int lightAbsorb) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
 		this.flags = flags;
 		
@@ -110,14 +109,14 @@ public enum TileType {
 		
 		this.lightColour = lightColour;
 		this.lightIntensity = lightIntensity;
-		this.absorb = absorb;
+		this.lightAbsorb = lightAbsorb;
 		
 		if (lightColour == null) {
 			if (solidity == Solidity.SOLID) {
 				this.lightColour = new Colour(0x404040FF);
-				this.absorb = 40;
+				this.lightAbsorb = 40;
 			} else {
-				this.absorb = 10;
+				this.lightAbsorb = 10;
 			}
 		}
 	}

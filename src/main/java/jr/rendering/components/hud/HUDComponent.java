@@ -7,14 +7,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Prompt;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
+import jr.language.transformers.Capitalise;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.components.RendererComponent;
+import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.ui.skin.UISkin;
@@ -51,6 +52,7 @@ public class HUDComponent extends RendererComponent {
 	@Getter	private List<PopupWindow> windows = new ArrayList<>();
 	
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
+	private List<Actor> entityDebugActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
 	public HUDComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
@@ -209,6 +211,8 @@ public class HUDComponent extends RendererComponent {
 	
 	@EventHandler
 	private void onBeforeTurn(BeforeTurnEvent e) {
+		entityDebugActors.forEach(Actor::remove);
+		entityDebugActors.clear();
 		singleTurnActors.forEach(Actor::remove);
 		singleTurnActors.clear();
 	}
@@ -221,27 +225,34 @@ public class HUDComponent extends RendererComponent {
 		updateStatusEffects(player);
 		
 		if (settings.isShowAIDebug()) {
-			showEntityAIStates();
+			showEntityDebugInformation();
 		}
 		
 		healthLastTurn = player.getHealth();
 		energyLastTurn = player.getEnergy();
 	}
 	
-	private void showEntityAIStates() {
+	@EventHandler
+	private void onEntityDebugUpdated(EntityDebugUpdatedEvent e) {
+		entityDebugActors.forEach(Actor::remove);
+		entityDebugActors.clear();
+		showEntityDebugInformation();
+	}
+	
+	private void showEntityDebugInformation() {
 		if (!player.isDebugger()) {
 			return;
 		}
 		
+		int w = dungeon.getLevel().getWidth();
+		
 		dungeon.getLevel().entityStore.getEntities().stream()
-			.filter(Monster.class::isInstance)
-			.map(e -> (Monster) e)
-			.filter(m -> m.getAI() != null)
-			.filter(m -> m.getAI().toString() != null)
-			.filter(m -> !m.getAI().toString().isEmpty())
-			.forEach(m -> {
-				int x = m.getX();
-				int y = m.getY();
+			.filter(e -> e.getPersistence() != null)
+			.filter(e -> e.getPersistence().optBoolean("showDebug"))
+			.sorted((e1, e2) -> Integer.compare(e1.getY() * w + e1.getX(), e2.getY() * w + e1.getY()))
+			.forEach(e -> {
+				int x = e.getX();
+				int y = e.getY();
 				
 				renderer.updateCamera();
 				
@@ -249,23 +260,29 @@ public class HUDComponent extends RendererComponent {
 					new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
 				);
 				
-				Table stateTable = new Table(skin);
-				stateTable.setBackground("blackTransparent");
+				Table outerDebugTable = new Table(skin);
+				outerDebugTable.setBackground("blackTransparent");
 				
-				stateTable.add(new Label(m.getAI().toString(), skin));
+				Table innerDebugTable = new Table(skin);
+				innerDebugTable.add(new Label(HUDUtils.replaceMarkupString(e.toString()), skin)).pad(4);
+				innerDebugTable.top().left();
 				
-				stage.getRoot().addActor(stateTable);
-				stateTable.pad(4);
-				stateTable.pack();
-				stateTable.setPosition((int) pos.x - (int) (stateTable.getWidth() / 2), (int) pos.y);
-				singleTurnActors.add(stateTable);
+				ScrollPane scrollPane = new ScrollPane(innerDebugTable, skin);
+				scrollPane.setOverscroll(false, false);
+				
+				stage.getRoot().addActor(outerDebugTable);
+				outerDebugTable.add(scrollPane).top().left().grow().maxWidth(300).maxHeight(200);
+				outerDebugTable.pack();
+				outerDebugTable.setPosition((int) pos.x - (int) (innerDebugTable.getWidth() / 2), (int) pos.y);
+				singleTurnActors.add(outerDebugTable);
+				entityDebugActors.add(outerDebugTable);
 			});
 	}
 	
 	private void updatePlayerLine(Player player) {
 		playerLabel.setText(String.format(
 			"[P_YELLOW]%s[] the [P_BLUE_2]%s[]",
-			player.getName(player, true),
+			player.getName(null).build(Capitalise.first),
 			player.getRole().getName()
 		));
 		

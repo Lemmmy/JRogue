@@ -4,11 +4,13 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.magic.EntityLightOrb;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class SpellLightOrb extends Spell {
 	@Override
-	public String getName(boolean requiresCapitalisation) {
-		return (requiresCapitalisation ? "L" : "l") + "ight orb";
+	public Noun getName() {
+		return Lexicon.lightOrb.clone();
 	}
 	
 	@Override

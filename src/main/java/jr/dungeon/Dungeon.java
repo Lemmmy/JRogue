@@ -11,6 +11,8 @@ import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorCave;
 import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.io.Messenger;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.*;
@@ -191,13 +193,7 @@ public class Dungeon implements Messenger {
 	public void changeLevel(Level level, int x, int y) {
 		this.level = level;
 		
-		getPlayer().getLevel().entityStore.removeEntity(player);
-		getPlayer().getLevel().entityStore.processEntityQueues(false);
-		
 		getPlayer().setLevel(level);
-		level.entityStore.addEntity(player);
-		level.entityStore.processEntityQueues(false);
-		
 		getPlayer().setPosition(x, y);
 		
 		turnSystem.turn(true);
@@ -231,23 +227,13 @@ public class Dungeon implements Messenger {
 	public void log(String s, Object... objects) {
 		String logString = String.format(s, objects);
 		
-		String printedLogString = logString;
-		printedLogString = printedLogString.replaceAll("\\[]", "\u001b[0m");
-		printedLogString = printedLogString.replaceAll("\\[RED]", "\u001b[31m");
-		printedLogString = printedLogString.replaceAll("\\[ORANGE]", "\u001b[31m");
-		printedLogString = printedLogString.replaceAll("\\[YELLOW]", "\u001b[33m");
-		printedLogString = printedLogString.replaceAll("\\[GREEN]", "\u001b[32m");
-		printedLogString = printedLogString.replaceAll("\\[BLUE]", "\u001b[34m");
-		printedLogString = printedLogString.replaceAll("\\[CYAN]", "\u001b[36m");
-		printedLogString = printedLogString + "\u001b[0m";
-		JRogue.getLogger().log(gameLogLevel, printedLogString);
-		
+		JRogue.getLogger().log(gameLogLevel, logString);
 		logHistory.add(logString);
 		eventSystem.triggerEvent(new LogEvent(logString));
 	}
 
 	/**
-	 * Triggers a {@link jr.dungeon.Prompt}.
+	 * Triggers a {@link Prompt}.
 	 * @param prompt The prompt to trigger.
 	 */
 	public void prompt(Prompt prompt) {

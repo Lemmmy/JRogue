@@ -1,5 +1,7 @@
 package jr.dungeon.entities.player.roles;
 
+import jr.dungeon.entities.monsters.familiars.Cat;
+import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.skills.Skill;
@@ -108,5 +110,10 @@ public class RoleWizard extends Role {
 	@Override
 	public Attribute getSpellcastingSuccessAttribute() {
 		return Attribute.INTELLIGENCE;
+	}
+	
+	@Override
+	public Class<? extends Familiar> getStartingFamiliar() {
+		return Cat.class;
 	}
 }

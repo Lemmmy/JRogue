@@ -4,19 +4,13 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.*;
 import jr.dungeon.items.Readable;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class ItemThermometer extends Item implements Readable, Shatterable {
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += (requiresCapitalisation ? "Thermometer" : "thermometer") + (plural ? "s" : "");
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.thermometer.clone();
 	}
 	
 	@Override

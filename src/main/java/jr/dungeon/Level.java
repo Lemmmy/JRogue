@@ -36,7 +36,7 @@ public class Level implements Serialisable, Persisting {
 	
 	private long turnCreated;
 	
-	@Setter private String levelName;
+	@Setter private String name;
 	
 	@Getter(AccessLevel.NONE) public final TileStore tileStore;
 	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
@@ -140,17 +140,22 @@ public class Level implements Serialisable, Persisting {
 	 * @return The unserialised level.
 	 */
 	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
+		Level level = null;
+		
 		try {
 			int width = obj.getInt("width");
 			int height = obj.getInt("height");
 			int depth = obj.getInt("depth");
 			
-			Level level = new Level(uuid, dungeon, width, height, depth);
+			level = new Level(uuid, dungeon, width, height, depth);
 			level.unserialise(obj);
 			return Optional.of(level);
-		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:");
-			JRogue.getLogger().error(e);
+		} catch (Exception e) {
+			if (level != null) {
+				JRogue.getLogger().error("Error loading level " + level.toString() + ":", e);
+			} else {
+				JRogue.getLogger().error("Error loading level:", e);
+			}
 		}
 		
 		return Optional.empty();
@@ -165,6 +170,7 @@ public class Level implements Serialisable, Persisting {
 		obj.put("spawnY", getSpawnY());
 		obj.put("climate", getClimate().name());
 		obj.put("turnCreated", turnCreated);
+		obj.put("name", name);
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
@@ -186,6 +192,7 @@ public class Level implements Serialisable, Persisting {
 			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
 			
 			turnCreated = obj.optInt("turnCreated", 0);
+			name = obj.optString("name", "Dungeon");
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
@@ -193,8 +200,7 @@ public class Level implements Serialisable, Persisting {
 			visibilityStore.unserialise(obj);
 			monsterSpawner.unserialise(obj);
 		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading level:", e);
 		}
 		
 		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
@@ -229,6 +235,6 @@ public class Level implements Serialisable, Persisting {
 	
 	@Override
 	public String toString() {
-		return String.format("%s %,d", levelName, depth);
+		return String.format("%s %,d", name, depth);
 	}
 }

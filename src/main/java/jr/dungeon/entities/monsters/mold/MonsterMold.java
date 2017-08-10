@@ -33,7 +33,7 @@ public abstract class MonsterMold extends Monster {
 	}
 	
 	@Override
-	public int getNutrition() {
+	public int getNutritionalValue() {
 		return 30;
 	}
 	

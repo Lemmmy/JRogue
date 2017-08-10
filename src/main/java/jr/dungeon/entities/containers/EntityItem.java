@@ -16,7 +16,11 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.tiles.TileType;
+import jr.language.LanguageUtils;
+import jr.language.Noun;
+import jr.language.transformers.Capitalise;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.util.Optional;
@@ -68,7 +72,10 @@ public class EntityItem extends Entity {
 		int y = getY() + e.getDeltaY();
 		
 		if (getItem() instanceof Shatterable) {
-			getDungeon().The("%s shatters into a thousand pieces!", getName(getDungeon().getPlayer(), false));
+			getDungeon().log(
+				"%s shatters into a thousand pieces!",
+				LanguageUtils.object(this).build(Capitalise.first)
+			);
 			
 			if (getItem() instanceof ItemThermometer) {
 				e.getKicker().addStatusEffect(new MercuryPoisoning());
@@ -81,7 +88,10 @@ public class EntityItem extends Entity {
 		TileType tile = getLevel().tileStore.getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
-			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
+			getDungeon().log(
+				"%s strikes the side of the wall.",
+				LanguageUtils.object(this).build(Capitalise.first)
+			);
 			
 			return;
 		}
@@ -90,8 +100,8 @@ public class EntityItem extends Entity {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return itemStack.getName(observer, requiresCapitalisation);
+	public Noun getName(EntityLiving observer) {
+		return itemStack.getName(observer);
 	}
 	
 	@EventHandler(selfOnly = true)
@@ -130,5 +140,11 @@ public class EntityItem extends Entity {
 	@Override
 	public JSONObject getPersistence() {
 		return persistence;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("itemStack", itemStack.toStringBuilder());
 	}
 }

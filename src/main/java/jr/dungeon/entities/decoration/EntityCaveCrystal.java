@@ -7,6 +7,8 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Decorative;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
@@ -23,8 +25,8 @@ public class EntityCaveCrystal extends Entity implements Decorative, LightEmitte
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Crystal" : "crystal";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.crystal;
 	}
 	
 	@Override

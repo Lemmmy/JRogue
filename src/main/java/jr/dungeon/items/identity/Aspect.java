@@ -1,6 +1,10 @@
 package jr.dungeon.items.identity;
 
+import jr.dungeon.items.Item;
+import jr.language.Noun;
+import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 /**
@@ -15,6 +19,14 @@ import org.json.JSONObject;
  */
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();
+	
+	public Noun applyNameTransformers(Item item, Noun name) {
+		return name;
+	}
+	
+	public int getNamePriority() {
+		return 0;
+	}
 	
 	/**
 	 * persistent aspects are known by all livingents of the same type permanently:
@@ -33,4 +45,15 @@ public abstract class Aspect implements Serialisable {
 	
 	@Override
 	public void unserialise(JSONObject obj) {}
+	
+	@Override
+	public String toString() {
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+			.append("persistent", isPersistent() ? "yes" : "no")
+			.append("namePriority", getNamePriority());
+	}
 }

@@ -16,8 +16,7 @@ public class SerialisationUtils {
 				try {
 					dos.writeBoolean(t);
 				} catch (IOException e) {
-					JRogue.getLogger().error("Error serialising boolean array:");
-					JRogue.getLogger().error(e);
+					JRogue.getLogger().error("Error serialising boolean array:", e);
 				}
 			});
 			
@@ -25,8 +24,7 @@ public class SerialisationUtils {
 			
 			return Optional.of(bos.toByteArray());
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error serialising boolean array:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error serialising boolean array:", e);
 		}
 		
 		return Optional.empty();
@@ -43,8 +41,7 @@ public class SerialisationUtils {
 				out[i] = dis.readBoolean();
 			}
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error unserialising boolean array:");
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error unserialising boolean array:", e);
 		}
 		
 		return out;

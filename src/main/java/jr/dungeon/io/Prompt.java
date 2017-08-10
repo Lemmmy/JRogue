@@ -1,5 +1,6 @@
-package jr.dungeon;
+package jr.dungeon.io;
 
+import jr.dungeon.Dungeon;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 

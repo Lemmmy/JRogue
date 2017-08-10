@@ -12,7 +12,11 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.items.identity.AspectEatenState;
 import jr.dungeon.items.identity.AspectRottenness;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformers.TransformerType;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -30,6 +34,7 @@ public class ItemCorpse extends ItemComestible {
 		super();
 		
 		addAspect(new AspectRottenness());
+		addAspect(new AspectEatenState());
 	}
 	
 	public ItemCorpse(EntityLiving entity) {
@@ -38,6 +43,7 @@ public class ItemCorpse extends ItemComestible {
 		this.entity = entity;
 		
 		addAspect(new AspectRottenness());
+		addAspect(new AspectEatenState());
 	}
 	
 	@Override
@@ -56,33 +62,11 @@ public class ItemCorpse extends ItemComestible {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
+	public Noun getName(EntityLiving observer) {
+		observeAspect(observer, AspectEatenState.class);
 		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		if (getEatenState() == EatenState.PARTLY_EATEN) {
-			s += requiresCapitalisation ? "Partly eaten " : "partly eaten ";
-			
-			if (!s.isEmpty() && requiresCapitalisation) {
-				requiresCapitalisation = false;
-			}
-		}
-		
-		if (getRottenness() > 7 && isAspectKnown(observer, AspectRottenness.class)) {
-			s += requiresCapitalisation ? "Rotten " : "rotten ";
-			
-			if (!s.isEmpty() && requiresCapitalisation) {
-				requiresCapitalisation = false;
-			}
-		}
-		
-		s += entity.getName(observer, requiresCapitalisation) +
-			" corpse" + (plural ? "s" : "");
-		
-		return s;
+		return Lexicon.corpse.clone()
+			.addInstanceTransformer(CorpseTransformer.class, (s, m) -> entity.getName(observer) + " " + s);
 	}
 	
 	@Override
@@ -102,7 +86,7 @@ public class ItemCorpse extends ItemComestible {
 	@Override
 	public int getNutrition() {
 		if (entity instanceof Monster) {
-			return ((Monster) entity).getNutrition();
+			return ((Monster) entity).getNutritionalValue();
 		} else {
 			return 0;
 		}
@@ -217,4 +201,6 @@ public class ItemCorpse extends ItemComestible {
 			ErrorHandler.error("Error loading entity class " + entityClassName, e);
 		}
 	}
+	
+	public class CorpseTransformer implements TransformerType {}
 }

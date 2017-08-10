@@ -3,6 +3,7 @@ package jr.dungeon.generators;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Colour;
 
 public class Generator_ extends GeneratorStandard {
 	public Generator_(Level level, Tile sourceTile) {
@@ -14,7 +15,7 @@ public class Generator_ extends GeneratorStandard {
 	
 	@Override
 	public boolean generate() {
-		level.setLevelName("________");
+		level.setName("________");
 		
 		return super.generate();
 	}

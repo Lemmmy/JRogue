@@ -4,6 +4,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.language.Lexicon;
+import jr.language.Noun;
 
 public class MonsterMoldBlue extends MonsterMold {
 	public MonsterMoldBlue(Dungeon dungeon, Level level, int x, int y) {
@@ -15,8 +17,8 @@ public class MonsterMoldBlue extends MonsterMold {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Blue mold" : "blue mold";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.blueMold.clone();
 	}
 	
 	@Override

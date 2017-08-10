@@ -13,6 +13,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.interfaces.Decorative;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
@@ -34,6 +35,7 @@ public class MinimapComponent extends RendererComponent {
 	private static final Color PLAYER_ICON_COLOUR = new Color(0xffffffff);
 	private static final Color ENTITY_ICON_COLOUR = new Color(0xffd200ff);
 	private static final Color NON_HOSTILE_MONSTER_ICON_COLOUR = new Color(0x0894d5ff);
+	private static final Color FAMILIAR_MONSTER_ICON_COLOUR = new Color(0x08d517ff);
 	private static final Color HOSTILE_MONSTER_ICON_COLOUR = new Color(0xd50808ff);
 	
 	private static final float INVISIBLE_ALPHA = -0.15f;
@@ -201,9 +203,17 @@ public class MinimapComponent extends RendererComponent {
 				iconPoint,
 				m.getLastSeenX(),
 				m.getLastSeenY(),
-				m.isHostile() ? HOSTILE_MONSTER_ICON_COLOUR :
-								NON_HOSTILE_MONSTER_ICON_COLOUR
+				getIconColour(m)
 			));
+	}
+	
+	private Color getIconColour(Monster m) {
+		if (m instanceof Familiar) {
+			return FAMILIAR_MONSTER_ICON_COLOUR;
+		} else {
+			return m.isHostile() ? HOSTILE_MONSTER_ICON_COLOUR :
+				                   NON_HOSTILE_MONSTER_ICON_COLOUR;
+		}
 	}
 	
 	private void drawPlayerIcon() {

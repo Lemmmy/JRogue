@@ -6,6 +6,9 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Decorative;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.transformers.Plural;
 
 public class EntityStalagmites extends Entity implements Decorative {
 	public EntityStalagmites(Dungeon dungeon, Level level, int x, int y) {
@@ -13,8 +16,8 @@ public class EntityStalagmites extends Entity implements Decorative {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return requiresCapitalisation ? "Stalagmites" : "stalagmites";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.stalagmite;
 	}
 	
 	@Override

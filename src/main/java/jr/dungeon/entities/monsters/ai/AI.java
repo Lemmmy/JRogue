@@ -12,13 +12,17 @@ import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.val;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Artificial 'intelligence' class. Used to automate movement and actions of monsters in the dungeon, for example
@@ -29,10 +33,12 @@ import java.util.List;
 public abstract class AI implements Serialisable, Persisting, EventListener {
 	@NonNull @Getter private Monster monster;
 	
-	private AStarPathfinder pathfinder = new AStarPathfinder();
+	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
 	private List<TileType> avoidTiles = new ArrayList<>();
 	
 	private JSONObject persistence = new JSONObject();
+	
+	protected int suppressTurns = 0;
 	
 	public AI(Monster monster) {
 		this.monster = monster;
@@ -74,13 +80,22 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	}
 	
 	/**
+	 * @param entity Entity
+	 *
+	 * @return Returns the linear distance between the entity and the monster.
+	 */
+	public float distanceFrom(Entity entity) {
+		return Utils.distance(
+			(float) monster.getX(), (float) monster.getY(),
+			(float) entity.getX(), (float) entity.getY()
+		);
+	}
+	
+	/**
 	 * @return Returns the linear distance between the player and the monster.
 	 */
 	public float distanceFromPlayer() {
-		return Utils.distance(
-			(float) monster.getX(), (float) monster.getY(),
-			(float) monster.getDungeon().getPlayer().getX(), (float) monster.getDungeon().getPlayer().getY()
-		);
+		return distanceFrom(monster.getDungeon().getPlayer());
 	}
 	
 	/**
@@ -207,17 +222,19 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	 * @see AStarPathfinder
 	 */
 	public void moveTowards(int destX, int destY) {
+		if (monster.hasAction()) return;
+		
 		int sourceX = getMonster().getX();
 		int sourceY = getMonster().getY();
 		
 		Path path = pathfinder.findPath(
-			getMonster().getLevel(),
+			monster.getLevel(),
 			sourceX,
 			sourceY,
 			destX,
 			destY,
-			getMonster().getVisibilityRange(),
-			getMonster().canMoveDiagonally(),
+			monster.getVisibilityRange(),
+			monster.canMoveDiagonally(),
 			avoidTiles
 		);
 		
@@ -225,12 +242,27 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 			path.getSteps().stream()
 				.filter(t -> t.getX() != sourceX || t.getY() != sourceY)
 				.findFirst()
-				.ifPresent(t -> getMonster().setAction(new ActionMove(
+				.ifPresent(t -> monster.setAction(new ActionMove(
 					t.getX(),
 					t.getY(),
 					new Action.NoCallback()
 				)));
 		}
+	}
+	
+	public boolean canReach(Entity e) {
+		Path path = pathfinder.findPath(
+			monster.getLevel(),
+			getMonster().getX(),
+			getMonster().getY(),
+			e.getX(),
+			e.getY(),
+			monster.getVisibilityRange(),
+			monster.canMoveDiagonally(),
+			avoidTiles
+		);
+		
+		return path != null;
 	}
 	
 	/**
@@ -279,18 +311,34 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		} catch (NoSuchMethodException e) {
 			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AI class {}", aiClassName);
-			JRogue.getLogger().error(e);
+			JRogue.getLogger().error("Error loading AI class {}", aiClassName, e);
 		}
 		
 		return null;
 	}
 	
+	@Override
+	public Set<Object> getListenerSelves() {
+		val selves = new HashSet<>();
+		selves.add(this);
+		selves.add(monster);
+		return selves;
+	}
+	
+	@Override
 	public String toString() {
-		return "";
+		return toStringBuilder().build();
+	}
+	
+	public ToStringBuilder toStringBuilder() {
+		return new ToStringBuilder(this, DebugToStringStyle.STYLE);
 	}
 	
 	public List<EventListener> getSubListeners() {
 		return new ArrayList<>();
+	}
+	
+	public void suppress(int turns) {
+		suppressTurns = turns;
 	}
 }

@@ -4,6 +4,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.NutritionState;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.language.LanguageUtils;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -13,16 +14,17 @@ public class PlayerConsume implements PlayerVisitor {
 	@Override
 	public void visit(Player player) {
 		if (item.getTurnsRequiredToEat() == 1) {
-			player.getDungeon().greenYou("eat the %s.", item.getName(player, false, false));
-			player.setNutrition(player.getNutrition() + item.getNutrition());
+			player.getDungeon().greenYou("eat %s.", LanguageUtils.object(player, item));
 			
+			player.setNutrition(player.getNutrition() + item.getNutrition());
 			item.eatPart();
+			
 			return;
 		}
 		
 		if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
 			if (item.getTurnsEaten() == item.getTurnsRequiredToEat() - 1) {
-				player.getDungeon().greenYou("finish eating the %s.", item.getName(player, false, false));
+				player.getDungeon().greenYou("finish eating %s.", LanguageUtils.object(player, item));
 				
 				player.setNutrition(
 					(int) (player.getNutrition() + Math.ceil(item.getNutrition() / item.getTurnsRequiredToEat()))
@@ -33,7 +35,7 @@ public class PlayerConsume implements PlayerVisitor {
 				}
 			} else {
 				if (!player.getDungeon().turnSystem.isDoingBulkAction()) {
-					player.getDungeon().You("eat a part of the %s.", item.getName(player, false, false));
+					player.getDungeon().greenYou("eat a part of %s.", LanguageUtils.object(player, item));
 				}
 				
 				player.setNutrition(

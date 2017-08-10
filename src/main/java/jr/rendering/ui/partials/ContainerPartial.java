@@ -114,7 +114,7 @@ public class ContainerPartial extends Table {
 				"windowStyleMarkup"
 			)).left().width(16);
 			itemTable.add(new Label(
-				"[WHITE]" + itemStack.getName(entity.getDungeon().getPlayer(), true) + suffix,
+				"[WHITE]" + itemStack.getName(entity.getDungeon().getPlayer()) + suffix,
 				getSkin(),
 				"windowStyleMarkup"
 			)).growX().left();

@@ -8,7 +8,11 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.language.LanguageUtils;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.dungeon.tiles.TileType;
+import jr.language.transformers.Capitalise;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
@@ -30,8 +34,8 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation) {
-		return (requiresCapitalisation ? "L" : "l") + "ight orb";
+	public Noun getName(EntityLiving observer) {
+		return Lexicon.lightOrb.clone();
 	}
 	
 	@Override
@@ -42,9 +46,9 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	@Override
 	public void move() {
 		if (--turnsLeft <= 0) {
-			getDungeon().The(
+			getDungeon().log(
 				"%s flashes brightly and then disappears into thin air.",
-				getName(getDungeon().getPlayer(), false)
+				LanguageUtils.subject(this).build(Capitalise.first)
 			);
 			getLevel().entityStore.removeEntity(this);
 		}
@@ -63,7 +67,10 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		TileType tile = getLevel().tileStore.getTileType(x, y);
 		
 		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
-			getDungeon().The("%s strikes the side of the wall.", getName(getDungeon().getPlayer(), false));
+			getDungeon().log(
+				"%s strikes the side of the wall.",
+				LanguageUtils.subject(this).build(Capitalise.first)
+			);
 			
 			return;
 		}

@@ -6,6 +6,10 @@ import jr.dungeon.items.HasMaterial;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.language.Lexicon;
+import jr.language.Noun;
+import jr.language.Verb;
+import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
@@ -41,22 +45,12 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public String getName(EntityLiving observer, boolean requiresCapitalisation, boolean plural) {
-		String s = getBeatitudePrefix(observer, requiresCapitalisation);
-		
-		if (!s.isEmpty() && requiresCapitalisation) {
-			requiresCapitalisation = false;
-		}
-		
-		s += this.material.getName(requiresCapitalisation);
-		s += " ";
-		s += getSwordName();
-		s += plural ? "s" : "";
-		
-		return s;
+	public Noun getName(EntityLiving observer) {
+		return getSwordName().clone()
+			.addInstanceTransformer(MaterialTransformer.class, (s, m) -> this.material.getName() + " " + s);
 	}
 	
-	public abstract String getSwordName();
+	public abstract Noun getSwordName();
 	
 	@Override
 	public float getWeight() {
@@ -100,8 +94,8 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void onHit(EntityLiving attacker, EntityLiving victim) {
-		hitLog("You hit the %s!", "The %s hits you!", "The %s hits the %s!", attacker, victim);
+	public Verb getMeleeAttackVerb() {
+		return Lexicon.hit.clone();
 	}
 	
 	@Override
@@ -127,4 +121,6 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 		
 		material = Material.valueOf(obj.getString("material"));
 	}
+	
+	public class MaterialTransformer implements TransformerType {}
 }

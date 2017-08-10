@@ -78,7 +78,7 @@ public class EntityComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * deltaMultiplier);
 			
-			if (!settings.isShowLevelDebug() && dungeon.getLevel().visibilityStore.isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
+			if (!settings.isShowLevelDebug() && level.visibilityStore.isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
 				continue;
 			}
 			
@@ -92,10 +92,10 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	private void drawEntities() {
-		dungeon.getLevel().entityStore.getEntities().stream()
+		level.entityStore.getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!e.isStatic() && dungeon.getLevel().visibilityStore.isTileInvisible(e.getX(), e.getY())) {
+				if (!e.isStatic() && level.visibilityStore.isTileInvisible(e.getX(), e.getY())) {
 					return;
 				}
 				
@@ -200,7 +200,7 @@ public class EntityComponent extends RendererComponent {
 	
 	@EventHandler()
 	private void onLevelChange(LevelChangeEvent e) {
-		this.level = e.getLevel();
+		level = e.getLevel();
 		
 		entityPooledEffects.clear();
 		entityAnimations.clear();

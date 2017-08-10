@@ -1,11 +1,10 @@
-package jr.dungeon.entities.monsters.ai.stateful.humanoid;
+package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import jr.utils.MultiLineNoPrefixToStringStyle;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class StateSearch extends AIState {
+public class StateSearch extends AIState<StatefulAI> {
 	public StateSearch(StatefulAI ai, int duration) {
 		super(ai, duration);
 	}
@@ -19,7 +18,7 @@ public class StateSearch extends AIState {
 			return;
 		}
 		
-		if (getAI().getCurrentTarget() == null) {
+		if (getAI().getCurrentTarget() == null || getAI().getTargetLastPos() == null) {
 			getAI().setCurrentState(null);
 			return;
 		}
@@ -28,11 +27,8 @@ public class StateSearch extends AIState {
 	}
 	
 	@Override
-	public String toString() {
-		return new ToStringBuilder(this, MultiLineNoPrefixToStringStyle.STYLE)
-			.append("duration", getDuration())
-			.append("turnsTaken", getTurnsTaken())
-			.append("dest", getAI().getTargetLastPos())
-			.toString();
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("dest", getAI().getTargetLastPos());
 	}
 }

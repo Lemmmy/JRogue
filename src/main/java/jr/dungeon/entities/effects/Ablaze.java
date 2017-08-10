@@ -4,6 +4,7 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.utils.RandomUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Fire status effect.
@@ -83,5 +84,11 @@ public class Ablaze extends StatusEffect {
 		}
 		
 		return 0;
+	}
+	
+	@Override
+	public ToStringBuilder toStringBuilder() {
+		return super.toStringBuilder()
+			.append("putOut", putOut);
 	}
 }

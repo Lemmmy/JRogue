@@ -1,4 +1,4 @@
-package jr.dungeon;
+package jr.dungeon.io;
 
 import jr.utils.RandomUtils;
 
@@ -19,6 +19,22 @@ public interface Messenger {
 	 * @see String#format
 	 */
 	void log(String s, Object... objects);
+	
+	default void red(String s, Object... objects) {
+		log("[RED]" + s, objects);
+	}
+	
+	default void orange(String s, Object... objects) {
+		log("[ORANGE]" + s, objects);
+	}
+	
+	default void yellow(String s, Object... objects) {
+		log("[YELLOW]" + s, objects);
+	}
+	
+	default void green(String s, Object... objects) {
+		log("[GREEN]" + s, objects);
+	}
 	
 	/**
 	 * Logs a random string from the list of strings.
