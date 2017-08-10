@@ -5,7 +5,7 @@ import jr.dungeon.entities.EntityAppearance;
 public enum EntityMap {
 	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0)),
 	
-	APPEARANCE_TAME_CAT(new EntityRendererCat()),
+	APPEARANCE_TAMED_CAT(new EntityRendererCat()),
 	
 	APPEARANCE_JACKAL(0, 2),
 	APPEARANCE_FOX(1, 2),
