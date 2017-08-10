@@ -44,12 +44,8 @@ public class ItemRendererSword extends ItemRenderer {
 	
 	private TextureRegion getImageFromMaterial(Material material, boolean flipped) {
 		int i = material.ordinal();
-		
-		if (flipped) {
-			return images.get(i);
-		} else {
-			return imagesDrawable.get(i);
-		}
+
+		return flipped ? images.get(i) : imagesDrawable.get(i);
 	}
 	
 	@Override

@@ -5,10 +5,10 @@ import jr.dungeon.items.ItemAppearance;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
-public class ItemCherries extends ItemComestible {
+public class ItemCherry extends ItemComestible {
 	@Override
 	public Noun getName(EntityLiving observer) {
-		return Lexicon.cherries.clone();
+		return Lexicon.cherry.clone();
 	}
 	
 	@Override
@@ -28,6 +28,6 @@ public class ItemCherries extends ItemComestible {
 	
 	@Override
 	public ItemAppearance getAppearance() {
-		return ItemAppearance.APPEARANCE_CHERRIES;
+		return ItemAppearance.APPEARANCE_CHERRY;
 	}
 }

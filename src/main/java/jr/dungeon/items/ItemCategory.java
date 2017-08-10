@@ -12,5 +12,6 @@ public enum ItemCategory {
 	WAND,
 	RING,
 	GEM,
+	TOOL,
 	MISCELLANEOUS
 }

@@ -31,7 +31,7 @@ import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.quaffable.potions.BottleType;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
 import jr.dungeon.items.quaffable.potions.PotionType;
-import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.items.tools.ItemThermometer;
 import jr.dungeon.items.weapons.*;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
@@ -275,7 +275,7 @@ public class Wishes {
 		registerWish("lemon", new WishItem<>(ItemLemon.class));
 		registerWish("banana", new WishItem<>(ItemBanana.class));
 		registerWish("carrot", new WishItem<>(ItemCarrot.class));
-		registerWish("cherries", new WishItem<>(ItemCherries.class));
+		registerWish("cherry", new WishItem<>(ItemCherry.class));
 		registerWish("corn", new WishItem<>(ItemCorn.class));
 		registerWish("staff", new WishItem<>(ItemStaff.class));
 		registerWish("spellbook", new WishItem<>(ItemSpellbook.class, s -> s.setSpell(new SpellLightOrb())));

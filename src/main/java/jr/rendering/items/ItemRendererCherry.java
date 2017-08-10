@@ -12,18 +12,17 @@ import jr.rendering.utils.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemRendererGold extends ItemRenderer {
-	private int[] values = new int[]{1, 2, 5, 10, 20, 30, 50, 100, 200, 300};
-	
+public class ItemRendererCherry extends ItemRenderer {
 	private List<TextureRegion> images = new ArrayList<>();
 	private List<TextureRegion> imagesDrawable = new ArrayList<>();
-	
-	public ItemRendererGold() {
-		for (int i = 0; i < values.length; i++) {
-			images.add(getImageFromSheet("textures/items.png", i, 7));
-			imagesDrawable
-				.add(ImageLoader.getImageFromSheet("textures/items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
-		}
+
+	public ItemRendererCherry() {
+		images.add(getImageFromSheet("textures/items.png", 20, 0));
+		images.add(getImageFromSheet("textures/items.png", 16, 0));
+		imagesDrawable
+			.add(ImageLoader.getImageFromSheet("textures/items.png", 20, 0, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+		imagesDrawable
+			.add(ImageLoader.getImageFromSheet("textures/items.png", 16, 0, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
 	}
 	
 	@Override
@@ -37,16 +36,7 @@ public class ItemRendererGold extends ItemRenderer {
 	}
 	
 	private TextureRegion getImageFromAmount(int count, boolean flipped) {
-		int value = 1;
-		
-		for (int i = 0; i < values.length; i++) {
-			if (count >= values[i]) {
-				value = i;
-			} else {
-				break;
-			}
-		}
-
+		int value = Math.min(count, 1);
 		return flipped ? images.get(value) : imagesDrawable.get(value);
 	}
 	

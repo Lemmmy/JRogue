@@ -1,4 +1,4 @@
-package jr.dungeon.items.valuables;
+package jr.dungeon.items.tools;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
@@ -25,7 +25,7 @@ public class ItemThermometer extends Item implements Readable, Shatterable {
 	
 	@Override
 	public ItemCategory getCategory() {
-		return ItemCategory.MISCELLANEOUS;
+		return ItemCategory.TOOL;
 	}
 
 	@Override

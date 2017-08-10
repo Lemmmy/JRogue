@@ -19,7 +19,7 @@ public class Lexicon {
 	public static final Noun candlestick = new Noun("candlestick");
 	public static final Noun carrot = new Noun("carrot");
 	public static final Noun cat = new Noun("cat");
-	public static final Noun cherries = new Noun("pair of cherries");
+	public static final Noun cherry = new Noun("cherry");
 	public static final Noun chest = new Noun("chest");
 	public static final Noun citrine = new Noun("citrine");
 	public static final Noun corn = new Noun("ear of corn");
@@ -65,6 +65,7 @@ public class Lexicon {
 	public static final Noun sapphire = new Noun("sapphire");
 	public static final Noun shortsword = new Noun("shortsword");
 	public static final Noun skeleton = new Noun("skeleton");
+	public static final Noun skeletonKey = new Noun("skeleton key");
 	public static final Noun skyBlueTopaz = new Noun("sky blue topaz");
 	public static final Noun spellbook = new Noun("spellbook");
 	public static final Noun spider = new Noun("spider");

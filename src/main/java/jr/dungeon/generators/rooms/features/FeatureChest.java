@@ -12,7 +12,7 @@ import jr.dungeon.items.SpecialChestSpawn;
 import jr.dungeon.items.comestibles.*;
 import jr.dungeon.items.magical.ItemSpellbook;
 import jr.dungeon.items.valuables.ItemGem;
-import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.items.tools.ItemThermometer;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemLongsword;
 import jr.dungeon.items.weapons.ItemShortsword;
@@ -36,7 +36,7 @@ public class FeatureChest extends SpecialRoomFeature {
 			ItemBanana.class,
 			ItemBread.class,
 			ItemCarrot.class,
-			ItemCherries.class,
+			ItemCherry.class,
 			ItemCorn.class,
 			ItemLemon.class,
 			ItemOrange.class

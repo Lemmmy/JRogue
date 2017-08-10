@@ -14,7 +14,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
-import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.items.tools.ItemThermometer;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
