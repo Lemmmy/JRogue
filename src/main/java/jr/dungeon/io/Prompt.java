@@ -141,15 +141,15 @@ public class Prompt {
 		/**
 		 * Message to log if the user provides no response ({@link Prompt#escape escapes} the prompt).
 		 */
-		private final String noResponseMessage;
+		@Getter private final String noResponseMessage;
 		/**
 		 * Message to log if the user provides an invalid response (a response that is not in {@link Prompt#options}).
 		 */
-		private final String invalidResponseMessage;
+		@Getter private final String invalidResponseMessage;
 		/**
 		 * {@link Messenger} to log to. Typically the {@link Dungeon}.
 		 */
-		private final Messenger messenger;
+		@Getter private final Messenger messenger;
 		
 		/**
 		 * @param messenger The {@link Messenger} to log to. Typically the {@link Dungeon}.
