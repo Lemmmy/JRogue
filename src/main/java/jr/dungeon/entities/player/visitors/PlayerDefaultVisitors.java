@@ -35,6 +35,10 @@ public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 		getPlayer().acceptVisitor(new PlayerKick());
 	}
 	
+	public void interact() {
+		getPlayer().acceptVisitor(new PlayerInteract());
+	}
+	
 	public void castSpell(Spell spell) {
 		switch (spell.getDirectionType()) {
 			case NON_DIRECTIONAL:

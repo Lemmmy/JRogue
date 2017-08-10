@@ -12,6 +12,7 @@ import jr.dungeon.io.Prompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.language.transformers.Article;
 import jr.utils.Point;
 import lombok.AllArgsConstructor;
 
@@ -76,11 +77,17 @@ public class PlayerWalk implements PlayerVisitor {
 		walkAction(player, tile, newX, newY);
 		ent.setAction(new ActionMove(player.getLastPosition(), new Action.NoCallback()));
 		
-		player.getDungeon().You("swap places with [CYAN]%s[].", ent.getName(player));
+		player.getDungeon().You(
+			"swap places with [CYAN]%s[].",
+			Article.addTheIfPossible(ent.getName(player).clone(), false).build()
+		);
 	}
 	
 	private void friendlyQuery(Player player, Entity ent) {
-		String msg = "Are you sure you want to attack [CYAN]" + ent.getName(player) + "[]?";
+		String msg = String.format(
+			"Are you sure you want to attack [CYAN]%s[]?",
+			Article.addTheIfPossible(ent.getName(player).clone(), false).build()
+		);
 		
 		player.getDungeon().prompt(new Prompt(
 			msg, new char[]{'y', 'n'}, true,

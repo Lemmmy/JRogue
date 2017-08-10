@@ -10,6 +10,7 @@ import jr.dungeon.entities.player.Player;
 import jr.utils.Point;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
+import jr.utils.VectorInt;
 import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -214,6 +215,12 @@ public class EntityStore implements Serialisable {
 			.collect(Collectors.toList());
 	}
 	
+	private List<Entity> getAdjacentEntities(int x, int y, VectorInt[] directions) {
+		return Arrays.stream(directions)
+			.flatMap(d -> getEntitiesAt(x + d.getX(), y + d.getY()).stream())
+			.collect(Collectors.toList());
+	}
+	
 	/**
 	 * @param x The X position to check.
 	 * @param y The Y position to check.
@@ -223,11 +230,20 @@ public class EntityStore implements Serialisable {
 	 * @see Utils#DIRECTIONS
 	 */
 	public List<Entity> getAdjacentEntities(int x, int y) {
-		List<Entity> entities = new ArrayList<>();
-		
-		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY())));
-		
-		return entities;
+		return getAdjacentEntities(x, y, Utils.DIRECTIONS);
+	}
+	
+	/**
+	 *
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return All {@link Entity Entities} adjacent to this tile, including diagonally.
+	 *
+	 * @see Utils#OCT_DIRECTIONS
+	 */
+	public List<Entity> getOctAdjacentEntities(int x, int y) {
+		return getAdjacentEntities(x, y, Utils.OCT_DIRECTIONS);
 	}
 	
 	/**
@@ -240,6 +256,12 @@ public class EntityStore implements Serialisable {
 	 */
 	public List<Entity> getAdjacentMonsters(int x, int y) {
 		return getAdjacentEntities(x, y).stream()
+			.filter(e -> e instanceof Monster)
+			.collect(Collectors.toList());
+	}
+	
+	public List<Entity> getOctAdjacentMonsters(int x, int y) {
+		return getOctAdjacentEntities(x, y).stream()
 			.filter(e -> e instanceof Monster)
 			.collect(Collectors.toList());
 	}
