@@ -12,6 +12,7 @@ import jr.dungeon.entities.events.EntityEnergyChangedEvent;
 import jr.dungeon.entities.events.EntityHealthChangedEvent;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.entities.monsters.ai.AStarPathfinder;
+import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.events.PlayerDefaultEvents;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.visitors.PlayerDefaultVisitors;
@@ -24,8 +25,11 @@ import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -35,10 +39,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -64,6 +66,8 @@ public class Player extends EntityLiving {
 	private final JSONObject persistence = new JSONObject();
 	
 	public final PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
+	
+	@Getter @Setter private Familiar familiar;
 	
 	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -110,7 +114,38 @@ public class Player extends EntityLiving {
 		setHealth(getMaxHealth());
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 		
+		spawnFamiliar();
+		
 		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
+	}
+	
+	private void spawnFamiliar() {
+		Class<? extends Familiar> familiarClass = getRole().getStartingFamiliar();
+		if (familiarClass == null) return;
+		
+		Point spawnPoint;
+		
+		List<Tile> availableSpawnTiles = Arrays.stream(getLevel().tileStore.getOctAdjacentTiles(getPosition()))
+			.filter(t -> t.getType().getSolidity() == TileType.Solidity.WALK_ON)
+			.collect(Collectors.toList());
+		
+		if (availableSpawnTiles.isEmpty()) {
+			spawnPoint = getPosition();
+		} else {
+			spawnPoint = RandomUtils.randomFrom(availableSpawnTiles).getPosition();
+		}
+		
+		try {
+			Constructor<? extends Familiar> familiarConstructor = familiarClass.getConstructor(
+				Dungeon.class, Level.class, int.class, int.class
+			);
+			this.familiar = familiarConstructor.newInstance(
+				getDungeon(), getLevel(), spawnPoint.getX(), spawnPoint.getY()
+			);
+			getLevel().entityStore.addEntity(this.familiar);
+		} catch (Exception e) {
+			JRogue.getLogger().error("Error spawning familiar", e);
+		}
 	}
 	
 	@Override

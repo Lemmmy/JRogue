@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,13 +41,13 @@ public abstract class Room {
 	 *
 	 * @see GeneratorRooms#graphRooms()
 	 */
-	private List<Room> touching = new ArrayList<>();
+	private List<Room> touching = new LinkedList<>();
 	
 	/**
 	 * List of {@link jr.dungeon.generators.GeneratorRooms.ConnectionPoint connection points} involving this room -
 	 * points a door should be placed and a corridor built from.
 	 */
-	private List<GeneratorRooms.ConnectionPoint> connectionPoints = new ArrayList<>();
+	private List<GeneratorRooms.ConnectionPoint> connectionPoints = new LinkedList<>();
 	
 	/**
 	 * Whether or not this room is the room the player spawns in.
