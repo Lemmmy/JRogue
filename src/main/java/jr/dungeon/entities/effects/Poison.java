@@ -60,7 +60,7 @@ public class Poison extends StatusEffect {
 	
 	@Override
 	public void onEnd() {
-		getMessenger().greenYou("managed to lightAbsorb the deadly poison.");
+		getMessenger().greenYou("managed to absorb the deadly poison.");
 	}
 	
 	@Override
