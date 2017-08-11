@@ -3,6 +3,8 @@ package jr;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
+import jr.debugger.DebugClient;
+import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
@@ -62,12 +64,14 @@ public class JRogue {
 	public static String BUILD_HASH = "unknown";
 	
 	@Getter
+	@HideFromDebugger
 	private static Reflections reflections;
 	
 	/**
 	 * The game's logger.
 	 */
 	@Getter
+	@HideFromDebugger
 	private static Logger logger;
 	
 	/**
@@ -85,6 +89,9 @@ public class JRogue {
 	 */
 	public GameAdapter adapter;
 	
+	@HideFromDebugger
+	public DebugClient debugClient;
+	
 	/**
 	 * The time (in milliseconds) that the game was started.
 	 */
@@ -96,6 +103,10 @@ public class JRogue {
 	public JRogue(Settings settings) {
 		initialiseReflections();
 		
+		if (settings.isShowDebugClient()){
+			initialiseDebugClient();
+		}
+		
 		try {
 			adapter = new GameAdapter();
 		} catch (Exception e) {
@@ -105,6 +116,10 @@ public class JRogue {
 				Gdx.app.exit();
 			}
 		}
+	}
+	
+	private void initialiseDebugClient() {
+	
 	}
 	
 	private void initialiseReflections() {
