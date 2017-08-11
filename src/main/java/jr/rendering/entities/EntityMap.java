@@ -45,7 +45,9 @@ public enum EntityMap {
 	APPEARANCE_ARROW(new EntityRendererProjectile("textures/entities.png", 1, 4)),
 	APPEARANCE_STRIKE(new EntityRendererProjectile("textures/entities.png", 0, 4)),
 	
-	APPEARANCE_LIGHT_ORB(2, 4);
+	APPEARANCE_LIGHT_ORB(2, 4),
+	
+	APPEARANCE_SHOPKEEPER(new EntityRendererRandom(0, 6, 8));
 	
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;

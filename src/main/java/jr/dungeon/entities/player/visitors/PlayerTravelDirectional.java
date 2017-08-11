@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.io.DirectionPromptCallback;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
@@ -17,23 +18,17 @@ public class PlayerTravelDirectional implements PlayerVisitor {
 	public void visit(Player player) {
 		String msg = "Travel in what direction?";
 		
-		player.getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
+		player.getDungeon().prompt(new Prompt(msg, null, true, new DirectionPromptCallback(player.getDungeon()) {
 			@Override
-			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-					player.getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-					return;
-				}
-				
-				travel(response, player);
+			public void onDirectionResponse(VectorInt dir) {
+				travel(dir, player);
 			}
 		}));
 	}
 	
-	private void travel(char response, Player player) {
+	private void travel(VectorInt d, Player player) {
 		Path pathTaken = new Path();
 		
-		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
 		int dx = d.getX();
 		int dy = d.getY();
 		

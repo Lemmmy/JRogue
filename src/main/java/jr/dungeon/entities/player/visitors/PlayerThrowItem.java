@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.io.DirectionPromptCallback;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.player.Player;
@@ -21,15 +22,10 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 			
 			String msg2 = "In what direction?";
 			
-			player.getDungeon().prompt(new Prompt(msg2, null, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
+			player.getDungeon().prompt(new Prompt(msg2, null, true, new DirectionPromptCallback(player.getDungeon()) {
 				@Override
-				public void onResponse(char response) {
-					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
-						player.getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
-						return;
-					}
-					
-					throwItem(player, response, item, stack, inv, ce);
+				public void onDirectionResponse(VectorInt dir) {
+					throwItem(player, dir, item, stack, inv, ce);
 				}
 			}));
 		});
@@ -47,12 +43,11 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 	}
 	
 	private void throwItem(Player player,
-						   char response,
+						   VectorInt d,
 						   Item item,
 						   ItemStack stack,
 						   Container inv,
 						   Container.ContainerEntry ce) {
-		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
 		int dx = d.getX();
 		int dy = d.getY();
 		

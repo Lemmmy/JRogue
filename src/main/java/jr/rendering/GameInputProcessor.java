@@ -44,7 +44,8 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.drop(), 'd');
 		registerKeyMapping(p -> p.defaultVisitors.eat(), 'e');
 		registerKeyMapping(p -> p.defaultVisitors.fire(), 'f');
-		registerKeyMapping(() -> renderer.getHudComponent().showInventoryWindow(), 'i');
+		registerKeyMapping(__ -> renderer.getHudComponent().showInventoryWindow(), 'i');
+		registerKeyMapping(p -> p.defaultVisitors.interact(), 'I');
 		registerKeyMapping(p -> p.defaultVisitors.loot(), 'l');
 		registerKeyMapping(p -> p.defaultVisitors.quaff(), 'q');
 		registerKeyMapping(dungeon::quit, 'Q');
@@ -53,7 +54,7 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.throwItem(), 't');
 		registerKeyMapping(p -> p.defaultVisitors.wield(), 'w');
 		registerKeyMapping(Player::swapHands, 'x');
-		registerKeyMapping(() -> renderer.getHudComponent().showSpellWindow(), 'Z');
+		registerKeyMapping(__ -> renderer.getHudComponent().showSpellWindow(), 'Z');
 		registerKeyMapping(p -> p.defaultVisitors.pickup(), ',');
 		registerKeyMapping(p -> p.defaultVisitors.climbAny(), '.');
 		registerKeyMapping(p -> p.defaultVisitors.climbUp(), '<');

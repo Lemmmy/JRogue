@@ -19,6 +19,7 @@ import jr.dungeon.entities.monsters.familiars.Cat;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
+import jr.dungeon.entities.npcs.NPCShopkeeper;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -235,6 +236,8 @@ public class Wishes {
 		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
 		
 		registerWish("cat", new WishSpawn<>(Cat.class));
+		
+		registerWish("shopkeeper", new WishSpawn<>(NPCShopkeeper.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {

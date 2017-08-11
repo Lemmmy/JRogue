@@ -52,6 +52,30 @@ public class Utils {
 		MOVEMENT_CHARS.put('9', new VectorInt(1, -1));
 	}
 	
+	public static int asCardinalDirection(VectorInt dir) {
+		VectorInt n = dir.normalised();
+		
+		if (n.getX() == -1 && n.getY() == 0) {
+			return Cardinal.WEST;
+		} else if (n.getX() == 1 && n.getY() == 0) {
+			return Cardinal.EAST;
+		} else if (n.getX() == 0 && n.getY() == 1) {
+			return Cardinal.SOUTH;
+		} else if (n.getX() == 0 && n.getY() == -1) {
+			return Cardinal.NORTH;
+		} else if (n.getX() == 1 && n.getY() == 1) {
+			return Cardinal.SOUTH_EAST;
+		} else if (n.getX() == -1 && n.getY() == 1) {
+			return Cardinal.SOUTH_WEST;
+		} else if (n.getX() == 1 && n.getY() == -1) {
+			return Cardinal.NORTH_EAST;
+		} else if (n.getX() == -1 && n.getY() == -1) {
+			return Cardinal.NORTH_WEST;
+		}
+		
+		return -1;
+	}
+	
 	public static int distance(int ax, int ay, int bx, int by) {
 		return (int) Math.sqrt(distanceSq(ax, ay, bx, by));
 	}
