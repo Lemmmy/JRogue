@@ -225,13 +225,13 @@ public class Colour {
 	}
 	
 	public float toFloatBits() {
-		int colour = (int) (255 * a) << 24 | (int) (255 * b) << 16 | (int) (255 * g) << 8 | (int) (255 * r);
+		int colour = (int) (255 * r) << 24 | (int) (255 * g) << 16 | (int) (255 * b) << 8 | (int) (255 * a);
 		
 		return Float.intBitsToFloat(colour & 0xfeffffff);
 	}
 	
 	public int toIntBits() {
-		return (int) (255 * a) << 24 | (int) (255 * b) << 16 | (int) (255 * g) << 8 | (int) (255 * r);
+		return  (int) (255 * r) << 24 | (int) (255 * g) << 16 | (int) (255 * b) << 8 | (int) (255 * a);
 	}
 	
 	public String toString() {
