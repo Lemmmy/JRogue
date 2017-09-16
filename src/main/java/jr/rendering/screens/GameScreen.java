@@ -1,8 +1,6 @@
 package jr.rendering.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,7 +36,7 @@ import java.util.List;
  * batch and camera.
  */
 @Getter
-public class GameScreen extends ScreenAdapter implements EventListener {
+public class GameScreen extends BasicScreen implements EventListener {
 	/**
 	 * The time in seconds to animate movement between turns.
 	 */
@@ -83,8 +81,6 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	private HUDComponent hudComponent;
 	private MinimapComponent minimapComponent;
 	private FPSCounterComponent fpsCounterComponent;
-	
-	private InputMultiplexer inputMultiplexer;
 	
 	private float zoom = 1.0f;
 	
@@ -174,10 +170,10 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		}
 	}
 	
-	private void initialiseInputMultiplexer() {
-		inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hudComponent.getStage());
+	private void initialiseInputProcessors() {
+		clearInputProcessors();
+		addInputProcessor(new GameInputProcessor(dungeon, this));
+		addInputProcessor(hudComponent.getStage());
 	}
 	
 	private void updateWindowTitle() {
@@ -283,11 +279,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	public void show() {
 		super.show();
 		
-		if (inputMultiplexer == null) {
-			initialiseInputMultiplexer();
-		}
-		
-		Gdx.input.setInputProcessor(inputMultiplexer);
+		initialiseInputProcessors();
 	}
 	
 	@Override

@@ -2,10 +2,8 @@ package jr.rendering;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +14,7 @@ import jr.Settings;
 import jr.debugger.DebugClient;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
+import jr.rendering.screens.BasicScreen;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.screens.utils.ScreenTransition;
@@ -51,6 +50,8 @@ public class GameAdapter extends Game {
 	
 	@Setter private Object rootDebugObject;
 	
+	private InputMultiplexer inputMultiplexer;
+	
 	public GameAdapter() {
 		this.settings = JRogue.getSettings();
 	}
@@ -74,6 +75,8 @@ public class GameAdapter extends Game {
 		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		
+		inputMultiplexer = new InputMultiplexer();
+		
 		if (Dungeon.canLoad()) {
 			screen = new GameScreen(this, Dungeon.load());
 		} else {
@@ -81,6 +84,8 @@ public class GameAdapter extends Game {
 		}
 		
 		screen.show();
+		
+		updateInputProcessors();
 	}
 	
 	@Override
@@ -101,6 +106,7 @@ public class GameAdapter extends Game {
 			transitioning = false;
 			newScreen = null;
 			screen.render(delta);
+			transitionComplete();
 		} else if (transition != null && newScreen != null) {
 			// transition is active
 			oldFBO.begin();
@@ -117,6 +123,24 @@ public class GameAdapter extends Game {
 			
 			currentTransitionTime += delta;
 		}
+	}
+	
+	private void transitionComplete() {
+		updateInputProcessors();
+	}
+	
+	private void updateInputProcessors() {
+		inputMultiplexer.clear();
+		
+		if (screen instanceof BasicScreen) {
+			((BasicScreen) screen).getInputProcessors().forEach(inputMultiplexer::addProcessor);
+		}
+		
+		if (debugClient != null && debugClient.getUI() != null) {
+			debugClient.getUI().getInputProcessors().forEach(inputMultiplexer::addProcessor);
+		}
+		
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
 	@Override

@@ -24,7 +24,7 @@ import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.ui.skin.UISkin;
 import org.apache.commons.lang3.StringUtils;
 
-public class CharacterCreationScreen extends ScreenAdapter {
+public class CharacterCreationScreen extends BasicScreen {
 	private Skin skin;
 	private Stage stage;
 	
@@ -221,6 +221,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	public void show() {
 		super.show();
 		
-		Gdx.input.setInputProcessor(stage);
+		clearInputProcessors();
+		addInputProcessor(stage);
 	}
 }

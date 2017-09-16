@@ -8,6 +8,7 @@ import jr.JRogue;
 import jr.Settings;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
+import lombok.Getter;
 
 public class DebugClient extends ApplicationAdapter {
 	public static final String WINDOW_TITLE = "JRogue Debug Client";
@@ -59,5 +60,9 @@ public class DebugClient extends ApplicationAdapter {
 	@Override
 	public void resize(int width, int height) {
 		if (ui != null) ui.resize(width, height);
+	}
+	
+	public DebugUI getUI() {
+		return ui;
 	}
 }

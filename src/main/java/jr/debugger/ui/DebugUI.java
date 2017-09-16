@@ -1,6 +1,8 @@
 package jr.debugger.ui;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -10,12 +12,17 @@ import jr.debugger.DebugClient;
 import jr.rendering.ui.skin.UISkin;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DebugUI {
 	@Getter private Skin skin;
 	@Getter private Stage stage;
 	
 	private DebugClient debugClient;
 	private Settings settings;
+	
+	@Getter private List<InputProcessor> inputProcessors = new ArrayList<>();
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -31,8 +38,17 @@ public class DebugUI {
 		Table root = new Table();
 		root.setFillParent(true);
 		
+		root.add(new Label("hello world", skin));
+		
 		root.top();
 		stage.addActor(root);
+		
+		initInputProcessors();
+	}
+	
+	public void initInputProcessors() {
+		inputProcessors.clear();
+		inputProcessors.add(stage);
 	}
 	
 	public void render() {
