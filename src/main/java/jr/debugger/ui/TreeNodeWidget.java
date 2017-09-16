@@ -20,8 +20,10 @@ public class TreeNodeWidget extends Table {
 	
 	@Getter private TreeNode node;
 	
-	private Drawable identicon;
+	private Table nameTable;
+	
 	private Image identiconImage;
+	private Image accessModifierImage;
 	private Label nameLabel;
 	
 	private Map<Integer, TreeNodeWidget> children = new LinkedHashMap<>();
@@ -41,7 +43,9 @@ public class TreeNodeWidget extends Table {
 		}
 	}
 	
-	private void initialiseIdenticon() {
+	private void initialiseIdenticon(Table container) {
+		Drawable identicon;
+		
 		if (node.getInstance() == null) {
 			identicon = new TextureRegionDrawable(nullIcon);
 		} else {
@@ -49,12 +53,18 @@ public class TreeNodeWidget extends Table {
 		}
 		
 		identiconImage = new Image(identicon);
-		add(identiconImage).left().padRight(node.getInstance() == null ? 4 + Identicon.SHAPE_PADDING : 4);
+		container.add(identiconImage).left().padRight(node.getInstance() == null ? 4 + Identicon.SHAPE_PADDING : 4);
 	}
 	
-	private void initialiseNameLabel() {
+	private void initializeAccessModifier(Table container) {
+		AccessLevelMap alm = AccessLevelMap.valueOf(node.getAccessLevel().name());
+		accessModifierImage = new Image(new TextureRegionDrawable(alm.getTextureRegion()));
+		container.add(accessModifierImage).left().padRight(4);
+	}
+	
+	private void initialiseNameLabel(Table container) {
 		nameLabel = new Label(node.toString(), getSkin());
-		add(nameLabel).left().row();
+		container.add(nameLabel).left().row();
 	}
 	
 	private void initialiseChildren() {
@@ -70,8 +80,14 @@ public class TreeNodeWidget extends Table {
 	}
 	
 	private void initialise() {
-		initialiseIdenticon();
-		initialiseNameLabel();
+		nameTable = new Table(getSkin());
+		
+		initialiseIdenticon(nameTable);
+		initializeAccessModifier(nameTable);
+		initialiseNameLabel(nameTable);
+		
+		add(nameTable).left().row();
+		
 		initialiseChildren();
 	}
 }
