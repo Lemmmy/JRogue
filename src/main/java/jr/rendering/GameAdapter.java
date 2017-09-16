@@ -66,7 +66,7 @@ public class GameAdapter extends Game {
 		ErrorHandler.setGLString();
 		
 		if (settings.isShowDebugClient()) {
-			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(rootDebugObject));
+			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));
 			this.debugClientThread.start();
 		}
 		
@@ -129,7 +129,7 @@ public class GameAdapter extends Game {
 		updateInputProcessors();
 	}
 	
-	private void updateInputProcessors() {
+	public void updateInputProcessors() {
 		inputMultiplexer.clear();
 		
 		if (screen instanceof BasicScreen) {

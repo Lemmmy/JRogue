@@ -4,14 +4,18 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
+import com.badlogic.gdx.graphics.GL20;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
+import jr.rendering.GameAdapter;
 import lombok.Getter;
 
 public class DebugClient extends ApplicationAdapter {
 	public static final String WINDOW_TITLE = "JRogue Debug Client";
+	
+	private GameAdapter gameAdapter;
 	
 	private Object rootObject;
 	
@@ -21,7 +25,8 @@ public class DebugClient extends ApplicationAdapter {
 	
 	private DebugUI ui;
 	
-	public DebugClient(Object rootObject) {
+	public DebugClient(GameAdapter gameAdapter, Object rootObject) {
+		this.gameAdapter = gameAdapter;
 		this.rootObject = rootObject;
 		
 		Settings settings = JRogue.getSettings();
@@ -44,6 +49,8 @@ public class DebugClient extends ApplicationAdapter {
 		
 		ui = new DebugUI(this);
 		ui.initialise();
+		
+		gameAdapter.updateInputProcessors();
 	}
 	
 	public void openNode(TreeNode node) {
@@ -53,6 +60,8 @@ public class DebugClient extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		if (ui != null) {
 			ui.update(Gdx.graphics.getDeltaTime());
 			ui.render();

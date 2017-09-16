@@ -59,7 +59,11 @@ public class TreeNodeWidget extends Table {
 		}
 		
 		identiconImage = new Image(identicon);
-		container.add(identiconImage).left().padRight(node.getInstance() == null ? 4 + Identicon.SHAPE_PADDING : 4);
+		identiconImage.addListener(new TextTooltip(String.format(
+			"[P_GREY_3]0x[]%s",
+			Integer.toHexString(node.getIdentityHashCode())
+		), getSkin()));
+		container.add(identiconImage).left().padRight(node.getInstance() == null ? 8 + Identicon.SHAPE_PADDING : 8);
 	}
 	
 	private void initialiseModifiers(Table container) {
