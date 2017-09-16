@@ -15,7 +15,7 @@ public class DebugClient extends ApplicationAdapter {
 	
 	private Object rootObject;
 	
-	private TreeNode rootNode;
+	@Getter private TreeNode rootNode;
 	private TreeNode pinnedNode;
 	private TreeNode manuallyPinnedNode;
 	
@@ -39,6 +39,7 @@ public class DebugClient extends ApplicationAdapter {
 	@Override
 	public void create() {
 		rootNode = new TreeNode(null, null, rootObject);
+		openNode(rootNode);
 		
 		ui = new DebugUI(this);
 		ui.initialise();

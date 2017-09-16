@@ -124,7 +124,7 @@ public class JRogue {
 		// remove this method and the org.reflections dependency
 		
 		ConfigurationBuilder cb = new ConfigurationBuilder()
-			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().toString()))
+			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().getName()))
 			// TODO: add mod packages as URLs
 			.addScanners(
 				new MethodParameterScanner(),

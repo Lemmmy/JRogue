@@ -1,7 +1,15 @@
 package jr.debugger.tree;
 
+import jr.ErrorHandler;
+import jr.JRogue;
+import jr.debugger.tree.namehints.LongNameHint;
+import jr.debugger.tree.namehints.NumberNameHint;
+import jr.debugger.tree.namehints.TypeNameHint;
+import jr.debugger.tree.namehints.TypeNameHintHandler;
 import jr.debugger.utils.Debuggable;
+import jr.dungeon.events.EventHandler;
 import lombok.Getter;
+import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,6 +21,29 @@ import java.util.*;
 
 @Getter
 public class TreeNode {
+	private static Map<Class, TypeNameHint> nameHintMap = new HashMap<>();
+	
+	static {
+		Reflections reflections = JRogue.getReflections();
+		
+		reflections.getTypesAnnotatedWith(TypeNameHintHandler.class).stream()
+			.filter(TypeNameHint.class::isAssignableFrom)
+			.forEach(handlerClass -> {
+				TypeNameHintHandler annotation = handlerClass.getAnnotation(TypeNameHintHandler.class);
+				Class[] classes = annotation.value();
+			
+				try {
+					TypeNameHint handlerInstance = (TypeNameHint) handlerClass.newInstance();
+				
+					for (Class clazz : classes) {
+						nameHintMap.put(clazz, handlerInstance);
+					}
+				} catch (InstantiationException | IllegalAccessException e) {
+					ErrorHandler.error("Unable to initialise debug client name hint map", e);
+				}
+			});
+	}
+	
 	private AccessLevel accessLevel = AccessLevel.UNKNOWN;
 	private boolean isStatic, isFinal;
 	
@@ -119,6 +150,8 @@ public class TreeNode {
 		List<Field> fields = getFieldsUpTo(instanceClass, Object.class);
 		
 		fields.forEach(field -> {
+			field.setAccessible(true);
+			
 			try {
 				Object instance = field.get(this.instance);
 				TreeNode node = new TreeNode(this, field, instance);
@@ -166,31 +199,51 @@ public class TreeNode {
 		children.forEach(TreeNode::refresh);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void updateNameHint() {
-		if (debuggableInstance == null) return;
-		
-		nameHint = debuggableInstance.getNameHint();
+		if (debuggableInstance == null) {
+			if (instance == null) return;
+			
+			Class clazz = instance.getClass();
+			
+			if (nameHintMap.containsKey(clazz)) {
+				nameHint = nameHintMap.get(clazz).toNameHint(parentField, instance);
+			}
+		} else {
+			nameHint = debuggableInstance.getNameHint();
+		}
 	}
 	
 	public String getDisplayedTypeName() {
 		if (instance != null) {
-			return String.format(
-				"[P_BLUE_1]%s[] → [P_BLUE_2]%s[]",
-				instance.getClass().getSimpleName(),
-				type != null ? type.getTypeName() : "unknown"
-			);
+			if (type != null && !type.getTypeName().contains(".")) {
+				return String.format(
+					"[P_BLUE_1]%s[] -> [P_BLUE_2]%s[]",
+					instance.getClass().getSimpleName(),
+					type.getTypeName()
+				);
+			} else {
+				return String.format(
+					"[P_BLUE_1]%s[]",
+					instance.getClass().getSimpleName()
+				);
+			}
 		} else {
-			return String.format(
-				"[P_BLUE_2]%s[]",
-				type != null ? type.getTypeName() : "unknown"
-			);
+			try {
+				return String.format("[P_BLUE_2]%s[]",
+					type != null ? Class.forName(type.getTypeName()).getSimpleName() : "unknown"
+				);
+			} catch (ClassNotFoundException e) {
+				return String.format("[P_BLUE_2]%s[]",
+					type != null ? type.getTypeName() : "unknown"
+				);
+			}
 		}
 	}
 	
 	public String toString() {
 		return String.format(
-			"@[P_GREY_4]%s[] %s [P_CYAN_1]%s[]%s%s",
-			Integer.toHexString(identityHashCode),
+			"%s [P_CYAN_1]%s[]%s%s",
 			getDisplayedTypeName(),
 			name,
 			isArray ? String.format("([P_GRAY_2]%,d[] items)", arrayLength) : "",

@@ -2,7 +2,6 @@ package jr.debugger.ui;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -35,12 +34,14 @@ public class DebugUI {
 		stage = new Stage(stageViewport);
 		skin = UISkin.getInstance();
 		
+		// stage.setDebugAll(true);
+		
 		Table root = new Table();
 		root.setFillParent(true);
 		
-		root.add(new Label("hello world", skin));
+		root.add(new TreeNodeWidget(debugClient.getRootNode(), skin));
 		
-		root.top();
+		root.top().left();
 		stage.addActor(root);
 		
 		initInputProcessors();
