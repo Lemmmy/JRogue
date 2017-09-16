@@ -213,8 +213,7 @@ public class TreeNode {
 		if (instance != null) {
 			if (type != null && !type.getTypeName().contains(".")) {
 				return String.format(
-					"[P_BLUE_1]%s[] -> [P_BLUE_2]%s[]",
-					instance.getClass().getSimpleName(),
+					"[P_BLUE_2]%s[]",
 					type.getTypeName()
 				);
 			} else {
