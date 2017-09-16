@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.debugger.DebugClient;
+import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
@@ -37,18 +40,19 @@ public class GameAdapter extends Game {
 	
 	private ScreenTransition transition;
 	
-	/**
-	 * Blocking adapter constructor. Calls {@link #create()} and starts the game's loop.
-	 */
+	@HideFromDebugger
+	private Settings settings;
+	
+	@HideFromDebugger
+	private Thread debugClientThread;
+	
+	@HideFromDebugger
+	public DebugClient debugClient;
+	
+	@Setter private Object rootDebugObject;
+	
 	public GameAdapter() {
-		Settings settings = JRogue.getSettings();
-		
-		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setResizable(true);
-		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
-		config.useVsync(settings.isVsync());
-		
-		new Lwjgl3Application(this, config);
+		this.settings = JRogue.getSettings();
 	}
 	
 	@Override
@@ -59,6 +63,11 @@ public class GameAdapter extends Game {
 		});
 		
 		ErrorHandler.setGLString();
+		
+		if (settings.isShowDebugClient()) {
+			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(rootDebugObject));
+			this.debugClientThread.start();
+		}
 		
 		batch = new SpriteBatch();
 		

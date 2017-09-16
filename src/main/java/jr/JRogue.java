@@ -1,6 +1,8 @@
 package jr;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.debugger.DebugClient;
@@ -28,11 +30,9 @@ import org.reflections.util.ConfigurationBuilder;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -89,9 +89,6 @@ public class JRogue {
 	 */
 	public GameAdapter adapter;
 	
-	@HideFromDebugger
-	public DebugClient debugClient;
-	
 	/**
 	 * The time (in milliseconds) that the game was started.
 	 */
@@ -103,12 +100,16 @@ public class JRogue {
 	public JRogue(Settings settings) {
 		initialiseReflections();
 		
-		if (settings.isShowDebugClient()){
-			initialiseDebugClient();
-		}
-		
 		try {
+			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+			config.setResizable(true);
+			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+			config.useVsync(settings.isVsync());
+			
 			adapter = new GameAdapter();
+			adapter.setRootDebugObject(this);
+			
+			new Lwjgl3Application(adapter, config);
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
 			
@@ -116,10 +117,6 @@ public class JRogue {
 				Gdx.app.exit();
 			}
 		}
-	}
-	
-	private void initialiseDebugClient() {
-	
 	}
 	
 	private void initialiseReflections() {
