@@ -8,12 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-public class UITextFieldStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler
+public class UITextFieldStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		skin.add("default", getTextFieldStyle(skin));
 	}
 	
-	public static TextField.TextFieldStyle getTextFieldStyle(Skin skin) {
+	public TextField.TextFieldStyle getTextFieldStyle(Skin skin) {
 		TextField.TextFieldStyle style = new TextField.TextFieldStyle();
 		
 		style.background = getBackground();
@@ -26,21 +27,21 @@ public class UITextFieldStyles {
 		return style;
 	}
 	
-	public static Drawable getBackground() {
+	public Drawable getBackground() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getFocusedBackground() {
+	public Drawable getFocusedBackground() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 148, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getDisabledBackground() {
+	public Drawable getDisabledBackground() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 158, 31, 10, 12),
 			4, 5, 5, 6

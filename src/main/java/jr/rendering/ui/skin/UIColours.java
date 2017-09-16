@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class UIColours {
+@UISkinStyleHandler(priority = UISkinStylePriority.HIGHEST)
+public class UIColours implements UISkinStyle {
 	static {
 		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
 		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
@@ -46,7 +47,7 @@ public class UIColours {
 		Colors.put("P_PINK_4", new Color(0xf356e6ff));
 	}
 	
-	public static void add(Skin skin) {
+	public void add(Skin skin) {
 		Colors.getColors().forEach(stringColorEntry -> addColour(
 			skin,
 			stringColorEntry.key.toLowerCase().replace("p_", ""),
@@ -58,7 +59,7 @@ public class UIColours {
 		addColour(skin, "greenBackground", new Color(0x6cdb00ff));
 	}
 	
-	public static void addColour(Skin skin, String name, Color colour) {
+	public void addColour(Skin skin, String name, Color colour) {
 		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(colour);
 		pixmap.fill();

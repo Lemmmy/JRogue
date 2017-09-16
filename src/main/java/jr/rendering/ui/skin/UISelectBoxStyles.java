@@ -10,14 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-public class UISelectBoxStyles {
+@UISkinStyleHandler
+public class UISelectBoxStyles implements UISkinStyle {
 	// TODO: new style
 	
-	public static void add(Skin skin) {
+	public void add(Skin skin) {
 		skin.add("default", getSelectBoxStyle(skin));
 	}
 	
-	public static SelectBox.SelectBoxStyle getSelectBoxStyle(Skin skin) {
+	public SelectBox.SelectBoxStyle getSelectBoxStyle(Skin skin) {
 		SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle();
 		
 		style.background = getBackground();
@@ -34,28 +35,28 @@ public class UISelectBoxStyles {
 		return style;
 	}
 	
-	public static Drawable getBackground() {
+	public Drawable getBackground() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 59, 10, 5, 18),
 			2, 2, 2, 2
 		));
 	}
 	
-	public static Drawable getBackgroundDisabled() {
+	public Drawable getBackgroundDisabled() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 69, 10, 5, 18),
 			2, 2, 2, 2
 		));
 	}
 	
-	public static Drawable getBackgroundOver() {
+	public Drawable getBackgroundOver() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 74, 10, 5, 18),
 			2, 2, 2, 2
 		));
 	}
 	
-	public static Drawable getBackgroundOpen() {
+	public Drawable getBackgroundOpen() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 79, 10, 5, 18),
 			2, 2, 2, 2

@@ -1,10 +1,7 @@
 package jr.debugger.ui;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.debugger.tree.TreeNode;
@@ -17,13 +14,14 @@ import java.util.Map;
 
 public class TreeNodeWidget extends Table {
 	private static TextureRegion nullIcon;
+	private static TextureRegion staticIcon;
+	private static TextureRegion finalIcon;
 	
 	@Getter private TreeNode node;
 	
 	private Table nameTable;
 	
 	private Image identiconImage;
-	private Image accessModifierImage;
 	private Label nameLabel;
 	
 	private Map<Integer, TreeNodeWidget> children = new LinkedHashMap<>();
@@ -33,13 +31,21 @@ public class TreeNodeWidget extends Table {
 		
 		this.node = node;
 		
-		initialiseNullIcon();
+		initialiseIcons();
 		initialise();
 	}
 	
-	private void initialiseNullIcon() {
+	private void initialiseIcons() {
 		if (nullIcon == null) {
 			nullIcon = ImageLoader.getSubimage("textures/hud.png", 128, 200, 16, 8);
+		}
+		
+		if (staticIcon == null) {
+			staticIcon = ImageLoader.getSubimage("textures/hud.png", 40, 192, 8, 8);
+		}
+		
+		if (finalIcon == null) {
+			finalIcon = ImageLoader.getSubimage("textures/hud.png", 48, 192, 8, 8);
 		}
 	}
 	
@@ -56,10 +62,23 @@ public class TreeNodeWidget extends Table {
 		container.add(identiconImage).left().padRight(node.getInstance() == null ? 4 + Identicon.SHAPE_PADDING : 4);
 	}
 	
-	private void initializeAccessModifier(Table container) {
+	private void initialiseModifiers(Table container) {
 		AccessLevelMap alm = AccessLevelMap.valueOf(node.getAccessLevel().name());
-		accessModifierImage = new Image(new TextureRegionDrawable(alm.getTextureRegion()));
-		container.add(accessModifierImage).left().padRight(4);
+		Image almIcon = new Image(new TextureRegionDrawable(alm.getTextureRegion()));
+		almIcon.addListener(new TextTooltip(node.getAccessLevel().humanName(), getSkin()));
+		container.add(almIcon).left().padRight(4);
+		
+		if (node.isStatic()) {
+			Image icon = new Image(new TextureRegionDrawable(staticIcon));
+			icon.addListener(new TextTooltip("Static", getSkin()));
+			container.add(icon).left().padRight(4);
+		}
+		
+		if (node.isFinal()) {
+			Image icon = new Image(new TextureRegionDrawable(finalIcon));
+			icon.addListener(new TextTooltip("Final", getSkin()));
+			container.add(icon).left().padRight(4);
+		}
 	}
 	
 	private void initialiseNameLabel(Table container) {
@@ -70,8 +89,14 @@ public class TreeNodeWidget extends Table {
 	private void initialiseChildren() {
 		if (node.isOpen()) {
 			node.getChildren().stream()
-				.filter(c -> !children.containsKey(c.getIdentityHashCode()))
 				.forEach(child -> {
+					int id = child.getIdentityHashCode();
+					
+					if (children.containsKey(id)) {
+						removeActor(children.get(id));
+						children.remove(id);
+					}
+					
 					TreeNodeWidget childWidget = new TreeNodeWidget(child, getSkin());
 					children.put(child.getIdentityHashCode(), childWidget);
 					add(childWidget).padLeft(8).left().row();
@@ -83,7 +108,7 @@ public class TreeNodeWidget extends Table {
 		nameTable = new Table(getSkin());
 		
 		initialiseIdenticon(nameTable);
-		initializeAccessModifier(nameTable);
+		initialiseModifiers(nameTable);
 		initialiseNameLabel(nameTable);
 		
 		add(nameTable).left().row();

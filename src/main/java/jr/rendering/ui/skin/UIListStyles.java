@@ -9,14 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-public class UIListStyles {
+@UISkinStyleHandler
+public class UIListStyles implements UISkinStyle {
 	// TODO: still using the old style.
 	
-	public static void add(Skin skin) {
+	public void add(Skin skin) {
 		skin.add("default", getListStyle(skin));
 	}
 	
-	public static List.ListStyle getListStyle(Skin skin) {
+	public List.ListStyle getListStyle(Skin skin) {
 		List.ListStyle style = new List.ListStyle();
 		
 		style.background = getBackground();
@@ -29,14 +30,14 @@ public class UIListStyles {
 		return style;
 	}
 	
-	public static Drawable getBackground() {
+	public Drawable getBackground() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 84, 10, 3, 3),
 			1, 1, 1, 1
 		));
 	}
 	
-	public static Drawable getSelection() {
+	public Drawable getSelection() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 84, 22, 3, 3),
 			1, 1, 1, 1

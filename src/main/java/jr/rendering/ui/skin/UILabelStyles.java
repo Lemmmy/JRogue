@@ -7,8 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-public class UILabelStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler(priority = UISkinStylePriority.HIGH)
+public class UILabelStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		addSimpleStyle(skin, "default", "default");
 		addSimpleStyle(skin, "redBackground", "default", "redBackground");
 		addSimpleStyle(skin, "greenBackground", "default", "greenBackground");
@@ -19,15 +20,15 @@ public class UILabelStyles {
 		addSimpleStyle(skin, "windowStyleRaisedMarkup", "default", null, getRaisedWindowDrawable());
 	}
 	
-	public static void addSimpleStyle(Skin skin, String name, String font) {
+	public void addSimpleStyle(Skin skin, String name, String font) {
 		addSimpleStyle(skin, name, font, null);
 	}
 	
-	public static void addSimpleStyle(Skin skin, String name, String font, String background) {
+	public void addSimpleStyle(Skin skin, String name, String font, String background) {
 		addSimpleStyle(skin, name, font, null, background != null ? skin.getDrawable(background) : null);
 	}
 	
-	public static void addSimpleStyle(Skin skin, String name, String font, Color fontColour, Drawable background) {
+	public void addSimpleStyle(Skin skin, String name, String font, Color fontColour, Drawable background) {
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
 		labelStyle.font = skin.getFont(font);
 		labelStyle.fontColor = fontColour;
@@ -39,14 +40,14 @@ public class UILabelStyles {
 		skin.add(name, labelStyle);
 	}
 	
-	public static Drawable getLoweredWindowDrawable() {
+	public Drawable getLoweredWindowDrawable() {
 		return new TiledNinePatchDrawable(
 			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
 			1, 1, 1, 1
 		);
 	}
 	
-	public static Drawable getRaisedWindowDrawable() {
+	public Drawable getRaisedWindowDrawable() {
 		return new TiledNinePatchDrawable(
 			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
 			1, 1, 1, 1

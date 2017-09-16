@@ -40,6 +40,7 @@ public class DebugClient extends ApplicationAdapter {
 	public void create() {
 		rootNode = new TreeNode(null, null, rootObject);
 		openNode(rootNode);
+		rootNode.refresh();
 		
 		ui = new DebugUI(this);
 		ui.initialise();

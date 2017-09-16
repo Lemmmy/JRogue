@@ -2,12 +2,9 @@ package jr.debugger.tree;
 
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.debugger.tree.namehints.LongNameHint;
-import jr.debugger.tree.namehints.NumberNameHint;
 import jr.debugger.tree.namehints.TypeNameHint;
 import jr.debugger.tree.namehints.TypeNameHintHandler;
 import jr.debugger.utils.Debuggable;
-import jr.dungeon.events.EventHandler;
 import lombok.Getter;
 import org.reflections.Reflections;
 
@@ -24,9 +21,7 @@ public class TreeNode {
 	private static Map<Class, TypeNameHint> nameHintMap = new HashMap<>();
 	
 	static {
-		Reflections reflections = JRogue.getReflections();
-		
-		reflections.getTypesAnnotatedWith(TypeNameHintHandler.class).stream()
+		JRogue.getReflections().getTypesAnnotatedWith(TypeNameHintHandler.class).stream()
 			.filter(TypeNameHint.class::isAssignableFrom)
 			.forEach(handlerClass -> {
 				TypeNameHintHandler annotation = handlerClass.getAnnotation(TypeNameHintHandler.class);
