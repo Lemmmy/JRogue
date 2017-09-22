@@ -47,6 +47,7 @@ public class GameAdapter extends Game {
 	
 	@HideFromDebugger
 	public DebugClient debugClient;
+	private boolean debugWindowFocused;
 	
 	@Setter private Object rootDebugObject;
 	
@@ -132,12 +133,14 @@ public class GameAdapter extends Game {
 	public void updateInputProcessors() {
 		inputMultiplexer.clear();
 		
-		if (screen instanceof BasicScreen) {
-			((BasicScreen) screen).getInputProcessors().forEach(inputMultiplexer::addProcessor);
-		}
-		
-		if (debugClient != null && debugClient.getUI() != null) {
-			debugClient.getUI().getInputProcessors().forEach(inputMultiplexer::addProcessor);
+		if (!debugWindowFocused) {
+			if (screen instanceof BasicScreen) {
+				((BasicScreen) screen).getInputProcessors().forEach(inputMultiplexer::addProcessor);
+			}
+		} else {
+			if (debugClient != null && debugClient.getUI() != null) {
+				debugClient.getUI().getInputProcessors().forEach(inputMultiplexer::addProcessor);
+			}
 		}
 		
 		Gdx.input.setInputProcessor(inputMultiplexer);
@@ -217,5 +220,10 @@ public class GameAdapter extends Game {
 		
 		oldFBO.dispose();
 		newFBO.dispose();
+	}
+	
+	public void setDebugWindowFocused(boolean debugWindowFocused) {
+		this.debugWindowFocused = debugWindowFocused;
+		updateInputProcessors();
 	}
 }

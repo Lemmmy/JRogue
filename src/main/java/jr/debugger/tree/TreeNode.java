@@ -5,8 +5,8 @@ import jr.JRogue;
 import jr.debugger.tree.namehints.TypeNameHint;
 import jr.debugger.tree.namehints.TypeNameHintHandler;
 import jr.debugger.utils.Debuggable;
+import jr.debugger.utils.HideFromDebugger;
 import lombok.Getter;
-import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,9 +15,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 public class TreeNode {
+	private static final List<String> localPackagePrefixes = new ArrayList<>();
+	
+	static {
+		// TODO: add mods too
+		localPackagePrefixes.add(JRogue.class.getPackage().getName());
+	}
+	
 	private static Map<Class, TypeNameHint> nameHintMap = new HashMap<>();
 	
 	static {
@@ -51,6 +59,7 @@ public class TreeNode {
 	private Debuggable debuggableInstance;
 	private boolean isPrimitive = false;
 	private boolean isArray = false;
+	private boolean isLocalClass = false;
 	private int arrayLength = 0;
 	private Type type;
 	
@@ -58,7 +67,6 @@ public class TreeNode {
 	
 	private TreeNode parent;
 	private List<TreeNode> children = new LinkedList<>();
-	private boolean foundChildren = false;
 	
 	public TreeNode(TreeNode parent, Field parentField, Object instance) {
 		this.parent = parent;
@@ -81,11 +89,23 @@ public class TreeNode {
 			this.name = getNameFromInstance(instance);
 		}
 		
+		checkPackagePrefix();
 		checkArray();
 		checkModifiers();
 		checkDebuggableInstance();
 		
 		refresh();
+	}
+	
+	private void checkPackagePrefix() {
+		if (type != null) {
+			String pkg = type.getTypeName();
+			
+			localPackagePrefixes.stream()
+				.filter(pkg::startsWith)
+				.findFirst()
+				.ifPresent(prefix -> isLocalClass = true);
+		}
 	}
 	
 	private void checkArray() {
@@ -131,8 +151,9 @@ public class TreeNode {
 	}
 	
 	private void findChildren() {
-		foundChildren = true;
-		if (isPrimitive) return;
+		children.clear();
+		
+		if (isPrimitive || instance == null) return;
 		
 		Class<?> instanceClass = instance.getClass();
 		
@@ -146,6 +167,8 @@ public class TreeNode {
 		
 		fields.forEach(field -> {
 			field.setAccessible(true);
+			
+			if (field.isAnnotationPresent(HideFromDebugger.class)) return;
 			
 			try {
 				Object instance = field.get(this.instance);
@@ -166,15 +189,12 @@ public class TreeNode {
 		
 		open = true;
 		
-		if (!foundChildren) {
-			findChildren();
-		}
-		
 		refresh();
 	}
 	
 	public void close() {
 		open = false;
+		children.clear();
 	}
 	
 	public void refresh() {
@@ -182,11 +202,7 @@ public class TreeNode {
 		
 		if (!isOpenable() || !open) return;
 		
-		if (isArray) {
-			foundChildren = false;
-			findChildren();
-		}
-		
+		findChildren();
 		updateChildren();
 	}
 	
@@ -218,13 +234,15 @@ public class TreeNode {
 				);
 			} else {
 				return String.format(
-					"[P_BLUE_1]%s[]",
+					"[%s]%s[]",
+					isLocalClass ? "P_GREEN_2" : "P_BLUE_1",
 					instance.getClass().getSimpleName()
 				);
 			}
 		} else {
 			try {
-				return String.format("[P_BLUE_2]%s[]",
+				return String.format("[%s]%s[]",
+					isLocalClass ? "P_GREEN_4" : "P_BLUE_2",
 					type != null ? Class.forName(type.getTypeName()).getSimpleName() : "unknown"
 				);
 			} catch (ClassNotFoundException e) {

@@ -107,6 +107,8 @@ public class GameScreen extends BasicScreen implements EventListener {
 		this.game = game;
 		this.dungeon = dungeon;
 		this.dungeon.eventSystem.addListener(this);
+		
+		JRogue.INSTANCE.setDungeon(dungeon);
 
 		settings = JRogue.getSettings();
 		

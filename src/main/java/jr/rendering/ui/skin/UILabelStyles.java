@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-@UISkinStyleHandler(priority = UISkinStylePriority.HIGH)
+@UISkinStyleHandler(priority = 400)
 public class UILabelStyles implements UISkinStyle {
 	public void add(Skin skin) {
 		addSimpleStyle(skin, "default", "default");

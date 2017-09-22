@@ -11,6 +11,7 @@ import jr.dungeon.entities.utils.EntityHelper;
 import jr.dungeon.items.Item;
 import jr.rendering.items.ItemMap;
 import jr.rendering.items.ItemRenderer;
+import jr.rendering.ui.utils.FunctionalClickListener;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -121,28 +122,25 @@ public class ContainerPartial extends Table {
 			itemTable.row();
 			
 			if (transferTo != null) {
-				itemButton.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						val containerOpt = EntityHelper.getContainer(transferTo);
-						if (!containerOpt.isPresent()) {
-							return;
-						}
-						
-						int amount = event.getButton() == Input.Buttons.LEFT ? itemStack.getCount() : 1;
-						
-						Container destContainer = containerOpt.get();
-						container.transfer(
-							destContainer,
-							character,
-							amount,
-							isPlayer ? entity.getDungeon().getPlayer() : null
-						);
-						
-						update();
-						updateRelated();
+				itemButton.addListener(new FunctionalClickListener((event, x, y) -> {
+					val transferContainerOpt = EntityHelper.getContainer(transferTo);
+					if (!transferContainerOpt.isPresent()) {
+						return;
 					}
-				});
+					
+					int amount = event.getButton() == Input.Buttons.LEFT ? itemStack.getCount() : 1;
+					
+					Container destContainer = transferContainerOpt.get();
+					container.transfer(
+						destContainer,
+						character,
+						amount,
+						isPlayer ? entity.getDungeon().getPlayer() : null
+					);
+					
+					update();
+					updateRelated();
+				}));
 			}
 			
 			itemButton.add(itemTable).left().width(266);

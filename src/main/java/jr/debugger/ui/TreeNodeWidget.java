@@ -2,10 +2,13 @@ package jr.debugger.ui;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.utils.Identicon;
+import jr.rendering.ui.utils.FunctionalClickListener;
 import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
@@ -13,9 +16,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TreeNodeWidget extends Table {
+	private static final int INDENT_SIZE = 16;
+	
 	private static TextureRegion nullIcon;
 	private static TextureRegion staticIcon;
 	private static TextureRegion finalIcon;
+	
+	private DebugClient debugClient;
 	
 	@Getter private TreeNode node;
 	
@@ -26,8 +33,12 @@ public class TreeNodeWidget extends Table {
 	
 	private Map<Integer, TreeNodeWidget> children = new LinkedHashMap<>();
 	
-	public TreeNodeWidget(TreeNode node, Skin skin) {
+	private ClickListener clickListener;
+	
+	public TreeNodeWidget(DebugClient debugClient, TreeNode node, Skin skin) {
 		super(skin);
+		
+		this.debugClient = debugClient;
 		
 		this.node = node;
 		
@@ -101,9 +112,9 @@ public class TreeNodeWidget extends Table {
 						children.remove(id);
 					}
 					
-					TreeNodeWidget childWidget = new TreeNodeWidget(child, getSkin());
+					TreeNodeWidget childWidget = new TreeNodeWidget(debugClient, child, getSkin());
 					children.put(child.getIdentityHashCode(), childWidget);
-					add(childWidget).padLeft(8).left().row();
+					add(childWidget).padLeft(INDENT_SIZE).left().row();
 				});
 		}
 	}
@@ -118,5 +129,11 @@ public class TreeNodeWidget extends Table {
 		add(nameTable).left().row();
 		
 		initialiseChildren();
+		
+		if (clickListener != null) removeListener(clickListener);
+		nameTable.addListener(clickListener = new FunctionalClickListener((event, x, y) -> {
+			debugClient.toggleNode(node);
+			debugClient.getUI().refresh();
+		}));
 	}
 }

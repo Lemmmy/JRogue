@@ -5,12 +5,12 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
-import jr.debugger.DebugClient;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
+import lombok.Setter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -37,6 +37,8 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class JRogue {
+	public static JRogue INSTANCE;
+	
 	/**
 	 * Filename of the config file in the home folder.
 	 */
@@ -83,7 +85,7 @@ public class JRogue {
 	/**
 	 * The current {@link Dungeon}.
 	 */
-	public Dungeon dungeon;
+	@Setter public Dungeon dungeon;
 	/**
 	 * The {@link GameAdapter} instance.
 	 */
@@ -98,6 +100,8 @@ public class JRogue {
 	 * @param settings The user's {@link Settings}.
 	 */
 	public JRogue(Settings settings) {
+		INSTANCE = this;
+		
 		initialiseReflections();
 		
 		try {

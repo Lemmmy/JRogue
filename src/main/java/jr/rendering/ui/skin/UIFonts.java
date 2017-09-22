@@ -3,7 +3,7 @@ package jr.rendering.ui.skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.rendering.utils.FontLoader;
 
-@UISkinStyleHandler(priority = UISkinStylePriority.HIGHEST)
+@UISkinStyleHandler(priority = 450)
 public class UIFonts implements UISkinStyle {
 	public void add(Skin skin) {
 		skin.add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true, false));

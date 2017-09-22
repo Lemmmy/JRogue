@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface UISkinStyleHandler {
-	UISkinStylePriority priority() default UISkinStylePriority.NORMAL;
+	int priority() default 100;
 }

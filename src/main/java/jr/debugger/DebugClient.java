@@ -3,7 +3,9 @@ package jr.debugger;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.graphics.GL20;
 import jr.JRogue;
 import jr.Settings;
@@ -37,6 +39,17 @@ public class DebugClient extends ApplicationAdapter {
 		config.setResizable(true);
 		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
 		config.setTitle(WINDOW_TITLE);
+		config.setWindowListener(new Lwjgl3WindowAdapter() {
+			@Override
+			public void focusLost() {
+				gameAdapter.setDebugWindowFocused(false);
+			}
+			
+			@Override
+			public void focusGained() {
+				gameAdapter.setDebugWindowFocused(true);
+			}
+		});
 		
 		app.newWindow(this, config);
 	}
@@ -56,6 +69,19 @@ public class DebugClient extends ApplicationAdapter {
 	public void openNode(TreeNode node) {
 		node.open();
 		pinnedNode = node;
+	}
+	
+	public void closeNode(TreeNode node) {
+		node.close();
+		pinnedNode = node.getParent();
+	}
+	
+	public void toggleNode(TreeNode node) {
+		if (node.isOpen()) {
+			closeNode(node);
+		} else {
+			openNode(node);
+		}
 	}
 	
 	@Override

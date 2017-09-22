@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-@UISkinStyleHandler
+@UISkinStyleHandler(priority = 300)
 public class UIScrollPaneStyles implements UISkinStyle {
 	public void add(Skin skin) {
 		skin.add("default", getScrollPaneStyle());

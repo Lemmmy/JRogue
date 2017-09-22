@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
-@UISkinStyleHandler
+@UISkinStyleHandler(priority = 300)
 public class UIListStyles implements UISkinStyle {
 	// TODO: still using the old style.
 	

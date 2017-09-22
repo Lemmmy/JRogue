@@ -2,6 +2,7 @@ package jr.debugger.ui;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -23,6 +24,9 @@ public class DebugUI {
 	
 	@Getter private List<InputProcessor> inputProcessors = new ArrayList<>();
 	
+	private Table root;
+	private Cell rootNodeCell;
+	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
 		this.settings = JRogue.getSettings();
@@ -36,15 +40,29 @@ public class DebugUI {
 		
 		// stage.setDebugAll(true);
 		
-		Table root = new Table();
+		root = new Table();
 		root.setFillParent(true);
 		
-		root.add(new TreeNodeWidget(debugClient.getRootNode(), skin));
+		initialiseRootNode();
 		
 		root.top().left();
 		stage.addActor(root);
 		
 		initInputProcessors();
+	}
+	
+	private void initialiseRootNode() {
+		TreeNodeWidget widget = new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
+		
+		if (rootNodeCell == null) {
+			rootNodeCell = root.add(widget);
+		} else {
+			rootNodeCell.setActor(widget);
+		}
+	}
+	
+	public void refresh() {
+		initialiseRootNode();
 	}
 	
 	public void initInputProcessors() {

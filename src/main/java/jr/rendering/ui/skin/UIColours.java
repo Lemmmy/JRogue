@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-@UISkinStyleHandler(priority = UISkinStylePriority.HIGHEST)
+@UISkinStyleHandler(priority = 500)
 public class UIColours implements UISkinStyle {
 	static {
 		Colors.put("P_GREY_0", new Color(0x2e2e2eff));

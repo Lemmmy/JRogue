@@ -13,10 +13,10 @@ public class UISkin extends Skin {
 	private UISkin() {
 		JRogue.getReflections().getTypesAnnotatedWith(UISkinStyleHandler.class).stream()
 			.filter(UISkinStyle.class::isAssignableFrom)
-			.sorted(Comparator.comparing(handlerClass -> {
+			.sorted(Comparator.comparingInt(handlerClass -> {
 				UISkinStyleHandler annotation = handlerClass.getAnnotation(UISkinStyleHandler.class);
 				
-				return annotation.priority().ordinal();
+				return -annotation.priority();
 			}))
 			.forEach(handlerClass -> {
 				UISkinStyleHandler annotation = handlerClass.getAnnotation(UISkinStyleHandler.class);
