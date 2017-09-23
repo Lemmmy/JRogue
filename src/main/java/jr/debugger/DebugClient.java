@@ -11,7 +11,9 @@ import jr.Settings;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
 import jr.dungeon.Dungeon;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.events.TurnEvent;
 import jr.rendering.GameAdapter;
 import lombok.Getter;
 import lombok.val;
@@ -133,6 +135,12 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 		this.dungeon = dungeon;
 		dungeon.eventSystem.addListener(this);
 		
+		refreshRoot();
+		ui.refresh();
+	}
+	
+	@EventHandler
+	private void onTurn(TurnEvent e) {
 		refreshRoot();
 		ui.refresh();
 	}
