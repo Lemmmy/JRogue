@@ -4,4 +4,8 @@ public interface Debuggable {
 	default String getValueHint() {
 		return null;
 	}
+	
+	default String getTypeOverride() {
+		return null;
+	}
 }

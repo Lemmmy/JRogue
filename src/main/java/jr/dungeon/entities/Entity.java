@@ -1,14 +1,17 @@
 package jr.dungeon.entities;
 
 import jr.JRogue;
+import jr.debugger.utils.Debuggable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.Event;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.language.Noun;
+import jr.language.transformers.Capitalise;
 import jr.language.transformers.Possessive;
 import jr.language.transformers.Transformer;
 import jr.utils.*;
@@ -29,7 +32,7 @@ import java.util.*;
  * methods.
  */
 @Getter
-public abstract class Entity implements Serialisable, Persisting, EventListener {
+public abstract class Entity implements Serialisable, Persisting, EventListener, Debuggable {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
 	 */
@@ -450,5 +453,20 @@ public abstract class Entity implements Serialisable, Persisting, EventListener 
 		statusEffects.forEach(s -> tsb.append(s.toStringBuilder()));
 		
 		return tsb;
+	}
+	
+	@Override
+	public String getValueHint() {
+		String name = getAppearance().name().replaceFirst("^APPEARANCE_", "");
+		
+		if (getDungeon() != null) {
+			Player player = getDungeon().getPlayer();
+			name = getName(player).build(Capitalise.first);
+		}
+		
+		return String.format(
+			"[P_GREY_3]%s[] %,d, %,d",
+			name, x, y
+		);
 	}
 }

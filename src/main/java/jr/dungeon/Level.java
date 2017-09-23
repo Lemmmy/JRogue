@@ -2,6 +2,7 @@ package jr.dungeon;
 
 import jr.ErrorHandler;
 import jr.JRogue;
+import jr.debugger.utils.Debuggable;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class Level implements Serialisable, Persisting {
+public class Level implements Serialisable, Persisting, Debuggable {
 	private UUID uuid;
 	
 	private Dungeon dungeon;
@@ -236,5 +237,13 @@ public class Level implements Serialisable, Persisting {
 	@Override
 	public String toString() {
 		return String.format("%s %,d", name, depth);
+	}
+	
+	@Override
+	public String getValueHint() {
+		return String.format(
+			"[P_GREY_3]%s[] %,d",
+			name, depth
+		);
 	}
 }

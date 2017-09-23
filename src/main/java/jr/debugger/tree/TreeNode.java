@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -119,13 +120,17 @@ public class TreeNode {
 		if (instance == null && parentField != null) {
 			isArray = parentField.getType().isArray();
 		} else {
-			isArray = instance.getClass().isArray();
-			
-			if (!isArray) return;
-			
-			arrayLength = Array.getLength(instance);
+			if (instance instanceof Collection) {
+				isArray = true;
+				arrayLength = ((Collection) instance).size();
+			} else if (instance instanceof Map) {
+				isArray = true;
+				arrayLength = ((Map) instance).size();
+			} else {
+				isArray = instance.getClass().isArray();
+				if (isArray) arrayLength = Array.getLength(instance);
+			}
 		}
-		
 	}
 	
 	private void checkModifiers() {
@@ -173,7 +178,17 @@ public class TreeNode {
 		Class<?> instanceClass = instance.getClass();
 		
 		if (isArray) {
-			findArrayChildren();
+			if (instance instanceof Collection) {
+				findArrayChildren(((Collection) instance).toArray());
+				return;
+			}
+			
+			if (instance instanceof Map) {
+				findMapChildren((Map) instance);
+				return;
+			}
+			
+			findArrayChildren((Object[]) instance);
 			return;
 		}
 		
@@ -194,15 +209,20 @@ public class TreeNode {
 		});
 	}
 	
-	private void findArrayChildren() {
-		if (!isArray || instance == null) return;
-		
-		for (int i = 0; i < arrayLength; i++) {
-			Object instance = Array.get(this.instance, i);
+	private void findArrayChildren(Object[] array) {
+		for (int i = 0; i < array.length; i++) {
+			Object instance = array[i];
 			TreeNode node = new TreeNode(this, parentField, instance);
 			node.name = Integer.toString(i);
 			children.put(node.getIdentityHashCode(), node);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void findMapChildren(Map map) {
+		findArrayChildren(map.entrySet().stream()
+			.map(entry -> entry instanceof Map.Entry ? new MapEntry((Map.Entry) entry) : entry)
+			.toArray());
 	}
 	
 	public boolean isOpenable() {
@@ -258,32 +278,36 @@ public class TreeNode {
 	public String getDisplayedTypeName() {
 		String name;
 		
-		if (instance != null) {
-			if (type != null && !type.getTypeName().contains(".")) {
-				name = String.format(
-					"[P_BLUE_2]%s[]",
-					type.getTypeName()
-				);
-			} else {
-				String typeName = instance.getClass().getSimpleName();
-				if (typeName.isEmpty()) typeName = StringUtils.substringAfterLast(instance.getClass().getName(), ".");
-				
-				name = String.format(
-					"[%s]%s[]",
-					isLocalClass ? "P_GREEN_2" : "P_BLUE_1",
-					typeName
-				);
-			}
+		if (debuggableInstance != null && debuggableInstance.getTypeOverride() != null) {
+			name = debuggableInstance.getTypeOverride();
 		} else {
-			try {
-				name = String.format("[%s]%s[]",
-					isLocalClass ? "P_GREEN_4" : "P_BLUE_2",
-					type != null ? Class.forName(type.getTypeName()).getSimpleName() : "unknown"
-				);
-			} catch (ClassNotFoundException e) {
-				name = String.format("[P_BLUE_2]%s[]",
-					type != null ? type.getTypeName() : "unknown"
-				);
+			if (instance != null) {
+				if (type != null && !type.getTypeName().contains(".")) {
+					name = String.format(
+						"[P_BLUE_2]%s[]",
+						type.getTypeName()
+					);
+				} else {
+					String typeName = instance.getClass().getSimpleName();
+					if (typeName.isEmpty()) typeName = StringUtils.substringAfterLast(instance.getClass().getName(), ".");
+					
+					name = String.format(
+						"[%s]%s[]",
+						isLocalClass ? "P_GREEN_2" : "P_BLUE_1",
+						typeName
+					);
+				}
+			} else {
+				try {
+					name = String.format("[%s]%s[]",
+						isLocalClass ? "P_GREEN_4" : "P_BLUE_2",
+						type != null ? Class.forName(type.getTypeName()).getSimpleName() : "unknown"
+					);
+				} catch (ClassNotFoundException e) {
+					name = String.format("[P_BLUE_2]%s[]",
+						type != null ? type.getTypeName() : "unknown"
+					);
+				}
 			}
 		}
 		
