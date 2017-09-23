@@ -19,6 +19,7 @@ public class TreeNodeWidget extends Table {
 	private static final int INDENT_SIZE = 16;
 	
 	private static TextureRegion nullIcon;
+	private static TextureRegion primitiveIcon;
 	private static TextureRegion staticIcon;
 	private static TextureRegion finalIcon;
 	
@@ -51,6 +52,10 @@ public class TreeNodeWidget extends Table {
 			nullIcon = ImageLoader.getSubimage("textures/hud.png", 128, 200, 16, 8);
 		}
 		
+		if (primitiveIcon == null) {
+			primitiveIcon = ImageLoader.getSubimage("textures/hud.png", 144, 200, 16, 8);
+		}
+		
 		if (staticIcon == null) {
 			staticIcon = ImageLoader.getSubimage("textures/hud.png", 40, 192, 8, 8);
 		}
@@ -65,6 +70,8 @@ public class TreeNodeWidget extends Table {
 		
 		if (node.getInstance() == null) {
 			identicon = new TextureRegionDrawable(nullIcon);
+		} else if (node.isPrimitive()) {
+			identicon = new TextureRegionDrawable(primitiveIcon);
 		} else {
 			identicon = Identicon.getIdenticon(node.getIdentityHashCode());
 		}
@@ -103,7 +110,7 @@ public class TreeNodeWidget extends Table {
 	
 	private void initialiseChildren() {
 		if (node.isOpen()) {
-			node.getChildren().stream()
+			node.getChildren().values().stream()
 				.forEach(child -> {
 					int id = child.getIdentityHashCode();
 					

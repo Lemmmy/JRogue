@@ -46,7 +46,7 @@ public class GameAdapter extends Game {
 	private Thread debugClientThread;
 	
 	@HideFromDebugger
-	public DebugClient debugClient;
+	@Getter private DebugClient debugClient;
 	private boolean debugWindowFocused;
 	
 	@Setter private Object rootDebugObject;

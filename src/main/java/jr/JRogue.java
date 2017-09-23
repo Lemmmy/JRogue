@@ -85,7 +85,7 @@ public class JRogue {
 	/**
 	 * The current {@link Dungeon}.
 	 */
-	@Setter public Dungeon dungeon;
+	public Dungeon dungeon;
 	/**
 	 * The {@link GameAdapter} instance.
 	 */
@@ -95,8 +95,6 @@ public class JRogue {
 	 * The time (in milliseconds) that the game was started.
 	 */
 	public static final long START_TIME = TimeUtils.millis();
-	
-	private static final int[] TEST_ARRAY = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	
 	/**
 	 * @param settings The user's {@link Settings}.
@@ -123,6 +121,11 @@ public class JRogue {
 				Gdx.app.exit();
 			}
 		}
+	}
+	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		adapter.getDebugClient().setDungeon(dungeon);
 	}
 	
 	private void initialiseReflections() {

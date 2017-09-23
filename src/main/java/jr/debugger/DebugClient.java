@@ -5,24 +5,29 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.graphics.GL20;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
+import jr.dungeon.Dungeon;
+import jr.dungeon.events.EventListener;
 import jr.rendering.GameAdapter;
 import lombok.Getter;
+import lombok.val;
 
-public class DebugClient extends ApplicationAdapter {
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class DebugClient extends ApplicationAdapter implements EventListener {
 	public static final String WINDOW_TITLE = "JRogue Debug Client";
 	
 	private GameAdapter gameAdapter;
+	private Dungeon dungeon;
 	
 	private Object rootObject;
 	
 	@Getter private TreeNode rootNode;
-	private TreeNode pinnedNode;
 	private TreeNode manuallyPinnedNode;
 	
 	private DebugUI ui;
@@ -57,8 +62,7 @@ public class DebugClient extends ApplicationAdapter {
 	@Override
 	public void create() {
 		rootNode = new TreeNode(null, null, rootObject);
-		openNode(rootNode);
-		rootNode.refresh();
+		rootNode.open();
 		
 		ui = new DebugUI(this);
 		ui.initialise();
@@ -66,21 +70,11 @@ public class DebugClient extends ApplicationAdapter {
 		gameAdapter.updateInputProcessors();
 	}
 	
-	public void openNode(TreeNode node) {
-		node.open();
-		pinnedNode = node;
-	}
-	
-	public void closeNode(TreeNode node) {
-		node.close();
-		pinnedNode = node.getParent();
-	}
-	
 	public void toggleNode(TreeNode node) {
 		if (node.isOpen()) {
-			closeNode(node);
+			node.close();
 		} else {
-			openNode(node);
+			node.open();
 		}
 	}
 	
@@ -101,5 +95,45 @@ public class DebugClient extends ApplicationAdapter {
 	
 	public DebugUI getUI() {
 		return ui;
+	}
+	
+	public Set<Set<Integer>> collectOpenPaths() {
+		if (rootNode == null) return new LinkedHashSet<>();
+		
+		return rootNode.flattened()
+			.filter(TreeNode::isOpen)
+			.map(TreeNode::getPath)
+			.map(path -> path.stream()
+				.map(TreeNode::getIdentityHashCode)
+				.collect(Collectors.toCollection(LinkedHashSet::new)))
+			.collect(Collectors.toCollection(LinkedHashSet::new));
+	}
+	
+	public void restoreOpenPaths(Set<Set<Integer>> openPaths) {
+		openPaths.stream()
+			.map(path -> new LinkedList<>(path).descendingIterator())
+			.filter(Iterator::hasNext)
+			.forEach(path -> {
+				TreeNode child = rootNode;
+				path.next(); // skip the first node (root node)
+				
+				while (path.hasNext() && (child = child.getChild(path.next())) != null) {
+					child.open();
+				}
+			});
+	}
+	
+	public void refreshRoot() {
+		val openPaths = collectOpenPaths();
+		rootNode.refresh();
+		restoreOpenPaths(openPaths);
+	}
+	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		dungeon.eventSystem.addListener(this);
+		
+		refreshRoot();
+		ui.refresh();
 	}
 }

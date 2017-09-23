@@ -14,9 +14,13 @@ import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.rendering.ui.skin.UISkin;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DebugUI {
 	@Getter private Skin skin;
@@ -55,12 +59,12 @@ public class DebugUI {
 	
 	private void initialiseHierarchyContainer(Table container) {
 		Table hierarchyContainer = new Table();
-		ScrollPane hierarchyScrolLPane = new ScrollPane(hierarchyContainer, skin);
+		ScrollPane hierarchyScrollPane = new ScrollPane(hierarchyContainer, skin);
 		
 		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
 			.top().left();
 		
-		container.add(hierarchyScrolLPane);
+		container.add(hierarchyScrollPane);
 	}
 	
 	private TreeNodeWidget getNewRootWidget() {

@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 @Getter
 public class TreeNode {
@@ -67,7 +67,7 @@ public class TreeNode {
 	private boolean open = false;
 	
 	private TreeNode parent;
-	private List<TreeNode> children = new LinkedList<>();
+	private Map<Integer, TreeNode> children = new LinkedHashMap<>();
 	
 	public TreeNode(TreeNode parent, Field parentField, Object instance) {
 		this.parent = parent;
@@ -183,7 +183,7 @@ public class TreeNode {
 			try {
 				Object instance = field.get(this.instance);
 				TreeNode node = new TreeNode(this, field, instance);
-				children.add(node);
+				children.put(node.getIdentityHashCode(), node);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -197,7 +197,7 @@ public class TreeNode {
 			Object instance = Array.get(this.instance, i);
 			TreeNode node = new TreeNode(this, parentField, instance);
 			node.name = Integer.toString(i);
-			children.add(node);
+			children.put(node.getIdentityHashCode(), node);
 		}
 	}
 	
@@ -228,7 +228,7 @@ public class TreeNode {
 	}
 	
 	private void updateChildren() {
-		children.forEach(TreeNode::refresh);
+		children.values().forEach(TreeNode::refresh);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -308,5 +308,28 @@ public class TreeNode {
 	
 	private static String getNameFromInstance(Object instance) {
 		return instance == null ? "null" : instance.getClass().getSimpleName();
+	}
+	
+	public Stream<TreeNode> flattened() {
+		return Stream.concat(
+			Stream.of(this),
+			children.values().stream().flatMap(TreeNode::flattened)
+		);
+	}
+	
+	public Set<TreeNode> getPath() {
+		Set<TreeNode> path = new LinkedHashSet<>();
+		path.add(this);
+		
+		TreeNode node = this;
+		while ((node = node.getParent()) != null) {
+			path.add(node);
+		}
+		
+		return path;
+	}
+	
+	public TreeNode getChild(int identityHashCode) {
+		return children.get(identityHashCode);
 	}
 }
