@@ -7,6 +7,7 @@ import jr.debugger.tree.valuehints.TypeValueHintHandler;
 import jr.debugger.utils.Debuggable;
 import jr.debugger.utils.HideFromDebugger;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -115,13 +116,16 @@ public class TreeNode {
 	}
 	
 	private void checkArray() {
-		if (instance == null) return;
+		if (instance == null && parentField != null) {
+			isArray = parentField.getType().isArray();
+		} else {
+			isArray = instance.getClass().isArray();
+			
+			if (!isArray) return;
+			
+			arrayLength = Array.getLength(instance);
+		}
 		
-		isArray = instance.getClass().isArray();
-		
-		if (!isArray) return;
-		
-		arrayLength = Array.getLength(instance);
 	}
 	
 	private void checkModifiers() {
@@ -261,10 +265,13 @@ public class TreeNode {
 					type.getTypeName()
 				);
 			} else {
+				String typeName = instance.getClass().getSimpleName();
+				if (typeName.isEmpty()) typeName = StringUtils.substringAfterLast(instance.getClass().getName(), ".");
+				
 				name = String.format(
 					"[%s]%s[]",
 					isLocalClass ? "P_GREEN_2" : "P_BLUE_1",
-					instance.getClass().getSimpleName()
+					typeName
 				);
 			}
 		} else {
