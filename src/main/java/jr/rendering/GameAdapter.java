@@ -49,6 +49,7 @@ public class GameAdapter extends Game {
 	@Getter private DebugClient debugClient;
 	private boolean debugWindowFocused;
 	
+	@HideFromDebugger
 	@Setter private Object rootDebugObject;
 	
 	private InputMultiplexer inputMultiplexer;

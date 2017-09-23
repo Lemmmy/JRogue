@@ -37,6 +37,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class JRogue {
+	@HideFromDebugger
 	public static JRogue INSTANCE;
 	
 	/**
