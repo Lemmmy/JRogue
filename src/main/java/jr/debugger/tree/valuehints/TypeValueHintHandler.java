@@ -1,4 +1,4 @@
-package jr.debugger.tree.namehints;
+package jr.debugger.tree.valuehints;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface TypeNameHintHandler {
+public @interface TypeValueHintHandler {
 	Class[] value();
 }

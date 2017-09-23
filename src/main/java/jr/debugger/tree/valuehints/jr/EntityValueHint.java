@@ -1,17 +1,17 @@
-package jr.debugger.tree.namehints.jr;
+package jr.debugger.tree.valuehints.jr;
 
-import jr.debugger.tree.namehints.TypeNameHint;
-import jr.debugger.tree.namehints.TypeNameHintHandler;
+import jr.debugger.tree.valuehints.TypeValueHint;
+import jr.debugger.tree.valuehints.TypeValueHintHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.language.transformers.Capitalise;
 
 import java.lang.reflect.Field;
 
-@TypeNameHintHandler(Entity.class)
-public class EntityNameHint extends TypeNameHint<Entity> {
+@TypeValueHintHandler(Entity.class)
+public class EntityValueHint extends TypeValueHint<Entity> {
 	@Override
-	public String toNameHint(Field field, Entity instance) {
+	public String toValueHint(Field field, Entity instance) {
 		if (instance == null) return "null entity";
 		
 		String name = instance.getAppearance().name().replaceFirst("^APPEARANCE_", "");

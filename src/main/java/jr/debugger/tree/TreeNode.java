@@ -2,8 +2,8 @@ package jr.debugger.tree;
 
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.debugger.tree.namehints.TypeNameHint;
-import jr.debugger.tree.namehints.TypeNameHintHandler;
+import jr.debugger.tree.valuehints.TypeValueHint;
+import jr.debugger.tree.valuehints.TypeValueHintHandler;
 import jr.debugger.utils.Debuggable;
 import jr.debugger.utils.HideFromDebugger;
 import lombok.Getter;
@@ -26,23 +26,23 @@ public class TreeNode {
 		localPackagePrefixes.add(JRogue.class.getPackage().getName());
 	}
 	
-	private static Map<Class, TypeNameHint> nameHintMap = new HashMap<>();
+	private static Map<Class, TypeValueHint> valueHintMap = new HashMap<>();
 	
 	static {
-		JRogue.getReflections().getTypesAnnotatedWith(TypeNameHintHandler.class).stream()
-			.filter(TypeNameHint.class::isAssignableFrom)
+		JRogue.getReflections().getTypesAnnotatedWith(TypeValueHintHandler.class).stream()
+			.filter(TypeValueHint.class::isAssignableFrom)
 			.forEach(handlerClass -> {
-				TypeNameHintHandler annotation = handlerClass.getAnnotation(TypeNameHintHandler.class);
+				TypeValueHintHandler annotation = handlerClass.getAnnotation(TypeValueHintHandler.class);
 				Class[] classes = annotation.value();
 			
 				try {
-					TypeNameHint handlerInstance = (TypeNameHint) handlerClass.newInstance();
+					TypeValueHint handlerInstance = (TypeValueHint) handlerClass.newInstance();
 				
 					for (Class clazz : classes) {
-						nameHintMap.put(clazz, handlerInstance);
+						valueHintMap.put(clazz, handlerInstance);
 					}
 				} catch (InstantiationException | IllegalAccessException e) {
-					ErrorHandler.error("Unable to initialise debug client name hint map", e);
+					ErrorHandler.error("Unable to initialise debug client value hint map", e);
 				}
 			});
 	}
@@ -51,7 +51,7 @@ public class TreeNode {
 	private boolean isStatic, isFinal;
 	
 	private String name = "unknown";
-	private String nameHint;
+	private String valueHint;
 	
 	private int identityHashCode = -1;
 	private Field parentField;
@@ -219,7 +219,7 @@ public class TreeNode {
 	}
 	
 	public void refresh() {
-		updateNameHint();
+		updateValueHint();
 		
 		if (!isOpenable() || !open) return;
 		
@@ -232,22 +232,22 @@ public class TreeNode {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void updateNameHint() {
+	private void updateValueHint() {
 		if (debuggableInstance == null) {
 			if (instance == null) return;
 			
 			Class clazz = instance.getClass();
 			
 			while (clazz != null) {
-				if (nameHintMap.containsKey(clazz)) {
-					nameHint = nameHintMap.get(clazz).toNameHint(parentField, instance);
+				if (valueHintMap.containsKey(clazz)) {
+					valueHint = valueHintMap.get(clazz).toValueHint(parentField, instance);
 					break;
 				}
 				
 				clazz = clazz.getSuperclass();
 			}
 		} else {
-			nameHint = debuggableInstance.getNameHint();
+			valueHint = debuggableInstance.getValueHint();
 		}
 	}
 	
@@ -291,8 +291,8 @@ public class TreeNode {
 			getDisplayedTypeName(),
 			name,
 			isArray ? String.format(" ([P_GREY_3]%,d[] items)", arrayLength) : "",
-			nameHint == null ? "" : String.format(
-				" ([P_GREY_2]%s[])", nameHint
+			valueHint == null ? "" : String.format(
+				" ([P_GREY_2]%s[])", valueHint
 			)
 		);
 	}

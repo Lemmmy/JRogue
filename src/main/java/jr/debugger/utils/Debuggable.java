@@ -1,7 +1,7 @@
 package jr.debugger.utils;
 
 public interface Debuggable {
-	default String getNameHint() {
+	default String getValueHint() {
 		return null;
 	}
 }
