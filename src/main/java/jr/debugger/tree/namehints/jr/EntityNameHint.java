@@ -4,7 +4,6 @@ import jr.debugger.tree.namehints.TypeNameHint;
 import jr.debugger.tree.namehints.TypeNameHintHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.tiles.Tile;
 import jr.language.transformers.Capitalise;
 
 import java.lang.reflect.Field;
