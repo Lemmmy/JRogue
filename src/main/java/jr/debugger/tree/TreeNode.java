@@ -238,8 +238,13 @@ public class TreeNode {
 			
 			Class clazz = instance.getClass();
 			
-			if (nameHintMap.containsKey(clazz)) {
-				nameHint = nameHintMap.get(clazz).toNameHint(parentField, instance);
+			while (clazz != null) {
+				if (nameHintMap.containsKey(clazz)) {
+					nameHint = nameHintMap.get(clazz).toNameHint(parentField, instance);
+					break;
+				}
+				
+				clazz = clazz.getSuperclass();
 			}
 		} else {
 			nameHint = debuggableInstance.getNameHint();
@@ -247,7 +252,7 @@ public class TreeNode {
 	}
 	
 	public String getDisplayedTypeName() {
-		String name = "";
+		String name;
 		
 		if (instance != null) {
 			if (type != null && !type.getTypeName().contains(".")) {

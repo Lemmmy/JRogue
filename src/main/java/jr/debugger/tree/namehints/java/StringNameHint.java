@@ -1,4 +1,7 @@
-package jr.debugger.tree.namehints;
+package jr.debugger.tree.namehints.java;
+
+import jr.debugger.tree.namehints.TypeNameHint;
+import jr.debugger.tree.namehints.TypeNameHintHandler;
 
 import java.lang.reflect.Field;
 

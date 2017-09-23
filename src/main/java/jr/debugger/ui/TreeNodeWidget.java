@@ -17,6 +17,8 @@ import java.util.Map;
 
 public class TreeNodeWidget extends Table {
 	private static final int INDENT_SIZE = 16;
+	private static final int IDENTICON_PADDING = 8;
+	private static final int ICON_PADDING = 4;
 	
 	private static TextureRegion nullIcon;
 	private static TextureRegion primitiveIcon;
@@ -68,10 +70,14 @@ public class TreeNodeWidget extends Table {
 	private void initialiseIdenticon(Table container) {
 		Drawable identicon;
 		
+		int rightPad = IDENTICON_PADDING;
+		
 		if (node.getInstance() == null) {
 			identicon = new TextureRegionDrawable(nullIcon);
+			rightPad += Identicon.SHAPE_PADDING;
 		} else if (node.isPrimitive()) {
 			identicon = new TextureRegionDrawable(primitiveIcon);
+			rightPad += Identicon.SHAPE_PADDING;
 		} else {
 			identicon = Identicon.getIdenticon(node.getIdentityHashCode());
 		}
@@ -81,25 +87,25 @@ public class TreeNodeWidget extends Table {
 			"[P_GREY_3]0x[]%s",
 			Integer.toHexString(node.getIdentityHashCode())
 		), getSkin()));
-		container.add(identiconImage).left().padRight(node.getInstance() == null ? 8 + Identicon.SHAPE_PADDING : 8);
+		container.add(identiconImage).left().padRight(rightPad);
 	}
 	
 	private void initialiseModifiers(Table container) {
 		AccessLevelMap alm = AccessLevelMap.valueOf(node.getAccessLevel().name());
 		Image almIcon = new Image(new TextureRegionDrawable(alm.getTextureRegion()));
 		almIcon.addListener(new TextTooltip(node.getAccessLevel().humanName(), getSkin()));
-		container.add(almIcon).left().padRight(4);
+		container.add(almIcon).left().padRight(ICON_PADDING);
 		
 		if (node.isStatic()) {
 			Image icon = new Image(new TextureRegionDrawable(staticIcon));
 			icon.addListener(new TextTooltip("Static", getSkin()));
-			container.add(icon).left().padRight(4);
+			container.add(icon).left().padRight(ICON_PADDING);
 		}
 		
 		if (node.isFinal()) {
 			Image icon = new Image(new TextureRegionDrawable(finalIcon));
 			icon.addListener(new TextTooltip("Final", getSkin()));
-			container.add(icon).left().padRight(4);
+			container.add(icon).left().padRight(ICON_PADDING);
 		}
 	}
 	
