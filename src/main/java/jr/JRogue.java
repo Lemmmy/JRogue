@@ -125,7 +125,10 @@ public class JRogue {
 	
 	public void setDungeon(Dungeon dungeon) {
 		this.dungeon = dungeon;
-		adapter.getDebugClient().setDungeon(dungeon);
+		
+		if (adapter.getDebugClient() != null) {
+			adapter.getDebugClient().setDungeon(dungeon);
+		}
 	}
 	
 	private void initialiseReflections() {
