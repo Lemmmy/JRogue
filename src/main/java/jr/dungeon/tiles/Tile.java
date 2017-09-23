@@ -2,7 +2,6 @@ package jr.dungeon.tiles;
 
 import jr.JRogue;
 import jr.dungeon.Level;
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Colour;
 import jr.utils.Point;
