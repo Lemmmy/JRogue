@@ -96,6 +96,8 @@ public class JRogue {
 	 */
 	public static final long START_TIME = TimeUtils.millis();
 	
+	private static final int[] TEST_ARRAY = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	
 	/**
 	 * @param settings The user's {@link Settings}.
 	 */

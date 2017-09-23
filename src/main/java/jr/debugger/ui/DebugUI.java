@@ -1,14 +1,17 @@
 package jr.debugger.ui;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
+import jr.debugger.tree.TreeNode;
 import jr.rendering.ui.skin.UISkin;
 import lombok.Getter;
 
@@ -24,8 +27,7 @@ public class DebugUI {
 	
 	@Getter private List<InputProcessor> inputProcessors = new ArrayList<>();
 	
-	private Table root;
-	private Cell rootNodeCell;
+	private Cell<? extends Actor> rootNodeCell;
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -40,10 +42,10 @@ public class DebugUI {
 		
 		// stage.setDebugAll(true);
 		
-		root = new Table();
+		Table root = new Table();
 		root.setFillParent(true);
 		
-		initialiseRootNode();
+		initialiseHierarchyContainer(root);
 		
 		root.top().left();
 		stage.addActor(root);
@@ -51,18 +53,34 @@ public class DebugUI {
 		initInputProcessors();
 	}
 	
-	private void initialiseRootNode() {
+	private void initialiseHierarchyContainer(Table container) {
+		Table hierarchyContainer = new Table();
+		ScrollPane hierarchyScrolLPane = new ScrollPane(hierarchyContainer, skin);
+		
+		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
+			.top().left();
+		
+		container.add(hierarchyScrolLPane);
+	}
+	
+	private TreeNodeWidget getNewRootWidget() {
+		return new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
+	}
+	
+	private void initialiseRootNode(Table container) {
 		TreeNodeWidget widget = new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
 		
 		if (rootNodeCell == null) {
-			rootNodeCell = root.add(widget);
+			rootNodeCell = container.add(widget);
 		} else {
 			rootNodeCell.setActor(widget);
 		}
 	}
 	
 	public void refresh() {
-		initialiseRootNode();
+		if (rootNodeCell != null) {
+			rootNodeCell.setActor(getNewRootWidget());
+		}
 	}
 	
 	public void initInputProcessors() {

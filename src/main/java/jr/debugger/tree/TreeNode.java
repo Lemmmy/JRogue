@@ -59,6 +59,7 @@ public class TreeNode {
 	private Debuggable debuggableInstance;
 	private boolean isPrimitive = false;
 	private boolean isArray = false;
+	private boolean isArrayElement = false;
 	private boolean isLocalClass = false;
 	private int arrayLength = 0;
 	private Type type;
@@ -91,10 +92,15 @@ public class TreeNode {
 		
 		checkPackagePrefix();
 		checkArray();
+		checkArrayElement();
 		checkModifiers();
 		checkDebuggableInstance();
 		
 		refresh();
+	}
+	
+	private void checkArrayElement() {
+		isArrayElement = parent != null && parent.isArray;
 	}
 	
 	private void checkPackagePrefix() {
@@ -120,6 +126,11 @@ public class TreeNode {
 	
 	private void checkModifiers() {
 		if (parentField == null) return;
+		
+		if (isArrayElement) {
+			accessLevel = AccessLevel.PACKAGE_PRIVATE;
+			return;
+		}
 		
 		int modifiers = parentField.getModifiers();
 		
@@ -153,13 +164,12 @@ public class TreeNode {
 	private void findChildren() {
 		children.clear();
 		
-		if (isPrimitive || instance == null) return;
+		if (!isArray && isPrimitive || instance == null) return;
 		
 		Class<?> instanceClass = instance.getClass();
 		
-		if (instanceClass.isArray()) {
-			// TODO: arrays and collections
-			
+		if (isArray) {
+			findArrayChildren();
 			return;
 		}
 		
@@ -180,8 +190,19 @@ public class TreeNode {
 		});
 	}
 	
+	private void findArrayChildren() {
+		if (!isArray || instance == null) return;
+		
+		for (int i = 0; i < arrayLength; i++) {
+			Object instance = Array.get(this.instance, i);
+			TreeNode node = new TreeNode(this, parentField, instance);
+			node.name = Integer.toString(i);
+			children.add(node);
+		}
+	}
+	
 	public boolean isOpenable() {
-		return !isPrimitive;
+		return isArray || !isPrimitive;
 	}
 	
 	public void open() {
@@ -226,14 +247,16 @@ public class TreeNode {
 	}
 	
 	public String getDisplayedTypeName() {
+		String name = "";
+		
 		if (instance != null) {
 			if (type != null && !type.getTypeName().contains(".")) {
-				return String.format(
+				name = String.format(
 					"[P_BLUE_2]%s[]",
 					type.getTypeName()
 				);
 			} else {
-				return String.format(
+				name = String.format(
 					"[%s]%s[]",
 					isLocalClass ? "P_GREEN_2" : "P_BLUE_1",
 					instance.getClass().getSimpleName()
@@ -241,16 +264,20 @@ public class TreeNode {
 			}
 		} else {
 			try {
-				return String.format("[%s]%s[]",
+				name = String.format("[%s]%s[]",
 					isLocalClass ? "P_GREEN_4" : "P_BLUE_2",
 					type != null ? Class.forName(type.getTypeName()).getSimpleName() : "unknown"
 				);
 			} catch (ClassNotFoundException e) {
-				return String.format("[P_BLUE_2]%s[]",
+				name = String.format("[P_BLUE_2]%s[]",
 					type != null ? type.getTypeName() : "unknown"
 				);
 			}
 		}
+		
+		if (isArray) name += "[[]";
+		
+		return name;
 	}
 	
 	public String toString() {
@@ -258,7 +285,7 @@ public class TreeNode {
 			"%s [P_CYAN_1]%s[]%s%s",
 			getDisplayedTypeName(),
 			name,
-			isArray ? String.format("([P_GRAY_2]%,d[] items)", arrayLength) : "",
+			isArray ? String.format(" ([P_GREY_3]%,d[] items)", arrayLength) : "",
 			nameHint == null ? "" : String.format(
 				" ([P_GREY_2]%s[])", nameHint
 			)
