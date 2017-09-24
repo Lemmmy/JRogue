@@ -102,7 +102,7 @@ public class EntityComponent extends RendererComponent {
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 				
 				if (em.getRenderer() != null && em.getRenderer().shouldRenderReal(e)) {
-					em.getRenderer().draw(mainBatch, dungeon, e);
+					em.getRenderer().draw(mainBatch, dungeon, e, true);
 				}
 			});
 	}

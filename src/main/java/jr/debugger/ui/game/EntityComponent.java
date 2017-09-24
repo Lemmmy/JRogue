@@ -27,8 +27,8 @@ public class EntityComponent extends RendererComponent {
 			.forEach(e -> {
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 				
-				if (em.getRenderer() != null && em.getRenderer().shouldRenderReal(e)) {
-					em.getRenderer().draw(batch, dungeon, e);
+				if (em.getRenderer() != null) {
+					em.getRenderer().draw(batch, dungeon, e, false);
 				}
 			});
 	}
