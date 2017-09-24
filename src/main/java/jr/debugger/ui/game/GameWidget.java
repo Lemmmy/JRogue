@@ -22,6 +22,7 @@ public class GameWidget extends Image implements EventListener {
 	private Level level;
 	
 	private LevelComponent levelComponent;
+	private EntityComponent entityComponent;
 	
 	private FrameBuffer fbo;
 	private TextureRegionDrawable fboRegion;
@@ -62,6 +63,7 @@ public class GameWidget extends Image implements EventListener {
 	
 	private void initialiseComponents() {
 		levelComponent = new LevelComponent(dungeon);
+		entityComponent = new EntityComponent(dungeon);
 	}
 	
 	private void initialiseDrawable() {
@@ -86,6 +88,7 @@ public class GameWidget extends Image implements EventListener {
 		spriteBatch.enableBlending();
 		
 		levelComponent.draw(spriteBatch);
+		entityComponent.draw(spriteBatch);
 		
 		spriteBatch.end();
 		fbo.end();

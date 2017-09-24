@@ -61,21 +61,18 @@ public class DebugUI {
 		gameCell = gameContainer.add(gameWidget = getNewGameWidget())
 			.top().left();
 		
-		gameContainer.top().left();
-		
-		container.add(new ScrollPane(gameContainer, skin)).grow().top().left();
+		container.add(new ScrollPane(gameContainer.top().left(), skin))
+			.grow().top().left();
 	}
 	
 	private void initialiseHierarchyContainer(Table container) {
 		Table hierarchyContainer = new Table();
-		ScrollPane hierarchyScrollPane = new ScrollPane(hierarchyContainer, skin);
 		
 		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
 			.top().left();
 		
-		hierarchyContainer.top();
-		
-		container.add(hierarchyScrollPane).minWidth(300).top().right().grow();
+		container.add(new ScrollPane(hierarchyContainer.top(), skin))
+			.minWidth(300).top().right().grow();
 	}
 	
 	
