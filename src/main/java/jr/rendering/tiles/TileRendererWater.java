@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import jr.debugger.ui.game.LevelComponent;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 
@@ -61,8 +62,15 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
-		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
+	
+	}
+	
+	@Override
+	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		int positionMask = getPositionMask(dungeon.getLevel(), x, y);
+		
+		TextureRegion blobImage = getImageFromMask(positionMask);
+		TextureRegion overlayImage = getImageFromMask(overlayImages, positionMask);
 		
 		Color colourOld = batch.getColor();
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -104,4 +112,6 @@ public class TileRendererWater extends TileRendererBlob8 {
 		
 		batch.setColor(colourOld);
 	}
+	
+	
 }
