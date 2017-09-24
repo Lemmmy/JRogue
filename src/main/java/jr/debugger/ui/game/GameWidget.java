@@ -8,8 +8,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.EventHandler;
@@ -44,6 +47,7 @@ public class GameWidget extends Image implements EventListener {
 		initialiseSpriteBatch();
 		initialiseComponents();
 		initialiseDrawable();
+		initialiseListeners();
 	}
 	
 	private void initialiseCamera() {
@@ -68,6 +72,10 @@ public class GameWidget extends Image implements EventListener {
 	
 	private void initialiseDrawable() {
 		setDrawable(fboRegion);
+	}
+	
+	private void initialiseListeners() {
+		addListener(new GameWidgetClickListener());
 	}
 	
 	@Override
@@ -109,5 +117,17 @@ public class GameWidget extends Image implements EventListener {
 	public float getMinHeight() {
 		if (dungeon.getLevel() == null) return 0;
 		return dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT;
+	}
+	
+	private class GameWidgetClickListener extends ClickListener {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			int worldX = (int) (x / TileMap.TILE_WIDTH);
+			int worldY = (int) (y / TileMap.TILE_HEIGHT);
+			
+			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) {
+			
+			}
+		}
 	}
 }

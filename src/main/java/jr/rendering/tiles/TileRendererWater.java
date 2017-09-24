@@ -91,23 +91,19 @@ public class TileRendererWater extends TileRendererBlob8 {
 		drawTile(batch, water, x, y);
 		
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, colourOld.a);
-		batch.flush();
 		
-		Gdx.gl.glColorMask(false, false, false, true);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		Gdx.gl.glColorMask(false, false, false, true);
 		
 		drawTile(batch, blobImage, x, y);
-		batch.flush();
 		
-		Gdx.gl.glColorMask(true, true, true, true);
 		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+		Gdx.gl.glColorMask(true, true, true, true);
 		drawTile(batch, floor, x, y);
-		batch.flush();
 		
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 0.5f);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		drawTile(batch, overlayImage, x, y);
-		batch.flush();
 		
 		batch.setColor(colourOld);
 	}
