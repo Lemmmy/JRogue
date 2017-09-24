@@ -1,26 +1,20 @@
 package jr.debugger.ui;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
-import jr.debugger.tree.TreeNode;
+import jr.debugger.ui.game.GameWidget;
+import jr.debugger.ui.tree.TreeNodeWidget;
+import jr.dungeon.Dungeon;
 import jr.rendering.ui.skin.UISkin;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DebugUI {
 	@Getter private Skin skin;
@@ -28,10 +22,13 @@ public class DebugUI {
 	
 	private DebugClient debugClient;
 	private Settings settings;
+	@Getter private Dungeon dungeon;
 	
 	@Getter private List<InputProcessor> inputProcessors = new ArrayList<>();
 	
-	private Cell<? extends Actor> rootNodeCell;
+	private Cell<? extends GameWidget> gameCell;
+	private Cell<? extends TreeNodeWidget> rootNodeCell;
+	private GameWidget gameWidget;
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -49,12 +46,24 @@ public class DebugUI {
 		Table root = new Table();
 		root.setFillParent(true);
 		
+		initialiseGameContainer(root);
 		initialiseHierarchyContainer(root);
 		
 		root.top().left();
 		stage.addActor(root);
 		
 		initInputProcessors();
+	}
+	
+	private void initialiseGameContainer(Table container) {
+		Table gameContainer = new Table();
+		
+		gameCell = gameContainer.add(gameWidget = getNewGameWidget())
+			.top().left();
+		
+		gameContainer.top().left();
+		
+		container.add(new ScrollPane(gameContainer, skin)).grow().top().left();
 	}
 	
 	private void initialiseHierarchyContainer(Table container) {
@@ -64,12 +73,11 @@ public class DebugUI {
 		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
 			.top().left();
 		
-		container.add(hierarchyScrollPane);
+		hierarchyContainer.top();
+		
+		container.add(hierarchyScrollPane).minWidth(300).top().right().grow();
 	}
 	
-	private TreeNodeWidget getNewRootWidget() {
-		return new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
-	}
 	
 	private void initialiseRootNode(Table container) {
 		TreeNodeWidget widget = new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
@@ -79,6 +87,20 @@ public class DebugUI {
 		} else {
 			rootNodeCell.setActor(widget);
 		}
+	}
+	
+	private GameWidget getNewGameWidget() {
+		if (debugClient.getDungeon() == null) return null;
+		return new GameWidget(debugClient.getDungeon());
+	}
+	
+	private TreeNodeWidget getNewRootWidget() {
+		return new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
+	}
+	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		if (gameCell != null) gameCell.setActor(gameWidget = getNewGameWidget());
 	}
 	
 	public void refresh() {
@@ -93,6 +115,7 @@ public class DebugUI {
 	}
 	
 	public void render() {
+		if (gameWidget != null) gameWidget.drawComponents();
 		if (stage != null) stage.draw();
 	}
 	

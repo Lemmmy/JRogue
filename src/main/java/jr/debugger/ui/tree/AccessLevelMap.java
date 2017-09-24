@@ -1,4 +1,4 @@
-package jr.debugger.ui;
+package jr.debugger.ui.tree;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.rendering.utils.ImageLoader;

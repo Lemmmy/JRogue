@@ -1,5 +1,7 @@
 package jr;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import jr.utils.OperatingSystem;
 import org.lwjgl.opengl.GL11;
 
@@ -185,6 +187,13 @@ public class ErrorHandler {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public static void glErrorCheck(String pos) {
+		int error;
+		while ((error = Gdx.gl.glGetError()) != GL20.GL_NO_ERROR) {
+			JRogue.getLogger().error("Error at {}: {}", pos, Integer.toHexString(error));
 		}
 	}
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.tree.TreeNode;
@@ -25,7 +26,7 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	public static final String WINDOW_TITLE = "JRogue Debug Client";
 	
 	private GameAdapter gameAdapter;
-	private Dungeon dungeon;
+	@Getter private Dungeon dungeon;
 	
 	private Object rootObject;
 	
@@ -137,6 +138,8 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 		
 		refreshRoot();
 		ui.refresh();
+		
+		ui.setDungeon(dungeon);
 	}
 	
 	@EventHandler
