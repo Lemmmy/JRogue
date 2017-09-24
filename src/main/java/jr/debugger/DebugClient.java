@@ -44,7 +44,7 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 		
 		Lwjgl3WindowConfiguration config = new Lwjgl3WindowConfiguration();
 		config.setResizable(true);
-		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+		config.setWindowedMode(settings.getDebugClientWidth(), settings.getDebugClientHeight());
 		config.setTitle(WINDOW_TITLE);
 		config.setWindowListener(new Lwjgl3WindowAdapter() {
 			@Override

@@ -33,6 +33,7 @@ public class Settings {
 	@Setting(comment="The height of the game window.")
 	private int screenHeight = 640;
 	
+	
 	/**
 	 * The size of the game's message log.
 	 */
@@ -81,6 +82,12 @@ public class Settings {
 	
 	@Setting(comment="[Debug] Show debug client")
 	private boolean showDebugClient = false;
+	
+	@Setting(comment="The width of the debug client window.")
+	private int debugClientWidth = 1200;
+	
+	@Setting(comment="The height of the debug client window.")
+	private int debugClientHeight = 640;
 	
 	/**
 	 * Show animations between each turn.
