@@ -71,6 +71,8 @@ public abstract class TileRenderer {
 	
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
 	
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
+	
 	public ParticleEffectPool getParticleEffectPool() {
 		return effectPool;
 	}
@@ -214,4 +216,8 @@ public abstract class TileRenderer {
 	}
 	
 	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {}
+	
+	public boolean canDrawBasic() {
+		return false;
+	}
 }

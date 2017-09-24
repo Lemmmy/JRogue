@@ -30,4 +30,14 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		drawGenericBlob(batch, dungeon, x, y, corridor, empty);
 	}
+	
+	@Override
+	public boolean canDrawBasic() {
+		return true;
+	}
+	
+	@Override
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, corridor, x, y);
+	}
 }

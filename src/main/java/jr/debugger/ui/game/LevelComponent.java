@@ -5,6 +5,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.rendering.tiles.TileMap;
+import jr.rendering.tiles.TileRenderer;
 
 public class LevelComponent extends RendererComponent {
 	public LevelComponent(Dungeon dungeon) {
@@ -28,12 +29,17 @@ public class LevelComponent extends RendererComponent {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				TileMap tm = TileMap.valueOf(tileStore.getTileType(x, y).name());
-				if (tm.getRenderer() == null) continue;
+				TileRenderer tr = tm.getRenderer();
+				if (tr == null) continue;
 				
-				if (extra) {
-					tm.getRenderer().drawExtra(batch, dungeon, x, y);
+				if (tr.canDrawBasic()) {
+					tr.drawBasic(batch, dungeon, x, y);
 				} else {
-					tm.getRenderer().draw(batch, dungeon, x, y);
+					if (extra) {
+						tr.drawExtra(batch, dungeon, x, y);
+					} else {
+						tr.draw(batch, dungeon, x, y);
+					}
 				}
 			}
 		}

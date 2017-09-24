@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.debugger.ui.game.LevelComponent;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 
@@ -113,5 +112,18 @@ public class TileRendererWater extends TileRendererBlob8 {
 		batch.setColor(colourOld);
 	}
 	
+	@Override
+	public boolean canDrawBasic() {
+		return true;
+	}
 	
+	@Override
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		Color colourOld = batch.getColor();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);
+		drawTile(batch, water, x, y);
+		batch.setColor(colourOld);
+	}
 }
