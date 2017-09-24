@@ -58,11 +58,13 @@ public class TreeNode {
 	private int identityHashCode = -1;
 	private Field parentField;
 	private Object instance;
+	private Class<?> instanceClass;
 	private Debuggable debuggableInstance;
 	private boolean isPrimitive = false;
 	private boolean isArray = false;
 	private boolean isArrayElement = false;
 	private boolean isLocalClass = false;
+	private boolean isEnum = false;
 	private int arrayLength = 0;
 	private Type type;
 	
@@ -92,13 +94,26 @@ public class TreeNode {
 			this.name = getNameFromInstance(instance);
 		}
 		
+		if (instance != null) {
+			instanceClass = instance.getClass();
+		} else if (parentField != null) {
+			instanceClass = parentField.getType();
+		}
+		
 		checkPackagePrefix();
 		checkArray();
 		checkArrayElement();
+		checkEnum();
 		checkModifiers();
 		checkDebuggableInstance();
 		
 		refresh();
+	}
+	
+	private void checkEnum() {
+		if (isPrimitive || instanceClass == null) return;
+		
+		isEnum = instanceClass.isEnum();
 	}
 	
 	private void checkArrayElement() {
@@ -153,17 +168,7 @@ public class TreeNode {
 	}
 	
 	private void checkDebuggableInstance() {
-		if (isPrimitive) return;
-		
-		Class<?> instanceClass;
-		
-		if (instance != null) {
-			instanceClass = instance.getClass();
-		} else if (parentField != null) {
-			instanceClass = parentField.getType();
-		} else {
-			return;
-		}
+		if (isPrimitive || instanceClass == null) return;
 		
 		if (Debuggable.class.isAssignableFrom(instanceClass)) {
 			this.debuggableInstance = (Debuggable) instance;
@@ -174,8 +179,6 @@ public class TreeNode {
 		children.clear();
 		
 		if (!isArray && isPrimitive || instance == null) return;
-		
-		Class<?> instanceClass = instance.getClass();
 		
 		if (isArray) {
 			if (instance instanceof Collection) {
@@ -260,7 +263,7 @@ public class TreeNode {
 		if (debuggableInstance == null) {
 			if (instance == null) return;
 			
-			Class clazz = instance.getClass();
+			Class clazz = instanceClass;
 			
 			while (clazz != null) {
 				if (valueHintMap.containsKey(clazz)) {

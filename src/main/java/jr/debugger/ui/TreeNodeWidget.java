@@ -9,7 +9,6 @@ import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.utils.Identicon;
 import jr.rendering.ui.utils.FunctionalClickListener;
-import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
 import java.util.LinkedHashMap;
@@ -20,19 +19,9 @@ public class TreeNodeWidget extends Table {
 	private static final int IDENTICON_PADDING = 8;
 	private static final int ICON_PADDING = 4;
 	
-	private static TextureRegion nullIcon;
-	private static TextureRegion primitiveIcon;
-	private static TextureRegion staticIcon;
-	private static TextureRegion finalIcon;
-	
 	private DebugClient debugClient;
 	
 	@Getter private TreeNode node;
-	
-	private Table nameTable;
-	
-	private Image identiconImage;
-	private Label nameLabel;
 	
 	private Map<Integer, TreeNodeWidget> children = new LinkedHashMap<>();
 	
@@ -42,29 +31,9 @@ public class TreeNodeWidget extends Table {
 		super(skin);
 		
 		this.debugClient = debugClient;
-		
 		this.node = node;
 		
-		initialiseIcons();
 		initialise();
-	}
-	
-	private void initialiseIcons() {
-		if (nullIcon == null) {
-			nullIcon = ImageLoader.getSubimage("textures/hud.png", 128, 200, 16, 8);
-		}
-		
-		if (primitiveIcon == null) {
-			primitiveIcon = ImageLoader.getSubimage("textures/hud.png", 144, 200, 16, 8);
-		}
-		
-		if (staticIcon == null) {
-			staticIcon = ImageLoader.getSubimage("textures/hud.png", 40, 192, 8, 8);
-		}
-		
-		if (finalIcon == null) {
-			finalIcon = ImageLoader.getSubimage("textures/hud.png", 48, 192, 8, 8);
-		}
 	}
 	
 	private void initialiseIdenticon(Table container) {
@@ -73,16 +42,16 @@ public class TreeNodeWidget extends Table {
 		int rightPad = IDENTICON_PADDING;
 		
 		if (node.getInstance() == null) {
-			identicon = new TextureRegionDrawable(nullIcon);
+			identicon = getSkin().get("debugNullIcon", TextureRegionDrawable.class);
 			rightPad += Identicon.SHAPE_PADDING;
 		} else if (node.isPrimitive()) {
-			identicon = new TextureRegionDrawable(primitiveIcon);
+			identicon = getSkin().get("debugPrimitiveIcon", TextureRegionDrawable.class);
 			rightPad += Identicon.SHAPE_PADDING;
 		} else {
 			identicon = Identicon.getIdenticon(node.getIdentityHashCode());
 		}
 		
-		identiconImage = new Image(identicon);
+		Image identiconImage = new Image(identicon);
 		identiconImage.addListener(new TextTooltip(String.format(
 			"[P_GREY_3]0x[]%s",
 			Integer.toHexString(node.getIdentityHashCode())
@@ -96,21 +65,22 @@ public class TreeNodeWidget extends Table {
 		almIcon.addListener(new TextTooltip(node.getAccessLevel().humanName(), getSkin()));
 		container.add(almIcon).left().padRight(ICON_PADDING);
 		
-		if (node.isStatic()) {
-			Image icon = new Image(new TextureRegionDrawable(staticIcon));
-			icon.addListener(new TextTooltip("Static", getSkin()));
-			container.add(icon).left().padRight(ICON_PADDING);
-		}
-		
-		if (node.isFinal()) {
-			Image icon = new Image(new TextureRegionDrawable(finalIcon));
-			icon.addListener(new TextTooltip("Final", getSkin()));
-			container.add(icon).left().padRight(ICON_PADDING);
+		if (node.isEnum()) {
+			addModifierIcon(container, "debugEnumIcon", "Enum");
+		} else {
+			if (node.isStatic()) addModifierIcon(container, "debugStaticIcon", "Static");
+			if (node.isFinal()) addModifierIcon(container, "debugFinalIcon", "Final");
 		}
 	}
 	
+	private void addModifierIcon(Table container, String iconName, String iconTooltip) {
+		Image icon = new Image(getSkin().get(iconName, TextureRegionDrawable.class));
+		icon.addListener(new TextTooltip(iconTooltip, getSkin()));
+		container.add(icon).left().padRight(ICON_PADDING);
+	}
+	
 	private void initialiseNameLabel(Table container) {
-		nameLabel = new Label(node.toString(), getSkin());
+		Label nameLabel = new Label(node.toString(), getSkin());
 		container.add(nameLabel).left().row();
 	}
 	
@@ -133,7 +103,7 @@ public class TreeNodeWidget extends Table {
 	}
 	
 	private void initialise() {
-		nameTable = new Table(getSkin());
+		Table nameTable = new Table(getSkin());
 		
 		initialiseIdenticon(nameTable);
 		initialiseModifiers(nameTable);
