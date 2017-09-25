@@ -82,8 +82,8 @@ public abstract class TileRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 			
-			float tx = x * width + 0.01f;
-			float ty = y * height + 0.01f;
+			float tx = x * width;
+			float ty = y * height;
 			
 			if (isDrawingReflection()) {
 				batch.draw(image, tx, ty + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
