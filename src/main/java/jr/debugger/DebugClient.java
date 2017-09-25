@@ -18,7 +18,10 @@ import jr.rendering.GameAdapter;
 import lombok.Getter;
 import lombok.val;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DebugClient extends ApplicationAdapter implements EventListener {

@@ -10,7 +10,6 @@ import jr.dungeon.Dungeon;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
-import lombok.Setter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;

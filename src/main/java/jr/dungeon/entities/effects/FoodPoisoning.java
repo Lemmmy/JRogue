@@ -1,10 +1,10 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.utils.RandomUtils;

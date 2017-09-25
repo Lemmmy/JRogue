@@ -3,10 +3,6 @@ package jr.rendering.ui.windows;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
-import jr.rendering.screens.GameScreen;
-import jr.rendering.ui.windows.Window;
 import lombok.Getter;
 
 @Getter

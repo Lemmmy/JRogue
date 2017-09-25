@@ -1,8 +1,6 @@
 package jr.rendering.ui.partials;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Attributes;
 import jr.rendering.ui.utils.FunctionalClickListener;

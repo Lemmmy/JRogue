@@ -12,7 +12,6 @@ import jr.dungeon.io.Prompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Point;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

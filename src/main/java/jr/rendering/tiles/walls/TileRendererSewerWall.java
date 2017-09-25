@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.tiles.TileRenderer;
 
 public class TileRendererSewerWall extends TileRendererWall {
 	private static TextureRegion[] mosses;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;

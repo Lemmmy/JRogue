@@ -1,9 +1,9 @@
 package jr.dungeon.entities.effects;
 
-import jr.dungeon.io.BlankMessenger;
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.io.BlankMessenger;
+import jr.dungeon.io.Messenger;
 import jr.utils.DebugToStringStyle;
 import jr.utils.Serialisable;
 import lombok.AccessLevel;

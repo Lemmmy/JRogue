@@ -1,7 +1,6 @@
 package jr.debugger.ui.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;

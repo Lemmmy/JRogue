@@ -7,7 +7,6 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityChest;
-import jr.dungeon.entities.decoration.EntityFountain;
 import jr.dungeon.entities.events.*;
 import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventHandler;

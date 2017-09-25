@@ -14,14 +14,14 @@ import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
-import jr.utils.*;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
