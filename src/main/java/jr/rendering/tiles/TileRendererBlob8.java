@@ -127,12 +127,10 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	
 	abstract boolean isJoinedTile(TileType tile);
 	
-	@Deprecated
 	protected TextureRegion getImageFromMask(int mask) {
 		return getImageFromMask(images, mask);
 	}
 	
-	@Deprecated
 	protected TextureRegion getImageFromMask(TextureRegion[] set, int mask) {
 		return set[MAP[mask]];
 	}

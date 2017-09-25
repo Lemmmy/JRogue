@@ -38,6 +38,8 @@ public class TileRendererRug extends TileRendererBlob8 {
 
 		loadBlob(overlayImages, 3, 0);
 		loadBlob(cutoutImages, 0, 1);
+		
+		bakeBlobs(cutoutImages, "rug", rug, floor);
 	}
 	
 	@Override
@@ -58,28 +60,9 @@ public class TileRendererRug extends TileRendererBlob8 {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion blobImage = getImageFromMask(cutoutImages, getPositionMask(dungeon.getLevel(), x, y));
 		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
 		
-		Color colourOld = batch.getColor();
-		
-		drawTile(batch, rug, x, y);
-		batch.flush();
-		
-		Gdx.gl.glColorMask(false, false, false, true);
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
-		drawTile(batch, blobImage, x, y);
-		batch.flush();
-		
-		Gdx.gl.glColorMask(true, true, true, true);
-		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
-		drawTile(batch, floor, x, y);
-		batch.flush();
-		
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		drawBakedBlob(batch, dungeon, x, y, "rug");
 		drawTile(batch, overlayImage, x, y);
-		batch.flush();
-		
-		batch.setColor(colourOld);
 	}
 }
