@@ -303,6 +303,8 @@ public class EntityComponent extends RendererComponent {
 	
 	@EventHandler
 	private void onEntityDamaged(EntityDamagedEvent e) {
+		if (e.getAttacker() == null) return;
+		
 		addAnimation(new AnimationEntityDamaged(renderer, e.getVictim(), e.getAttacker()));
 	}
 
