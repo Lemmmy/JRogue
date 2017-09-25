@@ -34,7 +34,7 @@ public class DebugUI {
 	private GameWidget gameWidget;
 	
 	private GLProfiler profiler;
-	private Label drawCallsLabel;
+	private Label profileLabel;
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -43,6 +43,7 @@ public class DebugUI {
 	
 	public void initialise() {
 		profiler = new GLProfiler(Gdx.graphics);
+		profiler.enable();
 		
 		ScreenViewport stageViewport = new ScreenViewport();
 		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
@@ -55,9 +56,9 @@ public class DebugUI {
 		root.setFillParent(true);
 		
 		Table topBar = new Table();
-		drawCallsLabel = new Label("Draw calls: none", skin);
-		drawCallsLabel.setAlignment(Align.left);
-		topBar.add(drawCallsLabel).left();
+		profileLabel = new Label("", skin);
+		profileLabel.setAlignment(Align.left);
+		topBar.add(profileLabel).left();
 		root.add(topBar).fillX().top().left().row();
 		
 		Table main = new Table();
@@ -131,7 +132,14 @@ public class DebugUI {
 		if (gameWidget != null) gameWidget.drawComponents();
 		if (stage != null) stage.draw();
 		
-		if (drawCallsLabel != null) drawCallsLabel.setText(String.format("Draw calls: %,d", profiler.getDrawCalls()));
+		if (profileLabel != null) profileLabel.setText(String.format(
+			"Draw calls: %,d   Calls: %,d   Shader Switches: %,d   Texture Bindings: %,d   Vertex Count: %,f",
+			profiler.getDrawCalls(),
+			profiler.getCalls(),
+			profiler.getShaderSwitches(),
+			profiler.getTextureBindings(),
+			profiler.getVertexCount().value
+		));
 		
 		profiler.reset();
 	}
