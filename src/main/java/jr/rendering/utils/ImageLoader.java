@@ -1,17 +1,26 @@
 package jr.rendering.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import jr.JRogue;
 import jr.rendering.tiles.TileMap;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ImageLoader {
 	private static final Map<String, Texture> imageCache = new HashMap<>();
+	
+	@Getter
+	private static final PixmapPacker pixmapPacker =
+		new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
+	@Getter private static final TextureAtlas pixmapAtlas = new TextureAtlas();
 	
 	public static TextureRegion getSubimage(Texture image, int x, int y, int width, int height) {
 		return new TextureRegion(image, x, y, width, height);
@@ -83,5 +92,11 @@ public class ImageLoader {
 		} catch (GdxRuntimeException e) {
 			JRogue.getLogger().error("Error cleaning up game", e);
 		}
+	}
+	
+	public static Pixmap getPixmapFromTextureRegion(TextureRegion region) {
+		Texture texture = region.getTexture();
+		if (!texture.getTextureData().isPrepared()) texture.getTextureData().prepare();
+		return texture.getTextureData().consumePixmap();
 	}
 }

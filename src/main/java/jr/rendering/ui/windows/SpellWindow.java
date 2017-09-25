@@ -7,7 +7,7 @@ import jr.dungeon.entities.player.Player;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.ui.partials.SpellPartial;
 
-public class SpellWindow extends PopupWindow {
+public class SpellWindow extends PopupWindowBase {
 	private Player player;
 	
 	public SpellWindow(GameScreen renderer, Stage stage, Skin skin, Player player) {
@@ -23,8 +23,7 @@ public class SpellWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(400);
-		getWindow().setHeight(150);
+		getWindow().setSize(400, 150);
 		
 		SpellPartial spellPartial = new SpellPartial(getSkin(), getWindow(), player);
 		ScrollPane spellScrollPane = new ScrollPane(spellPartial, getSkin());

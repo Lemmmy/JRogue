@@ -9,7 +9,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.screens.GameScreen;
 
-public class WishWindow extends PopupWindow {
+public class WishWindow extends PopupWindowBase {
 	private TextField wishField;
 	
 	public WishWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {

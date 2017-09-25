@@ -11,7 +11,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.screens.GameScreen;
 
-public class DebugWindow extends PopupWindow {
+public class DebugWindow extends PopupWindowBase {
 	public DebugWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
 		super(renderer, stage, skin, dungeon, level);
 	}

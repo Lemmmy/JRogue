@@ -14,7 +14,7 @@ import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.StatsPartial;
 import lombok.val;
 
-public class PlayerWindow extends PopupWindow {
+public class PlayerWindow extends PopupWindowBase {
 	private Entity entity;
 	
 	public PlayerWindow(GameScreen renderer, Stage stage, Skin skin, Entity entity) {

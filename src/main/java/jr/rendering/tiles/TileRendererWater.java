@@ -61,23 +61,17 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-	
-	}
-	
-	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		int positionMask = getPositionMask(dungeon.getLevel(), x, y);
 		
 		TextureRegion blobImage = getImageFromMask(positionMask);
 		TextureRegion overlayImage = getImageFromMask(overlayImages, positionMask);
 		
 		Color colourOld = batch.getColor();
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 1.0f);
 		
 		if (waterTransparency < 1.0f) {
 			drawTile(batch, floor, x, y);
-				
+			
 			TileRendererReflective.drawReflection(batch, renderer, dungeon, x, y, ReflectionSettings.create(
 				0.00125f,
 				16.0f,

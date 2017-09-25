@@ -10,10 +10,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
+import jr.debugger.ui.atlasviewer.AtlasViewer;
 import jr.debugger.ui.game.GameWidget;
 import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
 import jr.rendering.ui.skin.UISkin;
+import jr.rendering.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -55,21 +57,35 @@ public class DebugUI {
 		Table root = new Table();
 		root.setFillParent(true);
 		
-		Table topBar = new Table();
-		profileLabel = new Label("", skin);
-		profileLabel.setAlignment(Align.left);
-		topBar.add(profileLabel).left();
-		root.add(topBar).fillX().top().left().row();
-		
-		Table main = new Table();
-		initialiseGameContainer(main);
-		initialiseHierarchyContainer(main);
-		root.add(main).fill().top().left();
+		initialiseTopBar(root);
+		initialiseMainPane(root);
+		initialiseBottomBar(root);
 		
 		root.top().left();
 		stage.addActor(root);
 		
 		initInputProcessors();
+	}
+	
+	private void initialiseTopBar(Table container) {
+		Table topBar = new Table();
+		profileLabel = new Label("", skin);
+		profileLabel.setAlignment(Align.left);
+		topBar.add(profileLabel).left();
+		container.add(topBar).growX().top().left().pad(2).row();
+	}
+	
+	private void initialiseMainPane(Table container) {
+		Table main = new Table();
+		initialiseGameContainer(main);
+		initialiseHierarchyContainer(main);
+		container.add(main).grow().top().left().row();
+	}
+	
+	private void initialiseBottomBar(Table container) {
+		Table bottomBar = new Table();
+		initialiseAtlasViewerButton(bottomBar);
+		container.add(bottomBar).growX().bottom().left().pad(2);
 	}
 	
 	private void initialiseGameContainer(Table container) {
@@ -101,6 +117,12 @@ public class DebugUI {
 		} else {
 			rootNodeCell.setActor(widget);
 		}
+	}
+	
+	private void initialiseAtlasViewerButton(Table container) {
+		Button atlasViewerButton = new TextButton("Atlas Viewer", skin);
+		atlasViewerButton.addListener(new FunctionalClickListener((event, x, y) -> new AtlasViewer(stage, skin).show()));
+		container.add(atlasViewerButton).left();
 	}
 	
 	private GameWidget getNewGameWidget() {

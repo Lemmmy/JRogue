@@ -12,7 +12,7 @@ import jr.rendering.screens.GameScreen;
 import jr.rendering.ui.partials.ContainerPartial;
 import lombok.val;
 
-public class ContainerWindow extends PopupWindow {
+public class ContainerWindow extends PopupWindowBase {
 	private Entity entity;
 	private Player player;
 	
