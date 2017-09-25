@@ -245,6 +245,8 @@ public class Dungeon implements Messenger {
 	 * @param response The char response to send.
 	 */
 	public void promptRespond(char response) {
+		JRogue.getLogger().info("Prompt response {}", response);
+		
 		if (prompt != null) {
 			Prompt prompt = this.prompt;
 			prompt.respond(response);
