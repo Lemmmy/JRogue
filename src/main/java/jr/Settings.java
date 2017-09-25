@@ -33,6 +33,9 @@ public class Settings {
 	@Setting(comment="The height of the game window.")
 	private int screenHeight = 640;
 	
+	@Setting(comment="The scale of the tiles in game.")
+	private int zoom = 2;
+	
 	
 	/**
 	 * The size of the game's message log.
