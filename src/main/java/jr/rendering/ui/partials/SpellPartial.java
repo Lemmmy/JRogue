@@ -10,13 +10,13 @@ import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
 import jr.language.transformers.Capitalise;
 import jr.rendering.ui.utils.FunctionalClickListener;
-import jr.rendering.ui.windows.Window;
+import jr.rendering.ui.windows.WindowBorder;
 
 public class SpellPartial extends Table {
-	private Window parentWindow;
+	private WindowBorder parentWindow;
 	private Player player;
 	
-	public SpellPartial(Skin skin, Window parentWindow, Player player) {
+	public SpellPartial(Skin skin, WindowBorder parentWindow, Player player) {
 		super(skin);
 		
 		this.parentWindow = parentWindow;

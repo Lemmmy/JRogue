@@ -1,10 +1,12 @@
 package jr.rendering.ui.skin;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
@@ -14,6 +16,7 @@ public class UIWindowStyles implements UISkinStyle {
 	public void add(Skin skin) {
 		skin.add("windowCloseButton", getWindowCloseButtonStyle());
 		skin.add("default", getWindowStyle(skin));
+		skin.add("tooltip", getTooltipWindowStyle(skin));
 	}
 	
 	public Button.ButtonStyle getWindowCloseButtonStyle() {
@@ -36,6 +39,12 @@ public class UIWindowStyles implements UISkinStyle {
 		return style;
 	}
 	
+	public Window.WindowStyle getTooltipWindowStyle(Skin skin) {
+		Window.WindowStyle style = new Window.WindowStyle();
+		style.background = getTooltipBackground();
+		return style;
+	}
+	
 	public Drawable getCloseButtonUp() {
 		return new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 84, 31, 17, 17));
 	}
@@ -53,5 +62,12 @@ public class UIWindowStyles implements UISkinStyle {
 			ImageLoader.getSubimage("textures/hud.png", 0, 32, 84, 57),
 			8, 8, 27, 8
 		);
+	}
+	
+	public Drawable getTooltipBackground() {
+		return new NinePatchDrawable(new NinePatch(
+			ImageLoader.getSubimage("textures/hud.png", 130, 43, 13, 9),
+			6, 6, 4, 4
+		));
 	}
 }

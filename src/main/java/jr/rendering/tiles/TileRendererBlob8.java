@@ -59,8 +59,6 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected void bakeBlobs(TextureRegion[] set, String name, TextureRegion fg, TextureRegion bg) {
-		long t1 = System.nanoTime();
-		
 		PixmapPacker packer = ImageLoader.getPixmapPacker();
 		
 		Pixmap pixmapFg = ImageLoader.getPixmapFromTextureRegion(fg);
@@ -105,9 +103,6 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		}
 		
 		ImageLoader.getPixmapPacker().updateTextureAtlas(ImageLoader.getPixmapAtlas(), Nearest, Nearest, false);
-		
-		long t2 = System.nanoTime();
-		JRogue.getLogger().trace("Blob generation for {} took {} ms", name, (t2 - t1) / 1E6);
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {

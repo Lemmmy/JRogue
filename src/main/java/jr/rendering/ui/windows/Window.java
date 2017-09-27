@@ -1,82 +1,52 @@
 package jr.rendering.ui.windows;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Window extends Dialog {
-	private PopupWindow owner;
+@Getter
+public abstract class Window implements WindowBorder.ResultListener {
+	private final Stage stage;
+	private final Skin skin;
 	
-	private List<ResultListener> resultListeners = new ArrayList<>();
+	protected WindowBorder windowBorder;
 	
-	public Window(String title, Skin skin, PopupWindow owner) {
-		super(title, skin);
+	public Window(Stage stage, Skin skin) {
+		this.stage = stage;
+		this.skin = skin;
+	}
+	
+	public void show() {
+		initialiseWindow();
+	}
+	
+	protected void initialiseWindow() {
+		windowBorder = new WindowBorder(getTitle(), skin, this);
 		
-		init();
-		this.owner = owner;
-	}
-	
-	private void init() {
-		Button closeButton = new Button(getSkin(), "windowCloseButton");
+		windowBorder.addResultListener(this);
 		
-		closeButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Window.this.hide();
-			}
-		});
+		windowBorder.setMovable(true);
+		windowBorder.setModal(true);
+		windowBorder.pad(28, 10, 10, 10);
 		
-		getTitleTable().getCell(getTitleLabel()).padLeft(-3).padTop(-2);
-		getTitleTable().add(closeButton).size(18, 18).padRight(-4).padTop(-4);
-	}
-	
-	public Window(String title, Skin skin, String styleName, PopupWindow owner) {
-		super(title, skin, styleName);
+		windowBorder.key(Input.Keys.ESCAPE, false);
 		
-		init();
-		this.owner = owner;
-	}
-	
-	public Window(String title, WindowStyle style, PopupWindow owner) {
-		super(title, style);
+		populateWindow();
 		
-		init();
-		this.owner = owner;
-	}
-	
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		setClip(true);
-		super.draw(batch, parentAlpha);
-		setClip(false);
-	}
-	
-	@Override
-	public void hide(Action action) {
-		super.hide(action);
+		windowBorder.setPosition(
+			(int) Math.floor(stage.getWidth() / 2) - (int) Math.floor(windowBorder.getWidth() / 2),
+			(int) Math.floor(stage.getHeight() / 2) - (int) Math.floor(windowBorder.getHeight() / 2)
+		);
 		
-		owner.remove();
+		stage.addActor(windowBorder);
 	}
 	
-	@Override
-	protected void result(Object result) {
-		super.result(result);
-		
-		resultListeners.forEach(l -> l.onResult(result));
-	}
+	public abstract String getTitle();
 	
-	public void addResultListener(ResultListener listener) {
-		resultListeners.add(listener);
-	}
+	public abstract void populateWindow();
 	
-	public interface ResultListener {
-		void onResult(Object result);
-	}
+	protected void remove() {}
+	
+	public void onResult(Object result) {}
 }

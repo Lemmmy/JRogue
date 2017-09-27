@@ -3,6 +3,7 @@ package jr.debugger;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.GL20;
@@ -37,6 +38,8 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	
 	private DebugUI ui;
 	
+	private Lwjgl3Window window;
+	
 	public DebugClient(GameAdapter gameAdapter, Object rootObject) {
 		this.gameAdapter = gameAdapter;
 		this.rootObject = rootObject;
@@ -61,7 +64,7 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 			}
 		});
 		
-		app.newWindow(this, config);
+		window = app.newWindow(this, config);
 	}
 	
 	@Override
@@ -148,5 +151,16 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	private void onTurn(TurnEvent e) {
 		refreshRoot();
 		ui.refresh();
+	}
+	
+	@Override
+	public void dispose() {
+		try {
+			super.dispose();
+			ui.dispose();
+		} catch (Exception ignored) {
+		} finally {
+			if (window != null) window.closeWindow();
+		}
 	}
 }

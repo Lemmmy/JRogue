@@ -32,15 +32,15 @@ public class LevelComponent extends RendererComponent {
 				TileRenderer tr = tm.getRenderer();
 				if (tr == null) continue;
 				
-				/*if (tr.canDrawBasic()) {
+				if (tr.canDrawBasic()) {
 					tr.drawBasic(batch, dungeon, x, y);
-				} else {*/
+				} else {
 					if (extra) {
 						tr.drawExtra(batch, dungeon, x, y);
 					} else {
 						tr.draw(batch, dungeon, x, y);
 					}
-				// }
+				}
 			}
 		}
 	}

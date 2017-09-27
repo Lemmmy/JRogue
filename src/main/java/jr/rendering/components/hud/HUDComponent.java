@@ -49,7 +49,7 @@ public class HUDComponent extends RendererComponent {
 	private Player player;
 	
 	private List<LogEntry> log = new ArrayList<>();
-	@Getter	private List<PopupWindowBase> windows = new ArrayList<>();
+	@Getter	private List<WindowBase> windows = new ArrayList<>();
 	
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Actor> entityDebugActors = new ArrayList<>();
@@ -412,11 +412,11 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	public void addWindow(PopupWindowBase window) {
+	public void addWindow(WindowBase window) {
 		windows.add(window);
 	}
 	
-	public void removeWindow(PopupWindowBase window) {
+	public void removeWindow(WindowBase window) {
 		windows.remove(window);
 	}
 	

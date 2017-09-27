@@ -197,8 +197,8 @@ public class JRogue {
 		opts.addOption("h", "help", false, "Shows the help information");
 		opts.addOption("c", "config", true, "Specify the path of a config file to load");
 		opts.addOption(null, "name", true, "Specify the name of the player");
-		opts.addOption(null, "width", true, "Sets the game window width");
-		opts.addOption(null, "height", true, "Sets the game window height");
+		opts.addOption(null, "width", true, "Sets the game windowBorder width");
+		opts.addOption(null, "height", true, "Sets the game windowBorder height");
 		
 		CommandLine cmd = null;
 		

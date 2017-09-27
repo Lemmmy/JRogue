@@ -23,7 +23,7 @@ import lombok.Setter;
 
 public class GameAdapter extends Game {
 	/**
-	 * The game's title in the game window.
+	 * The game's title in the game windowBorder.
 	 */
 	public static final String WINDOW_TITLE = "JRogue";
 	
@@ -221,6 +221,8 @@ public class GameAdapter extends Game {
 		
 		oldFBO.dispose();
 		newFBO.dispose();
+		
+		if (debugClient != null) debugClient.dispose();
 	}
 	
 	public void setDebugWindowFocused(boolean debugWindowFocused) {

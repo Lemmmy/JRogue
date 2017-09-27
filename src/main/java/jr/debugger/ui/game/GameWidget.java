@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.EventHandler;
@@ -122,11 +123,11 @@ public class GameWidget extends Image implements EventListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			int worldX = (int) (x / TileMap.TILE_WIDTH);
-			int worldY = (int) (y / TileMap.TILE_HEIGHT);
+			int worldY = (int) ((getHeight() - y) / TileMap.TILE_HEIGHT);
 			
-			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) {
+			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) return;
 			
-			}
+			
 		}
 	}
 }

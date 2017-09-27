@@ -8,12 +8,12 @@ import jr.rendering.screens.GameScreen;
 import lombok.Getter;
 
 @Getter
-public abstract class PopupWindowBase extends PopupWindow {
+public abstract class WindowBase extends Window {
 	private final Dungeon dungeon;
 	private final Level level;
 	private final GameScreen renderer;
 	
-	public PopupWindowBase(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+	public WindowBase(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
 		super(stage, skin);
 		
 		this.renderer = renderer;
