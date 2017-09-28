@@ -33,8 +33,6 @@ public abstract class VoxParserBase extends AbstractVoxParser {
 		int contentSize = Integer.reverseBytes(dis.readInt());
 		int childrenSize = Integer.reverseBytes(dis.readInt());
 		
-		System.out.println(String.format("Chunk header for %s (%,d + %,d)", id, contentSize, childrenSize));
-		
 		AtomicReference<VoxChunkBase> chunk = new AtomicReference<>();
 		
 		JRogue.getReflections().getTypesAnnotatedWith(ChunkID.class).stream()
