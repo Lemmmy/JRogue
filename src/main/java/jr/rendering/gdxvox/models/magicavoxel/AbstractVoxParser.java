@@ -4,5 +4,5 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 public abstract class AbstractVoxParser {
-	public abstract VoxChunk parse(DataInputStream dis) throws VoxParseException, IOException;
+	public abstract VoxModel parse(DataInputStream dis) throws VoxParseException, IOException;
 }

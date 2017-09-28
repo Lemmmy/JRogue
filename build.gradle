@@ -26,7 +26,7 @@ version = "alpha-0.3"
 
 sourceCompatibility = 1.8
 
-applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
+applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC", "-ea"]
 
 repositories {
 	mavenLocal()

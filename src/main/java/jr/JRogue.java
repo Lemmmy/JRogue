@@ -8,6 +8,8 @@ import com.google.common.reflect.TypeToken;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx2d.GameAdapter;
+import jr.rendering.gdxvox.models.magicavoxel.VoxChunk;
+import jr.rendering.gdxvox.models.magicavoxel.VoxModel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.VoxParser;
 import jr.utils.OperatingSystem;
@@ -107,7 +109,9 @@ public class JRogue {
 		initialiseReflections();
 		
 		try {
-			new VoxParser().parse(JRogue.class.getResourceAsStream("/models/classes/wizard/wizard.vox"));
+			VoxModel wizard = new VoxParser().parse(JRogue.class.getResourceAsStream("/models/classes/wizard/wizard.vox"));
+			
+			System.out.println(wizard);
 		} catch (VoxParseException | IOException e) {
 			e.printStackTrace();
 		}

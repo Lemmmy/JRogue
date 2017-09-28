@@ -2,11 +2,13 @@ package jr.rendering.gdxvox.models.magicavoxel;
 
 import lombok.Getter;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class VoxChunk {
+public abstract class VoxChunk {
 	private String id;
 	
 	private int contentSize;
@@ -73,4 +75,6 @@ public class VoxChunk {
 	public VoxChunk getChunk(String name) {
 		return getTypedProperty(name, VoxChunk.class);
 	}
+	
+	public abstract void parse(DataInputStream dis) throws VoxParseException, IOException;
 }

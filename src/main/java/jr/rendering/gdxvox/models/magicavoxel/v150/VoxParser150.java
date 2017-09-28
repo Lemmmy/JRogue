@@ -1,15 +1,13 @@
 package jr.rendering.gdxvox.models.magicavoxel.v150;
 
-import jr.rendering.gdxvox.models.magicavoxel.AbstractVoxParser;
-import jr.rendering.gdxvox.models.magicavoxel.VoxChunk;
 import jr.rendering.gdxvox.models.magicavoxel.VoxVersion;
-
-import java.io.DataInputStream;
+import jr.rendering.gdxvox.models.magicavoxel.base.VoxChunkBase;
+import jr.rendering.gdxvox.models.magicavoxel.base.VoxParserBase;
 
 @VoxVersion(150)
-public class VoxParser150 extends AbstractVoxParser {
+public class VoxParser150 extends VoxParserBase {
 	@Override
-	public VoxChunk parse(DataInputStream dis) {
-		return null;
+	public Class<? extends VoxChunkBase> getChunkClass() {
+		return VoxChunk150.class;
 	}
 }
