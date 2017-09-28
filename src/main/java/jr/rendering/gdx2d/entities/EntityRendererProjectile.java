@@ -20,9 +20,9 @@ public class EntityRendererProjectile extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		int worldX = entity.getLastSeenX();
-		int worldY = entity.getLastSeenY();
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
+		int worldX = useMemoryLocation ? entity.getLastSeenX() : entity.getX();
+		int worldY = useMemoryLocation ? entity.getLastSeenY() : entity.getY();
 		int width = EntityMap.ENTITY_WIDTH;
 		int height = EntityMap.ENTITY_HEIGHT;
 		int x = worldX * width;

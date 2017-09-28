@@ -1,6 +1,5 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;
@@ -9,6 +8,7 @@ import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;

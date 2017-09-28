@@ -1,7 +1,7 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.io.Messenger;
 import jr.utils.DebugToStringStyle;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

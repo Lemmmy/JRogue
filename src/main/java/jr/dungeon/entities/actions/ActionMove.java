@@ -1,16 +1,14 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.items.Item;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.tiles.Tile;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
-import jr.language.Verb;
 import jr.language.transformers.Capitalise;
 import jr.utils.Point;
 

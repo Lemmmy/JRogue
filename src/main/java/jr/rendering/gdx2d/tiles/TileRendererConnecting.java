@@ -11,17 +11,19 @@ import java.util.List;
 
 public class TileRendererConnecting extends TileRendererBlob8 {
 	private TextureRegion fg;
-	private TextureRegion bg;
-
+	
 	private List<TileType> connecting;
 	
 	private boolean exclusive;
+	
+	private String name;
 
 	public TileRendererConnecting(int sheetX,
 								  int sheetY,
 								  int bgSheetX,
 								  int bgSheetY,
 								  boolean exclusive,
+								  String name,
 								  TileType... connecting) {
 		super(1, 0);
 		
@@ -29,7 +31,11 @@ public class TileRendererConnecting extends TileRendererBlob8 {
 		this.connecting = new ArrayList<>(Arrays.asList(connecting));
 		
 		fg = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		bg = getImageFromSheet("textures/tiles.png", bgSheetX, bgSheetY);
+		TextureRegion bg = getImageFromSheet("textures/tiles.png", bgSheetX, bgSheetY);
+		
+		this.name = name;
+		
+		bakeBlobs(images, name, fg, bg);
 	}
 	
 	@Override
@@ -44,6 +50,6 @@ public class TileRendererConnecting extends TileRendererBlob8 {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawGenericBlob(batch, dungeon, x, y, fg, bg);
+		drawBakedBlob(batch, dungeon, x, y, name);
 	}
 }

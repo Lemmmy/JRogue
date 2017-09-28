@@ -78,7 +78,7 @@ public class TileRendererReflective extends TileRendererBasic {
 				
 				EntityRenderer r = EntityMap.getRenderer(e.getAppearance());
 				r.setDrawingReflection(true);
-				r.draw(batch, dungeon, e);
+				r.draw(batch, dungeon, e, true);
 				r.setDrawingReflection(false);
 			});
 		

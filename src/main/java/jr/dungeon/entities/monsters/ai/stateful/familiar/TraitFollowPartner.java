@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
-import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
 public class TraitFollowPartner extends AITrait<FamiliarAI> {

@@ -1,12 +1,12 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionKick;
 import jr.dungeon.entities.effects.InjuredFoot;
 import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Prompt;
 import jr.utils.Utils;
 import jr.utils.VectorInt;
 

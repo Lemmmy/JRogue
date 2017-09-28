@@ -11,7 +11,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.gdx2d.screens.GameScreen;
 
-public class DebugWindow extends PopupWindow {
+public class DebugWindow extends WindowBase {
 	public DebugWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
 		super(renderer, stage, skin, dungeon, level);
 	}
@@ -23,25 +23,25 @@ public class DebugWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(350f);
-		getWindow().setHeight(250f);
+		getWindowBorder().setWidth(350f);
+		getWindowBorder().setHeight(250f);
 		
-		getWindow().getContentTable()
+		getWindowBorder().getContentTable()
 			.add(new Label(
 				String.format("Nutrition: %,d", getDungeon().getPlayer().getNutrition()),
 				getSkin(),
 				"windowStyle"
 			));
-		getWindow().getContentTable().row();
+		getWindowBorder().getContentTable().row();
 		
-		getWindow().getContentTable().add(
+		getWindowBorder().getContentTable().add(
 			new Label(
 				String.format("Pos: %d, %d", getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY()),
 				getSkin(),
 				"windowStyle"
 			)
 		);
-		getWindow().getContentTable().row();
+		getWindowBorder().getContentTable().row();
 		
 		Button seeAllButton = new TextButton("See all", getSkin());
 		seeAllButton.addListener(new ChangeListener() {
@@ -50,6 +50,6 @@ public class DebugWindow extends PopupWindow {
 				getLevel().visibilityStore.seeAll();
 			}
 		});
-		getWindow().getContentTable().add(seeAllButton).width(50f);
+		getWindowBorder().getContentTable().add(seeAllButton).width(50f);
 	}
 }

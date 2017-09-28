@@ -1,23 +1,22 @@
 package jr.rendering.gdx2d.ui.partials;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import jr.dungeon.entities.player.Player;
 import jr.language.transformers.Capitalise;
-import jr.rendering.gdx2d.ui.windows.Window;
+import jr.rendering.gdx2d.ui.utils.FunctionalClickListener;
+import jr.rendering.gdx2d.ui.windows.WindowBorder;
 
 public class SpellPartial extends Table {
-	private Window parentWindow;
+	private WindowBorder parentWindow;
 	private Player player;
 	
-	public SpellPartial(Skin skin, Window parentWindow, Player player) {
+	public SpellPartial(Skin skin, WindowBorder parentWindow, Player player) {
 		super(skin);
 		
 		this.parentWindow = parentWindow;
@@ -77,15 +76,10 @@ public class SpellPartial extends Table {
 			)).right().padLeft(6);
 			spellTable.row();
 			
-			spellButton.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					if (event.getButton() == Input.Buttons.LEFT) {
-						player.defaultVisitors.castSpell(spell);
-						parentWindow.hide();
-					}
-				}
-			});
+			spellButton.addListener(new FunctionalClickListener((event, x, y) -> {
+				player.defaultVisitors.castSpell(spell);
+				parentWindow.hide();
+			}));
 			
 			spellButton.add(spellTable).left().width(374).pad(2);
 			

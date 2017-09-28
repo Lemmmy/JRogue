@@ -71,6 +71,8 @@ public abstract class TileRenderer {
 	
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
 	
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
+	
 	public ParticleEffectPool getParticleEffectPool() {
 		return effectPool;
 	}
@@ -80,8 +82,8 @@ public abstract class TileRenderer {
 			int width = TileMap.TILE_WIDTH;
 			int height = TileMap.TILE_HEIGHT;
 			
-			float tx = x * width + 0.01f;
-			float ty = y * height + 0.01f;
+			float tx = x * width;
+			float ty = y * height;
 			
 			if (isDrawingReflection()) {
 				batch.draw(image, tx, ty + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
@@ -214,4 +216,8 @@ public abstract class TileRenderer {
 	}
 	
 	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {}
+	
+	public boolean canDrawBasic() {
+		return false;
+	}
 }

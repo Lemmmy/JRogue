@@ -1,8 +1,8 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.items.comestibles.ItemComestible;
 
 /**

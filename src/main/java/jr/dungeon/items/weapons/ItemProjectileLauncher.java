@@ -6,7 +6,6 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.dungeon.entities.skills.Skill;
-import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemProjectile;
 
 import java.util.List;

@@ -61,16 +61,17 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
-		TextureRegion overlayImage = getImageFromMask(overlayImages, getPositionMask(dungeon.getLevel(), x, y));
+		int positionMask = getPositionMask(dungeon.getLevel(), x, y);
+		
+		TextureRegion blobImage = getImageFromMask(positionMask);
+		TextureRegion overlayImage = getImageFromMask(overlayImages, positionMask);
 		
 		Color colourOld = batch.getColor();
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 1.0f);
 		
 		if (waterTransparency < 1.0f) {
 			drawTile(batch, floor, x, y);
-				
+			
 			TileRendererReflective.drawReflection(batch, renderer, dungeon, x, y, ReflectionSettings.create(
 				0.00125f,
 				16.0f,
@@ -84,24 +85,35 @@ public class TileRendererWater extends TileRendererBlob8 {
 		drawTile(batch, water, x, y);
 		
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, colourOld.a);
-		batch.flush();
 		
-		Gdx.gl.glColorMask(false, false, false, true);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
+		Gdx.gl.glColorMask(false, false, false, true);
 		
 		drawTile(batch, blobImage, x, y);
-		batch.flush();
 		
-		Gdx.gl.glColorMask(true, true, true, true);
 		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+		Gdx.gl.glColorMask(true, true, true, true);
 		drawTile(batch, floor, x, y);
-		batch.flush();
 		
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 0.5f);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		drawTile(batch, overlayImage, x, y);
-		batch.flush();
 		
+		batch.setColor(colourOld);
+	}
+	
+	@Override
+	public boolean canDrawBasic() {
+		return true;
+	}
+	
+	@Override
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		Color colourOld = batch.getColor();
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);
+		drawTile(batch, water, x, y);
 		batch.setColor(colourOld);
 	}
 }

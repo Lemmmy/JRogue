@@ -6,8 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.gdx2d.utils.ImageLoader;
 import org.apache.commons.lang3.StringUtils;
 
-public class UISplitterStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler
+public class UISplitterStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		// Horizontal
 		addSplitter(skin, "raised", 101, 48, false);
 		addSplitter(skin, "lowered", 101, 50, false);
@@ -21,7 +22,7 @@ public class UISplitterStyles {
 		addSplitter(skin, "darkLowered", 105, 57, true);
 	}
 	
-	public static void addSplitter(Skin skin, String name, int x, int y, boolean vertical) {
+	public void addSplitter(Skin skin, String name, int x, int y, boolean vertical) {
 		String fullName = "splitter" + (vertical ? "Vertical" : "Horizontal") + StringUtils.capitalize(name);
 		
 		int width = vertical ? 2 : 4;

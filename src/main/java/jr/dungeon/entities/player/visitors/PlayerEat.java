@@ -1,14 +1,13 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.language.LanguageUtils;
-import jr.language.Noun;
 
 import java.util.List;
 import java.util.Optional;

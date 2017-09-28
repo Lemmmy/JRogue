@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdx2d.events.EntityDebugUpdatedEvent;
 import jr.rendering.gdx2d.screens.GameScreen;
@@ -85,9 +85,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
-		if (renderer.isTurnLerping()) {
-			return false;
-		}
+		if (renderer.isTurnLerping()) return false;
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
@@ -105,9 +103,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommandsCharacters(char key) {
-		if (renderer.isTurnLerping()) {
-			return false;
-		}
+		if (renderer.isTurnLerping()) return false;
 
 		if (playerCommands.containsKey(key)) {
 			val action = playerCommands.get(key);
@@ -139,13 +135,8 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
-		if (renderer.isTurnLerping()) {
-			return false;
-		}
-		
-		if (renderer.getHudComponent().getWindows().size() > 0) {
-			return false;
-		}
+		if (renderer.isTurnLerping()) return false;
+		if (renderer.getHudComponent().getWindows().size() > 0) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -171,13 +162,8 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleDebugClicks(Point pos, int button) {
-		if (renderer.isTurnLerping()) {
-			return false;
-		}
-		
-		if (renderer.getHudComponent().getWindows().size() > 0) {
-			return false;
-		}
+		if (renderer.isTurnLerping()) return false;
+		if (renderer.getHudComponent().getWindows().size() > 0) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -218,7 +204,9 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		if (renderer.getHudComponent().getWindows().size() > 0) { return false; }
+		dontHandleNext = false;
+		
+		if (renderer.getHudComponent().getWindows().size() > 0) return false;
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {

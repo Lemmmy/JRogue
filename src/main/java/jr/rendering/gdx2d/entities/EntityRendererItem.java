@@ -36,7 +36,7 @@ public class EntityRendererItem extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
 		EntityItem item = (EntityItem) entity;
 		
 		if (item.getAppearance() != null) {
@@ -46,8 +46,8 @@ public class EntityRendererItem extends EntityRenderer {
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
 			if (renderer != null) {
-				float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
-				float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+				float x = getPositionX(entity, useMemoryLocation);
+				float y = getPositionY(entity, useMemoryLocation);
 				
 				float[] ac = getAnimationColour(entity);
 				

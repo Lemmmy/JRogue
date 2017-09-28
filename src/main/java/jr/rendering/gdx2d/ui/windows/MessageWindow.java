@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.rendering.gdx2d.screens.GameScreen;
 
-public class MessageWindow extends PopupWindow {
+public class MessageWindow extends WindowBase {
 	private String title;
 	private String message;
 	
@@ -26,10 +26,10 @@ public class MessageWindow extends PopupWindow {
 	public void populateWindow() {
 		Label label = new Label("[WHITE]" + message + "[]", getSkin(), "windowStyleMarkup");
 		label.setWrap(true);
-		getWindow().getContentTable().add(label).pad(16).prefWidth(350);
-		getWindow().button("OK");
-		getWindow().key(Input.Keys.ENTER, true);
-		getWindow().setModal(false);
-		getWindow().pack();
+		getWindowBorder().getContentTable().add(label).pad(16).prefWidth(350);
+		getWindowBorder().button("OK");
+		getWindowBorder().key(Input.Keys.ENTER, true);
+		getWindowBorder().setModal(false);
+		getWindowBorder().pack();
 	}
 }

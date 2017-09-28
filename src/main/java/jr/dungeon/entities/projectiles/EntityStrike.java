@@ -5,10 +5,10 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.language.Lexicon;
-import jr.language.Noun;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 

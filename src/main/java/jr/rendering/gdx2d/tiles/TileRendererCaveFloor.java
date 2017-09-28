@@ -22,7 +22,7 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 	private Random rand = new Random();
 	
 	public TileRendererCaveFloor() {
-		super(6, 2, 7, 2, true, TileType.TILE_GROUND, TileType.TILE_CAVE_WALL);
+		super(6, 2, 7, 2, true, "cavefloor", TileType.TILE_GROUND, TileType.TILE_CAVE_WALL);
 		
 		rocks = new TextureRegion[6 * 4];
 		

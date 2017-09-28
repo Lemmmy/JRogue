@@ -3,7 +3,6 @@ package jr.dungeon.generators;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Colour;
 
 public class Generator_ extends GeneratorStandard {
 	public Generator_(Level level, Tile sourceTile) {

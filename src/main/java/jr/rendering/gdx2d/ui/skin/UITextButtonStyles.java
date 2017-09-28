@@ -5,13 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+@UISkinStyleHandler
 public class UITextButtonStyles extends UIButtonStyles {
-	public static void add(Skin skin) {
+	public void add(Skin skin) {
 		skin.add("default", getTextButtonStyle(skin));
 		skin.add("checkable", getTextButtonStyleCheckable(skin));
 	}
 	
-	public static TextButton.TextButtonStyle getTextButtonStyle(Skin skin) {
+	public TextButton.TextButtonStyle getTextButtonStyle(Skin skin) {
 		TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
 		Button.ButtonStyle buttonStyle = getButtonStyle();
 		
@@ -25,7 +26,7 @@ public class UITextButtonStyles extends UIButtonStyles {
 		return style;
 	}
 	
-	public static TextButton.TextButtonStyle getTextButtonStyleCheckable(Skin skin) {
+	public TextButton.TextButtonStyle getTextButtonStyleCheckable(Skin skin) {
 		TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
 		Button.ButtonStyle buttonStyle = getCheckableButtonStyle();
 		

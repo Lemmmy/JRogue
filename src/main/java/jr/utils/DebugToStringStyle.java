@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 /**
  * Custom string style for {@link org.apache.commons.lang3.builder.ToStringBuilder}.

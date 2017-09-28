@@ -7,12 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.gdx2d.utils.ImageLoader;
 
-public class UIContainerButtonStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler
+public class UIContainerButtonStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		skin.add("containerEntry", getContainerButtonStyle());
 	}
 	
-	public static Button.ButtonStyle getContainerButtonStyle() {
+	public Button.ButtonStyle getContainerButtonStyle() {
 		Button.ButtonStyle style = new Button.ButtonStyle();
 		
 		style.disabled = style.up = getButtonUp();
@@ -22,21 +23,21 @@ public class UIContainerButtonStyles {
 		return style;
 	}
 	
-	public static Drawable getButtonUp() {
+	public Drawable getButtonUp() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 108, 44, 7, 7),
 			3, 3, 3, 3
 		));
 	}
 	
-	public static Drawable getButtonOver() {
+	public Drawable getButtonOver() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 116, 44, 7, 7),
 			3, 3, 3, 3
 		));
 	}
 	
-	public static Drawable getButtonDown() {
+	public Drawable getButtonDown() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 122, 44, 7, 7),
 			3, 3, 3, 3

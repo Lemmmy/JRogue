@@ -1,9 +1,9 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Quaffable;
+import jr.dungeon.io.Messenger;
 
 /**
  * Quaff/drink from entity action. For example, see {@link jr.dungeon.entities.decoration.EntityFountain}.

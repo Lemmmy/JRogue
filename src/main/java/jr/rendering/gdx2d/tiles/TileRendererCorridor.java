@@ -14,6 +14,8 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 		
 		corridor = getImageFromSheet("textures/tiles.png", 0, 1);
 		empty = getImageFromSheet("textures/tiles.png", 1, 1);
+		
+		bakeBlobs(images, "corridor", corridor, empty);
 	}
 	
 	@Override
@@ -28,6 +30,16 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawGenericBlob(batch, dungeon, x, y, corridor, empty);
+		drawBakedBlob(batch, dungeon, x, y, "corridor");
+	}
+	
+	@Override
+	public boolean canDrawBasic() {
+		return true;
+	}
+	
+	@Override
+	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+		drawTile(batch, corridor, x, y);
 	}
 }

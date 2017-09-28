@@ -1,7 +1,6 @@
 package jr.rendering.gdx2d.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,7 +27,7 @@ import jr.rendering.gdx2d.ui.partials.DungeonOverviewPartial;
 import jr.rendering.gdx2d.ui.skin.UISkin;
 import jr.rendering.gdx2d.utils.HUDUtils;
 
-public class DeathScreen extends ScreenAdapter {
+public class DeathScreen extends BasicScreen {
 	private Skin skin;
 	private Stage stage;
 	
@@ -268,6 +267,7 @@ public class DeathScreen extends ScreenAdapter {
 	public void show() {
 		super.show();
 		
-		Gdx.input.setInputProcessor(stage);
+		clearInputProcessors();
+		addInputProcessor(stage);
 	}
 }

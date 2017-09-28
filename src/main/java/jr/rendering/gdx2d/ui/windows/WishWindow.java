@@ -9,7 +9,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.rendering.gdx2d.screens.GameScreen;
 
-public class WishWindow extends PopupWindow {
+public class WishWindow extends WindowBase {
 	private TextField wishField;
 	
 	public WishWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
@@ -23,15 +23,15 @@ public class WishWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().getContentTable().add(new Label("Make a wish.", getSkin(), "windowStyle")).pad(8).row();
+		getWindowBorder().getContentTable().add(new Label("Make a wish.", getSkin(), "windowStyle")).pad(8).row();
 		
 		wishField = new TextField("", getSkin());
-		getWindow().getContentTable().add(wishField).pad(8).width(300);
+		getWindowBorder().getContentTable().add(wishField).pad(8).width(300);
 		getStage().setKeyboardFocus(wishField);
 		
-		getWindow().button("Wish", true);
-		getWindow().key(Input.Keys.ENTER, true);
-		getWindow().pack();
+		getWindowBorder().button("Wish", true);
+		getWindowBorder().key(Input.Keys.ENTER, true);
+		getWindowBorder().pack();
 	}
 	
 	@Override

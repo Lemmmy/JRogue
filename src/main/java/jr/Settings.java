@@ -23,15 +23,19 @@ public class Settings {
 								System.getProperty("user.name");
 	
 	/**
-	 * The width of the game window.
+	 * The width of the game windowBorder.
 	 */
-	@Setting(comment="The width of the game window.")
+	@Setting(comment="The width of the game windowBorder.")
 	private int screenWidth = 800;
 	/**
-	 * The height of the game window.
+	 * The height of the game windowBorder.
 	 */
-	@Setting(comment="The height of the game window.")
+	@Setting(comment="The height of the game windowBorder.")
 	private int screenHeight = 640;
+	
+	@Setting(comment="The scale of the tiles in game.")
+	private int zoom = 2;
+	
 	
 	/**
 	 * The size of the game's message log.
@@ -78,6 +82,15 @@ public class Settings {
 	 */
 	@Setting(comment="[Debug] Show FPS counter.")
 	private boolean showFPSCounter = false;
+	
+	@Setting(comment="[Debug] Show debug client")
+	private boolean showDebugClient = false;
+	
+	@Setting(comment="The width of the debug client windowBorder.")
+	private int debugClientWidth = 1200;
+	
+	@Setting(comment="The height of the debug client windowBorder.")
+	private int debugClientHeight = 640;
 	
 	/**
 	 * Show animations between each turn.

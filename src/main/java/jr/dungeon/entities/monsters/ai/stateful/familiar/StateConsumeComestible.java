@@ -1,10 +1,8 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
-import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
-import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.items.ItemStack;

@@ -8,13 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.gdx2d.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.gdx2d.utils.ImageLoader;
 
-public class UIScrollPaneStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler(priority = 300)
+public class UIScrollPaneStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		skin.add("default", getScrollPaneStyle());
 		skin.add("lowered", getLoweredScrollPaneStyle());
 	}
 	
-	public static ScrollPane.ScrollPaneStyle getScrollPaneStyle() {
+	public ScrollPane.ScrollPaneStyle getScrollPaneStyle() {
 		ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle();
 		
 		style.hScroll = getHScroll(); style.hScrollKnob = getHScrollKnob();
@@ -23,7 +24,7 @@ public class UIScrollPaneStyles {
 		return style;
 	}
 	
-	public static ScrollPane.ScrollPaneStyle getLoweredScrollPaneStyle() {
+	public ScrollPane.ScrollPaneStyle getLoweredScrollPaneStyle() {
 		ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle();
 		
 		style.hScroll = getLoweredHScroll(); style.hScrollKnob = getLoweredHScrollKnob();
@@ -34,54 +35,54 @@ public class UIScrollPaneStyles {
 		return style;
 	}
 	
-	public static Drawable getHScroll() {
+	public Drawable getHScroll() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 101, 31, 7, 3),
 			2, 1, 1, 1
 		));
 	}
 	
-	public static Drawable getHScrollKnob() {
+	public Drawable getHScrollKnob() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 101, 34, 7, 6),
 			2, 1, 1, 1
 		));
 	}
 	
-	public static Drawable getVScroll() {
+	public Drawable getVScroll() {
 		return getHScroll();
 	}
 	
-	public static Drawable getVScrollKnob() {
+	public Drawable getVScrollKnob() {
 		return getHScrollKnob();
 	}
 	
-	public static Drawable getLoweredBackground() {
+	public Drawable getLoweredBackground() {
 		return new TiledNinePatchDrawable(
 			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
 			1, 1, 1, 1
 		);
 	}
 	
-	public static Drawable getLoweredHScroll() {
+	public Drawable getLoweredHScroll() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 101, 41, 7, 3),
 			2, 1, 1, 1
 		));
 	}
 	
-	public static Drawable getLoweredHScrollKnob() {
+	public Drawable getLoweredHScrollKnob() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 101, 443, 6, 5),
 			2, 1, 1, 1
 		));
 	}
 	
-	public static Drawable getLoweredVScroll() {
+	public Drawable getLoweredVScroll() {
 		return getLoweredHScroll();
 	}
 	
-	public static Drawable getLoweredVScrollKnob() {
+	public Drawable getLoweredVScrollKnob() {
 		return getLoweredHScrollKnob();
 	}
 }

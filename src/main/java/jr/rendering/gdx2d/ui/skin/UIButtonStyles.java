@@ -7,13 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.rendering.gdx2d.utils.ImageLoader;
 
-public class UIButtonStyles {
-	public static void add(Skin skin) {
+@UISkinStyleHandler
+public class UIButtonStyles implements UISkinStyle {
+	public void add(Skin skin) {
 		skin.add("default", getButtonStyle());
 		skin.add("checkable", getCheckableButtonStyle());
 	}
 	
-	public static Button.ButtonStyle getButtonStyle() {
+	public Button.ButtonStyle getButtonStyle() {
 		Button.ButtonStyle style = new Button.ButtonStyle();
 		
 		style.up = getButtonUp();
@@ -24,7 +25,7 @@ public class UIButtonStyles {
 		return style;
 	}
 	
-	public static Button.ButtonStyle getCheckableButtonStyle() {
+	public Button.ButtonStyle getCheckableButtonStyle() {
 		Button.ButtonStyle style = new Button.ButtonStyle();
 		
 		style.up = getButtonUp();
@@ -38,42 +39,42 @@ public class UIButtonStyles {
 		return style;
 	}
 	
-	public static Drawable getButtonUp() {
+	public Drawable getButtonUp() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 108, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getButtonOver() {
+	public Drawable getButtonOver() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 118, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getButtonDown() {
+	public Drawable getButtonDown() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 128, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getButtonDisabled() {
+	public Drawable getButtonDisabled() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 138, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getButtonChecked() {
+	public Drawable getButtonChecked() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 169, 31, 10, 12),
 			4, 5, 5, 6
 		));
 	}
 	
-	public static Drawable getButtonCheckedOver() {
+	public Drawable getButtonCheckedOver() {
 		return new NinePatchDrawable(new NinePatch(
 			ImageLoader.getSubimage("textures/hud.png", 179, 31, 10, 12),
 			4, 5, 5, 6

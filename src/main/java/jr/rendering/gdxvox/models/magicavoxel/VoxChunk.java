@@ -28,6 +28,7 @@ public class VoxChunk {
 		return properties.get(name);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> T getTypedProperty(String name, Class<T> tClass) {
 		Object property = properties.get(name);
 		
