@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.dungeon.Dungeon;
-import jr.rendering.GameAdapter;
+import jr.rendering.gdx2d.GameAdapter;
+import jr.rendering.gdxvox.models.magicavoxel.VoxParseException;
+import jr.rendering.gdxvox.models.magicavoxel.VoxParser;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -97,6 +99,12 @@ public class JRogue {
 		initialiseReflections();
 		
 		try {
+			new VoxParser().parse(JRogue.class.getResourceAsStream("/models/classes/wizard/wizard.vox"));
+		} catch (VoxParseException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		/* try {
 			adapter = new GameAdapter();
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
@@ -104,7 +112,7 @@ public class JRogue {
 			if (adapter != null) {
 				Gdx.app.exit();
 			}
-		}
+		} */
 	}
 	
 	private void initialiseReflections() {
