@@ -18,6 +18,7 @@ import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.screens.CharacterCreationScreen;
 import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.screens.utils.ScreenTransition;
+import jr.rendering.gdxvox.screens.VoxGameScreen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -80,7 +81,7 @@ public class GameAdapter extends Game {
 		inputMultiplexer = new InputMultiplexer();
 		
 		if (Dungeon.canLoad()) {
-			screen = new GameScreen(this, Dungeon.load());
+			screen = new VoxGameScreen(this, Dungeon.load());
 		} else {
 			screen = new CharacterCreationScreen(this);
 		}

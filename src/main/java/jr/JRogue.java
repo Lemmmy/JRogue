@@ -109,14 +109,6 @@ public class JRogue {
 		initialiseReflections();
 		
 		try {
-			VoxModel wizard = new VoxParser().parse(JRogue.class.getResourceAsStream("/models/classes/wizard/wizard.vox"));
-			
-			System.out.println(wizard);
-		} catch (VoxParseException | IOException e) {
-			e.printStackTrace();
-		}
-		
-		/* try {
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 			config.setResizable(true);
 			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
@@ -132,7 +124,7 @@ public class JRogue {
 			if (adapter != null) {
 				Gdx.app.exit();
 			}
-		} */
+		}
 	}
 	
 	public void setDungeon(Dungeon dungeon) {

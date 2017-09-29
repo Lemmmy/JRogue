@@ -21,6 +21,7 @@ import jr.rendering.gdx2d.entities.RoleMap;
 import jr.rendering.gdx2d.screens.utils.SlidingTransition;
 import jr.rendering.gdx2d.ui.partials.AttributesPartial;
 import jr.rendering.gdx2d.ui.skin.UISkin;
+import jr.rendering.gdxvox.screens.VoxGameScreen;
 import org.apache.commons.lang3.StringUtils;
 
 public class CharacterCreationScreen extends BasicScreen {
@@ -179,7 +180,7 @@ public class CharacterCreationScreen extends BasicScreen {
 				JRogue.getSettings().setRole(selectedRole);
 				JRogue.getSettings().setAttributes(attributes);
 				
-				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
+				game.setScreen(new VoxGameScreen(game, Dungeon.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
 					false,
 					Interpolation.pow4
