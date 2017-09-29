@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.objects;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import jr.dungeon.events.EventListener;
 import lombok.Getter;
 
@@ -10,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public abstract class AbstractObjectRenderer<ObjectK, ObjectV, RendererInstanceT extends AbstractObjectRendererInstance> implements EventListener {
+public abstract class AbstractObjectRenderer<ObjectK, ObjectV, RendererInstanceT extends
+	AbstractObjectRendererInstance> implements EventListener, RenderableProvider {
 	protected List<ObjectK> objectKeys = new ArrayList<>();
 	protected Map<ObjectV, RendererInstanceT> objectInstanceMap = new HashMap<>();
 	
@@ -20,12 +22,8 @@ public abstract class AbstractObjectRenderer<ObjectK, ObjectV, RendererInstanceT
 		objectInstanceMap.remove(object);
 	}
 	
-	public abstract void render(ModelBatch batch, RendererInstanceT instance);
-	
 	public void renderAll(ModelBatch batch) {
-		objectInstanceMap.values().stream()
-			.filter(this::shouldDraw)
-			.forEach(instance -> render(batch, instance));
+		batch.render(this);
 	}
 	
 	public abstract boolean shouldDraw(RendererInstanceT instance);
