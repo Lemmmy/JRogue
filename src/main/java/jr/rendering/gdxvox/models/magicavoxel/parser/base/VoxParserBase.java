@@ -1,12 +1,12 @@
-package jr.rendering.gdxvox.models.magicavoxel.base;
+package jr.rendering.gdxvox.models.magicavoxel.parser.base;
 
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.rendering.gdxvox.models.magicavoxel.AbstractVoxParser;
-import jr.rendering.gdxvox.models.magicavoxel.VoxChunk;
-import jr.rendering.gdxvox.models.magicavoxel.VoxModel;
-import jr.rendering.gdxvox.models.magicavoxel.VoxParseException;
-import jr.rendering.gdxvox.models.magicavoxel.v150.ChunkMain;
+import jr.rendering.gdxvox.models.magicavoxel.parser.AbstractVoxParser;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxChunk;
+import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
+import jr.rendering.gdxvox.models.magicavoxel.parser.v150.ChunkMain;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class VoxParserBase extends AbstractVoxParser {
 	@Override
-	public VoxModel parse(DataInputStream dis) throws VoxParseException, IOException {
+	public VoxelModel parse(DataInputStream dis) throws VoxParseException, IOException {
 		VoxChunk chunk = parseChunk(dis);
 		if (!(chunk instanceof ChunkMain)) throw new VoxParseException("Parsed chunk wasn't a MAIN chunk");
 		

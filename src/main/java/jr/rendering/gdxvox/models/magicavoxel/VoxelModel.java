@@ -1,5 +1,6 @@
 package jr.rendering.gdxvox.models.magicavoxel;
 
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxChunk;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class VoxModel {
+public class VoxelModel {
 	private int maxSizeX, maxSizeY, maxSizeZ;
 	
 	private List<Frame> frames = new ArrayList<>();
@@ -17,8 +18,8 @@ public class VoxModel {
 	
 	private VoxChunk mainChunk;
 	
-	public void addFrame(int sizeX, int sizeY, int sizeZ, Voxel[] voxels) {
-		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels));
+	public void addFrame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
+		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels, indexedVoxelCounts));
 		updateMaxSize();
 	}
 	
@@ -34,21 +35,16 @@ public class VoxModel {
 	@Setter
 	public class Frame {
 		private int sizeX, sizeY, sizeZ;
-		private Voxel[] voxels;
+		private int[] voxels;
+		private int[] indexedVoxelCounts;
 		
-		public Frame(int sizeX, int sizeY, int sizeZ, Voxel[] voxels) {
+		public Frame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
 			this.sizeX = sizeX;
 			this.sizeY = sizeY;
 			this.sizeZ = sizeZ;
 			
 			this.voxels = voxels;
+			this.indexedVoxelCounts = indexedVoxelCounts;
 		}
-	}
-	
-	public void setPalette(int[] palette) {
-		this.palette = palette;
-		
-		frames.stream().flatMap(frame -> Arrays.stream(frame.getVoxels()))
-			.forEach(voxel -> voxel.updateColour(palette));
 	}
 }

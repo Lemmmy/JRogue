@@ -1,4 +1,4 @@
-package jr.rendering.gdxvox.models.magicavoxel;
+package jr.rendering.gdxvox.models.magicavoxel.parser;
 
 public class VoxParseException extends Exception {
 	public VoxParseException(String s) {

@@ -1,7 +1,7 @@
-package jr.rendering.gdxvox.models.magicavoxel.base;
+package jr.rendering.gdxvox.models.magicavoxel.parser.base;
 
-import jr.rendering.gdxvox.models.magicavoxel.VoxChunk;
-import jr.rendering.gdxvox.models.magicavoxel.VoxParseException;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxChunk;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import lombok.Getter;
 
 import java.io.DataInputStream;

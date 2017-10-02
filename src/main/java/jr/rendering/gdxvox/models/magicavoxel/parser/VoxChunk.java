@@ -1,4 +1,4 @@
-package jr.rendering.gdxvox.models.magicavoxel;
+package jr.rendering.gdxvox.models.magicavoxel.parser;
 
 import lombok.Getter;
 

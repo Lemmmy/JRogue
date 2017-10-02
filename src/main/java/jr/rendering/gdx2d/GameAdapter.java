@@ -8,16 +8,19 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Interpolation;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.screens.CharacterCreationScreen;
 import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.screens.utils.ScreenTransition;
+import jr.rendering.gdx2d.screens.utils.SlidingTransition;
 import jr.rendering.gdxvox.screens.VoxGameScreen;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,7 +86,11 @@ public class GameAdapter extends Game {
 		if (Dungeon.canLoad()) {
 			screen = new VoxGameScreen(this, Dungeon.load());
 		} else {
-			screen = new CharacterCreationScreen(this);
+			//screen = new CharacterCreationScreen(this);
+			
+			JRogue.getSettings().setRole(new RoleWizard());
+			
+			screen = new VoxGameScreen(this, Dungeon.load());
 		}
 		
 		screen.show();

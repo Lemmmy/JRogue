@@ -49,8 +49,6 @@ dependencies {
 
 	compile group: "org.fusesource.jansi", name: "jansi", version: "1.8"
 
-	compile group: "org.orbisgis", name: "poly2tri", version: "0.1.2", ext: "pom"
-
 	compile "com.badlogicgames.gdx:gdx:1.9.7-SNAPSHOT"
 	compile "com.badlogicgames.gdx:gdx-freetype:1.9.7-SNAPSHOT"
 	compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:1.9.7-SNAPSHOT"

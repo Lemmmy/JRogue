@@ -1,8 +1,8 @@
-package jr.rendering.gdxvox.models.magicavoxel.v150;
+package jr.rendering.gdxvox.models.magicavoxel.parser.v150;
 
-import jr.rendering.gdxvox.models.magicavoxel.VoxParseException;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
-import jr.rendering.gdxvox.models.magicavoxel.base.ChunkID;
+import jr.rendering.gdxvox.models.magicavoxel.parser.base.ChunkID;
 import lombok.Getter;
 
 import java.io.DataInputStream;
@@ -29,7 +29,7 @@ public class ChunkXYZI extends VoxChunk150 {
 			int z = Byte.toUnsignedInt(dis.readByte());
 			int colourIndex = Byte.toUnsignedInt(dis.readByte());
 			
-			voxels[i] = new Voxel(x, y, z, colourIndex);
+			voxels[i] = new Voxel(x, z, y, colourIndex);
 		}
 	}
 }

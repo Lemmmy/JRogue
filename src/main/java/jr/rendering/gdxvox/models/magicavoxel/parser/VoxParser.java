@@ -1,7 +1,8 @@
-package jr.rendering.gdxvox.models.magicavoxel;
+package jr.rendering.gdxvox.models.magicavoxel.parser;
 
 import jr.ErrorHandler;
 import jr.JRogue;
+import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -10,13 +11,13 @@ public class VoxParser extends AbstractVoxParser {
 	private static final int MAGIC_NUMBER = 0x564F5820; // VOX(SP)
 	
 	@Override
-	public VoxModel parse(DataInputStream dis) throws VoxParseException, IOException {
+	public VoxelModel parse(DataInputStream dis) throws VoxParseException, IOException {
 		int magicNumber = dis.readInt();
 		assert magicNumber == MAGIC_NUMBER;
 		
 		int version = Integer.reverseBytes(dis.readInt());
 		
-		AtomicReference<VoxModel> chunk = new AtomicReference<>();
+		AtomicReference<VoxelModel> chunk = new AtomicReference<>();
 		
 		JRogue.getReflections().getTypesAnnotatedWith(VoxVersion.class).stream()
 			.filter(AbstractVoxParser.class::isAssignableFrom)
@@ -35,7 +36,7 @@ public class VoxParser extends AbstractVoxParser {
 		return chunk.get();
 	}
 	
-	public VoxModel parse(InputStream is) throws VoxParseException, IOException {
+	public VoxelModel parse(InputStream is) throws VoxParseException, IOException {
 		try (DataInputStream dis = new DataInputStream(is)) {
 			return parse(dis);
 		} catch (AssertionError e) {
@@ -43,7 +44,7 @@ public class VoxParser extends AbstractVoxParser {
 		}
 	}
 	
-	public VoxModel parse(File file) throws VoxParseException, IOException {
+	public VoxelModel parse(File file) throws VoxParseException, IOException {
 		if (!file.exists()) {
 			throw new FileNotFoundException(String.format(
 				"File %s does not exist.",
@@ -52,7 +53,7 @@ public class VoxParser extends AbstractVoxParser {
 		}
 		
 		FileInputStream fis = new FileInputStream(file);
-		VoxModel chunk = parse(fis);
+		VoxelModel chunk = parse(fis);
 		fis.close();
 		return chunk;
 	}

@@ -1,12 +1,20 @@
 package jr.rendering.gdxvox.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import jr.JRogue;
 import jr.Settings;
@@ -18,6 +26,9 @@ import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
+import lombok.val;
+
+import java.util.List;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
 	private static final float VIEWPORT_SIZE = 20;
@@ -38,7 +49,9 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private Settings settings;
 	
 	private TileRendererMap tileRendererMap;
-	private OrthographicCamera camera;
+	// private OrthographicCamera camera;
+	private PerspectiveCamera camera;
+	private CameraInputController controller;
 	
 	private GLProfiler profiler;
 	
@@ -48,6 +61,11 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private BitmapFont debugFont;
 	
 	private FPSCounterComponent fpsCounterComponent;
+	
+	private Model testModel;
+	private ModelInstance testModelInstance;
+	
+	private Environment environment;
 	
 	public VoxGameScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
@@ -71,8 +89,12 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		tileRendererMap.initialise();
 		dungeon.eventSystem.addListener(tileRendererMap);
 		
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		controller = new CameraInputController(camera);
+		addInputProcessor(controller);
 		
 		modelBatch = new ModelBatch();
 		debugBatch = new SpriteBatch();
@@ -82,20 +104,39 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		fpsCounterComponent = new FPSCounterComponent(null, dungeon, settings);
 		fpsCounterComponent.initialise();
 		
-		ModelConverter.test();
+		testModel = ModelConverter.test();
+		testModelInstance = new ModelInstance(testModel);
+		
+		testModelInstance.transform.translate(-8, -8, -32);
+		
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		
+		updateWindowTitle();
+	}
+	
+	private void updateWindowTitle() {
+		Gdx.graphics.setTitle(String.format(
+			"%s - %s - Turn %,d",
+			GameAdapter.WINDOW_TITLE,
+			dungeon.getName(),
+			dungeon.turnSystem.getTurn()
+		));
 	}
 	
 	private void updateCameraViewport(float width, float height) {
 		float aspectRatio = width / height;
-		camera.setToOrtho(false, VIEWPORT_SIZE * aspectRatio, VIEWPORT_SIZE);
+		// camera.setToOrtho(false, VIEWPORT_SIZE * aspectRatio, VIEWPORT_SIZE);
 	}
 	
 	private void updateCamera() {
-		camera.position.set(40f, 10f, 40f);
-		camera.direction.set(-0.69631064f, -0.5f, -0.69631064f);
-		camera.zoom = 1f;
-		camera.near = 0.001f;
-		camera.far = 6000f;
+		// camera.position.set(20f, 20f, 20f);
+		// camera.direction.set(-0.69631064f, -0.5f, -0.69631064f);
+		// camera.lookAt(0, 0, 0);
+		// camera.zoom = 1f;
+		// camera.near = 0.001f;
+		// camera.far = 6000f;
 		camera.update();
 	}
 	
@@ -105,14 +146,17 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		
 		fpsCounterComponent.update(delta);
 		
+		controller.update();
 		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		updateCamera();
 		
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT |
 			(Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
 		
 		modelBatch.begin(camera);
-		tileRendererMap.renderAll(modelBatch);
+		// tileRendererMap.renderAll(modelBatch);
+		modelBatch.render(testModelInstance, environment);
 		modelBatch.end();
 		
 		drawDebugBatch();
@@ -132,7 +176,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 			profiler.getCalls(),
 			profiler.getShaderSwitches(),
 			profiler.getTextureBindings(),
-			profiler.getVertexCount().latest
+			profiler.getVertexCount().total
 		), 16, 16);
 		
 		profiler.reset();
