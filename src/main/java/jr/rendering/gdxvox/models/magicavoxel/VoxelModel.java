@@ -18,8 +18,8 @@ public class VoxelModel {
 	
 	private VoxChunk mainChunk;
 	
-	public void addFrame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[][] indexedVoxels, int[] indexedVoxelCounts) {
-		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels, indexedVoxels, indexedVoxelCounts));
+	public void addFrame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
+		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels, indexedVoxelCounts));
 		updateMaxSize();
 	}
 	
@@ -36,16 +36,14 @@ public class VoxelModel {
 	public class Frame {
 		private int sizeX, sizeY, sizeZ;
 		private int[] voxels;
-		private int[][] indexedVoxels;
 		private int[] indexedVoxelCounts;
 		
-		public Frame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[][] indexedVoxels, int[] indexedVoxelCounts) {
+		public Frame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
 			this.sizeX = sizeX;
 			this.sizeY = sizeY;
 			this.sizeZ = sizeZ;
 			
 			this.voxels = voxels;
-			this.indexedVoxels = indexedVoxels;
 			this.indexedVoxelCounts = indexedVoxelCounts;
 		}
 	}

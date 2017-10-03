@@ -36,7 +36,6 @@ public class ChunkMain extends VoxChunk150 {
 			int sz = size.getZ();
 			
 			int[] voxels = new int[sx * sy * sz];
-			int[][] indexedVoxels = new int[256][sx * sy * sz];
 			int[] indexedVoxelCounts = new int[256];
 			
 			for (Voxel voxel : xyzi.getVoxels()) {
@@ -46,11 +45,10 @@ public class ChunkMain extends VoxChunk150 {
 				int colour = voxel.getColourIndex();
 				
 				voxels[x + sx * y + sx * sy * z] = colour;
-				indexedVoxels[colour][x + sx * y + sx * sy * z] = colour;
 				indexedVoxelCounts[colour]++;
 			}
 			
-			model.addFrame(size.getX(), size.getY(), size.getZ(), voxels, indexedVoxels, indexedVoxelCounts);
+			model.addFrame(size.getX(), size.getY(), size.getZ(), voxels, indexedVoxelCounts);
 		}
 		
 		ChunkRGBA rgba = addNextChunk(dis, ChunkRGBA.class);

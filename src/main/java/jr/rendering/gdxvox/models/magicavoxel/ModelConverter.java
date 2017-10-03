@@ -27,24 +27,21 @@ public class ModelConverter {
 			Material paletteMaterial = new Material(TextureAttribute.createDiffuse(paletteTexture));
 			
 			VoxelModel.Frame frame = vodelModel.getFrames().get(0);
-			int[] fullVolume = frame.getVoxels();
+			int[] volume = frame.getVoxels();
 			int[] dims = new int[] {frame.getSizeX(), frame.getSizeY(), frame.getSizeZ()};
-			int[][] indexedVoxels = frame.getIndexedVoxels();
 			int[] indexedVoxelCounts = frame.getIndexedVoxelCounts();
 			
 			modelBuilder.begin();
 			
-			for (int colour = 1; colour < indexedVoxels.length; colour++) {
+			MeshPartBuilder builder = modelBuilder.part("part", GL20.GL_TRIANGLES,
+				VertexAttributes.Usage.Position |
+					VertexAttributes.Usage.TextureCoordinates |
+					VertexAttributes.Usage.Normal,
+				paletteMaterial);
+			
+			for (int colour = 1; colour < palette.length; colour++) {
 				if (indexedVoxelCounts[colour] == 0) continue;
-				int[] volume = indexedVoxels[colour];
-				
-				MeshPartBuilder builder = modelBuilder.part("" + colour, GL20.GL_TRIANGLES,
-					VertexAttributes.Usage.Position |
-						VertexAttributes.Usage.TextureCoordinates |
-						VertexAttributes.Usage.Normal,
-					paletteMaterial);
-				
-				greedyMesh(fullVolume, volume, dims, colour, builder);
+				greedyMesh(volume, dims, colour, builder);
 			}
 			
 			return modelBuilder.end();
@@ -68,7 +65,7 @@ public class ModelConverter {
 		return new Texture(pixmap);
 	}
 	
-	public static void greedyMesh(int[] fullVolume, int[] volume, int[] dims, int colour, MeshPartBuilder builder) {
+	public static void greedyMesh(int[] volume, int[] dims, int colour, MeshPartBuilder builder) {
 		List<Float> vertices = new ArrayList<>();
 		
 		for (int d = 0; d < 3; ++d) {
@@ -119,18 +116,18 @@ public class ModelConverter {
 							int[] du = new int[] {0, 0, 0}; du[u] = w;
 							int[] dv = new int[] {0, 0, 0}; dv[v] = h;
 							
-							boolean airBehind = getVoxel(fullVolume, dims,
+							boolean airBehind = getVoxel(volume, dims,
 								x[0] - q[0], x[1] - q[1], x[2] - q[2]) == 0;
-							boolean airFront = getVoxel(fullVolume, dims,
+							boolean airFront = getVoxel(volume, dims,
 								x[0] + q[0], x[1] + q[1], x[2] + q[2]) == 0;
 							
 							if (!airFront && !airBehind) {
-								airBehind = getVoxel(fullVolume, dims,
+								airBehind = getVoxel(volume, dims,
 									x[0] + du[0] + dv[0] - q[0],
 									x[1] + du[1] + dv[1] - q[1],
 									x[2] + du[2] + dv[2] - q[2]) == 0;
 								
-								airFront = getVoxel(fullVolume, dims,
+								airFront = getVoxel(volume, dims,
 									x[0] + du[0] + dv[0] + q[0],
 									x[1] + du[1] + dv[1] + q[1],
 									x[2] + du[2] + dv[2] + q[2]) == 0;
