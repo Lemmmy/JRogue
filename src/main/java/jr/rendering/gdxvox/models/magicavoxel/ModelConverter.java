@@ -20,7 +20,7 @@ public class ModelConverter {
 	
 	public static Model test() {
 		try {
-			VoxelModel wizard = new VoxParser().parse(Gdx.files.internal("models/classes/wizard/wizard.vox").read());
+			VoxelModel wizard = new VoxParser().parse(Gdx.files.internal("models/tiles/wall.vox").read());
 			int[] palette = wizard.getPalette();
 			
 			Texture paletteTexture = buildPalette(wizard);
@@ -183,6 +183,7 @@ public class ModelConverter {
 	}
 	
 	private static int getVoxel(int[] volume, int[] dims, int x, int y, int z) {
+		if (x < 0 || y < 0 || z < 0 || x >= dims[0] || y >= dims[1] || z >= dims[2]) return 0;
 		return volume[x + dims[0] * (y + dims[1] * z)];
 	}
 	
