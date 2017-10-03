@@ -1,9 +1,6 @@
 package jr.rendering.gdxvox.objects.tiles.renderers;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -15,11 +12,12 @@ import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
 
 public class TileRendererWall extends TileRenderer {
 	private ModelBuilder builder;
-	private Model model;
+	private Model modelWall, modelWallCorner;
 	
 	public TileRendererWall() {
 		builder = new ModelBuilder();
-		model = ModelConverter.loadModel("models/tiles/wall.vox");
+		modelWall = ModelConverter.loadModel("models/tiles/wall.vox");
+		modelWallCorner = ModelConverter.loadModel("models/tiles/wall-corner.vox");
 	}
 	
 	@Override
@@ -31,12 +29,16 @@ public class TileRendererWall extends TileRenderer {
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
 		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
 		
-		ModelInstance instance = new ModelInstance(model);
-		instance.transform.translate(x, 0, y);
+		int dx = 0;
+		int dy = h && !v ? 1 : 0;
+		float rotation = 0f;
+		
+		if (h && !v) rotation = 90f;
+		
+		ModelInstance instance = new ModelInstance(h && v ? modelWallCorner : modelWall);
+		instance.transform.translate(x + dx, 0, y + dy);
 		instance.transform.scale(1f / 16f, 1f / 16f, 1f / 16f);
-		if (h) {
-			instance.transform.rotate(0, 1, 0, 90);
-		}
+		instance.transform.rotate(0, 1, 0, rotation);
 		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));
 	}
 	
