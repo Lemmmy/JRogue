@@ -4,41 +4,69 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.gdx2d.utils.BlobUtils;
+import jr.rendering.gdxvox.models.magicavoxel.FramedModel;
 import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
 
 public class TileRendererWall extends TileRenderer {
-	private ModelBuilder builder;
-	private Model modelWall, modelWallCorner;
+	private static final WallModel[] MAP = new WallModel[] {
+		null,
+		new WallModel("wall-end", 0),
+		new WallModel("wall-end", 0),
+		new WallModel("wall-corner", 0),
+		new WallModel("wall-end", 0),
+		new WallModel("wall", 0),
+		new WallModel("wall-corner", 0),
+		new WallModel("wall-t", 0),
+		new WallModel("wall-end", 0),
+		new WallModel("wall-corner", 0),
+		new WallModel("wall", 0),
+		new WallModel("wall-t", 0),
+		new WallModel("wall-corner", 0),
+		new WallModel("wall-t", 0),
+		new WallModel("wall-t", 0),
+		new WallModel("wall-x", 0)
+	};
+	
+	private static boolean loadedMap;
 	
 	public TileRendererWall() {
-		builder = new ModelBuilder();
-		modelWall = ModelConverter.loadModel("models/tiles/wall.vox");
-		modelWallCorner = ModelConverter.loadModel("models/tiles/wall-corner.vox");
+		if (!loadedMap) {
+			loadedMap = true;
+			
+			for (WallModel wallModel : MAP) {
+				if (wallModel == null) continue;
+				wallModel.loadModel();
+			}
+		}
+	}
+	
+	@SuppressWarnings("Duplicates")
+	protected int getPositionMask(Tile tile) {
+		return BlobUtils.getPositionMask4(this::isJoinedTile, tile.getLevel(), tile.getX(), tile.getY());
+	}
+	
+	protected boolean isJoinedTile(TileType type) {
+		return type.isWallTile();
 	}
 	
 	@Override
 	public void tileAdded(Tile tile) {
 		int x = tile.getX();
 		int y = tile.getY();
-		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		WallModel model = MAP[getPositionMask(tile)];
 		
-		int dx = 0;
-		int dy = h && !v ? 1 : 0;
-		float rotation = 0f;
-		
-		if (h && !v) rotation = 90f;
-		
-		ModelInstance instance = new ModelInstance(h && v ? modelWallCorner : modelWall);
-		instance.transform.translate(x + dx, 0, y + dy);
+		ModelInstance instance = new ModelInstance(model.model);
+		instance.transform.translate(x + 0.5f, 0, y + 0.5f);
 		instance.transform.scale(1f / 16f, 1f / 16f, 1f / 16f);
-		instance.transform.rotate(0, 1, 0, rotation);
+		instance.transform.rotate(0, 1, 0, model.rotation);
+		instance.transform.translate(-0.5f, 0, -0.5f);
 		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));
 	}
 	
@@ -50,5 +78,23 @@ public class TileRendererWall extends TileRenderer {
 	@Override
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		objectInstanceMap.values().forEach(instance -> instance.getModelInstance().getRenderables(renderables, pool));
+	}
+	
+	protected static class WallModel {
+		private String modelName;
+		private float rotation;
+		private Model model;
+		
+		public WallModel(String modelName, float rotation) {
+			this.modelName = "models/tiles/" + modelName + ".vox";
+			this.rotation = rotation;
+		}
+		
+		protected void loadModel() {
+			FramedModel model = ModelConverter.loadModel(this.modelName);
+			if (model == null) return;
+			
+			this.model = model.getFrames()[0];
+		}
 	}
 }

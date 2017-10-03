@@ -13,38 +13,52 @@ import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModelConverter {
 	private static final ModelBuilder modelBuilder = new ModelBuilder();
 	
-	public static Model loadModel(String path) { // TODO: load frames
+	private static final Map<String, FramedModel> modelCache = new HashMap<>();
+	
+	public static FramedModel loadModel(String path) {
+		if (modelCache.containsKey(path)) {
+			return modelCache.get(path);
+		}
+		
 		try {
-			VoxelModel vodelModel = new VoxParser().parse(Gdx.files.internal(path).read());
-			int[] palette = vodelModel.getPalette();
+			VoxelModel voxelModel = new VoxParser().parse(Gdx.files.internal(path).read());
+			int[] palette = voxelModel.getPalette();
 			
-			Texture paletteTexture = buildPalette(vodelModel);
+			Model[] frames = new Model[voxelModel.getFrames().size()];
+			
+			Texture paletteTexture = buildPalette(voxelModel);
 			Material paletteMaterial = new Material(TextureAttribute.createDiffuse(paletteTexture));
 			
-			VoxelModel.Frame frame = vodelModel.getFrames().get(0);
-			int[] volume = frame.getVoxels();
-			int[] dims = new int[] {frame.getSizeX(), frame.getSizeY(), frame.getSizeZ()};
-			int[] indexedVoxelCounts = frame.getIndexedVoxelCounts();
-			
-			modelBuilder.begin();
-			
-			MeshPartBuilder builder = modelBuilder.part("part", GL20.GL_TRIANGLES,
-				VertexAttributes.Usage.Position |
-					VertexAttributes.Usage.TextureCoordinates |
-					VertexAttributes.Usage.Normal,
-				paletteMaterial);
-			
-			for (int colour = 1; colour < palette.length; colour++) {
-				if (indexedVoxelCounts[colour] == 0) continue;
-				greedyMesh(volume, dims, colour, builder);
+			for (int i = 0; i < voxelModel.getFrames().size(); i++) {
+				VoxelModel.Frame frame = voxelModel.getFrames().get(0);
+				int[] volume = frame.getVoxels();
+				int[] dims = new int[] {frame.getSizeX(), frame.getSizeY(), frame.getSizeZ()};
+				int[] indexedVoxelCounts = frame.getIndexedVoxelCounts();
+				
+				modelBuilder.begin();
+				
+				MeshPartBuilder builder = modelBuilder.part("part", GL20.GL_TRIANGLES,
+					VertexAttributes.Usage.Position |
+						VertexAttributes.Usage.TextureCoordinates |
+						VertexAttributes.Usage.Normal,
+					paletteMaterial);
+				
+				for (int colour = 1; colour < palette.length; colour++) {
+					if (indexedVoxelCounts[colour] == 0) continue;
+					greedyMesh(volume, dims, colour, builder, path);
+				}
+				
+				frames[i] = modelBuilder.end();
 			}
 			
-			return modelBuilder.end();
+			return new FramedModel(frames);
 		} catch (VoxParseException | IOException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +79,7 @@ public class ModelConverter {
 		return new Texture(pixmap);
 	}
 	
-	public static void greedyMesh(int[] volume, int[] dims, int colour, MeshPartBuilder builder) {
+	public static void greedyMesh(int[] volume, int[] dims, int colour, MeshPartBuilder builder, String path) {
 		List<Float> vertices = new ArrayList<>();
 		
 		for (int d = 0; d < 3; ++d) {
@@ -137,13 +151,13 @@ public class ModelConverter {
 								Vector3 normal = new Vector3(+q[0], +q[1], +q[2]);
 								
 								builder.rect(
-									getVertex(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2],
+									addVertex(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2],
 										normal, colour),
-									getVertex(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2],
+									addVertex(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2],
 										normal, colour),
-									getVertex(x[0] + du[0], x[1] + du[1], x[2] + du[2],
+									addVertex(x[0] + du[0], x[1] + du[1], x[2] + du[2],
 										normal, colour),
-									getVertex(x[0], x[1], x[2],
+									addVertex(x[0], x[1], x[2],
 										normal, colour)
 								);
 							}
@@ -152,13 +166,13 @@ public class ModelConverter {
 								Vector3 normal = new Vector3(-q[0], -q[1], -q[2]);
 								
 								builder.rect(
-									getVertex(x[0], x[1], x[2],
+									addVertex(x[0], x[1], x[2],
 										normal, 1),
-									getVertex(x[0] + du[0], x[1] + du[1], x[2] + du[2],
+									addVertex(x[0] + du[0], x[1] + du[1], x[2] + du[2],
 										normal, 1),
-									getVertex(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2],
+									addVertex(x[0] + du[0] + dv[0], x[1] + du[1] + dv[1], x[2] + du[2] + dv[2],
 										normal, 1),
-									getVertex(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2],
+									addVertex(x[0] + dv[0], x[1] + dv[1], x[2] + dv[2],
 										normal, 1)
 								);
 							}
@@ -184,7 +198,7 @@ public class ModelConverter {
 		return volume[x + dims[0] * (y + dims[1] * z)];
 	}
 	
-	private static MeshPartBuilder.VertexInfo getVertex(int x, int y, int z, Vector3 normal, int colour) {
+	private static MeshPartBuilder.VertexInfo addVertex(float x, float y, float z, Vector3 normal, int colour) {
 		return new MeshPartBuilder.VertexInfo()
 				.setUV(colour / 256f, 0)
 				.setNor(normal)

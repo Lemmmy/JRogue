@@ -27,6 +27,7 @@ import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import lombok.val;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -81,6 +82,8 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private void initialise() {
 		profiler = new GLProfiler(Gdx.graphics);
 		profiler.enable();
+		
+		DefaultShader.defaultCullFace = GL11.GL_BACK;
 		
 		tileRendererMap = new TileRendererMap();
 		tileRendererMap.initialise();
