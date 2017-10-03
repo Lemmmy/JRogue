@@ -62,9 +62,6 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	
 	private FPSCounterComponent fpsCounterComponent;
 	
-	private Model testModel;
-	private ModelInstance testModelInstance;
-	
 	private Environment environment;
 	
 	public VoxGameScreen(GameAdapter game, Dungeon dungeon) {
@@ -103,11 +100,6 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		
 		fpsCounterComponent = new FPSCounterComponent(null, dungeon, settings);
 		fpsCounterComponent.initialise();
-		
-		testModel = ModelConverter.test();
-		testModelInstance = new ModelInstance(testModel);
-		
-		testModelInstance.transform.translate(-8, -8, -32);
 		
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -155,8 +147,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 			(Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
 		
 		modelBatch.begin(camera);
-		// tileRendererMap.renderAll(modelBatch);
-		modelBatch.render(testModelInstance, environment);
+		tileRendererMap.renderAll(modelBatch);
 		modelBatch.end();
 		
 		drawDebugBatch();

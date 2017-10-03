@@ -18,15 +18,15 @@ import java.util.List;
 public class ModelConverter {
 	private static final ModelBuilder modelBuilder = new ModelBuilder();
 	
-	public static Model test() {
+	public static Model loadModel(String path) { // TODO: load frames
 		try {
-			VoxelModel wizard = new VoxParser().parse(Gdx.files.internal("models/tiles/wall.vox").read());
-			int[] palette = wizard.getPalette();
+			VoxelModel vodelModel = new VoxParser().parse(Gdx.files.internal(path).read());
+			int[] palette = vodelModel.getPalette();
 			
-			Texture paletteTexture = buildPalette(wizard);
+			Texture paletteTexture = buildPalette(vodelModel);
 			Material paletteMaterial = new Material(TextureAttribute.createDiffuse(paletteTexture));
 			
-			VoxelModel.Frame frame = wizard.getFrames().get(0);
+			VoxelModel.Frame frame = vodelModel.getFrames().get(0);
 			int[] fullVolume = frame.getVoxels();
 			int[] dims = new int[] {frame.getSizeX(), frame.getSizeY(), frame.getSizeZ()};
 			int[][] indexedVoxels = frame.getIndexedVoxels();

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import jr.dungeon.tiles.Tile;
+import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
 
@@ -17,17 +18,14 @@ public class TileRendererWall extends TileRenderer {
 	
 	public TileRendererWall() {
 		builder = new ModelBuilder();
-		model = builder.createBox(
-			1f, 1f, 1f,
-			new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-			VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
-		);
+		model = ModelConverter.loadModel("models/tiles/wall.vox");
 	}
 	
 	@Override
 	public void tileAdded(Tile tile) {
 		ModelInstance instance = new ModelInstance(model);
 		instance.transform.translate(tile.getX(), 0, tile.getY());
+		instance.transform.scale(1f / 16f, 1f / 16f, 1f / 16f);
 		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));
 	}
 	
