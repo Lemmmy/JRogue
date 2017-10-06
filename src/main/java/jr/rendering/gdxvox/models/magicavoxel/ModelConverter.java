@@ -201,7 +201,7 @@ public class ModelConverter {
 	
 	private static MeshPartBuilder.VertexInfo addVertex(float x, float y, float z, Vector3 normal, int colour) {
 		return new MeshPartBuilder.VertexInfo()
-				.setUV(colour / 256f, 0)
+				.setUV((float) colour / 256f, 0)
 				.setNor(normal)
 				.setPos(x / TileRenderer.TILE_WIDTH, y / TileRenderer.TILE_HEIGHT, z / TileRenderer.TILE_DEPTH);
 	}

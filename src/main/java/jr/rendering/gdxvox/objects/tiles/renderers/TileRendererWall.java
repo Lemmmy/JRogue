@@ -16,8 +16,8 @@ import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
 public class TileRendererWall extends TileRenderer {
 	private static final WallModel[] MAP = new WallModel[] {
 		null,
-		new WallModel("wall-end", 0),
-		new WallModel("wall-end", 0),
+		new WallModel("wall-end", 180),
+		new WallModel("wall-end", 90),
 		new WallModel("wall-corner", 0),
 		new WallModel("wall-end", 0),
 		new WallModel("wall", 0),
@@ -27,7 +27,7 @@ public class TileRendererWall extends TileRenderer {
 		new WallModel("wall-corner", 0),
 		new WallModel("wall", 90),
 		new WallModel("wall-t", 0),
-		new WallModel("wall-corner", 0),
+		new WallModel("wall-corner", 180),
 		new WallModel("wall-t", 0),
 		new WallModel("wall-t", 0),
 		new WallModel("wall-x", 0)
@@ -46,13 +46,12 @@ public class TileRendererWall extends TileRenderer {
 		}
 	}
 	
-	@SuppressWarnings("Duplicates")
 	protected int getPositionMask(Tile tile) {
 		return BlobUtils.getPositionMask4(this::isJoinedTile, tile.getLevel(), tile.getX(), tile.getY());
 	}
 	
 	protected boolean isJoinedTile(TileType type) {
-		return type.isWallTile();
+		return type != null && type.isWallTile();
 	}
 	
 	@Override
@@ -61,6 +60,9 @@ public class TileRendererWall extends TileRenderer {
 		int y = tile.getY();
 		
 		WallModel model = MAP[getPositionMask(tile)];
+		if (model == null) return;
+		
+		System.out.println(String.format("%,d %,d %,d", x, y, getPositionMask(tile)));
 		
 		ModelInstance instance = new ModelInstance(model.model);
 		instance.transform.translate(x, 0, y);

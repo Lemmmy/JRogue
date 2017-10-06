@@ -39,7 +39,7 @@ public class ChunkMain extends VoxChunk150 {
 			int[] indexedVoxelCounts = new int[256];
 			
 			for (Voxel voxel : xyzi.getVoxels()) {
-				int x = sx - voxel.getX();
+				int x = sx - voxel.getX() - 1;
 				int y = voxel.getY();
 				int z = voxel.getZ();
 				int colour = voxel.getColourIndex();
