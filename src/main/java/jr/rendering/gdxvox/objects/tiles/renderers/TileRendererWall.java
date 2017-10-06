@@ -25,7 +25,7 @@ public class TileRendererWall extends TileRenderer {
 		new WallModel("wall-t", 0),
 		new WallModel("wall-end", 0),
 		new WallModel("wall-corner", 0),
-		new WallModel("wall", 0),
+		new WallModel("wall", 90),
 		new WallModel("wall-t", 0),
 		new WallModel("wall-corner", 0),
 		new WallModel("wall-t", 0),
@@ -63,8 +63,8 @@ public class TileRendererWall extends TileRenderer {
 		WallModel model = MAP[getPositionMask(tile)];
 		
 		ModelInstance instance = new ModelInstance(model.model);
-		instance.transform.translate(x + 0.5f, 0, y + 0.5f);
-		instance.transform.scale(1f / 16f, 1f / 16f, 1f / 16f);
+		instance.transform.translate(x, 0, y);
+		instance.transform.translate(0.5f, 0, 0.5f);
 		instance.transform.rotate(0, 1, 0, model.rotation);
 		instance.transform.translate(-0.5f, 0, -0.5f);
 		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParser;
+import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -202,6 +203,6 @@ public class ModelConverter {
 		return new MeshPartBuilder.VertexInfo()
 				.setUV(colour / 256f, 0)
 				.setNor(normal)
-				.setPos(x, y, z);
+				.setPos(x / TileRenderer.TILE_WIDTH, y / TileRenderer.TILE_HEIGHT, z / TileRenderer.TILE_DEPTH);
 	}
 }
