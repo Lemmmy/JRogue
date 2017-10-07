@@ -26,6 +26,8 @@ import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL33;
 
 import java.nio.Buffer;
 
@@ -64,47 +66,55 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private Environment environment;
 	
 	private static final float[] VOXEL_VERTICES = new float[] {
-		1, -1, -1, 1, 1, 0,
-		-1, -1, 1, 0, 1, 0,
-		-1, -1, -1, 1, 0, 0,
-		1, -1, -1, 1, 1, 0,
-		1, -1, 1, 0, 0, 1,
-		-1, -1, 1, 0, 1, 0,
-		-1, 1, -1, 1, 0, 1,
-		-1, -1, -1, 1, 0, 0,
-		-1, -1, 1, 0, 1, 0,
-		-1, 1, 1, 0, 1, 1,
-		-1, 1, -1, 1, 0, 1,
-		-1, -1, 1, 0, 1, 0,
-		-1, 1, 1, 0, 1, 1,
-		-1, -1, 1, 0, 1, 0,
-		1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1,
-		-1, -1, 1, 0, 1, 0,
-		1, -1, 1, 0, 0, 1,
-		1, 1, 1, 1, 1, 1,
-		1, -1, 1, 0, 0, 1,
-		1, -1, -1, 1, 1, 0,
-		1, 1, -1, 0, 0, 0,
-		1, -1, -1, 1, 1, 0,
-		-1, 1, -1, 1, 0, 1,
-		-1, 1, -1, 1, 0, 1,
-		1, -1, -1, 1, 1, 0,
-		-1, -1, -1, 1, 0, 0,
-		-1, 1, -1, 1, 0, 1,
-		-1, 1, 1, 0, 1, 1,
-		1, 1, -1, 0, 0, 0,
-		-1, 1, 1, 0, 1, 1,
-		1, 1, 1, 1, 1, 1,
-		1, 1, -1, 0, 0, 0,
-		1, -1, -1, 1, 1, 0,
-		1, 1, -1, 0, 0, 0,
-		1, 1, 1, 1, 1, 1,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		-0.5f, -0.5f, -0.5f, 1, 0, 0,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		0.5f, -0.5f, 0.5f, 0, 0, 1,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		-0.5f, 0.5f, -0.5f, 1, 0, 1,
+		-0.5f, -0.5f, -0.5f, 1, 0, 0,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		-0.5f, 0.5f, 0.5f, 0, 1, 1,
+		-0.5f, 0.5f, -0.5f, 1, 0, 1,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		-0.5f, 0.5f, 0.5f, 0, 1, 1,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		0.5f, 0.5f, 0.5f, 1, 1, 1,
+		0.5f, 0.5f, 0.5f, 1, 1, 1,
+		-0.5f, -0.5f, 0.5f, 0, 1, 0,
+		0.5f, -0.5f, 0.5f, 0, 0, 1,
+		0.5f, 0.5f, 0.5f, 1, 1, 1,
+		0.5f, -0.5f, 0.5f, 0, 0, 1,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		0.5f, 0.5f, -0.5f, 0, 0, 0,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		-0.5f, 0.5f, -0.5f, 1, 0, 1,
+		-0.5f, 0.5f, -0.5f, 1, 0, 1,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		-0.5f, -0.5f, -0.5f, 1, 0, 0,
+		-0.5f, 0.5f, -0.5f, 1, 0, 1,
+		-0.5f, 0.5f, 0.5f, 0, 1, 1,
+		0.5f, 0.5f, -0.5f, 0, 0, 0,
+		-0.5f, 0.5f, 0.5f, 0, 1, 1,
+		0.5f, 0.5f, 0.5f, 1, 1, 1,
+		0.5f, 0.5f, -0.5f, 0, 0, 0,
+		0.5f, -0.5f, -0.5f, 1, 1, 0,
+		0.5f, 0.5f, -0.5f, 0, 0, 0,
+		0.5f, 0.5f, 0.5f, 1, 1, 1,
 	};
 	
-	private int voxelBuffer, voxelIndexBuffer, voxelVAO;
+	private int voxelBuffer, voxelVAO, voxelInstanceBuffer;
 	
 	private ShaderProgram voxelShader;
+	
+	public static final float[] VOXELS = new float[]{
+		0, 0, 0,
+		1, 0, 0,
+		2, 0, 0,
+		1, 1, 0,
+		1, 2, 0
+	};
 	
 	public VoxGameScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
@@ -155,11 +165,15 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 			.put(VOXEL_VERTICES).flip();
 		
 		voxelBuffer = Gdx.gl.glGenBuffer();
-		voxelIndexBuffer = Gdx.gl.glGenBuffer();
+		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
+		
+		Buffer voxelsFloatBuffer = BufferUtils.createFloatBuffer(VOXELS.length)
+			.put(VOXELS).flip();
 		
 		voxelVAO = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(voxelVAO);
 		
+		// voxel cube buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelBuffer);
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, VOXEL_VERTICES.length * 4, voxelFloatBuffer, Gdx.gl.GL_STATIC_DRAW);
 		
@@ -167,6 +181,14 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 0);
 		Gdx.gl.glEnableVertexAttribArray(1);
 		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 3 * 4);
+		
+		// instance buffer
+		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
+		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, VOXELS.length * 4, voxelsFloatBuffer, Gdx.gl.GL_STATIC_DRAW);
+		Gdx.gl.glEnableVertexAttribArray(2);
+		Gdx.gl.glVertexAttribPointer(2, 3, Gdx.gl.GL_FLOAT, false, 3 * 4, 0);
+		GL33.glVertexAttribDivisor(2, 1);
+		
 		GL30.glBindVertexArray(0);
 		
 		voxelShader = ShaderLoader.getProgram("shaders/voxel");
@@ -216,7 +238,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
 		
 		GL30.glBindVertexArray(voxelVAO);
-		Gdx.gl.glDrawArrays(Gdx.gl.GL_TRIANGLES, 0, VOXEL_VERTICES.length);
+		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, VOXEL_VERTICES.length, VOXELS.length);
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);
