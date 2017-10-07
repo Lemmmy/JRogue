@@ -1,13 +1,12 @@
 package jr.rendering.gdxvox.models.magicavoxel;
 
-import com.badlogic.gdx.graphics.g3d.Model;
 import lombok.Getter;
 
 @Getter
 public class FramedModel {
-	private Model[] frames;
+	private float[] voxels;
 	
-	public FramedModel(Model[] frames) {
-		this.frames = frames;
+	public FramedModel(float[] voxels) {
+		this.voxels = voxels;
 	}
 }

@@ -1,15 +1,11 @@
 package jr.rendering.gdxvox.objects.tiles.renderers;
 
 import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.utils.BlobUtils;
-import jr.rendering.gdxvox.models.magicavoxel.FramedModel;
-import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
 
@@ -60,15 +56,15 @@ public class TileRendererWall extends TileRenderer {
 		int y = tile.getY();
 		
 		WallModel model = MAP[getPositionMask(tile)];
-		if (model == null) return;
+		if (model == null || model.model == null) return;
 		
 		System.out.println(String.format("%,d %,d %,d", x, y, getPositionMask(tile)));
 		
 		ModelInstance instance = new ModelInstance(model.model);
 		instance.transform.translate(x, 0, y);
-		instance.transform.translate(0.5f, 0, 0.5f);
+		/* instance.transform.translate(0.5f, 0, 0.5f);
 		instance.transform.rotate(0, 1, 0, model.rotation);
-		instance.transform.translate(-0.5f, 0, -0.5f);
+		instance.transform.translate(-0.5f, 0, -0.5f); */
 		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));
 	}
 	
@@ -88,15 +84,15 @@ public class TileRendererWall extends TileRenderer {
 		private Model model;
 		
 		public WallModel(String modelName, float rotation) {
-			this.modelName = "models/tiles/" + modelName + ".vox";
+			this.modelName = "models/tiles/test.vox";
 			this.rotation = rotation;
 		}
 		
 		protected void loadModel() {
-			FramedModel model = ModelConverter.loadModel(this.modelName);
+			/* FramedModel model = ModelConverter.loadModel(this.modelName);
 			if (model == null) return;
 			
-			this.model = model.getFrames()[0];
+			this.model = model.getFrames()[0]; */
 		}
 	}
 }

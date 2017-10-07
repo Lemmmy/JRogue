@@ -1,5 +1,6 @@
 package jr.rendering.gdxvox.models.magicavoxel;
 
+import com.badlogic.gdx.graphics.Color;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxChunk;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,8 @@ public class VoxelModel {
 	
 	private VoxChunk mainChunk;
 	
-	public void addFrame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
-		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels, indexedVoxelCounts));
+	public void addFrame(int sizeX, int sizeY, int sizeZ, Voxel[] voxels) {
+		frames.add(new Frame(sizeX, sizeY, sizeZ, voxels));
 		updateMaxSize();
 	}
 	
@@ -31,20 +32,34 @@ public class VoxelModel {
 		});
 	}
 	
+	public void setPalette(int[] palette) {
+		this.palette = palette;
+		
+		frames.forEach(frame -> {
+			for (Voxel voxel : frame.getVoxels()) {
+				int colourIndex = voxel.getColourIndex();
+				Color colour = new Color(palette[colourIndex]);
+				
+				voxel.setR(colour.r);
+				voxel.setG(colour.g);
+				voxel.setB(colour.b);
+				voxel.setA(colour.a);
+			}
+		});
+	}
+	
 	@Getter
 	@Setter
 	public class Frame {
 		private int sizeX, sizeY, sizeZ;
-		private int[] voxels;
-		private int[] indexedVoxelCounts;
+		private Voxel[] voxels;
 		
-		public Frame(int sizeX, int sizeY, int sizeZ, int[] voxels, int[] indexedVoxelCounts) {
+		public Frame(int sizeX, int sizeY, int sizeZ, Voxel[] voxels) {
 			this.sizeX = sizeX;
 			this.sizeY = sizeY;
 			this.sizeZ = sizeZ;
 			
 			this.voxels = voxels;
-			this.indexedVoxelCounts = indexedVoxelCounts;
 		}
 	}
 }

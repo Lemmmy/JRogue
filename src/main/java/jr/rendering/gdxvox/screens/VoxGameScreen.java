@@ -1,20 +1,17 @@
 package jr.rendering.gdxvox.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import jr.JRogue;
 import jr.Settings;
@@ -24,12 +21,13 @@ import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdx2d.components.FPSCounterComponent;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
-import jr.rendering.gdxvox.models.magicavoxel.ModelConverter;
+import jr.rendering.gdx2d.utils.ShaderLoader;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
-import lombok.val;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
-import java.util.List;
+import java.nio.Buffer;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
 	private static final float VIEWPORT_SIZE = 20;
@@ -64,6 +62,49 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private FPSCounterComponent fpsCounterComponent;
 	
 	private Environment environment;
+	
+	private static final float[] VOXEL_VERTICES = new float[] {
+		1, -1, -1, 1, 1, 0,
+		-1, -1, 1, 0, 1, 0,
+		-1, -1, -1, 1, 0, 0,
+		1, -1, -1, 1, 1, 0,
+		1, -1, 1, 0, 0, 1,
+		-1, -1, 1, 0, 1, 0,
+		-1, 1, -1, 1, 0, 1,
+		-1, -1, -1, 1, 0, 0,
+		-1, -1, 1, 0, 1, 0,
+		-1, 1, 1, 0, 1, 1,
+		-1, 1, -1, 1, 0, 1,
+		-1, -1, 1, 0, 1, 0,
+		-1, 1, 1, 0, 1, 1,
+		-1, -1, 1, 0, 1, 0,
+		1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1,
+		-1, -1, 1, 0, 1, 0,
+		1, -1, 1, 0, 0, 1,
+		1, 1, 1, 1, 1, 1,
+		1, -1, 1, 0, 0, 1,
+		1, -1, -1, 1, 1, 0,
+		1, 1, -1, 0, 0, 0,
+		1, -1, -1, 1, 1, 0,
+		-1, 1, -1, 1, 0, 1,
+		-1, 1, -1, 1, 0, 1,
+		1, -1, -1, 1, 1, 0,
+		-1, -1, -1, 1, 0, 0,
+		-1, 1, -1, 1, 0, 1,
+		-1, 1, 1, 0, 1, 1,
+		1, 1, -1, 0, 0, 0,
+		-1, 1, 1, 0, 1, 1,
+		1, 1, 1, 1, 1, 1,
+		1, 1, -1, 0, 0, 0,
+		1, -1, -1, 1, 1, 0,
+		1, 1, -1, 0, 0, 0,
+		1, 1, 1, 1, 1, 1,
+	};
+	
+	private int voxelBuffer, voxelIndexBuffer, voxelVAO;
+	
+	private ShaderProgram voxelShader;
 	
 	public VoxGameScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
@@ -109,6 +150,26 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		updateWindowTitle();
+		
+		Buffer voxelFloatBuffer = BufferUtils.createFloatBuffer(VOXEL_VERTICES.length)
+			.put(VOXEL_VERTICES).flip();
+		
+		voxelBuffer = Gdx.gl.glGenBuffer();
+		voxelIndexBuffer = Gdx.gl.glGenBuffer();
+		
+		voxelVAO = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(voxelVAO);
+		
+		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelBuffer);
+		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, VOXEL_VERTICES.length * 4, voxelFloatBuffer, Gdx.gl.GL_STATIC_DRAW);
+		
+		Gdx.gl.glEnableVertexAttribArray(0);
+		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 0);
+		Gdx.gl.glEnableVertexAttribArray(1);
+		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 3 * 4);
+		GL30.glBindVertexArray(0);
+		
+		voxelShader = ShaderLoader.getProgram("shaders/voxel");
 	}
 	
 	private void updateWindowTitle() {
@@ -130,8 +191,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		// camera.direction.set(-0.69631064f, -0.5f, -0.69631064f);
 		// camera.lookAt(0, 0, 0);
 		// camera.zoom = 1f;
-		// camera.near = 0.001f;
-		// camera.far = 6000f;
+		camera.near = 0.01f;
 		camera.update();
 	}
 	
@@ -148,9 +208,21 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		modelBatch.begin(camera);
-		tileRendererMap.renderAll(modelBatch);
-		modelBatch.end();
+		voxelShader.begin();
+		voxelShader.setUniformMatrix("u_projTrans", camera.combined);
+		
+		Gdx.gl.glEnable(Gdx.gl.GL_DEPTH_TEST);
+		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);
+		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
+		
+		GL30.glBindVertexArray(voxelVAO);
+		Gdx.gl.glDrawArrays(Gdx.gl.GL_TRIANGLES, 0, VOXEL_VERTICES.length);
+		GL30.glBindVertexArray(0);
+		
+		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);
+		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
+		
+		voxelShader.end();
 		
 		drawDebugBatch();
 		fpsCounterComponent.render(delta);
