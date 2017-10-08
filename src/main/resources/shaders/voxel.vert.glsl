@@ -3,8 +3,10 @@
 uniform mat4 u_projTrans;
 
 layout(location = 0) in vec3 in_position;
-layout(location = 1) in vec3 in_instance_position;
-layout(location = 2) in vec3 in_instance_colour;
+layout(location = 1) in vec3 in_normal;
+
+layout(location = 2) in vec3 in_instance_position;
+layout(location = 3) in vec3 in_instance_colour;
 
 out vec3 v_colour;
 
