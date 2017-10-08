@@ -36,8 +36,6 @@ public class ModelLoader {
 	private static void optimiseFrame(VoxelModel.Frame frame) {
 		Voxel[] voxels = frame.getVoxels();
 		
-		int saved = 0;
-		
 		for (int i = 0; i < voxels.length; i++) {
 			Voxel voxel = voxels[i];
 			
@@ -54,11 +52,8 @@ public class ModelLoader {
 				getVoxelAt(frame, x, y, z + 1) != null &&
 				getVoxelAt(frame, x, y, z - 1) != null) {
 				voxels[i] = null;
-				saved++;
 			}
 		}
-		
-		System.out.println(String.format("Saved %d voxels", saved));
 	}
 	
 	private static Voxel getVoxelAt(VoxelModel.Frame frame, int x, int y, int z) {

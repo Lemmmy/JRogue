@@ -43,6 +43,8 @@ public class ChunkMain extends VoxChunk150 {
 				int y = voxel.getY();
 				int z = voxel.getZ();
 				
+				voxel.setX(x);
+				
 				voxels1D[x + sx * y + sx * sy * z] = voxel;
 			}
 			

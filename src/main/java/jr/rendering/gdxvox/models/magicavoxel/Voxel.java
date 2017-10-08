@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 public class Voxel {
-	private int x, y, z, colourIndex;
+	@Setter private int x, y, z, colourIndex;
 	@Setter private float r, g, b, a;
 	
 	public Voxel(int x, int y, int z, int colourIndex) {
