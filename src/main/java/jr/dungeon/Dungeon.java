@@ -10,7 +10,6 @@ import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
-import jr.dungeon.generators.GeneratorWallTest;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
@@ -43,12 +42,12 @@ public class Dungeon implements Messenger {
 	 * The default {@link Level} width. This may not be the Level's actual width. Use {@link TileStore#getWidth()}
 	 * for that instead.
 	 */
-	public static final int LEVEL_WIDTH = 10;
+	public static final int LEVEL_WIDTH = 90;
 	/**
 	 * The default {@link Level} height. This may not be the Level's actual height. Use {@link TileStore#getHeight()}
 	 * for that instead.
 	 */
-	public static final int LEVEL_HEIGHT = 10;
+	public static final int LEVEL_HEIGHT = 40;
 	
 	/**
 	 * The 'GAME' log level.
@@ -161,7 +160,7 @@ public class Dungeon implements Messenger {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorWallTest.class);
+		level.generate(null, GeneratorStandard.class);
 		
 		if (player == null) {
 			player = new Player(

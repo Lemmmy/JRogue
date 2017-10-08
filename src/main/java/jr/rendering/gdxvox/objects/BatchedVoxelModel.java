@@ -1,5 +1,6 @@
 package jr.rendering.gdxvox.objects;
 
+import jr.JRogue;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
@@ -35,11 +36,21 @@ public class BatchedVoxelModel {
 		return model.getFrames().get(frame).getVoxels();
 	}
 	
+	public VoxelModel.Frame getFrame() {
+		return model.getFrames().get(frame);
+	}
+	
+	public int getFrameNumber() {
+		return frame;
+	}
+	
 	public int getFrameCount() {
 		return model.getFrames().size();
 	}
 	
 	public FloatBuffer compileVoxels() {
+		VoxelModel.Frame frame = getFrame();
+		
 		List<Voxel> voxels = Arrays.stream(getVoxels())
 			.filter(Objects::nonNull)
 			.filter(v -> v.getColourIndex() != 0)
@@ -49,11 +60,21 @@ public class BatchedVoxelModel {
 		
 		FloatBuffer buf = BufferUtils.createFloatBuffer(length);
 		
+		float angle = (float) Math.toRadians(rotation);
+		float hsx = frame.getSizeX() / 2 - 0.5f;
+		float hsz = frame.getSizeZ() / 2 - 0.5f;
+		
 		for (Voxel voxel : voxels) {
+			float vx = (float) Math.cos(angle) * (voxel.getX() - hsx) -
+				(float) Math.sin(angle) * (voxel.getZ() - hsz);
+			float vy = voxel.getY();
+			float vz = (float) Math.sin(angle) * (voxel.getX() - hsx) +
+				(float) Math.cos(angle) * (voxel.getZ() - hsz);
+			
 			// position
-			buf.put(x + voxel.getX() / (float) TileRenderer.TILE_WIDTH)
-				.put(y + voxel.getY() / (float) TileRenderer.TILE_HEIGHT)
-				.put(z + voxel.getZ() / (float) TileRenderer.TILE_DEPTH);
+			buf.put(x + vx / (float) TileRenderer.TILE_WIDTH)
+				.put(y + vy / (float) TileRenderer.TILE_HEIGHT)
+				.put(z + vz / (float) TileRenderer.TILE_DEPTH);
 			
 			// colour
 			buf.put(voxel.getR()).put(voxel.getG()).put(voxel.getB());

@@ -4,6 +4,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.utils.BlobUtils;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
+import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.BatchedVoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
@@ -12,19 +13,19 @@ public class TileRendererWall extends TileRenderer {
 	private static final WallModel[] MAP = new WallModel[] {
 		null,
 		new WallModel("wall-end", 180),
-		new WallModel("wall-end", 90),
+		new WallModel("wall-end", 270),
 		new WallModel("wall-corner", 0),
 		new WallModel("wall-end", 0),
 		new WallModel("wall", 0),
-		new WallModel("wall-corner", 0),
+		new WallModel("wall-corner", 90),
 		new WallModel("wall-t", 0),
-		new WallModel("wall-end", 0),
-		new WallModel("wall-corner", 0),
+		new WallModel("wall-end", 90),
+		new WallModel("wall-corner", 270),
 		new WallModel("wall", 90),
-		new WallModel("wall-t", 0),
+		new WallModel("wall-t", 270),
 		new WallModel("wall-corner", 180),
-		new WallModel("wall-t", 0),
-		new WallModel("wall-t", 0),
+		new WallModel("wall-t", 180),
+		new WallModel("wall-t", 90),
 		new WallModel("wall-x", 0)
 	};
 	
@@ -54,21 +55,23 @@ public class TileRendererWall extends TileRenderer {
 		int x = tile.getX();
 		int y = tile.getY();
 		
-		WallModel model = MAP[getPositionMask(tile)];
-		if (model == null || model.model == null) return;
+		WallModel wallModel = MAP[getPositionMask(tile)];
+		if (wallModel == null || wallModel.model == null) return;
 		
-		System.out.println(String.format("%,d %,d %,d", x, y, getPositionMask(tile)));
+		BatchedVoxelModel model = new BatchedVoxelModel(wallModel.model);
 		
-		model.model.setPos(x, 0, y);
-		model.model.setRotation(model.rotation);
+		System.out.println(String.format("%,d %,d %,d %s %f", x, y, getPositionMask(tile), wallModel.modelName, wallModel.rotation));
 		
-		batch.add(tile, model.model);
+		model.setPos(x, 0, y);
+		model.setRotation(wallModel.rotation);
+		
+		batch.add(tile, model);
 	}
 	
 	protected static class WallModel {
 		private String modelName;
 		private float rotation;
-		private BatchedVoxelModel model;
+		private VoxelModel model;
 		
 		public WallModel(String modelName, float rotation) {
 			this.modelName = "models/tiles/" + modelName + ".vox";
@@ -76,7 +79,7 @@ public class TileRendererWall extends TileRenderer {
 		}
 		
 		protected void loadModel() {
-			model = ModelLoader.newBatchedModel(this.modelName);
+			model = ModelLoader.loadModel(this.modelName);
 		}
 	}
 }

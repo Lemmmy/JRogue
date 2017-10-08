@@ -29,10 +29,6 @@ public class ModelLoader {
 		return null;
 	}
 	
-	public static BatchedVoxelModel newBatchedModel(String path) {
-		return new BatchedVoxelModel(loadModel(path));
-	}
-	
 	private static void optimiseFrame(VoxelModel.Frame frame) {
 		Voxel[] voxels = frame.getVoxels();
 		
