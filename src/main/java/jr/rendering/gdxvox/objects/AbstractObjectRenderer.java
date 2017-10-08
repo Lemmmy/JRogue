@@ -1,8 +1,7 @@
 package jr.rendering.gdxvox.objects;
 
-import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
-import jr.dungeon.events.TurnEvent;
+import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,19 +16,10 @@ public abstract class AbstractObjectRenderer<ObjectK, ObjectV, BatchT extends Vo
 	
 	public abstract void initialiseBatch();
 	
-	public abstract void objectAdded(ObjectV object);
+	public abstract void objectAdded(ObjectV object, SceneContext scene);
 	
 	@SuppressWarnings("unchecked")
-	public void objectRemoved(ObjectV object) {
+	public void objectRemoved(ObjectV object, SceneContext scene) {
 		batch.remove(object);
-	}
-	
-	public void update() {
-		batch.update();
-	}
-	
-	@EventHandler
-	public void onTurn(TurnEvent e) {
-		update();
 	}
 }

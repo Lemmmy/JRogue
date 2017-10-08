@@ -89,6 +89,16 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
+	}
+	
+	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		

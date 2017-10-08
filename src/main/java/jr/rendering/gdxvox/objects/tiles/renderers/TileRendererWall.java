@@ -8,6 +8,7 @@ import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.BatchedVoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
+import jr.rendering.gdxvox.utils.SceneContext;
 
 public class TileRendererWall extends TileRenderer {
 	private static final WallModel[] MAP = new WallModel[] {
@@ -51,7 +52,7 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	@Override
-	public void tileAdded(Tile tile, TileVoxelBatch batch) {
+	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
 		int x = tile.getX();
 		int y = tile.getY();
 		

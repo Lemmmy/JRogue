@@ -20,6 +20,7 @@ import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
+import jr.rendering.gdxvox.utils.SceneContext;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
 	private static final float VIEWPORT_SIZE = 20;
@@ -39,20 +40,18 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	 */
 	private Settings settings;
 	
+	private SceneContext sceneContext;
 	private TileRendererMap tileRendererMap;
 	private EntityRendererMap entityRendererMap;
+	
+	
 	// private OrthographicCamera camera;
 	private PerspectiveCamera camera;
 	private CameraInputController controller;
 	
-	private ModelBatch modelBatch;
 	private SpriteBatch debugBatch;
-	
 	private BitmapFont debugFont;
-	
 	private FPSCounterComponent fpsCounterComponent;
-	
-	private Environment environment;
 	
 	public VoxGameScreen(GameAdapter game, Dungeon dungeon) {
 		this.game = game;
@@ -69,32 +68,29 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	}
 	
 	private void initialise() {
-		tileRendererMap = new TileRendererMap();
+		sceneContext = new SceneContext(dungeon);
+		
+		tileRendererMap = new TileRendererMap(sceneContext);
 		tileRendererMap.initialise();
 		dungeon.eventSystem.addListener(tileRendererMap);
 		
-		entityRendererMap = new EntityRendererMap();
+		entityRendererMap = new EntityRendererMap(sceneContext);
 		entityRendererMap.initialise();
 		dungeon.eventSystem.addListener(entityRendererMap);
 		
 		// camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.lookAt(20, 1, 20);
 		
 		controller = new CameraInputController(camera);
 		addInputProcessor(controller);
 		
-		modelBatch = new ModelBatch();
 		debugBatch = new SpriteBatch();
-		
 		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 12, true, false);
 		
 		fpsCounterComponent = new FPSCounterComponent(null, dungeon, settings);
 		fpsCounterComponent.initialise();
-		
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		updateWindowTitle();
 	}
@@ -135,9 +131,10 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
+		if (sceneContext.isLightsNeedUpdating()) sceneContext.updateLights();
+		
 		tileRendererMap.renderAll(camera);
 		entityRendererMap.renderAll(camera);
-		
 		drawDebugBatch();
 		fpsCounterComponent.render(delta);
 	}
@@ -157,7 +154,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		
 		debugFont.draw(debugBatch, String.format(
 			"Tile batches: %,d  Tile voxels: %,d  Entity batches: %,d  Entity voxels: %,d \n" +
-			"Total batches: %,d  Total voxels: %,d \n" +
+			"Total batches: %,d  Total voxels: %,d  Lights: %,d\n" +
 			"Camera pos: %f %f %f",
 			tileBatches,
 			tileVoxels,
@@ -165,6 +162,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 			entityVoxels,
 			tileBatches + entityBatches,
 			tileVoxels + entityVoxels,
+			sceneContext.getLights().size(),
 			camera.position.x, camera.position.y, camera.position.z
 		), 16, 48);
 	}

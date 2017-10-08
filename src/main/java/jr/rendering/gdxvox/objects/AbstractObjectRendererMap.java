@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Camera;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.LevelChangeEvent;
+import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
@@ -14,8 +16,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT extends AbstractObjectRenderer> implements EventListener {
-	@Getter protected Map<ObjectK, RendererT> objectRendererMap = new HashMap<>();
+	protected Map<ObjectK, RendererT> objectRendererMap = new HashMap<>();
+	
+	private SceneContext scene;
+	
+	public AbstractObjectRendererMap(SceneContext scene) {
+		this.scene = scene;
+	}
 	
 	public void initialise() {
 		findLists();
@@ -50,7 +59,7 @@ public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT exte
 	}
 	
 	public void renderAll(Camera camera) {
-		objectRendererMap.values().forEach(renderer -> renderer.getBatch().render(camera));
+		objectRendererMap.values().forEach(renderer -> renderer.getBatch().render(camera, scene));
 	}
 	
 	@EventHandler

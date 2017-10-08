@@ -52,4 +52,14 @@ public class EntityTorch extends Entity implements LightEmitter {
 	public Colour getLightColour() {
 		return lightColour;
 	}
+	
+	@Override
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
+	}
 }

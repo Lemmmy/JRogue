@@ -4,17 +4,22 @@ import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
+import jr.rendering.gdxvox.utils.SceneContext;
 
 import java.lang.annotation.Annotation;
 
 public class TileRendererMap extends AbstractObjectRendererMap<TileType, Tile, TileRenderer> {
+	public TileRendererMap(SceneContext scene) {
+		super(scene);
+	}
+	
 	@Override
 	public void findObjects(Level level) {
 		for (Tile tile : level.tileStore.getTiles()) {
 			TileType type = tile.getType();
 			
 			if (!objectRendererMap.containsKey(type)) continue;
-			(objectRendererMap.get(type)).objectAdded(tile);
+			objectRendererMap.get(type).objectAdded(tile, getScene());
 		}
 	}
 	

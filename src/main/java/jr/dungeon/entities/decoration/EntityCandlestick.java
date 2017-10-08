@@ -75,4 +75,14 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	public Colour getLightColour() {
 		return LIGHT_COLOUR;
 	}
+	
+	@Override
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
+	}
 }

@@ -4,22 +4,28 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
+import jr.rendering.gdxvox.utils.SceneContext;
 
 import java.lang.annotation.Annotation;
 
-public class EntityRendererMap extends AbstractObjectRendererMap {
+public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearance, Entity, EntityRenderer> {
+	public EntityRendererMap(SceneContext scene) {
+		super(scene);
+	}
+	
 	@Override
 	public void findObjects(Level level) {
 		for (Entity entity : level.entityStore.getEntities()) {
 			EntityAppearance appearance = entity.getAppearance();
 			
 			if (!objectRendererMap.containsKey(appearance)) continue;
-			((EntityRenderer) objectRendererMap.get(appearance)).objectAdded(entity);
+			objectRendererMap.get(appearance).objectAdded(entity, getScene());
 		}
 	}
 	
@@ -28,7 +34,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap {
 		EntityAppearance appearance = e.getEntity().getAppearance();
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
-		((EntityRenderer) objectRendererMap.get(appearance)).objectAdded(e.getEntity());
+		objectRendererMap.get(appearance).objectAdded(e.getEntity(), getScene());
 	}
 	
 	@EventHandler
@@ -36,7 +42,16 @@ public class EntityRendererMap extends AbstractObjectRendererMap {
 		EntityAppearance appearance = e.getEntity().getAppearance();
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
-		((EntityRenderer) objectRendererMap.get(appearance)).objectRemoved(e.getEntity());
+		objectRendererMap.get(appearance).objectRemoved(e.getEntity(), getScene());
+	}
+	
+	@EventHandler
+	public void onEntityMove(EntityMovedEvent e) {
+		EntityAppearance appearance = e.getEntity().getAppearance();
+		
+		if (!objectRendererMap.containsKey(appearance)) return;
+		EntityRenderer r = objectRendererMap.get(appearance);
+		r.entityMoved(e.getEntity(), e, r.getBatch(), getScene());
 	}
 	
 	@Override
