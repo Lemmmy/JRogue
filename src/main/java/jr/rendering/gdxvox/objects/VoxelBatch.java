@@ -19,46 +19,49 @@ import java.util.stream.Collectors;
 
 @Getter
 public abstract class VoxelBatch<ObjectV> {
-	public static final int INSTANCE_ELEMENT_COUNT = 3;
-	public static final int INSTANCE_ELEMENT_SIZE = 3 * 4;
+	public static final int INSTANCE_ELEMENT_COUNT = 6;
+	public static final int INSTANCE_ELEMENT_SIZE = 6 * 4;
+	
+	public static final int CUBE_ELEMENT_COUNT = 3;
+	public static final int CUBE_ELEMENT_SIZE = 3 * 4;
 	
 	private static final float[] CUBE_VERTICES = new float[] {
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		-0.03125f, -0.03125f, -0.03125f, 1, 0, 0,
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		0.03125f, -0.03125f, 0.03125f, 0, 0, 1,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		-0.03125f, 0.03125f, -0.03125f, 1, 0, 1,
-		-0.03125f, -0.03125f, -0.03125f, 1, 0, 0,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		-0.03125f, 0.03125f, 0.03125f, 0, 1, 1,
-		-0.03125f, 0.03125f, -0.03125f, 1, 0, 1,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		-0.03125f, 0.03125f, 0.03125f, 0, 1, 1,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		0.03125f, 0.03125f, 0.03125f, 1, 1, 1,
-		0.03125f, 0.03125f, 0.03125f, 1, 1, 1,
-		-0.03125f, -0.03125f, 0.03125f, 0, 1, 0,
-		0.03125f, -0.03125f, 0.03125f, 0, 0, 1,
-		0.03125f, 0.03125f, 0.03125f, 1, 1, 1,
-		0.03125f, -0.03125f, 0.03125f, 0, 0, 1,
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		0.03125f, 0.03125f, -0.03125f, 0, 0, 0,
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		-0.03125f, 0.03125f, -0.03125f, 1, 0, 1,
-		-0.03125f, 0.03125f, -0.03125f, 1, 0, 1,
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		-0.03125f, -0.03125f, -0.03125f, 1, 0, 0,
-		-0.03125f, 0.03125f, -0.03125f, 1, 0, 1,
-		-0.03125f, 0.03125f, 0.03125f, 0, 1, 1,
-		0.03125f, 0.03125f, -0.03125f, 0, 0, 0,
-		-0.03125f, 0.03125f, 0.03125f, 0, 1, 1,
-		0.03125f, 0.03125f, 0.03125f, 1, 1, 1,
-		0.03125f, 0.03125f, -0.03125f, 0, 0, 0,
-		0.03125f, -0.03125f, -0.03125f, 1, 1, 0,
-		0.03125f, 0.03125f, -0.03125f, 0, 0, 0,
-		0.03125f, 0.03125f, 0.03125f, 1, 1, 1,
+		0.03125f, -0.03125f, -0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		-0.03125f, -0.03125f, -0.03125f, 
+		0.03125f, -0.03125f, -0.03125f, 
+		0.03125f, -0.03125f, 0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		-0.03125f, 0.03125f, -0.03125f, 
+		-0.03125f, -0.03125f, -0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		-0.03125f, 0.03125f, 0.03125f, 
+		-0.03125f, 0.03125f, -0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		-0.03125f, 0.03125f, 0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, 0.03125f, 
+		-0.03125f, -0.03125f, 0.03125f, 
+		0.03125f, -0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, 0.03125f, 
+		0.03125f, -0.03125f, 0.03125f, 
+		0.03125f, -0.03125f, -0.03125f, 
+		0.03125f, 0.03125f, -0.03125f, 
+		0.03125f, -0.03125f, -0.03125f, 
+		-0.03125f, 0.03125f, -0.03125f, 
+		-0.03125f, 0.03125f, -0.03125f, 
+		0.03125f, -0.03125f, -0.03125f, 
+		-0.03125f, -0.03125f, -0.03125f, 
+		-0.03125f, 0.03125f, -0.03125f, 
+		-0.03125f, 0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, -0.03125f, 
+		-0.03125f, 0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, 0.03125f, 
+		0.03125f, 0.03125f, -0.03125f, 
+		0.03125f, -0.03125f, -0.03125f, 
+		0.03125f, 0.03125f, -0.03125f, 
+		0.03125f, 0.03125f, 0.03125f
 	};
 	
 	private static int cubeBuffer = -1;
@@ -95,17 +98,18 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, cubeBuffer);
 		// position
 		Gdx.gl.glEnableVertexAttribArray(0);
-		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 0);
-		// colour
-		Gdx.gl.glEnableVertexAttribArray(1);
-		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, 6 * 4, 3 * 4);
+		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, CUBE_ELEMENT_SIZE, 0);
 		
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		// instance position
+		Gdx.gl.glEnableVertexAttribArray(1);
+		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 0);
+		GL33.glVertexAttribDivisor(1, 1);
+		// instance colour
 		Gdx.gl.glEnableVertexAttribArray(2);
-		Gdx.gl.glVertexAttribPointer(2, 3, Gdx.gl.GL_FLOAT, false, 3 * 4, 0);
+		Gdx.gl.glVertexAttribPointer(2, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
 		GL33.glVertexAttribDivisor(2, 1);
 		
 		GL30.glBindVertexArray(0);
@@ -172,7 +176,7 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
 		
 		GL30.glBindVertexArray(voxelVAO);
-		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / 6, instanceCount);
+		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / CUBE_ELEMENT_COUNT, instanceCount);
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);

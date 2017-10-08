@@ -22,8 +22,8 @@ public class ChunkRGBA extends VoxChunk150 {
 	public void parse(DataInputStream dis) throws VoxParseException, IOException {
 		palette = new int[PALETTE_SIZE];
 		
-		for (int i = 0; i < PALETTE_SIZE; i++) {
-			palette[i] = dis.readInt();
+		for (int i = 0; i < PALETTE_SIZE - 1; i++) {
+			palette[i + 1] = dis.readInt();
 		}
 	}
 }
