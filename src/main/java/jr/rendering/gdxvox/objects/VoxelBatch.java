@@ -162,9 +162,9 @@ public abstract class VoxelBatch<ObjectV> {
 			.map(BatchedVoxelModel::compileVoxels)
 			.collect(Collectors.toList());
 		
-		int size = 4 + voxelBuffers.stream()
+		int size = voxelBuffers.stream()
 			.mapToInt(Buffer::capacity)
-			.sum() * 4;
+			.sum();
 		
 		FloatBuffer compiledBuffer = BufferUtils.createFloatBuffer(size);
 		voxelBuffers.forEach(compiledBuffer::put);

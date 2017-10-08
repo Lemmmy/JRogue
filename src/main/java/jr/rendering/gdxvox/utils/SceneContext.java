@@ -7,6 +7,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,6 +57,7 @@ public class SceneContext implements EventListener {
 		
 		List<ByteBuffer> lightBuffers = lights.values().stream()
 			.filter(Light::isEnabled)
+			.limit(MAX_LIGHTS)
 			.map(Light::compileLight)
 			.collect(Collectors.toList());
 		
@@ -66,6 +68,7 @@ public class SceneContext implements EventListener {
 		ByteBuffer compiledBuffer = BufferUtils.createByteBuffer(size);
 		compiledBuffer.putInt((int) lights.values().stream()
 			.filter(Light::isEnabled)
+			.limit(MAX_LIGHTS)
 			.count());
 		lightBuffers.forEach(compiledBuffer::put);
 		compiledBuffer.flip();
@@ -73,7 +76,7 @@ public class SceneContext implements EventListener {
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, size, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	private void onLevelChange(LevelChangeEvent levelChangeEvent) {
 		lights.clear();
 		updateLights();

@@ -55,7 +55,7 @@ public class EntityTorch extends Entity implements LightEmitter {
 	
 	@Override
 	public float getLightAttenuationFactor() {
-		return 0.25f;
+		return 0.01f;
 	}
 	
 	@Override
