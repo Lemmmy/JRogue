@@ -19,6 +19,8 @@ import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdx2d.components.FPSCounterComponent;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
+import jr.rendering.gdxvox.objects.AbstractObjectRenderer;
+import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
@@ -44,8 +46,6 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private PerspectiveCamera camera;
 	private CameraInputController controller;
 	
-	private GLProfiler profiler;
-	
 	private ModelBatch modelBatch;
 	private SpriteBatch debugBatch;
 	
@@ -70,9 +70,6 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	}
 	
 	private void initialise() {
-		profiler = new GLProfiler(Gdx.graphics);
-		profiler.enable();
-		
 		tileRendererMap = new TileRendererMap();
 		tileRendererMap.initialise();
 		dungeon.eventSystem.addListener(tileRendererMap);
@@ -149,15 +146,10 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	
 	private void drawProfilerInfo() {
 		debugFont.draw(debugBatch, String.format(
-			"Draw calls: %,d   Calls: %,d   Shader Switches: %,d   Texture Bindings: %,d   Vertex Count: %,f",
-			profiler.getDrawCalls(),
-			profiler.getCalls(),
-			profiler.getShaderSwitches(),
-			profiler.getTextureBindings(),
-			profiler.getVertexCount().total
+			"Voxel batches: %d  Voxels: %d",
+			tileRendererMap.getObjectRendererMap().values().size(),
+			tileRendererMap.getVoxelCount()
 		), 16, 16);
-		
-		profiler.reset();
 	}
 	
 	@Override

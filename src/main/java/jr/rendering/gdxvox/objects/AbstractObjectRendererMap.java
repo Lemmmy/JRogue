@@ -7,6 +7,7 @@ import jr.dungeon.Level;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.LevelChangeEvent;
+import lombok.Getter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT extends AbstractObjectRenderer> implements EventListener {
-	protected Map<ObjectK, RendererT> objectRendererMap = new HashMap<>();
+	@Getter protected Map<ObjectK, RendererT> objectRendererMap = new HashMap<>();
 	
 	public void initialise() {
 		findLists();
@@ -63,4 +64,10 @@ public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT exte
 	public abstract Class<? extends ObjectK> getObjectKeyClass();
 	public abstract Class<? extends ObjectV> getObjectValueClass();
 	public abstract Class<? extends Annotation> getListAnnotationClass();
+	
+	public int getVoxelCount() {
+		return objectRendererMap.values().stream()
+			.mapToInt(renderer -> renderer.getBatch().getInstanceCount())
+			.sum();
+	}
 }
