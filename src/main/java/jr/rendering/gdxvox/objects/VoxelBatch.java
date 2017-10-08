@@ -172,6 +172,14 @@ public abstract class VoxelBatch<ObjectV> {
 		voxelShader.begin();
 		voxelShader.setUniformMatrix("u_projTrans", camera.combined);
 		
+		voxelShader.setUniformi("u_lights[0].enabled", 1);
+		voxelShader.setUniformf("u_lights[0].position", 10, 0.5f, 10);
+		voxelShader.setUniformf("u_lights[0].attenuation_factor", 0.25f);
+		
+		for (int i = 1; i < 16; i++) {
+			voxelShader.setUniformi("u_lights[" + i + "].enabled", 0);
+		}
+		
 		Gdx.gl.glEnable(Gdx.gl.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);

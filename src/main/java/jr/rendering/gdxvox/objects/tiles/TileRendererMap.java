@@ -7,14 +7,14 @@ import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
 
 import java.lang.annotation.Annotation;
 
-public class TileRendererMap extends AbstractObjectRendererMap {
+public class TileRendererMap extends AbstractObjectRendererMap<TileType, Tile, TileRenderer> {
 	@Override
 	public void findObjects(Level level) {
 		for (Tile tile : level.tileStore.getTiles()) {
 			TileType type = tile.getType();
 			
 			if (!objectRendererMap.containsKey(type)) continue;
-			((TileRenderer) objectRendererMap.get(type)).objectAdded(tile);
+			(objectRendererMap.get(type)).objectAdded(tile);
 		}
 	}
 	

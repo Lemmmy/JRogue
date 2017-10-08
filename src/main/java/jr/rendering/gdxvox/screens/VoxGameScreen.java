@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
@@ -19,8 +18,7 @@ import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdx2d.components.FPSCounterComponent;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
-import jr.rendering.gdxvox.objects.AbstractObjectRenderer;
-import jr.rendering.gdxvox.objects.tiles.TileRenderer;
+import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
@@ -42,6 +40,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private Settings settings;
 	
 	private TileRendererMap tileRendererMap;
+	private EntityRendererMap entityRendererMap;
 	// private OrthographicCamera camera;
 	private PerspectiveCamera camera;
 	private CameraInputController controller;
@@ -73,6 +72,10 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		tileRendererMap = new TileRendererMap();
 		tileRendererMap.initialise();
 		dungeon.eventSystem.addListener(tileRendererMap);
+		
+		entityRendererMap = new EntityRendererMap();
+		entityRendererMap.initialise();
+		dungeon.eventSystem.addListener(entityRendererMap);
 		
 		// camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -133,6 +136,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		tileRendererMap.renderAll(camera);
+		entityRendererMap.renderAll(camera);
 		
 		drawDebugBatch();
 		fpsCounterComponent.render(delta);
@@ -145,11 +149,24 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	}
 	
 	private void drawProfilerInfo() {
+		int tileBatches = tileRendererMap.getObjectRendererMap().size();
+		int tileVoxels = tileRendererMap.getVoxelCount();
+		
+		int entityBatches = entityRendererMap.getObjectRendererMap().size();
+		int entityVoxels = entityRendererMap.getVoxelCount();
+		
 		debugFont.draw(debugBatch, String.format(
-			"Voxel batches: %d  Voxels: %d",
-			tileRendererMap.getObjectRendererMap().values().size(),
-			tileRendererMap.getVoxelCount()
-		), 16, 16);
+			"Tile batches: %,d  Tile voxels: %,d  Entity batches: %,d  Entity voxels: %,d \n" +
+			"Total batches: %,d  Total voxels: %,d \n" +
+			"Camera pos: %f %f %f",
+			tileBatches,
+			tileVoxels,
+			entityBatches,
+			entityVoxels,
+			tileBatches + entityBatches,
+			tileVoxels + entityVoxels,
+			camera.position.x, camera.position.y, camera.position.z
+		), 16, 48);
 	}
 	
 	@Override

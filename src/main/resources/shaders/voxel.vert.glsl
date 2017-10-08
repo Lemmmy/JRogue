@@ -9,8 +9,13 @@ layout(location = 2) in vec3 in_instance_position;
 layout(location = 3) in vec3 in_instance_colour;
 
 out vec3 v_colour;
+out vec3 v_normal;
+out vec3 v_surfPos;
 
 void main() {
-	gl_Position = u_projTrans * vec4(in_position + in_instance_position, 1.0);
+	vec4 final_pos = vec4(in_position + in_instance_position, 1.0);
+	gl_Position = u_projTrans * final_pos;
 	v_colour = in_instance_colour;
+	v_normal = in_normal;
+	v_surfPos = final_pos.xyz;
 }

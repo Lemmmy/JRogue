@@ -8,6 +8,7 @@ import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateTorch;
 import jr.utils.Colour;
+import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,8 +31,10 @@ public class RoomBasic extends Room {
 				} else {
 					ts.setTileType(x, y, getFloorTileType(generator));
 					
-					EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
-					if (torch != null) torch.setColours(getTorchColours(generator));
+					if (RandomUtils.randomFloat() < 0.1) {
+						EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
+						if (torch != null) torch.setColours(getTorchColours(generator));
+					}
 				}
 			}
 		}

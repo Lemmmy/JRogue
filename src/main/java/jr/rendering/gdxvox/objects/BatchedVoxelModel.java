@@ -6,6 +6,7 @@ import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 public class BatchedVoxelModel {
 	private VoxelModel model;
 	private int frame = 0;
