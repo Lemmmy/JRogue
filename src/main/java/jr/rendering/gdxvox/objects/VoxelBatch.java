@@ -155,9 +155,7 @@ public abstract class VoxelBatch<ObjectV> {
 		voxelBuffers.forEach(compiledBuffer::put);
 		compiledBuffer.flip();
 		
-		instanceCount = objects.values().stream()
-			.mapToInt(model -> model.getVoxels().length)
-			.sum();
+		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_COUNT;
 		
 		if (voxelInstanceBuffer == -1) initialiseVAO(compiledBuffer);
 	}

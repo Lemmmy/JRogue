@@ -8,6 +8,10 @@ import lombok.Setter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -36,14 +40,16 @@ public class BatchedVoxelModel {
 	}
 	
 	public FloatBuffer compileVoxels() {
-		Voxel[] voxels = getVoxels();
-		int length = voxels.length * VoxelBatch.INSTANCE_ELEMENT_COUNT;
+		List<Voxel> voxels = Arrays.stream(getVoxels())
+			.filter(Objects::nonNull)
+			.filter(v -> v.getColourIndex() != 0)
+			.collect(Collectors.toList());
+		
+		int length = voxels.size() * VoxelBatch.INSTANCE_ELEMENT_COUNT;
 		
 		FloatBuffer buf = BufferUtils.createFloatBuffer(length);
 		
 		for (Voxel voxel : voxels) {
-			if (voxel.getColourIndex() == 0) continue;
-			
 			// position
 			buf.put(x + voxel.getX() / (float) TileRenderer.TILE_WIDTH)
 				.put(y + voxel.getY() / (float) TileRenderer.TILE_HEIGHT)

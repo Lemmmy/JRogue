@@ -36,7 +36,11 @@ public class VoxelModel {
 		
 		frames.forEach(frame -> {
 			for (Voxel voxel : frame.getVoxels()) {
+				if (voxel == null) continue;
+				
 				int colourIndex = voxel.getColourIndex();
+				if (colourIndex == 0) continue;
+				
 				Color colour = new Color(palette[colourIndex]);
 				
 				voxel.setR(colour.r);
