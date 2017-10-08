@@ -1,7 +1,7 @@
 package jr.rendering.gdxvox.models.magicavoxel.parser.v150;
 
-import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
+import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.parser.base.ChunkID;
 import lombok.Getter;
 

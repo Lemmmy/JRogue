@@ -2,9 +2,9 @@ package jr.rendering.gdxvox.models.magicavoxel.parser.base;
 
 import jr.ErrorHandler;
 import jr.JRogue;
+import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.models.magicavoxel.parser.AbstractVoxParser;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxChunk;
-import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.parser.v150.ChunkMain;
 

@@ -1,6 +1,6 @@
 package jr.rendering.gdxvox.objects;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.Camera;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
@@ -42,18 +42,19 @@ public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT exte
 		for (ObjectK type : types) {
 			renderer.objectKeys.add(type);
 			objectRendererMap.put(type, renderer);
+			renderer.initialiseBatch();
 			
 			JRogue.getLogger().info("Added renderer for {}", type.toString());
 		}
 	}
 	
-	public void renderAll(ModelBatch batch) {
-		objectRendererMap.values().forEach(renderer -> renderer.renderAll(batch));
+	public void renderAll(Camera camera) {
+		objectRendererMap.values().forEach(renderer -> renderer.getBatch().render(camera));
 	}
 	
 	@EventHandler
 	protected void onLevelChange(LevelChangeEvent e) {
-		objectRendererMap.values().forEach(renderer -> renderer.objectInstanceMap.clear());
+		objectRendererMap.values().forEach(renderer -> renderer.getBatch().clear());
 		findObjects(e.getLevel());
 	}
 	

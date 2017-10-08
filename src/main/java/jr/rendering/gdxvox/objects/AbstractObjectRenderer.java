@@ -1,30 +1,34 @@
 package jr.rendering.gdxvox.objects;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.events.TurnEvent;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
-public abstract class AbstractObjectRenderer<ObjectK, ObjectV, RendererInstanceT extends
-	AbstractObjectRendererInstance> implements EventListener, RenderableProvider {
+public abstract class AbstractObjectRenderer<ObjectK, ObjectV, BatchT extends VoxelBatch> implements EventListener {
 	protected List<ObjectK> objectKeys = new ArrayList<>();
-	protected Map<ObjectV, RendererInstanceT> objectInstanceMap = new HashMap<>();
+	
+	@Setter private BatchT batch;
+	
+	public abstract void initialiseBatch();
 	
 	public abstract void objectAdded(ObjectV object);
 	
 	public void objectRemoved(ObjectV object) {
-		objectInstanceMap.remove(object);
+		batch.remove(object);
 	}
 	
-	public void renderAll(ModelBatch batch) {
-		batch.render(this);
+	public void update() {
+		batch.update();
 	}
 	
-	public abstract boolean shouldDraw(RendererInstanceT instance);
+	@EventHandler
+	public void onTurn(TurnEvent e) {
+		update();
+	}
 }

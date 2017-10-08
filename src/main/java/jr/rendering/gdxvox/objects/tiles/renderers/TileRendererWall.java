@@ -1,13 +1,12 @@
 package jr.rendering.gdxvox.objects.tiles.renderers;
 
-import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.utils.BlobUtils;
+import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
+import jr.rendering.gdxvox.objects.BatchedVoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
-import jr.rendering.gdxvox.objects.tiles.TileRendererInstance;
+import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
 
 public class TileRendererWall extends TileRenderer {
 	private static final WallModel[] MAP = new WallModel[] {
@@ -51,7 +50,7 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	@Override
-	public void tileAdded(Tile tile) {
+	public void tileAdded(Tile tile, TileVoxelBatch batch) {
 		int x = tile.getX();
 		int y = tile.getY();
 		
@@ -60,39 +59,24 @@ public class TileRendererWall extends TileRenderer {
 		
 		System.out.println(String.format("%,d %,d %,d", x, y, getPositionMask(tile)));
 		
-		ModelInstance instance = new ModelInstance(model.model);
-		instance.transform.translate(x, 0, y);
-		/* instance.transform.translate(0.5f, 0, 0.5f);
-		instance.transform.rotate(0, 1, 0, model.rotation);
-		instance.transform.translate(-0.5f, 0, -0.5f); */
-		objectInstanceMap.put(tile, new TileRendererInstance(tile, instance));
-	}
-	
-	@Override
-	public boolean shouldDraw(TileRendererInstance instance) {
-		return true;
-	}
-	
-	@Override
-	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-		objectInstanceMap.values().forEach(instance -> instance.getModelInstance().getRenderables(renderables, pool));
+		model.model.setPos(x, 0, y);
+		model.model.setRotation(model.rotation);
+		
+		batch.add(tile, model.model);
 	}
 	
 	protected static class WallModel {
 		private String modelName;
 		private float rotation;
-		private Model model;
+		private BatchedVoxelModel model;
 		
 		public WallModel(String modelName, float rotation) {
-			this.modelName = "models/tiles/test.vox";
+			this.modelName = "models/tiles/" + modelName + ".vox";
 			this.rotation = rotation;
 		}
 		
 		protected void loadModel() {
-			/* FramedModel model = ModelConverter.loadModel(this.modelName);
-			if (model == null) return;
-			
-			this.model = model.getFrames()[0]; */
+			model = ModelLoader.newBatchedModel(this.modelName);
 		}
 	}
 }
