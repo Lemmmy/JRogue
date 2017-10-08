@@ -40,7 +40,7 @@ public class BatchedVoxelModel {
 	
 	public FloatBuffer compileVoxels() {
 		Voxel[] voxels = getVoxels();
-		int length = voxels.length * VoxelBatch.INSTANCE_ELEMENT_COUNT; //test
+		int length = voxels.length * VoxelBatch.INSTANCE_ELEMENT_COUNT;
 		
 		FloatBuffer buf = BufferUtils.createFloatBuffer(length);
 		
