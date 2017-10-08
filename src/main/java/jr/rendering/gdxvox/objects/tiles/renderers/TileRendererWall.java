@@ -60,8 +60,6 @@ public class TileRendererWall extends TileRenderer {
 		
 		BatchedVoxelModel model = new BatchedVoxelModel(wallModel.model);
 		
-		System.out.println(String.format("%,d %,d %,d %s %f", x, y, getPositionMask(tile), wallModel.modelName, wallModel.rotation));
-		
 		model.setPos(x, 0, y);
 		model.setRotation(wallModel.rotation);
 		

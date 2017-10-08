@@ -276,15 +276,11 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getVisibilityRange() {
-		return 10 * ((getLightLevel() - 20) / 100) + 10;
-	}
-	
-	public int getLightLevel() {
-		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
+		return 15;
 	}
 	
 	public int getCorridorVisibilityRange() {
-		return 2 * ((getLightLevel() - 20) / 100) + 5;
+		return 7;
 	}
 	
 	public SkillLevel getSkillLevel(Skill skill) {

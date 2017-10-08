@@ -149,9 +149,7 @@ public class MinimapComponent extends RendererComponent {
 		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
 
 		if (isVisible) {
-			Color lightColour = Utils.colourToGdx(tile.getLightColour(), 1);
-			
-			mapBatch.setColor(lightColour.r, lightColour.g, lightColour.b, 0.5f);
+			mapBatch.setColor(colour.r, colour.g, colour.b, 0.5f);
 			mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
 		}
 	}

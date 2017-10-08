@@ -74,6 +74,7 @@ public class Lexicon {
 	public static final Noun tanzanite = new Noun("tanzanite");
 	public static final Noun thermometer = new Noun("thermometer");
 	public static final Noun topaz = new Noun("topaz");
+	public static final Noun torch = new Noun("torch");
 	public static final Noun weaponRack = new Noun("weapon rack");
 	public static final Noun whiteSapphire = new Noun("white sapphire");
 	public static final Noun whiteTopaz = new Noun("white topaz");

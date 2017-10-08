@@ -19,6 +19,7 @@ public abstract class AbstractObjectRenderer<ObjectK, ObjectV, BatchT extends Vo
 	
 	public abstract void objectAdded(ObjectV object);
 	
+	@SuppressWarnings("unchecked")
 	public void objectRemoved(ObjectV object) {
 		batch.remove(object);
 	}

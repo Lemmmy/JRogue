@@ -22,10 +22,6 @@ public class Tile implements Debuggable {
 	private TileType type;
 	private TileState state;
 	
-	private Colour lightColour;
-	private int lightIntensity;
-	private int lightAbsorb;
-	
 	private Level level;
 
 	public Tile(Level level, TileType type, int x, int y) {
@@ -40,19 +36,6 @@ public class Tile implements Debuggable {
 	
 	public jr.utils.Point getPosition() {
 		return jr.utils.Point.getPoint(x, y);
-	}
-	
-	public void resetLight() {
-		lightColour = state != null && state.getLightColour() != null ? state.getLightColour() : type.getLightColour();
-		lightIntensity = state != null && state.getLightIntensity() != -1 ? state.getLightIntensity() : type.getLightIntensity();
-		lightAbsorb = state != null && state.getLightAbsorb() != -1 ? state.getLightAbsorb() : type.getLightAbsorb();
-		
-		if (lightColour == null) {
-			lightColour = level.lightStore.getAmbientLight();
-			lightIntensity = level.lightStore.getAmbientLightIntensity();
-		}
-		
-		lightColour = level.lightStore.applyIntensity(lightColour, lightIntensity).copy();
 	}
 	
 	private void initialiseState() {

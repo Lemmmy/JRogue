@@ -38,9 +38,4 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	public Colour getLightColour() {
 		return LIGHT_COLOUR;
 	}
-	
-	@Override
-	public int getLightIntensity() {
-		return 60;
-	}
 }

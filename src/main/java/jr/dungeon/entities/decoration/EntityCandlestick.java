@@ -75,9 +75,4 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	public Colour getLightColour() {
 		return LIGHT_COLOUR;
 	}
-	
-	@Override
-	public int getLightIntensity() {
-		return lit ? LIGHT_INTENSITY : 0;
-	}
 }

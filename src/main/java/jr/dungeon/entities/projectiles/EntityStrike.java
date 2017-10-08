@@ -73,9 +73,4 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	public Colour getLightColour() {
 		return LIGHT_COLOUR;
 	}
-	
-	@Override
-	public int getLightIntensity() {
-		return 75;
-	}
 }

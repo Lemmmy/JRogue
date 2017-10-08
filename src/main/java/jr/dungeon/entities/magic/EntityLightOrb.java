@@ -89,11 +89,6 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public int getLightIntensity() {
-		return 100;
-	}
-	
-	@Override
 	public void serialise(JSONObject obj) {
 		super.serialise(obj);
 		

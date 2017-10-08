@@ -116,7 +116,6 @@ public class DungeonSerialiser implements Serialisable, Persisting {
 			dungeon.level = dungeon.getPlayer().getLevel();
 			dungeon.eventSystem.triggerEvent(new LevelChangeEvent(dungeon.level));
 			
-			dungeon.level.lightStore.buildLight(true);
 			dungeon.level.visibilityStore.updateSight(dungeon.getPlayer());
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);

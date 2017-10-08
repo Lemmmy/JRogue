@@ -79,8 +79,9 @@ public class GeneratorSewer extends GeneratorRooms {
 		return TileType.TILE_SEWER_WALL;
 	}
 	
-	public TileType getTorchTileType() {
-		return TileType.TILE_SEWER_WALL;
+	@Override
+	public boolean shouldAddTorches() {
+		return true;
 	}
 	
 	@Override

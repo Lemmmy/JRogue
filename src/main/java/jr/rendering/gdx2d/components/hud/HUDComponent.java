@@ -221,7 +221,6 @@ public class HUDComponent extends RendererComponent {
 	private void onTurn(TurnEvent e) {
 		updatePlayerLine(player);
 		updateAttributes(player);
-		updateBrightness(player);
 		updateStatusEffects(player);
 		
 		if (settings.isShowAIDebug()) {
@@ -345,16 +344,6 @@ public class HUDComponent extends RendererComponent {
 			
 			((Label) attributeTable.findActor(actorName)).setText(text);
 		});
-	}
-	
-	private void updateBrightness(Player player) {
-		brightness.clearChildren();
-		
-		int sheetX = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
-		
-		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
-			false)));
-		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));
 	}
 	
 	private void updateStatusEffects(Player player) {

@@ -2,6 +2,8 @@ package jr.dungeon.generators.rooms;
 
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
+import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityTorch;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateTorch;
@@ -24,19 +26,12 @@ public class RoomBasic extends Room {
 					y == getY() || y == getY() + getHeight() - 1;
 				
 				if (wall) {
-					if (x > getX() && x < getX() + getWidth() - 1 && x % 4 == 0) {
-						ts.setTileType(x, y, getTorchTileType(generator));
-						
-						if (getTorchTileType(generator) != null
-							&& ts.getTile(x, y).hasState()
-							&& ts.getTile(x, y).getState() instanceof TileStateTorch) {
-							((TileStateTorch) ts.getTile(x, y).getState()).setColours(getTorchColours(generator));
-						}
-					} else {
-						ts.setTileType(x, y, getWallTileType(generator));
-					}
+					ts.setTileType(x, y, getWallTileType(generator));
 				} else {
 					ts.setTileType(x, y, getFloorTileType(generator));
+					
+					EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
+					if (torch != null) torch.setColours(getTorchColours(generator));
 				}
 			}
 		}
@@ -59,14 +54,6 @@ public class RoomBasic extends Room {
 		}
 		
 		return generator.getFloorTileType();
-	}
-	
-	protected TileType getTorchTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_TORCH;
-		}
-		
-		return generator.getTorchTileType();
 	}
 	
 	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {

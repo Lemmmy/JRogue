@@ -4,6 +4,4 @@ import jr.utils.Colour;
 
 public interface LightEmitter {
 	Colour getLightColour();
-	
-	int getLightIntensity();
 }

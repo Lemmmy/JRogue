@@ -13,18 +13,6 @@ import org.json.JSONObject;
 public abstract class TileState implements Serialisable, EventListener {
 	private Tile tile;
 	
-	public Colour getLightColour() {
-		return null;
-	}
-	
-	public int getLightIntensity() {
-		return -1;
-	}
-	
-	public int getLightAbsorb() {
-		return -1;
-	}
-	
 	@Override
 	public void serialise(JSONObject obj) {}
 	

@@ -66,8 +66,10 @@ public class TileRendererTorch extends TileRendererWall {
 			Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
 			
 			if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
+				TileStateTorch tst = (TileStateTorch) tile.getState();
+				
 				Color c = batch.getColor();
-				batch.setColor(Utils.colourToGdx(tile.getLightColour(), 0));
+				batch.setColor(Utils.colourToGdx(tst.getColour1(), 0));
 				drawTile(batch, torchGlow, x, y);
 				batch.setColor(c);
 			} else {
@@ -98,8 +100,10 @@ public class TileRendererTorch extends TileRendererWall {
 		Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
 		
 		if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
-			Colour c1 = tile.getLightColour();
-			Colour c2 = ((TileStateTorch) tile.getState()).getParticleDarkColour();
+			TileStateTorch tst = (TileStateTorch) tile.getState();
+			
+			Colour c1 = tst.getColour1();
+			Colour c2 = tst.getParticleDarkColour();
 			
 			Arrays.stream(effect.getEmitters().items)
 				.filter(e -> e.getName().equalsIgnoreCase("Fire"))
