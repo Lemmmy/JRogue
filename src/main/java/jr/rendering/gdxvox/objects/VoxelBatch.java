@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.ErrorHandler;
 import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.gdxvox.utils.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
@@ -19,7 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static jr.rendering.gdxvox.utils.SceneContext.MAX_LIGHTS;
 
 @Getter
 public abstract class VoxelBatch<ObjectV> {
@@ -231,13 +235,16 @@ public abstract class VoxelBatch<ObjectV> {
 			}
 		}
 		
-		/* GL30.glBindBufferRange(
+		GL30.glBindBufferRange(
 			GL31.GL_UNIFORM_BUFFER,
 			uniformBlockIndex,
 			scene.getLightBufferHandle(),
 			0,
-			scene.getLights().size() * SceneContext.LIGHT_ELEMENT_SIZE
-		); */
+			16 + scene.getLights().values().stream()
+				.filter(Light::isEnabled)
+				.limit(MAX_LIGHTS)
+				.count() * SceneContext.LIGHT_ELEMENT_SIZE
+		);
 		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / CUBE_ELEMENT_COUNT, instanceCount);
 		GL30.glBindVertexArray(0);
 		

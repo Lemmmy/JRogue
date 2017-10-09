@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 @Getter
 @Setter
@@ -36,13 +37,22 @@ public class Light {
 			.putFloat(position.y + positionOffset.y)
 			.putFloat(position.z + positionOffset.z);
 		
+		buf.putFloat(0f); // padding
+		
 		// colour
 		buf.putFloat(colour.r).putFloat(colour.g).putFloat(colour.b);
+		
+		buf.putFloat(0f); // padding
 		
 		// attenuation factor
 		buf.putFloat(attenuationFactor);
 		
+		buf.putFloat(0f); // padding
+		buf.putFloat(0f); // padding
+		buf.putFloat(0f); // padding
+		
 		buf.flip();
+		
 		return buf;
 	}
 }
