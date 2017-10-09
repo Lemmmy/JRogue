@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.objects;
 
 import jr.JRogue;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
@@ -20,18 +21,37 @@ import java.util.stream.Collectors;
 @Accessors(chain = true)
 public class VoxelModelInstance {
 	private VoxelModel model;
+	private Object object;
+	private String instanceID;
 	private int frame = 0;
 	private float x, y, z;
+	private float offsetX, offsetY, offsetZ;
+	private float pivotX = -1, pivotZ = -1;
 	private float rotation;
 	
 	public VoxelModelInstance(VoxelModel model) {
 		this.model = model;
 	}
 	
-	public VoxelModelInstance setPos(float x, float y, float z) {
+	public VoxelModelInstance setPosition(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		
+		return this;
+	}
+	
+	public VoxelModelInstance setOffset(float x, float y, float z) {
+		this.offsetX = x;
+		this.offsetY = y;
+		this.offsetZ = z;
+		
+		return this;
+	}
+	
+	public VoxelModelInstance setPivotPosition(float x, float z) {
+		this.pivotX = x;
+		this.pivotZ = z;
 		
 		return this;
 	}
@@ -65,20 +85,24 @@ public class VoxelModelInstance {
 		FloatBuffer buf = BufferUtils.createFloatBuffer(length);
 		
 		float angle = (float) Math.toRadians(rotation);
-		float hsx = frame.getSizeX() / 2 - 0.5f;
-		float hsz = frame.getSizeZ() / 2 - 0.5f;
+		float pivotX = (this.pivotX == -1 ? frame.getSizeX() / 2 : this.pivotX) - 0.5f;
+		float pivotZ = (this.pivotZ == -1 ? frame.getSizeZ() / 2 : this.pivotZ) - 0.5f;
+		
+		float startX = x + offsetX;
+		float startY = y + offsetY;
+		float startZ = z + offsetZ;
 		
 		for (Voxel voxel : voxels) {
-			float vx = (float) Math.cos(angle) * (voxel.getX() - hsx) -
-				(float) Math.sin(angle) * (voxel.getZ() - hsz);
+			float vx = (float) Math.cos(angle) * (voxel.getX() - pivotX) -
+				(float) Math.sin(angle) * (voxel.getZ() - pivotZ);
 			float vy = voxel.getY();
-			float vz = (float) Math.sin(angle) * (voxel.getX() - hsx) +
-				(float) Math.cos(angle) * (voxel.getZ() - hsz);
+			float vz = (float) Math.sin(angle) * (voxel.getX() - pivotX) +
+				(float) Math.cos(angle) * (voxel.getZ() - pivotZ);
 			
 			// position
-			buf.put(x + vx / (float) TileRenderer.TILE_WIDTH)
-				.put(y + vy / (float) TileRenderer.TILE_HEIGHT)
-				.put(z + vz / (float) TileRenderer.TILE_DEPTH);
+			buf.put(startX + vx / (float) TileRenderer.TILE_WIDTH)
+				.put(startY + vy / (float) TileRenderer.TILE_HEIGHT)
+				.put(startZ + vz / (float) TileRenderer.TILE_DEPTH);
 			
 			// colour
 			buf.put(voxel.getR()).put(voxel.getG()).put(voxel.getB());

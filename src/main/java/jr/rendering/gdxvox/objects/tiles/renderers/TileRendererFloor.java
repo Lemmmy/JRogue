@@ -19,8 +19,7 @@ public class TileRendererFloor extends TileRenderer {
 	
 	@Override
 	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
-		VoxelModelInstance floorModel = new VoxelModelInstance(torchModel);
-		floorModel.setPos(tile.getX(), 0 - 1f / 16f, tile.getY());
-		batch.add(tile, floorModel);
+		batch.add(tile, new VoxelModelInstance(torchModel)
+			.setOffset(0, 0 - 1f / 16f, 0));
 	}
 }

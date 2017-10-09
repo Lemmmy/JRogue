@@ -55,12 +55,12 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 	}
 	
 	@Override
-	public Class getObjectKeyClass() {
+	public Class<? extends EntityAppearance> getObjectKeyClass() {
 		return EntityAppearance.class;
 	}
 	
 	@Override
-	public Class getObjectValueClass() {
+	public Class<? extends Entity> getObjectValueClass() {
 		return Entity.class;
 	}
 	

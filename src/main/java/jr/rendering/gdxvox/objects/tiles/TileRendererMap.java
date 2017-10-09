@@ -24,12 +24,12 @@ public class TileRendererMap extends AbstractObjectRendererMap<TileType, Tile, T
 	}
 	
 	@Override
-	public Class getObjectKeyClass() {
+	public Class<? extends TileType> getObjectKeyClass() {
 		return TileType.class;
 	}
 	
 	@Override
-	public Class getObjectValueClass() {
+	public Class<? extends Tile> getObjectValueClass() {
 		return Tile.class;
 	}
 	

@@ -23,9 +23,7 @@ public class EntityRendererTorch extends EntityRenderer {
 	
 	@Override
 	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		VoxelModelInstance model = new VoxelModelInstance(torchModel);
-		model.setPos(entity.getX(), 0, entity.getY());
-		batch.add(entity, model);
+		batch.add(entity, new VoxelModelInstance(torchModel));
 		
 		if (entity instanceof LightEmitter) {
 			LightEmitter le = (LightEmitter) entity;

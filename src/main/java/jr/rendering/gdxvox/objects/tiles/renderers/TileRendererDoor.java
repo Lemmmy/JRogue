@@ -10,10 +10,15 @@ import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
 import jr.rendering.gdxvox.utils.SceneContext;
 
 public class TileRendererDoor extends TileRenderer {
-	private VoxelModel doorModel;
+	private VoxelModel frameModel, doorModel;
 	
-	public TileRendererDoor() {
+	private DoorState doorState;
+	
+	public TileRendererDoor(DoorState doorState) {
+		frameModel = ModelLoader.loadModel("models/tiles/door-frame.vox");
 		doorModel = ModelLoader.loadModel("models/tiles/door.vox");
+		
+		this.doorState = doorState;
 	}
 	
 	@Override
@@ -24,12 +29,26 @@ public class TileRendererDoor extends TileRenderer {
 		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(x, y);
 		
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		float rotation = h ? 90 : 0;
 		
-		VoxelModelInstance instance = new VoxelModelInstance(doorModel)
-			.setRotation(rotation)
-			.setPos(x, 0, y);
+		batch.add(tile, new VoxelModelInstance(frameModel)
+			.setRotation(h ? 90 : 0));
 		
-		batch.add(tile, instance);
+		switch (doorState) {
+			case OPEN:
+				batch.add(tile, new VoxelModelInstance(doorModel)
+					.setOffset((h ? -6 : -9) * (1 / 16f), 0, (h ? -9 : 6) * (1 / 16f))
+					.setRotation(h ? 0 : 270));
+				break;
+			case CLOSED: // ha ha
+				batch.add(tile, new VoxelModelInstance(doorModel)
+					.setRotation(h ? 90 : 0));
+				break;
+			case BROKEN:
+				break; // ha ha
+		}
+	}
+	
+	public enum DoorState {
+		CLOSED, OPEN, BROKEN
 	}
 }

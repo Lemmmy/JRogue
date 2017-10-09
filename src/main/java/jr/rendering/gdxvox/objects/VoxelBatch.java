@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL33;
 import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public abstract class VoxelBatch<ObjectV> {
 	private int voxelShaderHandle = -1;
 	private int uniformBlockIndex = -1;
 	
-	private Map<ObjectV, VoxelModelInstance> objects = new HashMap<>();
+	private List<VoxelModelInstance> objects = new ArrayList<>();
 	
 	private boolean needsRebuild;
 	
@@ -136,16 +137,40 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public boolean contains(ObjectV object) {
-		return objects.containsKey(object);
+		return objects.stream().anyMatch(instance -> instance.getObject() == object);
+	}
+	
+	public boolean contains(String instanceID) {
+		return objects.stream().anyMatch(instance -> instance.getInstanceID().equals(instanceID));
+	}
+	
+	public boolean contains(VoxelModelInstance model) {
+		return objects.contains(model);
 	}
 	
 	public void add(ObjectV object, VoxelModelInstance model) {
-		objects.put(object, model);
+		model.setObject(object);
+		if (model.getInstanceID() == null) model.setInstanceID(String.valueOf(System.identityHashCode(object)));
+		setAddedObjectPosition(object, model);
+		
+		objects.add(model);
 		needsRebuild = true;
 	}
 	
+	protected abstract void setAddedObjectPosition(ObjectV object, VoxelModelInstance model);
+	
 	public void remove(ObjectV object) {
-		objects.remove(object);
+		objects.removeIf(instance -> instance.getObject() == object);
+		needsRebuild = true;
+	}
+	
+	public void remove(String instanceID) {
+		objects.removeIf(instance -> instance.getInstanceID().equals(instanceID));
+		needsRebuild = true;
+	}
+	
+	public void remove(VoxelModelInstance instance) {
+		objects.remove(instance);
 		needsRebuild = true;
 	}
 	
@@ -157,7 +182,7 @@ public abstract class VoxelBatch<ObjectV> {
 	public void rebuildVoxels(SceneContext scene) {
 		if (voxelShader == null) initialiseShader();
 		
-		List<FloatBuffer> voxelBuffers = objects.values().stream()
+		List<FloatBuffer> voxelBuffers = objects.stream()
 			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());
 		

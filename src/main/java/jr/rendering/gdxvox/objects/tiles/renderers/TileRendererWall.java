@@ -59,12 +59,8 @@ public class TileRendererWall extends TileRenderer {
 		WallModel wallModel = MAP[getPositionMask(tile)];
 		if (wallModel == null || wallModel.model == null) return;
 		
-		VoxelModelInstance model = new VoxelModelInstance(wallModel.model);
-		
-		model.setPos(x, 0, y);
-		model.setRotation(wallModel.rotation);
-		
-		batch.add(tile, model);
+		batch.add(tile, new VoxelModelInstance(wallModel.model)
+			.setRotation(wallModel.rotation));
 	}
 	
 	protected static class WallModel {
