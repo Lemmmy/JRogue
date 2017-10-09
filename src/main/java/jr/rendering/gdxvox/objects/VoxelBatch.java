@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL33;
 
 import java.lang.reflect.Field;
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +75,7 @@ public abstract class VoxelBatch<ObjectV> {
 	private int voxelShaderHandle = -1;
 	private int uniformBlockIndex = -1;
 	
-	private Map<ObjectV, BatchedVoxelModel> objects = new HashMap<>();
+	private Map<ObjectV, VoxelModelInstance> objects = new HashMap<>();
 	
 	private boolean needsRebuild;
 	
@@ -140,7 +139,7 @@ public abstract class VoxelBatch<ObjectV> {
 		return objects.containsKey(object);
 	}
 	
-	public void add(ObjectV object, BatchedVoxelModel model) {
+	public void add(ObjectV object, VoxelModelInstance model) {
 		objects.put(object, model);
 		needsRebuild = true;
 	}
@@ -159,7 +158,7 @@ public abstract class VoxelBatch<ObjectV> {
 		if (voxelShader == null) initialiseShader();
 		
 		List<FloatBuffer> voxelBuffers = objects.values().stream()
-			.map(BatchedVoxelModel::compileVoxels)
+			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());
 		
 		int size = voxelBuffers.stream()

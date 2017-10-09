@@ -6,7 +6,7 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
-import jr.rendering.gdxvox.objects.BatchedVoxelModel;
+import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.entities.EntityRenderer;
 import jr.rendering.gdxvox.objects.entities.EntityVoxelBatch;
 import jr.rendering.gdxvox.utils.Light;
@@ -23,7 +23,7 @@ public class EntityRendererTorch extends EntityRenderer {
 	
 	@Override
 	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		BatchedVoxelModel model = new BatchedVoxelModel(torchModel);
+		VoxelModelInstance model = new VoxelModelInstance(torchModel);
 		model.setPos(entity.getX(), 0, entity.getY());
 		batch.add(entity, model);
 		

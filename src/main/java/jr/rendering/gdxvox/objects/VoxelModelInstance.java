@@ -18,20 +18,22 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class BatchedVoxelModel {
+public class VoxelModelInstance {
 	private VoxelModel model;
 	private int frame = 0;
 	private float x, y, z;
 	private float rotation;
 	
-	public BatchedVoxelModel(VoxelModel model) {
+	public VoxelModelInstance(VoxelModel model) {
 		this.model = model;
 	}
 	
-	public void setPos(float x, float y, float z) {
+	public VoxelModelInstance setPos(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		
+		return this;
 	}
 	
 	public Voxel[] getVoxels() {

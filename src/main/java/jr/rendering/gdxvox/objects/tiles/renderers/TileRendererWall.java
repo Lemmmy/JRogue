@@ -5,7 +5,7 @@ import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.utils.BlobUtils;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
-import jr.rendering.gdxvox.objects.BatchedVoxelModel;
+import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
 import jr.rendering.gdxvox.utils.SceneContext;
@@ -59,7 +59,7 @@ public class TileRendererWall extends TileRenderer {
 		WallModel wallModel = MAP[getPositionMask(tile)];
 		if (wallModel == null || wallModel.model == null) return;
 		
-		BatchedVoxelModel model = new BatchedVoxelModel(wallModel.model);
+		VoxelModelInstance model = new VoxelModelInstance(wallModel.model);
 		
 		model.setPos(x, 0, y);
 		model.setRotation(wallModel.rotation);

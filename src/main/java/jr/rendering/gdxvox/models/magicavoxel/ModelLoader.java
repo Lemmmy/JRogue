@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import jr.ErrorHandler;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParseException;
 import jr.rendering.gdxvox.models.magicavoxel.parser.VoxParser;
-import jr.rendering.gdxvox.objects.BatchedVoxelModel;
 
 import java.io.IOException;
 import java.util.HashMap;
