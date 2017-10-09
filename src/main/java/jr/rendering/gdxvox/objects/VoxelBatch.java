@@ -207,13 +207,13 @@ public abstract class VoxelBatch<ObjectV> {
 			}
 		}
 		
-		GL30.glBindBufferRange(
+		/* GL30.glBindBufferRange(
 			GL31.GL_UNIFORM_BUFFER,
 			uniformBlockIndex,
 			scene.getLightBufferHandle(),
 			0,
 			scene.getLights().size() * SceneContext.LIGHT_ELEMENT_SIZE
-		);
+		); */
 		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / CUBE_ELEMENT_COUNT, instanceCount);
 		GL30.glBindVertexArray(0);
 		
