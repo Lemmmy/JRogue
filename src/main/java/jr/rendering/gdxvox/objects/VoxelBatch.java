@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.rendering.gdx2d.utils.ShaderLoader;
 import jr.rendering.gdxvox.utils.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
@@ -186,6 +187,12 @@ public abstract class VoxelBatch<ObjectV> {
 	public void rebuildVoxels(SceneContext scene) {
 		if (voxelShader == null) initialiseShader();
 		
+		JRogue.getLogger().debug(
+			"Rebuilding voxels for {} (first item: {})",
+			getClass().getSimpleName(),
+			objects.size() > 0 ? objects.get(0).toString() : "none"
+		);
+		
 		List<FloatBuffer> voxelBuffers = objects.stream()
 			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());
@@ -205,12 +212,10 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	public void render(Camera camera, SceneContext scene) {
 		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
-			System.out.println("VAO -1");
 			needsRebuild = true;
 		}
 		
 		if (needsRebuild) {
-			System.out.println("Rebuilding");
 			rebuildVoxels(scene);
 			needsRebuild = false;
 		}
@@ -225,8 +230,6 @@ public abstract class VoxelBatch<ObjectV> {
 		GL30.glBindVertexArray(voxelVAO);
 		
 		if (uniformBlockIndex == -1) {
-			System.out.println("UBO -1");
-			
 			uniformBlockIndex = GL31.glGetUniformBlockIndex(voxelShaderHandle, "Lights");
 			
 			if (uniformBlockIndex == -1) {

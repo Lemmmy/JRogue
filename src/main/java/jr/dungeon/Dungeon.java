@@ -9,8 +9,8 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
+import jr.dungeon.generators.GeneratorDebugLevel;
 import jr.dungeon.generators.GeneratorStandard;
-import jr.dungeon.generators.GeneratorWallTest;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
@@ -161,7 +161,7 @@ public class Dungeon implements Messenger {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorStandard.class);
+		level.generate(null, GeneratorDebugLevel.class);
 		
 		if (player == null) {
 			player = new Player(

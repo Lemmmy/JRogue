@@ -46,7 +46,7 @@ public class EntityTorch extends Entity implements LightEmitter {
 	@Override
 	public boolean isStatic() {
 		return true;
-	}
+	}#
 	
 	@Override
 	public Colour getLightColour() {

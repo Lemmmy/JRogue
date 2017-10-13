@@ -78,7 +78,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	
 	@Override
 	public float getLightAttenuationFactor() {
-		return 0.25f;
+		return 0.1f;
 	}
 	
 	@Override
