@@ -161,7 +161,7 @@ public class Dungeon implements Messenger {
 			levels.put(level.getUUID(), level);
 		}
 		
-		level.generate(null, GeneratorDebugLevel.class);
+		level.generate(null, GeneratorStandard.class);
 		
 		if (player == null) {
 			player = new Player(
