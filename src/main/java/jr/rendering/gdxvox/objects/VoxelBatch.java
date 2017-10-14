@@ -187,12 +187,6 @@ public abstract class VoxelBatch<ObjectV> {
 	public void rebuildVoxels(SceneContext scene) {
 		if (voxelShader == null) initialiseShader();
 		
-		JRogue.getLogger().debug(
-			"Rebuilding voxels for {} (first item: {})",
-			getClass().getSimpleName(),
-			objects.size() > 0 ? objects.get(0).toString() : "none"
-		);
-		
 		List<FloatBuffer> voxelBuffers = objects.stream()
 			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());

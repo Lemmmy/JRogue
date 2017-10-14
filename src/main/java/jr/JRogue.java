@@ -109,7 +109,7 @@ public class JRogue {
 			config.setResizable(true);
 			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
 			config.useVsync(settings.isVsync());
-			config.setBackBufferConfig(8, 8, 8, 8, 24, 0, 8);
+			config.setBackBufferConfig(8, 8, 8, 8, 24, 0, settings.getMsaaSamples());
 			
 			adapter = new GameAdapter();
 			adapter.setRootDebugObject(this);

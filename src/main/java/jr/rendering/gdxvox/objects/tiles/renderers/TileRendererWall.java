@@ -69,7 +69,7 @@ public class TileRendererWall extends TileRenderer {
 		private VoxelModel model;
 		
 		public WallModel(String modelName, float rotation) {
-			this.modelName = "models/tiles/" + modelName + ".vox";
+			this.modelName = "models/tiles/wall/" + modelName + ".vox";
 			this.rotation = rotation;
 		}
 		

@@ -15,8 +15,8 @@ public class TileRendererDoor extends TileRenderer {
 	private DoorState doorState;
 	
 	public TileRendererDoor(DoorState doorState) {
-		frameModel = ModelLoader.loadModel("models/tiles/door-frame.vox");
-		doorModel = ModelLoader.loadModel("models/tiles/door.vox");
+		frameModel = ModelLoader.loadModel("models/tiles/door/door-frame.vox");
+		doorModel = ModelLoader.loadModel("models/tiles/door/door.vox");
 		
 		this.doorState = doorState;
 	}
