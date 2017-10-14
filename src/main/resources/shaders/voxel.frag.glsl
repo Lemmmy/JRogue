@@ -25,7 +25,7 @@ in vec3 v_surfPos;
 out vec4 out_colour;
 
 void main() {
-	vec3 final_colour = vec3(0.0f, 0.0f, 0.0f);
+	/*vec3 final_colour = vec3(0.0f, 0.0f, 0.0f);
 
 	for (int i = 0; i < u_lights.count; i++) {
 		vec3 surface_to_light = normalize(u_lights.lights[i].position - v_surfPos);
@@ -33,7 +33,9 @@ void main() {
 		float dist = distance(u_lights.lights[i].position, v_surfPos);
 		float attenuation = 1.0f / (1.0f + u_lights.lights[i].attenuation_factor * (dist * dist));
 		final_colour += u_lights.lights[i].colour * brightness * attenuation;
-	}
+	}*/
+
+	vec3 final_colour = vec3(1.0f, 1.0f, 1.0f);
 
 	out_colour = vec4(final_colour * v_colour, 1.0f);
 }
