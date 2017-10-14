@@ -13,7 +13,7 @@ out vec3 v_normal;
 out vec3 v_surfPos;
 
 void main() {
-	vec4 final_pos = vec4(in_position + in_instance_position, 1.0);
+	vec4 final_pos = vec4(in_position + in_instance_position, 1.0f);
 	gl_Position = u_projTrans * final_pos;
 	v_colour = in_instance_colour;
 	v_normal = in_normal;
