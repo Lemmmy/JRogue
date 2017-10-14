@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 public class SceneContext implements EventListener {
 	public static final int MAX_LIGHTS = 128;
 	
-	public static final int LIGHT_ELEMENT_COUNT = 6;
-	public static final int LIGHT_ELEMENT_SIZE = 48;
+	public static final int LIGHT_ELEMENT_COUNT = 4;
+	public static final int LIGHT_ELEMENT_SIZE = 32;
 	
 	private Dungeon dungeon;
 	private Level level;
@@ -71,9 +71,9 @@ public class SceneContext implements EventListener {
 		compiledBuffer.putInt((int) lights.values().stream()
 			.filter(Light::isEnabled)
 			.limit(MAX_LIGHTS)
-			.count());
-		compiledBuffer.putFloat(0f).putFloat(0f).putFloat(0f);
-		lightBuffers.forEach(compiledBuffer::put);
+			.count()); // count
+		compiledBuffer.putFloat(0.0f).putFloat(0.0f).putFloat(0.0f); // padding
+		lightBuffers.forEach(compiledBuffer::put); // lights
 		compiledBuffer.flip();
 		
 		Gdx.gl.glBufferData(GL31.GL_UNIFORM_BUFFER, size, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);

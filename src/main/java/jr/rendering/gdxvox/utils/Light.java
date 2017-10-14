@@ -42,14 +42,8 @@ public class Light {
 		// colour
 		buf.putFloat(colour.r).putFloat(colour.g).putFloat(colour.b);
 		
-		buf.putFloat(0f); // padding
-		
 		// attenuation factor
 		buf.putFloat(attenuationFactor);
-		
-		buf.putFloat(0f); // padding
-		buf.putFloat(0f); // padding
-		buf.putFloat(0f); // padding
 		
 		buf.flip();
 		
