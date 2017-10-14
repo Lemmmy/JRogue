@@ -1,6 +1,8 @@
-#version 140
+#version 300 es
 
 #define MAX_LIGHTS 128
+
+precision mediump float;
 
 struct Light {
 	vec3 position;
