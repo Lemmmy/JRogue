@@ -1,7 +1,6 @@
 package jr.rendering.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -24,7 +23,7 @@ import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.ui.skin.UISkin;
 import org.apache.commons.lang3.StringUtils;
 
-public class CharacterCreationScreen extends ScreenAdapter {
+public class CharacterCreationScreen extends BasicScreen {
 	private Skin skin;
 	private Stage stage;
 	
@@ -79,7 +78,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	private void initNameField(Table container) {
 		Table nameTable = new Table();
 		
-		nameTable.add(new Label("Noun", skin)).left().padRight(8);
+		nameTable.add(new Label("Name", skin)).left().padRight(8);
 		nameField = new TextField(StringUtils.capitalize(JRogue.getSettings().getPlayerName()), skin);
 		nameTable.add(nameField).growX().left().row();
 		nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c) && textField.getText().length() < 20);
@@ -221,6 +220,7 @@ public class CharacterCreationScreen extends ScreenAdapter {
 	public void show() {
 		super.show();
 		
-		Gdx.input.setInputProcessor(stage);
+		clearInputProcessors();
+		addInputProcessor(stage);
 	}
 }

@@ -4,7 +4,6 @@ import jr.dungeon.Level;
 import jr.dungeon.generators.rooms.RoomBasic;
 import jr.dungeon.generators.rooms.RoomIce;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

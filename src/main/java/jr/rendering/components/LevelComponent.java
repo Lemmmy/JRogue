@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.TileStore;
+import jr.dungeon.VisibilityStore;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.screens.GameScreen;
@@ -45,25 +47,30 @@ public class LevelComponent extends RendererComponent {
 	}
 	
 	private void drawLevel(boolean extra) {
-		for (int y = 0; y < level.getHeight(); y++) {
-			for (int x = 0; x < level.getWidth(); x++) {
+		TileStore tileStore = level.tileStore;
+		VisibilityStore visibilityStore = level.visibilityStore;
+		
+		int width = level.getWidth();
+		int height = level.getHeight();
+		
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				if (!TileRenderer.shouldDrawTile(camera, x, y)) {
 					continue;
 				}
 				
-				if (!settings.isShowLevelDebug() && !level.visibilityStore.isTileDiscovered(x, y)) {
+				if (!settings.isShowLevelDebug() && !visibilityStore.isTileDiscovered(x, y)) {
 					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
 					continue;
 				}
 				
-				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
+				TileMap tm = TileMap.valueOf(tileStore.getTileType(x, y).name());
+				if (tm.getRenderer() == null) continue;
 				
-				if (tm.getRenderer() != null) {
-					if (extra) {
-						tm.getRenderer().drawExtra(mainBatch, dungeon, x, y);
-					} else {
-						tm.getRenderer().draw(mainBatch, dungeon, x, y);
-					}
+				if (extra) {
+					tm.getRenderer().drawExtra(mainBatch, dungeon, x, y);
+				} else {
+					tm.getRenderer().draw(mainBatch, dungeon, x, y);
 				}
 			}
 		}

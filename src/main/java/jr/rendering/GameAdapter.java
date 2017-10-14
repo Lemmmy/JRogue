@@ -2,9 +2,8 @@ package jr.rendering;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,7 +11,10 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
+import jr.debugger.DebugClient;
+import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
+import jr.rendering.screens.BasicScreen;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.screens.utils.ScreenTransition;
@@ -21,7 +23,7 @@ import lombok.Setter;
 
 public class GameAdapter extends Game {
 	/**
-	 * The game's title in the game window.
+	 * The game's title in the game windowBorder.
 	 */
 	public static final String WINDOW_TITLE = "JRogue";
 	
@@ -37,18 +39,23 @@ public class GameAdapter extends Game {
 	
 	private ScreenTransition transition;
 	
-	/**
-	 * Blocking adapter constructor. Calls {@link #create()} and starts the game's loop.
-	 */
+	@HideFromDebugger
+	private Settings settings;
+	
+	@HideFromDebugger
+	private Thread debugClientThread;
+	
+	@HideFromDebugger
+	@Getter private DebugClient debugClient;
+	private boolean debugWindowFocused;
+	
+	@HideFromDebugger
+	@Setter private Object rootDebugObject;
+	
+	private InputMultiplexer inputMultiplexer;
+	
 	public GameAdapter() {
-		Settings settings = JRogue.getSettings();
-		
-		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setResizable(true);
-		config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
-		config.useVsync(settings.isVsync());
-		
-		new Lwjgl3Application(this, config);
+		this.settings = JRogue.getSettings();
 	}
 	
 	@Override
@@ -60,10 +67,17 @@ public class GameAdapter extends Game {
 		
 		ErrorHandler.setGLString();
 		
+		if (settings.isShowDebugClient()) {
+			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));
+			this.debugClientThread.start();
+		}
+		
 		batch = new SpriteBatch();
 		
 		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		
+		inputMultiplexer = new InputMultiplexer();
 		
 		if (Dungeon.canLoad()) {
 			screen = new GameScreen(this, Dungeon.load());
@@ -72,6 +86,8 @@ public class GameAdapter extends Game {
 		}
 		
 		screen.show();
+		
+		updateInputProcessors();
 	}
 	
 	@Override
@@ -92,6 +108,7 @@ public class GameAdapter extends Game {
 			transitioning = false;
 			newScreen = null;
 			screen.render(delta);
+			transitionComplete();
 		} else if (transition != null && newScreen != null) {
 			// transition is active
 			oldFBO.begin();
@@ -108,6 +125,26 @@ public class GameAdapter extends Game {
 			
 			currentTransitionTime += delta;
 		}
+	}
+	
+	private void transitionComplete() {
+		updateInputProcessors();
+	}
+	
+	public void updateInputProcessors() {
+		inputMultiplexer.clear();
+		
+		if (!debugWindowFocused) {
+			if (screen instanceof BasicScreen) {
+				((BasicScreen) screen).getInputProcessors().forEach(inputMultiplexer::addProcessor);
+			}
+		} else {
+			if (debugClient != null && debugClient.getUI() != null) {
+				debugClient.getUI().getInputProcessors().forEach(inputMultiplexer::addProcessor);
+			}
+		}
+		
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 	
 	@Override
@@ -184,5 +221,12 @@ public class GameAdapter extends Game {
 		
 		oldFBO.dispose();
 		newFBO.dispose();
+		
+		if (debugClient != null) debugClient.dispose();
+	}
+	
+	public void setDebugWindowFocused(boolean debugWindowFocused) {
+		this.debugWindowFocused = debugWindowFocused;
+		updateInputProcessors();
 	}
 }

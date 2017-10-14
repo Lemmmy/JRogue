@@ -1,8 +1,6 @@
 package jr.rendering.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,7 +36,7 @@ import java.util.List;
  * batch and camera.
  */
 @Getter
-public class GameScreen extends ScreenAdapter implements EventListener {
+public class GameScreen extends BasicScreen implements EventListener {
 	/**
 	 * The time in seconds to animate movement between turns.
 	 */
@@ -84,9 +82,8 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	private MinimapComponent minimapComponent;
 	private FPSCounterComponent fpsCounterComponent;
 	
-	private InputMultiplexer inputMultiplexer;
-	
 	private float zoom = 1.0f;
+	private float zoomRounding = 1 / zoom * TileMap.TILE_WIDTH * 4;
 	
 	private float renderTime;
 	
@@ -111,6 +108,8 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		this.game = game;
 		this.dungeon = dungeon;
 		this.dungeon.eventSystem.addListener(this);
+		
+		JRogue.INSTANCE.setDungeon(dungeon);
 
 		settings = JRogue.getSettings();
 		
@@ -129,17 +128,21 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	}
 	
 	private void initialiseCamera() {
-		zoom = 24 * TileMap.TILE_WIDTH;
+		zoom = 1f / settings.getZoom();
+		zoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 4f;
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		if (!settings.isShowLevelDebug()) {
-			camera.viewportWidth = Math.round(zoom);
-			camera.viewportHeight = Math.round(zoom * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-		}
+		updateCameraZoom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		camera.update();
+	}
+	
+	private void updateCameraZoom(int width, int height) {
+		if (!settings.isShowLevelDebug()) {
+			camera.zoom = 0.5f;
+		}
 	}
 	
 	private void initialiseRendererComponents() {
@@ -174,10 +177,10 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		}
 	}
 	
-	private void initialiseInputMultiplexer() {
-		inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new GameInputProcessor(dungeon, this));
-		inputMultiplexer.addProcessor(hudComponent.getStage());
+	private void initialiseInputProcessors() {
+		clearInputProcessors();
+		addInputProcessor(new GameInputProcessor(dungeon, this));
+		addInputProcessor(hudComponent.getStage());
 	}
 	
 	private void updateWindowTitle() {
@@ -209,8 +212,8 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
 			float camY = worldY * TileMap.TILE_HEIGHT;
 			
-			camera.position.x = Math.round(camX * 100) / 100;
-			camera.position.y = Math.round(camY * 100) / 100;
+			camera.position.x = Math.round(camX * zoomRounding) / zoomRounding;
+			camera.position.y = Math.round(camY * zoomRounding) / zoomRounding;
 		}
 		
 		camera.update();
@@ -231,19 +234,16 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			wasTurnLerping = false;
 		}
 		
-		if (!settings.isShowTurnAnimations()) {
-			updateCamera();
-		}
+		if (!settings.isShowTurnAnimations()) updateCamera();
 		
 		rendererComponents.forEach(r -> r.update(delta));
 		
-		if (settings.isShowTurnAnimations()) {
-			updateCamera();
-		}
+		if (settings.isShowTurnAnimations()) updateCamera();
 		
 		mainBatch.setProjectionMatrix(camera.combined);
 		
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT |
+			(Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
 		
 		mainBatch.begin();
 		mainBatch.enableBlending();
@@ -258,9 +258,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(delta));
 		
-		if (settings.isShowTurnAnimations()) {
-			updateCamera();
-		}
+		if (settings.isShowTurnAnimations()) updateCamera();
 	}
 	
 	@Override
@@ -268,14 +266,9 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 		super.resize(width, height);
 		
 		camera.setToOrtho(true, width, height);
-		
-		if (!settings.isShowLevelDebug()) {
-			camera.viewportWidth = Math.round(zoom);
-			camera.viewportHeight = Math.round(zoom * height / width);
-		}
+		updateCameraZoom(width, height);
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
-		
 		debugCamera.setToOrtho(true, width, height);
 	}
 	
@@ -283,11 +276,7 @@ public class GameScreen extends ScreenAdapter implements EventListener {
 	public void show() {
 		super.show();
 		
-		if (inputMultiplexer == null) {
-			initialiseInputMultiplexer();
-		}
-		
-		Gdx.input.setInputProcessor(inputMultiplexer);
+		initialiseInputProcessors();
 	}
 	
 	@Override

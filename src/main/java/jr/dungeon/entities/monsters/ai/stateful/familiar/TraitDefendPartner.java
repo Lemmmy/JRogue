@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
-import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateMeleeAttackTarget;
 import jr.utils.Utils;
 import org.json.JSONObject;

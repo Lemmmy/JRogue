@@ -7,13 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
-import jr.language.transformers.Capitalise;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.TileType;
+import jr.language.transformers.Capitalise;
 import jr.rendering.components.RendererComponent;
 import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
@@ -49,7 +49,7 @@ public class HUDComponent extends RendererComponent {
 	private Player player;
 	
 	private List<LogEntry> log = new ArrayList<>();
-	@Getter	private List<PopupWindow> windows = new ArrayList<>();
+	@Getter	private List<WindowBase> windows = new ArrayList<>();
 	
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
 	private List<Actor> entityDebugActors = new ArrayList<>();
@@ -412,11 +412,11 @@ public class HUDComponent extends RendererComponent {
 		}
 	}
 	
-	public void addWindow(PopupWindow window) {
+	public void addWindow(WindowBase window) {
 		windows.add(window);
 	}
 	
-	public void removeWindow(PopupWindow window) {
+	public void removeWindow(WindowBase window) {
 		windows.remove(window);
 	}
 	

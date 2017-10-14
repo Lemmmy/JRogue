@@ -1,15 +1,17 @@
 package jr.language;
 
 import jr.ErrorHandler;
+import jr.language.transformers.Plural;
 import jr.language.transformers.Transformer;
 import jr.language.transformers.TransformerType;
-import jr.language.transformers.Plural;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 

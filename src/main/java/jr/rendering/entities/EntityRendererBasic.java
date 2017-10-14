@@ -19,9 +19,9 @@ public class EntityRendererBasic extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity) {
-		float x = entity.getLastSeenX() + getAnimationFloat(entity, "offsetX", 0);
-		float y = entity.getLastSeenY() + getAnimationFloat(entity, "offsetY", 0);
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
+		float x = getPositionX(entity, useMemoryLocation);
+		float y = getPositionY(entity, useMemoryLocation);
 		
 		float[] ac = getAnimationColour(entity);
 		

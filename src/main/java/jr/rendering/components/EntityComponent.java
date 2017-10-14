@@ -23,6 +23,7 @@ import lombok.val;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EntityComponent extends RendererComponent {
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
@@ -42,6 +43,8 @@ public class EntityComponent extends RendererComponent {
 	public void initialise() {
 		mainBatch = renderer.getMainBatch();
 		level = dungeon.getLevel();
+		
+		level.entityStore.getEntities().forEach(e -> onEntityAdded(new EntityAddedEvent(e, false)));
 	}
 	
 	@Override
@@ -67,7 +70,7 @@ public class EntityComponent extends RendererComponent {
 				continue;
 			}
 			
-			if (effect.shouldDrawOver() != over) { continue; }
+			if (effect.shouldDrawOver() != over) continue;
 			
 			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(
 				dungeon,
@@ -102,7 +105,7 @@ public class EntityComponent extends RendererComponent {
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 				
 				if (em.getRenderer() != null && em.getRenderer().shouldRenderReal(e)) {
-					em.getRenderer().draw(mainBatch, dungeon, e);
+					em.getRenderer().draw(mainBatch, dungeon, e, true);
 				}
 			});
 	}
@@ -199,28 +202,33 @@ public class EntityComponent extends RendererComponent {
 	}
 	
 	@EventHandler()
-	private void onLevelChange(LevelChangeEvent e) {
-		level = e.getLevel();
+	private void onLevelChange(LevelChangeEvent event) {
+		level = event.getLevel();
 		
 		entityPooledEffects.clear();
 		entityAnimations.clear();
 		animationValues.clear();
+		
+		level.entityStore.getEntities().forEach(e -> onEntityAdded(new EntityAddedEvent(e, false)));
 	}
 	
 	@EventHandler
 	private void onEntityAdded(EntityAddedEvent e) {
 		Entity entity = e.getEntity();
-		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 		
-		if (em.getRenderer() == null) {
-			return;
-		}
+		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+		if (em.getRenderer() == null)return;
 		
 		EntityRenderer renderer = em.getRenderer();
+		if (renderer.getParticleEffectPool(entity) == null) return;
 		
-		if (renderer.getParticleEffectPool(entity) == null) {
-			return;
-		}
+		AtomicBoolean found = new AtomicBoolean(false);
+		
+		entityPooledEffects.stream()
+			.filter(effect -> effect.getEntity().equals(entity))
+			.findFirst().ifPresent(effect -> found.set(true));
+		
+		if (found.get()) return;
 		
 		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
 		
@@ -239,6 +247,7 @@ public class EntityComponent extends RendererComponent {
 			over,
 			effect
 		);
+		
 		entityPooledEffects.add(entityPooledEffect);
 	}
 	
@@ -303,6 +312,8 @@ public class EntityComponent extends RendererComponent {
 	
 	@EventHandler
 	private void onEntityDamaged(EntityDamagedEvent e) {
+		if (e.getAttacker() == null) return;
+		
 		addAnimation(new AnimationEntityDamaged(renderer, e.getVictim(), e.getAttacker()));
 	}
 

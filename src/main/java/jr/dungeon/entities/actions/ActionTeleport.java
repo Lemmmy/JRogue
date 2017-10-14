@@ -1,9 +1,9 @@
 package jr.dungeon.entities.actions;
 
-import jr.dungeon.io.Messenger;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Messenger;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Point;
 

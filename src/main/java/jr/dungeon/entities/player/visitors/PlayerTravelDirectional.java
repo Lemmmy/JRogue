@@ -1,10 +1,10 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Path;

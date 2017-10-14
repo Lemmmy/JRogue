@@ -24,7 +24,7 @@ public abstract class EntityRenderer {
 
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
 	
-	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity);
+	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation);
 	
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
 		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
@@ -83,5 +83,15 @@ public abstract class EntityRenderer {
 			getAnimationFloat(entity, "b", 1),
 			getAnimationFloat(entity, "a", 1)
 		};
+	}
+	
+	public float getPositionX(Entity entity, boolean useMemoryLocation) {
+		return (useMemoryLocation ? entity.getLastSeenX() : entity.getX()) +
+			getAnimationFloat(entity, "offsetX", 0);
+	}
+	
+	public float getPositionY(Entity entity, boolean useMemoryLocation) {
+		return (useMemoryLocation ? entity.getLastSeenY() : entity.getY()) +
+			getAnimationFloat(entity, "offsetY", 0);
 	}
 }

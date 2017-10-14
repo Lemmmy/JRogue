@@ -1,10 +1,9 @@
 package jr.rendering.ui.partials;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Attributes;
+import jr.rendering.ui.utils.FunctionalClickListener;
 import jr.rendering.utils.ImageLoader;
 
 public class AttributesPartial extends Table {
@@ -67,15 +66,10 @@ public class AttributesPartial extends Table {
 		
 		Button button = new TextButton("Spend", getSkin());
 		button.setDisabled(!canSpend);
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				
-				attributes.incrementAttribute(attribute);
-				update();
-			}
-		});
+		button.addListener(new FunctionalClickListener((event, x, y) -> {
+			attributes.incrementAttribute(attribute);
+			update();
+		}));
 		
 		container.add(button).width(60).right();
 	}
@@ -86,29 +80,19 @@ public class AttributesPartial extends Table {
 		
 		Button decrement = new TextButton("-", getSkin());
 		decrement.setDisabled(!canDecrement);
-		decrement.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				
-				attributes.decrementAttribute(attribute);
-				update();
-			}
-		});
+		decrement.addListener(new FunctionalClickListener((event, x, y) -> {
+			attributes.decrementAttribute(attribute);
+			update();
+		}));
 		
 		container.add(decrement).width(22).padRight(4).right();
 		
 		Button increment = new TextButton("+", getSkin());
 		increment.setDisabled(!canIncrement);
-		increment.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				
-				attributes.incrementAttribute(attribute);
-				update();
-			}
-		});
+		increment.addListener(new FunctionalClickListener((event, x, y) -> {
+			attributes.incrementAttribute(attribute);
+			update();
+		}));
 		
 		container.add(increment).width(22).right();
 	}

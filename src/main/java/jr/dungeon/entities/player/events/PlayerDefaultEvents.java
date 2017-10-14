@@ -1,6 +1,5 @@
 package jr.dungeon.entities.player.events;
 
-import jr.dungeon.io.Prompt;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.actions.ActionKick;
@@ -10,6 +9,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;

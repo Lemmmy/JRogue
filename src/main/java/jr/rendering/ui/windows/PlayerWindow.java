@@ -14,7 +14,7 @@ import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.StatsPartial;
 import lombok.val;
 
-public class PlayerWindow extends PopupWindow {
+public class PlayerWindow extends WindowBase {
 	private Entity entity;
 	
 	public PlayerWindow(GameScreen renderer, Stage stage, Skin skin, Entity entity) {
@@ -30,16 +30,16 @@ public class PlayerWindow extends PopupWindow {
 	
 	@Override
 	public void populateWindow() {
-		getWindow().setWidth(592);
-		getWindow().setHeight(400);
+		getWindowBorder().setWidth(592);
+		getWindowBorder().setHeight(400);
 
 		val ec = EntityHelper.getContainer(entity);
 		String inventoryName = ec.isPresent() ? ec.get().getName() : "Inventory";
 		
-		getWindow().getContentTable().padTop(4);
-		getWindow().getContentTable().add(new Label("Statistics", getSkin(), "windowStyle"));
-		getWindow().getContentTable().add(new Label(inventoryName, getSkin(), "windowStyle"));
-		getWindow().getContentTable().row();
+		getWindowBorder().getContentTable().padTop(4);
+		getWindowBorder().getContentTable().add(new Label("Statistics", getSkin(), "windowStyle"));
+		getWindowBorder().getContentTable().add(new Label(inventoryName, getSkin(), "windowStyle"));
+		getWindowBorder().getContentTable().row();
 		
 		if (entity instanceof Player) {
 			Table tempTable = new Table();
@@ -57,14 +57,14 @@ public class PlayerWindow extends PopupWindow {
 			tempTable.add(attributesPartial).width(276);
 			
 			tempTable.top();
-			getWindow().getContentTable().add(tempScrollPane).growY().width(276);
+			getWindowBorder().getContentTable().add(tempScrollPane).growY().width(276);
 		}
 		
 		ContainerPartial inventoryComponent = new ContainerPartial(getSkin(), entity, null, true);
 		Table inventoryTable = new Table();
 		inventoryTable.add(inventoryComponent).left().top();
 		ScrollPane inventoryScrollPane = new ScrollPane(inventoryTable, getSkin(), "lowered");
-		getWindow().getContentTable().add(inventoryScrollPane).growY().left().top();
+		getWindowBorder().getContentTable().add(inventoryScrollPane).growY().left().top();
 		inventoryTable.top();
 	}
 }

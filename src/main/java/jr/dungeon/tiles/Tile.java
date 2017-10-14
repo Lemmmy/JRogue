@@ -1,8 +1,8 @@
 package jr.dungeon.tiles;
 
 import jr.JRogue;
+import jr.debugger.utils.Debuggable;
 import jr.dungeon.Level;
-import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Colour;
 import jr.utils.Point;
@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 @Getter
 @Setter
-public class Tile {
+public class Tile implements Debuggable {
 	private int x;
 	private int y;
 	
@@ -105,5 +105,14 @@ public class Tile {
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Tile && ((Tile) o).getX() == x && ((Tile) o).getY() == y;
+	}
+	
+	@Override
+	public String getValueHint() {
+		return String.format(
+			"[P_GREY_3]%s[] %,d, %,d",
+			type.name().replaceFirst("^TILE_", ""),
+			x, y
+		);
 	}
 }

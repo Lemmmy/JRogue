@@ -7,7 +7,6 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.Material;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import jr.language.Verb;
 
 public class ItemDagger extends ItemSword {
 	public ItemDagger() { // unserialisation constructor

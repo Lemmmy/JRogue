@@ -1,8 +1,11 @@
 package jr;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
+import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
@@ -26,15 +29,16 @@ import org.reflections.util.ConfigurationBuilder;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class JRogue {
+	@HideFromDebugger
+	public static JRogue INSTANCE;
+	
 	/**
 	 * Filename of the config file in the home folder.
 	 */
@@ -62,12 +66,14 @@ public class JRogue {
 	public static String BUILD_HASH = "unknown";
 	
 	@Getter
+	@HideFromDebugger
 	private static Reflections reflections;
 	
 	/**
 	 * The game's logger.
 	 */
 	@Getter
+	@HideFromDebugger
 	private static Logger logger;
 	
 	/**
@@ -94,10 +100,20 @@ public class JRogue {
 	 * @param settings The user's {@link Settings}.
 	 */
 	public JRogue(Settings settings) {
+		INSTANCE = this;
+		
 		initialiseReflections();
 		
 		try {
+			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+			config.setResizable(true);
+			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
+			config.useVsync(settings.isVsync());
+			
 			adapter = new GameAdapter();
+			adapter.setRootDebugObject(this);
+			
+			new Lwjgl3Application(adapter, config);
 		} catch (Exception e) {
 			ErrorHandler.error(null, e);
 			
@@ -107,12 +123,20 @@ public class JRogue {
 		}
 	}
 	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		
+		if (adapter.getDebugClient() != null) {
+			adapter.getDebugClient().setDungeon(dungeon);
+		}
+	}
+	
 	private void initialiseReflections() {
 		// if this isn't used once the modding api is added,
 		// remove this method and the org.reflections dependency
 		
 		ConfigurationBuilder cb = new ConfigurationBuilder()
-			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().toString()))
+			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().getName()))
 			// TODO: add mod packages as URLs
 			.addScanners(
 				new MethodParameterScanner(),
@@ -173,8 +197,8 @@ public class JRogue {
 		opts.addOption("h", "help", false, "Shows the help information");
 		opts.addOption("c", "config", true, "Specify the path of a config file to load");
 		opts.addOption(null, "name", true, "Specify the name of the player");
-		opts.addOption(null, "width", true, "Sets the game window width");
-		opts.addOption(null, "height", true, "Sets the game window height");
+		opts.addOption(null, "width", true, "Sets the game windowBorder width");
+		opts.addOption(null, "height", true, "Sets the game windowBorder height");
 		
 		CommandLine cmd = null;
 		
