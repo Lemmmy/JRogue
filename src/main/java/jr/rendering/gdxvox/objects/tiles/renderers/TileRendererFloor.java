@@ -25,14 +25,10 @@ public class TileRendererFloor extends TileRenderer {
 	
 	@Override
 	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
-		int x = tile.getX();
-		int y = tile.getY();
-		
-		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(x, y);
+		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(tile.getPosition());
 		
 		batch.add(tile, new VoxelModelInstance(floorModel)
 			.setOffset(0, 0 - 1f / 16f, 0));
-		
 		
 		addHalfFloors(tile, batch, adjacentTiles);
 		addCornerFloors(tile, batch, adjacentTiles);

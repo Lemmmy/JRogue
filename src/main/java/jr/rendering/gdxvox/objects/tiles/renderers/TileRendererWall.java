@@ -53,9 +53,6 @@ public class TileRendererWall extends TileRenderer {
 	
 	@Override
 	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
-		int x = tile.getX();
-		int y = tile.getY();
-		
 		WallModel wallModel = MAP[getPositionMask(tile)];
 		if (wallModel == null || wallModel.model == null) return;
 		

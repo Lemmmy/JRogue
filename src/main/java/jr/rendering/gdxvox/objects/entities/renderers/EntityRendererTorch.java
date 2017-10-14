@@ -1,9 +1,11 @@
 package jr.rendering.gdxvox.objects.entities.renderers;
 
 import com.badlogic.gdx.math.Vector3;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
@@ -11,6 +13,7 @@ import jr.rendering.gdxvox.objects.entities.EntityRenderer;
 import jr.rendering.gdxvox.objects.entities.EntityVoxelBatch;
 import jr.rendering.gdxvox.utils.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
+import jr.utils.Point;
 
 public class EntityRendererTorch extends EntityRenderer {
 	private static VoxelModel torchModel;
@@ -23,7 +26,14 @@ public class EntityRendererTorch extends EntityRenderer {
 	
 	@Override
 	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		batch.add(entity, new VoxelModelInstance(torchModel));
+		float rotation = getRotation(entity.getLevel(), entity.getPosition());
+		float dx = (float) Math.sin(Math.toRadians(rotation)) * 0.999f;
+		float dy = (float) Math.cos(Math.toRadians(rotation)) * 0.999f;
+		// * 0.999f here slightly extrudes them from the wall in case they are overlapping with a brick
+		
+		batch.add(entity, new VoxelModelInstance(torchModel)
+			.setOffset(-dx, 0, dy)
+			.setRotation(rotation));
 		
 		if (entity instanceof LightEmitter) {
 			LightEmitter le = (LightEmitter) entity;
@@ -38,6 +48,17 @@ public class EntityRendererTorch extends EntityRenderer {
 			
 			scene.addLight(entity, light);
 		}
+	}
+	
+	private float getRotation(Level level, Point position) {
+		TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(position);
+		
+		if (adjacentTiles[0].isWallTile()) return 270;
+		else if (adjacentTiles[1].isWallTile()) return 90;
+		else if (adjacentTiles[2].isWallTile()) return 0;
+		else if (adjacentTiles[3].isWallTile()) return 180;
+		
+		return 0;
 	}
 	
 	@Override

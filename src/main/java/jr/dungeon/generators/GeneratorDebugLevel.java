@@ -55,10 +55,11 @@ public class GeneratorDebugLevel extends DungeonGenerator {
 		level.setSpawnPoint(startX + 4, startY + 2);
 		QuickSpawn.spawnClass(EntityCandlestick.class, level, startX + 3, startY + 2);
 		
-		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 2, startY + 2);
-		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 5, startY + 2);
-		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 2, startY + 4);
-		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 5, startY + 4);
+		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 1, startY + 2);
+		QuickSpawn.spawnClass(EntityTorch.class, level, startX + width - 2, startY + 2);
+		
+		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 2, startY + 1);
+		QuickSpawn.spawnClass(EntityTorch.class, level, startX + 2, startY + height - 2);
 		
 		return true;
 	}
