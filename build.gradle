@@ -132,6 +132,19 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	}
 }
 
+task deobfBuild(type: Jar, dependsOn: "subJar") {
+	baseName = jarName + "-deobf-full"
+
+	from zipTree("$buildDir/tmp/${jarName}-deobf-${version}.jar")
+	files(configurations.compile.collect()).each { f ->
+		from zipTree(f)
+	}
+
+	manifest {
+		attributes makeManifest()
+	}
+}
+
 javadoc {
 	source = sourceSets.main.allJava
 	title = "JRogue API Documentation"

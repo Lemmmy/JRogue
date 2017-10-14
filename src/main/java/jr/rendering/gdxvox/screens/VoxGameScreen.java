@@ -114,7 +114,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		// camera.direction.set(-0.69631064f, -0.5f, -0.69631064f);
 		// camera.lookAt(0, 0, 0);
 		// camera.zoom = 1f;
-		camera.near = 0.01f;
+		camera.near = 0.1f;
 		camera.update();
 	}
 	
