@@ -167,12 +167,13 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT | Gdx.gl.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
 		
 		if (sceneContext.isLightsNeedUpdating()) sceneContext.updateLights();
 		
 		tileRendererMap.renderAll(camera);
 		entityRendererMap.renderAll(camera);
+		
+		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
 		
 		GL30.glBindVertexArray(fullscreenQuadVAO);
 		
@@ -194,9 +195,6 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		fullscreenQuadShader.setUniformi("u_g_normal", 1);
 		fullscreenQuadShader.setUniformi("u_g_pos", 2);
 		// fullscreenQuadShader.setUniformi("u_g_depth", 3);
-		
-		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);
-		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
 		
 		if (uniformBlockIndex == -1) {
 			uniformBlockIndex = GL31.glGetUniformBlockIndex(fullscreenQuadShaderHandle, "Lights");
@@ -222,6 +220,8 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		fullscreenQuadShader.end();
 		
 		GL30.glBindVertexArray(0);
+		
+		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE0);
 		
 		drawDebugBatch();
 		fpsCounterComponent.render(delta);

@@ -198,7 +198,6 @@ public abstract class VoxelBatch<ObjectV> {
 			needsRebuild = false;
 		}
 		
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, scene.getGBuffersHandle());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		voxelShader.begin();
@@ -218,7 +217,5 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
 		
 		voxelShader.end();
-		
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
 	}
 }
