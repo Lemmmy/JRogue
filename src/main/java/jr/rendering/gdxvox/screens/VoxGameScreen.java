@@ -221,6 +221,8 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		
 		GL30.glBindVertexArray(0);
 		
+		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE0);
+		
 		drawDebugBatch();
 		fpsCounterComponent.render(delta);
 	}
