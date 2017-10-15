@@ -18,6 +18,7 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.AnsiConsole;
+import org.lwjgl.opengl.GLUtil;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -200,6 +201,7 @@ public class JRogue {
 		opts.addOption(null, "name", true, "Specify the name of the player");
 		opts.addOption(null, "width", true, "Sets the game window width");
 		opts.addOption(null, "height", true, "Sets the game window height");
+		opts.addOption(null, "token", true, "rand token for dehbuging");
 		
 		CommandLine cmd = null;
 		

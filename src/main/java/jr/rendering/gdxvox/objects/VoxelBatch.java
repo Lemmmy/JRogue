@@ -4,24 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.rendering.gdx2d.utils.ShaderLoader;
 import jr.rendering.gdxvox.utils.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.*;
 
 import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static jr.rendering.gdxvox.utils.SceneContext.MAX_LIGHTS;
@@ -78,8 +72,6 @@ public abstract class VoxelBatch<ObjectV> {
 	private int voxelVAO, voxelInstanceBuffer = -1;
 	private int instanceCount = 0;
 	private ShaderProgram voxelShader;
-	private int voxelShaderHandle = -1;
-	private int uniformBlockIndex = -1;
 	
 	private List<VoxelModelInstance> objects = new ArrayList<>();
 	
@@ -101,14 +93,6 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	private void initialiseShader() {
 		voxelShader = ShaderLoader.getProgram("shaders/voxel");
-		
-		try {
-			Field voxelShaderHandleField = ShaderProgram.class.getDeclaredField("program");
-			voxelShaderHandleField.setAccessible(true);
-			voxelShaderHandle = (int) voxelShaderHandleField.get(voxelShader);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			ErrorHandler.error("Unable to get voxel shader program handle via reflection", e);
-		}
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
@@ -214,6 +198,9 @@ public abstract class VoxelBatch<ObjectV> {
 			needsRebuild = false;
 		}
 		
+		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, scene.getGBuffersHandle());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
 		voxelShader.begin();
 		voxelShader.setUniformMatrix("u_projTrans", camera.combined);
 		
@@ -223,25 +210,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		GL30.glBindVertexArray(voxelVAO);
 		
-		if (uniformBlockIndex == -1) {
-			uniformBlockIndex = GL31.glGetUniformBlockIndex(voxelShaderHandle, "Lights");
-			
-			if (uniformBlockIndex == -1) {
-				ErrorHandler.error("Uniform block index -1", new RuntimeException("Uniform block index -1"));
-				return;
-			}
-		}
-		
-		GL30.glBindBufferRange(
-			GL31.GL_UNIFORM_BUFFER,
-			uniformBlockIndex,
-			scene.getLightBufferHandle(),
-			0,
-			16 + scene.getLights().values().stream()
-				.filter(Light::isEnabled)
-				.limit(MAX_LIGHTS)
-				.count() * SceneContext.LIGHT_ELEMENT_SIZE
-		);
+		GL20.glDrawBuffers(SceneContext.G_BUFFERS_ATTACHMENTS);
 		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / CUBE_ELEMENT_COUNT, instanceCount);
 		GL30.glBindVertexArray(0);
 		
@@ -249,5 +218,7 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
 		
 		voxelShader.end();
+		
+		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
 	}
 }

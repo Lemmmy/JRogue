@@ -28,6 +28,10 @@ sourceCompatibility = 1.8
 
 applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC", "-ea"]
 
+run {
+	args "--token=debugjr"
+}
+
 repositories {
 	mavenLocal()
 	mavenCentral()
