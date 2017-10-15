@@ -1,6 +1,6 @@
 #version 300 es
 
-#define MAX_LIGHTS 128
+#define MAX_LIGHTS 256
 
 precision mediump float;
 

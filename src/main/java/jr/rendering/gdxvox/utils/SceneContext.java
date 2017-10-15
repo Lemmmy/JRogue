@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SceneContext implements EventListener {
-	public static final int MAX_LIGHTS = 128;
+	public static final int MAX_LIGHTS = 256;
 	
 	public static final int LIGHT_ELEMENT_COUNT = 4;
 	public static final int LIGHT_ELEMENT_SIZE = 32;
