@@ -20,13 +20,14 @@ import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdx2d.utils.ShaderLoader;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
-import jr.rendering.gdxvox.utils.FullscreenQuad;
-import jr.rendering.gdxvox.utils.Light;
+import jr.rendering.gdxvox.primitives.FullscreenQuad;
+import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GLUtil;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 
 import static jr.rendering.gdxvox.utils.SceneContext.MAX_LIGHTS;
@@ -63,6 +64,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	private BitmapFont debugFont;
 	private FPSCounterComponent fpsCounterComponent;
 	
+	private Dimension fullscreenDimension;
 	private int fullscreenQuadVAO, fullscreenQuadShaderHandle = -1, uniformBlockIndex = -1;
 	private ShaderProgram fullscreenQuadShader;
 	
@@ -111,7 +113,8 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		fpsCounterComponent = new FPSCounterComponent(null, dungeon, settings);
 		fpsCounterComponent.initialise();
 		
-		fullscreenQuadVAO = FullscreenQuad.getVAO();
+		fullscreenDimension = new Dimension(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		fullscreenQuadVAO = FullscreenQuad.getVAO(fullscreenDimension);
 		fullscreenQuadShader = ShaderLoader.getProgram("shaders/fullscreen_quad");
 		
 		try {
@@ -258,9 +261,18 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+		
+		if (fullscreenDimension != null) {
+			FullscreenQuad.deleteVAO(fullscreenDimension);
+		}
+		
+		fullscreenDimension = new Dimension(width, height);
+		fullscreenQuadVAO = FullscreenQuad.getVAO(fullscreenDimension);
+		
 		screenCamera.setToOrtho(false, width, height);
 		updateCameraViewport(width, height);
-		fpsCounterComponent.resize(width, height);
 		sceneContext.resize(width, height);
+		
+		fpsCounterComponent.resize(width, height);
 	}
 }

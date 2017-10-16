@@ -3,71 +3,22 @@ package jr.rendering.gdxvox.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import jr.ErrorHandler;
 import jr.rendering.gdx2d.utils.ShaderLoader;
-import jr.rendering.gdxvox.utils.Light;
 import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
-import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jr.rendering.gdxvox.utils.SceneContext.MAX_LIGHTS;
-
 @Getter
 public abstract class VoxelBatch<ObjectV> {
 	public static final int INSTANCE_ELEMENT_COUNT = 6;
 	public static final int INSTANCE_ELEMENT_SIZE = 6 * 4;
-	
-	public static final int CUBE_ELEMENT_COUNT = 6;
-	public static final int CUBE_ELEMENT_SIZE = 6 * 4;
-	
-	private static final float[] CUBE_VERTICES = new float[] {
-		-0.03125f, 0.03125f, 0.03125f, -1f, 0f, 0f,
-		-0.03125f, -0.03125f, -0.03125f, -1f, 0f, 0f,
-		-0.03125f, -0.03125f, 0.03125f, -1f, 0f, 0f,
-		-0.03125f, 0.03125f, -0.03125f, 0f, 0f, -1f,
-		0.03125f, -0.03125f, -0.03125f, 0f, 0f, -1f,
-		-0.03125f, -0.03125f, -0.03125f, 0f, 0f, -1f,
-		0.03125f, 0.03125f, -0.03125f, 1f, 0f, 0f,
-		0.03125f, -0.03125f, 0.03125f, 1f, 0f, 0f,
-		0.03125f, -0.03125f, -0.03125f, 1f, 0f, 0f,
-		0.03125f, 0.03125f, 0.03125f, 0f, 0f, 1f,
-		-0.03125f, -0.03125f, 0.03125f, 0f, 0f, 1f,
-		0.03125f, -0.03125f, 0.03125f, 0f, 0f, 1f,
-		0.03125f, -0.03125f, -0.03125f, 0f, -1f, 0f,
-		-0.03125f, -0.03125f, 0.03125f, 0f, -1f, 0f,
-		-0.03125f, -0.03125f, -0.03125f, 0f, -1f, 0f,
-		-0.03125f, 0.03125f, -0.03125f, 0f, 1f, 0f,
-		0.03125f, 0.03125f, 0.03125f, 0f, 1f, 0f,
-		0.03125f, 0.03125f, -0.03125f, 0f, 1f, 0f,
-		-0.03125f, 0.03125f, 0.03125f, -1f, 0f, 0f,
-		-0.03125f, 0.03125f, -0.03125f, -1f, 0f, 0f,
-		-0.03125f, -0.03125f, -0.03125f, -1f, 0f, 0f,
-		-0.03125f, 0.03125f, -0.03125f, 0f, 0f, -1f,
-		0.03125f, 0.03125f, -0.03125f, 0f, 0f, -1f,
-		0.03125f, -0.03125f, -0.03125f, 0f, 0f, -1f,
-		0.03125f, 0.03125f, -0.03125f, 1f, 0f, 0f,
-		0.03125f, 0.03125f, 0.03125f, 1f, 0f, 0f,
-		0.03125f, -0.03125f, 0.03125f, 1f, 0f, 0f,
-		0.03125f, 0.03125f, 0.03125f, 0f, 0f, 1f,
-		-0.03125f, 0.03125f, 0.03125f, 0f, 0f, 1f,
-		-0.03125f, -0.03125f, 0.03125f, 0f, 0f, 1f,
-		0.03125f, -0.03125f, -0.03125f, 0f, -1f, 0f,
-		0.03125f, -0.03125f, 0.03125f, 0f, -1f, 0f,
-		-0.03125f, -0.03125f, 0.03125f, 0f, -1f, 0f,
-		-0.03125f, 0.03125f, -0.03125f, 0f, 1f, 0f,
-		-0.03125f, 0.03125f, 0.03125f, 0f, 1f, 0f,
-		0.03125f, 0.03125f, 0.03125f, 0f, 1f, 0f
-	};
-	
-	private static int cubeBuffer = -1;
 	
 	private int voxelVAO, voxelInstanceBuffer = -1;
 	private int instanceCount = 0;

@@ -1,6 +1,7 @@
-package jr.rendering.gdxvox.utils;
+package jr.rendering.gdxvox.lighting;
 
 import com.badlogic.gdx.math.Vector3;
+import jr.rendering.gdxvox.utils.SceneContext;
 import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
