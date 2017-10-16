@@ -264,7 +264,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		super.resize(width, height);
 		
 		if (fullscreenDimension != null) {
-			FullscreenQuad.deleteVAO(fullscreenDimension);
+			FullscreenQuad.dispose(fullscreenDimension);
 		}
 		
 		fullscreenDimension = new Dimension(width, height);
@@ -282,7 +282,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		super.dispose();
 		
 		if (fullscreenDimension != null) {
-			FullscreenQuad.deleteVAO(fullscreenDimension);
+			FullscreenQuad.dispose(fullscreenDimension);
 			fullscreenQuadVAO = -1;
 		}
 		

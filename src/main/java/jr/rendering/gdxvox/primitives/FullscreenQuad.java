@@ -63,7 +63,9 @@ public class FullscreenQuad {
 		GL30.glBindVertexArray(0);
 		
 		quadsVBO.put(dimension, quadVBOHandle);
-		return quadsVAO.put(dimension, quadVAOHandle);
+		quadsVAO.put(dimension, quadVAOHandle);
+		
+		return quadVAOHandle;
 	}
 	
 	public static int getVAO(Dimension d) {
@@ -71,15 +73,14 @@ public class FullscreenQuad {
 		return initialise(d);
 	}
 	
-	public static void deleteVAO(Dimension d) {
-		if (quadsVAO.containsKey(d)) {
-			GL30.glDeleteVertexArrays(quadsVAO.get(d));
-			quadsVAO.remove(d);
-		}
-		
+	public static void dispose(Dimension d) {
 		if (quadsVBO.containsKey(d)) {
 			Gdx.gl.glDeleteBuffer(quadsVBO.get(d));
 			quadsVBO.remove(d);
+		}
+		if (quadsVAO.containsKey(d)) {
+			GL30.glDeleteVertexArrays(quadsVAO.get(d));
+			quadsVAO.remove(d);
 		}
 	}
 }
