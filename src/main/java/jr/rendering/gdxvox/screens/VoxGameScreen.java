@@ -22,6 +22,7 @@ import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import jr.rendering.gdxvox.primitives.FullscreenQuad;
 import jr.rendering.gdxvox.lighting.Light;
+import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.gdxvox.utils.SceneContext;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
@@ -274,5 +275,17 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		sceneContext.resize(width, height);
 		
 		fpsCounterComponent.resize(width, height);
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		
+		if (fullscreenDimension != null) {
+			FullscreenQuad.deleteVAO(fullscreenDimension);
+			fullscreenQuadVAO = -1;
+		}
+		
+		VoxelCube.dispose();
 	}
 }

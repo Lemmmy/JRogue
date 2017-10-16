@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.gdxvox.models.magicavoxel.Voxel;
+import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.gdxvox.utils.SceneContext;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
@@ -28,20 +30,6 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	private boolean needsRebuild;
 	
-	public VoxelBatch() {
-		if (cubeBuffer == -1) initialiseCubeBuffer();
-	}
-	
-	private static void initialiseCubeBuffer() {
-		Buffer cubeVerticesBuffer = BufferUtils.createFloatBuffer(CUBE_VERTICES.length)
-			.put(CUBE_VERTICES).flip();
-		
-		cubeBuffer = Gdx.gl.glGenBuffer();
-		
-		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, cubeBuffer);
-		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, CUBE_VERTICES.length * 4, cubeVerticesBuffer, Gdx.gl.GL_STATIC_DRAW);
-	}
-	
 	private void initialiseShader() {
 		voxelShader = ShaderLoader.getProgram("shaders/voxel");
 	}
@@ -53,13 +41,13 @@ public abstract class VoxelBatch<ObjectV> {
 		GL30.glBindVertexArray(voxelVAO);
 		
 		// voxel cube buffer
-		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, cubeBuffer);
+		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, VoxelCube.getVBO());
 		// position
 		Gdx.gl.glEnableVertexAttribArray(0);
-		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, CUBE_ELEMENT_SIZE, 0);
+		Gdx.gl.glVertexAttribPointer(0, 3, Gdx.gl.GL_FLOAT, false, VoxelCube.CUBE_ELEMENT_SIZE, 0);
 		// normal
 		Gdx.gl.glEnableVertexAttribArray(1);
-		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, CUBE_ELEMENT_SIZE, 3 * 4);
+		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, VoxelCube.CUBE_ELEMENT_SIZE, 3 * 4);
 		
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
@@ -161,7 +149,12 @@ public abstract class VoxelBatch<ObjectV> {
 		GL30.glBindVertexArray(voxelVAO);
 		
 		GL20.glDrawBuffers(SceneContext.G_BUFFERS_ATTACHMENTS);
-		GL31.glDrawArraysInstanced(Gdx.gl.GL_TRIANGLES, 0, CUBE_VERTICES.length / CUBE_ELEMENT_COUNT, instanceCount);
+		GL31.glDrawArraysInstanced(
+			Gdx.gl.GL_TRIANGLES,
+			0,
+			VoxelCube.CUBE_VERTICES.length / VoxelCube.CUBE_ELEMENT_COUNT,
+			instanceCount
+		);
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);
