@@ -177,17 +177,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		
 		GL30.glBindVertexArray(fullscreenQuadVAO);
 		
-		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE0);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.DIFFUSE));
-		
-		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE1);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.NORMALS));
-		
-		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE2);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.POSITION));
-		
-		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE3);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.DEPTH));
+		sceneContext.gBuffersContext.bindTextures();
 		
 		fullscreenQuadShader.begin();
 		fullscreenQuadShader.setUniformMatrix("u_projTrans", screenCamera.combined);

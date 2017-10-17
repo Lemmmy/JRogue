@@ -81,20 +81,52 @@ public class GBuffersContext extends Context {
 		return gBuffersTextures.get(buffer.ordinal());
 	}
 	
+	public void bindTextures() {
+		for (GBuffers buffer : GBuffers.values()) {
+			Gdx.gl.glActiveTexture(buffer.getTextureUnit());
+			Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, getHandle(buffer));
+		}
+	}
+	
 	@Getter
 	public enum GBuffers {
-		DIFFUSE(GL30.GL_COLOR_ATTACHMENT0, GL20.GL_RGB, GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE),
-		NORMALS(GL30.GL_COLOR_ATTACHMENT1, GL30.GL_RGB32F, GL20.GL_RGB, GL20.GL_FLOAT),
-		POSITION(GL30.GL_COLOR_ATTACHMENT2, GL30.GL_RGB32F, GL20.GL_RGB, GL20.GL_FLOAT),
-		DEPTH(GL30.GL_DEPTH_ATTACHMENT, GL20.GL_DEPTH_COMPONENT, GL20.GL_DEPTH_COMPONENT, GL20.GL_UNSIGNED_BYTE);
+		DIFFUSE(
+			GL30.GL_COLOR_ATTACHMENT0,
+			GL20.GL_RGB,
+			GL20.GL_RGB,
+			GL20.GL_UNSIGNED_BYTE,
+			GL20.GL_TEXTURE0
+		),
+		NORMALS(
+			GL30.GL_COLOR_ATTACHMENT1,
+			GL30.GL_RGB32F,
+			GL20.GL_RGB,
+			GL20.GL_FLOAT,
+			GL20.GL_TEXTURE1
+		),
+		POSITION(
+			GL30.GL_COLOR_ATTACHMENT2,
+			GL30.GL_RGB32F,
+			GL20.GL_RGB,
+			GL20.GL_FLOAT,
+			GL20.GL_TEXTURE2
+		),
+		DEPTH(
+			GL30.GL_DEPTH_ATTACHMENT,
+			GL20.GL_DEPTH_COMPONENT,
+			GL20.GL_DEPTH_COMPONENT,
+			GL20.GL_UNSIGNED_BYTE,
+			GL20.GL_TEXTURE3
+		);
 		
-		private int attachment, internalFormat, format, type;
+		private int attachment, internalFormat, format, type, textureUnit;
 		
-		GBuffers(int attachment, int internalFormat, int format, int type) {
+		GBuffers(int attachment, int internalFormat, int format, int type, int textureUnit) {
 			this.attachment = attachment;
 			this.internalFormat = internalFormat;
 			this.format = format;
 			this.type = type;
+			this.textureUnit = textureUnit;
 		}
 	}
 	
