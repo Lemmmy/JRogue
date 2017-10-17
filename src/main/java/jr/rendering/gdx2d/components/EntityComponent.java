@@ -2,8 +2,6 @@ package jr.rendering.gdx2d.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import jr.Settings;
-import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityChest;
@@ -16,7 +14,6 @@ import jr.rendering.gdx2d.entities.EntityMap;
 import jr.rendering.gdx2d.entities.EntityPooledEffect;
 import jr.rendering.gdx2d.entities.EntityRenderer;
 import jr.rendering.gdx2d.entities.animations.*;
-import jr.rendering.gdx2d.entities.animations.*;
 import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.tiles.TileMap;
 import jr.utils.Vector;
@@ -26,7 +23,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class EntityComponent extends RendererComponent {
+public class EntityComponent extends GameComponent {
 	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
 	
 	private SpriteBatch mainBatch;
@@ -36,8 +33,8 @@ public class EntityComponent extends RendererComponent {
 	private List<EntityAnimation> entityAnimations = new LinkedList<>();
 	private Map<Entity, Map<String, Object>> animationValues = new HashMap<>();
 	
-	public EntityComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
-		super(renderer, dungeon, settings);
+	public EntityComponent(GameScreen gameScreen) {
+		super(gameScreen);
 	}
 	
 	@Override

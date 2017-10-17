@@ -7,8 +7,8 @@ import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.EventHandler;
-import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
 import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
 
 import java.lang.annotation.Annotation;
 

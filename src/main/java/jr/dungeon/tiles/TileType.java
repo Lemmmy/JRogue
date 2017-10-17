@@ -1,7 +1,9 @@
 package jr.dungeon.tiles;
 
-import jr.dungeon.tiles.states.*;
-import jr.utils.Colour;
+import jr.dungeon.tiles.states.TileState;
+import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.dungeon.tiles.states.TileStateDoor;
+import jr.dungeon.tiles.states.TileStateTrap;
 import lombok.Getter;
 
 import java.util.Arrays;

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
-import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
 import lombok.Setter;
 

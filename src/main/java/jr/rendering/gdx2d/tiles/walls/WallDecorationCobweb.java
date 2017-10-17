@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdx2d.tiles.TileMap;
 import jr.rendering.gdx2d.tiles.TileRenderer;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 import java.util.Random;
 

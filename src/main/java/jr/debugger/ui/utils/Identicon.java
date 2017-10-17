@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 public class Identicon extends BaseDrawable {
 	private static final Color[] COLOURS = new Color[] {

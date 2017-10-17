@@ -6,7 +6,6 @@ import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.decoration.EntityTorch;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
-import jr.dungeon.tiles.states.TileStateTorch;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;

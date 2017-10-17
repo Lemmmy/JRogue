@@ -2,8 +2,6 @@ package jr.rendering.gdx2d.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import jr.Settings;
-import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.dungeon.VisibilityStore;
@@ -18,15 +16,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class LevelComponent extends RendererComponent {
+public class LevelComponent extends GameComponent {
 	private List<TilePooledEffect> tilePooledEffects = new ArrayList<>();
 	
 	private SpriteBatch mainBatch;
 	
 	private Level level;
 	
-	public LevelComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
-		super(renderer, dungeon, settings);
+	public LevelComponent(GameScreen gameScreen) {
+		super(gameScreen);
 	}
 	
 	@Override

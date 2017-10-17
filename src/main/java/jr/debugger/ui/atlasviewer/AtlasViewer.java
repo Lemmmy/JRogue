@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import jr.rendering.gdx2d.ui.windows.Window;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.base.ui.windows.Window;
+import jr.rendering.utils.ImageLoader;
 
 public class AtlasViewer extends Window {
 	public AtlasViewer(Stage stage, Skin skin) {

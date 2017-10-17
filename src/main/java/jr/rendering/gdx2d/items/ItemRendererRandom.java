@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 public class ItemRendererRandom extends ItemRenderer {
 	protected TextureRegion[] images;

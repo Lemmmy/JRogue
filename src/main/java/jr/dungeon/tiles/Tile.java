@@ -4,7 +4,6 @@ import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
-import jr.utils.Colour;
 import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.Getter;

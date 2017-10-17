@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;

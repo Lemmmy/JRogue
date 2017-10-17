@@ -7,7 +7,6 @@ import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityTorch;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.utils.RandomUtils;
 
 public class GeneratorDebugLevel extends DungeonGenerator {
 	/**

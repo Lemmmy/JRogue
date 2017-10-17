@@ -1,8 +1,6 @@
 package jr.rendering.gdx2d.components;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import jr.Settings;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.effects.Ablaze;
 import jr.dungeon.entities.events.EntityMovedEvent;
@@ -22,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ParticlesComponent extends RendererComponent {
+public abstract class ParticlesComponent extends GameComponent {
 	@Getter private List<PooledEffect> pooledEffects = new ArrayList<>();
 	
-	public ParticlesComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
-		super(renderer, dungeon, settings);
+	public ParticlesComponent(GameScreen gameScreen) {
+		super(gameScreen);
 	}
 	
 	@Override
@@ -178,8 +176,8 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	public static class Below extends ParticlesComponent {
-		public Below(GameScreen renderer, Dungeon dungeon, Settings settings) {
-			super(renderer, dungeon, settings);
+		public Below(GameScreen gameScreen) {
+			super(gameScreen);
 		}
 		
 		@Override
@@ -203,8 +201,8 @@ public abstract class ParticlesComponent extends RendererComponent {
 	}
 	
 	public static class Above extends ParticlesComponent {
-		public Above(GameScreen renderer, Dungeon dungeon, Settings settings) {
-			super(renderer, dungeon, settings);
+		public Above(GameScreen gameScreen) {
+			super(gameScreen);
 		}
 		
 		@Override

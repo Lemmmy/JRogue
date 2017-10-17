@@ -14,8 +14,8 @@ import jr.debugger.ui.atlasviewer.AtlasViewer;
 import jr.debugger.ui.game.GameWidget;
 import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
-import jr.rendering.gdx2d.ui.skin.UISkin;
-import jr.rendering.gdx2d.ui.utils.FunctionalClickListener;
+import jr.rendering.base.ui.skin.UISkin;
+import jr.rendering.base.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
 import java.util.ArrayList;

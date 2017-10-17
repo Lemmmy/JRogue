@@ -9,8 +9,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
-import jr.rendering.gdx2d.utils.CompositeDrawable;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.CompositeDrawable;
+import jr.rendering.utils.ImageLoader;
 
 public class ItemRendererPotion extends ItemRenderer {
 	private final TextureRegion fluidTex, bottleTex;

@@ -1,7 +1,5 @@
 package jr.rendering.gdxvox.objects;
 
-import jr.JRogue;
-import jr.dungeon.tiles.Tile;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;

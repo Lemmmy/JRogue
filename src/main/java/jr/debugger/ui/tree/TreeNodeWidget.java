@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.utils.Identicon;
-import jr.rendering.gdx2d.ui.utils.FunctionalClickListener;
+import jr.rendering.base.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
 import java.util.LinkedHashMap;

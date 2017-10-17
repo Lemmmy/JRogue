@@ -2,13 +2,13 @@ package jr.rendering.gdxvox.objects.tiles.renderers;
 
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdx2d.utils.BlobUtils;
+import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
-import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.utils.BlobUtils;
 
 public class TileRendererWall extends TileRenderer {
 	private static final WallModel[] MAP = new WallModel[] {

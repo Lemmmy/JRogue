@@ -13,7 +13,7 @@ import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.entities.EntityMap;
 import jr.rendering.gdx2d.entities.EntityRenderer;
 import jr.rendering.gdx2d.screens.GameScreen;
-import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.utils.ShaderLoader;
 import lombok.NonNull;
 
 import java.util.Comparator;

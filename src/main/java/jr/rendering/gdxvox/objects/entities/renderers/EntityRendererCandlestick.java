@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.entities.EntityRenderer;
 import jr.rendering.gdxvox.objects.entities.EntityVoxelBatch;
-import jr.rendering.gdxvox.lighting.Light;
-import jr.rendering.gdxvox.context.SceneContext;
 
 public class EntityRendererCandlestick extends EntityRenderer {
 	private static VoxelModel candlestickModel;

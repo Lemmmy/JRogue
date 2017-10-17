@@ -1,7 +1,7 @@
 package jr.debugger.ui.tree;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
 @Getter

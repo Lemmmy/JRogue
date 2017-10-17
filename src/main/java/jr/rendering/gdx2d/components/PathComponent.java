@@ -3,21 +3,19 @@ package jr.rendering.gdx2d.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.Settings;
-import jr.dungeon.Dungeon;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
 import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.tiles.TileMap;
-import jr.rendering.gdx2d.utils.Gradient;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.Gradient;
+import jr.rendering.utils.ImageLoader;
 import jr.utils.Path;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PathComponent extends RendererComponent {
+public class PathComponent extends GameComponent {
 	private static final Gradient PATH_GRADIENT = Gradient.getGradient(
 		Color.GREEN,
 		Color.RED
@@ -28,8 +26,8 @@ public class PathComponent extends RendererComponent {
 	
 	private SpriteBatch mainBatch;
 	
-	public PathComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
-		super(renderer, dungeon, settings);
+	public PathComponent(GameScreen gameScreen) {
+		super(gameScreen);
 	}
 	
 	@Override

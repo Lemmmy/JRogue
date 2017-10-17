@@ -1,8 +1,6 @@
 package jr.rendering.gdx2d.components;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import jr.Settings;
-import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
@@ -10,13 +8,13 @@ import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.tiles.TileMap;
 import jr.rendering.gdx2d.tiles.TileRenderer;
 
-public class LightingComponent extends RendererComponent {
+public class LightingComponent extends GameComponent {
 	private SpriteBatch lightSpriteBatch;
 	
 	private Level level;
 	
-	public LightingComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
-		super(renderer, dungeon, settings);
+	public LightingComponent(GameScreen gameScreen) {
+		super(gameScreen);
 	}
 	
 	@Override

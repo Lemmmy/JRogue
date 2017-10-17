@@ -4,10 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.gdx2d.events.EntityDebugUpdatedEvent;
+import jr.rendering.base.components.hud.HUDComponent;
+import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.tiles.TileMap;
 import jr.utils.Point;
@@ -17,13 +17,12 @@ import lombok.val;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
-	private GameScreen renderer;
+	private ComponentedScreen renderer;
 	
 	private boolean dontHandleNext = false;
 	private boolean mouseMoved = false;
@@ -32,11 +31,15 @@ public class GameInputProcessor implements InputProcessor {
 
 	private final Map<Character, BiConsumer<Player, Character>> playerCommands = new HashMap<>();
 	
+	private HUDComponent hudComponent;
+	
 	public GameInputProcessor(Dungeon dungeon, GameScreen renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
 
 		registerDefaultKeys();
+		
+		hudComponent = renderer.getComponent(HUDComponent.class, "hud");
 	}
 
 	private void registerDefaultKeys() {
@@ -44,7 +47,6 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.drop(), 'd');
 		registerKeyMapping(p -> p.defaultVisitors.eat(), 'e');
 		registerKeyMapping(p -> p.defaultVisitors.fire(), 'f');
-		registerKeyMapping(() -> renderer.getHudComponent().showInventoryWindow(), 'i');
 		registerKeyMapping(p -> p.defaultVisitors.loot(), 'l');
 		registerKeyMapping(p -> p.defaultVisitors.quaff(), 'q');
 		registerKeyMapping(dungeon::quit, 'Q');
@@ -53,11 +55,15 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.throwItem(), 't');
 		registerKeyMapping(p -> p.defaultVisitors.wield(), 'w');
 		registerKeyMapping(Player::swapHands, 'x');
-		registerKeyMapping(() -> renderer.getHudComponent().showSpellWindow(), 'Z');
 		registerKeyMapping(p -> p.defaultVisitors.pickup(), ',');
 		registerKeyMapping(p -> p.defaultVisitors.climbAny(), '.');
 		registerKeyMapping(p -> p.defaultVisitors.climbUp(), '<');
 		registerKeyMapping(p -> p.defaultVisitors.climbDown(), '>');
+		
+		if (hudComponent != null) {
+			registerKeyMapping(() -> hudComponent.showInventoryWindow(), 'i');
+			registerKeyMapping(() -> hudComponent.showSpellWindow(), 'Z');
+		}
 	}
 
 	private void registerKeyMapping(BiConsumer<Player, Character> callback, char ...inputs) {
@@ -85,7 +91,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
-		if (renderer.isTurnLerping()) return false;
+		if (!renderer.shouldAllowInput()) return false;
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (keycode == Input.Keys.D) {
@@ -103,7 +109,7 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handlePlayerCommandsCharacters(char key) {
-		if (renderer.isTurnLerping()) return false;
+		if (!renderer.shouldAllowInput()) return false;
 
 		if (playerCommands.containsKey(key)) {
 			val action = playerCommands.get(key);
@@ -119,11 +125,8 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
-			if (keycode == Input.Keys.D) {
-				renderer.getHudComponent().showDebugWindow();
-				return true;
-			} else if (keycode == Input.Keys.W) {
-				renderer.getHudComponent().showWishWindow();
+			if (keycode == Input.Keys.W && hudComponent != null) {
+				hudComponent.showWishWindow();
 				return true;
 			} else if (keycode == Input.Keys.R) {
 				dungeon.generateFirstLevel();
@@ -135,8 +138,8 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleWorldClicks(Point pos, int button) {
-		if (renderer.isTurnLerping()) return false;
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (!renderer.shouldAllowInput()) return false;
+		if (hasWindows()) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -162,8 +165,8 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleDebugClicks(Point pos, int button) {
-		if (renderer.isTurnLerping()) return false;
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (!renderer.shouldAllowInput()) return false;
+		if (hasWindows()) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -174,39 +177,20 @@ public class GameInputProcessor implements InputProcessor {
 			return false;
 		}
 		
-		if (button == Input.Buttons.RIGHT) {
-			if (dungeon.getPlayer().isDebugger()) {
-				AtomicBoolean fucked = new AtomicBoolean(false);
-				
-				dungeon.getLevel().entityStore.getEntitiesAt(pos).stream()
-					.findFirst()
-					.ifPresent(e -> {
-						e.getPersistence().put("showDebug", !e.getPersistence().optBoolean("showDebug"));
-						fucked.set(true);
-						dungeon.eventSystem.triggerEvent(new EntityDebugUpdatedEvent());
-					});
-				
-				return fucked.get();
-			}
-		}
+		// TODO: UNUSED
 		
 		return false;
 	}
 	
 	private Point screenToWorldPos(int screenX, int screenY) {
-		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
-		
-		return new Point(
-			(int) unprojected.x / TileMap.TILE_WIDTH,
-			(int) unprojected.y / TileMap.TILE_HEIGHT
-		);
+		return renderer.unprojectWorldPos(screenX, screenY);
 	}
 	
 	@Override
 	public boolean keyDown(int keycode) {
 		dontHandleNext = false;
 		
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -231,7 +215,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) {
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		if (character == 0) return false;
 		
 		if (dontHandleNext) {
@@ -283,5 +267,9 @@ public class GameInputProcessor implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+	
+	protected boolean hasWindows() {
+		return hudComponent != null && hudComponent.getWindows().size() > 0;
 	}
 }

@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdx2d.utils.BlobUtils;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.BlobUtils;
+import jr.rendering.utils.ImageLoader;
 
 import java.util.Arrays;
 

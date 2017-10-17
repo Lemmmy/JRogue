@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 public abstract class ItemRenderer {
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect);

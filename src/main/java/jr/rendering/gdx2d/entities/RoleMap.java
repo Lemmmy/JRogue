@@ -3,7 +3,7 @@ package jr.rendering.gdx2d.entities;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.roles.RoleWizard;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

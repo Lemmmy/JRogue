@@ -2,7 +2,6 @@ package jr.dungeon.tiles.states;
 
 import jr.dungeon.events.EventListener;
 import jr.dungeon.tiles.Tile;
-import jr.utils.Colour;
 import jr.utils.Serialisable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

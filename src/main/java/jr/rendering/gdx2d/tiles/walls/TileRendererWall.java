@@ -6,7 +6,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.tiles.TileRenderer;
-import jr.rendering.gdx2d.utils.BlobUtils;
+import jr.rendering.utils.BlobUtils;
 import jr.utils.WeightedCollection;
 
 import java.util.Random;

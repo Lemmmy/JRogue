@@ -1,7 +1,6 @@
 package jr.rendering.gdxvox.primitives;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.BufferUtils;
 
 import java.nio.Buffer;

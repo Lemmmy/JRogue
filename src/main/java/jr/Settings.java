@@ -66,12 +66,6 @@ public class Settings {
 	private boolean autosave = true;
 	
 	/**
-	 * Show extensive information about {@link jr.dungeon.entities.monsters.ai.AI} state above monsters.
-	 */
-	@Setting(comment="[Debug] Show AI information.")
-	private boolean showAIDebug = false;
-	
-	/**
 	 * Show the entire level in one view.
 	 */
 	@Setting(comment="[Debug] Show whole level.")

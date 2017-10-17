@@ -7,36 +7,39 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
+import jr.rendering.base.components.FPSCounterComponent;
+import jr.rendering.base.components.MinimapComponent;
+import jr.rendering.base.components.RendererComponent;
+import jr.rendering.base.components.hud.HUDComponent;
+import jr.rendering.base.screens.ComponentedScreen;
+import jr.rendering.base.screens.DeathScreen;
+import jr.rendering.base.screens.utils.SlidingTransition;
 import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdx2d.GameInputProcessor;
 import jr.rendering.gdx2d.components.*;
-import jr.rendering.gdx2d.components.hud.HUDComponent;
-import jr.rendering.gdx2d.screens.utils.SlidingTransition;
 import jr.rendering.gdx2d.tiles.TileMap;
-import jr.rendering.gdx2d.utils.FontLoader;
-import jr.rendering.gdx2d.utils.ImageLoader;
-import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.utils.FontLoader;
+import jr.rendering.utils.ImageLoader;
+import jr.rendering.utils.ShaderLoader;
+import jr.utils.Point;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * The game's renderer. Houses the {@link RendererComponent components} used for rendering, and also handles the main
  * batch and camera.
  */
 @Getter
-public class GameScreen extends BasicScreen implements EventListener {
+public class GameScreen extends ComponentedScreen implements EventListener {
 	/**
 	 * The time in seconds to animate movement between turns.
 	 */
@@ -66,22 +69,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 	 */
 	private OrthographicCamera camera;
 	
-	/**
-	 * The list of renderer components - components that get a change to render to the screen at their specified
-	 * Z-indexes.
-	 */
-	private List<RendererComponent> rendererComponents = new ArrayList<>();
-	
-	private LevelComponent levelComponent;
-	private ParticlesComponent particlesBelowComponent;
-	private PathComponent pathComponent;
-	private EntityComponent entityComponent;
-	private ParticlesComponent particlesAboveComponent;
-	private LightingComponent lightingComponent;
-	private HUDComponent hudComponent;
-	private MinimapComponent minimapComponent;
-	private FPSCounterComponent fpsCounterComponent;
-	
 	private float zoom = 1.0f;
 	private float zoomRounding = 1 / zoom * TileMap.TILE_WIDTH * 4;
 	
@@ -105,6 +92,8 @@ public class GameScreen extends BasicScreen implements EventListener {
 	 * @param dungeon The dungeon that should be rendered.
 	 */
 	public GameScreen(GameAdapter game, Dungeon dungeon) {
+		super(dungeon);
+		
 		this.game = game;
 		this.dungeon = dungeon;
 		this.dungeon.eventSystem.addListener(this);
@@ -118,7 +107,10 @@ public class GameScreen extends BasicScreen implements EventListener {
 		mainBatch = new SpriteBatch();
 		
 		initialiseCamera();
-		initialiseRendererComponents();
+		
+		for (TileMap tmap : TileMap.values()) {
+			tmap.getRenderer().setRenderer(this);
+		}
 		
 		debugBatch = new SpriteBatch();
 		debugCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -137,6 +129,11 @@ public class GameScreen extends BasicScreen implements EventListener {
 		updateCameraZoom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		camera.update();
+		
+		getRendererComponents().values().stream()
+			.filter(GameComponent.class::isInstance)
+			.map(GameComponent.class::cast)
+			.forEach(r -> r.setCamera(camera));
 	}
 	
 	private void updateCameraZoom(int width, int height) {
@@ -145,42 +142,45 @@ public class GameScreen extends BasicScreen implements EventListener {
 		}
 	}
 	
-	private void initialiseRendererComponents() {
-		rendererComponents.add(levelComponent = new LevelComponent(this, dungeon, settings));
-		rendererComponents.add(particlesBelowComponent = new ParticlesComponent.Below(this, dungeon, settings));
-		rendererComponents.add(pathComponent = new PathComponent(this, dungeon, settings));
-		rendererComponents.add(entityComponent = new EntityComponent(this, dungeon, settings));
-		rendererComponents.add(particlesAboveComponent = new ParticlesComponent.Above(this, dungeon, settings));
+	@Override
+	public void initialiseComponents() {
+		addComponent(10, "level", LevelComponent.class);
+		addComponent(15, "particlesBelow", ParticlesComponent.Below.class);
+		addComponent(20, "path", PathComponent.class);
+		addComponent(30, "entities", EntityComponent.class);
+		addComponent(35, "particlesAbove", ParticlesComponent.Above.class);
 		
 		if (!settings.isShowLevelDebug()) {
-			rendererComponents.add(lightingComponent = new LightingComponent(this, dungeon, settings));
+			addComponent(50, "lighting", LightingComponent.class);
 		}
 		
-		rendererComponents.add(minimapComponent = new MinimapComponent(this, dungeon, settings));
+		addComponent(100, "hud", HUDComponent.class);
+		addComponent(125, "minimap", MinimapComponent.class);
 		
 		if (settings.isShowFPSCounter()) {
-			rendererComponents.add(fpsCounterComponent = new FPSCounterComponent(this, dungeon, settings));
+			addComponent(130, "fps", FPSCounterComponent.class);
 		}
+	}
+	
+	@Override
+	public Point unprojectWorldPos(float screenX, float screenY) {
+		Vector3 unprojected = camera.unproject(new Vector3(screenX, screenY, 0));
 		
-		rendererComponents.add(hudComponent = new HUDComponent(this, dungeon, settings));
-		
-		// add mod components
-		
-		rendererComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
-		
-		rendererComponents.forEach(r -> r.setCamera(camera));
-		rendererComponents.forEach(r -> dungeon.eventSystem.addListener(r));
-		rendererComponents.forEach(RendererComponent::initialise);
-		
-		for (TileMap tmap : TileMap.values()) {
-			tmap.getRenderer().setRenderer(this);
-		}
+		return new Point(
+			(int) unprojected.x / TileMap.TILE_WIDTH,
+			(int) unprojected.y / TileMap.TILE_HEIGHT
+		);
+	}
+	
+	@Override
+	public Vector3 projectWorldPos(float worldX, float worldY) {
+		return camera.project(new Vector3(worldX, worldY, 0));
 	}
 	
 	private void initialiseInputProcessors() {
 		clearInputProcessors();
 		addInputProcessor(new GameInputProcessor(dungeon, this));
-		addInputProcessor(hudComponent.getStage());
+		addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
 	}
 	
 	private void updateWindowTitle() {
@@ -222,9 +222,7 @@ public class GameScreen extends BasicScreen implements EventListener {
 	public void render(float delta) {
 		renderTime += delta;
 		
-		if (turnLerping) {
-			turnLerpTime += delta;
-		}
+		if (turnLerping) turnLerpTime += delta;
 		
 		if (turnLerpTime >= TURN_LERP_DURATION) {
 			turnLerping = false;
@@ -236,7 +234,7 @@ public class GameScreen extends BasicScreen implements EventListener {
 		
 		if (!settings.isShowTurnAnimations()) updateCamera();
 		
-		rendererComponents.forEach(r -> r.update(delta));
+		updateRendererComponents(delta);
 		
 		if (settings.isShowTurnAnimations()) updateCamera();
 		
@@ -248,15 +246,11 @@ public class GameScreen extends BasicScreen implements EventListener {
 		mainBatch.begin();
 		mainBatch.enableBlending();
 		
-		rendererComponents.stream()
-			.filter(RendererComponent::useMainBatch)
-			.forEach(r -> r.render(delta));
+		renderMainBatchComponents(delta);
 		
 		mainBatch.end();
 		
-		rendererComponents.stream()
-			.filter(r -> !r.useMainBatch())
-			.forEach(r -> r.render(delta));
+		renderOtherBatchComponents(delta);
 		
 		if (settings.isShowTurnAnimations()) updateCamera();
 	}
@@ -268,7 +262,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 		camera.setToOrtho(true, width, height);
 		updateCameraZoom(width, height);
 		
-		rendererComponents.forEach(r -> r.resize(width, height));
 		debugCamera.setToOrtho(true, width, height);
 	}
 	
@@ -281,13 +274,13 @@ public class GameScreen extends BasicScreen implements EventListener {
 	
 	@Override
 	public void dispose() {
+		super.dispose();
+		
 		if (settings.isAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
 			dungeon.save();
 		}
 		
 		mainBatch.dispose();
-
-		rendererComponents.forEach(RendererComponent::dispose);
 		
 		ImageLoader.disposeAll();
 		FontLoader.disposeAll();

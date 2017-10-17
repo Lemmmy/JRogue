@@ -4,7 +4,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdx2d.tiles.walls.TileRendererSewerWall;
 import jr.rendering.gdx2d.tiles.walls.TileRendererWall;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
 public enum TileMap {

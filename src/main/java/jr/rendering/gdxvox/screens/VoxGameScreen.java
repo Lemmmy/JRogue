@@ -13,17 +13,16 @@ import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.events.EventListener;
+import jr.rendering.base.components.FPSCounterComponent;
+import jr.rendering.base.screens.BasicScreen;
 import jr.rendering.gdx2d.GameAdapter;
-import jr.rendering.gdx2d.components.FPSCounterComponent;
-import jr.rendering.gdx2d.screens.BasicScreen;
-import jr.rendering.gdx2d.utils.FontLoader;
-import jr.rendering.gdx2d.utils.ShaderLoader;
-import jr.rendering.gdxvox.context.GBuffersContext;
+import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import jr.rendering.gdxvox.primitives.FullscreenQuad;
 import jr.rendering.gdxvox.primitives.VoxelCube;
-import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.utils.FontLoader;
+import jr.rendering.utils.ShaderLoader;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GLUtil;
@@ -107,7 +106,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		debugBatch = new SpriteBatch();
 		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 12, true, false);
 		
-		fpsCounterComponent = new FPSCounterComponent(null, dungeon, settings);
+		fpsCounterComponent = new FPSCounterComponent(null);
 		fpsCounterComponent.initialise();
 		
 		fullscreenDimension = new Dimension(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

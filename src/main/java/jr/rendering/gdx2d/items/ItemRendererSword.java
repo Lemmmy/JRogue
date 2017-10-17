@@ -9,7 +9,7 @@ import jr.dungeon.items.HasMaterial;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
-import jr.rendering.gdx2d.utils.ImageLoader;
+import jr.rendering.utils.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
