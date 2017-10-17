@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.gdxvox.context.GBuffersContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.gdxvox.context.SceneContext;
 import lombok.Getter;
@@ -147,7 +148,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		GL30.glBindVertexArray(voxelVAO);
 		
-		GL20.glDrawBuffers(SceneContext.G_BUFFERS_ATTACHMENTS);
+		GL20.glDrawBuffers(GBuffersContext.G_BUFFERS_ATTACHMENTS);
 		GL31.glDrawArraysInstanced(
 			Gdx.gl.GL_TRIANGLES,
 			0,

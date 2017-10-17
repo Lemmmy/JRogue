@@ -18,11 +18,10 @@ import jr.rendering.gdx2d.components.FPSCounterComponent;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdx2d.utils.ShaderLoader;
-import jr.rendering.gdxvox.context.LightContext;
+import jr.rendering.gdxvox.context.GBuffersContext;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import jr.rendering.gdxvox.primitives.FullscreenQuad;
-import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.gdxvox.context.SceneContext;
 import org.lwjgl.opengl.GL30;
@@ -31,8 +30,6 @@ import org.lwjgl.opengl.GLUtil;
 
 import java.awt.*;
 import java.lang.reflect.Field;
-
-import static jr.rendering.gdxvox.context.LightContext.MAX_LIGHTS;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
 	private static final float VIEWPORT_SIZE = 20;
@@ -98,13 +95,11 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		dungeon.eventSystem.addListener(entityRendererMap);
 		
 		screenCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		sceneContext.setScreenCamera(screenCamera);
 		
 		// camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.lookAt(20, 1, 20);
-		sceneContext.setWorldCamera(camera);
 		
 		controller = new CameraInputController(camera);
 		addInputProcessor(controller);
@@ -168,7 +163,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, sceneContext.getGBuffersHandle());
+		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, sceneContext.gBuffersContext.getGBuffersHandle());
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT | Gdx.gl.GL_DEPTH_BUFFER_BIT);
@@ -183,16 +178,16 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		GL30.glBindVertexArray(fullscreenQuadVAO);
 		
 		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE0);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.getGBuffersTextures().get(SceneContext.G_BUFFER_DIFFUSE));
+		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.DIFFUSE));
 		
 		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE1);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.getGBuffersTextures().get(SceneContext.G_BUFFER_NORMALS));
+		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.NORMALS));
 		
 		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE2);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.getGBuffersTextures().get(SceneContext.G_BUFFER_POSITION));
+		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.POSITION));
 		
 		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE3);
-		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.getGBuffersTextures().get(SceneContext.G_BUFFER_DEPTH));
+		Gdx.gl.glBindTexture(Gdx.gl.GL_TEXTURE_2D, sceneContext.gBuffersContext.getHandle(GBuffersContext.GBuffers.DEPTH));
 		
 		fullscreenQuadShader.begin();
 		fullscreenQuadShader.setUniformMatrix("u_projTrans", screenCamera.combined);

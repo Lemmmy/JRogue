@@ -1,128 +1,16 @@
 package jr.rendering.gdxvox.context;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector3;
-import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
-import jr.dungeon.entities.Entity;
-import jr.dungeon.events.EventHandler;
-import jr.dungeon.events.EventListener;
-import jr.dungeon.events.EventPriority;
-import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.gdxvox.lighting.Light;
-import lombok.Getter;
-import lombok.Setter;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL32;
-
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SceneContext extends Context {
-	public static final int G_BUFFERS_COUNT = 4;
-	
-	public static final int G_BUFFER_DIFFUSE = 0,
-							G_BUFFER_NORMALS = 1,
-							G_BUFFER_POSITION = 2,
-							G_BUFFER_DEPTH = 3;
-	
-	public static final int[] G_BUFFERS_ATTACHMENTS = new int[] {
-		GL30.GL_COLOR_ATTACHMENT0,
-		GL30.GL_COLOR_ATTACHMENT1,
-		GL30.GL_COLOR_ATTACHMENT2
-	};
-	
 	public final LightContext lightContext;
-	
-	@Getter private int gBuffersHandle = -1;
-	@Getter private IntBuffer gBuffersTextures;
-	
-	@Getter @Setter private Camera screenCamera, worldCamera;
+	public final GBuffersContext gBuffersContext;
 	
 	public SceneContext(Dungeon dungeon) {
 		super(dungeon);
 		
 		lightContext = new LightContext(dungeon);
-		initialiseGBuffers(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	}
-	
-	private void initialiseGBuffers(int width, int height) { // TODO: extract
-		if (gBuffersTextures != null) {
-			Gdx.gl.glDeleteTextures(G_BUFFERS_COUNT, gBuffersTextures);
-			Gdx.gl.glDeleteFramebuffer(gBuffersHandle);
-		}
-		
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, gBuffersHandle = Gdx.gl.glGenFramebuffer());
-		
-		gBuffersTextures = BufferUtils.createIntBuffer(G_BUFFERS_COUNT);
-		Gdx.gl.glGenTextures(G_BUFFERS_COUNT, gBuffersTextures);
-		
-		for (int i = 0; i < G_BUFFERS_COUNT; i++) {
-			int texHandle = gBuffersTextures.get(i);
-			int texTarget = Gdx.gl.GL_TEXTURE_2D;
-			int internalFormat = GL30.GL_RGB32F;
-			int format = i == G_BUFFER_DEPTH ? Gdx.gl.GL_DEPTH_COMPONENT : Gdx.gl.GL_RGB;
-			int type = Gdx.gl.GL_FLOAT;
-			
-			int attachment = GL30.GL_COLOR_ATTACHMENT0;
-			
-			switch (i) {
-				case G_BUFFER_DIFFUSE:
-					internalFormat = Gdx.gl.GL_RGB;
-					type = Gdx.gl.GL_UNSIGNED_BYTE;
-					break;
-				case G_BUFFER_NORMALS:
-					attachment = GL30.GL_COLOR_ATTACHMENT1;
-					break;
-				case G_BUFFER_POSITION:
-					attachment = GL30.GL_COLOR_ATTACHMENT2;
-					break;
-				case G_BUFFER_DEPTH:
-					attachment = GL30.GL_DEPTH_ATTACHMENT;
-					internalFormat = Gdx.gl.GL_DEPTH_COMPONENT;
-					type = Gdx.gl.GL_UNSIGNED_BYTE;
-					break;
-			}
-			
-			Gdx.gl.glBindTexture(texTarget, texHandle);
-			
-			Gdx.gl.glTexParameteri(texTarget, Gdx.gl.GL_TEXTURE_MIN_FILTER, Gdx.gl.GL_NEAREST);
-			Gdx.gl.glTexParameteri(texTarget, Gdx.gl.GL_TEXTURE_MAG_FILTER, Gdx.gl.GL_NEAREST);
-			
-			Gdx.gl.glTexImage2D(
-				texTarget,
-				0,
-				internalFormat,
-				width,
-				height,
-				0,
-				format,
-				type,
-				null
-			);
-			
-			GL32.glFramebufferTexture(
-				Gdx.gl.GL_FRAMEBUFFER,
-				attachment,
-				texHandle,
-				0
-			);
-		}
-		
-		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
-		
-		if (Gdx.gl.glCheckFramebufferStatus(Gdx.gl.GL_FRAMEBUFFER) != Gdx.gl.GL_FRAMEBUFFER_COMPLETE) {
-			ErrorHandler.error("fuck", new RuntimeException("shit"));
-		}
+		gBuffersContext = new GBuffersContext(dungeon);
 	}
 	
 	public void update() {
@@ -130,6 +18,6 @@ public class SceneContext extends Context {
 	}
 	
 	public void resize(int width, int height) {
-		initialiseGBuffers(width, height);
+		gBuffersContext.resize(width, height);
 	}
 }
