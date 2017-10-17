@@ -6,7 +6,7 @@ import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.entities.EntityRenderer;
 import jr.rendering.gdxvox.objects.entities.EntityVoxelBatch;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 
 public class EntityRendererPlayer extends EntityRenderer {
 	private static VoxelModel playerModel;

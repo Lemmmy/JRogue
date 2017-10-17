@@ -7,7 +7,7 @@ import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileVoxelBatch;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 
 public class TileRendererDoor extends TileRenderer {
 	private VoxelModel frameModel, doorModel;

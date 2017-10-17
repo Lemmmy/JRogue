@@ -3,7 +3,7 @@ package jr.rendering.gdxvox.objects.tiles;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.objects.AbstractObjectRenderer;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 
 public abstract class TileRenderer extends AbstractObjectRenderer<TileType, Tile, TileVoxelBatch> {
 	public static final int TILE_WIDTH = 16;

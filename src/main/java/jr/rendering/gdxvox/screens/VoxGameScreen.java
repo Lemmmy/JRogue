@@ -18,12 +18,13 @@ import jr.rendering.gdx2d.components.FPSCounterComponent;
 import jr.rendering.gdx2d.screens.BasicScreen;
 import jr.rendering.gdx2d.utils.FontLoader;
 import jr.rendering.gdx2d.utils.ShaderLoader;
+import jr.rendering.gdxvox.context.LightContext;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 import jr.rendering.gdxvox.primitives.FullscreenQuad;
 import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.primitives.VoxelCube;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GLUtil;
@@ -31,7 +32,7 @@ import org.lwjgl.opengl.GLUtil;
 import java.awt.*;
 import java.lang.reflect.Field;
 
-import static jr.rendering.gdxvox.utils.SceneContext.MAX_LIGHTS;
+import static jr.rendering.gdxvox.context.LightContext.MAX_LIGHTS;
 
 public class VoxGameScreen extends BasicScreen implements EventListener {
 	private static final float VIEWPORT_SIZE = 20;
@@ -172,7 +173,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT | Gdx.gl.GL_DEPTH_BUFFER_BIT);
 		
-		if (sceneContext.isLightsNeedUpdating()) sceneContext.updateLights();
+		sceneContext.update();
 		
 		tileRendererMap.renderAll(camera);
 		entityRendererMap.renderAll(camera);
@@ -212,12 +213,9 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 		GL30.glBindBufferRange(
 			GL31.GL_UNIFORM_BUFFER,
 			uniformBlockIndex,
-			sceneContext.getLightBufferHandle(),
+			sceneContext.lightContext.getLightBufferHandle(),
 			0,
-			16 + sceneContext.getLights().values().stream()
-				.filter(Light::isEnabled)
-				.limit(MAX_LIGHTS)
-				.count() * SceneContext.LIGHT_ELEMENT_SIZE
+			sceneContext.lightContext.getBufferSize()
 		);
 		Gdx.gl.glDrawArrays(Gdx.gl.GL_TRIANGLE_STRIP, 0, FullscreenQuad.QUAD_ELEMENT_COUNT);
 		
@@ -254,7 +252,7 @@ public class VoxGameScreen extends BasicScreen implements EventListener {
 			entityVoxels,
 			tileBatches + entityBatches,
 			tileVoxels + entityVoxels,
-			sceneContext.getLights().size(),
+			sceneContext.lightContext.getLights().size(),
 			camera.position.x, camera.position.y, camera.position.z
 		), 16, 48);
 	}

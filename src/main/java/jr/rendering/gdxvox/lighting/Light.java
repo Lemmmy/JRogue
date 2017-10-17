@@ -1,14 +1,13 @@
 package jr.rendering.gdxvox.lighting;
 
 import com.badlogic.gdx.math.Vector3;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.LightContext;
 import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 @Getter
 @Setter
@@ -29,7 +28,7 @@ public class Light {
 	}
 	
 	public ByteBuffer compileLight() {
-		int size = SceneContext.LIGHT_ELEMENT_SIZE;
+		int size = LightContext.LIGHT_ELEMENT_SIZE;
 		
 		ByteBuffer buf = BufferUtils.createByteBuffer(size);
 		

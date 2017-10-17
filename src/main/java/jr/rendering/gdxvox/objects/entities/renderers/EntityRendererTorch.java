@@ -12,7 +12,7 @@ import jr.rendering.gdxvox.objects.VoxelModelInstance;
 import jr.rendering.gdxvox.objects.entities.EntityRenderer;
 import jr.rendering.gdxvox.objects.entities.EntityVoxelBatch;
 import jr.rendering.gdxvox.lighting.Light;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 import jr.utils.Point;
 
 public class EntityRendererTorch extends EntityRenderer {
@@ -46,7 +46,7 @@ public class EntityRendererTorch extends EntityRenderer {
 				le.getLightAttenuationFactor()
 			);
 			
-			scene.addLight(entity, light);
+			scene.lightContext.addLight(entity, light);
 		}
 	}
 	
@@ -63,11 +63,11 @@ public class EntityRendererTorch extends EntityRenderer {
 	
 	@Override
 	public void entityRemoved(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		scene.removeLight(entity);
+		scene.lightContext.removeLight(entity);
 	}
 	
 	@Override
 	public void entityMoved(Entity entity, EntityMovedEvent event, EntityVoxelBatch batch, SceneContext scene) {
-		scene.moveLight(entity);
+		scene.lightContext.moveLight(entity);
 	}
 }

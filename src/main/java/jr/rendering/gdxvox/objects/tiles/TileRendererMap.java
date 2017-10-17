@@ -4,7 +4,7 @@ import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 
 import java.lang.annotation.Annotation;
 

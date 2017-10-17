@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.Camera;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
-import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;

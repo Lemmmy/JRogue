@@ -1,7 +1,7 @@
 package jr.rendering.gdxvox.objects;
 
 import jr.dungeon.events.EventListener;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 import lombok.Getter;
 import lombok.Setter;
 

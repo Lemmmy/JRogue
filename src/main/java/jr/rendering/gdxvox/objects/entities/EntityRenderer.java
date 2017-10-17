@@ -3,11 +3,9 @@ package jr.rendering.gdxvox.objects.entities;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.events.EntityMovedEvent;
-import jr.dungeon.events.EventHandler;
-import jr.dungeon.tiles.Tile;
 import jr.rendering.gdxvox.objects.AbstractObjectRenderer;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
-import jr.rendering.gdxvox.utils.SceneContext;
+import jr.rendering.gdxvox.context.SceneContext;
 
 import java.util.ArrayList;
 import java.util.List;
