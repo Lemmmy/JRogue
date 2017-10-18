@@ -11,11 +11,13 @@ import lombok.Getter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public abstract class ComponentedScreen extends BasicScreen {
-	@Getter private Dungeon dungeon;
-	@Getter private Settings settings;
+	@Getter protected Dungeon dungeon;
+	@Getter protected Settings settings;
 	
 	/**
 	 * The list of renderer components - components that get a chance to render to the screen at their specified
@@ -28,10 +30,12 @@ public abstract class ComponentedScreen extends BasicScreen {
 		this.dungeon = dungeon;
 		this.settings = JRogue.getSettings();
 		
+		preInitialiseComponents();
 		initialiseComponents();
 		setupComponents();
 	}
 	
+	public void preInitialiseComponents() {}
 	public abstract void initialiseComponents();
 	
 	protected void setupComponents() {
@@ -49,11 +53,25 @@ public abstract class ComponentedScreen extends BasicScreen {
 	
 	public void addComponent(int zIndex, String name, Class<? extends RendererComponent> clazz) {
 		try {
-			Constructor componentConstructor = clazz.getConstructor(ComponentedScreen.class);
+			Type genericSuperclass = clazz.getGenericSuperclass();
+			Constructor componentConstructor;
+			
+			if (genericSuperclass instanceof ParameterizedType) {
+				Class<? extends ComponentedScreen> componentGenericClass = (Class<? extends ComponentedScreen>)
+					((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
+				componentConstructor = clazz.getConstructor(componentGenericClass);
+			} else {
+				componentConstructor = clazz.getConstructor(ComponentedScreen.class);
+			}
+			
 			RendererComponent component = (RendererComponent) componentConstructor.newInstance(this);
 			addComponent(zIndex, name, component);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			e.printStackTrace();
+			ErrorHandler.error(String.format(
+				"Error adding component %s (%s)",
+				name,
+				clazz.getSimpleName()
+			), e);
 		}
 	}
 	

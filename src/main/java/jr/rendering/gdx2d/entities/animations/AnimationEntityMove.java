@@ -30,7 +30,7 @@ public class AnimationEntityMove extends EntityAnimation {
 		));
 		
 		if (getEntity() instanceof Player) {
-			values.put("camera", new Vector(
+			values.put("sceneCamera", new Vector(
 				Utils.easeInOut(t, -dx, dx, 1),
 				Utils.easeInOut(t, -dy, dy, 1)
 			));

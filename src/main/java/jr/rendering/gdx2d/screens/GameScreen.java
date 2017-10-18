@@ -36,7 +36,7 @@ import org.json.JSONObject;
 
 /**
  * The game's renderer. Houses the {@link RendererComponent components} used for rendering, and also handles the main
- * batch and camera.
+ * batch and sceneCamera.
  */
 @Getter
 public class GameScreen extends ComponentedScreen implements EventListener {
@@ -60,12 +60,12 @@ public class GameScreen extends ComponentedScreen implements EventListener {
 	
 	/**
 	 * The 'main sprite batch' - the sprite batch that renders the {@link jr.dungeon.Level}'s contents. This is the
-	 * batch that's inside the game's {@link #camera viewport camera}, and moves along with the player etc.
+	 * batch that's inside the game's {@link #camera viewport sceneCamera}, and moves along with the player etc.
 	 */
 	private SpriteBatch mainBatch;
 	
 	/**
-	 * The 'main camera' - the camera inside the {@link jr.dungeon.Level} that follows the {@link Player}.
+	 * The 'main sceneCamera' - the sceneCamera inside the {@link jr.dungeon.Level} that follows the {@link Player}.
 	 */
 	private OrthographicCamera camera;
 	
@@ -193,7 +193,7 @@ public class GameScreen extends ComponentedScreen implements EventListener {
 	}
 	
 	/**
-	 * Updates the in-game camera position.
+	 * Updates the in-game sceneCamera position.
 	 */
 	public void updateCamera() {
 		Player p = dungeon.getPlayer();

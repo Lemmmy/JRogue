@@ -33,7 +33,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private HUDComponent hudComponent;
 	
-	public GameInputProcessor(Dungeon dungeon, GameScreen renderer) {
+	public GameInputProcessor(Dungeon dungeon, ComponentedScreen renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
 

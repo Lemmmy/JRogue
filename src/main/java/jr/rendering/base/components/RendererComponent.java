@@ -30,7 +30,7 @@ public abstract class RendererComponent<Renderer extends ComponentedScreen> impl
 	
 	/**
 	 * @return Whether or not this should be drawn in the main batch. The main batch is the batch the level is drawn on,
-	 * in the viewport camera.
+	 * in the viewport sceneCamera.
 	 */
 	public boolean useMainBatch() {
 		return false;
