@@ -18,6 +18,7 @@ import jr.rendering.base.components.FPSCounterComponent;
 import jr.rendering.base.components.hud.HUDComponent;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.gdx2d.GameAdapter;
+import jr.rendering.gdx2d.GameInputProcessor;
 import jr.rendering.gdxvox.components.RendererStatsComponent;
 import jr.rendering.gdxvox.components.SceneComponent;
 import jr.rendering.gdxvox.context.SceneContext;
@@ -37,8 +38,6 @@ import java.awt.*;
 import java.lang.reflect.Field;
 
 public class VoxGameScreen extends ComponentedScreen {
-	private static final float VIEWPORT_SIZE = 20;
-	
 	/**
 	 * The {@link GameAdapter} instance.
 	 */
@@ -87,8 +86,8 @@ public class VoxGameScreen extends ComponentedScreen {
 		super.show();
 		
 		clearInputProcessors();
-		// addInputProcessor(new GameInputProcessor(dungeon, this));
-		addInputProcessor(getComponent(SceneComponent.class, "scene").getCameraController());
+		addInputProcessor(new GameInputProcessor(dungeon, this));
+		// addInputProcessor(getComponent(SceneComponent.class, "scene").getCameraController());
 		addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
 	}
 	

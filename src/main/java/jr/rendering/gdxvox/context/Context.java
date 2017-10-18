@@ -6,7 +6,9 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
+import lombok.Getter;
 
+@Getter
 public abstract class Context implements EventListener {
 	private Dungeon dungeon;
 	private Level level;

@@ -1,12 +1,18 @@
 package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.player.Player;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
 
 public class SceneContext extends Context {
+	private static final float VIEWPORT_SIZE = 20;
+	public static final int CAMERA_Y = 4;
+	public static final int CAMERA_OFFSET_Z = 5;
+	
 	public final LightContext lightContext;
 	public final GBuffersContext gBuffersContext;
 	
@@ -22,9 +28,6 @@ public class SceneContext extends Context {
 		gBuffersContext = new GBuffersContext(dungeon);
 		
 		sceneCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		sceneCamera.lookAt(20, 1, 20);
-		
 		tileRendererMap = new TileRendererMap(this);
 		tileRendererMap.initialise();
 		dungeon.eventSystem.addListener(tileRendererMap);
@@ -34,22 +37,20 @@ public class SceneContext extends Context {
 		dungeon.eventSystem.addListener(entityRendererMap);
 	}
 	
-	public void updateCameraViewport(float width, float height) {
-		float aspectRatio = width / height;
-		// sceneCamera.setToOrtho(false, VIEWPORT_SIZE * aspectRatio, VIEWPORT_SIZE);
-	}
-	
 	public void updateCamera() {
-		// sceneCamera.position.set(20f, 20f, 20f);
-		// sceneCamera.direction.set(-0.69631064f, -0.5f, -0.69631064f);
-		// sceneCamera.lookAt(0, 0, 0);
-		// sceneCamera.zoom = 1f;
+		if (getDungeon().getPlayer() != null) {
+			Player p = getDungeon().getPlayer();
+			
+			sceneCamera.position.set(p.getX(), CAMERA_Y, p.getY() + CAMERA_OFFSET_Z);
+			sceneCamera.lookAt(p.getX(), 0.5f, p.getY());
+			sceneCamera.direction.x = 0f; // sometimes the camera likes to wobble out of its angle
+		}
+		
 		sceneCamera.near = 0.1f;
 		sceneCamera.update();
 	}
 	
 	public void update() {
-		updateCameraViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		updateCamera();
 		lightContext.update();
 	}
