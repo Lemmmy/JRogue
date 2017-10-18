@@ -41,6 +41,8 @@ public class LightContext extends Context {
 	}
 	
 	public void rebuildLights() {
+		System.out.println("[PRINT DEBUGGING] rebuildLights");
+		
 		if (lightBufferHandle == -1) lightBufferHandle = Gdx.gl.glGenBuffer();
 		
 		Gdx.gl.glBindBuffer(GL31.GL_UNIFORM_BUFFER, lightBufferHandle);

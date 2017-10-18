@@ -1,7 +1,6 @@
 package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
@@ -60,7 +59,11 @@ public class SceneContext extends Context {
 	}
 	
 	public void renderAllMaps() {
+		System.out.println("[PRINT DEBUGGING] before renderAllMaps");
+		
 		tileRendererMap.renderAll(sceneCamera);
 		entityRendererMap.renderAll(sceneCamera);
+		
+		System.out.println("[PRINT DEBUGGING] after renderAllMaps");
 	}
 }

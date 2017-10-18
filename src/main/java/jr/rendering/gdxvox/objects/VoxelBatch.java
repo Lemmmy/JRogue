@@ -9,16 +9,17 @@ import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.*;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 public abstract class VoxelBatch<ObjectV> {
@@ -29,7 +30,7 @@ public abstract class VoxelBatch<ObjectV> {
 	private int instanceCount = 0;
 	private ShaderProgram voxelShader;
 	
-	private List<VoxelModelInstance> objects = new ArrayList<>();
+	private List<VoxelModelInstance> instances = new ArrayList<>();
 	
 	private boolean needsRebuild;
 	
@@ -38,11 +39,15 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
+		System.out.println("[PRINT DEBUGGING] VoxelBatch.initialiseVAO");
 		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
 		
+		System.out.println("[PRINT DEBUGGING] before glGenVertexArrays");
 		voxelVAO = GL30.glGenVertexArrays();
+		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
+		System.out.println("[PRINT DEBUGGING] before glBindBuffer (cube VBO)");
 		// voxel cube buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, VoxelCube.getVBO());
 		// position
@@ -52,6 +57,7 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnableVertexAttribArray(1);
 		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, VoxelCube.CUBE_ELEMENT_SIZE, 3 * 4);
 		
+		System.out.println("[PRINT DEBUGGING] before glBindBuffer (voxel instances)");
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
@@ -64,56 +70,78 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glVertexAttribPointer(3, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
 		GL33.glVertexAttribDivisor(3, 1);
 		
+		System.out.println("[PRINT DEBUGGING] before unbind all");
 		GL30.glBindVertexArray(0);
 	}
 	
 	public boolean contains(ObjectV object) {
-		return objects.stream().anyMatch(instance -> instance.getObject() == object);
+		return instances.stream().anyMatch(instance -> instance.getObject() == object);
 	}
 	
 	public boolean contains(String instanceID) {
-		return objects.stream().anyMatch(instance -> instance.getInstanceID().equals(instanceID));
+		return instances.stream().anyMatch(instance -> instance.getInstanceID().equals(instanceID));
 	}
 	
 	public boolean contains(VoxelModelInstance model) {
-		return objects.contains(model);
+		return instances.contains(model);
 	}
 	
 	public void add(ObjectV object, VoxelModelInstance model) {
 		model.setObject(object);
 		if (model.getInstanceID() == null) model.setInstanceID(String.valueOf(System.identityHashCode(object)));
-		setAddedObjectPosition(object, model);
+		updateObjectPosition(object, model);
 		
-		objects.add(model);
+		instances.add(model);
 		needsRebuild = true;
 	}
 	
-	protected abstract void setAddedObjectPosition(ObjectV object, VoxelModelInstance model);
+	protected abstract void updateObjectPosition(ObjectV object, VoxelModelInstance model);
 	
 	public void remove(ObjectV object) {
-		objects.removeIf(instance -> instance.getObject() == object);
+		instances.removeIf(instance -> instance.getObject() == object);
 		needsRebuild = true;
 	}
 	
 	public void remove(String instanceID) {
-		objects.removeIf(instance -> instance.getInstanceID().equals(instanceID));
+		instances.removeIf(instance -> instance.getInstanceID().equals(instanceID));
 		needsRebuild = true;
 	}
 	
 	public void remove(VoxelModelInstance instance) {
-		objects.remove(instance);
+		instances.remove(instance);
 		needsRebuild = true;
 	}
 	
+	public void move(ObjectV object) {
+		instances.stream()
+			.filter(i -> i.getObject().equals(object))
+			.forEach(i -> updateObjectPosition(object, i));
+	}
+	
+	public void move(ObjectV object, float x, float y, float z) {
+		instances.stream()
+			.filter(i -> i.getObject().equals(object))
+			.forEach(i -> i.setPosition(x, y, z));
+	}
+	
+	public Optional<VoxelModelInstance> getInstance(ObjectV object) {
+		return instances.stream()
+			.filter(i -> i.getObject().equals(object))
+			.findFirst();
+	}
+	
 	public void clear() {
-		objects.clear();
+		instances.clear();
 		needsRebuild = true;
 	}
 	
 	public void rebuildVoxels(SceneContext scene) {
 		if (voxelShader == null) initialiseShader();
 		
-		List<FloatBuffer> voxelBuffers = objects.stream()
+		// keep track of the locations of all buffers so we can update them later
+		AtomicInteger location = new AtomicInteger(0);
+		
+		List<FloatBuffer> voxelBuffers = instances.stream()
 			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());
 		
@@ -122,7 +150,11 @@ public abstract class VoxelBatch<ObjectV> {
 			.sum();
 		
 		FloatBuffer compiledBuffer = BufferUtils.createFloatBuffer(size);
-		voxelBuffers.forEach(compiledBuffer::put);
+		instances.forEach(instance -> {
+			FloatBuffer instanceBuffer = instance.getCompiledVoxels();
+			compiledBuffer.put(instanceBuffer);
+			instance.setBufferLocation(location.getAndAdd(instanceBuffer.capacity()));
+		});
 		compiledBuffer.flip();
 		
 		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_COUNT;
@@ -138,8 +170,34 @@ public abstract class VoxelBatch<ObjectV> {
 		if (needsRebuild) {
 			rebuildVoxels(scene);
 			needsRebuild = false;
+			System.out.println("[PRINT DEBUGGING] after all rebuild");
+		} else {
+			Stream instanceStream = instances.stream()
+				.filter(VoxelModelInstance::isUpdated);
+			
+			if (instanceStream.count() > 0) {
+				Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
+				ByteBuffer mappedBuffer = GL15.glMapBuffer(Gdx.gl.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
+				
+				instances.stream()
+					.filter(VoxelModelInstance::isUpdated)
+					.forEach(instance -> {
+						int start = instance.getBufferLocation();
+						FloatBuffer instanceBuffer = instance.compileVoxels();
+						
+						for (int i = 0; i < instanceBuffer.capacity(); i++) {
+							mappedBuffer.putFloat((start + i) * 4, instanceBuffer.get(i));
+						}
+					});
+				
+				GL15.glUnmapBuffer(Gdx.gl.GL_ARRAY_BUFFER);
+				Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
+			}
 		}
 		
+		instances.forEach(i -> i.setUpdated(false));
+		
+		System.out.println("[PRINT DEBUGGING] before glViewport");
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		voxelShader.begin();
@@ -149,15 +207,19 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
 		
+		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
+		System.out.println("[PRINT DEBUGGING] before glDrawBuffers");
 		GL20.glDrawBuffers(GBuffersContext.G_BUFFERS_ATTACHMENTS);
+		System.out.println("[PRINT DEBUGGING] before glDrawArraysInstanced");
 		GL31.glDrawArraysInstanced(
 			Gdx.gl.GL_TRIANGLES,
 			0,
 			VoxelCube.CUBE_VERTICES.length / VoxelCube.CUBE_ELEMENT_COUNT,
 			instanceCount
 		);
+		System.out.println("[PRINT DEBUGGING] after glDrawArraysInstanced");
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);

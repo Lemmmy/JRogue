@@ -6,7 +6,7 @@ import jr.rendering.gdxvox.objects.VoxelModelInstance;
 
 public class TileVoxelBatch extends VoxelBatch<Tile> {
 	@Override
-	protected void setAddedObjectPosition(Tile tile, VoxelModelInstance model) {
+	protected void updateObjectPosition(Tile tile, VoxelModelInstance model) {
 		model.setPosition(tile.getX(), 0, tile.getY());
 	}
 }

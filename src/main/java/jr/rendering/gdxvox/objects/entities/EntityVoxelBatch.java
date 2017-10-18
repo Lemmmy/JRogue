@@ -6,7 +6,7 @@ import jr.rendering.gdxvox.objects.VoxelModelInstance;
 
 public class EntityVoxelBatch extends VoxelBatch<Entity> {
 	@Override
-	protected void setAddedObjectPosition(Entity entity, VoxelModelInstance model) {
+	protected void updateObjectPosition(Entity entity, VoxelModelInstance model) {
 		model.setPosition(entity.getX(), 0, entity.getY());
 	}
 }

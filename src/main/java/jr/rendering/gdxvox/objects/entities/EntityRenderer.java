@@ -40,5 +40,7 @@ public abstract class EntityRenderer extends AbstractObjectRenderer<EntityAppear
 	
 	public void entityRemoved(Entity entity, EntityVoxelBatch batch, SceneContext scene) {}
 	
-	public void entityMoved(Entity entity, EntityMovedEvent event, EntityVoxelBatch batch, SceneContext scene) {}
+	public void entityMoved(Entity entity, EntityMovedEvent event, EntityVoxelBatch batch, SceneContext scene) {
+		batch.move(entity);
+	}
 }

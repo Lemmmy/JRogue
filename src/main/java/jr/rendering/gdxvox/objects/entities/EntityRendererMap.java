@@ -44,7 +44,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 	}
 	
 	@EventHandler
-	public void onEntityMove(EntityMovedEvent e) {
+	public void onEntityMoved(EntityMovedEvent e) {
 		EntityAppearance appearance = e.getEntity().getAppearance();
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
