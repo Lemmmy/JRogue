@@ -60,8 +60,8 @@ public class FullscreenQuad {
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glVertexAttribPointer(1, 2, Gdx.gl.GL_FLOAT, false, QUAD_ELEMENT_COUNT * 4, 2 * 4);
 		
-		Gdx.gl.glDisableVertexAttribArray(1);
 		GL30.glBindVertexArray(0);
+		Gdx.gl.glDisableVertexAttribArray(1);
 		
 		quadsVBO.put(dimension, quadVBOHandle);
 		quadsVAO.put(dimension, quadVAOHandle);

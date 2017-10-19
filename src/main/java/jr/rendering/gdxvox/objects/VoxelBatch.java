@@ -71,11 +71,13 @@ public abstract class VoxelBatch<ObjectV> {
 		GL33.glVertexAttribDivisor(3, 1);
 		
 		System.out.println("[PRINT DEBUGGING] before unbind all");
+		
+		GL30.glBindVertexArray(0);
+		
 		Gdx.gl.glEnableVertexAttribArray(0);
 		Gdx.gl.glDisableVertexAttribArray(1);
 		Gdx.gl.glDisableVertexAttribArray(2);
 		Gdx.gl.glDisableVertexAttribArray(3);
-		GL30.glBindVertexArray(0);
 	}
 	
 	public boolean contains(ObjectV object) {
