@@ -91,6 +91,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 			
 			if (uniformBlockIndex == -1) {
 				ErrorHandler.error("Uniform block index -1", new RuntimeException("Uniform block index -1"));
+				GL30.glBindVertexArray(0);
 				return;
 			}
 		}
@@ -125,14 +126,14 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	
 	@Override
 	public void resize(int width, int height) {
-		if (fullscreenDimension != null) {
+		/* if (fullscreenDimension != null) {
 			FullscreenQuad.dispose(fullscreenDimension);
 		}
 		
 		fullscreenDimension = new Dimension(width, height);
 		fullscreenQuadVAO = FullscreenQuad.getVAO(fullscreenDimension);
 		
-		sceneContext.resize(width, height);
+		sceneContext.resize(width, height); */
 	}
 	
 	@Override

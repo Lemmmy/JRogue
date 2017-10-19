@@ -162,6 +162,8 @@ public class HUDComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
+		System.out.println("[PRINT DEBUGGING] before HUDComponent.render");
+		
 		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
 			Runnable r = iterator.next();
 			r.run();

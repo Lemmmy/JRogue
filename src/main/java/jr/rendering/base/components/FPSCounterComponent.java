@@ -46,6 +46,8 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
+		System.out.println("[PRINT DEBUGGING] before FPSCounterComponent.render");
+		
 		counterCamera.update();
 		
 		shapeBatch.setProjectionMatrix(counterCamera.combined);

@@ -60,6 +60,7 @@ public class FullscreenQuad {
 		GL20.glEnableVertexAttribArray(1);
 		GL20.glVertexAttribPointer(1, 2, Gdx.gl.GL_FLOAT, false, QUAD_ELEMENT_COUNT * 4, 2 * 4);
 		
+		Gdx.gl.glDisableVertexAttribArray(1);
 		GL30.glBindVertexArray(0);
 		
 		quadsVBO.put(dimension, quadVBOHandle);
@@ -75,12 +76,14 @@ public class FullscreenQuad {
 	
 	public static void dispose(Dimension d) {
 		if (quadsVBO.containsKey(d)) {
-			Gdx.gl.glDeleteBuffer(quadsVBO.get(d));
-			quadsVBO.remove(d);
+			System.out.println("[PRINT DEBUGGING] FullscreenQuad - deleting buffer " + quadsVBO.get(d));
+			// Gdx.gl.glDeleteBuffer(quadsVBO.get(d));
+			// quadsVBO.remove(d);
 		}
 		if (quadsVAO.containsKey(d)) {
-			GL30.glDeleteVertexArrays(quadsVAO.get(d));
-			quadsVAO.remove(d);
+			System.out.println("[PRINT DEBUGGING] FullscreenQuad - deleting vertex arrays " + quadsVAO.get(d));
+			// GL30.glDeleteVertexArrays(quadsVAO.get(d));
+			// quadsVAO.remove(d);
 		}
 	}
 }

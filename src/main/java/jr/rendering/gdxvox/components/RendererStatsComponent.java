@@ -38,13 +38,19 @@ public class RendererStatsComponent extends RendererComponent<VoxGameScreen> {
 	
 	@Override
 	public void render(float dt) {
+		System.out.println("[PRINT DEBUGGING] before RendererStatsComponent.render");
+		
 		batch.begin();
+		
+		System.out.println("[PRINT DEBUGGING] after RendererStatsComponent.render.batch.begin()");
 		
 		int tileBatches = tileRendererMap.getObjectRendererMap().size();
 		int tileVoxels = tileRendererMap.getVoxelCount();
 		
 		int entityBatches = entityRendererMap.getObjectRendererMap().size();
 		int entityVoxels = entityRendererMap.getVoxelCount();
+		
+		System.out.println("[PRINT DEBUGGING] before RendererStatsComponent.render.font.draw()");
 		
 		font.draw(batch, String.format(
 			"Tile batches: %,d  Tile voxels: %,d  Entity batches: %,d  Entity voxels: %,d \n" +
@@ -60,7 +66,11 @@ public class RendererStatsComponent extends RendererComponent<VoxGameScreen> {
 			camera.position.x, camera.position.y, camera.position.z
 		), 16, 64);
 		
+		System.out.println("[PRINT DEBUGGING] before RendererStatsComponent.render.batch.end()");
+		
 		batch.end();
+		
+		System.out.println("[PRINT DEBUGGING] after RendererStatsComponent.render");
 	}
 	
 	@Override

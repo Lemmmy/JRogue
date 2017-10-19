@@ -68,8 +68,6 @@ public class VoxGameScreen extends ComponentedScreen {
 	}
 	
 	private void initialise() {
-		GLUtil.setupDebugMessageCallback(System.out);
-		
 		updateWindowTitle();
 	}
 	
@@ -78,7 +76,7 @@ public class VoxGameScreen extends ComponentedScreen {
 		addComponent(10, "scene", new SceneComponent(this, sceneContext));
 		addComponent(100, "hud", HUDComponent.class);
 		addComponent(150, "fps", FPSCounterComponent.class);
-		addComponent(200, "stats", RendererStatsComponent.class);
+		// addComponent(200, "stats", RendererStatsComponent.class);
 	}
 	
 	@Override
@@ -102,13 +100,20 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public void render(float delta) {
+		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.super.render");
 		super.render(delta);
+		System.out.println("[PRINT DEBUGGING] after VoxGameScreen.super.render");
 		
 		screenCamera.update();
+		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.updateRendererComponents");
 		updateRendererComponents(delta);
 		
+		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.renderMainBatchComponents");
 		renderMainBatchComponents(delta);
+		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.renderOtherBatchComponents");
 		renderOtherBatchComponents(delta);
+		
+		System.out.println("[PRINT DEBUGGING] after VoxGameScreen.render");
 	}
 	
 	@Override
@@ -123,7 +128,7 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public void resize(int width, int height) {
-		super.resize(width, height);
+		// super.resize(width, height);
 		screenCamera.setToOrtho(false, width, height);
 	}
 	

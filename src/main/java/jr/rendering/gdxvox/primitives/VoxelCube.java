@@ -67,8 +67,9 @@ public class VoxelCube {
 	
 	public static void dispose() {
 		if (cubeBuffer != -1) {
-			Gdx.gl.glDeleteBuffer(cubeBuffer);
-			cubeBuffer = -1;
+			System.out.println("[PRINT DEBUGGING] VoxelCube - deleting cube buffer " + cubeBuffer);
+			// Gdx.gl.glDeleteBuffer(cubeBuffer);
+			// cubeBuffer = -1;
 		}
 	}
 }
