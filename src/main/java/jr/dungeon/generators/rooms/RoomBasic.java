@@ -43,19 +43,13 @@ public class RoomBasic extends Room {
 	public void addFeatures() {}
 	
 	protected TileType getWallTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_WALL;
-		}
+		return generator == null ? TileType.TILE_ROOM_WALL : generator.getWallTileType();
 		
-		return generator.getWallTileType();
 	}
 	
 	protected TileType getFloorTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_FLOOR;
-		}
+		return generator == null ? TileType.TILE_ROOM_FLOOR : generator.getFloorTileType();
 		
-		return generator.getFloorTileType();
 	}
 	
 	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {
