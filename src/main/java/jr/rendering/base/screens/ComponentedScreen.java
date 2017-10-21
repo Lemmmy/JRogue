@@ -41,8 +41,8 @@ public abstract class ComponentedScreen extends BasicScreen {
 	protected void setupComponents() {
 		sortedComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
 		
-		getRendererComponents().values().forEach(r -> dungeon.eventSystem.addListener(r));
-		getRendererComponents().values().forEach(RendererComponent::initialise);
+		sortedComponents.forEach(r -> dungeon.eventSystem.addListener(r));
+		sortedComponents.forEach(RendererComponent::initialise);
 	}
 	
 	public void addComponent(int zIndex, String name, RendererComponent component) {
@@ -51,6 +51,7 @@ public abstract class ComponentedScreen extends BasicScreen {
 		sortedComponents.add(component);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void addComponent(int zIndex, String name, Class<? extends RendererComponent> clazz) {
 		try {
 			Type genericSuperclass = clazz.getGenericSuperclass();
@@ -120,13 +121,13 @@ public abstract class ComponentedScreen extends BasicScreen {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		rendererComponents.values().forEach(r -> r.resize(width, height));
+		sortedComponents.forEach(r -> r.resize(width, height));
 	}
 	
 	@Override
 	public void dispose() {
 		super.dispose();
 		
-		rendererComponents.values().forEach(RendererComponent::dispose);
+		sortedComponents.forEach(RendererComponent::dispose);
 	}
 }

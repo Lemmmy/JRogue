@@ -57,7 +57,9 @@ public class VoxGameScreen extends ComponentedScreen {
 	public void initialiseComponents() {
 		addComponent(10, "scene", new SceneComponent(this, sceneContext));
 		addComponent(100, "hud", HUDComponent.class);
-		addComponent(150, "fps", FPSCounterComponent.class);
+		
+		if (settings.isShowFPSCounter()) addComponent(150, "fps", FPSCounterComponent.class);
+		
 		addComponent(200, "stats", RendererStatsComponent.class);
 	}
 	
@@ -84,8 +86,8 @@ public class VoxGameScreen extends ComponentedScreen {
 	public void render(float delta) {
 		super.render(delta);
 		
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		// Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		screenCamera.update();
 		updateRendererComponents(delta);
@@ -106,7 +108,8 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public void resize(int width, int height) {
-		// super.resize(width, height);
+		super.resize(width, height);
+		
 		screenCamera.setToOrtho(false, width, height);
 	}
 	

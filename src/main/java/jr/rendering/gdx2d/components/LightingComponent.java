@@ -58,11 +58,6 @@ public class LightingComponent extends GameComponent {
 	}
 	
 	@Override
-	public int getZIndex() {
-		return 50;
-	}
-	
-	@Override
 	public void dispose() {
 		lightSpriteBatch.dispose();
 	}

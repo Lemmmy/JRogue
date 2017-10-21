@@ -103,11 +103,6 @@ public class LevelComponent extends GameComponent {
 	}
 	
 	@Override
-	public int getZIndex() {
-		return 10;
-	}
-	
-	@Override
 	public void dispose() {
 		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
 	}

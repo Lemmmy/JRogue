@@ -115,11 +115,6 @@ public class MinimapComponent extends RendererComponent {
 		
 	}
 	
-	@Override
-	public int getZIndex() {
-		return 125;
-	}
-	
 	private void drawMap() {
 		for (Tile tile : level.tileStore.getTiles()) {
 			boolean discovered = level.visibilityStore

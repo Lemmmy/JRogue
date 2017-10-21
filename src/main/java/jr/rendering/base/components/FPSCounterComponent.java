@@ -31,6 +31,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private BitmapFont font;
 	
+	@SuppressWarnings("unchecked")
 	public FPSCounterComponent(ComponentedScreen renderer) {
 		super(renderer);
 	}
@@ -111,11 +112,6 @@ public class FPSCounterComponent extends RendererComponent {
 	@Override
 	public void resize(int width, int height) {
 		counterCamera.setToOrtho(true, width, height);
-	}
-	
-	@Override
-	public int getZIndex() {
-		return 130;
 	}
 	
 	@Override

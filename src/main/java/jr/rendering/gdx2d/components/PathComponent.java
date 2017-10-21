@@ -130,12 +130,7 @@ public class PathComponent extends GameComponent {
 	
 	@Override
 	public void resize(int width, int height) {
-		
-	}
 	
-	@Override
-	public int getZIndex() {
-		return 20;
 	}
 	
 	@Override

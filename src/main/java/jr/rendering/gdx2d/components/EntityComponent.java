@@ -320,11 +320,6 @@ public class EntityComponent extends GameComponent {
 	}
 	
 	@Override
-	public int getZIndex() {
-		return 30;
-	}
-	
-	@Override
 	public boolean useMainBatch() {
 		return true;
 	}

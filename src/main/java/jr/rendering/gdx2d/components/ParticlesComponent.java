@@ -180,11 +180,6 @@ public abstract class ParticlesComponent extends GameComponent {
 			super(gameScreen);
 		}
 		
-		@Override
-		public int getZIndex() {
-			return 15;
-		}
-		
 		@EventHandler
 		private void onEntityMoved(EntityMovedEvent event) {
 			Entity e = event.getEntity();
@@ -203,11 +198,6 @@ public abstract class ParticlesComponent extends GameComponent {
 	public static class Above extends ParticlesComponent {
 		public Above(GameScreen gameScreen) {
 			super(gameScreen);
-		}
-		
-		@Override
-		public int getZIndex() {
-			return 35;
 		}
 		
 		@EventHandler

@@ -50,6 +50,7 @@ public class HUDComponent extends RendererComponent {
 	private List<Actor> entityDebugActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
 	
+	@SuppressWarnings("unchecked")
 	public HUDComponent(ComponentedScreen renderer) {
 		super(renderer);
 	}
@@ -180,11 +181,6 @@ public class HUDComponent extends RendererComponent {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-	}
-	
-	@Override
-	public int getZIndex() {
-		return 100;
 	}
 	
 	@Override
