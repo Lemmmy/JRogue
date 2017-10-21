@@ -50,15 +50,11 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
-		ErrorHandler.glErrorCheck("VoxelBatch.initialiseVAO");
 		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
 		
-		ErrorHandler.glErrorCheck("before glGenVertexArrays");
 		voxelVAO = GL30.glGenVertexArrays();
-		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
-		ErrorHandler.glErrorCheck("before glBindBuffer (cube VBO)");
 		// voxel cube buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, VoxelCube.getVBO());
 		// position
@@ -68,10 +64,8 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnableVertexAttribArray(1);
 		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, VoxelCube.CUBE_ELEMENT_SIZE, 3 * 4);
 		
-		ErrorHandler.glErrorCheck("before glBindBuffer (voxel instances)");
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
-		System.err.println(String.format("[[V]]%s|%d|%d", rendererName, voxelsBuffer.capacity(), voxelsBuffer.capacity() * 4));
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		// instance position
 		Gdx.gl.glEnableVertexAttribArray(2);
@@ -81,8 +75,6 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnableVertexAttribArray(3);
 		Gdx.gl.glVertexAttribPointer(3, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
 		GL33.glVertexAttribDivisor(3, 1);
-		
-		ErrorHandler.glErrorCheck("before unbind all");
 		
 		GL30.glBindVertexArray(0);
 		
@@ -159,19 +151,19 @@ public abstract class VoxelBatch<ObjectV> {
 		// keep track of the locations of all buffers so we can update them later
 		AtomicInteger location = new AtomicInteger(0);
 		
-		List<FloatBuffer> voxelBuffers = instances.stream()
+		List<List<Float>> voxelBuffers = instances.stream()
 			.map(VoxelModelInstance::compileVoxels)
 			.collect(Collectors.toList());
 		
 		int size = voxelBuffers.stream()
-			.mapToInt(Buffer::capacity)
+			.mapToInt(List::size)
 			.sum();
 		
 		FloatBuffer compiledBuffer = BufferUtils.createFloatBuffer(size);
 		instances.forEach(instance -> {
-			FloatBuffer instanceBuffer = instance.getCompiledVoxels();
-			compiledBuffer.put(instanceBuffer);
-			instance.setBufferLocation(location.getAndAdd(instanceBuffer.capacity()));
+			List<Float> instanceBuffer = instance.getCompiledVoxels();
+			instanceBuffer.forEach(compiledBuffer::put);
+			instance.setBufferLocation(location.getAndAdd(instanceBuffer.size()));
 		});
 		compiledBuffer.flip();
 		
@@ -188,7 +180,6 @@ public abstract class VoxelBatch<ObjectV> {
 		if (needsRebuild) {
 			rebuildVoxels(scene);
 			needsRebuild = false;
-			ErrorHandler.glErrorCheck("after all rebuild");
 		} else {
 			Stream instanceStream = instances.stream()
 				.filter(VoxelModelInstance::isUpdated);
@@ -201,9 +192,9 @@ public abstract class VoxelBatch<ObjectV> {
 					.filter(VoxelModelInstance::isUpdated)
 					.forEach(instance -> {
 						int start = instance.getBufferLocation();
-						FloatBuffer instanceBuffer = instance.compileVoxels();
+						List<Float> instanceBuffer = instance.compileVoxels();
 						
-						for (int i = 0; i < instanceBuffer.capacity(); i++) {
+						for (int i = 0; i < instanceBuffer.size(); i++) {
 							mappedBuffer.putFloat((start + i) * 4, instanceBuffer.get(i));
 						}
 					});
@@ -215,7 +206,6 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instances.forEach(i -> i.setUpdated(false));
 		
-		ErrorHandler.glErrorCheck("before glViewport");
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		voxelShader.begin();
@@ -225,24 +215,24 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
 		
-		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
-		ErrorHandler.glErrorCheck("before glDrawBuffers");
-		GL20.glDrawBuffers(GBuffersContext.G_BUFFERS_ATTACHMENTS);
-		ErrorHandler.glErrorCheck("before glDrawArraysInstanced");
 		GL31.glDrawArraysInstanced(
 			Gdx.gl.GL_TRIANGLES,
 			0,
 			VoxelCube.CUBE_VERTICES.length / VoxelCube.CUBE_ELEMENT_COUNT,
 			instanceCount
 		);
-		ErrorHandler.glErrorCheck("after glDrawArraysInstanced");
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);
 		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
 		
 		voxelShader.end();
+	}
+	
+	public void dispose() {
+		Gdx.gl.glDeleteBuffer(voxelInstanceBuffer);
+		GL30.glDeleteVertexArrays(voxelVAO);
 	}
 }

@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,13 +33,13 @@ public class VoxelModelInstance {
 	@Setter private int bufferLocation;
 	@Setter private boolean updated = true;
 	
-	private FloatBuffer compiledVoxels;
+	private List<Float> compiledVoxels;
 	
 	public VoxelModelInstance(VoxelModel model) {
 		this.model = model;
 	}
 	
-	public FloatBuffer compileVoxels() {
+	public List<Float> compileVoxels() {
 		VoxelModel.Frame frame = getFrame();
 		
 		List<Voxel> voxels = Arrays.stream(getVoxels())
@@ -48,7 +49,7 @@ public class VoxelModelInstance {
 		
 		int length = voxels.size() * VoxelBatch.INSTANCE_ELEMENT_COUNT;
 		
-		compiledVoxels = BufferUtils.createFloatBuffer(length);
+		compiledVoxels = new ArrayList<>();
 		
 		float angle = (float) Math.toRadians(rotation);
 		float pivotX = (this.pivotX == -1 ? frame.getSizeX() / 2 : this.pivotX) - 0.5f;
@@ -66,15 +67,16 @@ public class VoxelModelInstance {
 				(float) Math.cos(angle) * (voxel.getZ() - pivotZ);
 			
 			// position
-			compiledVoxels.put(startX + vx / (float) TileRenderer.TILE_WIDTH)
-				.put(startY + vy / (float) TileRenderer.TILE_HEIGHT)
-				.put(startZ + vz / (float) TileRenderer.TILE_DEPTH);
+			compiledVoxels.add(startX + vx / (float) TileRenderer.TILE_WIDTH);
+			compiledVoxels.add(startY + vy / (float) TileRenderer.TILE_HEIGHT);
+			compiledVoxels.add(startZ + vz / (float) TileRenderer.TILE_DEPTH);
 			
 			// colour
-			compiledVoxels.put(voxel.getR()).put(voxel.getG()).put(voxel.getB());
+			compiledVoxels.add(voxel.getR());
+			compiledVoxels.add(voxel.getG());
+			compiledVoxels.add(voxel.getB());
 		}
 		
-		compiledVoxels.flip();
 		return compiledVoxels;
 	}
 	

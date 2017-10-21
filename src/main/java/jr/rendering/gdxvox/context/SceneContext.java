@@ -60,11 +60,7 @@ public class SceneContext extends Context {
 	}
 	
 	public void renderAllMaps() {
-		ErrorHandler.glErrorCheck("before renderAllMaps");
-		
 		tileRendererMap.renderAll(sceneCamera);
 		entityRendererMap.renderAll(sceneCamera);
-		
-		ErrorHandler.glErrorCheck("after renderAllMaps");
 	}
 }

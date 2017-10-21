@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,25 +29,25 @@ public class Light {
 		this.attenuationFactor = attenuationFactor;
 	}
 	
-	public ByteBuffer compileLight() {
+	public List<Float> compileLight() {
 		int size = LightContext.LIGHT_ELEMENT_SIZE;
 		
-		ByteBuffer buf = BufferUtils.createByteBuffer(size);
+		List<Float> buf = new ArrayList<>();
 		
 		// position
-		buf.putFloat(position.x + positionOffset.x)
-			.putFloat(position.y + positionOffset.y)
-			.putFloat(position.z + positionOffset.z);
+		buf.add(position.x + positionOffset.x);
+		buf.add(position.y + positionOffset.y);
+		buf.add(position.z + positionOffset.z);
 		
-		buf.putFloat(0f); // padding
+		buf.add(0f); // padding
 		
 		// colour
-		buf.putFloat(colour.r).putFloat(colour.g).putFloat(colour.b);
+		buf.add(colour.r);
+		buf.add(colour.g);
+		buf.add(colour.b);
 		
 		// attenuation factor
-		buf.putFloat(attenuationFactor);
-		
-		buf.flip();
+		buf.add(attenuationFactor);
 		
 		return buf;
 	}

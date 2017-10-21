@@ -68,9 +68,8 @@ public class VoxelCube {
 	
 	public static void dispose() {
 		if (cubeBuffer != -1) {
-			ErrorHandler.glErrorCheck("VoxelCube - deleting cube buffer " + cubeBuffer);
-			// Gdx.gl.glDeleteBuffer(cubeBuffer);
-			// cubeBuffer = -1;
+			Gdx.gl.glDeleteBuffer(cubeBuffer);
+			cubeBuffer = -1;
 		}
 	}
 }

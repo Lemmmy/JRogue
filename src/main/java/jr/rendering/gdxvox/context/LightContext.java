@@ -42,23 +42,19 @@ public class LightContext extends Context {
 	}
 	
 	public void rebuildLights() {
-		ErrorHandler.glErrorCheck("before rebuildLights");
-		
 		if (lightBufferHandle == -1) lightBufferHandle = Gdx.gl.glGenBuffer();
 		
 		Gdx.gl.glBindBuffer(GL31.GL_UNIFORM_BUFFER, lightBufferHandle);
 		
-		List<ByteBuffer> lightBuffers = lights.values().stream()
+		List<List<Float>> lightBuffers = lights.values().stream()
 			.filter(Light::isEnabled)
 			.limit(LightContext.MAX_LIGHTS)
 			.map(Light::compileLight)
 			.collect(Collectors.toList());
 		
 		bufferSize = 16 + lightBuffers.stream()
-			.mapToInt(Buffer::capacity)
-			.sum();
-		
-		System.err.println(String.format("[[L]]%d|%d", lights.size(), bufferSize));
+			.mapToInt(List::size)
+			.sum() * 4;
 		
 		ByteBuffer compiledBuffer = BufferUtils.createByteBuffer(bufferSize);
 		compiledBuffer.putInt((int) lights.values().stream()
@@ -66,12 +62,10 @@ public class LightContext extends Context {
 			.limit(LightContext.MAX_LIGHTS)
 			.count()); // count
 		compiledBuffer.putFloat(0.0f).putFloat(0.0f).putFloat(0.0f); // padding
-		lightBuffers.forEach(compiledBuffer::put); // lights
+		lightBuffers.forEach(buffer -> buffer.forEach(compiledBuffer::putFloat));
 		compiledBuffer.flip();
 		
 		Gdx.gl.glBufferData(GL31.GL_UNIFORM_BUFFER, bufferSize, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);
-		
-		ErrorHandler.glErrorCheck("after rebuildLights");
 	}
 	
 	@Override

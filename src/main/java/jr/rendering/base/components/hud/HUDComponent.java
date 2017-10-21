@@ -163,8 +163,6 @@ public class HUDComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
-		ErrorHandler.glErrorCheck("before HUDComponent.render");
-		
 		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
 			Runnable r = iterator.next();
 			r.run();

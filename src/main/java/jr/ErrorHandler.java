@@ -191,8 +191,6 @@ public class ErrorHandler {
 	}
 	
 	public static void glErrorCheck(String pos) {
-		JRogue.getLogger().debug("[PRINT DEBUGGING] Checking at " + pos);
-		
 		int error;
 		while ((error = Gdx.gl.glGetError()) != GL20.GL_NO_ERROR) {
 			JRogue.getLogger().error("Error at {}: {}", pos, Integer.toHexString(error));

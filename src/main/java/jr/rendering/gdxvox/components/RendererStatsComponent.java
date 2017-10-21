@@ -39,19 +39,13 @@ public class RendererStatsComponent extends RendererComponent<VoxGameScreen> {
 	
 	@Override
 	public void render(float dt) {
-		ErrorHandler.glErrorCheck("before RendererStatsComponent.render");
-		
 		batch.begin();
-		
-		ErrorHandler.glErrorCheck("after RendererStatsComponent.render.batch.begin()");
 		
 		int tileBatches = tileRendererMap.getObjectRendererMap().size();
 		int tileVoxels = tileRendererMap.getVoxelCount();
 		
 		int entityBatches = entityRendererMap.getObjectRendererMap().size();
 		int entityVoxels = entityRendererMap.getVoxelCount();
-		
-		ErrorHandler.glErrorCheck("before RendererStatsComponent.render.font.draw()");
 		
 		font.draw(batch, String.format(
 			"Tile batches: %,d  Tile voxels: %,d  Entity batches: %,d  Entity voxels: %,d \n" +
@@ -67,11 +61,7 @@ public class RendererStatsComponent extends RendererComponent<VoxGameScreen> {
 			camera.position.x, camera.position.y, camera.position.z
 		), 16, 64);
 		
-		ErrorHandler.glErrorCheck("before RendererStatsComponent.render.batch.end()");
-		
 		batch.end();
-		
-		ErrorHandler.glErrorCheck("after RendererStatsComponent.render");
 	}
 	
 	@Override

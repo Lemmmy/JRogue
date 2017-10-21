@@ -3,17 +3,10 @@ package jr.rendering.gdxvox.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.Settings;
 import jr.dungeon.Dungeon;
-import jr.dungeon.events.EventListener;
 import jr.rendering.base.components.FPSCounterComponent;
 import jr.rendering.base.components.hud.HUDComponent;
 import jr.rendering.base.screens.ComponentedScreen;
@@ -22,20 +15,9 @@ import jr.rendering.gdx2d.GameInputProcessor;
 import jr.rendering.gdxvox.components.RendererStatsComponent;
 import jr.rendering.gdxvox.components.SceneComponent;
 import jr.rendering.gdxvox.context.SceneContext;
-import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
-import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
-import jr.rendering.gdxvox.primitives.FullscreenQuad;
 import jr.rendering.gdxvox.primitives.VoxelCube;
-import jr.rendering.utils.FontLoader;
-import jr.rendering.utils.ShaderLoader;
 import jr.utils.Point;
 import lombok.Getter;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GLUtil;
-
-import java.awt.*;
-import java.lang.reflect.Field;
 
 public class VoxGameScreen extends ComponentedScreen {
 	/**
@@ -84,9 +66,9 @@ public class VoxGameScreen extends ComponentedScreen {
 		super.show();
 		
 		clearInputProcessors();
-		// addInputProcessor(new GameInputProcessor(dungeon, this));
+		addInputProcessor(new GameInputProcessor(dungeon, this));
 		// addInputProcessor(getComponent(SceneComponent.class, "scene").getCameraController());
-		// addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
+		addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
 	}
 	
 	private void updateWindowTitle() {
@@ -100,20 +82,16 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public void render(float delta) {
-		ErrorHandler.glErrorCheck("before VoxGameScreen.super.render");
 		super.render(delta);
-		ErrorHandler.glErrorCheck("after VoxGameScreen.super.render");
+		
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		screenCamera.update();
-		ErrorHandler.glErrorCheck("before VoxGameScreen.updateRendererComponents");
 		updateRendererComponents(delta);
 		
-		ErrorHandler.glErrorCheck("before VoxGameScreen.renderMainBatchComponents");
 		renderMainBatchComponents(delta);
-		ErrorHandler.glErrorCheck("before VoxGameScreen.renderOtherBatchComponents");
 		renderOtherBatchComponents(delta);
-		
-		ErrorHandler.glErrorCheck("after VoxGameScreen.render");
 	}
 	
 	@Override
