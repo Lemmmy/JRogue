@@ -57,7 +57,7 @@ public class GameWidget extends Image implements EventListener {
 	}
 	
 	private void initialiseFBO() {
-		fbo = new FrameBuffer(Pixmap.Format.RGBA8888, (int) getMinWidth(), (int) getMinHeight(), false);
+		fbo = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, (int) getMinWidth(), (int) getMinHeight(), false);
 		fboRegion = new TextureRegionDrawable(new TextureRegion(fbo.getColorBufferTexture()));
 	}
 	
