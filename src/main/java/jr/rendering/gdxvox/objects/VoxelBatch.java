@@ -3,6 +3,7 @@ package jr.rendering.gdxvox.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import jr.ErrorHandler;
 import jr.rendering.gdxvox.context.GBuffersContext;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
@@ -30,24 +31,34 @@ public abstract class VoxelBatch<ObjectV> {
 	private int instanceCount = 0;
 	private ShaderProgram voxelShader;
 	
+	private String rendererName;
+	
 	private List<VoxelModelInstance> instances = new ArrayList<>();
 	
 	private boolean needsRebuild;
+	
+	public VoxelBatch(String rendererName) {
+		this.rendererName = rendererName;
+	}
+	
+	public VoxelBatch(Class<? extends AbstractObjectRenderer> rendererClass) {
+		this.rendererName = rendererClass.getSimpleName();
+	}
 	
 	private void initialiseShader() {
 		voxelShader = ShaderLoader.getProgram("shaders/voxel");
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
-		System.out.println("[PRINT DEBUGGING] VoxelBatch.initialiseVAO");
+		ErrorHandler.glErrorCheck("VoxelBatch.initialiseVAO");
 		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
 		
-		System.out.println("[PRINT DEBUGGING] before glGenVertexArrays");
+		ErrorHandler.glErrorCheck("before glGenVertexArrays");
 		voxelVAO = GL30.glGenVertexArrays();
-		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
+		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
-		System.out.println("[PRINT DEBUGGING] before glBindBuffer (cube VBO)");
+		ErrorHandler.glErrorCheck("before glBindBuffer (cube VBO)");
 		// voxel cube buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, VoxelCube.getVBO());
 		// position
@@ -57,9 +68,10 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnableVertexAttribArray(1);
 		Gdx.gl.glVertexAttribPointer(1, 3, Gdx.gl.GL_FLOAT, false, VoxelCube.CUBE_ELEMENT_SIZE, 3 * 4);
 		
-		System.out.println("[PRINT DEBUGGING] before glBindBuffer (voxel instances)");
+		ErrorHandler.glErrorCheck("before glBindBuffer (voxel instances)");
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
+		System.err.println(String.format("[[V]]%s|%d|%d", rendererName, voxelsBuffer.capacity(), voxelsBuffer.capacity() * 4));
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		// instance position
 		Gdx.gl.glEnableVertexAttribArray(2);
@@ -70,11 +82,11 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glVertexAttribPointer(3, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
 		GL33.glVertexAttribDivisor(3, 1);
 		
-		System.out.println("[PRINT DEBUGGING] before unbind all");
+		ErrorHandler.glErrorCheck("before unbind all");
 		
 		GL30.glBindVertexArray(0);
 		
-		Gdx.gl.glEnableVertexAttribArray(0);
+		Gdx.gl.glDisableVertexAttribArray(0);
 		Gdx.gl.glDisableVertexAttribArray(1);
 		Gdx.gl.glDisableVertexAttribArray(2);
 		Gdx.gl.glDisableVertexAttribArray(3);
@@ -176,7 +188,7 @@ public abstract class VoxelBatch<ObjectV> {
 		if (needsRebuild) {
 			rebuildVoxels(scene);
 			needsRebuild = false;
-			System.out.println("[PRINT DEBUGGING] after all rebuild");
+			ErrorHandler.glErrorCheck("after all rebuild");
 		} else {
 			Stream instanceStream = instances.stream()
 				.filter(VoxelModelInstance::isUpdated);
@@ -203,7 +215,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instances.forEach(i -> i.setUpdated(false));
 		
-		System.out.println("[PRINT DEBUGGING] before glViewport");
+		ErrorHandler.glErrorCheck("before glViewport");
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		voxelShader.begin();
@@ -213,19 +225,19 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);
 		Gdx.gl.glCullFace(Gdx.gl.GL_BACK);
 		
-		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
+		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(voxelVAO);
 		
-		System.out.println("[PRINT DEBUGGING] before glDrawBuffers");
+		ErrorHandler.glErrorCheck("before glDrawBuffers");
 		GL20.glDrawBuffers(GBuffersContext.G_BUFFERS_ATTACHMENTS);
-		System.out.println("[PRINT DEBUGGING] before glDrawArraysInstanced");
+		ErrorHandler.glErrorCheck("before glDrawArraysInstanced");
 		GL31.glDrawArraysInstanced(
 			Gdx.gl.GL_TRIANGLES,
 			0,
 			VoxelCube.CUBE_VERTICES.length / VoxelCube.CUBE_ELEMENT_COUNT,
 			instanceCount
 		);
-		System.out.println("[PRINT DEBUGGING] after glDrawArraysInstanced");
+		ErrorHandler.glErrorCheck("after glDrawArraysInstanced");
 		GL30.glBindVertexArray(0);
 		
 		Gdx.gl.glDisable(Gdx.gl.GL_CULL_FACE);

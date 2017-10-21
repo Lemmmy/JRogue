@@ -19,7 +19,7 @@ public abstract class EntityRenderer extends AbstractObjectRenderer<EntityAppear
 	
 	@Override
 	public void initialiseBatch() {
-		setBatch(new EntityVoxelBatch());
+		setBatch(new EntityVoxelBatch(getClass()));
 	}
 	
 	@Override

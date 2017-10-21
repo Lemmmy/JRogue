@@ -2,6 +2,7 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
@@ -59,11 +60,11 @@ public class SceneContext extends Context {
 	}
 	
 	public void renderAllMaps() {
-		System.out.println("[PRINT DEBUGGING] before renderAllMaps");
+		ErrorHandler.glErrorCheck("before renderAllMaps");
 		
 		tileRendererMap.renderAll(sceneCamera);
 		entityRendererMap.renderAll(sceneCamera);
 		
-		System.out.println("[PRINT DEBUGGING] after renderAllMaps");
+		ErrorHandler.glErrorCheck("after renderAllMaps");
 	}
 }

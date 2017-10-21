@@ -76,7 +76,7 @@ public class VoxGameScreen extends ComponentedScreen {
 		addComponent(10, "scene", new SceneComponent(this, sceneContext));
 		addComponent(100, "hud", HUDComponent.class);
 		addComponent(150, "fps", FPSCounterComponent.class);
-		// addComponent(200, "stats", RendererStatsComponent.class);
+		addComponent(200, "stats", RendererStatsComponent.class);
 	}
 	
 	@Override
@@ -84,9 +84,9 @@ public class VoxGameScreen extends ComponentedScreen {
 		super.show();
 		
 		clearInputProcessors();
-		addInputProcessor(new GameInputProcessor(dungeon, this));
+		// addInputProcessor(new GameInputProcessor(dungeon, this));
 		// addInputProcessor(getComponent(SceneComponent.class, "scene").getCameraController());
-		addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
+		// addInputProcessor(getComponent(HUDComponent.class, "hud").getStage());
 	}
 	
 	private void updateWindowTitle() {
@@ -100,20 +100,20 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public void render(float delta) {
-		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.super.render");
+		ErrorHandler.glErrorCheck("before VoxGameScreen.super.render");
 		super.render(delta);
-		System.out.println("[PRINT DEBUGGING] after VoxGameScreen.super.render");
+		ErrorHandler.glErrorCheck("after VoxGameScreen.super.render");
 		
 		screenCamera.update();
-		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.updateRendererComponents");
+		ErrorHandler.glErrorCheck("before VoxGameScreen.updateRendererComponents");
 		updateRendererComponents(delta);
 		
-		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.renderMainBatchComponents");
+		ErrorHandler.glErrorCheck("before VoxGameScreen.renderMainBatchComponents");
 		renderMainBatchComponents(delta);
-		System.out.println("[PRINT DEBUGGING] before VoxGameScreen.renderOtherBatchComponents");
+		ErrorHandler.glErrorCheck("before VoxGameScreen.renderOtherBatchComponents");
 		renderOtherBatchComponents(delta);
 		
-		System.out.println("[PRINT DEBUGGING] after VoxGameScreen.render");
+		ErrorHandler.glErrorCheck("after VoxGameScreen.render");
 	}
 	
 	@Override

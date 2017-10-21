@@ -23,7 +23,6 @@ public class TileRendererDoor extends TileRenderer {
 		this.state = state;
 	}
 	
-	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
 		switch (state) {

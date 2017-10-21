@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -162,7 +163,7 @@ public class HUDComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
-		System.out.println("[PRINT DEBUGGING] before HUDComponent.render");
+		ErrorHandler.glErrorCheck("before HUDComponent.render");
 		
 		for (Iterator<Runnable> iterator = nextFrameDeferred.iterator(); iterator.hasNext(); ) {
 			Runnable r = iterator.next();

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import jr.ErrorHandler;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.utils.FontLoader;
 
@@ -46,7 +47,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void render(float dt) {
-		System.out.println("[PRINT DEBUGGING] before FPSCounterComponent.render");
+		ErrorHandler.glErrorCheck("before FPSCounterComponent.render");
 		
 		counterCamera.update();
 		

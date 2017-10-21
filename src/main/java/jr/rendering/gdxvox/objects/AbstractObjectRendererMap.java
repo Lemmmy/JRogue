@@ -60,7 +60,7 @@ public abstract class AbstractObjectRendererMap<ObjectK, ObjectV, RendererT exte
 	
 	public void renderAll(Camera camera) {
 		objectRendererMap.values().forEach(renderer -> renderer.getBatch().render(camera, scene));
-		System.out.println("[PRINT DEBUGGING] after " + getClass().getSimpleName() + ".renderAll");
+		ErrorHandler.glErrorCheck("after " + getClass().getSimpleName() + ".renderAll");
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

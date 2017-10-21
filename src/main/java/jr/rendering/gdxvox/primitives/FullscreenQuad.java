@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.primitives;
 
 import com.badlogic.gdx.Gdx;
+import jr.ErrorHandler;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -61,6 +62,7 @@ public class FullscreenQuad {
 		GL20.glVertexAttribPointer(1, 2, Gdx.gl.GL_FLOAT, false, QUAD_ELEMENT_COUNT * 4, 2 * 4);
 		
 		GL30.glBindVertexArray(0);
+		Gdx.gl.glDisableVertexAttribArray(0);
 		Gdx.gl.glDisableVertexAttribArray(1);
 		
 		quadsVBO.put(dimension, quadVBOHandle);
@@ -76,12 +78,12 @@ public class FullscreenQuad {
 	
 	public static void dispose(Dimension d) {
 		if (quadsVBO.containsKey(d)) {
-			System.out.println("[PRINT DEBUGGING] FullscreenQuad - deleting buffer " + quadsVBO.get(d));
+			ErrorHandler.glErrorCheck("FullscreenQuad - deleting buffer " + quadsVBO.get(d));
 			// Gdx.gl.glDeleteBuffer(quadsVBO.get(d));
 			// quadsVBO.remove(d);
 		}
 		if (quadsVAO.containsKey(d)) {
-			System.out.println("[PRINT DEBUGGING] FullscreenQuad - deleting vertex arrays " + quadsVAO.get(d));
+			ErrorHandler.glErrorCheck("FullscreenQuad - deleting vertex arrays " + quadsVAO.get(d));
 			// GL30.glDeleteVertexArrays(quadsVAO.get(d));
 			// quadsVAO.remove(d);
 		}

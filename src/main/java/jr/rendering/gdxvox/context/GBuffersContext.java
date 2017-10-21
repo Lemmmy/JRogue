@@ -31,9 +31,9 @@ public class GBuffersContext extends Context {
 		int bufferCount = GBuffers.values().length;
 		
 		if (gBuffersTextures != null) {
-			System.out.println("[PRINT DEBUGGING] GBuffersContext - deleting textures");
+			ErrorHandler.glErrorCheck("GBuffersContext - deleting textures");
 			// Gdx.gl.glDeleteTextures(bufferCount, gBuffersTextures);
-			System.out.println("[PRINT DEBUGGING] GBuffersContext - deleting framebuffer " + gBuffersHandle);
+			ErrorHandler.glErrorCheck("GBuffersContext - deleting framebuffer " + gBuffersHandle);
 			// Gdx.gl.glDeleteFramebuffer(gBuffersHandle);
 		}
 		

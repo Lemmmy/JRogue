@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.primitives;
 
 import com.badlogic.gdx.Gdx;
+import jr.ErrorHandler;
 import org.lwjgl.BufferUtils;
 
 import java.nio.Buffer;
@@ -67,7 +68,7 @@ public class VoxelCube {
 	
 	public static void dispose() {
 		if (cubeBuffer != -1) {
-			System.out.println("[PRINT DEBUGGING] VoxelCube - deleting cube buffer " + cubeBuffer);
+			ErrorHandler.glErrorCheck("VoxelCube - deleting cube buffer " + cubeBuffer);
 			// Gdx.gl.glDeleteBuffer(cubeBuffer);
 			// cubeBuffer = -1;
 		}

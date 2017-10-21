@@ -22,6 +22,11 @@ public class TileRendererDoor extends TileRenderer {
 	}
 	
 	@Override
+	public void initialiseBatch() {
+		setBatch(new TileVoxelBatch(getClass().getSimpleName() + doorState.name()));
+	}
+	
+	@Override
 	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
 		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(tile.getPosition());
 		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();

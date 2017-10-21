@@ -57,7 +57,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	
 	@Override
 	public void render(float dt) {
-		System.out.println("[PRINT DEBUGGING] before SceneComponent.render");
+		ErrorHandler.glErrorCheck("before SceneComponent.render");
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
@@ -68,16 +68,16 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		
 		sceneContext.renderAllMaps();
 		
-		System.out.println("[PRINT DEBUGGING] before glBindFramebuffer");
+		ErrorHandler.glErrorCheck("before glBindFramebuffer unbind");
 		Gdx.gl.glBindFramebuffer(Gdx.gl.GL_FRAMEBUFFER, 0);
 		
-		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
+		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(fullscreenQuadVAO);
 		
-		System.out.println("[PRINT DEBUGGING] before bindTextures");
+		ErrorHandler.glErrorCheck("before bindTextures");
 		sceneContext.gBuffersContext.bindTextures();
 		
-		System.out.println("[PRINT DEBUGGING] before shader.begin");
+		ErrorHandler.glErrorCheck("before shader.begin");
 		fullscreenQuadShader.begin();
 		fullscreenQuadShader.setUniformMatrix("u_projTrans", renderer.getScreenCamera().combined);
 		fullscreenQuadShader.setUniformi("u_g_diffuse", 0);
@@ -85,7 +85,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		fullscreenQuadShader.setUniformi("u_g_pos", 2);
 		// fullscreenQuadShader.setUniformi("u_g_depth", 3);
 		
-		System.out.println("[PRINT DEBUGGING] before UBO check");
+		ErrorHandler.glErrorCheck("before UBO check");
 		if (uniformBlockIndex == -1) {
 			uniformBlockIndex = GL31.glGetUniformBlockIndex(fullscreenQuadShaderHandle, "Lights");
 			
@@ -96,7 +96,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 			}
 		}
 		
-		System.out.println("[PRINT DEBUGGING] before glBindBufferRange");
+		ErrorHandler.glErrorCheck("before glBindBufferRange");
 		GL30.glBindBufferRange(
 			GL31.GL_UNIFORM_BUFFER,
 			uniformBlockIndex,
@@ -104,18 +104,18 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 			0,
 			sceneContext.lightContext.getBufferSize()
 		);
-		System.out.println("[PRINT DEBUGGING] before glDrawArrays");
+		ErrorHandler.glErrorCheck("before glDrawArrays");
 		Gdx.gl.glDrawArrays(Gdx.gl.GL_TRIANGLE_STRIP, 0, FullscreenQuad.QUAD_ELEMENT_COUNT);
 		
 		fullscreenQuadShader.end();
 		
-		System.out.println("[PRINT DEBUGGING] before glBindVertexArray");
+		ErrorHandler.glErrorCheck("before glBindVertexArray");
 		GL30.glBindVertexArray(0);
-		System.out.println("[PRINT DEBUGGING] after glBindVertexArray");
+		ErrorHandler.glErrorCheck("after glBindVertexArray");
 		
 		Gdx.gl.glActiveTexture(Gdx.gl.GL_TEXTURE0);
 		
-		System.out.println("[PRINT DEBUGGING] after glActiveTexture");
+		ErrorHandler.glErrorCheck("after glActiveTexture");
 	}
 	
 	@Override

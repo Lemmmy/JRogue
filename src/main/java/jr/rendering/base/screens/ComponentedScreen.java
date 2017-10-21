@@ -94,17 +94,17 @@ public abstract class ComponentedScreen extends BasicScreen {
 	}
 	
 	public void updateRendererComponents(float dt) {
-		rendererComponents.values().forEach(r -> r.update(dt));
+		sortedComponents.forEach(r -> r.update(dt));
 	}
 	
 	public void renderMainBatchComponents(float dt) {
-		rendererComponents.values().stream()
+		sortedComponents.stream()
 			.filter(RendererComponent::useMainBatch)
 			.forEach(r -> r.render(dt));
 	}
 	
 	public void renderOtherBatchComponents(float dt) {
-		rendererComponents.values().stream()
+		sortedComponents.stream()
 			.filter(r -> !r.useMainBatch())
 			.forEach(r -> r.render(dt));
 	}

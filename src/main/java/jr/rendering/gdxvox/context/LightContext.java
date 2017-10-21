@@ -2,6 +2,7 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.LevelChangeEvent;
@@ -41,7 +42,7 @@ public class LightContext extends Context {
 	}
 	
 	public void rebuildLights() {
-		System.out.println("[PRINT DEBUGGING] rebuildLights");
+		ErrorHandler.glErrorCheck("before rebuildLights");
 		
 		if (lightBufferHandle == -1) lightBufferHandle = Gdx.gl.glGenBuffer();
 		
@@ -57,6 +58,8 @@ public class LightContext extends Context {
 			.mapToInt(Buffer::capacity)
 			.sum();
 		
+		System.err.println(String.format("[[L]]%d|%d", lights.size(), bufferSize));
+		
 		ByteBuffer compiledBuffer = BufferUtils.createByteBuffer(bufferSize);
 		compiledBuffer.putInt((int) lights.values().stream()
 			.filter(Light::isEnabled)
@@ -67,6 +70,8 @@ public class LightContext extends Context {
 		compiledBuffer.flip();
 		
 		Gdx.gl.glBufferData(GL31.GL_UNIFORM_BUFFER, bufferSize, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);
+		
+		ErrorHandler.glErrorCheck("after rebuildLights");
 	}
 	
 	@Override

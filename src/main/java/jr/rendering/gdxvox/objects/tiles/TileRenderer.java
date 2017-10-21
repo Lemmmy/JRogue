@@ -12,7 +12,7 @@ public abstract class TileRenderer extends AbstractObjectRenderer<TileType, Tile
 	
 	@Override
 	public void initialiseBatch() {
-		setBatch(new TileVoxelBatch());
+		setBatch(new TileVoxelBatch(getClass()));
 	}
 	
 	@Override
