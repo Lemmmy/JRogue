@@ -91,7 +91,7 @@ public class EventSystem {
 			try {
 				h.getMethod().invoke(h.getListener(), event);
 			} catch (Exception e) {
-				JRogue.getLogger().error("Error triggering event " + event.getClass().getSimpleName(), e);
+				JRogue.getLogger().error("Error triggering event " + event.getClass().getSimpleName(), e.getCause());
 			}
 		});
 	}
