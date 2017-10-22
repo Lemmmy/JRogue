@@ -2,7 +2,6 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.LevelChangeEvent;
@@ -12,7 +11,6 @@ import lombok.Setter;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL31;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,7 @@ public class LightContext extends Context {
 		super(dungeon);
 	}
 	
-	public void update() {
+	public void update(float delta) {
 		if (!lightsNeedUpdating) return;
 		rebuildLights();
 		lightsNeedUpdating = false;
@@ -72,7 +70,7 @@ public class LightContext extends Context {
 	protected void onLevelChange(LevelChangeEvent levelChangeEvent) {
 		super.onLevelChange(levelChangeEvent);
 		lights.clear();
-		update();
+		lightsNeedUpdating = true;
 	}
 	
 	public void addLight(Entity emitter, Light light) {

@@ -148,7 +148,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	@Override
 	public void update(float dt) {
 		cameraController.update();
-		sceneContext.update();
+		sceneContext.update(dt);
 	}
 	
 	@Override

@@ -20,20 +20,20 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class GameInputProcessor implements InputProcessor {
-	private Dungeon dungeon;
-	private ComponentedScreen renderer;
+public class GameInputProcessor<RendererT extends ComponentedScreen> implements InputProcessor {
+	protected Dungeon dungeon;
+	protected RendererT renderer;
 	
-	private boolean dontHandleNext = false;
-	private boolean mouseMoved = false;
+	protected boolean dontHandleNext = false;
+	protected boolean mouseMoved = false;
 	
-	private boolean teleporting = false;
-
-	private final Map<Character, BiConsumer<Player, Character>> playerCommands = new HashMap<>();
+	protected boolean teleporting = false;
 	
-	private HUDComponent hudComponent;
+	protected final Map<Character, BiConsumer<Player, Character>> playerCommands = new HashMap<>();
 	
-	public GameInputProcessor(Dungeon dungeon, ComponentedScreen renderer) {
+	protected HUDComponent hudComponent;
+	
+	public GameInputProcessor(Dungeon dungeon, RendererT renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
 
@@ -42,7 +42,7 @@ public class GameInputProcessor implements InputProcessor {
 		hudComponent = renderer.getComponent(HUDComponent.class, "hud");
 	}
 
-	private void registerDefaultKeys() {
+	protected void registerDefaultKeys() {
 		registerKeyMapping(p -> p.defaultVisitors.travelDirectional(), '5', 'g');
 		registerKeyMapping(p -> p.defaultVisitors.drop(), 'd');
 		registerKeyMapping(p -> p.defaultVisitors.eat(), 'e');
@@ -66,21 +66,21 @@ public class GameInputProcessor implements InputProcessor {
 		}
 	}
 
-	private void registerKeyMapping(BiConsumer<Player, Character> callback, char ...inputs) {
+	protected void registerKeyMapping(BiConsumer<Player, Character> callback, char ...inputs) {
 		for (char input : inputs) {
 			playerCommands.put(input, callback);
 		}
 	}
 
-	private void registerKeyMapping(Consumer<Player> callback, char ...inputs) {
+	protected void registerKeyMapping(Consumer<Player> callback, char... inputs) {
 		registerKeyMapping((p, i) -> callback.accept(p), inputs);
 	}
 
-	private void registerKeyMapping(Runnable callback, char ...inputs) {
+	protected void registerKeyMapping(Runnable callback, char ...inputs) {
 		registerKeyMapping((p, i) -> callback.run(), inputs);
 	}
 	
-	private boolean handleMovementCommands(int keycode) {
+	protected boolean handleMovementCommands(int keycode) {
 		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
 			VectorInt d = Utils.MOVEMENT_KEYS.get(keycode);
 			dungeon.getPlayer().defaultVisitors.walk(d.getX(), d.getY());
@@ -90,7 +90,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
+	protected boolean handlePlayerCommands(int keycode) { // TODO: Reorder this fucking mess
 		if (!renderer.shouldAllowInput()) return false;
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
@@ -108,7 +108,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private boolean handlePlayerCommandsCharacters(char key) {
+	protected boolean handlePlayerCommandsCharacters(char key) {
 		if (!renderer.shouldAllowInput()) return false;
 
 		if (playerCommands.containsKey(key)) {
@@ -123,7 +123,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private boolean handleRendererCommands(int keycode) {
+	protected boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.W && hudComponent != null) {
 				hudComponent.showWishWindow();
@@ -137,7 +137,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private boolean handleWorldClicks(Point pos, int button) {
+	protected boolean handleWorldClicks(Point pos, int button) {
 		if (!renderer.shouldAllowInput()) return false;
 		if (hasWindows()) return false;
 		
@@ -164,7 +164,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private boolean handleDebugClicks(Point pos, int button) {
+	protected boolean handleDebugClicks(Point pos, int button) {
 		if (!renderer.shouldAllowInput()) return false;
 		if (hasWindows()) return false;
 		
@@ -182,7 +182,7 @@ public class GameInputProcessor implements InputProcessor {
 		return false;
 	}
 	
-	private Point screenToWorldPos(int screenX, int screenY) {
+	protected Point screenToWorldPos(int screenX, int screenY) {
 		return renderer.unprojectWorldPos(screenX, screenY);
 	}
 	

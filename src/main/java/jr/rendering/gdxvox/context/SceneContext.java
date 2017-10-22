@@ -2,16 +2,28 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import jr.ErrorHandler;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
 import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
+import jr.utils.Utils;
 
 public class SceneContext extends Context {
 	private static final float VIEWPORT_SIZE = 20;
-	public static final int CAMERA_Y = 4;
-	public static final int CAMERA_OFFSET_Z = 5;
+	
+	public static final int CAMERA_Y = 5;
+	public static final int CAMERA_OFFSET_BEHIND = 5;
+	
+	public static final float CAMERA_LERP_DURATION = 0.125f;
+	public static final float CAMERA_LERP_BIAS = 0.01f;
+	
+	public float cameraRotation = 0f;
+	public float cameraStartRotation = 0f;
+	public float cameraTargetRotation = 0f;
+	public float cameraLerpElapsed = 0f;
+	public boolean cameraLerping = false;
 	
 	public final LightContext lightContext;
 	public final GBuffersContext gBuffersContext;
@@ -37,22 +49,42 @@ public class SceneContext extends Context {
 		dungeon.eventSystem.addListener(entityRendererMap);
 	}
 	
-	public void updateCamera() {
+	public void updateCamera(float delta) {
+		if (cameraLerping) {
+			cameraLerpElapsed += delta;
+			
+			if (cameraLerpElapsed >= CAMERA_LERP_DURATION - CAMERA_LERP_BIAS) {
+				cameraLerping = false;
+				cameraRotation = cameraTargetRotation % 360;
+			} else {
+				cameraRotation = Utils.easeInOut(
+					cameraLerpElapsed,
+					cameraStartRotation,
+					cameraTargetRotation - cameraStartRotation,
+					CAMERA_LERP_DURATION
+				);
+			}
+		}
+		
 		if (getDungeon().getPlayer() != null) {
 			Player p = getDungeon().getPlayer();
 			
-			sceneCamera.position.set(p.getX(), CAMERA_Y, p.getY() + CAMERA_OFFSET_Z);
+			float dx = (float) (Math.sin(Math.toRadians(cameraRotation)) * CAMERA_OFFSET_BEHIND);
+			float dy = (float) (Math.cos(Math.toRadians(cameraRotation)) * CAMERA_OFFSET_BEHIND);
+			
+			sceneCamera.position.set(p.getX() + dx, CAMERA_Y, p.getY() + dy);
 			sceneCamera.lookAt(p.getX(), 0.5f, p.getY());
-			sceneCamera.direction.x = 0f; // sometimes the camera likes to wobble out of its angle
+			sceneCamera.up.set(Vector3.Y);
+			// sceneCamera.direction.x = 0f; // sometimes the camera likes to wobble out of its angle
 		}
 		
 		sceneCamera.near = 0.1f;
 		sceneCamera.update();
 	}
 	
-	public void update() {
-		updateCamera();
-		lightContext.update();
+	public void update(float delta) {
+		updateCamera(delta);
+		lightContext.update(delta);
 	}
 	
 	public void resize(int width, int height) {
@@ -62,5 +94,12 @@ public class SceneContext extends Context {
 	public void renderAllMaps() {
 		tileRendererMap.renderAll(sceneCamera);
 		entityRendererMap.renderAll(sceneCamera);
+	}
+	
+	public void rotateCamera(float degrees) {
+		cameraLerping = true;
+		cameraLerpElapsed = 0.0f;
+		cameraStartRotation = cameraRotation;
+		cameraTargetRotation = (cameraRotation % (360 + 90) + degrees) % (360 + 90);
 	}
 }

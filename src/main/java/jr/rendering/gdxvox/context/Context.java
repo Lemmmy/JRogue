@@ -19,7 +19,7 @@ public abstract class Context implements EventListener {
 		this.dungeon.eventSystem.addListener(this);
 	}
 	
-	public void update() {}
+	public void update(float delta) {}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	protected void onLevelChange(LevelChangeEvent levelChangeEvent) {
