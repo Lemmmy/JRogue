@@ -113,7 +113,6 @@ public class JRogue {
 			config.useOpenGL3(true, 3, 2);
 			
 			adapter = new GameAdapter();
-			adapter.setRootDebugObject(this);
 			
 			new Lwjgl3Application(adapter, config);
 		} catch (Exception e) {
@@ -129,7 +128,9 @@ public class JRogue {
 		this.dungeon = dungeon;
 		
 		if (adapter.getDebugClient() != null) {
-			adapter.getDebugClient().setDungeon(dungeon);
+			try {
+				adapter.getDebugClient().setDungeon(dungeon);
+			} catch (Exception ignored) {}
 		}
 	}
 	

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.rendering.base.components.FPSCounterComponent;
@@ -13,12 +14,15 @@ import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdxvox.GameInputProcessor;
 import jr.rendering.gdxvox.components.RendererStatsComponent;
 import jr.rendering.gdxvox.components.SceneComponent;
+import jr.rendering.gdxvox.components.TextPopups;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.utils.Point;
 import lombok.Getter;
 
 public class VoxGameScreen extends ComponentedScreen {
+	private static final Vector3 tmpVector = new Vector3();
+	
 	/**
 	 * The {@link GameAdapter} instance.
 	 */
@@ -50,6 +54,8 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	private void initialise() {
 		updateWindowTitle();
+		
+		dungeon.eventSystem.addListener(new TextPopups(getComponent(HUDComponent.class, "hud")));
 	}
 	
 	@Override
@@ -97,12 +103,19 @@ public class VoxGameScreen extends ComponentedScreen {
 	
 	@Override
 	public Point unprojectWorldPos(float screenX, float screenY) {
-		return null;
+		Ray ray = sceneContext.sceneCamera.getPickRay(screenX, screenY);
+		float distance = -ray.origin.y / ray.direction.y;
+		tmpVector.set(ray.direction).scl(distance).add(ray.origin);
+		
+		return new Point(
+			(int) (tmpVector.x + 0.5f),
+			(int) (tmpVector.z + 0.5f)
+		);
 	}
 	
 	@Override
 	public Vector3 projectWorldPos(float worldX, float worldY) {
-		return null;
+		return sceneContext.sceneCamera.project(new Vector3(worldX, 0f, worldY));
 	}
 	
 	@Override

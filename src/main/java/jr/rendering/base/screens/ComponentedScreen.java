@@ -52,7 +52,7 @@ public abstract class ComponentedScreen extends BasicScreen {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void addComponent(int zIndex, String name, Class<? extends RendererComponent> clazz) {
+	public <ComponentT extends RendererComponent> ComponentT addComponent(int zIndex, String name, Class<? extends ComponentT> clazz) {
 		try {
 			Type genericSuperclass = clazz.getGenericSuperclass();
 			Constructor componentConstructor;
@@ -65,8 +65,10 @@ public abstract class ComponentedScreen extends BasicScreen {
 				componentConstructor = clazz.getConstructor(ComponentedScreen.class);
 			}
 			
-			RendererComponent component = (RendererComponent) componentConstructor.newInstance(this);
+			ComponentT component = (ComponentT) componentConstructor.newInstance(this);
 			addComponent(zIndex, name, component);
+			
+			return component;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			ErrorHandler.error(String.format(
 				"Error adding component %s (%s)",
@@ -74,6 +76,8 @@ public abstract class ComponentedScreen extends BasicScreen {
 				clazz.getSimpleName()
 			), e);
 		}
+		
+		return null;
 	}
 	
 	public <ComponentT extends RendererComponent> ComponentT getComponent(Class<ComponentT> clazz, String name) {

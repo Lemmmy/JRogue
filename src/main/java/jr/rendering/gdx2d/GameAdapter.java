@@ -50,12 +50,13 @@ public class GameAdapter extends Game {
 	private boolean debugWindowFocused;
 	
 	@HideFromDebugger
-	@Setter private Object rootDebugObject;
+	private Object rootDebugObject;
 	
 	private InputMultiplexer inputMultiplexer;
 	
 	public GameAdapter() {
 		this.settings = JRogue.getSettings();
+		rootDebugObject = JRogue.INSTANCE;
 	}
 	
 	@Override

@@ -158,8 +158,6 @@ public class HUDComponent extends RendererComponent {
 		
 		root.top();
 		stage.addActor(root);
-		
-		dungeon.eventSystem.addListener(new TextPopups(this));
 	}
 	
 	@Override

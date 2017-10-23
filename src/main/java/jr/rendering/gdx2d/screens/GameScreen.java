@@ -18,6 +18,7 @@ import jr.rendering.base.components.FPSCounterComponent;
 import jr.rendering.base.components.MinimapComponent;
 import jr.rendering.base.components.RendererComponent;
 import jr.rendering.base.components.hud.HUDComponent;
+import jr.rendering.gdx2d.components.TextPopups;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.base.screens.DeathScreen;
 import jr.rendering.base.screens.utils.SlidingTransition;
@@ -116,6 +117,8 @@ public class GameScreen extends ComponentedScreen implements EventListener {
 		debugCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
 		
+		dungeon.eventSystem.addListener(new TextPopups(getComponent(HUDComponent.class, "hud")));
+		
 		dungeon.start();
 	}
 	
@@ -174,7 +177,11 @@ public class GameScreen extends ComponentedScreen implements EventListener {
 	
 	@Override
 	public Vector3 projectWorldPos(float worldX, float worldY) {
-		return camera.project(new Vector3(worldX, worldY, 0));
+		return camera.project(new Vector3(
+			worldX * TileMap.TILE_WIDTH,
+			worldY * TileMap.TILE_HEIGHT,
+			0
+		));
 	}
 	
 	private void initialiseInputProcessors() {

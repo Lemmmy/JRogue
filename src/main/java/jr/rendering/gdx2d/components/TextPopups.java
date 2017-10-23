@@ -1,4 +1,4 @@
-package jr.rendering.base.components.hud;
+package jr.rendering.gdx2d.components;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,20 +15,20 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventInvocationTime;
 import jr.dungeon.events.EventListener;
+import jr.rendering.base.components.hud.HUDComponent;
 import jr.rendering.base.screens.ComponentedScreen;
-import jr.rendering.gdx2d.screens.GameScreen;
 import jr.rendering.gdx2d.tiles.TileMap;
 import jr.utils.Point;
 
 public class TextPopups implements EventListener {
-	private static final float TEXT_POPUP_DURATION = 0.4f;
+	protected static final float TEXT_POPUP_DURATION = 0.4f;
 	
-	public HUDComponent hudComponent;
+	protected HUDComponent hudComponent;
 	
-	private Dungeon dungeon;
-	private Stage stage;
-	private ComponentedScreen renderer;
-	private Settings settings;
+	protected Dungeon dungeon;
+	protected Stage stage;
+	protected ComponentedScreen renderer;
+	protected Settings settings;
 	
 	public TextPopups(HUDComponent hudComponent) {
 		this.hudComponent = hudComponent;
@@ -83,10 +83,7 @@ public class TextPopups implements EventListener {
 			return;
 		}
 		
-		Vector3 pos = renderer.projectWorldPos(
-			(worldPos.getX() + 0.5f) * TileMap.TILE_WIDTH,
-			worldPos.getY() * TileMap.TILE_HEIGHT
-		);
+		Vector3 pos = getProjectedPos(worldPos);
 		
 		Table table = new Table(hudComponent.getSkin());
 		table.add(new Label(text, hudComponent.getSkin(), setting == 1 ? "default" : "large"));
@@ -96,10 +93,21 @@ public class TextPopups implements EventListener {
 		table.setPosition((int) pos.x - (int) (table.getWidth() / 2), (int) pos.y);
 		hudComponent.getSingleTurnActors().add(table);
 		
-		table.addAction(Actions.moveTo(table.getX(), table.getY() + TileMap.TILE_HEIGHT / 2, TEXT_POPUP_DURATION));
+		table.addAction(Actions.moveTo(table.getX(), table.getY() + getYRaise(), TEXT_POPUP_DURATION));
 		table.addAction(Actions.sequence(
 			Actions.delay(TEXT_POPUP_DURATION / 2),
 			Actions.fadeOut(TEXT_POPUP_DURATION))
 		);
+	}
+	
+	public Vector3 getProjectedPos(Point worldPos) {
+		return renderer.projectWorldPos(
+			worldPos.getX() + 0.5f,
+			worldPos.getY()
+		);
+	}
+	
+	public float getYRaise() {
+		return TileMap.TILE_HEIGHT / 2;
 	}
 }
