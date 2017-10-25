@@ -2,7 +2,6 @@ package jr.rendering.gdxvox.objects.tiles.renderers;
 
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
@@ -52,11 +51,12 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	@Override
-	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
+	public void tileAdded(Tile tile) {
 		WallModel wallModel = MAP[getPositionMask(tile)];
 		if (wallModel == null || wallModel.model == null) return;
 		
-		batch.add(tile, new VoxelModelInstance(wallModel.model)
+		manager.getStaticBatch(tile.getX(), tile.getY())
+			.add(tile, new VoxelModelInstance(wallModel.model)
 			.setRotation(wallModel.rotation));
 	}
 	

@@ -2,7 +2,6 @@ package jr.rendering.gdxvox.objects.tiles.renderers;
 
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
@@ -24,8 +23,10 @@ public class TileRendererFloor extends TileRenderer {
 	}
 	
 	@Override
-	public void tileAdded(Tile tile, TileVoxelBatch batch, SceneContext scene) {
+	public void tileAdded(Tile tile) {
 		TileType[] adjacentTiles = tile.getLevel().tileStore.getAdjacentTileTypes(tile.getPosition());
+		
+		TileVoxelBatch batch = manager.getStaticBatch(tile.getX(), tile.getY());
 		
 		batch.add(tile, new VoxelModelInstance(floorModel)
 			.setOffset(0, 0 - 1f / 16f, 0));

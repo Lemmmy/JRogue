@@ -10,7 +10,7 @@ public class EntityVoxelBatch extends VoxelBatch<Entity> {
 		super(rendererName);
 	}
 	
-	public EntityVoxelBatch(Class<? extends AbstractObjectRenderer> rendererClass) {
+	public EntityVoxelBatch(Class<?> rendererClass) {
 		super(rendererClass);
 	}
 	

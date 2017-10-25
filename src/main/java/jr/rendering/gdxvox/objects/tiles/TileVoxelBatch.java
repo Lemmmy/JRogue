@@ -10,7 +10,7 @@ public class TileVoxelBatch extends VoxelBatch<Tile> {
 		super(rendererName);
 	}
 	
-	public TileVoxelBatch(Class<? extends AbstractObjectRenderer> rendererClass) {
+	public TileVoxelBatch(Class<?> rendererClass) {
 		super(rendererClass);
 	}
 	

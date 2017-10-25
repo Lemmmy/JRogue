@@ -4,13 +4,23 @@ import jr.dungeon.Level;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.gdxvox.context.SceneContext;
-import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
+import jr.rendering.gdxvox.objects.AbstractObjectRendererManager;
 
 import java.lang.annotation.Annotation;
 
-public class TileRendererMap extends AbstractObjectRendererMap<TileType, Tile, TileRenderer> {
-	public TileRendererMap(SceneContext scene) {
+public class TileRendererManager extends AbstractObjectRendererManager<TileType, Tile, TileVoxelBatch, TileRenderer> {
+	public TileRendererManager(SceneContext scene) {
 		super(scene);
+	}
+	
+	@Override
+	public TileVoxelBatch initialiseBatch() {
+		return new TileVoxelBatch(getClass());
+	}
+	
+	@Override
+	public TileVoxelBatch[] initialiseStaticBatchArray(int size) {
+		return new TileVoxelBatch[size];
 	}
 	
 	@Override
@@ -19,7 +29,7 @@ public class TileRendererMap extends AbstractObjectRendererMap<TileType, Tile, T
 			TileType type = tile.getType();
 			
 			if (!objectRendererMap.containsKey(type)) continue;
-			objectRendererMap.get(type).objectAdded(tile, getScene());
+			objectRendererMap.get(type).objectAdded(tile);
 		}
 	}
 	

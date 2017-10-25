@@ -9,6 +9,7 @@ import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
@@ -37,11 +38,13 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	private boolean needsRebuild;
 	
+	@Setter private boolean isCulled = false;
+	
 	public VoxelBatch(String rendererName) {
 		this.rendererName = rendererName;
 	}
 	
-	public VoxelBatch(Class<? extends AbstractObjectRenderer> rendererClass) {
+	public VoxelBatch(Class<?> rendererClass) {
 		this.rendererName = rendererClass.getSimpleName();
 	}
 	
@@ -173,6 +176,8 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public void render(Camera camera, SceneContext scene) {
+		if (isCulled) return;
+		
 		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
 			needsRebuild = true;
 		}
@@ -205,6 +210,8 @@ public abstract class VoxelBatch<ObjectV> {
 		}
 		
 		instances.forEach(i -> i.setUpdated(false));
+		
+		if (instanceCount <= 0) return;
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		

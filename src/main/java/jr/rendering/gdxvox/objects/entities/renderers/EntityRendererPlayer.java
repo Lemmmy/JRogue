@@ -1,7 +1,6 @@
 package jr.rendering.gdxvox.objects.entities.renderers;
 
 import jr.dungeon.entities.Entity;
-import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
@@ -18,8 +17,8 @@ public class EntityRendererPlayer extends EntityRenderer {
 	}
 	
 	@Override
-	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		batch.add(entity, new VoxelModelInstance(playerModel));
+	public void entityAdded(Entity entity) {
+		manager.getDynamicBatch().add(entity, new VoxelModelInstance(playerModel));
 		
 		// TODO: light emission
 	}

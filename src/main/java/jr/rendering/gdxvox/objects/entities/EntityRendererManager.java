@@ -8,13 +8,23 @@ import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.EventHandler;
 import jr.rendering.gdxvox.context.SceneContext;
-import jr.rendering.gdxvox.objects.AbstractObjectRendererMap;
+import jr.rendering.gdxvox.objects.AbstractObjectRendererManager;
 
 import java.lang.annotation.Annotation;
 
-public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearance, Entity, EntityRenderer> {
-	public EntityRendererMap(SceneContext scene) {
+public class EntityRendererManager extends AbstractObjectRendererManager<EntityAppearance, Entity, EntityVoxelBatch, EntityRenderer> {
+	public EntityRendererManager(SceneContext scene) {
 		super(scene);
+	}
+	
+	@Override
+	public EntityVoxelBatch initialiseBatch() {
+		return new EntityVoxelBatch(getClass());
+	}
+	
+	@Override
+	public EntityVoxelBatch[] initialiseStaticBatchArray(int size) {
+		return new EntityVoxelBatch[size];
 	}
 	
 	@Override
@@ -23,7 +33,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 			EntityAppearance appearance = entity.getAppearance();
 			
 			if (!objectRendererMap.containsKey(appearance)) continue;
-			objectRendererMap.get(appearance).objectAdded(entity, getScene());
+			objectRendererMap.get(appearance).objectAdded(entity);
 		}
 	}
 	
@@ -32,7 +42,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 		EntityAppearance appearance = e.getEntity().getAppearance();
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
-		objectRendererMap.get(appearance).objectAdded(e.getEntity(), getScene());
+		objectRendererMap.get(appearance).objectAdded(e.getEntity());
 	}
 	
 	@EventHandler
@@ -40,7 +50,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 		EntityAppearance appearance = e.getEntity().getAppearance();
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
-		objectRendererMap.get(appearance).objectRemoved(e.getEntity(), getScene());
+		objectRendererMap.get(appearance).objectRemoved(e.getEntity());
 	}
 	
 	@EventHandler
@@ -49,7 +59,7 @@ public class EntityRendererMap extends AbstractObjectRendererMap<EntityAppearanc
 		
 		if (!objectRendererMap.containsKey(appearance)) return;
 		EntityRenderer r = objectRendererMap.get(appearance);
-		r.entityMoved(e.getEntity(), e, r.getBatch(), getScene());
+		r.entityMoved(e.getEntity(), e);
 	}
 	
 	@Override

@@ -21,10 +21,10 @@ public class GameInputProcessor extends jr.rendering.gdx2d.GameInputProcessor<Vo
 	
 	private boolean handleCameraRotation(int keycode) {
 		if (keycode == Input.Keys.NUMPAD_4) {
-			renderer.getSceneContext().rotateCamera(-90);
+			renderer.getSceneContext().rotateCamera(90);
 			return true;
 		} else if (keycode == Input.Keys.NUMPAD_6) {
-			renderer.getSceneContext().rotateCamera(90);
+			renderer.getSceneContext().rotateCamera(-90);
 			return true;
 		}
 		

@@ -6,7 +6,6 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
@@ -25,13 +24,14 @@ public class EntityRendererTorch extends EntityRenderer {
 	}
 	
 	@Override
-	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
+	public void entityAdded(Entity entity) {
 		float rotation = getRotation(entity.getLevel(), entity.getPosition());
 		float dx = (float) Math.sin(Math.toRadians(rotation)) * 0.999f;
 		float dy = (float) Math.cos(Math.toRadians(rotation)) * 0.999f;
 		// * 0.999f here slightly extrudes them from the wall in case they are overlapping with a brick
 		
-		batch.add(entity, new VoxelModelInstance(torchModel)
+		manager.getStaticBatch(entity.getX(), entity.getY())
+			.add(entity, new VoxelModelInstance(torchModel)
 			.setOffset(-dx, 0, dy)
 			.setRotation(rotation));
 		
@@ -62,12 +62,12 @@ public class EntityRendererTorch extends EntityRenderer {
 	}
 	
 	@Override
-	public void entityRemoved(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
+	public void entityRemoved(Entity entity) {
 		scene.lightContext.removeLight(entity);
 	}
 	
 	@Override
-	public void entityMoved(Entity entity, EntityMovedEvent event, EntityVoxelBatch batch, SceneContext scene) {
+	public void entityMoved(Entity entity, EntityMovedEvent event) {
 		scene.lightContext.moveLight(entity);
 	}
 }

@@ -2,12 +2,11 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.gdxvox.objects.entities.EntityRendererMap;
-import jr.rendering.gdxvox.objects.tiles.TileRendererMap;
+import jr.rendering.gdxvox.objects.entities.EntityRendererManager;
+import jr.rendering.gdxvox.objects.tiles.TileRendererManager;
 import jr.utils.Utils;
 
 public class SceneContext extends Context {
@@ -19,19 +18,19 @@ public class SceneContext extends Context {
 	public static final float CAMERA_LERP_DURATION = 0.125f;
 	public static final float CAMERA_LERP_BIAS = 0.01f;
 	
-	public float cameraRotation = 0f;
-	public float cameraStartRotation = 0f;
-	public float cameraTargetRotation = 0f;
-	public float cameraLerpElapsed = 0f;
-	public boolean cameraLerping = false;
+	public final TileRendererManager tileRendererManager;
+	public final EntityRendererManager entityRendererManager;
 	
 	public final LightContext lightContext;
 	public final GBuffersContext gBuffersContext;
 	
 	public final PerspectiveCamera sceneCamera;
 	
-	public final TileRendererMap tileRendererMap;
-	public final EntityRendererMap entityRendererMap;
+	public float cameraRotation = 0f;
+	public float cameraStartRotation = 0f;
+	public float cameraTargetRotation = 0f;
+	public float cameraLerpElapsed = 0f;
+	public boolean cameraLerping = false;
 	
 	public SceneContext(Dungeon dungeon) {
 		super(dungeon);
@@ -40,13 +39,13 @@ public class SceneContext extends Context {
 		gBuffersContext = new GBuffersContext(dungeon);
 		
 		sceneCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		tileRendererMap = new TileRendererMap(this);
-		tileRendererMap.initialise();
-		dungeon.eventSystem.addListener(tileRendererMap);
+		tileRendererManager = new TileRendererManager(this);
+		tileRendererManager.initialise();
+		dungeon.eventSystem.addListener(tileRendererManager);
 		
-		entityRendererMap = new EntityRendererMap(this);
-		entityRendererMap.initialise();
-		dungeon.eventSystem.addListener(entityRendererMap);
+		entityRendererManager = new EntityRendererManager(this);
+		entityRendererManager.initialise();
+		dungeon.eventSystem.addListener(entityRendererManager);
 	}
 	
 	public void updateCamera(float delta) {
@@ -92,8 +91,8 @@ public class SceneContext extends Context {
 	}
 	
 	public void renderAllMaps() {
-		tileRendererMap.renderAll(sceneCamera);
-		entityRendererMap.renderAll(sceneCamera);
+		tileRendererManager.renderAll(sceneCamera);
+		entityRendererManager.renderAll(sceneCamera);
 	}
 	
 	public void rotateCamera(float degrees) {

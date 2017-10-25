@@ -8,7 +8,7 @@ import jr.rendering.gdxvox.objects.tiles.renderers.TileRendererWall;
 public class TileRenderers {
 	@SuppressWarnings("unchecked")
 	@TileRendererList
-	public static void addRenderers(TileRendererMap m) {
+	public static void addRenderers(TileRendererManager m) {
 		m.addRenderers(new TileRendererWall(), TileType.TILE_ROOM_WALL);
 		m.addRenderers(new TileRendererFloor(), TileType.TILE_ROOM_FLOOR);
 		m.addRenderers(new TileRendererDoor(TileRendererDoor.DoorState.CLOSED), TileType.TILE_ROOM_DOOR_CLOSED);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
-import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
@@ -22,8 +21,8 @@ public class EntityRendererCandlestick extends EntityRenderer {
 	}
 	
 	@Override
-	public void entityAdded(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
-		batch.add(entity, new VoxelModelInstance(candlestickModel));
+	public void entityAdded(Entity entity) {
+		manager.getDynamicBatch().add(entity, new VoxelModelInstance(candlestickModel));
 		
 		if (entity instanceof LightEmitter) {
 			LightEmitter le = (LightEmitter) entity;
@@ -41,12 +40,12 @@ public class EntityRendererCandlestick extends EntityRenderer {
 	}
 	
 	@Override
-	public void entityRemoved(Entity entity, EntityVoxelBatch batch, SceneContext scene) {
+	public void entityRemoved(Entity entity) {
 		scene.lightContext.removeLight(entity);
 	}
 	
 	@Override
-	public void entityMoved(Entity entity, EntityMovedEvent event, EntityVoxelBatch batch, SceneContext scene) {
+	public void entityMoved(Entity entity, EntityMovedEvent event) {
 		scene.lightContext.moveLight(entity);
 	}
 }
