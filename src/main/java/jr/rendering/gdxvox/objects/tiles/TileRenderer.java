@@ -16,4 +16,12 @@ public abstract class TileRenderer extends AbstractObjectRenderer<TileType, Tile
 	}
 	
 	public abstract void tileAdded(Tile tile);
+	
+	@Override
+	public void objectRemoved(Tile object) {
+		super.objectRemoved(object);
+		tileRemoved(object);
+	}
+	
+	public void tileRemoved(Tile tile) {}
 }

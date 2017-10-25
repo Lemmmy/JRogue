@@ -3,11 +3,13 @@ package jr.dungeon;
 import jr.JRogue;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.events.TileChangedEvent;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Point;
 import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,12 +20,18 @@ import java.util.*;
 
 @Getter
 public class TileStore implements Serialisable {
+	private Level level;
+	
 	private Tile[] tiles;
 	
 	private int width;
 	private int height;
 	
+	@Setter private boolean eventsSuppressed;
+	
 	public void initialise(Level level) {
+		this.level = level;
+		
 		this.width = level.getWidth();
 		this.height = level.getHeight();
 		
@@ -75,6 +83,8 @@ public class TileStore implements Serialisable {
 	
 	@Override
 	public void unserialise(JSONObject obj) {
+		eventsSuppressed = true;
+		
 		try {
 			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
 			
@@ -83,6 +93,8 @@ public class TileStore implements Serialisable {
 		} catch (Exception e) {
 			JRogue.getLogger().error("Error loading level - during TileStore unserialisation:", e);
 		}
+		
+		eventsSuppressed = false;
 	}
 	
 	private void unserialiseTiles(byte[] bytes) {
@@ -166,6 +178,10 @@ public class TileStore implements Serialisable {
 
 	public void setTileType(Point p, TileType tile) {
 		setTileType(p.getX(), p.getY(), tile);
+	}
+	
+	public void triggerTileSetEvent(Tile tile, TileType oldType, TileType newType) {
+		level.getDungeon().eventSystem.triggerEvent(new TileChangedEvent(tile, oldType, newType));
 	}
 
 	public Tile[] getAdjacentTiles(int x, int y) {

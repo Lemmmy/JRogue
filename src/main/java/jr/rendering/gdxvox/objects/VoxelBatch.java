@@ -3,8 +3,6 @@ package jr.rendering.gdxvox.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import jr.ErrorHandler;
-import jr.rendering.gdxvox.context.GBuffersContext;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
@@ -13,7 +11,6 @@ import lombok.Setter;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -85,6 +82,12 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glDisableVertexAttribArray(1);
 		Gdx.gl.glDisableVertexAttribArray(2);
 		Gdx.gl.glDisableVertexAttribArray(3);
+	}
+	
+	private void updateInstanceBuffer(FloatBuffer voxelsBuffer) {
+		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
+		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
+		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
 	}
 	
 	public boolean contains(ObjectV object) {
@@ -172,7 +175,11 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_COUNT;
 		
-		if (voxelInstanceBuffer == -1) initialiseVAO(compiledBuffer);
+		if (voxelInstanceBuffer == -1) {
+			initialiseVAO(compiledBuffer);
+		} else {
+			updateInstanceBuffer(compiledBuffer);
+		}
 	}
 	
 	public void render(Camera camera, SceneContext scene) {

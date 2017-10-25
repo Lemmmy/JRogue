@@ -1,8 +1,10 @@
 package jr.rendering.gdxvox.objects.tiles;
 
 import jr.dungeon.Level;
+import jr.dungeon.events.EventHandler;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.events.TileChangedEvent;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.objects.AbstractObjectRendererManager;
 
@@ -31,6 +33,14 @@ public class TileRendererManager extends AbstractObjectRendererManager<TileType,
 			if (!objectRendererMap.containsKey(type)) continue;
 			objectRendererMap.get(type).objectAdded(tile);
 		}
+	}
+	
+	@EventHandler
+	private void onTileChanged(TileChangedEvent e) {
+		Tile tile = e.getTile();
+		
+		objectRendererMap.get(e.getOldType()).objectRemoved(tile);
+		objectRendererMap.get(e.getNewType()).objectAdded(tile);
 	}
 	
 	@Override

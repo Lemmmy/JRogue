@@ -103,6 +103,8 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
+		tileStore.setEventsSuppressed(true);
+		
 		do {
 			initialise();
 			
@@ -122,6 +124,8 @@ public class Level implements Serialisable, Persisting, Debuggable {
 				ErrorHandler.error("Error generating level", e);
 			}
 		} while (!gotLevel);
+		
+		tileStore.setEventsSuppressed(false);
 		
 		monsterSpawner.spawnMonsters();
 	}
