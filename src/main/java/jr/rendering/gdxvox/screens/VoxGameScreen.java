@@ -6,16 +6,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import jr.JRogue;
+import jr.debugger.ui.DebugUI;
+import jr.debugger.ui.debugwindows.DebugWindow;
 import jr.dungeon.Dungeon;
 import jr.rendering.base.components.FPSCounterComponent;
 import jr.rendering.base.components.hud.HUDComponent;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.gdx2d.GameAdapter;
 import jr.rendering.gdxvox.GameInputProcessor;
-import jr.rendering.gdxvox.components.RendererStatsComponent;
 import jr.rendering.gdxvox.components.SceneComponent;
 import jr.rendering.gdxvox.components.TextPopups;
 import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.gdxvox.debugger.VoxProfiler;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.utils.Point;
 import lombok.Getter;
@@ -37,6 +39,7 @@ public class VoxGameScreen extends ComponentedScreen {
 		
 		this.game = game;
 		
+		DebugUI.addDebugWindow(new DebugWindow("Vox Profiler", VoxProfiler.class, this));
 		JRogue.INSTANCE.setDungeon(dungeon);
 		
 		initialise();
@@ -64,8 +67,6 @@ public class VoxGameScreen extends ComponentedScreen {
 		addComponent(100, "hud", HUDComponent.class);
 		
 		if (settings.isShowFPSCounter()) addComponent(150, "fps", FPSCounterComponent.class);
-		
-		addComponent(200, "stats", RendererStatsComponent.class);
 	}
 	
 	@Override
