@@ -96,6 +96,8 @@ public class PlayerWalk implements PlayerVisitor {
 	}
 	
 	private void meleeAction(Player player, Entity ent) {
+		if (ent.equals(player)) return;
+		
 		if (player.getRightHand() != null && player.getRightHand().getItem() instanceof ItemWeaponMelee) {
 			((ItemWeaponMelee) player.getRightHand().getItem()).hit(player, (EntityLiving) ent);
 		} else if (player.getLeftHand() != null && player.getLeftHand().getItem() instanceof ItemWeaponMelee) {
