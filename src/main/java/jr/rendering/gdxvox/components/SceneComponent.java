@@ -1,10 +1,7 @@
 package jr.rendering.gdxvox.components;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.*;
@@ -38,6 +35,9 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	
 	private int fullscreenQuadShaderHandle = -1, uniformBlockIndex = -1;
 	private ShaderProgram fullscreenQuadShader;
+	
+	private ShaderProgram fxaaShader;
+	private FrameBuffer fxaaFramebuffer;
 	
 	public SceneComponent(VoxGameScreen voxGameScreen, SceneContext sceneContext) {
 		super(voxGameScreen);
@@ -84,6 +84,8 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		
 		initialiseFullscreenQuad();
 		
+		if (settings.isUseFxaa()) initialiseFXAA();
+		
 		try {
 			Field programField = ShaderProgram.class.getDeclaredField("program");
 			programField.setAccessible(true);
@@ -91,6 +93,24 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			ErrorHandler.error("Unable to get fullscreen quad shader program handle via reflection", e);
 		}
+	}
+	
+	private void initialiseFXAA() {
+		fxaaShader = ShaderLoader.getProgram("shaders/fxaa");
+		
+		initialiseFXAAFrameBuffer();
+	}
+	
+	private void initialiseFXAAFrameBuffer() {
+		if (fxaaFramebuffer != null) fxaaFramebuffer.dispose();
+		
+		fxaaFramebuffer = FrameBuffer.createFrameBuffer(
+			Pixmap.Format.RGBA8888,
+			Gdx.graphics.getWidth(),
+			Gdx.graphics.getHeight(),
+			false,
+			false
+		);
 	}
 	
 	@Override
@@ -110,6 +130,8 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		fb.end();
 		
 		// draw the FBO to the screen
+		
+		if (settings.isUseFxaa()) fxaaFramebuffer.begin();
 		
 		renderContext.begin();
 		
@@ -146,6 +168,23 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		fullscreenQuadShader.end();
 		
 		renderContext.end();
+		
+		if (settings.isUseFxaa()) {
+			fxaaFramebuffer.end();
+			
+			renderContext.begin();
+			
+			fxaaShader.begin();
+			fxaaShader.setUniformMatrix("u_projTrans", renderer.getScreenCamera().combined);
+			fxaaShader.setUniformi("u_texture0", textureBinder.bind(fxaaFramebuffer.getColorBufferTexture()));
+			fxaaShader.setUniformf("u_resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			
+			fullscreenQuadModel.meshes.get(0).render(fxaaShader, GL20.GL_TRIANGLES);
+			
+			fxaaShader.end();
+			
+			renderContext.end();
+		}
 	}
 	
 	@Override
@@ -157,6 +196,8 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	@Override
 	public void resize(int width, int height) {
 		initialiseFullscreenQuad();
+		
+		if (settings.isUseFxaa()) initialiseFXAAFrameBuffer();
 		
 		sceneContext.resize(width, height);
 	}

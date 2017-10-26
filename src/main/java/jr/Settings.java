@@ -104,8 +104,8 @@ public class Settings {
 	@Setting(comment="Ambient occlusion strength. 0=none, 3=maximum")
 	private int aoLevel = 1;
 	
-	@Setting(comment="MSAA samples")
-	private int msaaSamples = 4;
+	@Setting(comment="Use FXAA")
+	private boolean useFxaa = true;
 	
 	/**
 	 * Show text popups above entities when stats change or events occur. 0=none, 1=small, 2=large.
