@@ -68,12 +68,8 @@ public class RoomBasic extends Room {
 	}
 	
 	protected void addTorch(GeneratorRooms generator, int x, int y) {
-		getLevel().tileStore.setTileType(x, y, TileType.TILE_DEBUG_B);
-		
 		if (getLevel().entityStore.getAdjacentQueuedEntities(x, y).stream()
 			.anyMatch(EntityTorch.class::isInstance)) return;
-		
-		getLevel().tileStore.setTileType(x, y, TileType.TILE_DEBUG_A);
 		
 		EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
 		if (torch != null) torch.setColours(getTorchColours(generator));
