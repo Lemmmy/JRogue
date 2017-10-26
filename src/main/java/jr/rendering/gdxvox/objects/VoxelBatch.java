@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 
 @Getter
 public abstract class VoxelBatch<ObjectV> {
-	public static final int INSTANCE_ELEMENT_COUNT = 6;
-	public static final int INSTANCE_ELEMENT_SIZE = 6 * 4;
+	public static final int INSTANCE_ELEMENT_COUNT = 7;
+	public static final int INSTANCE_ELEMENT_SIZE = 7 * 4;
 	
 	private int voxelVAO, voxelInstanceBuffer = -1;
 	private int instanceCount = 0;
@@ -71,10 +71,14 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glEnableVertexAttribArray(2);
 		Gdx.gl.glVertexAttribPointer(2, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 0);
 		GL33.glVertexAttribDivisor(2, 1);
-		// instance colour
+		// instance rotation
 		Gdx.gl.glEnableVertexAttribArray(3);
-		Gdx.gl.glVertexAttribPointer(3, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
+		Gdx.gl.glVertexAttribPointer(3, 1, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 3 * 4);
 		GL33.glVertexAttribDivisor(3, 1);
+		// instance colour
+		Gdx.gl.glEnableVertexAttribArray(4);
+		Gdx.gl.glVertexAttribPointer(4, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 4 * 4);
+		GL33.glVertexAttribDivisor(4, 1);
 		
 		GL30.glBindVertexArray(0);
 		

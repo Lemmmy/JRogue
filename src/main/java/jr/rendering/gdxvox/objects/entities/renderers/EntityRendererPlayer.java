@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.objects.entities.renderers;
 
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.rendering.gdxvox.models.magicavoxel.ModelLoader;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
@@ -21,5 +22,14 @@ public class EntityRendererPlayer extends EntityRenderer {
 		manager.getDynamicBatch().add(entity, new VoxelModelInstance(playerModel));
 		
 		// TODO: light emission
+	}
+	
+	@Override
+	public void entityMoved(Entity entity, EntityMovedEvent event) {
+		super.entityMoved(entity, event);
+		
+		float angle = (float) Math.toDegrees(Math.atan2(event.getDeltaY(), event.getDeltaX())) + 90;
+		
+		manager.getDynamicBatch().getInstance(entity).ifPresent(instance -> instance.setRotation(angle));
 	}
 }

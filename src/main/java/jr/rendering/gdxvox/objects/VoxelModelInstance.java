@@ -1,5 +1,6 @@
 package jr.rendering.gdxvox.objects;
 
+import com.badlogic.gdx.math.Matrix4;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
@@ -70,6 +71,9 @@ public class VoxelModelInstance {
 			compiledVoxels.add(startX + vx / (float) TileRenderer.TILE_WIDTH);
 			compiledVoxels.add(startY + vy / (float) TileRenderer.TILE_HEIGHT);
 			compiledVoxels.add(startZ + vz / (float) TileRenderer.TILE_DEPTH);
+			
+			// rotation
+			compiledVoxels.add(angle);
 			
 			// colour
 			compiledVoxels.add(voxel.getR());
