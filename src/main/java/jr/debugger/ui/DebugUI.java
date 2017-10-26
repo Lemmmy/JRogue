@@ -36,8 +36,9 @@ public class DebugUI {
 	
 	private Cell<? extends GameWidget> gameCell;
 	private Cell<? extends TreeNodeWidget> rootNodeCell;
+	private Cell<? extends Table> debugButtonsCell;
 	private GameWidget gameWidget;
-	private Table bottomBar, debugButtons;
+	private Table bottomBar;
 	
 	private GLProfiler profiler;
 	private Label profileLabel;
@@ -126,11 +127,7 @@ public class DebugUI {
 	}
 	
 	private void initialiseDebugWindowButtons(Table container) {
-		if (debugButtons != null) {
-			container.removeActor(debugButtons);
-		}
-		
-		debugButtons = new Table();
+		Table debugButtons = new Table();
 		
 		debugWindows.forEach(window -> {
 			Button button = new TextButton(window.getWindowName(), skin);
@@ -138,7 +135,11 @@ public class DebugUI {
 			debugButtons.add(button).left();
 		});
 		
-		container.add(debugButtons).growX().bottom().left();
+		if (debugButtonsCell == null) {
+			debugButtonsCell = container.add(debugButtons).growX().bottom().left();
+		} else {
+			debugButtonsCell.setActor(debugButtons);
+		}
 	}
 	
 	private GameWidget getNewGameWidget() {
