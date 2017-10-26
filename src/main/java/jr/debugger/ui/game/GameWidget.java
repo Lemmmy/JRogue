@@ -36,6 +36,7 @@ public class GameWidget extends Image implements EventListener {
 	public GameWidget(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		this.dungeon.eventSystem.addListener(this);
+		this.level = dungeon.getLevel();
 		
 		initialise();
 	}

@@ -39,6 +39,7 @@ public enum EntityMap {
 	APPEARANCE_WEAPON_RACK_STOCKED(17, 1),
 	APPEARANCE_ALTAR(20, 1),
 	APPEARANCE_GRAVESTONE(new EntityRendererRandom(23, 1, 3)),
+	APPEARANCE_TORCH("textures/tiles.png", 6, 1),
 	
 	APPEARANCE_ITEM(new EntityRendererItem()),
 	
