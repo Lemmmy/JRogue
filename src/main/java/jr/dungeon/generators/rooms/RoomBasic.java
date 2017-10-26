@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class RoomBasic extends Room {
-	public static final int TORCH_SPACING = 6;
+	public static final int TORCH_SPACING = 5;
 	
 	public RoomBasic(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
 		super(level, roomX, roomY, roomWidth, roomHeight);
@@ -39,32 +39,41 @@ public class RoomBasic extends Room {
 	}
 	
 	protected void addTorches(GeneratorRooms generator) {
-		int torchStartX = (getWidth() - 1) % TORCH_SPACING / 2 + 1;
-		int torchCountX = (int) Math.floor((getWidth() - 1) / TORCH_SPACING);
+		int innerWidth = getWidth() - 1;
+		int innerHeight = getHeight() - 1;
+		int innerX = getX() + 1;
+		int innerY = getY() + 1;
+		
+		int torchStartX = innerWidth % TORCH_SPACING + 1;
+		int torchCountX = (int) Math.floor((float) innerWidth / (float) TORCH_SPACING);
 		
 		// top + bottom walls
 		for (int i = 0; i < torchCountX; i++) {
 			int tx = torchStartX + TORCH_SPACING * i;
 			
-			addTorch(generator, getX() + tx, getY() + 1);
+			addTorch(generator, getX() + tx, innerY);
 			addTorch(generator, getX() + tx, getY() + getHeight() - 2);
 		}
 		
-		int torchStartY = (getHeight() - 1) % TORCH_SPACING / 2 + 1;
-		int torchCountY = (int) Math.floor((getHeight() - 1) / TORCH_SPACING);
+		int torchStartY =  innerHeight % TORCH_SPACING + 1;
+		int torchCountY = (int) Math.floor((float) innerHeight / (float) TORCH_SPACING);
 		
 		// left + right walls
 		for (int i = 0; i < torchCountY; i++) {
 			int ty = torchStartY + TORCH_SPACING * i;
 			
-			addTorch(generator, getX() + 1, getY() + ty);
+			addTorch(generator, innerX, getY() + ty);
 			addTorch(generator, getX() + getWidth() - 2, getY() + ty);
 		}
 	}
 	
 	protected void addTorch(GeneratorRooms generator, int x, int y) {
+		getLevel().tileStore.setTileType(x, y, TileType.TILE_DEBUG_B);
+		
 		if (getLevel().entityStore.getAdjacentQueuedEntities(x, y).stream()
 			.anyMatch(EntityTorch.class::isInstance)) return;
+		
+		getLevel().tileStore.setTileType(x, y, TileType.TILE_DEBUG_A);
 		
 		EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
 		if (torch != null) torch.setColours(getTorchColours(generator));
