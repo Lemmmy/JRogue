@@ -21,12 +21,14 @@ uniform sampler2D u_g_normal;
 uniform sampler2D u_g_pos;
 uniform sampler2D u_g_depth;
 
+uniform vec3 u_ambientLight;
+
 in vec2 v_uv;
 
 out vec3 out_colour;
 
 void main() {
-	vec3 final_colour = vec3(0.0f, 0.0f, 0.0f);
+	vec3 final_colour = u_ambientLight;
 
 	vec3 diffuse = texture(u_g_diffuse, v_uv).rgb;
 	vec3 normal = texture(u_g_normal, v_uv).xyz;

@@ -120,6 +120,9 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		fullscreenQuadShader.setUniformi("u_g_pos", textureBinder.bind(textures.get(2)));
 		fullscreenQuadShader.setUniformi("u_g_depth", textureBinder.bind(textures.get(3)));
 		
+		Color ambientColour = sceneContext.lightContext.getAmbientLight();
+		fullscreenQuadShader.setUniformf("u_ambientLight", ambientColour.r, ambientColour.g, ambientColour.b);
+		
 		if (uniformBlockIndex == -1) {
 			uniformBlockIndex = GL31.glGetUniformBlockIndex(fullscreenQuadShaderHandle, "Lights");
 			

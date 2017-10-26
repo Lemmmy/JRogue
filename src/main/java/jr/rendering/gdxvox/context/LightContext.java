@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
@@ -17,17 +18,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public class LightContext extends Context {
+	public static final Color DEFAULT_AMBIENT_COLOUR = new Color(0x262c35ff);
+	
 	public static final int MAX_LIGHTS = 256;
 	
 	public static final int LIGHT_ELEMENT_COUNT = 4;
 	public static final int LIGHT_ELEMENT_SIZE = 32;
 	
-	@Getter private Map<Entity, Light> lights = new HashMap<>();
-	@Getter @Setter	private boolean lightsNeedUpdating = false;
+	private Map<Entity, Light> lights = new HashMap<>();
+	@Setter	private boolean lightsNeedUpdating = false;
 	
-	@Getter private int lightBufferHandle = -1;
-	@Getter private int bufferSize = 0;
+	private int lightBufferHandle = -1;
+	private int bufferSize = 0;
+	
+	@Setter private Color ambientLight = new Color(0x181818ff);
 	
 	public LightContext(Dungeon dungeon) {
 		super(dungeon);
