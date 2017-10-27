@@ -370,4 +370,13 @@ public class TreeNode {
 	public TreeNode getChild(int identityHashCode) {
 		return children.get(identityHashCode);
 	}
+	
+	public Optional<TreeNode> getNamedChild(String name) {
+		if (!open) open();
+		
+		return children.values().stream()
+			.filter(c -> c.getParentField() != null)
+			.filter(c -> c.getParentField().getName().equalsIgnoreCase(name))
+			.findFirst();
+	}
 }

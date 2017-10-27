@@ -3,13 +3,16 @@ package jr.debugger.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
+import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.debugwindows.AtlasViewer;
 import jr.debugger.ui.debugwindows.DebugWindow;
 import jr.debugger.ui.game.GameWidget;
@@ -17,10 +20,13 @@ import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
 import jr.rendering.base.ui.skin.UISkin;
 import jr.rendering.base.ui.utils.FunctionalClickListener;
+import jr.utils.Vector;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DebugUI {
 	private static List<DebugWindow> debugWindows = new ArrayList<>();
@@ -28,7 +34,7 @@ public class DebugUI {
 	@Getter private Skin skin;
 	@Getter private Stage stage;
 	
-	private DebugClient debugClient;
+	@Getter private DebugClient debugClient;
 	private Settings settings;
 	@Getter private Dungeon dungeon;
 	
@@ -39,9 +45,12 @@ public class DebugUI {
 	private Cell<? extends Table> debugButtonsCell;
 	private GameWidget gameWidget;
 	private Table bottomBar;
+	private ScrollPane hierarchyScrollPane;
 	
 	private GLProfiler profiler;
 	private Label profileLabel;
+	
+	private Map<TreeNode, TreeNodeWidget> treeNodeWidgetMap = new HashMap<>();
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -111,7 +120,7 @@ public class DebugUI {
 		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
 			.top().left();
 		
-		container.add(new ScrollPane(hierarchyContainer.top(), skin))
+		container.add(hierarchyScrollPane = new ScrollPane(hierarchyContainer.top(), skin))
 			.minWidth(300).top().right().grow();
 	}
 	
@@ -151,12 +160,30 @@ public class DebugUI {
 		return new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
 	}
 	
+	public void scrollTo(TreeNode node) {
+		Vector2 vec2 = Pools.obtain(Vector2.class);
+		TreeNodeWidget widget = treeNodeWidgetMap.get(node);
+		Vector2 scrollPos = widget.localToAscendantCoordinates(hierarchyScrollPane.getActor(), vec2.set(0, 0));
+		hierarchyScrollPane.scrollTo(scrollPos.x, scrollPos.y, widget.getWidth(), widget.getHeight());
+		Pools.free(vec2);
+	}
+	
+	public void registerNodeWidget(TreeNodeWidget widget) {
+		treeNodeWidgetMap.put(widget.getNode(), widget);
+	}
+	
+	public void unregisterNodeWidget(TreeNodeWidget widget) {
+		treeNodeWidgetMap.remove(widget.getNode());
+	}
+	
 	public void setDungeon(Dungeon dungeon) {
 		this.dungeon = dungeon;
 		if (gameCell != null) gameCell.setActor(gameWidget = getNewGameWidget());
 	}
 	
 	public void refresh() {
+		treeNodeWidgetMap.clear();
+		
 		if (rootNodeCell != null) {
 			rootNodeCell.setActor(getNewRootWidget());
 		}

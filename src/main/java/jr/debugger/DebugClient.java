@@ -19,10 +19,7 @@ import jr.rendering.gdx2d.GameAdapter;
 import lombok.Getter;
 import lombok.val;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DebugClient extends ApplicationAdapter implements EventListener {
@@ -133,6 +130,21 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 					child.open();
 				}
 			});
+	}
+	
+	public Optional<TreeNode> findNamedPath(String path) {
+		return findNamedPath(path.split("\\."));
+	}
+	
+	public Optional<TreeNode> findNamedPath(String[] path) {
+		Optional<TreeNode> ot = Optional.of(rootNode);
+		
+		for (String pathEl : path) {
+			if (!ot.isPresent()) return Optional.empty();
+			ot = ot.get().getNamedChild(pathEl);
+		}
+		
+		return ot;
 	}
 	
 	public void refreshRoot() {
