@@ -109,7 +109,7 @@ public class TreeNodeWidget extends Table {
 	private void initialise() {
 		Table nameTable = new Table(getSkin());
 		
-		initialiseIdenticon(nameTable);
+		if (node.isShowIdenticon()) initialiseIdenticon(nameTable);
 		initialiseModifiers(nameTable);
 		initialiseNameLabel(nameTable);
 		

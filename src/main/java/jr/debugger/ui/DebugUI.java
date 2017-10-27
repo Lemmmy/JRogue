@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
@@ -161,11 +162,23 @@ public class DebugUI {
 	}
 	
 	public void scrollTo(TreeNode node) {
-		Vector2 vec2 = Pools.obtain(Vector2.class);
 		TreeNodeWidget widget = treeNodeWidgetMap.get(node);
-		Vector2 scrollPos = widget.localToAscendantCoordinates(hierarchyScrollPane.getActor(), vec2.set(0, 0));
-		hierarchyScrollPane.scrollTo(scrollPos.x, scrollPos.y, widget.getWidth(), widget.getHeight());
-		Pools.free(vec2);
+		hierarchyScrollPane.updateVisualScroll();
+		hierarchyScrollPane.invalidateHierarchy();
+		hierarchyScrollPane.layout();
+		hierarchyScrollPane.updateVisualScroll();
+		
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				Vector2 vec2 = Pools.obtain(Vector2.class);
+				Vector2 itemPos = widget.localToStageCoordinates(vec2.set(0, 0));
+				hierarchyScrollPane.setScrollY(
+					(hierarchyScrollPane.getVisualScrollY() + hierarchyScrollPane.getHeight()) - itemPos.y - widget.getHeight()
+				);
+				Pools.free(vec2);
+			}
+		}, 0.05f);
 	}
 	
 	public void registerNodeWidget(TreeNodeWidget widget) {
