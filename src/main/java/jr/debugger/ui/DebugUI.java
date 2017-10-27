@@ -131,7 +131,7 @@ public class DebugUI {
 		
 		debugWindows.forEach(window -> {
 			Button button = new TextButton(window.getWindowName(), skin);
-			button.addListener(new FunctionalClickListener((event, x, y) -> window.show(stage, skin)));
+			button.addListener(new FunctionalClickListener((fcl, event, x, y) -> window.show(stage, skin)));
 			debugButtons.add(button).left();
 		});
 		
@@ -144,7 +144,7 @@ public class DebugUI {
 	
 	private GameWidget getNewGameWidget() {
 		if (debugClient.getDungeon() == null) return null;
-		return new GameWidget(debugClient.getDungeon());
+		return new GameWidget(this, debugClient.getDungeon(), skin);
 	}
 	
 	private TreeNodeWidget getNewRootWidget() {

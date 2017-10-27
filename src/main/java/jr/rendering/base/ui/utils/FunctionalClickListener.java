@@ -13,12 +13,12 @@ public class FunctionalClickListener extends ClickListener {
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
 		if (this.fci != null) {
-			this.fci.clicked(event, x, y);
+			this.fci.clicked(this, event, x, y);
 		}
 	}
 	
 	@FunctionalInterface
 	public interface FunctionalClickInterface {
-		void clicked(InputEvent event, float x, float y);
+		void clicked(FunctionalClickListener fcl, InputEvent event, float x, float y);
 	}
 }

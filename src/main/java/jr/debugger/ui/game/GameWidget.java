@@ -10,16 +10,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.debugger.ui.DebugUI;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdx2d.tiles.TileMap;
+import lombok.Setter;
 
 public class GameWidget extends Image implements EventListener {
+	private DebugUI ui;
+	private Skin skin;
+	
 	private Dungeon dungeon;
 	private Level level;
 	
@@ -33,10 +39,16 @@ public class GameWidget extends Image implements EventListener {
 	
 	private int width, height;
 	
-	public GameWidget(Dungeon dungeon) {
+	@Setter private LevelUtilPopup levelUtilPopup;
+	
+	public GameWidget(DebugUI ui, Dungeon dungeon, Skin skin) {
+		this.ui = ui;
+		
 		this.dungeon = dungeon;
 		this.dungeon.eventSystem.addListener(this);
 		this.level = dungeon.getLevel();
+		
+		this.skin = skin;
 		
 		initialise();
 	}
@@ -127,7 +139,11 @@ public class GameWidget extends Image implements EventListener {
 			
 			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) return;
 			
+			if (levelUtilPopup != null) return;
 			
+			levelUtilPopup = new LevelUtilPopup(ui, GameWidget.this, skin, dungeon, worldX, worldY);
+			getStage().addActor(levelUtilPopup);
+			levelUtilPopup.setPosition(event.getStageX(), event.getStageY());
 		}
 	}
 }
