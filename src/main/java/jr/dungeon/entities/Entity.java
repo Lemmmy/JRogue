@@ -456,7 +456,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	}
 	
 	@Override
-	public String getValueHint() {
+	public String getValueString() {
 		String name = getAppearance().name().replaceFirst("^APPEARANCE_", "");
 		
 		if (getDungeon() != null) {

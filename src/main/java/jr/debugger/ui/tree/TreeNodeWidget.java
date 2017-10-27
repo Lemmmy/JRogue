@@ -1,5 +1,7 @@
 package jr.debugger.ui.tree;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
+import jr.debugger.ui.tree.setters.SetterWindow;
 import jr.debugger.ui.utils.Identicon;
 import jr.rendering.base.ui.utils.FunctionalClickListener;
 import lombok.Getter;
@@ -119,8 +122,17 @@ public class TreeNodeWidget extends Table {
 		
 		if (clickListener != null) removeListener(clickListener);
 		nameTable.addListener(clickListener = new FunctionalClickListener((fcl, event, x, y) -> {
+			if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+				setterClick();
+				return;
+			}
+			
 			debugClient.toggleNode(node);
 			debugClient.getUI().refresh();
 		}));
+	}
+	
+	private void setterClick() {
+		new SetterWindow(getStage(), getSkin(), this, node).show();
 	}
 }
