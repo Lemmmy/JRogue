@@ -60,7 +60,7 @@ public class TreeNode {
 	private Object instance;
 	private Class<?> instanceClass;
 	private Debuggable debuggableInstance;
-	private TypeValueManager<Object> typeValueManager;
+	private TypeValueManager<Object, ?> typeValueManager;
 	private boolean isPrimitive = false;
 	private boolean isArray = false;
 	private boolean isArrayElement = false;
