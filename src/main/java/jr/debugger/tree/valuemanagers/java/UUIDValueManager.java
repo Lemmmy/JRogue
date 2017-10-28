@@ -23,6 +23,6 @@ public class UUIDValueManager extends TypeValueManager<UUID, UUIDSetter> {
 	
 	@Override
 	public UUIDSetter getSetter(Field field, UUID instance) {
-		return super.getSetter(field, instance);
+		return setter;
 	}
 }
