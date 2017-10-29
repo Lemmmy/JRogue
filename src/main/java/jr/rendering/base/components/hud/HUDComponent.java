@@ -4,7 +4,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;

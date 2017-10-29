@@ -1,15 +1,12 @@
 package jr.rendering.gdxvox.objects;
 
-import com.badlogic.gdx.math.Matrix4;
 import jr.rendering.gdxvox.models.magicavoxel.Voxel;
 import jr.rendering.gdxvox.models.magicavoxel.VoxelModel;
 import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.lwjgl.BufferUtils;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

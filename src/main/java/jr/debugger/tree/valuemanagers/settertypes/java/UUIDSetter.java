@@ -8,10 +8,11 @@ import java.util.UUID;
 
 public class UUIDSetter extends TypeValueSetter<UUID, String> {
 	@Override
-	public void set(Field field, UUID instance, String value) {
+	public void set(Field field, Object instance, String value) {
 		try {
+			field.setAccessible(true);
 			field.set(instance, UUID.fromString(value));
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting uuid value", e);
 		}
 	}

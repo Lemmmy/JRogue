@@ -9,7 +9,10 @@ import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL33;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

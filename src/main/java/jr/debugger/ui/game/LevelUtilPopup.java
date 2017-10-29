@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.JRogue;
 import jr.debugger.tree.MapEntry;
-import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;

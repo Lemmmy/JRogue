@@ -3,7 +3,6 @@ package jr.dungeon.entities.events;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.Event;
 import jr.utils.Point;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

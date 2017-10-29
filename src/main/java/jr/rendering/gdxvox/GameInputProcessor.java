@@ -2,7 +2,6 @@ package jr.rendering.gdxvox;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.screens.VoxGameScreen;

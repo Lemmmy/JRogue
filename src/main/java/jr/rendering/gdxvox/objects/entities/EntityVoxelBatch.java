@@ -1,7 +1,6 @@
 package jr.rendering.gdxvox.objects.entities;
 
 import jr.dungeon.entities.Entity;
-import jr.rendering.gdxvox.objects.AbstractObjectRenderer;
 import jr.rendering.gdxvox.objects.VoxelBatch;
 import jr.rendering.gdxvox.objects.VoxelModelInstance;
 

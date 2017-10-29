@@ -18,7 +18,6 @@ import jr.rendering.base.components.FPSCounterComponent;
 import jr.rendering.base.components.MinimapComponent;
 import jr.rendering.base.components.RendererComponent;
 import jr.rendering.base.components.hud.HUDComponent;
-import jr.rendering.gdx2d.components.TextPopups;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.base.screens.DeathScreen;
 import jr.rendering.base.screens.utils.SlidingTransition;

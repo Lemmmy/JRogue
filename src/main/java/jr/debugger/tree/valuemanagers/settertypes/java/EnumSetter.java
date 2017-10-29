@@ -18,9 +18,10 @@ public class EnumSetter extends TypeValueSetter<Enum, String> {
 	}
 	
 	@Override
-	public void set(Field field, Enum instance, String value) {
+	public void set(Field field, Object instance, String value) {
 		try {
-			field.set(instance, Enum.valueOf(instance.getClass(), value));
+			field.setAccessible(true);
+			field.set(instance, Enum.valueOf((Class<Enum>) field.getType(), value));
 		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting char value", e);
 		}

@@ -7,10 +7,11 @@ import java.lang.reflect.Field;
 
 public class CharacterSetter extends TypeValueSetter<Character, String> {
 	@Override
-	public void set(Field field, Character instance, String value) {
+	public void set(Field field, Object instance, String value) {
 		try {
+			field.setAccessible(true);
 			field.setChar(instance, value.charAt(0));
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting char value", e);
 		}
 	}

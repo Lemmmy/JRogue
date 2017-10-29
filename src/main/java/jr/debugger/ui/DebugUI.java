@@ -21,7 +21,6 @@ import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
 import jr.rendering.base.ui.skin.UISkin;
 import jr.rendering.base.ui.utils.FunctionalClickListener;
-import jr.utils.Vector;
 import lombok.Getter;
 
 import java.util.ArrayList;

@@ -23,7 +23,7 @@ public class TreeNodeWidget extends Table {
 	private static final int ICON_PADDING = 4;
 	
 	private DebugClient debugClient;
-	private DebugUI ui;
+	@Getter private DebugUI ui;
 	
 	@Getter private TreeNode node;
 	
@@ -122,7 +122,7 @@ public class TreeNodeWidget extends Table {
 		
 		if (clickListener != null) removeListener(clickListener);
 		nameTable.addListener(clickListener = new FunctionalClickListener((fcl, event, x, y) -> {
-			if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+			if (node.isSettable() && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 				setterClick();
 				return;
 			}

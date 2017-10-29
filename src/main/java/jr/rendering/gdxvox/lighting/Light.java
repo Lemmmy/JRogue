@@ -5,9 +5,7 @@ import jr.rendering.gdxvox.context.LightContext;
 import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
-import org.lwjgl.BufferUtils;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 

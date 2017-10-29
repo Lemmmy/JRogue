@@ -7,10 +7,11 @@ import java.lang.reflect.Field;
 
 public class BooleanSetter extends TypeValueSetter<Boolean, Boolean> {
 	@Override
-	public void set(Field field, Boolean instance, Boolean value) {
+	public void set(Field field, Object instance, Boolean value) {
 		try {
+			field.setAccessible(true);
 			field.setBoolean(instance, value);
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting boolean value", e);
 		}
 	}

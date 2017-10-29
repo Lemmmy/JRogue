@@ -23,12 +23,12 @@ public abstract class WindowBase extends Window {
 	
 	@Override
 	public void show() {
-		hud.addWindow(this);
+		if (hud != null) hud.addWindow(this);
 		super.show();
 	}
 	
 	@Override
 	protected void remove() {
-		hud.removeWindow(this);
+		if (hud != null) hud.removeWindow(this);
 	}
 }

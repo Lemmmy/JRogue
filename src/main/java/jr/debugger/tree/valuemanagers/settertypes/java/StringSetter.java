@@ -7,10 +7,11 @@ import java.lang.reflect.Field;
 
 public class StringSetter extends TypeValueSetter<String, String> {
 	@Override
-	public void set(Field field, String instance, String value) {
+	public void set(Field field, Object instance, String value) {
 		try {
+			field.setAccessible(true);
 			field.set(instance, value);
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting string value", e);
 		}
 	}
