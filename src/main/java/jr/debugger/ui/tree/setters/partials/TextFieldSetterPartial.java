@@ -5,10 +5,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.tree.valuemanagers.settertypes.TypeValueSetter;
 
-public abstract class AbstractStringSetterPartial<SetterT extends TypeValueSetter<?, String>> extends SetterPartial<String, SetterT> {
+public abstract class TextFieldSetterPartial<SetterT extends TypeValueSetter<?, String>> extends SetterPartial<String, SetterT> {
 	private TextField valueField;
 	
-	public AbstractStringSetterPartial(Skin skin, SetterT setterT, TreeNode node) {
+	public TextFieldSetterPartial(Skin skin, SetterT setterT, TreeNode node) {
 		super(skin, setterT, node);
 	}
 	

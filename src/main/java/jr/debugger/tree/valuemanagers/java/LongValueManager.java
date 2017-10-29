@@ -2,15 +2,15 @@ package jr.debugger.tree.valuemanagers.java;
 
 import jr.debugger.tree.valuemanagers.TypeValueManager;
 import jr.debugger.tree.valuemanagers.TypeValueManagerHandler;
-import jr.debugger.tree.valuemanagers.settertypes.java.LongSetter;
+import jr.debugger.tree.valuemanagers.settertypes.java.NumberSetter;
 
 import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 @TypeValueManagerHandler({ Long.class })
-public class LongValueManager extends TypeValueManager<Long, LongSetter> {
-	private static final LongSetter setter = new LongSetter();
+public class LongValueManager extends TypeValueManager<Long, NumberSetter<Long>> {
+	private static final NumberSetter setter = new NumberSetter();
 	
 	private static final NumberFormat numberFormat = NumberFormat.getNumberInstance();
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -30,7 +30,7 @@ public class LongValueManager extends TypeValueManager<Long, LongSetter> {
 	}
 	
 	@Override
-	public LongSetter getSetter(Field field, Long instance) {
+	public NumberSetter getSetter(Field field, Long instance) {
 		return setter;
 	}
 }

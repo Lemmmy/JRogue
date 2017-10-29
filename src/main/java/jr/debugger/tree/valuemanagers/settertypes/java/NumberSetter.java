@@ -6,7 +6,7 @@ import jr.debugger.tree.valuemanagers.settertypes.TypeValueSetter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-public class NumberSetter extends TypeValueSetter<Number, String> {
+public class NumberSetter<T> extends TypeValueSetter<T, String> {
 	@Override
 	public void set(Field field, Object instance, String value) {
 		try {
@@ -26,6 +26,7 @@ public class NumberSetter extends TypeValueSetter<Number, String> {
 			if (is(field, Byte.class, byte.class)) field.setByte(instance, Byte.parseByte(value, radix));
 			if (is(field, Short.class, short.class)) field.setShort(instance, Short.parseShort(value, radix));
 			if (is(field, Integer.class, int.class)) field.setInt(instance, Integer.parseInt(value, radix));
+			if (is(field, Long.class, long.class)) field.setLong(instance, Long.parseLong(value, radix));
 		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new ValueSetError("Error setting number value", e);
 		}

@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.text.NumberFormat;
 
 @TypeValueManagerHandler({ Byte.class, Short.class, Integer.class, Double.class, Float.class })
-public class NumberValueManager extends TypeValueManager<Number, NumberSetter> {
+public class NumberValueManager extends TypeValueManager<Number, NumberSetter<Number>> {
 	private static final NumberSetter setter = new NumberSetter();
 	
 	protected static final NumberFormat numberFormat = NumberFormat.getNumberInstance();
