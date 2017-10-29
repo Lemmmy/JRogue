@@ -8,22 +8,21 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 @Getter
-public class EnumSetter extends TypeValueSetter<Enum, String> {
-	private String[] values;
+public class EnumSetter extends TypeValueSetter<Enum, Enum> {
+	private Enum[] values;
 	
 	public EnumSetter(Enum instance) {
 		values = Arrays.stream(instance.getClass().getEnumConstants())
-			.map(Enum::name)
-			.toArray(String[]::new);
+			.toArray(Enum[]::new);
 	}
 	
 	@Override
-	public void set(Field field, Object instance, String value) {
+	public void set(Field field, Object instance, Enum value) {
 		try {
 			field.setAccessible(true);
-			field.set(instance, Enum.valueOf((Class<Enum>) field.getType(), value));
+			field.set(instance, value);
 		} catch (IllegalAccessException | IllegalArgumentException e) {
-			throw new ValueSetError("Error setting char value", e);
+			throw new ValueSetError("Error setting enum value", e);
 		}
 	}
 }
