@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
@@ -69,6 +71,10 @@ public class DebugUI {
 		addDebugWindow(new DebugWindow("Atlas Viewer", AtlasViewer.class));
 		
 		// stage.setDebugAll(true);
+		
+		if (JRogue.INSTANCE.dungeon != null) {
+			dungeon = JRogue.INSTANCE.dungeon;
+		}
 		
 		Table root = new Table();
 		root.setFillParent(true);
@@ -144,11 +150,24 @@ public class DebugUI {
 			debugButtons.add(button).left();
 		});
 		
+		initialiseNextTurnButton(debugButtons);
+		
 		if (debugButtonsCell == null) {
 			debugButtonsCell = container.add(debugButtons).growX().bottom().left();
 		} else {
 			debugButtonsCell.setActor(debugButtons);
 		}
+	}
+	
+	private void initialiseNextTurnButton(Table container) {
+		TextButton nextTurnButton = new TextButton("Turn", skin);
+		nextTurnButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				dungeon.turnSystem.turn(false);
+			}
+		});
+		container.add(nextTurnButton).left();
 	}
 	
 	private GameWidget getNewGameWidget() {
