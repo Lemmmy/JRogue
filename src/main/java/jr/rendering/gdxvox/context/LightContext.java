@@ -7,6 +7,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.gdxvox.lighting.Light;
+import jr.rendering.utils.TimeProfiler;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.BufferUtils;
@@ -46,6 +47,8 @@ public class LightContext extends Context {
 	}
 	
 	public void rebuildLights() {
+		TimeProfiler.begin("[P_ORANGE_2]LightContext.rebuildLights[]");
+		
 		if (lightBufferHandle == -1) lightBufferHandle = Gdx.gl.glGenBuffer();
 		
 		Gdx.gl.glBindBuffer(GL31.GL_UNIFORM_BUFFER, lightBufferHandle);
@@ -70,6 +73,8 @@ public class LightContext extends Context {
 		compiledBuffer.flip();
 		
 		Gdx.gl.glBufferData(GL31.GL_UNIFORM_BUFFER, bufferSize, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);
+		
+		TimeProfiler.end("[P_ORANGE_2]LightContext.rebuildLights[]");
 	}
 	
 	@Override

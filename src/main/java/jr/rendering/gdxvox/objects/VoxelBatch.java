@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
+import jr.rendering.utils.TimeProfiler;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.BufferUtils;
@@ -159,6 +160,8 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public void rebuildVoxels(SceneContext scene) {
+		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.rebuildVoxels[]");
+		
 		if (voxelShader == null) initialiseShader();
 		
 		// keep track of the locations of all buffers so we can update them later
@@ -187,10 +190,14 @@ public abstract class VoxelBatch<ObjectV> {
 		} else {
 			updateInstanceBuffer(compiledBuffer);
 		}
+		
+		TimeProfiler.end("[P_GREEN_1]VoxelBatch.rebuildVoxels[]");
 	}
 	
 	public void render(Camera camera, SceneContext scene) {
 		if (isCulled) return;
+		
+		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render - update[]");
 		
 		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
 			needsRebuild = true;
@@ -223,11 +230,15 @@ public abstract class VoxelBatch<ObjectV> {
 			}
 		}
 		
+		TimeProfiler.end("[P_GREEN_1]VoxelBatch.render - update[]");
+		
 		instances.forEach(i -> i.setUpdated(false));
 		
 		if (instanceCount <= 0) return;
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render[]");
 		
 		voxelShader.begin();
 		voxelShader.setUniformMatrix("u_projTrans", camera.combined);
@@ -250,6 +261,8 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glDisable(Gdx.gl.GL_DEPTH_TEST);
 		
 		voxelShader.end();
+		
+		TimeProfiler.end("[P_GREEN_1]VoxelBatch.render[]");
 	}
 	
 	public void dispose() {

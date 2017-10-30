@@ -10,6 +10,7 @@ import jr.debugger.ui.DebugUI;
 import jr.debugger.ui.debugwindows.DebugWindow;
 import jr.dungeon.Dungeon;
 import jr.rendering.base.components.FPSCounterComponent;
+import jr.rendering.base.components.TimeProfilerComponent;
 import jr.rendering.base.components.hud.HUDComponent;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.gdx2d.GameAdapter;
@@ -66,7 +67,10 @@ public class VoxGameScreen extends ComponentedScreen {
 		addComponent(10, "scene", new SceneComponent(this, sceneContext));
 		addComponent(100, "hud", HUDComponent.class);
 		
-		if (settings.isShowFPSCounter()) addComponent(150, "fps", FPSCounterComponent.class);
+		if (settings.isShowFPSCounter()) {
+			addComponent(150, "fps", FPSCounterComponent.class);
+			addComponent(200, "timeProfiler", TimeProfilerComponent.class);
+		}
 	}
 	
 	@Override

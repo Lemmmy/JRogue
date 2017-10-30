@@ -7,6 +7,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.gdxvox.objects.entities.EntityRendererManager;
 import jr.rendering.gdxvox.objects.tiles.TileRendererManager;
+import jr.rendering.utils.TimeProfiler;
 import jr.utils.Utils;
 
 public class SceneContext extends Context {
@@ -49,6 +50,8 @@ public class SceneContext extends Context {
 	}
 	
 	public void updateCamera(float delta) {
+		TimeProfiler.begin("[P_BLUE_0]SceneContext.updateCamera[]");
+		
 		if (cameraLerping) {
 			cameraLerpElapsed += delta;
 			
@@ -79,6 +82,8 @@ public class SceneContext extends Context {
 		
 		sceneCamera.near = 0.1f;
 		sceneCamera.update();
+		
+		TimeProfiler.end("[P_BLUE_0]SceneContext.updateCamera[]");
 	}
 	
 	public void update(float delta) {

@@ -115,6 +115,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void dispose() {
-		
+		spriteBatch.dispose();
+		shapeBatch.dispose();
 	}
 }
