@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TimeProfilerComponent extends RendererComponent {
 	private static final int MAX_ITEMS = 15;
 	
-	private static final float KEY_X = 8;
-	private static final float VALUE_X = 192;
+	private static final float KEY_X = 256;
+	private static final float VALUE_X = 96;
 	
 	private static final float START_Y = 64;
 	
@@ -55,14 +55,15 @@ public class TimeProfilerComponent extends RendererComponent {
 	}
 	
 	private void drawTimes() {
+		float width = Gdx.graphics.getWidth();
 		AtomicReference<Float> y = new AtomicReference<>(START_Y);
 		
 		TimeProfiler.getTimes().entrySet().stream()
 			.sorted(Comparator.comparingLong(Map.Entry::getValue))
 			.limit(MAX_ITEMS)
 			.forEach(timeEntry -> {
-				font.draw(spriteBatch, timeEntry.getKey(), KEY_X, y.get());
-				font.draw(spriteBatch, String.format("%,.2f ms", timeEntry.getValue() / 1E6), VALUE_X, y.get());
+				font.draw(spriteBatch, timeEntry.getKey(), width - KEY_X, y.get());
+				font.draw(spriteBatch, String.format("%,.2f ms", timeEntry.getValue() / 1E6), width - VALUE_X, y.get());
 				
 				y.set(y.get() + yIncrement);
 			});
