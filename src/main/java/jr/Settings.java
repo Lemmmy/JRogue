@@ -105,7 +105,7 @@ public class Settings {
 	private int aoLevel = 1;
 	
 	@Setting(comment="Use FXAA")
-	private boolean useFxaa = true;
+	private boolean useFxaa = false;
 	
 	/**
 	 * Show text popups above entities when stats change or events occur. 0=none, 1=small, 2=large.

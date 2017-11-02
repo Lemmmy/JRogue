@@ -54,6 +54,7 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
+		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.initialiseVAO[]");
 		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
 		
 		voxelVAO = GL30.glGenVertexArrays();
@@ -90,12 +91,15 @@ public abstract class VoxelBatch<ObjectV> {
 		Gdx.gl.glDisableVertexAttribArray(1);
 		Gdx.gl.glDisableVertexAttribArray(2);
 		Gdx.gl.glDisableVertexAttribArray(3);
+		TimeProfiler.end("[P_GREEN_1]VoxelBatch.initialiseVAO[]");
 	}
 	
 	private void updateInstanceBuffer(FloatBuffer voxelsBuffer) {
+		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.updateInstanceBuffer[]");
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
 		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
+		TimeProfiler.end("[P_GREEN_1]VoxelBatch.updateInstanceBuffer[]");
 	}
 	
 	public boolean contains(ObjectV object) {
@@ -185,6 +189,8 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_COUNT;
 		
+		if (instanceCount == 0) return;
+		
 		if (voxelInstanceBuffer == -1) {
 			initialiseVAO(compiledBuffer);
 		} else {
@@ -195,8 +201,6 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public void render(Camera camera, SceneContext scene) {
-		if (isCulled) return;
-		
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render - update[]");
 		
 		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
@@ -234,7 +238,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instances.forEach(i -> i.setUpdated(false));
 		
-		if (instanceCount <= 0) return;
+		if (isCulled || instanceCount <= 0) return;
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		

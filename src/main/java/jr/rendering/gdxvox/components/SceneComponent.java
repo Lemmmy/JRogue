@@ -12,10 +12,12 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import jr.ErrorHandler;
+import jr.JRogue;
 import jr.rendering.base.components.RendererComponent;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.screens.VoxGameScreen;
 import jr.rendering.utils.ShaderLoader;
+import jr.rendering.utils.TimeProfiler;
 import lombok.Getter;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
@@ -132,6 +134,8 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		
 		fb.end();
 		
+		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.render[]");
+		
 		// draw the FBO to the screen
 		
 		if (settings.isUseFxaa()) fxaaFramebuffer.begin();
@@ -172,6 +176,10 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		
 		renderContext.end();
 		
+		TimeProfiler.end("[P_PURPLE_1]SceneComponent.render[]");
+		
+		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.render (FXAA pass)[]");
+		
 		if (settings.isUseFxaa()) {
 			fxaaFramebuffer.end();
 			
@@ -188,6 +196,8 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 			
 			renderContext.end();
 		}
+		
+		TimeProfiler.end("[P_PURPLE_1]SceneComponent.render (FXAA pass)[]");
 	}
 	
 	@Override
@@ -198,11 +208,15 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	
 	@Override
 	public void resize(int width, int height) {
-		initialiseFullscreenQuad();
+		try {
+			initialiseFullscreenQuad();
 		
-		if (settings.isUseFxaa()) initialiseFXAAFrameBuffer();
-		
-		sceneContext.resize(width, height);
+			if (settings.isUseFxaa()) initialiseFXAAFrameBuffer();
+			
+			sceneContext.resize(width, height);
+		} catch (IllegalStateException e) {
+			JRogue.getLogger().error("Resize error", e);
+		}
 	}
 	
 	@Override
