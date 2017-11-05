@@ -3,6 +3,7 @@ package jr.rendering.gdxvox.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
@@ -200,7 +201,7 @@ public abstract class VoxelBatch<ObjectV> {
 		TimeProfiler.end("[P_GREEN_1]VoxelBatch.rebuildVoxels[]");
 	}
 	
-	public void render(Camera camera, SceneContext scene) {
+	public void render(RenderPass pass, Camera camera, SceneContext scene) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render - update[]");
 		
 		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
@@ -238,7 +239,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instances.forEach(i -> i.setUpdated(false));
 		
-		if (isCulled || instanceCount <= 0) return;
+		if (pass == RenderPass.MAIN_PASS && isCulled || instanceCount <= 0) return;
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		

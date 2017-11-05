@@ -23,11 +23,9 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private List<Float> frameTimeHistory = new ArrayList<>();
 	
-	private ShapeRenderer shapeBatch;
 	private SpriteBatch spriteBatch;
-	
 	private OrthographicCamera counterCamera;
-	
+	private StreamingGraph graph;
 	private BitmapFont font;
 	
 	@SuppressWarnings("unchecked")
@@ -37,52 +35,31 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void initialise() {
-		shapeBatch = new ShapeRenderer();
 		spriteBatch = new SpriteBatch();
 		
 		counterCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		font = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
+		
+		graph = new StreamingGraph(counterCamera, GRAPH_BACKGROUND, GRAPH_FOREGROUND, GRAPH_WIDTH, GRAPH_HEIGHT, frameTimeHistory);
 	}
 	
 	@Override
 	public void render(float dt) {
 		counterCamera.update();
 		
-		shapeBatch.setProjectionMatrix(counterCamera.combined);
 		spriteBatch.setProjectionMatrix(counterCamera.combined);
 		
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
-		shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
-		drawGraph();
-		shapeBatch.end();
+		graph.render(Gdx.graphics.getWidth() - GRAPH_WIDTH, Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16);
 		
 		spriteBatch.begin();
 		drawText();
 		spriteBatch.end();
 		
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-	}
-	
-	private void drawGraph() {
-		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16;
-		
-		shapeBatch.setColor(GRAPH_BACKGROUND);
-		shapeBatch.rect(x, y, GRAPH_WIDTH, GRAPH_HEIGHT);
-		
-		shapeBatch.setColor(GRAPH_FOREGROUND);
-		
-		float peakTime = Collections.max(frameTimeHistory);
-		float scale = GRAPH_HEIGHT / peakTime;
-		
-		for (int i = 0; i < frameTimeHistory.size(); i++) {
-			float barHeight = frameTimeHistory.get(i) * scale;
-			
-			shapeBatch.rect(x + i, y + (GRAPH_HEIGHT - barHeight), 1, barHeight);
-		}
 	}
 	
 	private void drawText() {
@@ -116,6 +93,6 @@ public class FPSCounterComponent extends RendererComponent {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		shapeBatch.dispose();
+		graph.dispose();
 	}
 }

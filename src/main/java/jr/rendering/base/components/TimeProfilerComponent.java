@@ -1,25 +1,41 @@
 package jr.rendering.base.components;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.utils.FontLoader;
 import jr.rendering.utils.TimeProfiler;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TimeProfilerComponent extends RendererComponent {
+	private static final Color BACKGROUND = new Color(0x00000066);
+	
+	private static final float GRAPH_ALPHA = 0.85f;
+	
 	private static final int MAX_ITEMS = 15;
-	
 	private static final float KEY_X = 256;
-	private static final float VALUE_X = 96;
-	
+	private static final float VALUE_X = 52;
+	private static final float TEXT_OFFSET_Y = 2;
 	private static final float START_Y = 64;
 	
+	private static final Pattern COLOUR_PATTERN = Pattern.compile("^\\[(\\w+?)]");
+	
+	private Map<String, StreamingGraph> graphs = new HashMap<>();
+	
+	private ShapeRenderer shapeBatch;
 	private SpriteBatch spriteBatch;
 	
 	private OrthographicCamera screenCamera;
@@ -33,6 +49,7 @@ public class TimeProfilerComponent extends RendererComponent {
 	
 	@Override
 	public void initialise() {
+		shapeBatch = new ShapeRenderer();
 		spriteBatch = new SpriteBatch();
 		
 		screenCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -45,13 +62,31 @@ public class TimeProfilerComponent extends RendererComponent {
 	@Override
 	public void render(float dt) {
 		screenCamera.update();
-		
-		spriteBatch.begin();
+		shapeBatch.setProjectionMatrix(screenCamera.combined);
 		spriteBatch.setProjectionMatrix(screenCamera.combined);
+		
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
+		drawBackground();
+		shapeBatch.end();
+		
 		drawTimes();
-		spriteBatch.end();
+		
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		
 		TimeProfiler.reset();
+	}
+	
+	private void drawBackground() {
+		shapeBatch.setColor(BACKGROUND);
+		shapeBatch.rect(
+			Gdx.graphics.getWidth() - KEY_X,
+			START_Y,
+			KEY_X,
+			Math.min(TimeProfiler.getTimes().size(), MAX_ITEMS) * (yIncrement * 2)
+		);
 	}
 	
 	private void drawTimes() {
@@ -59,13 +94,51 @@ public class TimeProfilerComponent extends RendererComponent {
 		AtomicReference<Float> y = new AtomicReference<>(START_Y);
 		
 		TimeProfiler.getTimes().entrySet().stream()
-			.sorted(Comparator.comparingLong(Map.Entry::getValue))
+			.sorted(Comparator.comparing(Map.Entry::getValue))
 			.limit(MAX_ITEMS)
 			.forEach(timeEntry -> {
-				font.draw(spriteBatch, timeEntry.getKey(), width - KEY_X, y.get());
-				font.draw(spriteBatch, String.format("%,.2f ms", timeEntry.getValue() / 1E6), width - VALUE_X, y.get());
+				String key = timeEntry.getKey();
+				float value = timeEntry.getValue();
 				
-				y.set(y.get() + yIncrement);
+				float yf = y.get();
+				
+				StreamingGraph graph = null;
+				
+				if (!graphs.containsKey(key)) {
+					Color colour = Color.WHITE;
+					Matcher colourMatcher = COLOUR_PATTERN.matcher(key);
+					
+					if (colourMatcher.find()) colour = Colors.get(colourMatcher.group(1));
+					
+					colour = new Color(colour);
+					colour.mul(1f, 1f, 1f, GRAPH_ALPHA);
+					
+					List<Long> data = TimeProfiler.getTimeHistory(key);
+					
+					if (data != null) {
+						graph = new StreamingGraph(
+							screenCamera,
+							Color.CLEAR,
+							colour,
+							TimeProfiler.TIME_HISTORY_COUNT,
+							(int) yIncrement,
+							data
+						);
+						
+						graphs.put(key, graph);
+					}
+				} else {
+					graph = graphs.get(key);
+				}
+				
+				if (graph != null) graph.render(width - KEY_X, yf + yIncrement);
+				
+				spriteBatch.begin();
+				font.draw(spriteBatch, key, width - KEY_X, yf + TEXT_OFFSET_Y);
+				font.draw(spriteBatch, String.format("%,.2f ms", value / 1E6), width - VALUE_X, yf + TEXT_OFFSET_Y);
+				spriteBatch.end();
+				
+				y.set(yf + yIncrement * 2);
 			});
 	}
 	
@@ -82,5 +155,6 @@ public class TimeProfilerComponent extends RendererComponent {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+		graphs.values().forEach(StreamingGraph::dispose);
 	}
 }

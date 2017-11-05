@@ -11,6 +11,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
+import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.context.SceneContext;
 import lombok.Getter;
 
@@ -114,14 +115,14 @@ public abstract class AbstractObjectRendererManager<
 		}
 	}
 	
-	public void renderAll(Camera camera) {
-		checkCulling(camera);
+	public void renderAll(RenderPass pass, Camera camera) {
+		if (pass == RenderPass.MAIN_PASS) checkCulling(camera);
 		
 		for (BatchT staticBatch : staticBatches) {
-			staticBatch.render(camera, scene);
+			staticBatch.render(pass, camera, scene);
 		}
 		
-		dynamicBatch.render(camera, scene);
+		dynamicBatch.render(pass, camera, scene);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

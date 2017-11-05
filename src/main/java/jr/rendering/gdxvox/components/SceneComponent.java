@@ -124,21 +124,29 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		Array<Texture> textures = fb.getTextureAttachments();
 		
 		// draw the scene to the FBO
+		renderScene(fb);
 		
+		// draw the FBO to the screen
+		if (settings.isUseFxaa()) fxaaFramebuffer.begin();
+		renderFBO(textures);
+		if (settings.isUseFxaa()) fxaaFramebuffer.end();
+		
+		renderFXAA();
+	}
+	
+	private void renderScene(FrameBuffer fb) {
 		fb.begin();
 		
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT | Gdx.gl.GL_DEPTH_BUFFER_BIT);
 		
-		sceneContext.renderAllMaps();
+		sceneContext.renderAllMaps(RenderPass.MAIN_PASS);
 		
 		fb.end();
-		
-		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.render[]");
-		
-		// draw the FBO to the screen
-		
-		if (settings.isUseFxaa()) fxaaFramebuffer.begin();
+	}
+	
+	private void renderFBO(Array<Texture> textures) {
+		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.renderFBO[]");
 		
 		renderContext.begin();
 		
@@ -176,13 +184,13 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		
 		renderContext.end();
 		
-		TimeProfiler.end("[P_PURPLE_1]SceneComponent.render[]");
-		
+		TimeProfiler.end("[P_PURPLE_1]SceneComponent.renderFBO[]");
+	}
+	
+	private void renderFXAA() {
 		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.render (FXAA pass)[]");
 		
 		if (settings.isUseFxaa()) {
-			fxaaFramebuffer.end();
-			
 			renderContext.begin();
 			
 			fxaaShader.begin();

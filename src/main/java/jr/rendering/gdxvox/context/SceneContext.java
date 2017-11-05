@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.objects.entities.EntityRendererManager;
 import jr.rendering.gdxvox.objects.tiles.TileRendererManager;
 import jr.rendering.utils.TimeProfiler;
@@ -95,9 +96,9 @@ public class SceneContext extends Context {
 		gBuffersContext.resize(width, height);
 	}
 	
-	public void renderAllMaps() {
-		tileRendererManager.renderAll(sceneCamera);
-		entityRendererManager.renderAll(sceneCamera);
+	public void renderAllMaps(RenderPass pass) {
+		tileRendererManager.renderAll(pass, sceneCamera);
+		entityRendererManager.renderAll(pass, sceneCamera);
 	}
 	
 	public void rotateCamera(float degrees) {
