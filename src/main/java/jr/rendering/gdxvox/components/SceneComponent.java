@@ -234,5 +234,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 		}
 		
 		fullscreenQuadBatch.dispose();
+		
+		sceneContext.dispose();
 	}
 }

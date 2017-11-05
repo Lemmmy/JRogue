@@ -1,6 +1,7 @@
 package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
@@ -89,16 +90,20 @@ public class SceneContext extends Context {
 	
 	public void update(float delta) {
 		updateCamera(delta);
-		lightContext.update(delta);
+		lightContext.update(delta, this);
 	}
 	
 	public void resize(int width, int height) {
 		gBuffersContext.resize(width, height);
 	}
 	
+	public void renderAllMaps(RenderPass pass, Camera camera) {
+		tileRendererManager.renderAll(pass, camera);
+		entityRendererManager.renderAll(pass, camera);
+	}
+	
 	public void renderAllMaps(RenderPass pass) {
-		tileRendererManager.renderAll(pass, sceneCamera);
-		entityRendererManager.renderAll(pass, sceneCamera);
+		renderAllMaps(pass, sceneCamera);
 	}
 	
 	public void rotateCamera(float degrees) {
@@ -106,5 +111,10 @@ public class SceneContext extends Context {
 		cameraLerpElapsed = 0.0f;
 		cameraStartRotation = cameraRotation;
 		cameraTargetRotation = (cameraRotation % (360 + 90) + degrees) % (360 + 90);
+	}
+	
+	@Override
+	public void dispose() {
+		lightContext.dispose();
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.context.SceneContext;
+import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.primitives.VoxelCube;
 import jr.rendering.utils.ShaderLoader;
 import jr.rendering.utils.TimeProfiler;
@@ -32,7 +33,6 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	private int voxelVAO, voxelInstanceBuffer = -1;
 	private int instanceCount = 0;
-	private ShaderProgram voxelShader;
 	
 	private String rendererName;
 	
@@ -48,10 +48,6 @@ public abstract class VoxelBatch<ObjectV> {
 	
 	public VoxelBatch(Class<?> rendererClass) {
 		this.rendererName = rendererClass.getSimpleName();
-	}
-	
-	private void initialiseShader() {
-		voxelShader = ShaderLoader.getProgram("shaders/voxel");
 	}
 	
 	private void initialiseVAO(FloatBuffer voxelsBuffer) {
@@ -167,8 +163,6 @@ public abstract class VoxelBatch<ObjectV> {
 	public void rebuildVoxels(SceneContext scene) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.rebuildVoxels[]");
 		
-		if (voxelShader == null) initialiseShader();
-		
 		// keep track of the locations of all buffers so we can update them later
 		AtomicInteger location = new AtomicInteger(0);
 		
@@ -204,7 +198,7 @@ public abstract class VoxelBatch<ObjectV> {
 	public void render(RenderPass pass, Camera camera, SceneContext scene) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render - update[]");
 		
-		if (voxelVAO == -1 || voxelInstanceBuffer == -1 || voxelShader == null) {
+		if (voxelVAO == -1 || voxelInstanceBuffer == -1) {
 			needsRebuild = true;
 		}
 		
@@ -239,7 +233,9 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		instances.forEach(i -> i.setUpdated(false));
 		
-		if (pass == RenderPass.MAIN_PASS && isCulled || instanceCount <= 0) return;
+		if (pass.isCheckCulling() && isCulled || instanceCount <= 0) return;
+		
+		ShaderProgram voxelShader = pass.getVoxelShader();
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
@@ -247,6 +243,12 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		voxelShader.begin();
 		voxelShader.setUniformMatrix("u_projTrans", camera.combined);
+		
+		if (pass == RenderPass.SHADOW_STATIC_PASS || pass == RenderPass.SHADOW_DYNAMIC_PASS) {
+			Light currentLight = scene.lightContext.getCurrentShadowMapLight();
+			voxelShader.setUniformf("u_cameraFar", camera.far);
+			voxelShader.setUniformf("u_lightPosition", currentLight.getPosition());
+		}
 		
 		Gdx.gl.glEnable(Gdx.gl.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(Gdx.gl.GL_CULL_FACE);

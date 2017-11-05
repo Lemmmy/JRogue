@@ -35,4 +35,9 @@ public class GBuffersContext extends Context {
 	public void resize(int width, int height) {
 		initialiseGBuffers(width, height);
 	}
+	
+	@Override
+	public void dispose() {
+		if (frameBuffer != null) frameBuffer.dispose();
+	}
 }

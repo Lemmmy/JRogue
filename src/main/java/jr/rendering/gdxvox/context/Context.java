@@ -27,4 +27,6 @@ public abstract class Context implements EventListener {
 	}
 	
 	public void resize(int width, int height) {}
+	
+	public void dispose() {}
 }

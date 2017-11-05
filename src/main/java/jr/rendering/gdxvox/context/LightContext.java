@@ -2,7 +2,9 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.LevelChangeEvent;
@@ -21,6 +23,11 @@ import java.util.stream.Collectors;
 
 @Getter
 public class LightContext extends Context {
+	public static int SHADOW_MAP_SIZE = -1;
+	
+	public static final float SHADOW_CAMERA_NEAR_Z = 1f;
+	public static final float SHADOW_CAMERA_FAR_Z = 25f;
+	
 	public static final Color DEFAULT_AMBIENT_COLOUR = new Color(0x262c35ff);
 	
 	public static final int MAX_LIGHTS = 256;
@@ -30,20 +37,39 @@ public class LightContext extends Context {
 	
 	private Map<Entity, Light> lights = new HashMap<>();
 	@Setter	private boolean lightsNeedUpdating = false;
+	private Light currentShadowMapLight;
 	
 	private int lightBufferHandle = -1;
 	private int bufferSize = 0;
 	
 	@Setter private Color ambientLight = new Color(0x181818ff);
 	
+	@Setter	private boolean shadowMapsNeedUpdating = false;
+	private PerspectiveCamera shadowMapCamera;
+	
 	public LightContext(Dungeon dungeon) {
 		super(dungeon);
+		
+		if (SHADOW_MAP_SIZE == -1) SHADOW_MAP_SIZE = JRogue.getSettings().getShadowMapSize();
+		if (SHADOW_MAP_SIZE != -1) initialiseShadowMapCamera();
 	}
 	
-	public void update(float delta) {
-		if (!lightsNeedUpdating) return;
-		rebuildLights();
-		lightsNeedUpdating = false;
+	private void initialiseShadowMapCamera() {
+		shadowMapCamera = new PerspectiveCamera(90f, LightContext.SHADOW_MAP_SIZE, LightContext.SHADOW_MAP_SIZE);
+		shadowMapCamera.near = SHADOW_CAMERA_NEAR_Z;
+		shadowMapCamera.far = SHADOW_CAMERA_FAR_Z;
+	}
+	
+	public void update(float delta, SceneContext scene) {
+		if (lightsNeedUpdating) {
+			rebuildLights();
+			lightsNeedUpdating = false;
+		}
+		
+		if (shadowMapsNeedUpdating) {
+			rebuildShadowMaps(scene);
+			shadowMapsNeedUpdating = false;
+		}
 	}
 	
 	public void rebuildLights() {
@@ -77,25 +103,42 @@ public class LightContext extends Context {
 		TimeProfiler.end("[P_ORANGE_2]LightContext.rebuildLights[]");
 	}
 	
+	private void rebuildShadowMaps(SceneContext scene) {
+		for (Light light : lights.values()) {
+			currentShadowMapLight = light;
+			light.renderShadowMaps(scene, this, shadowMapCamera);
+		}
+	}
+	
 	@Override
 	protected void onLevelChange(LevelChangeEvent levelChangeEvent) {
 		super.onLevelChange(levelChangeEvent);
+		lights.values().forEach(Light::dispose);
 		lights.clear();
 		lightsNeedUpdating = true;
+		shadowMapsNeedUpdating = true;
 	}
 	
 	public void addLight(Entity emitter, Light light) {
 		lights.put(emitter, light);
 		lightsNeedUpdating = true;
+		shadowMapsNeedUpdating = true;
 	}
 	
 	public void removeLight(Entity emitter) {
 		lights.remove(emitter);
 		lightsNeedUpdating = true;
+		shadowMapsNeedUpdating = true;
 	}
 	
 	public void moveLight(Entity emitter) {
 		lights.get(emitter).setPosition(new Vector3(emitter.getX(), 0, emitter.getY()));
 		lightsNeedUpdating = true;
+		shadowMapsNeedUpdating = true;
+	}
+	
+	@Override
+	public void dispose() {
+		lights.values().forEach(Light::dispose);
 	}
 }

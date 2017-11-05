@@ -116,13 +116,17 @@ public abstract class AbstractObjectRendererManager<
 	}
 	
 	public void renderAll(RenderPass pass, Camera camera) {
-		if (pass == RenderPass.MAIN_PASS) checkCulling(camera);
+		if (pass.isCheckCulling()) checkCulling(camera);
 		
-		for (BatchT staticBatch : staticBatches) {
-			staticBatch.render(pass, camera, scene);
+		if (pass.isDrawStatic()) {
+			for (BatchT staticBatch : staticBatches) {
+				staticBatch.render(pass, camera, scene);
+			}
 		}
 		
-		dynamicBatch.render(pass, camera, scene);
+		if (pass.isDrawDynamic()) {
+			dynamicBatch.render(pass, camera, scene);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

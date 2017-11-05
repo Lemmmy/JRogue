@@ -107,6 +107,9 @@ public class Settings {
 	@Setting(comment="Use FXAA")
 	private boolean useFxaa = false;
 	
+	@Setting(comment="Shadow map size")
+	private int shadowMapSize = 1024;
+	
 	/**
 	 * Show text popups above entities when stats change or events occur. 0=none, 1=small, 2=large.
 	 */
