@@ -12,10 +12,7 @@ import jr.rendering.base.screens.ComponentedScreen;
 import jr.rendering.utils.FontLoader;
 import jr.rendering.utils.TimeProfiler;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,6 +96,8 @@ public class TimeProfilerComponent extends RendererComponent {
 			.forEach(timeEntry -> {
 				String key = timeEntry.getKey();
 				float value = timeEntry.getValue();
+				List<Long> data = TimeProfiler.getTimeHistory(key);
+				float peak = data == null ? 0.0f : Collections.max(data).floatValue();;
 				
 				float yf = y.get();
 				
@@ -112,8 +111,6 @@ public class TimeProfilerComponent extends RendererComponent {
 					
 					colour = new Color(colour);
 					colour.mul(1f, 1f, 1f, GRAPH_ALPHA);
-					
-					List<Long> data = TimeProfiler.getTimeHistory(key);
 					
 					if (data != null) {
 						graph = new StreamingGraph(
@@ -134,8 +131,21 @@ public class TimeProfilerComponent extends RendererComponent {
 				if (graph != null) graph.render(width - KEY_X, yf + yIncrement);
 				
 				spriteBatch.begin();
-				font.draw(spriteBatch, key, width - KEY_X, yf + TEXT_OFFSET_Y);
-				font.draw(spriteBatch, String.format("%,.2f ms", value / 1E6), width - VALUE_X, yf + TEXT_OFFSET_Y);
+				font.draw( // name
+					spriteBatch,
+					key,
+					width - KEY_X, yf + TEXT_OFFSET_Y
+				);
+				font.draw( // current time
+					spriteBatch,
+					String.format("%,.2fms", value / 1E6),
+					width - VALUE_X, yf + TEXT_OFFSET_Y
+				);
+				font.draw( // peak time
+					spriteBatch,
+					String.format("[P_ORANGE_2]%,.2fms[]", peak / 1E6),
+					width - VALUE_X, yf + yIncrement + TEXT_OFFSET_Y
+				);
 				spriteBatch.end();
 				
 				y.set(yf + yIncrement * 2);

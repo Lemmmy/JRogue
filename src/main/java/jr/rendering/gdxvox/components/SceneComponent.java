@@ -188,7 +188,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 	}
 	
 	private void renderFXAA() {
-		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.render (FXAA pass)[]");
+		TimeProfiler.begin("[P_PURPLE_1]SceneComponent.renderFXAA[]");
 		
 		if (settings.isUseFxaa()) {
 			renderContext.begin();
@@ -205,7 +205,7 @@ public class SceneComponent extends RendererComponent<VoxGameScreen> {
 			renderContext.end();
 		}
 		
-		TimeProfiler.end("[P_PURPLE_1]SceneComponent.render (FXAA pass)[]");
+		TimeProfiler.end("[P_PURPLE_1]SceneComponent.renderFXAA[]");
 	}
 	
 	@Override
