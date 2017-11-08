@@ -1,5 +1,6 @@
 package jr.rendering.utils;
 
+import jr.JRogue;
 import lombok.Getter;
 import lombok.val;
 
@@ -15,7 +16,21 @@ public class TimeProfiler {
 	private static Map<String, Long> startTimes = new HashMap<>();
 	@Getter private static Map<String, List<Long>> timeHistory = new HashMap<>();
 	
+	private static boolean checked = false;
+	private static boolean enabled;
+	
+	private static boolean settingCheck() {
+		if (!checked) {
+			enabled = JRogue.getSettings().isShowTimeProfiler();
+			checked = true;
+		}
+		
+		return enabled;
+	}
+	
 	public static void reset() {
+		if (!settingCheck()) return;
+		
 		times.keySet().forEach(key -> {
 			if (!timeHistory.containsKey(key)) timeHistory.put(key, new ArrayList<>());
 			
@@ -29,10 +44,14 @@ public class TimeProfiler {
 	}
 	
 	public static void begin(String key) {
+		if (!settingCheck()) return;
+		
 		startTimes.put(key, System.nanoTime());
 	}
 	
 	public static void end(String key) {
+		if (!settingCheck()) return;
+		
 		long startTime = startTimes.get(key);
 		long endTime = System.nanoTime();
 		long time = endTime - startTime;

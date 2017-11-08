@@ -69,6 +69,9 @@ public class VoxGameScreen extends ComponentedScreen {
 		
 		if (settings.isShowFPSCounter()) {
 			addComponent(150, "fps", FPSCounterComponent.class);
+		}
+		
+		if (settings.isShowTimeProfiler()) {
 			addComponent(200, "timeProfiler", TimeProfilerComponent.class);
 		}
 	}

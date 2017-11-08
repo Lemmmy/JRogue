@@ -77,6 +77,9 @@ public class Settings {
 	@Setting(comment="[Debug] Show FPS counter.")
 	private boolean showFPSCounter = false;
 	
+	@Setting(comment="[Debug] Show time prfiler.")
+	private boolean showTimeProfiler = false;
+	
 	@Setting(comment="[Debug] Show debug client")
 	private boolean showDebugClient = false;
 	
