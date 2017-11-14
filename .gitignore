@@ -15,3 +15,4 @@ docs/
 proguard.map
 *.class
 !lib/
+screenshots/
