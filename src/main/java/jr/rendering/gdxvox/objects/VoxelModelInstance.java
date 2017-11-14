@@ -54,7 +54,13 @@ public class VoxelModelInstance {
 		float startY = y + offsetY + animatedOffsetY;
 		float startZ = z + offsetZ + animatedOffsetZ;
 		
-		int length = getVoxels().length * VoxelBatch.INSTANCE_ELEMENT_SIZE;
+		int count = 0;
+		for (Voxel v : getVoxels()) {
+			if (v == null || v.getColourIndex() == 0) continue;
+			count++;
+		}
+		
+		int length = count * VoxelBatch.INSTANCE_ELEMENT_SIZE;
 		compiledVoxels = BufferUtils.createByteBuffer(length);
 		
 		for (Voxel v : getVoxels()) {
