@@ -25,7 +25,7 @@ import java.util.Map;
 public class LightContext extends Context {
 	public static int SHADOW_MAP_SIZE = -1;
 	
-	public static final float SHADOW_CAMERA_NEAR_Z = 1f;
+	public static final float SHADOW_CAMERA_NEAR_Z = 0.25f;
 	public static final float SHADOW_CAMERA_FAR_Z = 25f;
 	
 	public static final Color DEFAULT_AMBIENT_COLOUR = new Color(0x262c35ff);

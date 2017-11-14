@@ -40,7 +40,7 @@ public class EntityRendererTorch extends EntityRenderer {
 			Light light = new Light(
 				le.isLightEnabled(),
 				new Vector3(entity.getX(), 0, entity.getY()),
-				new Vector3(-dx * 0.9f, 0.65f, dy * 0.9f),
+				new Vector3(-dx * 0.5f, 0.65f, dy * 0.5f),
 				le.getLightColour(),
 				le.getLightAttenuationFactor()
 			);

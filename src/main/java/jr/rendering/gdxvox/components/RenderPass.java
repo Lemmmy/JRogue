@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum RenderPass {
-	SHADOW_STATIC_PASS(false, true, false, "shaders/voxel_depth"),
+	SHADOW_STATIC_PASS(true, true, false, "shaders/voxel_depth"),
 	SHADOW_DYNAMIC_PASS(false, false, true, "shaders/voxel_depth"),
 	MAIN_PASS(true, true, true, "shaders/voxel");
 	
