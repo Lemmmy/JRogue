@@ -303,9 +303,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected void safePlaceDoor(int x, int y) {
 		level.tileStore.setTileType(x, y, doorTypes.next());
 		
-		level.entityStore.getEntitiesAt(x, y).stream()
+		level.entityStore.getQueuedEntitiesAt(x, y).stream()
 			.filter(EntityTorch.class::isInstance)
-			.forEach(e -> level.entityStore.removeEntity(e));
+			.forEach(e -> level.entityStore.removeQueuedEntity(e));
 
 		for (VectorInt direction : Utils.DIRECTIONS) {
 			int nx = x + direction.getX();
