@@ -5,23 +5,17 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
-import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.math.Vector3;
-import jr.JRogue;
 import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.context.LightContext;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.utils.FrameBufferUtils;
-import jr.rendering.utils.ScreenshotFactory;
 import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

@@ -16,12 +16,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL31;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Getter
 public class LightContext extends Context {

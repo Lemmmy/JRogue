@@ -2,9 +2,7 @@ package jr.debugger.ui.tree.setters.partials.java;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.debugger.tree.TreeNode;
-import jr.debugger.tree.valuemanagers.settertypes.java.BooleanSetter;
 import jr.debugger.tree.valuemanagers.settertypes.java.EnumSetter;
-import jr.debugger.ui.tree.setters.partials.CheckboxSetterPartial;
 import jr.debugger.ui.tree.setters.partials.DropdownSetterPartial;
 import jr.debugger.ui.tree.setters.partials.SetterPartialHandler;
 

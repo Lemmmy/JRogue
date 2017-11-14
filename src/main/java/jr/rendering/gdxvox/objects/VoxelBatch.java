@@ -7,7 +7,6 @@ import jr.rendering.gdxvox.components.RenderPass;
 import jr.rendering.gdxvox.context.SceneContext;
 import jr.rendering.gdxvox.lighting.Light;
 import jr.rendering.gdxvox.primitives.VoxelCube;
-import jr.rendering.utils.ShaderLoader;
 import jr.rendering.utils.TimeProfiler;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +17,9 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL33;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 public abstract class VoxelBatch<ObjectV> {
