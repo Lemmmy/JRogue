@@ -57,7 +57,8 @@ dependencies {
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 
-	compile "org.projectlombok:lombok:1.16.12"
+	//compile "org.projectlombok:lombok:1.16.18"
+	compile files("lib/lombok-1.16.19.jar")
 }
 
 tasks.withType(JavaCompile) {
