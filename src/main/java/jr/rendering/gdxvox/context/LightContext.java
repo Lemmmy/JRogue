@@ -2,6 +2,7 @@ package jr.rendering.gdxvox.context;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import jr.JRogue;
@@ -44,6 +45,7 @@ public class LightContext extends Context {
 	
 	@Setter private Color ambientLight = new Color(0x181818ff);
 	
+	private GLTexture shadowMapTexture;
 	@Setter	private boolean shadowMapsNeedUpdating = false;
 	private PerspectiveCamera shadowMapCamera;
 	
@@ -58,6 +60,10 @@ public class LightContext extends Context {
 		shadowMapCamera = new PerspectiveCamera(90f, LightContext.SHADOW_MAP_SIZE, LightContext.SHADOW_MAP_SIZE);
 		shadowMapCamera.near = SHADOW_CAMERA_NEAR_Z;
 		shadowMapCamera.far = SHADOW_CAMERA_FAR_Z;
+	}
+	
+	private void initialiseShadowMapTextures() {
+		
 	}
 	
 	public void update(float delta, SceneContext scene) {
@@ -102,6 +108,8 @@ public class LightContext extends Context {
 	}
 	
 	private void rebuildShadowMaps(SceneContext scene) {
+		if (SHADOW_MAP_SIZE != -1 && shadowMapTexture == null) initialiseShadowMapCamera();
+		
 		for (Light light : lights.values()) {
 			currentShadowMapLight = light;
 			light.renderShadowMaps(scene, this, shadowMapCamera);
