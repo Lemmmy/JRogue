@@ -39,6 +39,7 @@ public abstract class VoxelBatch<ObjectV> {
 	private List<VoxelModelInstance> instances = new ArrayList<>();
 	
 	private boolean needsRebuild;
+	@Setter private boolean instancesNeedRemap;
 	
 	@Setter private boolean isCulled = false;
 	
@@ -50,7 +51,7 @@ public abstract class VoxelBatch<ObjectV> {
 		this.rendererName = rendererClass.getSimpleName();
 	}
 	
-	private void initialiseVAO(FloatBuffer voxelsBuffer) {
+	private void initialiseVAO(ByteBuffer voxelsBuffer) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.initialiseVAO[]");
 		voxelInstanceBuffer = Gdx.gl.glGenBuffer();
 		
@@ -68,7 +69,7 @@ public abstract class VoxelBatch<ObjectV> {
 		
 		// instance buffer
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
-		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
+		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity(), voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		// instance position
 		Gdx.gl.glEnableVertexAttribArray(2);
 		Gdx.gl.glVertexAttribPointer(2, 3, Gdx.gl.GL_FLOAT, false, INSTANCE_ELEMENT_SIZE, 0);
@@ -91,10 +92,10 @@ public abstract class VoxelBatch<ObjectV> {
 		TimeProfiler.end("[P_GREEN_1]VoxelBatch.initialiseVAO[]");
 	}
 	
-	private void updateInstanceBuffer(FloatBuffer voxelsBuffer) {
+	private void updateInstanceBuffer(ByteBuffer voxelsBuffer) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.updateInstanceBuffer[]");
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
-		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity() * 4, voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
+		Gdx.gl.glBufferData(Gdx.gl.GL_ARRAY_BUFFER, voxelsBuffer.capacity(), voxelsBuffer, Gdx.gl.GL_STATIC_DRAW);
 		Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
 		TimeProfiler.end("[P_GREEN_1]VoxelBatch.updateInstanceBuffer[]");
 	}
@@ -117,6 +118,7 @@ public abstract class VoxelBatch<ObjectV> {
 		updateObjectPosition(object, model);
 		
 		instances.add(model);
+		model.setBatch(this);
 		needsRebuild = true;
 	}
 	
@@ -163,28 +165,21 @@ public abstract class VoxelBatch<ObjectV> {
 	public void rebuildVoxels(SceneContext scene) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.rebuildVoxels[]");
 		
-		// keep track of the locations of all buffers so we can update them later
-		AtomicInteger location = new AtomicInteger(0);
+		int size = 0;
+		for (VoxelModelInstance voxelModelInstance : instances) {
+			size += voxelModelInstance.compileVoxels().capacity();
+		}
+		if (size == 0) return;
 		
-		List<List<Float>> voxelBuffers = instances.stream()
-			.map(VoxelModelInstance::compileVoxels)
-			.collect(Collectors.toList());
-		
-		int size = voxelBuffers.stream()
-			.mapToInt(List::size)
-			.sum();
-		
-		FloatBuffer compiledBuffer = BufferUtils.createFloatBuffer(size);
-		instances.forEach(instance -> {
-			List<Float> instanceBuffer = instance.getCompiledVoxels();
-			instanceBuffer.forEach(compiledBuffer::put);
-			instance.setBufferLocation(location.getAndAdd(instanceBuffer.size()));
-		});
+		ByteBuffer compiledBuffer = BufferUtils.createByteBuffer(size);
+		for (VoxelModelInstance instance : instances) {
+			ByteBuffer instanceBuffer = instance.getCompiledVoxels();
+			instance.setBufferLocation(compiledBuffer.position());
+			compiledBuffer.put(instanceBuffer);
+		}
 		compiledBuffer.flip();
 		
-		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_COUNT;
-		
-		if (instanceCount == 0) return;
+		instanceCount = compiledBuffer.capacity() / INSTANCE_ELEMENT_SIZE;
 		
 		if (voxelInstanceBuffer == -1) {
 			initialiseVAO(compiledBuffer);
@@ -198,40 +193,31 @@ public abstract class VoxelBatch<ObjectV> {
 	public void render(RenderPass pass, Camera camera, SceneContext scene) {
 		TimeProfiler.begin("[P_GREEN_1]VoxelBatch.render - update[]");
 		
-		if (voxelVAO == -1 || voxelInstanceBuffer == -1) {
-			needsRebuild = true;
-		}
+		if (voxelVAO == -1 || voxelInstanceBuffer == -1) needsRebuild = true;
 		
 		if (needsRebuild) {
 			rebuildVoxels(scene);
 			needsRebuild = false;
-		} else {
-			Stream instanceStream = instances.stream()
-				.filter(VoxelModelInstance::isUpdated);
+		} else if (instancesNeedRemap) {
+			Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
+			ByteBuffer mappedBuffer = GL15.glMapBuffer(Gdx.gl.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
 			
-			if (instanceStream.count() > 0) {
-				Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, voxelInstanceBuffer);
-				ByteBuffer mappedBuffer = GL15.glMapBuffer(Gdx.gl.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
+			for (VoxelModelInstance instance : instances) {
+				if (!instance.isUpdated()) continue;
 				
-				instances.stream()
-					.filter(VoxelModelInstance::isUpdated)
-					.forEach(instance -> {
-						int start = instance.getBufferLocation();
-						List<Float> instanceBuffer = instance.compileVoxels();
-						
-						for (int i = 0; i < instanceBuffer.size(); i++) {
-							mappedBuffer.putFloat((start + i) * 4, instanceBuffer.get(i));
-						}
-					});
+				mappedBuffer.position(instance.getBufferLocation());
+				mappedBuffer.put(instance.compileVoxels());
 				
-				GL15.glUnmapBuffer(Gdx.gl.GL_ARRAY_BUFFER);
-				Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
+				instance.setUpdated(false);
 			}
+			
+			GL15.glUnmapBuffer(Gdx.gl.GL_ARRAY_BUFFER);
+			Gdx.gl.glBindBuffer(Gdx.gl.GL_ARRAY_BUFFER, 0);
+			
+			instancesNeedRemap = false;
 		}
 		
 		TimeProfiler.end("[P_GREEN_1]VoxelBatch.render - update[]");
-		
-		instances.forEach(i -> i.setUpdated(false));
 		
 		if (pass.isCheckCulling() && isCulled || instanceCount <= 0) return;
 		

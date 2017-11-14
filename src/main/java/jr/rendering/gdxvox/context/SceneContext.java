@@ -110,7 +110,7 @@ public class SceneContext extends Context {
 		cameraLerping = true;
 		cameraLerpElapsed = 0.0f;
 		cameraStartRotation = cameraRotation;
-		cameraTargetRotation = (cameraRotation % (360 + 90) + degrees) % (360 + 90);
+		cameraTargetRotation = (float) (Math.floor((cameraRotation % 450f + degrees) % 450 / 90f) * 90f);
 	}
 	
 	@Override

@@ -16,6 +16,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL31;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,23 +81,21 @@ public class LightContext extends Context {
 		
 		Gdx.gl.glBindBuffer(GL31.GL_UNIFORM_BUFFER, lightBufferHandle);
 		
-		List<List<Float>> lightBuffers = lights.values().stream()
-			.filter(Light::isEnabled)
-			.limit(LightContext.MAX_LIGHTS)
-			.map(Light::compileLight)
-			.collect(Collectors.toList());
+		List<ByteBuffer> lightBuffers = new ArrayList<>();
 		
-		bufferSize = 16 + lightBuffers.stream()
-			.mapToInt(List::size)
-			.sum() * 4;
+		for (Light light : lights.values()) {
+			if (!light.isEnabled()) continue;
+			if (lightBuffers.size() >= MAX_LIGHTS) break;
+			
+			lightBuffers.add(light.compileLight());
+		}
+		
+		bufferSize = 16 + lightBuffers.size() * LIGHT_ELEMENT_SIZE;
 		
 		ByteBuffer compiledBuffer = BufferUtils.createByteBuffer(bufferSize);
-		compiledBuffer.putInt((int) lights.values().stream()
-			.filter(Light::isEnabled)
-			.limit(LightContext.MAX_LIGHTS)
-			.count()); // count
+		compiledBuffer.putInt(lightBuffers.size()); // count
 		compiledBuffer.putFloat(0.0f).putFloat(0.0f).putFloat(0.0f); // padding
-		lightBuffers.forEach(buffer -> buffer.forEach(compiledBuffer::putFloat));
+		lightBuffers.forEach(compiledBuffer::put);
 		compiledBuffer.flip();
 		
 		Gdx.gl.glBufferData(GL31.GL_UNIFORM_BUFFER, bufferSize, compiledBuffer, Gdx.gl.GL_DYNAMIC_DRAW);

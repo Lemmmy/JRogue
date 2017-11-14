@@ -16,7 +16,10 @@ import jr.rendering.utils.ScreenshotFactory;
 import jr.utils.Colour;
 import lombok.Getter;
 import lombok.Setter;
+import org.lwjgl.BufferUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,30 +53,31 @@ public class Light {
 		);
 	}
 	
-	public List<Float> compileLight() {
-		int size = LightContext.LIGHT_ELEMENT_SIZE;
-		
-		List<Float> buf = new ArrayList<>();
+	public ByteBuffer compileLight() {
+		ByteBuffer buf = BufferUtils.createByteBuffer(LightContext.LIGHT_ELEMENT_SIZE);
 		
 		// position
-		buf.add(position.x + positionOffset.x);
-		buf.add(position.y + positionOffset.y);
-		buf.add(position.z + positionOffset.z);
+		buf.putFloat(position.x + positionOffset.x);
+		buf.putFloat(position.y + positionOffset.y);
+		buf.putFloat(position.z + positionOffset.z);
 		
-		buf.add(0f); // padding
+		buf.putFloat(0f); // padding
 		
 		// colour
-		buf.add(colour.r);
-		buf.add(colour.g);
-		buf.add(colour.b);
+		buf.putFloat(colour.r);
+		buf.putFloat(colour.g);
+		buf.putFloat(colour.b);
 		
 		// attenuation factor
-		buf.add(attenuationFactor);
+		buf.putFloat(attenuationFactor);
 		
+		buf.flip();
 		return buf;
 	}
 	
 	public void renderShadowMaps(SceneContext sceneContext, LightContext lightContext, Camera camera) {
+		if (5 > 2) return;
+		
 		fbo.begin();
 		fbo.bind();
 		
@@ -87,12 +91,6 @@ public class Light {
 			Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT | Gdx.gl.GL_DEPTH_BUFFER_BIT);
 			
 			sceneContext.renderAllMaps(RenderPass.SHADOW_STATIC_PASS, camera);
-			
-			ScreenshotFactory.saveScreenshot(String.format(
-				"light-shadowmap-cube-%s-%f-%f-%f",
-				side.name(),
-				position.x, position.y, position.z
-			));
 		}
 		
 		fbo.end();

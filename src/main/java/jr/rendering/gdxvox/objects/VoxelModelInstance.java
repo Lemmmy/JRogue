@@ -6,12 +6,16 @@ import jr.rendering.gdxvox.objects.tiles.TileRenderer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.lwjgl.BufferUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Accessors(chain = true)
@@ -28,26 +32,19 @@ public class VoxelModelInstance {
 	private float pivotX = -1, pivotZ = -1;
 	private float rotation;
 	
-	@Setter private int bufferLocation;
-	@Setter private boolean updated = true;
+	@Setter private boolean updated;
+	@Setter private VoxelBatch batch;
 	
-	private List<Float> compiledVoxels;
+	@Setter private int bufferLocation;
+	
+	private ByteBuffer compiledVoxels;
 	
 	public VoxelModelInstance(VoxelModel model) {
 		this.model = model;
 	}
 	
-	public List<Float> compileVoxels() {
+	public ByteBuffer compileVoxels() {
 		VoxelModel.Frame frame = getFrame();
-		
-		List<Voxel> voxels = Arrays.stream(getVoxels())
-			.filter(Objects::nonNull)
-			.filter(v -> v.getColourIndex() != 0)
-			.collect(Collectors.toList());
-		
-		int length = voxels.size() * VoxelBatch.INSTANCE_ELEMENT_COUNT;
-		
-		compiledVoxels = new ArrayList<>();
 		
 		float angle = (float) Math.toRadians(rotation);
 		float pivotX = (this.pivotX == -1 ? frame.getSizeX() / 2 : this.pivotX) - 0.5f;
@@ -57,26 +54,33 @@ public class VoxelModelInstance {
 		float startY = y + offsetY + animatedOffsetY;
 		float startZ = z + offsetZ + animatedOffsetZ;
 		
-		for (Voxel voxel : voxels) {
-			float vx = (float) Math.cos(angle) * (voxel.getX() - pivotX) -
-				(float) Math.sin(angle) * (voxel.getZ() - pivotZ);
-			float vy = voxel.getY();
-			float vz = (float) Math.sin(angle) * (voxel.getX() - pivotX) +
-				(float) Math.cos(angle) * (voxel.getZ() - pivotZ);
+		int length = getVoxels().length * VoxelBatch.INSTANCE_ELEMENT_SIZE;
+		compiledVoxels = BufferUtils.createByteBuffer(length);
+		
+		for (Voxel v : getVoxels()) {
+			if (v == null || v.getColourIndex() == 0) continue;
+			
+			float vx = (float) Math.cos(angle) * (v.getX() - pivotX) -
+				(float) Math.sin(angle) * (v.getZ() - pivotZ);
+			float vy = v.getY();
+			float vz = (float) Math.sin(angle) * (v.getX() - pivotX) +
+				(float) Math.cos(angle) * (v.getZ() - pivotZ);
 			
 			// position
-			compiledVoxels.add(startX + vx / (float) TileRenderer.TILE_WIDTH);
-			compiledVoxels.add(startY + vy / (float) TileRenderer.TILE_HEIGHT);
-			compiledVoxels.add(startZ + vz / (float) TileRenderer.TILE_DEPTH);
+			compiledVoxels.putFloat(startX + vx / (float) TileRenderer.TILE_WIDTH);
+			compiledVoxels.putFloat(startY + vy / (float) TileRenderer.TILE_HEIGHT);
+			compiledVoxels.putFloat(startZ + vz / (float) TileRenderer.TILE_DEPTH);
 			
 			// rotation
-			compiledVoxels.add(angle);
+			compiledVoxels.putFloat(angle);
 			
 			// colour
-			compiledVoxels.add(voxel.getR());
-			compiledVoxels.add(voxel.getG());
-			compiledVoxels.add(voxel.getB());
+			compiledVoxels.putFloat(v.getR());
+			compiledVoxels.putFloat(v.getG());
+			compiledVoxels.putFloat(v.getB());
 		}
+		
+		compiledVoxels.flip();
 		
 		return compiledVoxels;
 	}
@@ -98,103 +102,103 @@ public class VoxelModelInstance {
 	}
 	
 	public VoxelModelInstance setObject(Object object) {
-		if (this.object != object) updated = true;
+		if (this.object != object) updateInstancesNeedRemap();
 		this.object = object;
 		return this;
 	}
 	
 	public VoxelModelInstance setInstanceID(String instanceID) {
-		if (this.instanceID == null || !this.instanceID.equals(instanceID)) updated = true;
+		if (this.instanceID == null || !this.instanceID.equals(instanceID)) updateInstancesNeedRemap();
 		this.instanceID = instanceID;
 		return this;
 	}
 	
 	public VoxelModelInstance setModel(VoxelModel model) {
-		if (this.model != model) updated = true;
+		if (this.model != model) updateInstancesNeedRemap();
 		this.model = model;
 		return this;
 	}
 	
 	public VoxelModelInstance setFrame(int frame) {
-		if (this.frame != frame) updated = true;
+		if (this.frame != frame) updateInstancesNeedRemap();
 		this.frame = frame;
 		return this;
 	}
 	
 	public VoxelModelInstance setX(float x) {
-		if (this.x != x) updated = true;
+		if (this.x != x) updateInstancesNeedRemap();
 		this.x = x;
 		return this;
 	}
 	
 	public VoxelModelInstance setY(float y) {
-		if (this.y != y) updated = true;
+		if (this.y != y) updateInstancesNeedRemap();
 		this.y = y;
 		return this;
 	}
 	
 	public VoxelModelInstance setZ(float z) {
-		if (this.z != z) updated = true;
+		if (this.z != z) updateInstancesNeedRemap();
 		this.z = z;
 		return this;
 	}
 	
 	public VoxelModelInstance setOffsetX(float offsetX) {
-		if (this.offsetX != offsetX) updated = true;
+		if (this.offsetX != offsetX) updateInstancesNeedRemap();
 		this.offsetX = offsetX;
 		return this;
 	}
 	
 	public VoxelModelInstance setOffsetY(float offsetY) {
-		if (this.offsetY != offsetY) updated = true;
+		if (this.offsetY != offsetY) updateInstancesNeedRemap();
 		this.offsetY = offsetY;
 		return this;
 	}
 	
 	public VoxelModelInstance setOffsetZ(float offsetZ) {
-		if (this.offsetZ != offsetZ) updated = true;
+		if (this.offsetZ != offsetZ) updateInstancesNeedRemap();
 		this.offsetZ = offsetZ;
 		return this;
 	}
 	
 	public VoxelModelInstance setAnimatedOffsetX(float animatedOffsetX) {
-		if (this.animatedOffsetX != animatedOffsetX) updated = true;
+		if (this.animatedOffsetX != animatedOffsetX) updateInstancesNeedRemap();
 		this.animatedOffsetX = animatedOffsetX;
 		return this;
 	}
 	
 	public VoxelModelInstance setAnimatedOffsetY(float animatedOffsetY) {
-		if (this.animatedOffsetY != animatedOffsetY) updated = true;
+		if (this.animatedOffsetY != animatedOffsetY) updateInstancesNeedRemap();
 		this.animatedOffsetY = animatedOffsetY;
 		return this;
 	}
 	
 	public VoxelModelInstance setAnimatedOffsetZ(float animatedOffsetZ) {
-		if (this.animatedOffsetZ != animatedOffsetZ) updated = true;
+		if (this.animatedOffsetZ != animatedOffsetZ) updateInstancesNeedRemap();
 		this.animatedOffsetZ = animatedOffsetZ;
 		return this;
 	}
 	
 	public VoxelModelInstance setPivotX(float pivotX) {
-		if (this.pivotX != pivotX) updated = true;
+		if (this.pivotX != pivotX) updateInstancesNeedRemap();
 		this.pivotX = pivotX;
 		return this;
 	}
 	
 	public VoxelModelInstance setPivotZ(float pivotZ) {
-		if (this.pivotZ != pivotZ) updated = true;
+		if (this.pivotZ != pivotZ) updateInstancesNeedRemap();
 		this.pivotZ = pivotZ;
 		return this;
 	}
 	
 	public VoxelModelInstance setRotation(float rotation) {
-		if (this.rotation != rotation) updated = true;
+		if (this.rotation != rotation) updateInstancesNeedRemap();
 		this.rotation = rotation;
 		return this;
 	}
 	
 	public VoxelModelInstance setPosition(float x, float y, float z) {
-		if (this.x != x || this.y != y || this.z != z) updated = true;
+		if (this.x != x || this.y != y || this.z != z) updateInstancesNeedRemap();
 		
 		this.x = x;
 		this.y = y;
@@ -204,7 +208,7 @@ public class VoxelModelInstance {
 	}
 	
 	public VoxelModelInstance setOffset(float x, float y, float z) {
-		if (this.offsetX != x || this.offsetY != y || this.offsetZ != z) updated = true;
+		if (this.offsetX != x || this.offsetY != y || this.offsetZ != z) updateInstancesNeedRemap();
 		
 		this.offsetX = x;
 		this.offsetY = y;
@@ -214,7 +218,7 @@ public class VoxelModelInstance {
 	}
 	
 	public VoxelModelInstance setAnimatedOffset(float x, float y, float z) {
-		if (this.animatedOffsetX != x || this.animatedOffsetY != y || this.animatedOffsetZ != z) updated = true;
+		if (this.animatedOffsetX != x || this.animatedOffsetY != y || this.animatedOffsetZ != z) updateInstancesNeedRemap();
 		
 		this.animatedOffsetX = x;
 		this.animatedOffsetY = y;
@@ -224,11 +228,16 @@ public class VoxelModelInstance {
 	}
 	
 	public VoxelModelInstance setPivotPosition(float x, float z) {
-		if (this.pivotX != x || this.pivotZ != z) updated = true;
+		if (this.pivotX != x || this.pivotZ != z) updateInstancesNeedRemap();
 		
 		this.pivotX = x;
 		this.pivotZ = z;
 		
 		return this;
+	}
+	
+	private void updateInstancesNeedRemap() {
+		if (batch != null) batch.setInstancesNeedRemap(true);
+		updated = true;
 	}
 }
