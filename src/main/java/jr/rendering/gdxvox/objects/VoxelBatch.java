@@ -101,11 +101,19 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public boolean contains(ObjectV object) {
-		return instances.stream().anyMatch(instance -> instance.getObject() == object);
+		for (VoxelModelInstance instance : instances) {
+			if (instance.getObject() == object) return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean contains(String instanceID) {
-		return instances.stream().anyMatch(instance -> instance.getInstanceID().equals(instanceID));
+		for (VoxelModelInstance instance : instances) {
+			if (instance.getInstanceID().equals(instanceID)) return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean contains(VoxelModelInstance model) {
@@ -152,9 +160,11 @@ public abstract class VoxelBatch<ObjectV> {
 	}
 	
 	public Optional<VoxelModelInstance> getInstance(ObjectV object) {
-		return instances.stream()
-			.filter(i -> i.getObject().equals(object))
-			.findFirst();
+		for (VoxelModelInstance i : instances) {
+			if (i.getObject().equals(object)) return Optional.of(i);
+		}
+		
+		return Optional.empty();
 	}
 	
 	public void clear() {
