@@ -60,9 +60,8 @@ dependencies {
 	compile "com.badlogicgames.gdx:gdx-freetype-platform:1.9.7:natives-desktop"
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
-
-	compile "org.projectlombok:lombok:1.16.12"
-
+	
+	compile files("lib/lombok-1.16.19.jar")
 }
 
 tasks.withType(JavaCompile) {
