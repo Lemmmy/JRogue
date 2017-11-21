@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
-	private String name;
+	@Setter private String name;
 	@Getter private Role role;
 	
 	@Getter private int energy;
