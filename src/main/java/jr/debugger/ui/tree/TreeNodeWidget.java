@@ -1,13 +1,17 @@
 package jr.debugger.ui.tree;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
+import jr.debugger.ui.DebugUI;
+import jr.debugger.ui.tree.setters.SetterWindow;
 import jr.debugger.ui.utils.Identicon;
-import jr.rendering.ui.utils.FunctionalClickListener;
+import jr.rendering.base.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
 import java.util.LinkedHashMap;
@@ -19,6 +23,7 @@ public class TreeNodeWidget extends Table {
 	private static final int ICON_PADDING = 4;
 	
 	private DebugClient debugClient;
+	@Getter private DebugUI ui;
 	
 	@Getter private TreeNode node;
 	
@@ -30,6 +35,7 @@ public class TreeNodeWidget extends Table {
 		super(skin);
 		
 		this.debugClient = debugClient;
+		this.ui = debugClient.getUI();
 		this.node = node;
 		
 		initialise();
@@ -91,10 +97,12 @@ public class TreeNodeWidget extends Table {
 					
 					if (children.containsKey(id)) {
 						removeActor(children.get(id));
+						ui.unregisterNodeWidget(children.get(id));
 						children.remove(id);
 					}
 					
 					TreeNodeWidget childWidget = new TreeNodeWidget(debugClient, child, getSkin());
+					ui.registerNodeWidget(childWidget);
 					children.put(child.getIdentityHashCode(), childWidget);
 					add(childWidget).padLeft(INDENT_SIZE).left().row();
 				});
@@ -104,7 +112,7 @@ public class TreeNodeWidget extends Table {
 	private void initialise() {
 		Table nameTable = new Table(getSkin());
 		
-		initialiseIdenticon(nameTable);
+		if (node.isShowIdenticon()) initialiseIdenticon(nameTable);
 		initialiseModifiers(nameTable);
 		initialiseNameLabel(nameTable);
 		
@@ -113,9 +121,18 @@ public class TreeNodeWidget extends Table {
 		initialiseChildren();
 		
 		if (clickListener != null) removeListener(clickListener);
-		nameTable.addListener(clickListener = new FunctionalClickListener((event, x, y) -> {
+		nameTable.addListener(clickListener = new FunctionalClickListener((fcl, event, x, y) -> {
+			if (node.isSettable() && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+				setterClick();
+				return;
+			}
+			
 			debugClient.toggleNode(node);
 			debugClient.getUI().refresh();
 		}));
+	}
+	
+	private void setterClick() {
+		new SetterWindow(getStage(), getSkin(), this, node).show();
 	}
 }

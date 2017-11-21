@@ -191,7 +191,6 @@ public class TurnSystem implements Serialisable {
 		es.processEntityQueues(!isStart);
 		
 		l.visibilityStore.updateSight(dungeon.getPlayer());
-		l.lightStore.buildLight(false);
 		
 		ev.triggerTurnCompleteEvents();
 		

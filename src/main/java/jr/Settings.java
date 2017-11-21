@@ -23,14 +23,14 @@ public class Settings {
 								System.getProperty("user.name");
 	
 	/**
-	 * The width of the game windowBorder.
+	 * The width of the game window.
 	 */
-	@Setting(comment="The width of the game windowBorder.")
+	@Setting(comment="The width of the game window.")
 	private int screenWidth = 800;
 	/**
-	 * The height of the game windowBorder.
+	 * The height of the game window.
 	 */
-	@Setting(comment="The height of the game windowBorder.")
+	@Setting(comment="The height of the game window.")
 	private int screenHeight = 640;
 	
 	@Setting(comment="The scale of the tiles in game.")
@@ -66,12 +66,6 @@ public class Settings {
 	private boolean autosave = true;
 	
 	/**
-	 * Show extensive information about {@link jr.dungeon.entities.monsters.ai.AI} state above monsters.
-	 */
-	@Setting(comment="[Debug] Show AI information.")
-	private boolean showAIDebug = false;
-	
-	/**
 	 * Show the entire level in one view.
 	 */
 	@Setting(comment="[Debug] Show whole level.")
@@ -83,13 +77,16 @@ public class Settings {
 	@Setting(comment="[Debug] Show FPS counter.")
 	private boolean showFPSCounter = false;
 	
+	@Setting(comment="[Debug] Show time prfiler.")
+	private boolean showTimeProfiler = false;
+	
 	@Setting(comment="[Debug] Show debug client")
 	private boolean showDebugClient = false;
 	
-	@Setting(comment="The width of the debug client windowBorder.")
+	@Setting(comment="The width of the debug client window.")
 	private int debugClientWidth = 1200;
 	
-	@Setting(comment="The height of the debug client windowBorder.")
+	@Setting(comment="The height of the debug client window.")
 	private int debugClientHeight = 640;
 	
 	/**
@@ -109,6 +106,12 @@ public class Settings {
 	 */
 	@Setting(comment="Ambient occlusion strength. 0=none, 3=maximum")
 	private int aoLevel = 1;
+	
+	@Setting(comment="Use FXAA")
+	private boolean useFxaa = false;
+	
+	@Setting(comment="Shadow map size")
+	private int shadowMapSize = 1024;
 	
 	/**
 	 * Show text popups above entities when stats change or events occur. 0=none, 1=small, 2=large.

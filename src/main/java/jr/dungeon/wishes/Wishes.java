@@ -19,6 +19,7 @@ import jr.dungeon.entities.monsters.familiars.Cat;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
 import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
+import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
@@ -282,6 +283,11 @@ public class Wishes {
 		registerWish("bow", new WishItem<>(ItemBow.class));
 		registerWish("arrow", new WishItem<>(ItemArrow.class));
 		registerWish("thermometer", new WishItem<>(ItemThermometer.class));
+		
+		registerWish("become nathan", (d, p, a) -> {
+			p.getAttributes().setAttribute(Attribute.INTELLIGENCE, 100);
+			p.setName("Nathan");
+		});
 	}
 
 	public void registerWish(Pattern pattern, Wish wish) {

@@ -3,29 +3,40 @@ package jr.debugger.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
-import jr.debugger.ui.atlasviewer.AtlasViewer;
+import jr.debugger.tree.TreeNode;
+import jr.debugger.ui.debugwindows.AtlasViewer;
+import jr.debugger.ui.debugwindows.DebugWindow;
 import jr.debugger.ui.game.GameWidget;
 import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
-import jr.rendering.ui.skin.UISkin;
-import jr.rendering.ui.utils.FunctionalClickListener;
+import jr.rendering.base.ui.skin.UISkin;
+import jr.rendering.base.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DebugUI {
+	private static List<DebugWindow> debugWindows = new ArrayList<>();
+	
 	@Getter private Skin skin;
 	@Getter private Stage stage;
 	
-	private DebugClient debugClient;
+	@Getter private DebugClient debugClient;
 	private Settings settings;
 	@Getter private Dungeon dungeon;
 	
@@ -33,10 +44,15 @@ public class DebugUI {
 	
 	private Cell<? extends GameWidget> gameCell;
 	private Cell<? extends TreeNodeWidget> rootNodeCell;
+	private Cell<? extends Table> debugButtonsCell;
 	private GameWidget gameWidget;
+	private Table bottomBar;
+	private ScrollPane hierarchyScrollPane;
 	
 	private GLProfiler profiler;
 	private Label profileLabel;
+	
+	private Map<TreeNode, TreeNodeWidget> treeNodeWidgetMap = new HashMap<>();
 	
 	public DebugUI(DebugClient debugClient) {
 		this.debugClient = debugClient;
@@ -52,7 +68,13 @@ public class DebugUI {
 		stage = new Stage(stageViewport);
 		skin = UISkin.getInstance();
 		
+		addDebugWindow(new DebugWindow("Atlas Viewer", AtlasViewer.class));
+		
 		// stage.setDebugAll(true);
+		
+		if (JRogue.INSTANCE.dungeon != null) {
+			dungeon = JRogue.INSTANCE.dungeon;
+		}
 		
 		Table root = new Table();
 		root.setFillParent(true);
@@ -83,8 +105,8 @@ public class DebugUI {
 	}
 	
 	private void initialiseBottomBar(Table container) {
-		Table bottomBar = new Table();
-		initialiseAtlasViewerButton(bottomBar);
+		bottomBar = new Table();
+		initialiseDebugWindowButtons(bottomBar);
 		container.add(bottomBar).growX().bottom().left().pad(2);
 	}
 	
@@ -104,7 +126,7 @@ public class DebugUI {
 		rootNodeCell = hierarchyContainer.add(getNewRootWidget())
 			.top().left();
 		
-		container.add(new ScrollPane(hierarchyContainer.top(), skin))
+		container.add(hierarchyScrollPane = new ScrollPane(hierarchyContainer.top(), skin))
 			.minWidth(300).top().right().grow();
 	}
 	
@@ -119,19 +141,70 @@ public class DebugUI {
 		}
 	}
 	
-	private void initialiseAtlasViewerButton(Table container) {
-		Button atlasViewerButton = new TextButton("Atlas Viewer", skin);
-		atlasViewerButton.addListener(new FunctionalClickListener((event, x, y) -> new AtlasViewer(stage, skin).show()));
-		container.add(atlasViewerButton).left();
+	private void initialiseDebugWindowButtons(Table container) {
+		Table debugButtons = new Table();
+		
+		debugWindows.forEach(window -> {
+			Button button = new TextButton(window.getWindowName(), skin);
+			button.addListener(new FunctionalClickListener((fcl, event, x, y) -> window.show(stage, skin)));
+			debugButtons.add(button).left();
+		});
+		
+		initialiseNextTurnButton(debugButtons);
+		
+		if (debugButtonsCell == null) {
+			debugButtonsCell = container.add(debugButtons).growX().bottom().left();
+		} else {
+			debugButtonsCell.setActor(debugButtons);
+		}
+	}
+	
+	private void initialiseNextTurnButton(Table container) {
+		TextButton nextTurnButton = new TextButton("Turn", skin);
+		nextTurnButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				dungeon.turnSystem.turn(false);
+			}
+		});
+		container.add(nextTurnButton).left();
 	}
 	
 	private GameWidget getNewGameWidget() {
 		if (debugClient.getDungeon() == null) return null;
-		return new GameWidget(debugClient.getDungeon());
+		return new GameWidget(this, debugClient.getDungeon(), skin);
 	}
 	
 	private TreeNodeWidget getNewRootWidget() {
 		return new TreeNodeWidget(debugClient, debugClient.getRootNode(), skin);
+	}
+	
+	public void scrollTo(TreeNode node) {
+		TreeNodeWidget widget = treeNodeWidgetMap.get(node);
+		hierarchyScrollPane.updateVisualScroll();
+		hierarchyScrollPane.invalidateHierarchy();
+		hierarchyScrollPane.layout();
+		hierarchyScrollPane.updateVisualScroll();
+		
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				Vector2 vec2 = Pools.obtain(Vector2.class);
+				Vector2 itemPos = widget.localToStageCoordinates(vec2.set(0, 0));
+				hierarchyScrollPane.setScrollY(
+					(hierarchyScrollPane.getVisualScrollY() + hierarchyScrollPane.getHeight()) - itemPos.y - widget.getHeight()
+				);
+				Pools.free(vec2);
+			}
+		}, 0.05f);
+	}
+	
+	public void registerNodeWidget(TreeNodeWidget widget) {
+		treeNodeWidgetMap.put(widget.getNode(), widget);
+	}
+	
+	public void unregisterNodeWidget(TreeNodeWidget widget) {
+		treeNodeWidgetMap.remove(widget.getNode());
 	}
 	
 	public void setDungeon(Dungeon dungeon) {
@@ -140,9 +213,13 @@ public class DebugUI {
 	}
 	
 	public void refresh() {
+		treeNodeWidgetMap.clear();
+		
 		if (rootNodeCell != null) {
 			rootNodeCell.setActor(getNewRootWidget());
 		}
+		
+		initialiseDebugWindowButtons(bottomBar);
 	}
 	
 	public void initInputProcessors() {
@@ -180,5 +257,9 @@ public class DebugUI {
 			skin.dispose();
 			profiler.disable();
 		} catch (Exception ignored) {}
+	}
+	
+	public static void addDebugWindow(DebugWindow debugWindow) {
+		debugWindows.add(debugWindow);
 	}
 }

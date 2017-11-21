@@ -4,7 +4,6 @@ import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
-import jr.utils.Colour;
 import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -22,10 +21,6 @@ public class Tile implements Debuggable {
 	private TileType type;
 	private TileState state;
 	
-	private Colour lightColour;
-	private int lightIntensity;
-	private int lightAbsorb;
-	
 	private Level level;
 
 	public Tile(Level level, TileType type, int x, int y) {
@@ -40,19 +35,6 @@ public class Tile implements Debuggable {
 	
 	public jr.utils.Point getPosition() {
 		return jr.utils.Point.getPoint(x, y);
-	}
-	
-	public void resetLight() {
-		lightColour = state != null && state.getLightColour() != null ? state.getLightColour() : type.getLightColour();
-		lightIntensity = state != null && state.getLightIntensity() != -1 ? state.getLightIntensity() : type.getLightIntensity();
-		lightAbsorb = state != null && state.getLightAbsorb() != -1 ? state.getLightAbsorb() : type.getLightAbsorb();
-		
-		if (lightColour == null) {
-			lightColour = level.lightStore.getAmbientLight();
-			lightIntensity = level.lightStore.getAmbientLightIntensity();
-		}
-		
-		lightColour = level.lightStore.applyIntensity(lightColour, lightIntensity).copy();
 	}
 	
 	private void initialiseState() {
@@ -73,6 +55,8 @@ public class Tile implements Debuggable {
 	}
 	
 	public void setType(TileType type) {
+		TileType oldType = this.type;
+		
 		if (type.getStateClass() != this.type.getStateClass()) {
 			this.type = type;
 			
@@ -80,6 +64,8 @@ public class Tile implements Debuggable {
 		} else {
 			this.type = type;
 		}
+		
+		level.tileStore.triggerTileSetEvent(this, oldType, type);
 	}
 	
 	/**
@@ -108,7 +94,7 @@ public class Tile implements Debuggable {
 	}
 	
 	@Override
-	public String getValueHint() {
+	public String getValueString() {
 		return String.format(
 			"[P_GREY_3]%s[] %,d, %,d",
 			type.name().replaceFirst("^TILE_", ""),

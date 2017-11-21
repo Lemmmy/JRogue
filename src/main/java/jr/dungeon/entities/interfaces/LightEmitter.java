@@ -4,6 +4,7 @@ import jr.utils.Colour;
 
 public interface LightEmitter {
 	Colour getLightColour();
+	float getLightAttenuationFactor();
 	
-	int getLightIntensity();
+	boolean isLightEnabled();
 }

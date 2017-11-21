@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
-import jr.rendering.tiles.TileMap;
-import jr.rendering.tiles.TileRenderer;
+import jr.rendering.gdx2d.tiles.TileMap;
+import jr.rendering.gdx2d.tiles.TileRenderer;
 
 public class LevelComponent extends RendererComponent {
 	public LevelComponent(Dungeon dungeon) {

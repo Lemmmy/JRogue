@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import jr.JRogue;
-import jr.rendering.tiles.TileMap;
+import jr.rendering.gdx2d.tiles.TileMap;
 import lombok.Getter;
 
 import java.util.HashMap;

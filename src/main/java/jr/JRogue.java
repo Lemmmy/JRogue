@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
-import jr.rendering.GameAdapter;
+import jr.rendering.gdx2d.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -109,9 +109,10 @@ public class JRogue {
 			config.setResizable(true);
 			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
 			config.useVsync(settings.isVsync());
+			config.setBackBufferConfig(8, 8, 8, 8, 24, 0, 0);
+			config.useOpenGL3(true, 3, 2);
 			
 			adapter = new GameAdapter();
-			adapter.setRootDebugObject(this);
 			
 			new Lwjgl3Application(adapter, config);
 		} catch (Exception e) {
@@ -127,7 +128,9 @@ public class JRogue {
 		this.dungeon = dungeon;
 		
 		if (adapter.getDebugClient() != null) {
-			adapter.getDebugClient().setDungeon(dungeon);
+			try {
+				adapter.getDebugClient().setDungeon(dungeon);
+			} catch (Exception ignored) {}
 		}
 	}
 	
@@ -197,8 +200,9 @@ public class JRogue {
 		opts.addOption("h", "help", false, "Shows the help information");
 		opts.addOption("c", "config", true, "Specify the path of a config file to load");
 		opts.addOption(null, "name", true, "Specify the name of the player");
-		opts.addOption(null, "width", true, "Sets the game windowBorder width");
-		opts.addOption(null, "height", true, "Sets the game windowBorder height");
+		opts.addOption(null, "width", true, "Sets the game window width");
+		opts.addOption(null, "height", true, "Sets the game window height");
+		opts.addOption(null, "token", true, "rand token for dehbuging");
 		
 		CommandLine cmd = null;
 		

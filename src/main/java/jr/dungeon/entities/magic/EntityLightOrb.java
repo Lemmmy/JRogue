@@ -89,8 +89,13 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	}
 	
 	@Override
-	public int getLightIntensity() {
-		return 100;
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
 	}
 	
 	@Override

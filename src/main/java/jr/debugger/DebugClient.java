@@ -15,14 +15,11 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.TurnEvent;
-import jr.rendering.GameAdapter;
+import jr.rendering.gdx2d.GameAdapter;
 import lombok.Getter;
 import lombok.val;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DebugClient extends ApplicationAdapter implements EventListener {
@@ -69,6 +66,10 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	
 	@Override
 	public void create() {
+		if (rootObject instanceof JRogue && ((JRogue) rootObject).dungeon != null) {
+			setDungeon(((JRogue) rootObject).dungeon);
+		}
+		
 		rootNode = new TreeNode(null, null, rootObject);
 		rootNode.open();
 		
@@ -131,7 +132,24 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 			});
 	}
 	
+	public Optional<TreeNode> findNamedPath(String path) {
+		return findNamedPath(path.split("\\."));
+	}
+	
+	public Optional<TreeNode> findNamedPath(String[] path) {
+		Optional<TreeNode> ot = Optional.of(rootNode);
+		
+		for (String pathEl : path) {
+			if (!ot.isPresent()) return Optional.empty();
+			ot = ot.get().getNamedChild(pathEl);
+		}
+		
+		return ot;
+	}
+	
 	public void refreshRoot() {
+		if (rootNode == null) return;
+		
 		val openPaths = collectOpenPaths();
 		rootNode.refresh();
 		restoreOpenPaths(openPaths);
@@ -142,9 +160,11 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 		dungeon.eventSystem.addListener(this);
 		
 		refreshRoot();
-		ui.refresh();
 		
-		ui.setDungeon(dungeon);
+		if (ui != null) {
+			ui.refresh();
+			ui.setDungeon(dungeon);
+		}
 	}
 	
 	@EventHandler

@@ -4,6 +4,7 @@ import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityTorch;
 import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.generators.rooms.RoomBasic;
 import jr.dungeon.generators.rooms.RoomGraveyard;
@@ -301,6 +302,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void safePlaceDoor(int x, int y) {
 		level.tileStore.setTileType(x, y, doorTypes.next());
+		
+		level.entityStore.getQueuedEntitiesAt(x, y).stream()
+			.filter(EntityTorch.class::isInstance)
+			.forEach(e -> level.entityStore.removeQueuedEntity(e));
 
 		for (VectorInt direction : Utils.DIRECTIONS) {
 			int nx = x + direction.getX();
@@ -910,8 +915,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		return TileType.TILE_ROOM_FLOOR;
 	}
 	
-	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_TORCH;
+	public boolean shouldAddTorches() {
+		return true;
 	}
 	
 	public Pair<Colour, Colour> getTorchColours() {

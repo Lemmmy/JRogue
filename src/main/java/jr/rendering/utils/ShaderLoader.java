@@ -11,6 +11,8 @@ public class ShaderLoader {
 	private static final Map<String, ShaderProgram> shaderCache = new ConcurrentHashMap<>();
 	
 	public static ShaderProgram getProgram(String name) {
+		ShaderProgram.pedantic = false;
+		
 		return shaderCache.computeIfAbsent(name, n -> {
 			ShaderProgram shader =
 				new ShaderProgram(Gdx.files.classpath(n + ".vert.glsl"), Gdx.files.classpath(n + ".frag.glsl"));

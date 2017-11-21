@@ -86,7 +86,7 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 		
 		try {
 			return new CloseShieldOutputStream(new WindowsAnsiOutputStream(outputStream));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

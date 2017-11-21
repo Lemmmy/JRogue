@@ -2,14 +2,17 @@ package jr.dungeon.generators.rooms;
 
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
+import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityTorch;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
-import jr.dungeon.tiles.states.TileStateTorch;
 import jr.utils.Colour;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class RoomBasic extends Room {
+	public static final int TORCH_SPACING = 5;
+	
 	public RoomBasic(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
 		super(level, roomX, roomY, roomWidth, roomHeight);
 	}
@@ -24,49 +27,62 @@ public class RoomBasic extends Room {
 					y == getY() || y == getY() + getHeight() - 1;
 				
 				if (wall) {
-					if (x > getX() && x < getX() + getWidth() - 1 && x % 4 == 0) {
-						ts.setTileType(x, y, getTorchTileType(generator));
-						
-						if (getTorchTileType(generator) != null
-							&& ts.getTile(x, y).hasState()
-							&& ts.getTile(x, y).getState() instanceof TileStateTorch) {
-							((TileStateTorch) ts.getTile(x, y).getState()).setColours(getTorchColours(generator));
-						}
-					} else {
-						ts.setTileType(x, y, getWallTileType(generator));
-					}
+					ts.setTileType(x, y, getWallTileType(generator));
 				} else {
 					ts.setTileType(x, y, getFloorTileType(generator));
 				}
 			}
 		}
+		
+		addTorches(generator);
+	}
+	
+	protected void addTorches(GeneratorRooms generator) {
+		int innerWidth = getWidth() - 1;
+		int innerHeight = getHeight() - 1;
+		int innerX = getX() + 1;
+		int innerY = getY() + 1;
+		
+		int torchStartX = innerWidth % TORCH_SPACING + 1;
+		int torchCountX = (int) Math.floor((float) innerWidth / (float) TORCH_SPACING);
+		
+		// top + bottom walls
+		for (int i = 0; i < torchCountX; i++) {
+			int tx = torchStartX + TORCH_SPACING * i;
+			
+			addTorch(generator, getX() + tx, innerY);
+			addTorch(generator, getX() + tx, getY() + getHeight() - 2);
+		}
+		
+		int torchStartY =  innerHeight % TORCH_SPACING + 1;
+		int torchCountY = (int) Math.floor((float) innerHeight / (float) TORCH_SPACING);
+		
+		// left + right walls
+		for (int i = 0; i < torchCountY; i++) {
+			int ty = torchStartY + TORCH_SPACING * i;
+			
+			addTorch(generator, innerX, getY() + ty);
+			addTorch(generator, getX() + getWidth() - 2, getY() + ty);
+		}
+	}
+	
+	protected void addTorch(GeneratorRooms generator, int x, int y) {
+		if (getLevel().entityStore.getAdjacentQueuedEntities(x, y).stream()
+			.anyMatch(EntityTorch.class::isInstance)) return;
+		
+		EntityTorch torch = QuickSpawn.spawnClass(EntityTorch.class, getLevel(), x, y);
+		if (torch != null) torch.setColours(getTorchColours(generator));
 	}
 	
 	@Override
 	public void addFeatures() {}
 	
 	protected TileType getWallTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_WALL;
-		}
-		
-		return generator.getWallTileType();
+		return generator == null ? TileType.TILE_ROOM_WALL : generator.getWallTileType();
 	}
 	
 	protected TileType getFloorTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_FLOOR;
-		}
-		
-		return generator.getFloorTileType();
-	}
-	
-	protected TileType getTorchTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_TORCH;
-		}
-		
-		return generator.getTorchTileType();
+		return generator == null ? TileType.TILE_ROOM_FLOOR : generator.getFloorTileType();
 	}
 	
 	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {

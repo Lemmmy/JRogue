@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
-	private String name;
+	@Setter private String name;
 	@Getter private Role role;
 	
 	@Getter private int energy;
@@ -126,6 +126,7 @@ public class Player extends EntityLiving {
 		Point spawnPoint;
 		
 		List<Tile> availableSpawnTiles = Arrays.stream(getLevel().tileStore.getOctAdjacentTiles(getPosition()))
+			.filter(Objects::nonNull)
 			.filter(t -> t.getType().getSolidity() == TileType.Solidity.WALK_ON)
 			.collect(Collectors.toList());
 		
@@ -275,15 +276,11 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getVisibilityRange() {
-		return 10 * ((getLightLevel() - 20) / 100) + 10;
-	}
-	
-	public int getLightLevel() {
-		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
+		return 15;
 	}
 	
 	public int getCorridorVisibilityRange() {
-		return 2 * ((getLightLevel() - 20) / 100) + 5;
+		return 7;
 	}
 	
 	public SkillLevel getSkillLevel(Skill skill) {

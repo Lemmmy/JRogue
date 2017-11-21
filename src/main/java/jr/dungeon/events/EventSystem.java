@@ -91,7 +91,17 @@ public class EventSystem {
 			try {
 				h.getMethod().invoke(h.getListener(), event);
 			} catch (Exception e) {
-				JRogue.getLogger().error("Error triggering event " + event.getClass().getSimpleName(), e);
+				String err = e.getCause().toString();
+				StackTraceElement[] els = e.getCause().getStackTrace();
+				
+				for (StackTraceElement el : els) { // skip the irrelevant parts
+					if (el.isNativeMethod() || el.getClassName().equals(EventSystem.class.getName())) break;
+					
+					err += "\n  ";
+					err += el.toString();
+				}
+				
+				JRogue.getLogger().error("Error triggering event {}\n{}", event.getClass().getSimpleName(), err);
 			}
 		});
 	}
@@ -108,9 +118,9 @@ public class EventSystem {
 			for (Method method : methods) {
 				if (
 					method.isAnnotationPresent(EventHandler.class) &&
-						method.getParameterCount() == 1 &&
-						method.getParameterTypes()[0].isAssignableFrom(event.getClass())
-					) {
+					method.getParameterCount() == 1 &&
+					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
+				) {
 					listenerMethods.add(method);
 				}
 			}

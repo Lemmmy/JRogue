@@ -2,30 +2,17 @@ package jr.dungeon.tiles.states;
 
 import jr.dungeon.tiles.Tile;
 import jr.utils.Colour;
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
+@Getter
 public class TileStateTorch extends TileState {
 	private Colour colour1 = new Colour(0xFF9B26FF);
 	private Colour colour2 = new Colour(0xFF1F0CFF);
 	
 	public TileStateTorch(Tile tile) {
 		super(tile);
-	}
-	
-	@Override
-	public Colour getLightColour() {
-		return colour1;
-	}
-	
-	@Override
-	public int getLightIntensity() {
-		return 100;
-	}
-	
-	@Override
-	public int getLightAbsorb() {
-		return 0;
 	}
 	
 	public Colour getParticleDarkColour() {

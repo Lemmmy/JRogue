@@ -196,6 +196,29 @@ public class EntityStore implements Serialisable {
 	}
 	
 	/**
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return All queued {@link Entity Entities} at the specified location.
+	 */
+	public List<Entity> getQueuedEntitiesAt(int x, int y) {
+		return entityAddQueue.stream()
+			.filter(e -> e.getX() == x && e.getY() == y)
+			.collect(Collectors.toList());
+	}
+	
+	/**
+	 * @param p The position to check.
+	 *
+	 * @return All queued {@link Entity Entities} at the specified location.
+	 */
+	public List<Entity> getQueuedEntitiesAt(Point p) {
+		return entityAddQueue.stream()
+			.filter(e -> e.getPosition().equals(p))
+			.collect(Collectors.toList());
+	}
+	
+	/**
 	 * @return All {@link Monster Monster entities} in the store.
 	 */
 	public List<Entity> getMonsters() {
@@ -226,6 +249,25 @@ public class EntityStore implements Serialisable {
 		List<Entity> entities = new ArrayList<>();
 		
 		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY())));
+		
+		return entities;
+	}
+	
+	/**
+	 * @param x The X position to check.
+	 * @param y The Y position to check.
+	 *
+	 * @return All {@link Entity Entities} (and entities not yet added) adjacent to this tile.
+	 *
+	 * @see Utils#DIRECTIONS
+	 */
+	public List<Entity> getAdjacentQueuedEntities(int x, int y) {
+		List<Entity> entities = new ArrayList<>();
+		
+		Arrays.stream(Utils.DIRECTIONS).forEach(d -> {
+			entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY()));
+			entities.addAll(getQueuedEntitiesAt(x + d.getX(), y + d.getY()));
+		});
 		
 		return entities;
 	}
@@ -296,6 +338,11 @@ public class EntityStore implements Serialisable {
 	public boolean removeEntity(Entity entity) {
 		entity.setBeingRemoved(true);
 		return entityRemoveQueue.add(entity);
+	}
+	
+	public boolean removeQueuedEntity(Entity entity) {
+		entity.setBeingRemoved(true);
+		return entityAddQueue.remove(entity);
 	}
 	
 	public boolean hasEntity(Entity entity) {

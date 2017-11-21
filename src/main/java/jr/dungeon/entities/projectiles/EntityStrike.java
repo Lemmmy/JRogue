@@ -75,7 +75,12 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 	}
 	
 	@Override
-	public int getLightIntensity() {
-		return 75;
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
 	}
 }

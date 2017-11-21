@@ -30,11 +30,6 @@ public class Generator_ extends GeneratorStandard {
 	}
 	
 	@Override
-	public TileType getTorchTileType() {
-		return null;
-	}
-	
-	@Override
 	public TileType getGroundTileType() {
 		return TileType.TILE__NOISE;
 	}

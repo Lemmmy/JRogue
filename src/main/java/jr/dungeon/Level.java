@@ -41,7 +41,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	
 	@Getter(AccessLevel.NONE) public final TileStore tileStore;
 	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
-	@Getter(AccessLevel.NONE) public final LightStore lightStore;
 	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
 	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
 	
@@ -79,7 +78,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		tileStore = new TileStore();
 		entityStore = new EntityStore(this);
 		visibilityStore = new VisibilityStore(this);
-		lightStore = new LightStore(this);
 		monsterSpawner = new MonsterSpawner(this);
 	}
 
@@ -90,10 +88,7 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		tileStore.initialise(this);
 		entityStore.initialise();
 		visibilityStore.initialise();
-		lightStore.initialise();
 		monsterSpawner.initialise();
-		
-		lightStore.initialiseLight();
 		
 		turnCreated = dungeon.turnSystem.getTurn();
 
@@ -107,6 +102,8 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	 */
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
+		
+		tileStore.setEventsSuppressed(true);
 		
 		do {
 			initialise();
@@ -122,13 +119,13 @@ public class Level implements Serialisable, Persisting, Debuggable {
 				climate = generator.getClimate();
 				monsterSpawner.setMonsterSpawningStrategy(generator.getMonsterSpawningStrategy());
 				
-				lightStore.buildLight(true);
-				
 				gotLevel = true;
 			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 				ErrorHandler.error("Error generating level", e);
 			}
 		} while (!gotLevel);
+		
+		tileStore.setEventsSuppressed(false);
 		
 		monsterSpawner.spawnMonsters();
 	}
@@ -175,7 +172,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		
 		tileStore.serialise(obj);
 		entityStore.serialise(obj);
-		lightStore.serialise(obj);
 		visibilityStore.serialise(obj);
 		monsterSpawner.serialise(obj);
 		
@@ -197,7 +193,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 			
 			tileStore.unserialise(obj);
 			entityStore.unserialise(obj);
-			lightStore.unserialise(obj);
 			visibilityStore.unserialise(obj);
 			monsterSpawner.unserialise(obj);
 		} catch (JSONException e) {
@@ -240,7 +235,7 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	}
 	
 	@Override
-	public String getValueHint() {
+	public String getValueString() {
 		return String.format(
 			"[P_GREY_3]%s[] %,d",
 			name, depth

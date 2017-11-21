@@ -40,7 +40,12 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	}
 	
 	@Override
-	public int getLightIntensity() {
-		return 60;
+	public float getLightAttenuationFactor() {
+		return 0.25f;
+	}
+	
+	@Override
+	public boolean isLightEnabled() {
+		return true;
 	}
 }

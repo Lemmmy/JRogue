@@ -26,7 +26,11 @@ version = "alpha-0.3"
 
 sourceCompatibility = 1.8
 
-applicationDefaultJvmArgs = ["-XX:-UseAdaptiveSizePolicy", "-XX:+UseParallelGC"]
+applicationDefaultJvmArgs = ["-XX:+UseParallelGC", "-ea"]
+
+run {
+	args "--token=debugjr"
+}
 
 repositories {
 	mavenLocal()
@@ -57,7 +61,6 @@ dependencies {
 
 	compile "ninja.leaping.configurate:configurate-hocon:3.1"
 
-	//compile "org.projectlombok:lombok:1.16.18"
 	compile files("lib/lombok-1.16.19.jar")
 }
 
@@ -132,6 +135,19 @@ task fullDistBuild(type: Jar, dependsOn: "obfuscate") {
 	}
 }
 
+task deobfBuild(type: Jar, dependsOn: "subJar") {
+	baseName = jarName + "-deobf-full"
+
+	from zipTree("$buildDir/tmp/${jarName}-deobf-${version}.jar")
+	files(configurations.compile.collect()).each { f ->
+		from zipTree(f)
+	}
+
+	manifest {
+		attributes makeManifest()
+	}
+}
+
 javadoc {
 	source = sourceSets.main.allJava
 	title = "JRogue API Documentation"
@@ -145,6 +161,6 @@ javadoc {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999"
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999"
 	}
 }

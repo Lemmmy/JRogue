@@ -1,7 +1,9 @@
 package jr.dungeon.tiles;
 
-import jr.dungeon.tiles.states.*;
-import jr.utils.Colour;
+import jr.dungeon.tiles.states.TileState;
+import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.dungeon.tiles.states.TileStateDoor;
+import jr.dungeon.tiles.states.TileStateTrap;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -23,10 +25,9 @@ public enum TileType {
 	TILE_DEBUG_H(8, Solidity.WALK_ON),
 	
 	TILE_GROUND(9, BUILDABLE, Solidity.SOLID),
-	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
+	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER),
 	
 	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
-	TILE_ROOM_TORCH(12, WALL, Solidity.SOLID, TileStateTorch.class),
 	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, Solidity.WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
 	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, Solidity.WALK_ON),
@@ -67,10 +68,6 @@ public enum TileType {
 	private Solidity solidity;
 	private Class<? extends TileState> stateClass;
 	
-	private Colour lightColour;
-	private int lightIntensity = 0;
-	private int lightAbsorb;
-	
 	TileType(int id, Solidity solidity) {
 		this(id, 0, solidity, null);
 	}
@@ -80,42 +77,18 @@ public enum TileType {
 	}
 	
 	TileType(int id, Solidity solidity, Class<? extends TileState> stateClass) {
-		this(id, 0, solidity, stateClass, null, 0, 0);
-	}
-	
-	TileType(int id, int flags, Solidity solidity, Class<? extends TileState> stateClass) {
-		this(id, flags, solidity, stateClass, null, 0, 0);
-	}
-	
-	TileType(int id, int flags, Solidity solidity, Colour lightColour, int lightIntensity, int lightAbsorb) {
-		this(id, flags, solidity, null, lightColour, lightIntensity, lightAbsorb);
+		this(id, 0, solidity, stateClass);
 	}
 	
 	TileType(int id,
 			 int flags,
 			 Solidity solidity,
-			 Class<? extends TileState> stateClass,
-			 Colour lightColour,
-			 int lightIntensity,
-			 int lightAbsorb) {
+			 Class<? extends TileState> stateClass) {
 		this.id = (short) id; // ids are shorts (uint16) but its easier to type enum definitions without the cast
 		this.flags = flags;
 		
 		this.solidity = solidity;
 		this.stateClass = stateClass;
-		
-		this.lightColour = lightColour;
-		this.lightIntensity = lightIntensity;
-		this.lightAbsorb = lightAbsorb;
-		
-		if (lightColour == null) {
-			if (solidity == Solidity.SOLID) {
-				this.lightColour = new Colour(0x404040FF);
-				this.lightAbsorb = 40;
-			} else {
-				this.lightAbsorb = 10;
-			}
-		}
 	}
 	
 	public boolean isBuildable() {
