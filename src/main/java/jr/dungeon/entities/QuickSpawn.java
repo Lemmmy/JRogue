@@ -23,21 +23,25 @@ public class QuickSpawn {
 		level.entityStore.addEntity(entity);
 	}
 	
-	public static void spawnClass(Class<? extends Entity> entityClass, Level level, int x, int y) {
+	public static <T extends Entity> T spawnClass(Class<? extends T> entityClass, Level level, int x, int y) {
 		try {
 			Constructor entityConstructor = entityClass.getConstructor(
 				Dungeon.class, Level.class,
 				int.class, int.class
 			);
 			
-			Entity entity = (Entity) entityConstructor.newInstance(
+			T entity = (T) entityConstructor.newInstance(
 				level.getDungeon(), level,
 				x, y
 			);
 			
 			level.entityStore.addEntity(entity);
+			
+			return entity;
 		} catch (Exception e) {
 			ErrorHandler.error("Error spawning entity", e);
 		}
+		
+		return null;
 	}
 }

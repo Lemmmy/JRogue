@@ -3,6 +3,7 @@ package jr.dungeon.wishes;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.player.Player;
 
 public class WishSpawn<T extends Entity> implements Wish {
@@ -14,14 +15,7 @@ public class WishSpawn<T extends Entity> implements Wish {
 
 	@Override
 	public void grant(Dungeon dungeon, Player player, String... args) {
-		try {
-			T ent = entityClass.getConstructor(Dungeon.class, Level.class, int.class, int.class)
-								.newInstance(dungeon, dungeon.getLevel(), player.getX(), player.getY());
-
-			dungeon.getLevel().entityStore.addEntity(ent);
-			dungeon.turnSystem.turn(dungeon);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		QuickSpawn.spawnClass(entityClass, dungeon.getLevel(), player.getX(), player.getY());
+		dungeon.turnSystem.turn(dungeon);
 	}
 }

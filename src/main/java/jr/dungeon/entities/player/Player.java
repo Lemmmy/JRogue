@@ -135,17 +135,7 @@ public class Player extends EntityLiving {
 			spawnPoint = RandomUtils.randomFrom(availableSpawnTiles).getPosition();
 		}
 		
-		try {
-			Constructor<? extends Familiar> familiarConstructor = familiarClass.getConstructor(
-				Dungeon.class, Level.class, int.class, int.class
-			);
-			this.familiar = familiarConstructor.newInstance(
-				getDungeon(), getLevel(), spawnPoint.getX(), spawnPoint.getY()
-			);
-			getLevel().entityStore.addEntity(this.familiar);
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error spawning familiar", e);
-		}
+		QuickSpawn.spawnClass(familiarClass, getLevel(), spawnPoint.getX(), spawnPoint.getY());
 	}
 	
 	@Override

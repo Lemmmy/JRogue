@@ -2,6 +2,7 @@ package jr.dungeon;
 
 import jr.JRogue;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.MonsterSpawn;
 import jr.dungeon.entities.player.Player;
@@ -99,15 +100,7 @@ public class MonsterSpawner implements Serialisable {
 	}
 	
 	void spawnMonsterAtPoint(Class<? extends Monster> monsterClass, Point point) {
-		try {
-			Constructor<? extends Monster> constructor = monsterClass
-				.getConstructor(Dungeon.class, Level.class, int.class, int.class);
-			
-			Entity monster = constructor.newInstance(level.getDungeon(), level, point.getX(), point.getY());
-			level.entityStore.addEntity(monster);
-		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			JRogue.getLogger().error("Error spawning monsters", e);
-		}
+		QuickSpawn.spawnClass(monsterClass, level, point.getX(), point.getY());
 	}
 	
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
