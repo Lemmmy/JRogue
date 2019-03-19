@@ -160,16 +160,6 @@ public class CharacterCreationScreen extends BasicScreen {
 	private void initBottomButtons(Table container) {
 		Table buttonTable = new Table();
 		
-		TextButton tempReloadButton = new TextButton("Reload (temporary)", skin);
-		tempReloadButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				stage.clear();
-				initLayout(new Table(skin));
-			}
-		});
-		buttonTable.add(tempReloadButton).right().bottom().padRight(8);
-		
 		createButton = new TextButton("Create", skin);
 		createButton.setDisabled(true);
 		createButton.addListener(new ChangeListener() {
