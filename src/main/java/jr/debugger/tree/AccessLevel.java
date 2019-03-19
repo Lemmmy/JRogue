@@ -1,6 +1,6 @@
 package jr.debugger.tree;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 public enum AccessLevel {
 	UNKNOWN, PACKAGE_PRIVATE, PRIVATE, PROTECTED, PUBLIC;

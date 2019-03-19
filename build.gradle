@@ -43,6 +43,7 @@ dependencies {
 
 	compile group: "commons-cli", name: "commons-cli", version: "1.4"
 	compile group: "org.apache.commons", name: "commons-lang3", version: "3.8.1"
+	compile group: "org.apache.commons", name: "commons-text", version: "1.6"
 
 	compile group: "com.github.alexeyr.pcg", name: "pcg", version: "0.9.1"
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.4"
