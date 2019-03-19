@@ -3,6 +3,7 @@ package jr.dungeon.entities;
 import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Dungeon;
+import jr.dungeon.EntityStore;
 import jr.dungeon.Level;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.*;
@@ -399,6 +400,17 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	public void teleport(EntityLiving teleporter) {
 		getDungeon().eventSystem.triggerEvent(new EntityTeleportedToEvent(this, teleporter));
 	}
+	
+	/**
+	 * Queue this entity to be removed. The entity will be removed when the
+	 * {@link EntityStore#processEntityQueues(boolean) entity queues} are next processed - this is
+	 * typically at the start and end of each turn, though it is sometimes called manually (e.g. in {@link #setLevel(Level)})
+	 * @see EntityStore#removeEntity
+	 */
+	public void remove() {
+		if (getLevel() == null || isBeingRemoved()) return;
+		getLevel().entityStore.removeEntity(this);
+	}
 
 	/**
 	 * @return Whether this entity is solid or can be walked on.
@@ -425,7 +437,7 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	}
 	
 	public void setLevel(Level level) {
-		this.level.entityStore.removeEntity(this);
+		this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
 		this.level.entityStore.processEntityQueues(false);
 		
 		this.level = level;

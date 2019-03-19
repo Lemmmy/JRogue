@@ -50,7 +50,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 				"%s flashes brightly and then disappears into thin air.",
 				LanguageUtils.subject(this).build(Capitalise.first)
 			);
-			getLevel().entityStore.removeEntity(this);
+			remove();
 		}
 	}
 	

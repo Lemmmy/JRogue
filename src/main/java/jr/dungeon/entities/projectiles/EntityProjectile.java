@@ -96,7 +96,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 				LanguageUtils.object(getDungeon().getPlayer(), ((EntityItem) victim).getItem())
 					.build(Capitalise.first)
 			);
-			getLevel().entityStore.removeEntity(victim);
+			victim.remove();
 		}
 	}
 	
@@ -127,11 +127,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	}
 	
 	public void killProjectile() {
-		if (isBeingRemoved()) {
-			return;
-		}
-		
-		getLevel().entityStore.removeEntity(this);
+		remove();
 	}
 	
 	@Override

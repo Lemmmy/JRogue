@@ -81,7 +81,7 @@ public class EntityItem extends Entity {
 				e.getKicker().addStatusEffect(new MercuryPoisoning());
 			}
 			
-			getLevel().entityStore.removeEntity(this);
+			remove();
 			return;
 		}
 		

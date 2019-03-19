@@ -45,7 +45,7 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 		ItemComestible item = (ItemComestible) targetComestible.getItem();
 		
 		if (stack.getCount() == 1) {
-			targetComestible.getLevel().entityStore.removeEntity(targetComestible);
+			targetComestible.remove();
 		} else {
 			stack.subtractCount(1);
 		}

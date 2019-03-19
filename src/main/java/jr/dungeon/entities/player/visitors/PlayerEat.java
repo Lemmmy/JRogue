@@ -46,7 +46,7 @@ public class PlayerEat extends PlayerItemVisitor {
 				}
 				
 				if (stack.getCount() == 1) {
-					entity.getLevel().entityStore.removeEntity(entity);
+					entity.remove();
 				} else {
 					stack.subtractCount(1);
 				}

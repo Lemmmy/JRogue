@@ -321,8 +321,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		healingTurns = 0;
 		
 		getDungeon().eventSystem.triggerEvent(new EntityDeathEvent(this, damageSource, damage));
-		
-		getLevel().entityStore.removeEntity(this);
+		remove();
 	}
 	
 	public void dropItem(ItemStack item) {

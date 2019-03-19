@@ -24,7 +24,7 @@ public class PlayerPickup implements PlayerVisitor {
 				
 				if (item instanceof ItemGold) {
 					player.giveGold(stack.getCount());
-					player.getLevel().entityStore.removeEntity(entity);
+					entity.remove();
 					player.getDungeon().turnSystem.turn(player.getDungeon());
 					player.getDungeon().You("pick up [YELLOW]%s[].", LanguageUtils.object(player, stack));
 				} else if (player.getContainer().isPresent()) {
@@ -35,7 +35,7 @@ public class PlayerPickup implements PlayerVisitor {
 						return;
 					}
 					
-					player.getLevel().entityStore.removeEntity(entity);
+					entity.remove();
 					player.getDungeon().turnSystem.turn(player.getDungeon());
 					
 					player.getDungeon().You(

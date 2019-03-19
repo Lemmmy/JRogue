@@ -155,7 +155,7 @@ public class Dungeon implements Messenger {
 		this.name = this.originalName;
 		
 		if (level != null) {
-			level.entityStore.removeEntity(player);
+			player.remove();
 		} else {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 			levels.put(level.getUUID(), level);
