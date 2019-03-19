@@ -76,7 +76,6 @@ public class MonsterSpawner implements Serialisable {
 			});
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void spawnNewMonsters() {
 		if (monsterSpawningStrategy == null) {
 			return;

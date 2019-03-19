@@ -231,7 +231,6 @@ public class DungeonOverviewPartial extends WidgetGroup {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void addTreePart(Node node) {
 		Table nodeTable = new Table(skin);
 		node.table = nodeTable;

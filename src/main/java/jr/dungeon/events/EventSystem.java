@@ -67,7 +67,6 @@ public class EventSystem {
 	 * @param event The event to trigger.
 	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>TURN_COMPLETE</code> to delay it to the next turn.
 	 */
-	@SuppressWarnings("unchecked")
 	public void triggerEvent(Event event, EventInvocationTime invocationTime) {
 		Set<EventHandlerMethodInstance> handlers = new HashSet<>();
 		
@@ -96,7 +95,6 @@ public class EventSystem {
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void fetchEventMethods(Set<EventHandlerMethodInstance> handlers, EventListener listener, Event event, EventInvocationTime invocationTime) {
 		event.setDungeon(dungeon);
 		

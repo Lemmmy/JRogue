@@ -86,7 +86,6 @@ public class Identicon extends BaseDrawable {
 		}
 	}
 	
-	@SuppressWarnings("NumericOverflow")
 	public static Identicon getIdenticon(int code) {
 		if (!initialised) initialiseShapes();
 		

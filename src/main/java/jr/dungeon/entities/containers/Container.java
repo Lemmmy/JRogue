@@ -213,7 +213,6 @@ public class Container implements Serialisable, EventListener {
 			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<EventListener> getSubListeners() {
 		List<EventListener> subListeners = new ArrayList<>();
 		
