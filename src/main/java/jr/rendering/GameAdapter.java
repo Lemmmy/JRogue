@@ -74,8 +74,8 @@ public class GameAdapter extends Game {
 		
 		batch = new SpriteBatch();
 		
-		oldFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		newFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		
 		inputMultiplexer = new InputMultiplexer();
 		
@@ -175,8 +175,8 @@ public class GameAdapter extends Game {
 		oldFBO.dispose();
 		newFBO.dispose();
 		
-		oldFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
-		newFBO = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		oldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		newFBO = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
 	}
 	
 	@Override

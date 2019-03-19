@@ -17,7 +17,6 @@ import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import org.json.JSONObject;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class DungeonOverviewPartial extends WidgetGroup {
@@ -420,7 +419,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	
 	private class Node {
 		private Level level;
-		@Nullable private Node parent;
+		private Node parent;
 		private List<Node> children = new ArrayList<>();
 		private float x, mod;
 		private int depth;

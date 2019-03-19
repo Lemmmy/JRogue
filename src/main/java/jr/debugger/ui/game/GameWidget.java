@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -57,7 +58,7 @@ public class GameWidget extends Image implements EventListener {
 	}
 	
 	private void initialiseFBO() {
-		fbo = FrameBuffer.createFrameBuffer(Pixmap.Format.RGBA8888, (int) getMinWidth(), (int) getMinHeight(), false);
+		fbo = new FrameBuffer(Pixmap.Format.RGBA8888, (int) getMinWidth(), (int) getMinHeight(), false);
 		fboRegion = new TextureRegionDrawable(new TextureRegion(fbo.getColorBufferTexture()));
 	}
 	

@@ -9,8 +9,6 @@ import jr.debugger.utils.HideFromDebugger;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -51,7 +49,7 @@ public class TreeNode {
 	private AccessLevel accessLevel = AccessLevel.UNKNOWN;
 	private boolean isStatic, isFinal;
 	
-	private String name = "unknown";
+	private String name;
 	private String valueHint;
 	
 	private int identityHashCode = -1;
@@ -330,7 +328,7 @@ public class TreeNode {
 		);
 	}
 	
-	private static List<Field> getFieldsUpTo(@Nonnull Class<?> startClass, @Nullable Class<?> exclusiveParent) {
+	private static List<Field> getFieldsUpTo(Class<?> startClass, Class<?> exclusiveParent) {
 		List<Field> currentClassFields = new ArrayList<>();
 		Collections.addAll(currentClassFields, startClass.getDeclaredFields());
 		
