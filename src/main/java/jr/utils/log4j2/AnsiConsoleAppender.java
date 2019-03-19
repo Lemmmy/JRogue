@@ -6,6 +6,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.fusesource.jansi.WindowsAnsiOutputStream;
+import org.fusesource.jansi.WindowsAnsiPrintStream;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -31,8 +33,9 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 								  Filter filter,
 								  Layout<? extends Serializable> layout,
 								  boolean ignoreExceptions,
-								  final ConsoleAppender.Target target) {
-		super(name, filter, layout, ignoreExceptions);
+								  final ConsoleAppender.Target target,
+								  Property[] properties) {
+		super(name, filter, layout, ignoreExceptions, properties);
 		
 		os = getOutputStream(false, true, target);
 	}
@@ -85,7 +88,7 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 		}
 		
 		try {
-			return new CloseShieldOutputStream(new WindowsAnsiOutputStream(outputStream));
+			return new CloseShieldOutputStream(new WindowsAnsiPrintStream(new PrintStream(outputStream)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -117,7 +120,7 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 		}
 		
 		@Override
-		public void write(final byte[] b, final int off, final int len) throws IOException {
+		public void write(final byte[] b, final int off, final int len) {
 			System.err.write(b, off, len);
 		}
 		
@@ -150,12 +153,12 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 		}
 		
 		@Override
-		public void write(final byte[] b, final int off, final int len) throws IOException {
+		public void write(final byte[] b, final int off, final int len) {
 			System.out.write(b, off, len);
 		}
 		
 		@Override
-		public void write(final int b) throws IOException {
+		public void write(final int b) {
 			System.out.write(b);
 		}
 	}
@@ -180,6 +183,6 @@ public final class AnsiConsoleAppender extends AbstractAppender {
 										ConsoleAppender.Target.SYSTEM_OUT :
 										ConsoleAppender.Target.valueOf(targetStr);
 		
-		return new AnsiConsoleAppender(name, filter, layout, true, target);
+		return new AnsiConsoleAppender(name, filter, layout, true, target, Property.EMPTY_ARRAY);
 	}
 }

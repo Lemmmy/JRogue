@@ -45,7 +45,7 @@ public class DebugToStringStyle extends ToStringStyle {
 		
 		setContentStart("");
 		setContentEnd("");
-		setFieldSeparator(SystemUtils.LINE_SEPARATOR + spacer());
+		setFieldSeparator(System.lineSeparator() + spacer());
 		setFieldSeparatorAtStart(true);
 		setFieldSeparatorAtEnd(false);
 	}
