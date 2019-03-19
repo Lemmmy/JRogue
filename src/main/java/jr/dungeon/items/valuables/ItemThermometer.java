@@ -2,8 +2,8 @@ package jr.dungeon.items.valuables;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.items.*;
 import jr.dungeon.items.Readable;
+import jr.dungeon.items.*;
 import jr.language.Lexicon;
 import jr.language.Noun;
 

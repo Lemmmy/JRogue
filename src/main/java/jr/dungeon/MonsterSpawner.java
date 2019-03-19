@@ -1,7 +1,5 @@
 package jr.dungeon;
 
-import jr.JRogue;
-import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.MonsterSpawn;
@@ -17,8 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;

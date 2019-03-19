@@ -1,7 +1,6 @@
 package jr.dungeon.wishes;
 
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.player.Player;
