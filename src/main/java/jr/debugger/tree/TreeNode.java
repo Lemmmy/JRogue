@@ -52,7 +52,7 @@ public class TreeNode {
 	private String name;
 	private String valueHint;
 	
-	private int identityHashCode = -1;
+	private int identityHashCode;
 	private Field parentField;
 	private Object instance;
 	private Class<?> instanceClass;
@@ -334,7 +334,7 @@ public class TreeNode {
 		
 		Class<?> parentClass = startClass.getSuperclass();
 		
-		if (parentClass != null && (exclusiveParent == null || !parentClass.equals(exclusiveParent))) {
+		if (parentClass != null && !parentClass.equals(exclusiveParent)) {
 			List<Field> parentClassFields = getFieldsUpTo(parentClass, exclusiveParent);
 			currentClassFields.addAll(parentClassFields);
 		}

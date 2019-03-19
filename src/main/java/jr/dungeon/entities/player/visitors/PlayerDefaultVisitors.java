@@ -2,6 +2,7 @@ package jr.dungeon.entities.player.visitors;
 
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Point;
@@ -36,13 +37,10 @@ public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 	}
 	
 	public void castSpell(Spell spell) {
-		switch (spell.getDirectionType()) {
-			case NON_DIRECTIONAL:
-				castSpellNonDirectional(spell);
-				break;
-			default:
-				castSpellDirectional(spell);
-				break;
+		if (spell.getDirectionType() == DirectionType.NON_DIRECTIONAL) {
+			castSpellNonDirectional(spell);
+		} else {
+			castSpellDirectional(spell);
 		}
 	}
 	

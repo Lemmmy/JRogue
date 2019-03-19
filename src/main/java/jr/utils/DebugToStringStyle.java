@@ -126,7 +126,7 @@ public class DebugToStringStyle extends ToStringStyle {
 		if (value instanceof UUID) {
 			String s = value.toString();
 			
-			buffer.append(s.substring(0, 4))
+			buffer.append(s, 0, 4)
 				.append("[GREY] .. []")
 				.append(s.substring(s.length() - 4));
 		} else {
@@ -229,7 +229,7 @@ public class DebugToStringStyle extends ToStringStyle {
 	
 	protected void appendFieldStart(final StringBuffer buffer, final String fieldName) {
 		if (isUseFieldNames() && fieldName != null) {
-			buffer.append("[GREY]" + fieldName + "[]");
+			buffer.append("[GREY]").append(fieldName).append("[]");
 			buffer.append(getFieldNameValueSeparator());
 		}
 	}

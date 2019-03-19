@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PotionType {
-	POTION_HEALTH((ent, potency) -> ent.heal((int) Math.round(potency)));
+	POTION_HEALTH((ent, potency) -> ent.heal(Math.round(potency)));
 	
 	private final PotionEffect effect;
 }

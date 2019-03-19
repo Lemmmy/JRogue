@@ -256,8 +256,6 @@ public class GameInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (!mouseMoved) {
-			mouseMoved = false;
-			
 			return handleDebugClicks(screenToWorldPos(screenX, screenY), button) ||
 				   handleWorldClicks(screenToWorldPos(screenX, screenY), button);
 		}

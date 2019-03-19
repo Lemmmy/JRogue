@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 
 @Getter
 public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
-	private static final Map<Integer, Class<? extends Spell>> spellLevelMap = new HashMap<>();
+	private static final Map<Class<? extends Spell>, Integer> spellLevelMap = new HashMap<>();
 	
 	static {
-		spellLevelMap.put(0, SpellLightOrb.class);
-		spellLevelMap.put(0, SpellStrike.class);
+		spellLevelMap.put(SpellLightOrb.class, 0);
+		spellLevelMap.put(SpellStrike.class, 0);
 	}
 	
 	@Setter private Spell spell;
@@ -245,10 +245,10 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		Player player = chest.getDungeon().getPlayer();
 		
 		List<Class<? extends Spell>> spells = spellLevelMap.entrySet().stream()
-			.filter(e -> e.getKey() <= player.getExperienceLevel())
+			.filter(e -> e.getValue() <= player.getExperienceLevel())
 			.filter(e -> player.getKnownSpells().values().stream()
-							.noneMatch(s -> s.getClass().equals(e.getValue())))
-			.map(Map.Entry::getValue)
+							.noneMatch(s -> s.getClass().equals(e.getKey())))
+			.map(Map.Entry::getKey)
 			.collect(Collectors.toList());
 		
 		if (spells.size() == 0) {

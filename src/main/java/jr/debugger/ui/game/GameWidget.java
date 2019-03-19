@@ -126,7 +126,7 @@ public class GameWidget extends Image implements EventListener {
 			
 			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) return;
 			
-			
+			// TODO
 		}
 	}
 }

@@ -439,7 +439,7 @@ public class Player extends EntityLiving {
 		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
 		serialisedSpells.keySet().forEach(key -> {
 			Character spellLetter = key.charAt(0);
-			String spellClassName = key.substring(2, key.length());
+			String spellClassName = key.substring(2);
 			
 			try {
 				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);

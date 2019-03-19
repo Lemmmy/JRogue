@@ -28,7 +28,7 @@ import java.util.Set;
 public class AIState<T extends StatefulAI> implements Serialisable, EventListener {
 	private T ai;
 	
-	@Setter private int duration = 0;
+	@Setter private int duration;
 	@Setter private int turnsTaken = 0;
 	
 	/**

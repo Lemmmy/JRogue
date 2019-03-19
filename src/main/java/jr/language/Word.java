@@ -96,6 +96,8 @@ public class Word<T extends Word> {
 		return Word.class;
 	}
 	
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
+	@Override
 	public T clone() {
 		try {
 			Constructor c = getCloneClass().getConstructor(String.class);

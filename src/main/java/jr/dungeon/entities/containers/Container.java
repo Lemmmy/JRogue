@@ -175,10 +175,10 @@ public class Container implements Serialisable, EventListener {
 		obj.put("name", name);
 		
 		JSONObject serialisedItems = new JSONObject();
-		items.entrySet().forEach(e -> {
+		items.forEach((key, value) -> {
 			JSONObject serialisedItemStack = new JSONObject();
-			e.getValue().serialise(serialisedItemStack);
-			serialisedItems.put(e.getKey().toString(), serialisedItemStack);
+			value.serialise(serialisedItemStack);
+			serialisedItems.put(key.toString(), serialisedItemStack);
 		});
 		obj.put("items", serialisedItems);
 	}

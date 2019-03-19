@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
@@ -86,7 +87,7 @@ public class Dungeon implements Messenger {
 	/**
 	 * @see Prompt
 	 *
-	 * @return The curernt {@link Prompt} or null.
+	 * @return The current {@link Prompt} or null.
 	 */
 	@Getter private Prompt prompt;
 	/**
@@ -315,12 +316,7 @@ public class Dungeon implements Messenger {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'y') {
-					File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
-					
-					if (file.exists() && !file.delete()) {
-						ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
-					}
-					
+					deleteSave();
 					eventSystem.triggerEvent(new QuitEvent());
 				}
 			}
@@ -364,7 +360,7 @@ public class Dungeon implements Messenger {
 		
 		try (
 			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))
 		) {
 			JSONObject serialisedDungeon = new JSONObject();
 			serialiser.serialise(serialisedDungeon);
@@ -389,7 +385,7 @@ public class Dungeon implements Messenger {
 		if (file.exists()) {
 			try (
 				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
 			) {
 				JSONTokener tokener = new JSONTokener(reader);
 				JSONObject serialisedDungeon = new JSONObject(tokener);

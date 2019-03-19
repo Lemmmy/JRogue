@@ -31,11 +31,7 @@ public class Attributes implements EventListener {
 	}
 	
 	public int getAttribute(Attribute attribute) {
-		if (attributes.containsKey(attribute)) {
-			return attributes.get(attribute);
-		} else {
-			return 0;
-		}
+		return attributes.getOrDefault(attribute, 0);
 	}
 	
 	public void setAttribute(Attribute attribute, int level) {

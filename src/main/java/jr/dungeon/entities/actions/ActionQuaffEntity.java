@@ -29,7 +29,7 @@ public class ActionQuaffEntity extends Action {
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		if (entity instanceof EntityLiving) {
-			((Quaffable) quaffable).quaff((EntityLiving) entity);
+			quaffable.quaff((EntityLiving) entity);
 		}
 		runOnCompleteCallback(entity);
 	}

@@ -123,13 +123,8 @@ public class AStarPathfinder {
 						// less than the recorded cost), then remove it from the lists it's in to mark it as
 						// un-searched.
 						if (nextStepCost < neighbour.cost) {
-							if (open.contains(neighbour)) {
-								open.remove(neighbour);
-							}
-							
-							if (closed.contains(neighbour)) {
-								closed.remove(neighbour);
-							}
+							open.remove(neighbour);
+							closed.remove(neighbour);
 						}
 						
 						// If the node hasn't already been processed and discarded, then reset its cost to our
@@ -193,8 +188,7 @@ public class AStarPathfinder {
 	 * moving from tile <code>A</code> to tile <code>B</code>. Uses the octile distance heuristic, using 1 as a cost
 	 * for cardinal movements, and <code>sqrt(2)</code> (<code>~1.41</code>) for diagonal movements.
 	 *
-	 *
-	 * @param level
+	 * @param level The @link Level} to look at tiles and calculate the cost within.
 	 * @param ax The source X position.
 	 * @param ay The source Y position.
 	 * @param bx The target X position.

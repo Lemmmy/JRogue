@@ -68,7 +68,7 @@ public enum TileType {
 	private Class<? extends TileState> stateClass;
 	
 	private Colour lightColour;
-	private int lightIntensity = 0;
+	private int lightIntensity;
 	private int lightAbsorb;
 	
 	TileType(int id, Solidity solidity) {

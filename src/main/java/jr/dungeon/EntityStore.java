@@ -285,7 +285,7 @@ public class EntityStore implements Serialisable {
 	
 	/**
 	 * Adds an {@link Entity} to the {@link #entityRemoveQueue}. It will be removed from the store when the queues are
-	 * {@link #processEntityQueues(boolean) next processed}. The {@link Entity}'s {@link Entity#beingRemoved} flag will be
+	 * {@link #processEntityQueues(boolean) next processed}. The {@link Entity}'s {@link Entity#isBeingRemoved()} flag will be
 	 * assigned instantly, so the {@link Entity} knows it will be removed from the store/{@link Level} when the queues
 	 * are {@link #processEntityQueues(boolean) next processed}.
 	 *

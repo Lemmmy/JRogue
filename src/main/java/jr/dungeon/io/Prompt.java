@@ -44,7 +44,7 @@ public class Prompt {
 	}
 	
 	public String getOptionsString() {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		
 		char[] chars = options.clone();
 		Arrays.sort(chars);
@@ -56,23 +56,18 @@ public class Prompt {
 			if (chars[i] == chars[i - 1] + 1) {
 				end = chars[i];
 			} else {
-				if (start == end) {
-					result += (char) start + " ";
-				} else {
-					result += (char) start + "-" + (char) end + " ";
-				}
+				result.append((char) start);
+				if (start != end) result.append("-").append((char) end);
+				result.append(" ");
 				
 				start = end = chars[i];
 			}
 		}
 		
-		if (start == end) {
-			result += (char) start;
-		} else {
-			result += (char) start + "-" + (char) end;
-		}
+		result.append((char) start);
+		if (start != end) result.append("-").append((char) end);
 		
-		return result;
+		return result.toString();
 	}
 	
 	public boolean isEscapable() {

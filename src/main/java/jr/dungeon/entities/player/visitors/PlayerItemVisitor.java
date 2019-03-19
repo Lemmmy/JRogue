@@ -46,7 +46,7 @@ public abstract class PlayerItemVisitor implements PlayerVisitor {
 					return;
 				}
 				
-				Container.ContainerEntry entry = containerEntry.isPresent() ? containerEntry.get() : null;
+				Container.ContainerEntry entry = containerEntry.orElse(null);
 				responseCallback.accept(response, entry, inv);
 			}
 		}));

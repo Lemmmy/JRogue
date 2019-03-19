@@ -204,7 +204,7 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 		serialise(serialisedItem);
 		
 		Optional<Item> itemOptional = createFromJSON(serialisedItem);
-		return itemOptional.isPresent() ? itemOptional.get() : null;
+		return itemOptional.orElse(null);
 	}
 
 	@Override

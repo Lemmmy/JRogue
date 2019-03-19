@@ -12,7 +12,7 @@ public enum NutritionState {
 	FAINTING("Fainting", 2);
 	
 	private String string;
-	private int importance = 0;
+	private int importance;
 	
 	NutritionState(String string) {
 		this(string, 0);

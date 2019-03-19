@@ -41,7 +41,7 @@ public class EntityArrow extends EntityProjectile {
 		if (victim instanceof EntityLiving) {
 			Entity source = getSource();
 			
-			if (source != null && source instanceof EntityLiving) {
+			if (source instanceof EntityLiving) {
 				EntityLiving living = (EntityLiving) victim;
 				
 				String colour = living instanceof Player ? "[ORANGE]" : "";

@@ -358,9 +358,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			.append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
 			.append("hasInventory", getContainer().isPresent());
 		
-		knownAspects.forEach((h, a) -> {
-			tsb.append(h.toString(), StringUtils.join(a.stream().map(Class::getSimpleName).toArray(String[]::new)));
-		});
+		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a.stream().map(Class::getSimpleName).toArray(String[]::new))));
 		
 		return tsb;
 	}

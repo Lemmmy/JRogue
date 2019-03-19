@@ -42,7 +42,6 @@ public class StateApproachComestible extends AIState<FamiliarAI> {
 		
 		if (Utils.chebyshevDistance(targetComestible.getPosition(), getAI().getMonster().getPosition()) <= 1) {
 			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, targetComestible));
-			return;
 		}
 	}
 	

@@ -175,12 +175,10 @@ public class Wishes {
 				d.log("Message " + i);
 			}
 		});
-		registerWish("identify all", (d, p, a) -> {
-			p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
-				i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
-				i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
-			}));
-		});
+		registerWish("identify all", (d, p, a) -> p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
+			i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
+			i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
+		})));
 		registerWish("bless (.)", (d, p, a) -> {
 			d.log("Blessing [YELLOW]%s[].", a[0].charAt(0));
 			
@@ -199,11 +197,9 @@ public class Wishes {
 				i.getItem().observeAspect(p, AspectBeatitude.class);
 			}));
 		});
-		registerWish("debug (.)", (d, p, a) -> {
-			p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
-				d.log(i.getItem().toString());
-			}));
-		});
+		registerWish("debug (.)", (d, p, a) -> p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
+			d.log(i.getItem().toString());
+		})));
 		
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
