@@ -68,7 +68,7 @@ public class TurnSystem implements Serialisable {
 	@Getter private long passiveSoundCounter = 0;
 	
 	/**
-	 * Random counter for new monster spwans.
+	 * Random counter for new monster spawns.
 	 *
 	 * @see MonsterSpawner
 	 */

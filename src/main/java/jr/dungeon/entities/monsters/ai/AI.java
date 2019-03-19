@@ -214,7 +214,7 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	}
 	
 	/**
-	 * Pathfinds towards the specified destX and destY coordinates.
+	 * Finds a path towards the specified destX and destY coordinates.
 	 *
 	 * @param destX The X position to pathfind towards.
 	 * @param destY The Y position to pathfind towards.

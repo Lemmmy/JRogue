@@ -162,13 +162,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	private Tile startTile;
 	/**
-	 * The primary destination tile for this level - does not include branches. Typically the stiarcase down.
+	 * The primary destination tile for this level - does not include branches. Typically the staircase down.
 	 */
 	private Tile endTile;
 	
 	/**
 	 * @param level The level that this generator is generating for.
-	 * @param sourceTile The tile that the player came from in the pervious level.
+	 * @param sourceTile The tile that the player came from in the previous level.
 	 */
 	public GeneratorRooms(Level level, Tile sourceTile) {
 		super(level, sourceTile);

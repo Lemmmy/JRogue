@@ -23,11 +23,12 @@ public abstract class DungeonGenerator {
 	@Getter protected Tile sourceTile;
 	
 	/**
-	 * Local random number generator instance - uses pcg32 algo.
+	 * Local random number generator instance - uses the <a href="http://www.pcg-random.org/">PCG32</a> algorithm.
+	 * @see <a href="http://www.pcg-random.org/">pcg-random.org</a>
 	 */
 	protected Pcg32 rand = new Pcg32();
 	/**
-	 * Local random number generator instance - uses java algo.
+	 * Local random number generator instance - uses Java's inbuilt PRNG algorithm.
 	 */
 	protected Random jrand = new Random();
 	
@@ -53,7 +54,8 @@ public abstract class DungeonGenerator {
 	public abstract boolean generate();
 	
 	/**
-	 * Quick utility method for generating a random number within a range. Uses the #rand instance (pcg32 algo).
+	 * Quick utility method for generating a random number within a range. Uses the {@link #rand} instance
+	 * (<a href="http://www.pcg-random.org/">PCG32</a> algorithm).
 	 *
 	 * @param min The minimum bound for the random number (inclusive).
 	 * @param max The maximum bound for the random number (exclusive).
