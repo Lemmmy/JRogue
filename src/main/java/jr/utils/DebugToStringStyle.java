@@ -1,7 +1,6 @@
 package jr.utils;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
