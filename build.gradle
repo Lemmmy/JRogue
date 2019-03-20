@@ -145,6 +145,6 @@ javadoc {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999"
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999" << "-Xlint:deprecation"
 	}
 }

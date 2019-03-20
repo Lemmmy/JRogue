@@ -14,7 +14,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.fusesource.jansi.WindowsAnsiOutputStream;
 import org.fusesource.jansi.WindowsAnsiPrintStream;
 
 import java.io.*;
