@@ -6,6 +6,7 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.tiles.TileRenderer;
+import jr.rendering.utils.BlobUtils;
 import jr.utils.WeightedCollection;
 
 import java.util.Random;
@@ -84,12 +85,7 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {
-		int n = isJoinedTile(level.tileStore.getTileType(x, y - 1)) ? 1 : 0;
-		int s = isJoinedTile(level.tileStore.getTileType(x, y + 1)) ? 1 : 0;
-		int w = isJoinedTile(level.tileStore.getTileType(x - 1, y)) ? 1 : 0;
-		int e = isJoinedTile(level.tileStore.getTileType(x + 1, y)) ? 1 : 0;
-		
-		return n + 2 * e + 4 * s + 8 * w ;
+		return BlobUtils.getPositionMask4(this::isJoinedTile, level, x, y);
 	}
 	
 	protected boolean isJoinedTile(TileType type) {

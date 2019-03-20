@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.utils.BlobUtils;
 import jr.rendering.utils.ImageLoader;
 
 import java.util.Arrays;
@@ -105,17 +106,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {
-		int n = isJoinedTile(level.tileStore.getTileType(x, y - 1)) ? 1 : 0;
-		int s = isJoinedTile(level.tileStore.getTileType(x, y + 1)) ? 1 : 0;
-		int w = isJoinedTile(level.tileStore.getTileType(x - 1, y)) ? 1 : 0;
-		int e = isJoinedTile(level.tileStore.getTileType(x + 1, y)) ? 1 : 0;
-		
-		int nw = isJoinedTile(level.tileStore.getTileType(x - 1, y - 1)) && w == 1 && n == 1 ? 1 : 0;
-		int ne = isJoinedTile(level.tileStore.getTileType(x + 1, y - 1)) && e == 1 && n == 1 ? 1 : 0;
-		int sw = isJoinedTile(level.tileStore.getTileType(x - 1, y + 1)) && w == 1 && s == 1 ? 1 : 0;
-		int se = isJoinedTile(level.tileStore.getTileType(x + 1, y + 1)) && e == 1 && s == 1 ? 1 : 0;
-		
-		return nw + 2 * n + 4 * ne + 8 * w + 16 * e + 32 * sw + 64 * s + 128 * se;
+		return BlobUtils.getPositionMask8(this::isJoinedTile, level, x, y);
 	}
 	
 	abstract boolean isJoinedTile(TileType tile);
