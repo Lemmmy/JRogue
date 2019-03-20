@@ -126,6 +126,7 @@ public class Player extends EntityLiving {
 		Point spawnPoint;
 		
 		List<Tile> availableSpawnTiles = Arrays.stream(getLevel().tileStore.getOctAdjacentTiles(getPosition()))
+			.filter(Objects::nonNull)
 			.filter(t -> t.getType().getSolidity() == TileType.Solidity.WALK_ON)
 			.collect(Collectors.toList());
 		
