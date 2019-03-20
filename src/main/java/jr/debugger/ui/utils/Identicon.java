@@ -55,7 +55,7 @@ public class Identicon extends BaseDrawable {
 	private static boolean initialised = false;
 	
 	private TextureRegion shape1, shape2;
-	private Color bg1, fg1, bg2, fg2;
+	private Color bg1, fg1, bg2, fg2, oldColour = new Color();
 	
 	public Identicon(TextureRegion shape1,
 					 Color bg1,
@@ -116,7 +116,7 @@ public class Identicon extends BaseDrawable {
 	
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
-		Color oldColor = batch.getColor();
+		oldColour.set(batch.getColor());
 		
 		batch.setColor(bg1);
 		batch.draw(shapes[0], x, y); // shape 1 is a filled shape
@@ -128,6 +128,6 @@ public class Identicon extends BaseDrawable {
 		batch.setColor(fg2);
 		batch.draw(shape2, x + SHAPE_PADDING + SHAPE_WIDTH, y);
 		
-		batch.setColor(oldColor);
+		batch.setColor(oldColour);
 	}
 }

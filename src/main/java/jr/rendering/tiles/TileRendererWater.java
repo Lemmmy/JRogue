@@ -19,6 +19,8 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	private float waterTransparency;
 	
+	private Color oldColour = new Color();
+	
 	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, float waterTransparency) {
 		this(sheetX, sheetY, floorSheetX, floorSheetY, waterTransparency, true, null);
 	}
@@ -66,8 +68,8 @@ public class TileRendererWater extends TileRendererBlob8 {
 		TextureRegion blobImage = getImageFromMask(positionMask);
 		TextureRegion overlayImage = getImageFromMask(overlayImages, positionMask);
 		
-		Color colourOld = batch.getColor();
-		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 1.0f);
+		oldColour.set(batch.getColor());
+		batch.setColor(oldColour.r, oldColour.g, oldColour.b, 1.0f);
 		
 		if (waterTransparency < 1.0f) {
 			drawTile(batch, floor, x, y);
@@ -81,10 +83,10 @@ public class TileRendererWater extends TileRendererBlob8 {
 			));
 		}
 		
-		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);
+		batch.setColor(oldColour.r, oldColour.g, oldColour.b, waterTransparency);
 		drawTile(batch, water, x, y);
 		
-		batch.setColor(colourOld.r, colourOld.g, colourOld.b, colourOld.a);
+		batch.setColor(oldColour.r, oldColour.g, oldColour.b, oldColour.a);
 		
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
 		Gdx.gl.glColorMask(false, false, false, true);
@@ -95,11 +97,11 @@ public class TileRendererWater extends TileRendererBlob8 {
 		Gdx.gl.glColorMask(true, true, true, true);
 		drawTile(batch, floor, x, y);
 		
-		batch.setColor(colourOld.r, colourOld.g, colourOld.b, 0.5f);
+		batch.setColor(oldColour.r, oldColour.g, oldColour.b, 0.5f);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		drawTile(batch, overlayImage, x, y);
 		
-		batch.setColor(colourOld);
+		batch.setColor(oldColour);
 	}
 	
 	@Override
@@ -109,11 +111,11 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	@Override
 	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		Color colourOld = batch.getColor();
+		oldColour.set(batch.getColor());
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
-		batch.setColor(colourOld.r, colourOld.g, colourOld.b, waterTransparency);
+		batch.setColor(oldColour.r, oldColour.g, oldColour.b, waterTransparency);
 		drawTile(batch, water, x, y);
-		batch.setColor(colourOld);
+		batch.setColor(oldColour);
 	}
 }

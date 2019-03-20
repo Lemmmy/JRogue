@@ -20,6 +20,8 @@ public class TileRendererTorch extends TileRendererWall {
 	private TextureRegion torch;
 	private TextureRegion torchGlow;
 	
+	private Color oldColour = new Color();
+	
 	public TileRendererTorch(int sheetX, int sheetY, int glowX, int glowY, String particleName) {
 		super();
 		
@@ -66,10 +68,10 @@ public class TileRendererTorch extends TileRendererWall {
 			Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
 			
 			if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
-				Color c = batch.getColor();
+				oldColour.set(batch.getColor());
 				batch.setColor(Utils.colourToGdx(tile.getLightColour(), 0));
 				drawTile(batch, torchGlow, x, y);
-				batch.setColor(c);
+				batch.setColor(oldColour);
 			} else {
 				drawTile(batch, torchGlow, x, y);
 			}

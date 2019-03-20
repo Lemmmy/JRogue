@@ -7,6 +7,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 
 public class EntityRendererFish extends EntityRenderer {
+	private static final float FISH_ALPHA = 0.7f;
+	
 	protected TextureRegion image;
 	
 	public EntityRendererFish(int sheetX, int sheetY) {
@@ -28,11 +30,8 @@ public class EntityRendererFish extends EntityRenderer {
 		float x = getPositionX(entity, useMemoryLocation);
 		float y = getPositionY(entity, useMemoryLocation);
 		
-		float[] ac = getAnimationColour(entity);
-		
-		Color c = batch.getColor();
-		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3] * 0.7f);
+		Color oldColour = setAnimationColour(batch, entity, FISH_ALPHA);
 		drawEntity(batch, image, x, y);
-		batch.setColor(c);
+		batch.setColor(oldColour);
 	}
 }

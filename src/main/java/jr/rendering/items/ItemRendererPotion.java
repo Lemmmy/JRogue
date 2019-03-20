@@ -14,8 +14,9 @@ import jr.rendering.utils.ImageLoader;
 
 public class ItemRendererPotion extends ItemRenderer {
 	private final TextureRegion fluidTex, bottleTex;
-	
 	private final TextureRegionDrawable fluidDrawable, bottleDrawable;
+	
+	private Color oldColour = new Color();
 	
 	public ItemRendererPotion(int sheetX, int sheetY, int liquidX, int liquidY) {
 		bottleTex = ImageLoader.getImageFromSheet("textures/items.png", sheetX, sheetY);
@@ -36,10 +37,10 @@ public class ItemRendererPotion extends ItemRenderer {
 	public void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean reflect) {
 		if (item instanceof ItemPotion) {
 			ItemPotion potion = (ItemPotion) item;
-			Color prevColour = batch.getColor();
+			oldColour.set(batch.getColor());
 			batch.setColor(PotionColourMap.fromPotion(potion));
 			drawItem(batch, fluidTex, x, y, reflect);
-			batch.setColor(prevColour);
+			batch.setColor(oldColour);
 		}
 		
 		drawItem(batch, bottleTex, x, y, reflect);

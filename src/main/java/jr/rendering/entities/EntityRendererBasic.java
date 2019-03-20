@@ -25,9 +25,8 @@ public class EntityRendererBasic extends EntityRenderer {
 		
 		float[] ac = getAnimationColour(entity);
 		
-		Color c = batch.getColor();
-		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
+		Color oldColour = setAnimationColour(batch, entity);
 		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
-		batch.setColor(c);
+		batch.setColor(oldColour);
 	}
 }

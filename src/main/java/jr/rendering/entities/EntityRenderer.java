@@ -1,5 +1,6 @@
 package jr.rendering.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +14,8 @@ import lombok.Setter;
 public abstract class EntityRenderer {
 	protected ParticleEffectPool effectPool;
 	@Getter @Setter private boolean drawingReflection = false;
+	
+	private Color oldAnimationColour = new Color();
 	
 	public boolean shouldBeReflected(Entity entity) {
 		return true;
@@ -93,5 +96,56 @@ public abstract class EntityRenderer {
 	public float getPositionY(Entity entity, boolean useMemoryLocation) {
 		return (useMemoryLocation ? entity.getLastSeenY() : entity.getY()) +
 			getAnimationFloat(entity, "offsetY", 0);
+	}
+	
+	/**
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
+	 * animation colour. Also multiplies the colour values by the multipliers past in via
+	 * mr, mg, mb and ma.
+	 *
+	 * @param batch The sprite batch currently being drawn.
+	 * @param entity The entity currently being drawn.
+	 * @param mr Additional custom multiplier for the red component.
+	 * @param mg Additional custom multiplier for the green component.
+	 * @param mb Additional custom multiplier for the blue component.
+	 * @param ma Additional custom multiplier for the alpha component.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 */
+	public Color setAnimationColour(SpriteBatch batch, Entity entity, float mr, float mg, float mb, float ma) {
+		float[] ac = getAnimationColour(entity);
+		
+		oldAnimationColour.set(batch.getColor());
+		batch.setColor(
+			oldAnimationColour.r * ac[0] * mr,
+			oldAnimationColour.g * ac[1] * mg,
+			oldAnimationColour.b * ac[2] * mb,
+			oldAnimationColour.a * ac[3] * ma
+		);
+		return oldAnimationColour;
+	}
+	
+	/**
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
+	 * animation colour. Also multiplies the alpha value by ma.
+	 *
+	 * @param batch The sprite batch currently being drawn.
+	 * @param entity The entity currently being drawn.
+	 * @param ma Additional custom multiplier for the alpha component.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 */
+	public Color setAnimationColour(SpriteBatch batch, Entity entity, float ma) {
+		return setAnimationColour(batch, entity, 1f, 1f, 1f, ma);
+	}
+	
+	/**
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
+	 * animation colour.
+	 *
+	 * @param batch The sprite batch currently being drawn.
+	 * @param entity The entity currently being drawn.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 */
+	public Color setAnimationColour(SpriteBatch batch, Entity entity) {
+		return setAnimationColour(batch, entity, 1f, 1f, 1f, 1f);
 	}
 }

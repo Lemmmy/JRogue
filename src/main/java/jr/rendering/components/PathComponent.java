@@ -27,6 +27,7 @@ public class PathComponent extends RendererComponent {
 	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
 	
 	private SpriteBatch mainBatch;
+	private Color oldColour = new Color();
 	
 	public PathComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -74,7 +75,7 @@ public class PathComponent extends RendererComponent {
 			return;
 		}
 		
-		Color oldColour = mainBatch.getColor();
+		oldColour.set(mainBatch.getColor());
 		
 		Path path = lastPath;
 		AtomicInteger i = new AtomicInteger(0);

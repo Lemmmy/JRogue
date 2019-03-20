@@ -40,8 +40,7 @@ public class EntityRendererProjectile extends EntityRenderer {
 			rotation = (float) (Math.atan2(dy, dx) * (180 / Math.PI));
 		}
 		
-		Color c = batch.getColor();
-		batch.setColor(c.r * ac[0], c.g * ac[1], c.b * ac[2], c.a * ac[3]);
+		Color oldColour = setAnimationColour(batch, entity);
 		
 		if (isDrawingReflection()) {
 			batch.draw(
@@ -63,6 +62,6 @@ public class EntityRendererProjectile extends EntityRenderer {
 			);
 		}
 		
-		batch.setColor(c);
+		batch.setColor(oldColour);
 	}
 }
