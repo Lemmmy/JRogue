@@ -25,12 +25,12 @@ public class Settings {
 	/**
 	 * The width of the game windowBorder.
 	 */
-	@Setting(comment="The width of the game windowBorder.")
+	@Setting(comment="The width of the game window width.")
 	private int screenWidth = 800;
 	/**
 	 * The height of the game windowBorder.
 	 */
-	@Setting(comment="The height of the game windowBorder.")
+	@Setting(comment="The height of the game window.")
 	private int screenHeight = 640;
 	
 	@Setting(comment="The scale of the tiles in game.")
@@ -86,10 +86,10 @@ public class Settings {
 	@Setting(comment="[Debug] Show debug client")
 	private boolean showDebugClient = false;
 	
-	@Setting(comment="The width of the debug client windowBorder.")
+	@Setting(comment="The width of the debug client window.")
 	private int debugClientWidth = 1200;
 	
-	@Setting(comment="The height of the debug client windowBorder.")
+	@Setting(comment="The height of the debug client window.")
 	private int debugClientHeight = 640;
 	
 	/**
