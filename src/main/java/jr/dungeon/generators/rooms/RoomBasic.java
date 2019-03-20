@@ -46,34 +46,20 @@ public class RoomBasic extends Room {
 	public void addFeatures() {}
 	
 	protected TileType getWallTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_WALL;
-		}
-		
-		return generator.getWallTileType();
+		return generator == null ? TileType.TILE_ROOM_WALL : generator.getWallTileType();
 	}
 	
 	protected TileType getFloorTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_FLOOR;
-		}
-		
-		return generator.getFloorTileType();
+		return generator == null ? TileType.TILE_ROOM_FLOOR : generator.getFloorTileType();
 	}
 	
 	protected TileType getTorchTileType(GeneratorRooms generator) {
-		if (generator == null) {
-			return TileType.TILE_ROOM_TORCH;
-		}
-		
-		return generator.getTorchTileType();
+		return generator == null ? TileType.TILE_ROOM_TORCH : generator.getTorchTileType();
 	}
 	
 	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {
-		if (generator == null) {
-			return new ImmutablePair<>(new Colour(0xFF9B26FF), new Colour(0xFF1F0CFF));
-		}
-		
-		return generator.getTorchColours();
+		return generator == null
+			 ? new ImmutablePair<>(new Colour(0xFF9B26FF), new Colour(0xFF1F0CFF))
+			 : generator.getTorchColours();
 	}
 }
