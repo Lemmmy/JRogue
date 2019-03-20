@@ -10,7 +10,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
-import jr.debugger.ui.atlasviewer.AtlasViewer;
+import jr.debugger.ui.debugwindows.AtlasViewer;
+import jr.debugger.ui.debugwindows.DebugUIWindow;
 import jr.debugger.ui.game.GameWidget;
 import jr.debugger.ui.tree.TreeNodeWidget;
 import jr.dungeon.Dungeon;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DebugUI {
+	private static List<DebugUIWindow> windows = new ArrayList<>();
+	
 	@Getter private Skin skin;
 	@Getter private Stage stage;
 	
@@ -33,7 +36,9 @@ public class DebugUI {
 	
 	private Cell<? extends GameWidget> gameCell;
 	private Cell<? extends TreeNodeWidget> rootNodeCell;
+	private Cell<? extends Table> debugButtonsCell;
 	private GameWidget gameWidget;
+	private Table bottomBar;
 	
 	private GLProfiler profiler;
 	private Label profileLabel;
@@ -51,6 +56,8 @@ public class DebugUI {
 		stageViewport.setUnitsPerPixel(1f / settings.getHudScale());
 		stage = new Stage(stageViewport);
 		skin = UISkin.getInstance();
+		
+		addDebugWindow(new DebugUIWindow("Atlas Viewer", AtlasViewer.class));
 		
 		// stage.setDebugAll(true);
 		
@@ -83,8 +90,8 @@ public class DebugUI {
 	}
 	
 	private void initialiseBottomBar(Table container) {
-		Table bottomBar = new Table();
-		initialiseAtlasViewerButton(bottomBar);
+		bottomBar = new Table();
+		initialiseDebugWindowButtons(bottomBar);
 		container.add(bottomBar).growX().bottom().left().pad(2);
 	}
 	
@@ -119,10 +126,20 @@ public class DebugUI {
 		}
 	}
 	
-	private void initialiseAtlasViewerButton(Table container) {
-		Button atlasViewerButton = new TextButton("Atlas Viewer", skin);
-		atlasViewerButton.addListener(new FunctionalClickListener((event, x, y) -> new AtlasViewer(stage, skin).show()));
-		container.add(atlasViewerButton).left();
+	private void initialiseDebugWindowButtons(Table container) {
+		Table debugButtons = new Table();
+		
+		windows.forEach(window -> {
+			Button button = new TextButton(window.getWindowName(), skin);
+			button.addListener(new FunctionalClickListener((event, x, y) -> window.show(stage, skin)));
+			debugButtons.add(button).left();
+		});
+		
+		if (debugButtonsCell == null) {
+			debugButtonsCell = container.add(debugButtons).growX().bottom().left();
+		} else {
+			debugButtonsCell.setActor(debugButtons);
+		}
 	}
 	
 	private GameWidget getNewGameWidget() {
@@ -143,11 +160,17 @@ public class DebugUI {
 		if (rootNodeCell != null) {
 			rootNodeCell.setActor(getNewRootWidget());
 		}
+		
+		initialiseDebugWindowButtons(bottomBar);
 	}
 	
 	public void initInputProcessors() {
 		inputProcessors.clear();
 		inputProcessors.add(stage);
+	}
+	
+	public static void addDebugWindow(DebugUIWindow debugUIWindow) {
+		windows.add(debugUIWindow);
 	}
 	
 	public void render() {

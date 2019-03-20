@@ -1,4 +1,4 @@
-package jr.debugger.ui.atlasviewer;
+package jr.debugger.ui.debugwindows;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
