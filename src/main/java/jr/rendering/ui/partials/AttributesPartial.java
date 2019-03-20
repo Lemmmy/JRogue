@@ -66,7 +66,7 @@ public class AttributesPartial extends Table {
 		
 		Button button = new TextButton("Spend", getSkin());
 		button.setDisabled(!canSpend);
-		button.addListener(new FunctionalClickListener((event, x, y) -> {
+		button.addListener(new FunctionalClickListener((fcl, event, x, y) -> {
 			attributes.incrementAttribute(attribute);
 			update();
 		}));
@@ -80,7 +80,7 @@ public class AttributesPartial extends Table {
 		
 		Button decrement = new TextButton("-", getSkin());
 		decrement.setDisabled(!canDecrement);
-		decrement.addListener(new FunctionalClickListener((event, x, y) -> {
+		decrement.addListener(new FunctionalClickListener((fcl, event, x, y) -> {
 			attributes.decrementAttribute(attribute);
 			update();
 		}));
@@ -89,7 +89,7 @@ public class AttributesPartial extends Table {
 		
 		Button increment = new TextButton("+", getSkin());
 		increment.setDisabled(!canIncrement);
-		increment.addListener(new FunctionalClickListener((event, x, y) -> {
+		increment.addListener(new FunctionalClickListener((fcl, event, x, y) -> {
 			attributes.incrementAttribute(attribute);
 			update();
 		}));

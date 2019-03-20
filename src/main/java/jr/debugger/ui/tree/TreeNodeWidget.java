@@ -113,7 +113,7 @@ public class TreeNodeWidget extends Table {
 		initialiseChildren();
 		
 		if (clickListener != null) removeListener(clickListener);
-		nameTable.addListener(clickListener = new FunctionalClickListener((event, x, y) -> {
+		nameTable.addListener(clickListener = new FunctionalClickListener((fcl, event, x, y) -> {
 			debugClient.toggleNode(node);
 			debugClient.getUI().refresh();
 		}));

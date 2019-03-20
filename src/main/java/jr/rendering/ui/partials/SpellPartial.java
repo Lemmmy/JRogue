@@ -76,7 +76,7 @@ public class SpellPartial extends Table {
 			)).right().padLeft(6);
 			spellTable.row();
 			
-			spellButton.addListener(new FunctionalClickListener((event, x, y) -> {
+			spellButton.addListener(new FunctionalClickListener((fcl, event, x, y) -> {
 				player.defaultVisitors.castSpell(spell);
 				parentWindow.hide();
 			}));

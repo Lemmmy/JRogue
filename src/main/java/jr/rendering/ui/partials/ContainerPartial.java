@@ -120,7 +120,7 @@ public class ContainerPartial extends Table {
 			itemTable.row();
 			
 			if (transferTo != null) {
-				itemButton.addListener(new FunctionalClickListener((event, x, y) -> {
+				itemButton.addListener(new FunctionalClickListener((fcl, event, x, y) -> {
 					val transferContainerOpt = EntityHelper.getContainer(transferTo);
 					if (!transferContainerOpt.isPresent()) {
 						return;
