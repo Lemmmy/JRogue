@@ -106,9 +106,9 @@ public class EventSystem {
 			for (Method method : methods) {
 				if (
 					method.isAnnotationPresent(EventHandler.class) &&
-						method.getParameterCount() == 1 &&
-						method.getParameterTypes()[0].isAssignableFrom(event.getClass())
-					) {
+					method.getParameterCount() == 1 &&
+					method.getParameterTypes()[0].isAssignableFrom(event.getClass())
+				) {
 					listenerMethods.add(method);
 				}
 			}
