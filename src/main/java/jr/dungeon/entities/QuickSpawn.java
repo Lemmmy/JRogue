@@ -23,6 +23,7 @@ public class QuickSpawn {
 		level.entityStore.addEntity(entity);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T extends Entity> T spawnClass(Class<? extends T> entityClass, Level level, int x, int y) {
 		try {
 			Constructor entityConstructor = entityClass.getConstructor(
