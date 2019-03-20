@@ -111,7 +111,6 @@ public class JRogue {
 			config.useVsync(settings.isVsync());
 			
 			adapter = new GameAdapter();
-			adapter.setRootDebugObject(this);
 			
 			new Lwjgl3Application(adapter, config);
 		} catch (Exception e) {
@@ -127,7 +126,9 @@ public class JRogue {
 		this.dungeon = dungeon;
 		
 		if (adapter.getDebugClient() != null) {
-			adapter.getDebugClient().setDungeon(dungeon);
+			try {
+				adapter.getDebugClient().setDungeon(dungeon);
+			} catch (Exception ignored) {}
 		}
 	}
 	

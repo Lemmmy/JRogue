@@ -25,11 +25,13 @@ public class EntityComponent extends RendererComponent {
 		entityStore.getEntities().stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
-				
-				if (em.getRenderer() != null) {
-					em.getRenderer().draw(batch, dungeon, e, false);
-				}
+				try {
+					EntityMap em = EntityMap.valueOf(e.getAppearance().name());
+					
+					if (em.getRenderer() != null) {
+						em.getRenderer().draw(batch, dungeon, e, false);
+					}
+				} catch (IllegalArgumentException ignored) {}
 			});
 	}
 }

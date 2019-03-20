@@ -69,6 +69,10 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	
 	@Override
 	public void create() {
+		if (rootObject instanceof JRogue && ((JRogue) rootObject).dungeon != null) {
+			setDungeon(((JRogue) rootObject).dungeon);
+		}
+
 		rootNode = new TreeNode(null, null, rootObject);
 		rootNode.open();
 		
@@ -132,6 +136,8 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 	}
 	
 	public void refreshRoot() {
+		if (rootNode == null) return;
+		
 		val openPaths = collectOpenPaths();
 		rootNode.refresh();
 		restoreOpenPaths(openPaths);
@@ -142,9 +148,11 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
 		dungeon.eventSystem.addListener(this);
 		
 		refreshRoot();
-		ui.refresh();
 		
-		ui.setDungeon(dungeon);
+		if (ui != null) {
+			ui.refresh();
+			ui.setDungeon(dungeon);
+		}
 	}
 	
 	@EventHandler
