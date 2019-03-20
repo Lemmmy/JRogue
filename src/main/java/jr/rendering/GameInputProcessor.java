@@ -139,15 +139,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleWorldClicks(Point pos, int button) {
 		if (renderer.isTurnLerping()) return false;
 		if (hasWindows()) return false;
-		
-		if (
-			pos.getX() < 0 ||
-			pos.getY() < 0 ||
-			pos.getX() > dungeon.getLevel().getWidth() ||
-			pos.getY() > dungeon.getLevel().getHeight()
-		) {
-			return false;
-		}
+		if (!pos.insideLevel(dungeon.getLevel())) return false;
 		
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
@@ -166,15 +158,7 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleDebugClicks(Point pos, int button) {
 		if (renderer.isTurnLerping()) return false;
 		if (hasWindows()) return false;
-		
-		if (
-			pos.getX() < 0 ||
-			pos.getY() < 0 ||
-			pos.getX() > dungeon.getLevel().getWidth() ||
-			pos.getY() > dungeon.getLevel().getHeight()
-		) {
-			return false;
-		}
+		if (!pos.insideLevel(dungeon.getLevel())) return false;
 		
 		if (button == Input.Buttons.RIGHT) {
 			if (dungeon.getPlayer().isDebugger()) {

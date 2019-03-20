@@ -1,6 +1,7 @@
 package jr.utils;
 
 import com.badlogic.gdx.utils.Pool;
+import jr.dungeon.Level;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,6 +51,14 @@ public class Point implements Pool.Poolable {
 	public void set(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public boolean within(int minX, int minY, int maxX, int maxY) {
+		return x >= minX && y >= minY && x <= maxX && y <= maxY;
+	}
+	
+	public boolean insideLevel(Level level) {
+		return within(0, 0, level.getWidth(), level.getHeight());
 	}
 	
 	@Override
