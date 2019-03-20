@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
 	private GameScreen renderer;
+	private HUDComponent hudComponent;
 	
 	private boolean dontHandleNext = false;
 	private boolean mouseMoved = false;
@@ -34,6 +36,7 @@ public class GameInputProcessor implements InputProcessor {
 	public GameInputProcessor(Dungeon dungeon, GameScreen renderer) {
 		this.dungeon = dungeon;
 		this.renderer = renderer;
+		this.hudComponent = renderer.getHudComponent();
 
 		registerDefaultKeys();
 	}
@@ -43,7 +46,7 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.drop(), 'd');
 		registerKeyMapping(p -> p.defaultVisitors.eat(), 'e');
 		registerKeyMapping(p -> p.defaultVisitors.fire(), 'f');
-		registerKeyMapping(() -> renderer.getHudComponent().showInventoryWindow(), 'i');
+		registerKeyMapping(() -> hudComponent.showInventoryWindow(), 'i');
 		registerKeyMapping(p -> p.defaultVisitors.loot(), 'l');
 		registerKeyMapping(p -> p.defaultVisitors.quaff(), 'q');
 		registerKeyMapping(dungeon::quit, 'Q');
@@ -52,7 +55,7 @@ public class GameInputProcessor implements InputProcessor {
 		registerKeyMapping(p -> p.defaultVisitors.throwItem(), 't');
 		registerKeyMapping(p -> p.defaultVisitors.wield(), 'w');
 		registerKeyMapping(Player::swapHands, 'x');
-		registerKeyMapping(() -> renderer.getHudComponent().showSpellWindow(), 'Z');
+		registerKeyMapping(() -> hudComponent.showSpellWindow(), 'Z');
 		registerKeyMapping(p -> p.defaultVisitors.pickup(), ',');
 		registerKeyMapping(p -> p.defaultVisitors.climbAny(), '.');
 		registerKeyMapping(p -> p.defaultVisitors.climbUp(), '<');
@@ -119,10 +122,10 @@ public class GameInputProcessor implements InputProcessor {
 	private boolean handleRendererCommands(int keycode) {
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT) && dungeon.getPlayer().isDebugger()) {
 			if (keycode == Input.Keys.D) {
-				renderer.getHudComponent().showDebugWindow();
+				hudComponent.showDebugWindow();
 				return true;
 			} else if (keycode == Input.Keys.W) {
-				renderer.getHudComponent().showWishWindow();
+				hudComponent.showWishWindow();
 				return true;
 			} else if (keycode == Input.Keys.R) {
 				dungeon.generateFirstLevel();
@@ -135,7 +138,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handleWorldClicks(Point pos, int button) {
 		if (renderer.isTurnLerping()) return false;
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -162,7 +165,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	private boolean handleDebugClicks(Point pos, int button) {
 		if (renderer.isTurnLerping()) return false;
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		
 		if (
 			pos.getX() < 0 ||
@@ -205,7 +208,7 @@ public class GameInputProcessor implements InputProcessor {
 	public boolean keyDown(int keycode) {
 		dontHandleNext = false;
 		
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		
 		if (dungeon.hasPrompt()) {
 			if (keycode == Input.Keys.ESCAPE && dungeon.isPromptEscapable()) {
@@ -230,7 +233,7 @@ public class GameInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) {
-		if (renderer.getHudComponent().getWindows().size() > 0) return false;
+		if (hasWindows()) return false;
 		if (character == 0) return false;
 		
 		if (dontHandleNext) {
@@ -280,5 +283,9 @@ public class GameInputProcessor implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+	
+	protected boolean hasWindows() {
+		return hudComponent != null && hudComponent.getWindows().size() > 0;
 	}
 }
