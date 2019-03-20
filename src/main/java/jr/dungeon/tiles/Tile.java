@@ -73,6 +73,8 @@ public class Tile implements Debuggable {
 	}
 	
 	public void setType(TileType type) {
+		TileType oldType = this.type;
+		
 		if (type.getStateClass() != this.type.getStateClass()) {
 			this.type = type;
 			
@@ -80,6 +82,8 @@ public class Tile implements Debuggable {
 		} else {
 			this.type = type;
 		}
+		
+		level.tileStore.triggerTileSetEvent(this, oldType, type);
 	}
 	
 	/**
