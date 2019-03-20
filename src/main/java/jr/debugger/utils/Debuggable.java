@@ -8,4 +8,8 @@ public interface Debuggable {
 	default String getTypeOverride() {
 		return null;
 	}
+	
+	default boolean shouldShowIdenticon() {
+		return true;
+	}
 }

@@ -22,4 +22,9 @@ public class MapEntry implements Debuggable {
 	public String getTypeOverride() {
 		return "Entry";
 	}
+	
+	@Override
+	public boolean shouldShowIdenticon() {
+		return false;
+	}
 }

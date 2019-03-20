@@ -64,6 +64,7 @@ public class TreeNode {
 	private boolean isEnum = false;
 	private int arrayLength = 0;
 	private Type type;
+	private boolean showIdenticon = true;
 	
 	private boolean open = false;
 	
@@ -81,6 +82,7 @@ public class TreeNode {
 				this.name = parentField.getName();
 				this.type = parentField.getGenericType();
 				this.isPrimitive = parentField.getType().isPrimitive();
+				this.showIdenticon = !this.isPrimitive;
 			} else {
 				this.name = String.format(
 					"[P_ORANGE_2]Unknown[] %s",
@@ -169,6 +171,8 @@ public class TreeNode {
 		
 		if (Debuggable.class.isAssignableFrom(instanceClass)) {
 			this.debuggableInstance = (Debuggable) instance;
+			
+			showIdenticon = this.debuggableInstance.shouldShowIdenticon();
 		}
 	}
 	
@@ -367,5 +371,14 @@ public class TreeNode {
 	
 	public TreeNode getChild(int identityHashCode) {
 		return children.get(identityHashCode);
+	}
+	
+	public Optional<TreeNode> getNamedChild(String name) {
+		if (!open) open();
+		
+		return children.values().stream()
+			.filter(c -> c.getParentField() != null)
+			.filter(c -> c.getParentField().getName().equalsIgnoreCase(name))
+			.findFirst();
 	}
 }

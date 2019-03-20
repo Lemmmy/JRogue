@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.JRogue;
+import jr.debugger.tree.MapEntry;
 import jr.debugger.ui.DebugUI;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
@@ -70,7 +71,24 @@ public class LevelUtilPopup extends Table {
 			TextureRegion region = new TextureRegion(tr.getTextureRegion(dungeon, worldX, worldY));
 			region.flip(false, true);
 			
-			addButton(container, new TextureRegionDrawable(region), tile.getType().name());
+			addButton(container, new TextureRegionDrawable(region), tile.getType().name(), (fcl, event, x, y) -> {
+				ui.getDebugClient().findNamedPath("dungeon.level.tileStore.tiles").ifPresent(treeNode -> {
+					treeNode.open();
+					
+					treeNode.getChildren().values().stream()
+						.filter(t -> t.getInstance() != null)
+						.filter(t -> t.getInstance().equals(tile))
+						.findFirst()
+						.ifPresent(t -> {
+							t.open();
+							ui.refresh();
+							ui.refresh();
+							ui.scrollTo(t);
+						});
+				});
+				
+				remove();
+			});
 		} catch (Exception e) {
 			addLabel(container, "[P_RED]Tile err[]");
 			JRogue.getLogger().error(e);
@@ -88,14 +106,36 @@ public class LevelUtilPopup extends Table {
 			TextureRegion region = new TextureRegion(er.getTextureRegion(dungeon, entity));
 			region.flip(false, true);
 			
-			addButton(container, new TextureRegionDrawable(region), entity.getName(null).build(Capitalise.first));
+			addButton(container, new TextureRegionDrawable(region), entity.getName(null).build(Capitalise.first), (fcl, event, x, y) -> {
+				ui.getDebugClient().findNamedPath("dungeon.level.entityStore.entities").ifPresent(treeNode -> {
+					treeNode.open();
+					
+					treeNode.getChildren().values().stream()
+						.filter(t -> t.getInstance() != null)
+						.filter(t -> t.getInstance() instanceof MapEntry)
+						.filter(t -> ((MapEntry) t.getInstance()).getValue() != null)
+						.filter(t -> ((MapEntry) t.getInstance()).getValue().equals(entity))
+						.findFirst()
+						.ifPresent(t -> {
+							t.open();
+							t.getNamedChild("value").ifPresent(t2 -> {
+								t2.open();
+								ui.refresh();
+								ui.refresh();
+								ui.scrollTo(t2);
+							});
+						});
+				});
+				
+				remove();
+			});
 		} catch (Exception e) {
 			addLabel(container, "[P_RED]Entity err[]");
 			JRogue.getLogger().error(e);
 		}
 	}
 	
-	private void addButton(Table container, Drawable icon, String text) {
+	private void addButton(Table container, Drawable icon, String text, FunctionalClickListener.FunctionalClickInterface fci) {
 		Button button = new Button(skin);
 		Table buttonTable = new Table();
 		Image iconImage = new Image(icon);
@@ -104,6 +144,7 @@ public class LevelUtilPopup extends Table {
 		buttonTable.add(new Label(text, skin)).growX().left();
 		
 		button.add(buttonTable).left().growX();
+		button.addListener(new FunctionalClickListener(fci));
 		container.add(button).left().growX().row();
 	}
 	
