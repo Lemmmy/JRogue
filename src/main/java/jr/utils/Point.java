@@ -1,6 +1,7 @@
 package jr.utils;
 
 import com.badlogic.gdx.utils.Pool;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Level;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +15,9 @@ public class Point implements Pool.Poolable {
 			return new Point();
 		}
 	};
-
-	private int x;
-	private int y;
+	
+	@Expose private int x;
+	@Expose private int y;
 
 	public static Point getPoint(int x, int y) {
 		Point p = pointPool.obtain();

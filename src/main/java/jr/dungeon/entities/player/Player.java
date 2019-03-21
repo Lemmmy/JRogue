@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player;
 
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -45,23 +46,23 @@ import java.util.stream.Collectors;
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
-	private String name;
-	@Getter private Role role;
+	@Expose private String name;
+	@Expose @Getter private Role role;
 	
-	@Getter private int energy;
-	@Getter private int maxEnergy;
-	@Getter private int chargingTurns = 0;
-	@Getter private Map<Character, Spell> knownSpells;
+	@Expose @Getter private int energy;
+	@Expose @Getter private int maxEnergy;
+	@Expose @Getter private int chargingTurns = 0;
+	@Expose @Getter private Map<Character, Spell> knownSpells;
 	
-	@Getter @Setter private int nutrition;
+	@Expose @Getter @Setter private int nutrition;
 	@Getter private NutritionState lastNutritionState;
 	
-	@Getter private Attributes attributes;
-	@Getter private Map<Skill, SkillLevel> skills;
+	@Expose @Getter private Attributes attributes;
+	@Expose @Getter private Map<Skill, SkillLevel> skills;
 	
-	@Getter private int gold = 0;
+	@Expose @Getter private int gold = 0;
 	
-	@Getter @Setter private boolean godmode = false;
+	@Expose @Getter @Setter private boolean godmode = false;
 
 	private final JSONObject persistence = new JSONObject();
 	

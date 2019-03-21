@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.familiars;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -33,11 +34,11 @@ public abstract class Familiar extends Monster implements Friendly {
 	/**
 	 * The familiar's age from 0 to 2. 0 is youngest, 2 is oldest.
 	 */
-	@Getter private int age;
+	@Expose @Getter private int age;
 	
-	private String name;
+	@Expose private String name;
 	
-	@Getter @Setter private float nutrition = 1400;
+	@Expose @Getter @Setter private float nutrition = 1400;
 	@Getter private NutritionState lastNutritionState;
 	
 	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor

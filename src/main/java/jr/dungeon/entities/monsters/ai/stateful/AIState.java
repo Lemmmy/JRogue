@@ -1,9 +1,9 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.dungeon.events.EventListener;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -25,11 +25,11 @@ import java.util.Set;
  * This AI system may be replaced soon.
  */
 @Getter
-public class AIState<T extends StatefulAI> implements Serialisable, EventListener {
+public class AIState<T extends StatefulAI> implements EventListener {
 	private T ai;
 	
-	@Setter private int duration;
-	@Setter private int turnsTaken = 0;
+	@Expose @Setter private int duration;
+	@Expose @Setter private int turnsTaken = 0;
 	
 	/**
 	 * @param ai The {@link StatefulAI} that hosts this state.

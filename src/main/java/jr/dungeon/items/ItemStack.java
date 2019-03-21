@@ -1,5 +1,6 @@
 package jr.dungeon.items;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.language.Noun;
 import jr.language.transformers.Plural;
@@ -13,8 +14,8 @@ import java.util.Optional;
 
 @Getter
 public class ItemStack {
-	private Item item;
-	@Setter private int count;
+	@Expose private Item item;
+	@Expose @Setter private int count;
 	
 	public ItemStack(Item item) {
 		this(item, 1);

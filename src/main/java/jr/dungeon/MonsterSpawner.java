@@ -9,7 +9,6 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;

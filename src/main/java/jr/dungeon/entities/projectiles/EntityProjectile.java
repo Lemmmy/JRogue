@@ -1,5 +1,6 @@
 package jr.dungeon.entities.projectiles;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -19,9 +20,9 @@ import org.json.JSONObject;
 import java.util.Optional;
 
 public abstract class EntityProjectile extends EntityTurnBased {
-	private int dx = 0, dy = 0;
-	@Getter private int range = Integer.MAX_VALUE;
-	@Getter private int distanceTravelled = 0;
+	@Expose private int dx = 0, dy = 0;
+	@Expose @Getter private int range = Integer.MAX_VALUE;
+	@Expose @Getter private int distanceTravelled = 0;
 	
 	@Getter @Setter private Entity source = null;
 	

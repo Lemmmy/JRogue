@@ -7,8 +7,6 @@ import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.tiles.Tile;
-import jr.utils.Persisting;
-import jr.utils.Serialisable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

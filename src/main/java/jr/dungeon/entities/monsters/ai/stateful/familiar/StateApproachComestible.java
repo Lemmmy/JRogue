@@ -1,12 +1,13 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.utils.Utils;
 import org.json.JSONObject;
 
 public class StateApproachComestible extends AIState<FamiliarAI> {
-	private EntityItem targetComestible;
+	@Expose private EntityItem targetComestible;
 	
 	/**
 	 * @param ai       The {@link FamiliarAI} that hosts this state.

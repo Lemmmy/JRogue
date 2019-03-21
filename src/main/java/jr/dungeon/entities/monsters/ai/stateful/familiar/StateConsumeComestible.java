@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
@@ -10,7 +11,7 @@ import jr.dungeon.items.comestibles.ItemComestible;
 import org.json.JSONObject;
 
 public class StateConsumeComestible extends AIState<FamiliarAI> {
-	private EntityItem targetComestible;
+	@Expose private EntityItem targetComestible;
 	
 	/**
 	 * @param ai       The {@link FamiliarAI} that hosts this state.

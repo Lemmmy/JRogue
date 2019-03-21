@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
@@ -11,7 +12,6 @@ import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,10 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Container implements Serialisable, EventListener {
-	@Getter @Setter	private String name;
+public class Container implements EventListener {
+	@Expose	@Getter @Setter	private String name;
 	
-	@Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
+	@Expose @Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
 	private List<ContainerListener> listeners = new ArrayList<>();
 	
 	public Container(Noun name) {

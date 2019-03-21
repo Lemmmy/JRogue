@@ -11,7 +11,6 @@ import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventSystem;
 import jr.dungeon.events.TurnEvent;
 import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Range;

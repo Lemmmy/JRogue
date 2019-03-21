@@ -4,8 +4,6 @@ import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.utils.OperatingSystem;
-import jr.utils.Persisting;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -15,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-public class DungeonSerialiser implements Serialisable, Persisting {
+public class DungeonSerialiser {
 	private Dungeon dungeon;
 	
 	/**

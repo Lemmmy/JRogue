@@ -6,7 +6,6 @@ import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.events.TileChangedEvent;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;

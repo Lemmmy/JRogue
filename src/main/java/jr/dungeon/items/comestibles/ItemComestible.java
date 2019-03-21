@@ -1,5 +1,6 @@
 package jr.dungeon.items.comestibles;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.items.Item;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Getter
 public abstract class ItemComestible extends Item {
-	private int turnsEaten = 0;
+	@Expose private int turnsEaten = 0;
 	
 	public EatenState getEatenState() {
 		if (turnsEaten == 0) {

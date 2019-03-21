@@ -1,5 +1,6 @@
 package jr.dungeon.entities.decoration;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -22,7 +23,7 @@ public class EntityGravestone extends Entity implements Readable {
 		// TODO: come up with some funny gravestone messages
 	};
 	
-	private String message;
+	@Expose private String message;
 	
 	public EntityGravestone(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

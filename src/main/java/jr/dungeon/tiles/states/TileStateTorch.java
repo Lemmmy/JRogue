@@ -1,13 +1,14 @@
 package jr.dungeon.tiles.states;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Colour;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
 public class TileStateTorch extends TileState {
-	private Colour colour1 = new Colour(0xFF9B26FF);
-	private Colour colour2 = new Colour(0xFF1F0CFF);
+	@Expose private Colour colour1 = new Colour(0xFF9B26FF);
+	@Expose private Colour colour2 = new Colour(0xFF1F0CFF);
 	
 	public TileStateTorch(Tile tile) {
 		super(tile);

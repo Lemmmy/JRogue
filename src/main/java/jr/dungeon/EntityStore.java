@@ -8,7 +8,6 @@ import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import org.json.JSONArray;

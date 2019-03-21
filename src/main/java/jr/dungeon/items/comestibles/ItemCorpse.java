@@ -1,5 +1,6 @@
 package jr.dungeon.items.comestibles;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class ItemCorpse extends ItemComestible {
-	private EntityLiving entity;
+	@Expose private EntityLiving entity;
 	
 	public ItemCorpse() { // unserialisation constructor
 		super();

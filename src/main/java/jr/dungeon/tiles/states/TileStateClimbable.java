@@ -1,5 +1,6 @@
 package jr.dungeon.tiles.states;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.dungeon.Level;
 import jr.dungeon.generators.DungeonGenerator;
@@ -13,10 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class TileStateClimbable extends TileState {
-	@Setter private UUID linkedLevelUUID;
-	@Getter private int destX = 0;
-	@Getter private int destY = 0;
-	@Getter private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
+	@Expose @Setter private UUID linkedLevelUUID;
+	@Expose @Getter private int destX = 0;
+	@Expose @Getter private int destY = 0;
+	@Expose @Getter private Class<? extends DungeonGenerator> generatorClass = GeneratorStandard.class;
 	
 	public TileStateClimbable(Tile tile) {
 		super(tile);

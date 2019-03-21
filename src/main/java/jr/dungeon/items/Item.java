@@ -1,5 +1,6 @@
 package jr.dungeon.items;
 
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
@@ -8,9 +9,7 @@ import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.language.Noun;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Persisting;
 import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONArray;
@@ -22,12 +21,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public abstract class Item implements Serialisable, Persisting, EventListener {
-	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
-	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
+public abstract class Item implements EventListener {
+	@Expose private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
+	@Expose private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	
-	private int visualID;
-	private int age;
+	@Expose private int visualID;
+	@Expose private int age;
 
 	private final JSONObject persistence = new JSONObject();
 	

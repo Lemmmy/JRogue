@@ -3,7 +3,6 @@ package jr.dungeon;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.SerialisationUtils;
 import lombok.Getter;
 import org.json.JSONObject;

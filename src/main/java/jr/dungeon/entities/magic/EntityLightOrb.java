@@ -1,5 +1,6 @@
 package jr.dungeon.entities.magic;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
@@ -20,7 +21,7 @@ import org.json.JSONObject;
 public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xAAFFECFF);
 	
-	private int turnsLeft;
+	@Expose private int turnsLeft;
 	
 	public EntityLightOrb(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

@@ -1,5 +1,6 @@
 package jr.dungeon.items.magical;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
@@ -41,10 +42,10 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		spellLevelMap.put(SpellStrike.class, 0);
 	}
 	
-	@Setter private Spell spell;
+	@Expose @Setter private Spell spell;
 	
-	private int timesRead = 0;
-	private int readingProgress = 0;
+	@Expose private int timesRead = 0;
+	@Expose private int readingProgress = 0;
 	
 	public ItemSpellbook() {
 		super();

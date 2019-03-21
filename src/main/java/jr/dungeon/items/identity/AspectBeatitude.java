@@ -1,5 +1,6 @@
 package jr.dungeon.items.identity;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.items.Item;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
 @Getter
 @Setter
 public class AspectBeatitude extends Aspect {
-	private Beatitude beatitude = Beatitude.UNCURSED;
+	@Expose private Beatitude beatitude = Beatitude.UNCURSED;
 	
 	@Override
 	public String getName() {

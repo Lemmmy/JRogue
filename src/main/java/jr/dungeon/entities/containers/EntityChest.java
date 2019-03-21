@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -27,8 +28,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EntityChest extends Entity implements Lootable, ContainerOwner {
-	private Container container;
-	@Getter private boolean locked;
+	@Expose private Container container;
+	@Expose	@Getter private boolean locked;
 	
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

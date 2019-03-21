@@ -5,7 +5,6 @@ import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
-import jr.utils.Serialisable;
 import org.json.JSONObject;
 
 import java.io.*;

@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.fish;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class MonsterFish extends Monster {
-	private FishColour colour;
+	@Expose private FishColour colour;
 	
 	public MonsterFish(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);

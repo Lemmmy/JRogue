@@ -1,5 +1,6 @@
 package jr.dungeon.items.weapons;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.HasMaterial;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
-	private Material material;
+	@Expose private Material material;
 	
 	public ItemSword() { // unserialisation constructor
 		super();

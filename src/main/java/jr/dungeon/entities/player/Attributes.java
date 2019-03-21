@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
@@ -13,9 +14,9 @@ import java.util.EnumMap;
 public class Attributes implements EventListener {
 	private static final int MAX_ATTRIBUTE_LEVEL = 30;
 	
-	private EnumMap<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
+	@Expose private EnumMap<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
 	private EnumMap<Attribute, Integer> defaults = new EnumMap<>(Attribute.class);
-	@Getter private int spendableSkillPoints = 3;
+	@Expose @Getter private int spendableSkillPoints = 3;
 	
 	public Attributes() {
 		clear();

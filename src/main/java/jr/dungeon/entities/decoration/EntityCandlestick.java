@@ -1,5 +1,6 @@
 package jr.dungeon.entities.decoration;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -18,7 +19,7 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 	private static final int LIGHT_INTENSITY = 60;
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9329FF);
 	
-	private boolean lit = true;
+	@Expose private boolean lit = true;
 	
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

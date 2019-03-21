@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.critters;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class MonsterRat extends Monster {
-	private int speed;
+	@Expose private int speed;
 	
 	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);

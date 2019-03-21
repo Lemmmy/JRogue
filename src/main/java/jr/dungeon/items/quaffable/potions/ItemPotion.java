@@ -1,5 +1,6 @@
 package jr.dungeon.items.quaffable.potions;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
@@ -18,11 +19,11 @@ import org.json.JSONObject;
 @Getter
 @Setter
 public class ItemPotion extends ItemQuaffable implements Shatterable {
-	private boolean empty = false;
-	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
-	private PotionType potionType = PotionType.POTION_HEALTH;
-	private PotionColour potionColour;
-	private float potency = 0.0f;
+	@Expose private boolean empty = false;
+	@Expose private BottleType bottleType = BottleType.BOTTLE_LABELLED;
+	@Expose private PotionType potionType = PotionType.POTION_HEALTH;
+	@Expose private PotionColour potionColour;
+	@Expose private float potency = 0.0f;
 	
 	public ItemPotion() {
 		potionColour = RandomUtils.randomFrom(PotionColour.values());

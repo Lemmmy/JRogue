@@ -1,11 +1,11 @@
 package jr.dungeon.entities.effects;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.io.BlankMessenger;
 import jr.dungeon.io.Messenger;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,12 +13,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
 @Getter
-public abstract class StatusEffect implements Serialisable, EventListener {
+public abstract class StatusEffect implements EventListener {
 	@Setter private Messenger messenger;
 	@Setter private Entity entity;
 	
-	private int duration;
-	@Setter(AccessLevel.PROTECTED) int turnsPassed = 0;
+	@Expose private int duration;
+	@Expose @Setter(AccessLevel.PROTECTED) int turnsPassed = 0;
 	
 	public StatusEffect(int duration) {
 		this.messenger = new BlankMessenger();

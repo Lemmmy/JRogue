@@ -1,5 +1,6 @@
 package jr.dungeon.entities;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -33,41 +34,41 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	/**
 	 * The Entity's health.
 	 */
-	private int health;
+	@Expose private int health;
 	/**
 	 * The Entity's maximum health.
 	 */
-	protected int maxHealth;
+	@Expose protected int maxHealth;
 	
 	/**
 	 * The Entity's experience level - i.e. how much they've levelled up.
 	 */
-	private int experienceLevel = 1;
+	@Expose private int experienceLevel = 1;
 	/**
 	 * The Entity's progress through their current experience level.
 	 *
 	 * @see #getXPForLevel(int)
 	 */
-	private int experience = 0;
+	@Expose private int experience = 0;
 	
 	/**
-	 * The current turn counter for the Entity's
+	 * The current turn counter for the Entity's healing cooldown.
 	 */
 	@Setter(AccessLevel.NONE)
-	private int healingTurns = 0;
+	@Expose private int healingTurns = 0;
 	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
-	private Container inventory;
+	@Expose private Container inventory;
 	
-	private Container.ContainerEntry leftHand;
-	private Container.ContainerEntry rightHand;
+	@Expose private Container.ContainerEntry leftHand;
+	@Expose private Container.ContainerEntry rightHand;
 	
 	/**
 	 * known persistent aspects per item class
 	 * the key is the hashcode of an items list of persistent aspects
 	 */
-	private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
+	@Expose private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
 	
 	public EntityLiving(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);

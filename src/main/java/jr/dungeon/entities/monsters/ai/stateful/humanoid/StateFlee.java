@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
@@ -14,7 +15,7 @@ import org.json.JSONObject;
 import java.util.stream.Collectors;
 
 public class StateFlee extends AIState<StatefulAI> {
-	private Point dest;
+	@Expose private Point dest;
 	
 	public StateFlee(StatefulAI ai, int duration) {
 		super(ai, duration);

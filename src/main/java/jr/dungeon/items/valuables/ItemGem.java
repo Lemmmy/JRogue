@@ -1,5 +1,6 @@
 package jr.dungeon.items.valuables;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
@@ -15,8 +16,8 @@ import lombok.Getter;
 import org.json.JSONObject;
 
 public class ItemGem extends Item {
-	private Gem gem;
-	private boolean worthless = false;
+	@Expose private Gem gem;
+	@Expose private boolean worthless = false;
 	
 	public ItemGem() { // unserialisation constructor
 		super();

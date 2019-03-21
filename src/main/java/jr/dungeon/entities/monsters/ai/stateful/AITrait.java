@@ -4,7 +4,6 @@ import jr.JRogue;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.events.EventListener;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;

@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.Monster;
@@ -25,20 +26,21 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class StatefulAI extends AI {
-	private AIState defaultState;
-	private AIState currentState;
+	@Expose private AIState defaultState;
+	@Expose private AIState currentState;
 	
-	private EntityLiving currentTarget;
-	private Point targetLastPos;
+	@Expose private EntityLiving currentTarget;
+	@Expose private Point targetLastPos;
 	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
+	@Expose
 	private boolean shouldTargetPlayer = true;
-	private int visibilityRange = 15;
+	@Expose private int visibilityRange = 15;
 	
-	private Map<Class<? extends AITrait>, AITrait> traits = new HashMap<>();
+	@Expose private Map<Class<? extends AITrait>, AITrait> traits = new HashMap<>();
 	
-	private Set<Point> safePoints = new HashSet<>();
+	@Expose private Set<Point> safePoints = new HashSet<>();
 	
 	public StatefulAI(Monster monster) {
 		super(monster);

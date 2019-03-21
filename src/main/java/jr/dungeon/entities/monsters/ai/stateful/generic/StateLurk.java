@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful.generic;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
@@ -14,7 +15,7 @@ import org.json.JSONObject;
 import java.util.stream.Collectors;
 
 public class StateLurk extends AIState<StatefulAI> {
-	private Point dest;
+	@Expose private Point dest;
 	
 	public StateLurk(StatefulAI ai, int duration) {
 		super(ai, duration);

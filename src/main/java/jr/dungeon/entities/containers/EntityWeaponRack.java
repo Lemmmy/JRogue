@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
 import java.util.Optional;
 
 public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
-	private Container container;
+	@Expose private Container container;
 	
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

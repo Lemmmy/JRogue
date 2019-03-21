@@ -1,5 +1,6 @@
 package jr.dungeon.entities;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.actions.Action;
@@ -22,7 +23,7 @@ public abstract class EntityTurnBased extends Entity {
 	/**
 	 * The amount of movement points the Entity currently has free.
 	 */
-	@Getter @Setter private int movementPoints = 0;
+	@Expose @Getter @Setter private int movementPoints = 0;
 	/**
 	 * The next {@link Action} this Entity is going to perform when it gets a chance to move.
 	 */

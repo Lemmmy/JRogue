@@ -1,5 +1,6 @@
 package jr.dungeon.tiles.states;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
@@ -8,7 +9,7 @@ import org.json.JSONObject;
 
 @Getter
 public class TileStateDoor extends TileState {
-	private int health = 0;
+	@Expose private int health = 0;
 	
 	public TileStateDoor(Tile tile) {
 		super(tile);

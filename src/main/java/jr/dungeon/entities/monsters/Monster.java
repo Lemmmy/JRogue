@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Monster extends EntityLiving {
-	private AI ai;
+	@Expose private AI ai;
 	
 	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);

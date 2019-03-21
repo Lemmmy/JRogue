@@ -1,5 +1,6 @@
 package jr.dungeon.tiles.states;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import lombok.Getter;
@@ -7,11 +8,8 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 public class TileStateTrap extends TileState {
-	@Getter @Setter
-	private TileType disguise;
-
-	@Getter @Setter
-	private boolean identified;
+	@Getter @Setter @Expose private TileType disguise;
+	@Getter @Setter @Expose private boolean identified;
 
 	public TileStateTrap(Tile tile) {
 		super(tile);

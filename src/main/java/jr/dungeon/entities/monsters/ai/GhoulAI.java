@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.ai;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
 import jr.utils.DebugToStringStyle;
 import lombok.AccessLevel;
@@ -23,11 +24,11 @@ public class GhoulAI extends AI {
 	@Setter(AccessLevel.NONE)
 	private Random random = new Random();
 	
-	private float moveProbability = 0.25f;
-	private float attackProbability = 0.25f;
+	@Expose private float moveProbability = 0.25f;
+	@Expose private float attackProbability = 0.25f;
 	
-	private int turnsSinceLastAttack = 0;
-	private int attackCooldownDuration = 2;
+	@Expose private int turnsSinceLastAttack = 0;
+	@Expose private int attackCooldownDuration = 2;
 	
 	public GhoulAI(Monster monster) {
 		super(monster);

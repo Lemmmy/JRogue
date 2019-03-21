@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 import java.util.Optional;
 
 public class EntityItem extends Entity {
-	@Getter private ItemStack itemStack;
+	@Expose	@Getter private ItemStack itemStack;
 
 	private final JSONObject persistence = new JSONObject();
 	

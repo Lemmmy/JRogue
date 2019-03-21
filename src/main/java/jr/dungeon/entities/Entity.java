@@ -1,5 +1,6 @@
 package jr.dungeon.entities;
 
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Dungeon;
@@ -33,49 +34,49 @@ import java.util.*;
  * methods.
  */
 @Getter
-public abstract class Entity implements Serialisable, Persisting, EventListener, Debuggable {
+public abstract class Entity implements EventListener, Debuggable {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
 	 */
-	private UUID uuid;
+	@Expose private UUID uuid;
 	
 	/**
 	 * The X position of this Entity in the {@link Level}.
 	 */
-	@Setter private int x;
+	@Setter @Expose private int x;
 	/**
 	 * The Y position of this Entity in the {@link Level}.
 	 */
-	@Setter private int y;
+	@Setter @Expose private int y;
 	
 	/**
 	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
 	 * the position before it was last assigned.
 	 */
-	@Setter private int lastX;
+	@Setter @Expose private int lastX;
 	/**
 	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
 	 * the position before it was last assigned.
 	 */
-	@Setter private int lastY;
+	@Setter @Expose private int lastY;
 	
 	/**
 	 * The last X position of this Entity in the {@link Level} that was seen by the
 	 * {@link jr.dungeon.entities.player.Player}.
 	 */
-	@Setter private int lastSeenX;
+	@Setter @Expose private int lastSeenX;
 	/**
 	 * The last Y position of this Entity in the {@link Level} that was seen by the
 	 * {@link jr.dungeon.entities.player.Player}.
 	 */
-	@Setter private int lastSeenY;
+	@Setter @Expose private int lastSeenY;
 	
 	/**
 	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this
 	 * number for persistent random effects with no actual gameplay effect, e.g. the colour of a spider could be
 	 * visualID % 2.
 	 */
-	private int visualID;
+	@Expose private int visualID;
 	
 	/**
 	 * Assigned by the {@link jr.dungeon.EntityStore} when the Entity is in the removal queue. Do not set this yourself,
@@ -105,11 +106,13 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	 *
 	 * @see StatusEffect
 	 */
-	private List<StatusEffect> statusEffects = new ArrayList<>();
+	@Expose private List<StatusEffect> statusEffects = new ArrayList<>();
 	
 	/**
 	 * An object of persistent properties that will be serialised with the Entity. Can contain absolutely any data
 	 * for any purpose - typically for use by mods or the renderer.
+	 *
+	 * TODO: evaluate whether we should be keeping this around
 	 */
 	private final JSONObject persistence = new JSONObject();
 	
@@ -362,9 +365,9 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
-		dungeon.eventSystem
-			.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED)
-			);
+		dungeon.eventSystem.triggerEvent(new EntityStatusEffectChangedEvent(
+			this, effect, EntityStatusEffectChangedEvent.Change.ADDED
+		));
 	}
 
 	/**

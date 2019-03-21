@@ -3,7 +3,6 @@ package jr.dungeon.items.identity;
 import jr.dungeon.items.Item;
 import jr.language.Noun;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
@@ -17,7 +16,7 @@ import org.json.JSONObject;
  * An example of a non-persistent aspect is the beatitude (blessed, uncursed or cursed status) of an item. The
  * beatitude differs between every item, so it's non-persistent.
  */
-public abstract class Aspect implements Serialisable {
+public abstract class Aspect {
 	public abstract String getName();
 	
 	public Noun applyNameTransformers(Item item, Noun name) {
