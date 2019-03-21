@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.google.common.reflect.TypeToken;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
+import jr.dungeon.entities.EntityRegistry;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
@@ -102,9 +103,11 @@ public class JRogue {
 	public JRogue(Settings settings) {
 		INSTANCE = this;
 		
-		initialiseReflections();
-		
 		try {
+			initialiseReflections();
+			
+			EntityRegistry.findEntityClasses();
+			
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 			config.setResizable(true);
 			config.setWindowedMode(settings.getScreenWidth(), settings.getScreenHeight());
@@ -133,9 +136,6 @@ public class JRogue {
 	}
 	
 	private void initialiseReflections() {
-		// if this isn't used once the modding api is added,
-		// remove this method and the org.reflections dependency
-		
 		ConfigurationBuilder cb = new ConfigurationBuilder()
 			.addUrls(ClasspathHelper.forPackage(JRogue.class.getPackage().getName()))
 			// TODO: add mod packages as URLs
