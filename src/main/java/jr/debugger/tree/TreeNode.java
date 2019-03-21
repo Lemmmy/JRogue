@@ -2,8 +2,9 @@ package jr.debugger.tree;
 
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.debugger.tree.valuehints.TypeValueHint;
-import jr.debugger.tree.valuehints.TypeValueHintHandler;
+import jr.debugger.tree.valuemanagers.TypeValueManager;
+import jr.debugger.tree.valuemanagers.TypeValueManagerHandler;
+import jr.debugger.tree.valuemanagers.settertypes.TypeValueSetter;
 import jr.debugger.utils.Debuggable;
 import jr.debugger.utils.HideFromDebugger;
 import lombok.Getter;
@@ -25,23 +26,23 @@ public class TreeNode {
 		localPackagePrefixes.add(JRogue.class.getPackage().getName());
 	}
 	
-	private static Map<Class, TypeValueHint> valueHintMap = new HashMap<>();
+	private static Map<Class, TypeValueManager> valueManagerMap = new HashMap<>();
 	
 	static {
-		JRogue.getReflections().getTypesAnnotatedWith(TypeValueHintHandler.class).stream()
-			.filter(TypeValueHint.class::isAssignableFrom)
+		JRogue.getReflections().getTypesAnnotatedWith(TypeValueManagerHandler.class).stream()
+			.filter(TypeValueManager.class::isAssignableFrom)
 			.forEach(handlerClass -> {
-				TypeValueHintHandler annotation = handlerClass.getAnnotation(TypeValueHintHandler.class);
+				TypeValueManagerHandler annotation = handlerClass.getAnnotation(TypeValueManagerHandler.class);
 				Class[] classes = annotation.value();
 			
 				try {
-					TypeValueHint handlerInstance = (TypeValueHint) handlerClass.newInstance();
+					TypeValueManager handlerInstance = (TypeValueManager) handlerClass.newInstance();
 				
 					for (Class clazz : classes) {
-						valueHintMap.put(clazz, handlerInstance);
+						valueManagerMap.put(clazz, handlerInstance);
 					}
 				} catch (InstantiationException | IllegalAccessException e) {
-					ErrorHandler.error("Unable to initialise debug client value hint map", e);
+					ErrorHandler.error("Unable to initialise debug client value manager map", e);
 				}
 			});
 	}
@@ -50,13 +51,14 @@ public class TreeNode {
 	private boolean isStatic, isFinal;
 	
 	private String name;
-	private String valueHint;
+	private String valueString;
 	
 	private int identityHashCode;
 	private Field parentField;
 	private Object instance;
 	private Class<?> instanceClass;
 	private Debuggable debuggableInstance;
+	private TypeValueManager<Object, ?> typeValueManager;
 	private boolean isPrimitive = false;
 	private boolean isArray = false;
 	private boolean isArrayElement = false;
@@ -65,6 +67,7 @@ public class TreeNode {
 	private int arrayLength = 0;
 	private Type type;
 	private boolean showIdenticon = true;
+	private boolean isSettable = false;
 	
 	private boolean open = false;
 	
@@ -247,7 +250,7 @@ public class TreeNode {
 	}
 	
 	public void refresh() {
-		updateValueHint();
+		updateValueString();
 		
 		if (!isOpenable() || !open) return;
 		
@@ -260,22 +263,24 @@ public class TreeNode {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void updateValueHint() {
+	private void updateValueString() {
 		if (debuggableInstance == null) {
-			if (instance == null) return;
+			if (instance == null || parentField == null) return;
 			
 			Class clazz = instanceClass;
 			
 			while (clazz != null) {
-				if (valueHintMap.containsKey(clazz)) {
-					valueHint = valueHintMap.get(clazz).toValueHint(parentField, instance);
+				if (valueManagerMap.containsKey(clazz)) {
+					typeValueManager = valueManagerMap.get(clazz);
+					valueString = typeValueManager.valueToString(parentField, instance);
+					isSettable = typeValueManager.canSet(parentField, instance);
 					break;
 				}
 				
 				clazz = clazz.getSuperclass();
 			}
 		} else {
-			valueHint = debuggableInstance.getValueHint();
+			valueString = debuggableInstance.getValueString();
 		}
 	}
 	
@@ -326,8 +331,8 @@ public class TreeNode {
 			getDisplayedTypeName(),
 			name,
 			isArray ? String.format(" ([P_GREY_3]%,d[] items)", arrayLength) : "",
-			valueHint == null ? "" : String.format(
-				" ([P_GREY_2]%s[])", valueHint
+			valueString == null ? "" : String.format(
+				" ([P_GREY_2]%s[])", valueString
 			)
 		);
 	}
@@ -380,5 +385,10 @@ public class TreeNode {
 			.filter(c -> c.getParentField() != null)
 			.filter(c -> c.getParentField().getName().equalsIgnoreCase(name))
 			.findFirst();
+	}
+	
+	public Optional<TypeValueSetter<?, ?>> getSetter() {
+		if (typeValueManager == null || parentField == null || instance == null) return Optional.empty();
+		return Optional.ofNullable(typeValueManager.getSetter(parentField, instance));
 	}
 }

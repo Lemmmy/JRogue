@@ -425,31 +425,31 @@ public class HUDComponent extends RendererComponent {
 		Entity containerEntity = e.getContainerEntity();
 		
 		nextFrameDeferred
-			.add(() -> new ContainerWindow(renderer, stage, skin, containerEntity)
+			.add(() -> new ContainerWindow(this, stage, skin, containerEntity)
 				.show());
 	}
 	
 	public void showDebugWindow() {
 		nextFrameDeferred
-			.add(() -> new DebugWindow(renderer, stage, skin, dungeon, dungeon.getLevel())
+			.add(() -> new DebugWindow(this, stage, skin, dungeon, dungeon.getLevel())
 				.show());
 	}
 	
 	public void showInventoryWindow() {
 		nextFrameDeferred
-			.add(() -> new PlayerWindow(renderer, stage, skin, player)
+			.add(() -> new PlayerWindow(this, stage, skin, player)
 				.show());
 	}
 	
 	public void showWishWindow() {
 		nextFrameDeferred
-			.add(() -> new WishWindow(renderer, stage, skin, dungeon, dungeon.getLevel())
+			.add(() -> new WishWindow(this, stage, skin, dungeon, dungeon.getLevel())
 				.show());
 	}
 	
 	public void showSpellWindow() {
 		nextFrameDeferred
-			.add(() -> new SpellWindow(renderer, stage, skin, player)
+			.add(() -> new SpellWindow(this, stage, skin, player)
 				.show());
 	}
 	

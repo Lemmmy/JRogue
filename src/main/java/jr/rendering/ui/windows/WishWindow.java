@@ -7,13 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 
 public class WishWindow extends WindowBase {
 	private TextField wishField;
 	
-	public WishWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
-		super(renderer, stage, skin, dungeon, level);
+	public WishWindow(HUDComponent hud, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+		super(hud, stage, skin, dungeon, level);
 	}
 	
 	@Override

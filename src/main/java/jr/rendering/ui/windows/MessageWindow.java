@@ -4,14 +4,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 
 public class MessageWindow extends WindowBase {
 	private String title;
 	private String message;
 	
-	public MessageWindow(GameScreen renderer, Stage stage, Skin skin, String title, String message) {
-		super(renderer, stage, skin, null, null);
+	public MessageWindow(HUDComponent hud, Stage stage, Skin skin, String title, String message) {
+		super(hud, stage, skin, null, null);
 		
 		this.title = title;
 		this.message = message;

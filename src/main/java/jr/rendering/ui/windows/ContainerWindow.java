@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.ui.partials.ContainerPartial;
 import lombok.val;
 
@@ -16,8 +16,8 @@ public class ContainerWindow extends WindowBase {
 	private Entity entity;
 	private Player player;
 	
-	public ContainerWindow(GameScreen renderer, Stage stage, Skin skin, Entity entity) {
-		super(renderer, stage, skin, entity.getDungeon(), entity.getLevel());
+	public ContainerWindow(HUDComponent hud, Stage stage, Skin skin, Entity entity) {
+		super(hud, stage, skin, entity.getDungeon(), entity.getLevel());
 		
 		this.entity = entity;
 		player = entity.getDungeon().getPlayer();

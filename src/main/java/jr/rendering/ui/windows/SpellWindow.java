@@ -4,14 +4,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.dungeon.entities.player.Player;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.ui.partials.SpellPartial;
 
 public class SpellWindow extends WindowBase {
 	private Player player;
 	
-	public SpellWindow(GameScreen renderer, Stage stage, Skin skin, Player player) {
-		super(renderer, stage, skin, player.getDungeon(), player.getLevel());
+	public SpellWindow(HUDComponent hud, Stage stage, Skin skin, Player player) {
+		super(hud, stage, skin, player.getDungeon(), player.getLevel());
 		
 		this.player = player;
 	}

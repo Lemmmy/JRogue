@@ -112,7 +112,7 @@ public class Tile implements Debuggable {
 	}
 	
 	@Override
-	public String getValueHint() {
+	public String getValueString() {
 		return String.format(
 			"[P_GREY_3]%s[] %,d, %,d",
 			type.name().replaceFirst("^TILE_", ""),

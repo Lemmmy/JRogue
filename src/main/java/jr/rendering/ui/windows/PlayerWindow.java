@@ -8,7 +8,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.utils.EntityHelper;
 import jr.language.transformers.Capitalise;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.ui.partials.AttributesPartial;
 import jr.rendering.ui.partials.ContainerPartial;
 import jr.rendering.ui.partials.StatsPartial;
@@ -17,8 +17,8 @@ import lombok.val;
 public class PlayerWindow extends WindowBase {
 	private Entity entity;
 	
-	public PlayerWindow(GameScreen renderer, Stage stage, Skin skin, Entity entity) {
-		super(renderer, stage, skin, entity.getDungeon(), entity.getLevel());
+	public PlayerWindow(HUDComponent hud, Stage stage, Skin skin, Entity entity) {
+		super(hud, stage, skin, entity.getDungeon(), entity.getLevel());
 		
 		this.entity = entity;
 	}

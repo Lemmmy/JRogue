@@ -9,11 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.rendering.screens.GameScreen;
+import jr.rendering.components.hud.HUDComponent;
 
 public class DebugWindow extends WindowBase {
-	public DebugWindow(GameScreen renderer, Stage stage, Skin skin, Dungeon dungeon, Level level) {
-		super(renderer, stage, skin, dungeon, level);
+	public DebugWindow(HUDComponent hud, Stage stage, Skin skin, Dungeon dungeon, Level level) {
+		super(hud, stage, skin, dungeon, level);
 	}
 	
 	@Override

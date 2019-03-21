@@ -244,7 +244,7 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	}
 	
 	@Override
-	public String getValueHint() {
+	public String getValueString() {
 		return String.format(
 			"[P_GREY_3]%s[] %,d",
 			name, depth
