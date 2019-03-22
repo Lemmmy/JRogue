@@ -12,11 +12,15 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.Event;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.language.transformers.Possessive;
 import jr.language.transformers.Transformer;
-import jr.utils.*;
+import jr.utils.DebugToStringStyle;
+import jr.utils.Point;
+import jr.utils.RandomUtils;
+import jr.utils.VectorInt;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,6 +38,7 @@ import java.util.*;
  * methods.
  */
 @Getter
+@HasRegistry
 public abstract class Entity implements EventListener, Debuggable {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.

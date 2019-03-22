@@ -1,7 +1,9 @@
-package jr.dungeon;
+package jr.dungeon.serialisation;
 
 import jr.ErrorHandler;
 import jr.JRogue;
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.utils.OperatingSystem;
 import lombok.Getter;

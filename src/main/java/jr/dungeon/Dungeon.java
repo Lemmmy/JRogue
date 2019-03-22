@@ -12,6 +12,7 @@ import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
+import jr.dungeon.serialisation.DungeonSerialiser;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.Point;
