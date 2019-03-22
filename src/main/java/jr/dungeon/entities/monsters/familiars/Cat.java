@@ -7,11 +7,13 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.FamiliarAI;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.StateFollowPlayer;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.utils.RandomUtils;
 
+@Registered(id="familiarCat")
 public class Cat extends Familiar {
 	public Cat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

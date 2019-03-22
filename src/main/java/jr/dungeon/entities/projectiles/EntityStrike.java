@@ -5,6 +5,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
@@ -12,6 +13,7 @@ import jr.language.Noun;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
 
+@Registered(id="projectileStrike")
 public class EntityStrike extends EntityProjectile implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0x75E5F6FF);
 	

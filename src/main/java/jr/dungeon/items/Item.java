@@ -7,6 +7,8 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
 import jr.utils.DebugToStringStyle;
 import jr.utils.RandomUtils;
@@ -21,14 +23,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public abstract class Item implements EventListener {
+@HasRegistry
+public abstract class Item implements Serialisable, EventListener {
 	@Expose private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
 	@Expose private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
 	
 	@Expose private int visualID;
 	@Expose private int age;
-
-	private final JSONObject persistence = new JSONObject();
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
@@ -150,8 +151,6 @@ public abstract class Item implements EventListener {
 		JSONArray serialisedKnownAspects = new JSONArray();
 		knownAspects.forEach(a -> serialisedKnownAspects.put(a.getName()));
 		obj.put("knownAspects", serialisedKnownAspects);
-
-		serialisePersistence(obj);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -188,12 +187,6 @@ public abstract class Item implements EventListener {
 				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
 			}
 		});
-
-		try {
-			unserialisePersistence(obj);
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error unserialising item persistence", e);
-		}
 	}
 	
 	public Item copy() {
@@ -204,11 +197,6 @@ public abstract class Item implements EventListener {
 		
 		Optional<Item> itemOptional = createFromJSON(serialisedItem);
 		return itemOptional.orElse(null);
-	}
-
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override

@@ -5,10 +5,12 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 
+@Registered(id="itemStaff")
 public class ItemStaff extends ItemWeaponMelee {
 	@Override
 	public Noun getName(EntityLiving observer) {

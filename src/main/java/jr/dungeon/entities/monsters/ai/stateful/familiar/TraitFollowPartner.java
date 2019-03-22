@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
-import org.json.JSONObject;
 
 public class TraitFollowPartner extends AITrait<FamiliarAI> {
 	/**
@@ -22,19 +21,12 @@ public class TraitFollowPartner extends AITrait<FamiliarAI> {
 			if (distance > 4) {
 				getAI().setCurrentState(new StateFollowPlayer(getAI(), 0));
 			} else {
-				getAI().setCurrentState(new StateLurk(getAI(), 0));
+				StateLurk stateLurk = new StateLurk(getAI(), 0);
+				stateLurk.setLurkRadius(3); // TODO: expose this back in FamiliarAI
+				stateLurk.setLurkTarget(getMonster().getDungeon().getPlayer());
+				getAI().setCurrentState(stateLurk);
 			}
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-	
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-	
 	}
 	
 	@Override

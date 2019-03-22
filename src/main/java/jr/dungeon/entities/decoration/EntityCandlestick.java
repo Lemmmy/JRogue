@@ -10,11 +10,13 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
 
+@Registered(id="entityCandlestick")
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private static final int LIGHT_INTENSITY = 60;
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9329FF);

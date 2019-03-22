@@ -3,6 +3,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import java.util.Set;
  * This AI system may be replaced soon.
  */
 @Getter
+@HasRegistry
 public class AIState<T extends StatefulAI> implements EventListener {
 	private T ai;
 	
@@ -49,19 +51,6 @@ public class AIState<T extends StatefulAI> implements EventListener {
 	 */
 	public void update() {
 		turnsTaken = Math.max(0, turnsTaken - 1);
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		
-		obj.put("duration", duration);
-		obj.put("turnsTaken", turnsTaken);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		turnsTaken = obj.optInt("turnsTaken");
 	}
 	
 	/**

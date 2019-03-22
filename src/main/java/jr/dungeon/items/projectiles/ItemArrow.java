@@ -5,9 +5,11 @@ import jr.dungeon.entities.projectiles.EntityArrow;
 import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="itemArrow")
 public class ItemArrow extends ItemProjectile {
 	@Override
 	public Noun getName(EntityLiving observer) {

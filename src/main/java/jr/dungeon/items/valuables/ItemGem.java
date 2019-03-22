@@ -7,6 +7,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.identity.AspectGemValue;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+@Registered(id="itemGem")
 public class ItemGem extends Item {
 	@Expose private Gem gem;
 	@Expose private boolean worthless = false;

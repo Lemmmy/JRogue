@@ -15,6 +15,7 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+@Registered(id="monsterRat")
 public class MonsterRat extends Monster {
 	@Expose private int speed;
 	

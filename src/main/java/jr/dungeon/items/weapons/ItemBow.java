@@ -5,12 +5,14 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Registered(id="itemBow")
 public class ItemBow extends ItemProjectileLauncher {
 	@Override
 	public boolean isTwoHanded() {

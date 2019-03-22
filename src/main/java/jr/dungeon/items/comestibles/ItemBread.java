@@ -2,9 +2,11 @@ package jr.dungeon.items.comestibles;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.ItemAppearance;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="itemBread")
 public class ItemBread extends ItemComestible {
 	@Override
 	public Noun getName(EntityLiving observer) {

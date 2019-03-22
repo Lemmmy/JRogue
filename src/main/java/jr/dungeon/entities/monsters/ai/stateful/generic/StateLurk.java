@@ -9,16 +9,32 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 import java.util.stream.Collectors;
 
 public class StateLurk extends AIState<StatefulAI> {
+	private static final int DEFAULT_LURK_RADIUS = 7;
+	private static final float DEFAULT_LURK_PROBABILITY = 0.8f;
+	
 	@Expose private Point dest;
 	
-	public StateLurk(StatefulAI ai, int duration) {
+	@Expose @Getter	@Setter private int lurkRadius = DEFAULT_LURK_RADIUS;
+	@Expose @Getter	@Setter private float lurkMoveProbability = DEFAULT_LURK_PROBABILITY;
+	@Expose @Getter	@Setter private Entity lurkTarget;
+	
+	public StateLurk(StatefulAI ai, int duration, int lurkRadius, float lurkMoveProbability) {
 		super(ai, duration);
+	}
+	
+	public StateLurk(StatefulAI ai, int duration, int lurkRadius) {
+		this(ai, duration, lurkRadius, DEFAULT_LURK_PROBABILITY);
+	}
+	
+	public StateLurk(StatefulAI ai, int duration) {
+		this(ai, duration, DEFAULT_LURK_RADIUS, DEFAULT_LURK_PROBABILITY);
 	}
 	
 	@Override
@@ -43,45 +59,15 @@ public class StateLurk extends AIState<StatefulAI> {
 	}
 	
 	private Point getRandomDestination() {
-		Monster m = getAI().getMonster();
-		Entity target = m;
-		int r = getAI().getPersistence().optInt("lurkRadius", 7);
-		float p = (float) getAI().getPersistence().optDouble("lurkMoveProbability", 0.8);
+		Monster monster = getAI().getMonster();
+		Entity target = lurkTarget != null ? lurkTarget : monster;
 		
-		if (RandomUtils.randomFloat() > p) return null;
+		if (RandomUtils.randomFloat() > lurkMoveProbability) return null;
 		
-		if (getAI().getPersistence().has("lurkTarget")) {
-			String uuid = getAI().getPersistence().getString("lurkTarget");
-			Entity e = m.getDungeon().getLevel().entityStore.getEntityByUUID(uuid);
-			
-			if (e != null) {
-				target = e;
-			}
-		}
-		
-		return RandomUtils.randomFrom(m.getLevel().tileStore.getTilesInRadius(target.getPosition(), r).stream()
+		return RandomUtils.randomFrom(monster.getLevel().tileStore.getTilesInRadius(target.getPosition(), lurkRadius).stream()
 			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
 			.map(Tile::getPosition)
 			.collect(Collectors.toList()));
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		if (dest != null) {
-			obj.put("dest", new JSONObject().put("x", dest.getX()).put("y", dest.getY()));
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("dest")) {
-			JSONObject serialisedPoint = obj.getJSONObject("dest");
-			dest = Point.getPoint(serialisedPoint.optInt("x"), serialisedPoint.optInt("y"));
-		}
 	}
 	
 	@Override

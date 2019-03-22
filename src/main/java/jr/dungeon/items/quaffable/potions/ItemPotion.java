@@ -7,6 +7,7 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 @Getter
 @Setter
+@Registered(id="itemPotion")
 public class ItemPotion extends ItemQuaffable implements Shatterable {
 	@Expose private boolean empty = false;
 	@Expose private BottleType bottleType = BottleType.BOTTLE_LABELLED;

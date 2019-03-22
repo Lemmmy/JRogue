@@ -1,6 +1,7 @@
 package jr.dungeon;
 
 import com.github.alexeyr.pcg.Pcg32;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityTurnBased;
@@ -14,14 +15,13 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Range;
-import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class TurnSystem implements Serialisable {
+public class TurnSystem {
 	/**
 	 * The random range of turns in which a random {@link jr.dungeon.entities.monsters.Monster} will spawn somewhere on
 	 * the {@link Level}.
@@ -36,7 +36,7 @@ public class TurnSystem implements Serialisable {
 	/**
 	 * The number of turns that have passed.
 	 */
-	@Getter private long turn = 0;
+	@Expose @Getter private long turn = 0;
 	
 	/**
 	 * A bulk action is an action in which multiple turns will pass, and the action is repeated. For example, when
@@ -64,14 +64,14 @@ public class TurnSystem implements Serialisable {
 	 *
 	 * @see PassiveSoundEmitter
 	 */
-	@Getter private long passiveSoundCounter = 0;
+	@Expose @Getter private long passiveSoundCounter = 0;
 	
 	/**
 	 * Random counter for new monster spawns.
 	 *
 	 * @see MonsterSpawner
 	 */
-	@Getter private long monsterSpawnCounter = 50;
+	@Expose @Getter private long monsterSpawnCounter = 50;
 	
 	/**
 	 * rand
@@ -91,20 +91,6 @@ public class TurnSystem implements Serialisable {
 		somethingHappened = true;
 		
 		// TODO: trigger event here?
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("turn", turn);
-		obj.put("passiveSoundCounter", passiveSoundCounter);
-		obj.put("monsterSpawnCounter", monsterSpawnCounter);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		turn = obj.getInt("turn");
-		passiveSoundCounter = obj.getInt("passiveSoundCounter");
-		monsterSpawnCounter = obj.getInt("monsterSpawnCounter");
 	}
 	
 	public void turn(Dungeon dungeon) {

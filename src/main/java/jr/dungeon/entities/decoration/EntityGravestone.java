@@ -10,12 +10,14 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
+@Registered(id="entityGravestone")
 public class EntityGravestone extends Entity implements Readable {
 	private static final String[] GRAVE_MESSAGES = new String[] {
 		"Rest in peace",

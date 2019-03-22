@@ -9,6 +9,7 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Registered(id="projectile")
 public abstract class EntityProjectile extends EntityTurnBased {
 	@Expose private int dx = 0, dy = 0;
 	@Expose @Getter private int range = Integer.MAX_VALUE;

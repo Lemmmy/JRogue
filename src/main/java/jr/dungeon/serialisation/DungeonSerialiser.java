@@ -23,21 +23,8 @@ public class DungeonSerialiser {
 	 */
 	@Getter private static Path dataDir = OperatingSystem.get().getAppDataDir().resolve("jrogue");
 	
-	/**
-	 * Persistent object for user-defined keys, typically for use by mods or the renderer.
-	 */
-	private final JSONObject persistence = new JSONObject();
-	
 	public DungeonSerialiser(Dungeon dungeon) {
 		this.dungeon = dungeon;
-	}
-	
-	/**
-	 * @return A JSONObject that persists across game sessions.
-	 */
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override
@@ -53,8 +40,6 @@ public class DungeonSerialiser {
 			serialisedLevels.put(uuid.toString(), j);
 		});
 		obj.put("levels", serialisedLevels);
-		
-		serialisePersistence(obj);
 	}
 	
 	@Override
@@ -121,7 +106,5 @@ public class DungeonSerialiser {
 		} catch (Exception e) {
 			ErrorHandler.error("Error loading dungeon", e);
 		}
-		
-		unserialisePersistence(obj);
 	}
 }

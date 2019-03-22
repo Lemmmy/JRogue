@@ -13,6 +13,7 @@ import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Registered(id="entityChest")
 public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;
 	@Expose	@Getter private boolean locked;

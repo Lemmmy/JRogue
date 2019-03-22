@@ -16,6 +16,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
@@ -26,10 +27,9 @@ import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Registered(id="entityItem")
 public class EntityItem extends Entity {
 	@Expose	@Getter private ItemStack itemStack;
-
-	private final JSONObject persistence = new JSONObject();
 	
 	public EntityItem(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		super(dungeon, level, x, y);
@@ -136,11 +136,6 @@ public class EntityItem extends Entity {
 		
 		Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(obj.getJSONObject("itemStack"));
 		itemStackOptional.ifPresent(i -> itemStack = i);
-	}
-
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override

@@ -5,11 +5,13 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
 import java.util.List;
 
+@Registered(id="monsterJackal")
 public class MonsterJackal extends MonsterCanine {
 	public MonsterJackal(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

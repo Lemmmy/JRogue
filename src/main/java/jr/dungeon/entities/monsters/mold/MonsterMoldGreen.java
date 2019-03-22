@@ -4,9 +4,11 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="monsterMoldGreen")
 public class MonsterMoldGreen extends MonsterMold {
 	public MonsterMoldGreen(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

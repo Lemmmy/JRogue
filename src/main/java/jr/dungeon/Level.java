@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class Level implements Serialisable, Persisting, Debuggable {
+public class Level implements Debuggable {
 	private UUID uuid;
 	
 	private Dungeon dungeon;
@@ -42,8 +42,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	@Getter(AccessLevel.NONE) public final LightStore lightStore;
 	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
 	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
-	
-	private JSONObject persistence;
 
 	/**
 	 * Constructs a level with a random UUID.
@@ -94,8 +92,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		lightStore.initialiseLight();
 		
 		turnCreated = dungeon.turnSystem.getTurn();
-
-		persistence = new JSONObject();
 	}
 
 	/**
@@ -180,8 +176,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		lightStore.serialise(obj);
 		visibilityStore.serialise(obj);
 		monsterSpawner.serialise(obj);
-		
-		serialisePersistence(obj);
 	}
 
 	@Override
@@ -207,8 +201,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		}
 		
 		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
-
-		unserialisePersistence(obj);
 	}
 
 	/**
@@ -226,14 +218,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	 */
 	public UUID getUUID() {
 		return uuid;
-	}
-
-	/**
-	 * @return A JSONObject containing data that will persist across game sessions.
-	 */
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override

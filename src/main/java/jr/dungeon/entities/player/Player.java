@@ -26,6 +26,7 @@ import jr.dungeon.events.EventPriority;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
@@ -43,6 +44,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Registered(id="player")
 public class Player extends EntityLiving {
 	@Getter private AStarPathfinder pathfinder = new AStarPathfinder();
 	
@@ -63,8 +65,6 @@ public class Player extends EntityLiving {
 	@Expose @Getter private int gold = 0;
 	
 	@Expose @Getter @Setter private boolean godmode = false;
-
-	private final JSONObject persistence = new JSONObject();
 	
 	public final PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
 	
@@ -599,11 +599,6 @@ public class Player extends EntityLiving {
 	public void swapHands() {
 		super.swapHands();
 		getDungeon().You("swap your weapons.");
-	}
-
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override

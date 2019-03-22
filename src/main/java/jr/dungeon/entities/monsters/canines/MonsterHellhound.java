@@ -6,6 +6,7 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -13,6 +14,7 @@ import jr.utils.Colour;
 
 import java.util.List;
 
+@Registered(id="monsterHellhound")
 public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9B26FF);
 	

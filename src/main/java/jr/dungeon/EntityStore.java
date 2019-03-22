@@ -1,5 +1,6 @@
 package jr.dungeon;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.entities.Entity;
@@ -10,7 +11,6 @@ import jr.dungeon.entities.player.Player;
 import jr.utils.Point;
 import jr.utils.Utils;
 import lombok.Getter;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
  * Store class for {@link Entity Entities}. Handles storage, serialisation, unserialisation, getters and setters
  * related to {@link Entity Entities}.
  */
-public class EntityStore implements Serialisable {
+public class EntityStore {
 	/**
 	 * The map of {@link Entity Entities} in the {@link Level}.
 	 */
-	private Map<UUID, Entity> entities;
+	@Expose private Map<UUID, Entity> entities;
 	
 	/**
 	 * Queue of {@link Entity Entities} that are being added. Queues are processed and flushed at the start and end
@@ -60,25 +60,6 @@ public class EntityStore implements Serialisable {
 		entities = new HashMap<>();
 		entityAddQueue = new ArrayList<>();
 		entityRemoveQueue = new ArrayList<>();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		entities.values().forEach(e -> {
-			JSONObject serialisedEntity = new JSONObject();
-			e.serialise(serialisedEntity);
-			obj.append("entities", serialisedEntity);
-		});
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		try {
-			JSONArray serialisedEntities = obj.getJSONArray("entities");
-			serialisedEntities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error loading level - during EntityStore unserialisation:", e);
-		}
 	}
 	
 	@SuppressWarnings("unchecked")

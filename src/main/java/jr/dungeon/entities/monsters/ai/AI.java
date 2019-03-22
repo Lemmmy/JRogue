@@ -8,6 +8,7 @@ import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.tiles.TileType;
 import jr.utils.*;
 import lombok.Getter;
@@ -30,13 +31,12 @@ import java.util.Set;
  *
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
-public abstract class AI implements Serialisable, Persisting, EventListener {
+@HasRegistry
+public abstract class AI implements EventListener {
 	@NonNull @Getter private Monster monster;
 	
 	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
 	private List<TileType> avoidTiles = new ArrayList<>();
-	
-	private JSONObject persistence = new JSONObject();
 	
 	protected int suppressTurns = 0;
 	
@@ -269,23 +269,6 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	 * Called every turn - this is the AI's turn to assign an action to the monster.
 	 */
 	public abstract void update();
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		
-		serialisePersistence(obj);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		unserialisePersistence(obj);
-	}
-	
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
 	
 	/**
 	 * Instantiates and unserialises an AI from serialised JSON.

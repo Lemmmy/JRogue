@@ -10,6 +10,7 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Registered(id="entityWeaponRack")
 public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;
 	

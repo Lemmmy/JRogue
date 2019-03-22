@@ -8,7 +8,6 @@ import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.utils.Utils;
-import org.json.JSONObject;
 
 import java.util.Comparator;
 
@@ -52,15 +51,5 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 					getAI().setCurrentState(new StateApproachComestible(getAI(), 5, e));
 				}
 			});
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		
 	}
 }

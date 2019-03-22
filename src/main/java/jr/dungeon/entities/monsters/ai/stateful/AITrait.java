@@ -3,6 +3,7 @@ package jr.dungeon.entities.monsters.ai.stateful;
 import jr.JRogue;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.val;
@@ -19,7 +20,8 @@ import java.util.Set;
  * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
  */
 @Getter
-public abstract class AITrait<T extends StatefulAI> implements Serialisable, EventListener {
+@HasRegistry
+public abstract class AITrait<T extends StatefulAI> implements EventListener {
 	private Monster monster;
 	private T ai;
 	

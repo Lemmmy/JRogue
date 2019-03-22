@@ -10,6 +10,7 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -17,6 +18,7 @@ import jr.language.Verb;
 import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 
+@Registered(id="monsterGoblinZombie")
 public class MonsterGoblinZombie extends MonsterZombie {
 	public MonsterGoblinZombie(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);

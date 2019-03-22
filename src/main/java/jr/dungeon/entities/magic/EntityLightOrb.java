@@ -9,6 +9,7 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
@@ -18,6 +19,7 @@ import jr.utils.Colour;
 import jr.utils.RandomUtils;
 import org.json.JSONObject;
 
+@Registered(id="entityLightOrb")
 public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xAAFFECFF);
 	

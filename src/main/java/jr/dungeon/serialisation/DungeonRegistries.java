@@ -10,14 +10,16 @@ public class DungeonRegistries {
 	private static final Map<Class, DungeonRegistry> registries = new HashMap<>();
 	
 	public static void findRegistries() {
-		JRogue.getReflections().getTypesAnnotatedWith(HasRegistry.class).forEach(clazz -> {
-			JRogue.getLogger().debug("Making registry for {}", clazz);
-			
-			DungeonRegistry registry = new DungeonRegistry<>(clazz);
-			registries.put(clazz, registry);
-			
-			registry.scanClasses();
-		});
+		JRogue.getReflections().getTypesAnnotatedWith(HasRegistry.class).stream()
+			.filter(clazz -> clazz.getAnnotation(HasRegistry.class) == null)
+			.forEach(clazz -> {
+				JRogue.getLogger().debug("Making registry for {}", clazz);
+				
+				DungeonRegistry registry = new DungeonRegistry<>(clazz);
+				registries.put(clazz, registry);
+				
+				registry.scanClasses();
+			});
 	}
 	
 	public static <T> Optional<DungeonRegistry<T>> findRegistryForClass(Class<? extends T> clazz) {

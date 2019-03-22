@@ -12,7 +12,6 @@ import jr.dungeon.items.identity.AspectBeatitude;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.transformers.Capitalise;
-import org.json.JSONObject;
 
 public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 	/**
@@ -55,16 +54,6 @@ public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 	
 	@Override
 	public void update() {
-		
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
 		
 	}
 }

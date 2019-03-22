@@ -1,5 +1,6 @@
 package jr.dungeon;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
@@ -81,7 +82,7 @@ public class Dungeon implements Messenger {
 	
 	public final EventSystem eventSystem;
 	
-	public final TurnSystem turnSystem;
+	@Expose public final TurnSystem turnSystem;
 	
 	public final DungeonSerialiser serialiser;
 	
@@ -398,8 +399,7 @@ public class Dungeon implements Messenger {
 			}
 		}
 		
-		Level firstLevel = dungeon.generateFirstLevel();
-		dungeon.serialiser.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
+		dungeon.generateFirstLevel();
 		return dungeon;
 	}
 	

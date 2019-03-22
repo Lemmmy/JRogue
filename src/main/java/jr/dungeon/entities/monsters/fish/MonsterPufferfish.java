@@ -10,12 +10,14 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Registered(id="monsterPufferfish")
 public class MonsterPufferfish extends Monster {
 	public MonsterPufferfish(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);

@@ -15,6 +15,7 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.items.identity.AspectEatenState;
 import jr.dungeon.items.identity.AspectRottenness;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
+@Registered(id="itemCorpse")
 public class ItemCorpse extends ItemComestible {
 	@Expose private EntityLiving entity;
 	

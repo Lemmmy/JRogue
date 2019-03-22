@@ -4,7 +4,6 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateMeleeAttackTarget;
 import jr.utils.Utils;
-import org.json.JSONObject;
 
 import java.util.Comparator;
 
@@ -37,16 +36,6 @@ public class TraitDefendPartner extends AITrait<FamiliarAI> {
 					getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 0));
 				});
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-	
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-	
 	}
 	
 	@Override

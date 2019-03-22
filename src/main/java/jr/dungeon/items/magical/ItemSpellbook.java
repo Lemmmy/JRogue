@@ -16,6 +16,7 @@ import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -34,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Getter
+@Registered(id="itemSpellbook")
 public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	private static final Map<Class<? extends Spell>, Integer> spellLevelMap = new HashMap<>();
 	
