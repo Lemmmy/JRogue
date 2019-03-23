@@ -13,7 +13,6 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -131,20 +130,6 @@ public class MonsterFish extends Monster {
 	@Override
 	public int getExperienceRewarded() {
 		return 0;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("colour", colour.name());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		colour = FishColour.valueOf(obj.getString("colour"));
 	}
 	
 	public enum FishColour {

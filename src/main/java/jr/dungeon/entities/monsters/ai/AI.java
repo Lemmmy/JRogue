@@ -1,6 +1,6 @@
 package jr.dungeon.entities.monsters.ai;
 
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -23,10 +23,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,10 +37,10 @@ import java.util.Set;
  */
 @HasRegistry
 public abstract class AI implements Serialisable, EventListener {
-	@NonNull @Getter private Monster monster;
+	@NonNull @Getter @Setter private Monster monster;
 	
 	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
-	private List<TileType> avoidTiles = new ArrayList<>();
+	@Expose private List<TileType> avoidTiles = new ArrayList<>();
 	
 	protected int suppressTurns = 0;
 	
@@ -287,36 +284,6 @@ public abstract class AI implements Serialisable, EventListener {
 	 * Called every turn - this is the AI's turn to assign an action to the monster.
 	 */
 	public abstract void update();
-	
-	/**
-	 * Instantiates and unserialises an AI from serialised JSON.
-	 *
-	 * @param serialisedAI The previously serialised JSONObject containing the AI information.
-	 * @param monster The {@link Monster} that hosts this AI.
-	 *
-	 * @return A fully unserialised AI instance.
-	 */
-	@SuppressWarnings("unchecked")
-	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
-		String aiClassName = serialisedAI.getString("class");
-		
-		try {
-			Class<? extends AI> aiClass = (Class<? extends AI>) Class.forName(aiClassName);
-			Constructor<? extends AI> aiConstructor = aiClass.getConstructor(Monster.class);
-			
-			AI ai = aiConstructor.newInstance(monster);
-			ai.unserialise(serialisedAI);
-			return ai;
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown AI class {}", aiClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AI class {}", aiClassName, e);
-		}
-		
-		return null;
-	}
 	
 	@Override
 	public Set<Object> getListenerSelves() {

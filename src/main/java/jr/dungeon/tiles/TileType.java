@@ -1,14 +1,20 @@
 package jr.dungeon.tiles;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import jr.dungeon.tiles.states.*;
 import jr.utils.Colour;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static jr.dungeon.tiles.TileFlag.*;
 
 @Getter
+@JsonAdapter(TileType.TileTypeAdapter.class)
 public enum TileType {
 	TILE_IDENTITY(-1, Solidity.WALK_ON),
 	TILE_DUMMY(0, Solidity.WALK_ON),
@@ -183,5 +189,17 @@ public enum TileType {
 		WALK_ON, // ground
 		WALK_THROUGH, // disturbs automove - doors and such
 		WATER // the player can swim in it
+	}
+	
+	public class TileTypeAdapter extends TypeAdapter<TileType> {
+		@Override
+		public void write(JsonWriter out, TileType value) throws IOException {
+			out.value(value.id);
+		}
+		
+		@Override
+		public TileType read(JsonReader in) throws IOException {
+			return TileType.fromID((short) in.nextInt());
+		}
 	}
 }

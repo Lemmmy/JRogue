@@ -6,7 +6,6 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.GameStartedEvent;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -69,29 +68,6 @@ public class Attributes implements EventListener {
 	public boolean canIncrementAttribute(Attribute attribute) {
 		return spendableSkillPoints > 0 && getAttribute(attribute) < 30;
 	}
-	
-	public void serialise(JSONObject obj) {
-		obj.put("spendableSkillPoints", spendableSkillPoints);
-		
-		attributes.forEach((attribute, level) -> {
-			String keyName = "attribute" + attribute.getName();
-			
-			obj.put(keyName, level);
-		});
-	}
-	
-	public void unserialise(JSONObject obj) {
-		spendableSkillPoints = obj.getInt("spendableSkillPoints");
-		
-		Arrays.stream(Attribute.values()).forEach(attribute -> {
-			String keyName = "attribute" + attribute.getName();
-			
-			if (obj.has(keyName)) {
-				attributes.put(attribute, obj.getInt(keyName));
-			}
-		});
-	}
-	
 	
 	@EventHandler
 	private void onGameStarted(GameStartedEvent event) {

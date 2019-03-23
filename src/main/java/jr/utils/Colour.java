@@ -1,8 +1,16 @@
 package jr.utils;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+
 /**
  * A class representing a colour.
  */
+@JsonAdapter(Colour.ColourTypeAdapter.class)
 public class Colour {
 	/** Pure white (0xFFFFFFFF). */
 	public static final Colour WHITE = new Colour(0xFFFFFFFF);
@@ -364,5 +372,17 @@ public class Colour {
 	
 	public Colour copy() {
 		return new Colour(this);
+	}
+	
+	public class ColourTypeAdapter extends TypeAdapter<Colour> {
+		@Override
+		public void write(JsonWriter out, Colour value) throws IOException {
+			out.value(value.toIntBits());
+		}
+		
+		@Override
+		public Colour read(JsonReader in) throws IOException {
+			return new Colour(in.nextInt());
+		}
 	}
 }

@@ -37,10 +37,7 @@ import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -371,94 +368,6 @@ public class Player extends EntityLiving {
 		knownSpells.values().forEach(Spell::update);
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("name", name);
-		obj.put("role", role.getClass().getName());
-		obj.put("energy", getEnergy());
-		obj.put("maxEnergy", getMaxEnergy());
-		obj.put("chargingTurns", chargingTurns);
-		obj.put("nutrition", getNutrition());
-		obj.put("gold", getGold());
-		obj.put("godmode", godmode);
-		
-		attributes.serialise(obj);
-		
-		JSONObject serialisedSkills = new JSONObject();
-		skills.forEach((skill, skillLevel) -> serialisedSkills.put(skill.name(), skillLevel.name()));
-		obj.put("skills", serialisedSkills);
-		
-		JSONObject serialisedSpells = new JSONObject();
-		knownSpells.forEach((spellLetter, spell) -> {
-			JSONObject serialisedSpell = new JSONObject();
-			spell.serialise(serialisedSpell);
-			serialisedSpells.put(spellLetter.toString() + "!" + spell.getClass().getName(), serialisedSpell);
-		});
-		obj.put("knownSpells", serialisedSpells);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void unserialise(JSONObject obj) {
-		setInventoryContainer(new Container("Inventory"));
-		skills = new HashMap<>();
-		knownSpells = new HashMap<>();
-		
-		super.unserialise(obj);
-		
-		name = obj.getString("name");
-		energy = obj.getInt("energy");
-		maxEnergy = obj.getInt("maxEnergy");
-		chargingTurns = obj.getInt("chargingTurns");
-		nutrition = obj.getInt("nutrition");
-		gold = obj.getInt("gold");
-		godmode = obj.getBoolean("godmode");
-		
-		attributes = new Attributes();
-		attributes.unserialise(obj);
-		
-		String roleClassName = obj.getString("role");
-		try {
-			Class<? extends Role> roleClass = (Class<? extends Role>) Class.forName(roleClassName);
-			Constructor<? extends Role> roleConstructor = roleClass.getConstructor();
-			role = roleConstructor.newInstance();
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown role class {}", roleClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Role class {} has no unserialisation constructor", roleClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading role class {}", roleClassName, e);
-		}
-		
-		JSONObject serialisedSkills = obj.getJSONObject("skills");
-		serialisedSkills.keySet().forEach(k -> {
-			String v = serialisedSkills.getString(k);
-			skills.put(Skill.valueOf(k), SkillLevel.valueOf(v));
-		});
-		
-		JSONObject serialisedSpells = obj.getJSONObject("knownSpells");
-		serialisedSpells.keySet().forEach(key -> {
-			Character spellLetter = key.charAt(0);
-			String spellClassName = key.substring(2);
-			
-			try {
-				Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
-				Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
-				Spell spell = spellConstructor.newInstance();
-				spell.unserialise(serialisedSpells.getJSONObject(key));
-				knownSpells.put(spellLetter, spell);
-			} catch (ClassNotFoundException e) {
-				JRogue.getLogger().error("Unknown spell class {}", spellClassName);
-			} catch (NoSuchMethodException e) {
-				JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
-			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
-			}
-		});
-	}
-	
 	@EventHandler(selfOnly = true, priority = EventPriority.HIGHEST)
 	private void onDie(EntityDeathEvent e) {
 		DamageType type = e.getDamageSource().getType();
@@ -481,7 +390,7 @@ public class Player extends EntityLiving {
 			});
 		}));
 		
-		getDungeon().deleteSave();
+		getDungeon().serialiser.deleteSave();
 	}
 	
 	@Override

@@ -56,6 +56,13 @@ public abstract class Monster extends EntityLiving {
 	}
 	
 	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		
+		if (ai != null) ai.setMonster(this);
+	}
+	
+	@Override
 	public void update() {
 		if (ai != null) {
 			ai.update();

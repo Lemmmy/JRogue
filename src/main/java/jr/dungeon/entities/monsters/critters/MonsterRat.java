@@ -20,7 +20,6 @@ import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -136,12 +135,5 @@ public class MonsterRat extends Monster {
 	@Override
 	public Verb getMeleeAttackVerb(EntityLiving victim) {
 		return Lexicon.bite.clone();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("speed", speed);
 	}
 }

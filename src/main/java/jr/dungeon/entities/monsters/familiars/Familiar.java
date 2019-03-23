@@ -21,8 +21,6 @@ import jr.language.transformers.Possessive;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -139,24 +137,6 @@ public abstract class Familiar extends Monster implements Friendly {
 		if (e.isAttackerPlayer()) {
 			// TODO: cripple player's luck and god relationship. they are a terrible person
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("age", age);
-		obj.put("nutrition", nutrition);
-		obj.put("name", name);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-
-		age = obj.getInt("age");
-		nutrition = obj.getInt("nutrition");
-		try { name = obj.getString("name"); } catch (JSONException ignored) {}
 	}
 	
 	@Override
