@@ -28,12 +28,11 @@ public class MonsterSpawner {
 	private Level level;
 	
 	public MonsterSpawner(Level level) {
-		this.dungeon = level.getDungeon();
 		this.level = level;
 	}
 	
 	public void initialise() {
-		//
+		this.dungeon = level.getDungeon();
 	}
 	
 	public void spawnMonsters() {
