@@ -16,6 +16,8 @@ import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemLongsword;
 import jr.dungeon.items.weapons.ItemShortsword;
+import jr.language.Lexicon;
+import jr.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.WeightedCollection;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
@@ -74,8 +76,8 @@ public class FeatureChest extends SpecialRoomFeature {
 	}
 	
 	@Override
-	public String getName(boolean plural) {
-		return plural ? "chests" : "chest";
+	public Noun getName() {
+		return Lexicon.chest.clone();
 	}
 	
 	private void populateChest(Room room, EntityChest chest) {
