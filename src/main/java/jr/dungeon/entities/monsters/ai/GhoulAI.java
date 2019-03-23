@@ -2,12 +2,12 @@ package jr.dungeon.entities.monsters.ai;
 
 import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.DebugToStringStyle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 import java.util.Random;
 
@@ -19,6 +19,7 @@ import java.util.Random;
  */
 @Getter
 @Setter
+@Registered(id="aiGhoul")
 public class GhoulAI extends AI {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
@@ -49,26 +50,6 @@ public class GhoulAI extends AI {
 		} else if (canMoveTowardsPlayer() && (random.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
 			moveTowardsPlayer();
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("moveProbability", moveProbability);
-		obj.put("attackProbability", attackProbability);
-		obj.put("turnsSinceLastAttack", turnsSinceLastAttack);
-		obj.put("attackCooldownDuration", attackCooldownDuration);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		moveProbability = (float) obj.optDouble("moveProbability");
-		attackProbability = (float) obj.optDouble("attackProbability");
-		turnsSinceLastAttack = obj.optInt("turnsSinceLastAttack");
-		attackCooldownDuration = obj.optInt("attackCooldownDuration");
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
 import jr.utils.Utils;
@@ -27,11 +28,13 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Registered(id="aiStateful")
 public class StatefulAI extends AI {
 	@Expose private AIState defaultState;
 	@Expose private AIState currentState;
 	
-	@Expose private EntityReference<EntityLiving> currentTarget = new EntityReference<>();
+	@Expose @Setter(AccessLevel.NONE)
+	private EntityReference<EntityLiving> currentTarget = new EntityReference<>();
 	@Expose private Point targetLastPos;
 	
 	@Getter(AccessLevel.NONE)

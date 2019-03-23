@@ -5,7 +5,9 @@ import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="aiFamiliar")
 public class FamiliarAI extends StatefulAI {
 	public FamiliarAI(Monster monster) {
 		super(monster);

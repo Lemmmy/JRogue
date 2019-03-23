@@ -9,10 +9,12 @@ import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.transformers.Capitalise;
 
+@Registered(id="aiTraitFamiliarAvoidCursed")
 public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.

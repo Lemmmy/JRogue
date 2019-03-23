@@ -1,31 +1,23 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Getter
+@Registered(id="aiTraitHumanoidExtrinsicFear")
 public class TraitExtrinsicFear extends AITrait<StatefulAI> {
-	private float fear;
+	@Expose private float fear;
 	
 	public TraitExtrinsicFear(StatefulAI ai) {
 		super(ai);
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("extrinsicFear", fear);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		fear = obj.getInt("extrinsicFear");
 	}
 	
 	@Override
@@ -48,7 +40,7 @@ public class TraitExtrinsicFear extends AITrait<StatefulAI> {
 			e.getAttacker() instanceof EntityLiving &&
 			((EntityLiving) e.getAttacker()).getHealth() > ((EntityLiving) e.getAttacker()).getMaxHealth() / 1.5f
 		) {
-			fear += (1 - getMonster().getHealth() / getMonster().getMaxHealth()) * RandomUtils.randomFloat();
+			fear += (1 - (float) getMonster().getHealth() / (float) getMonster().getMaxHealth()) * RandomUtils.randomFloat();
 		}
 	}
 	

@@ -3,12 +3,14 @@ package jr.dungeon.entities.effects;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Fire status effect.
  */
+@Registered(id="statusEffectAblaze")
 public class Ablaze extends StatusEffect {
 	private Severity severity;
 	

@@ -5,12 +5,14 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.TileType;
 import jr.utils.DebugToStringStyle;
 import jr.utils.Path;
@@ -37,7 +39,7 @@ import java.util.Set;
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
 @HasRegistry
-public abstract class AI implements EventListener {
+public abstract class AI implements Serialisable, EventListener {
 	@NonNull @Getter private Monster monster;
 	
 	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
@@ -207,6 +209,17 @@ public abstract class AI implements EventListener {
 	 */
 	public void moveTowards(Entity entity) {
 		moveTowards(entity.getPosition());
+	}
+	
+	/**
+	 * {@link #moveTowards(Point) Moves towards} the {@link Entity} serialised within an
+	 * {@link EntityReference}.
+	 *
+	 * @param entity The entity to {@link #moveTowards(Point) move towards.}
+	 */
+	public void moveTowards(EntityReference entity) {
+		if (!entity.isSet()) return;
+		moveTowards(entity.get(getLevel()).getPosition());
 	}
 	
 	/**

@@ -7,10 +7,12 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONObject;
 
+@Registered(id="statusEffectFoodPoisoning")
 public class FoodPoisoning extends StatusEffect {
 	private ItemComestible sourceFood;
 	

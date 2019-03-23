@@ -2,8 +2,10 @@ package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.serialisation.Registered;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Registered(id="aiStateSearch")
 public class StateSearch extends AIState<StatefulAI> {
 	public StateSearch(StatefulAI ai, int duration) {
 		super(ai, duration);
@@ -13,22 +15,22 @@ public class StateSearch extends AIState<StatefulAI> {
 	public void update() {
 		super.update();
 		
-		if (getAI().canSeeTarget()) {
-			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
+		if (ai.canSeeTarget()) {
+			ai.setCurrentState(new StateApproachTarget(ai, 0));
 			return;
 		}
 		
-		if (getAI().getCurrentTarget() == null || getAI().getTargetLastPos() == null) {
-			getAI().setCurrentState(null);
+		if (ai.getCurrentTarget() == null || ai.getTargetLastPos() == null) {
+			ai.setCurrentState(null);
 			return;
 		}
 		
-		getAI().moveTowards(getAI().getTargetLastPos());
+		ai.moveTowards(ai.getTargetLastPos());
 	}
 	
 	@Override
 	public ToStringBuilder toStringBuilder() {
 		return super.toStringBuilder()
-			.append("dest", getAI().getTargetLastPos());
+			.append("dest", ai.getTargetLastPos());
 	}
 }

@@ -9,9 +9,14 @@ import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.serialisation.Registered;
+import lombok.AccessLevel;
+import lombok.Setter;
 
+@Registered(id="aiStateFamiliarConsumeComestible")
 public class StateConsumeComestible extends AIState<FamiliarAI> {
-	@Expose private EntityReference<EntityItem> targetComestible = new EntityReference<>();
+	@Expose @Setter(AccessLevel.NONE)
+	private EntityReference<EntityItem> targetComestible = new EntityReference<>();
 	
 	/**
 	 * @param ai       The {@link FamiliarAI} that hosts this state.
@@ -28,10 +33,10 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 	public void update() {
 		super.update();
 		
-		assert getAI().getMonster() instanceof Familiar;
-		Familiar f = (Familiar) getAI().getMonster();
+		assert ai.getMonster() instanceof Familiar;
+		Familiar f = (Familiar) ai.getMonster();
 		
-		EntityItem target = targetComestible.get(getAI().getLevel());
+		EntityItem target = targetComestible.get(getLevel());
 		
 		if (
 			target == null ||
@@ -40,7 +45,7 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 			!f.getLevel().entityStore.hasEntity(target)
 		) {
 			setTurnsTaken(getDuration());
-			getAI().setCurrentState(null);
+			ai.setCurrentState(null);
 			return;
 		}
 		
@@ -56,7 +61,7 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 		
 		float nutrition = item.getNutrition() * 3;
 		
-		getAI().getMonster().setAction(new ActionEat(item, (Action.CompleteCallback) entity -> {
+		ai.getMonster().setAction(new ActionEat(item, (Action.CompleteCallback) entity -> {
 			if (item.getTurnsRequiredToEat() == 1) {
 				f.setNutrition(f.getNutrition() + nutrition);
 			} else if (item.getEatenState() != ItemComestible.EatenState.EATEN) {

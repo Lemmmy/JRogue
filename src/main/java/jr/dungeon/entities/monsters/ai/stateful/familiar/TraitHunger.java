@@ -7,10 +7,12 @@ import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.Utils;
 
 import java.util.Comparator;
 
+@Registered(id="aiTraitFamiliarHunger")
 public class TraitHunger extends AITrait<FamiliarAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
@@ -31,7 +33,7 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 		Player p = d.getPlayer();
 		
 		if (l != p.getLevel()) return;
-		if (getAI().getCurrentState() != null && getAI().getCurrentState().getDuration() > 0) return;
+		if (ai.getCurrentState() != null && ai.getCurrentState().getDuration() > 0) return;
 		if (m.getNutrition() > 650) return;
 		
 		l.entityStore.getEntities().stream()
@@ -40,15 +42,15 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 			.map(EntityItem.class::cast)
 			.filter(e -> e.getItem() instanceof ItemComestible)
 			.filter(e -> ((ItemComestible) e.getItem()).getStatusEffects(m).isEmpty())
-			.filter(e -> getAI().canSee(e))
-			.filter(e -> getAI().canReach(e))
+			.filter(e -> ai.canSee(e))
+			.filter(e -> ai.canReach(e))
 			.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 			.findFirst()
 			.ifPresent(e -> {
 				if (e.getPosition() == m.getPosition()) {
-					getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, e));
+					ai.setCurrentState(new StateConsumeComestible(ai, 3, e));
 				} else {
-					getAI().setCurrentState(new StateApproachComestible(getAI(), 5, e));
+					ai.setCurrentState(new StateApproachComestible(ai, 5, e));
 				}
 			});
 	}

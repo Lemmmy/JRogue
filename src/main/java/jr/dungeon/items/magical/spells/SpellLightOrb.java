@@ -4,9 +4,11 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.magic.EntityLightOrb;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="spellLightOrb")
 public class SpellLightOrb extends Spell {
 	@Override
 	public Noun getName() {

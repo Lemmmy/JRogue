@@ -4,10 +4,15 @@ import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.Utils;
+import lombok.AccessLevel;
+import lombok.Setter;
 
+@Registered(id="aiStateFamiliarApproachComestible")
 public class StateApproachComestible extends AIState<FamiliarAI> {
-	@Expose private EntityReference<EntityItem> targetComestible = new EntityReference<>();
+	@Expose @Setter(AccessLevel.NONE)
+	private EntityReference<EntityItem> targetComestible = new EntityReference<>();
 	
 	/**
 	 * @param ai       The {@link FamiliarAI} that hosts this state.
@@ -24,27 +29,27 @@ public class StateApproachComestible extends AIState<FamiliarAI> {
 	public void update() {
 		super.update();
 		
-		EntityItem target = targetComestible.get(getAI().getLevel());
+		EntityItem target = targetComestible.get(getLevel());
 		
 		if (
 			target == null ||
-			target.getLevel() != getAI().getMonster().getLevel() ||
+			target.getLevel() != getLevel() ||
 			target.getLevel() == null ||
-			!getAI().getMonster().getLevel().entityStore.hasEntity(target)
+			!getLevel().entityStore.hasEntity(target)
 		) {
-			getAI().setCurrentState(null);
+			ai.setCurrentState(null);
 			return;
 		}
 		
-		if (Utils.chebyshevDistance(target.getPosition(), getAI().getMonster().getPosition()) <= 1) {
-			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, target));
+		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 			return;
 		}
 		
-		getAI().moveTowards(target);
+		ai.moveTowards(target);
 		
-		if (Utils.chebyshevDistance(target.getPosition(), getAI().getMonster().getPosition()) <= 1) {
-			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, target));
+		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 		}
 	}
 }

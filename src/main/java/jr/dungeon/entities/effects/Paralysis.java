@@ -1,7 +1,9 @@
 package jr.dungeon.entities.effects;
 
+import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 
+@Registered(id="statusEffectParalysis")
 public class Paralysis extends StatusEffect {
     public Paralysis() {
         super(RandomUtils.random(10, 20));

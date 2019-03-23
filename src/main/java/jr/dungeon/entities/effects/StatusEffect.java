@@ -5,15 +5,17 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.io.BlankMessenger;
 import jr.dungeon.io.Messenger;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.utils.DebugToStringStyle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Getter
-public abstract class StatusEffect implements EventListener {
+@HasRegistry
+public abstract class StatusEffect implements Serialisable, EventListener {
 	@Setter private Messenger messenger;
 	@Setter private Entity entity;
 	
@@ -36,23 +38,11 @@ public abstract class StatusEffect implements EventListener {
 		turnsPassed++;
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		obj.put("duration", getDuration());
-		obj.put("turnsPassed", getTurnsPassed());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		turnsPassed = obj.getInt("turnsPassed");
-	}
-	
 	public abstract String getName();
 	
 	public abstract Severity getSeverity();
 	
-	//public abstract void onContract(); //TODO: Move "oh no you strained your leg" etc. here
+	//public abstract void onContract(); // TODO: Move "oh no you strained your leg" etc. here
 	
 	public abstract void onEnd();
 	

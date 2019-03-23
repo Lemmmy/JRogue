@@ -1,7 +1,9 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="aiStateFamiliarFollowPlayer")
 public class StateFollowPlayer extends AIState<FamiliarAI> {
 	public StateFollowPlayer(FamiliarAI ai, int duration) {
 		super(ai, duration);
@@ -11,6 +13,6 @@ public class StateFollowPlayer extends AIState<FamiliarAI> {
 	public void update() {
 		super.update();
 		
-		getAI().moveTowardsPlayer();
+		ai.moveTowardsPlayer();
 	}
 }

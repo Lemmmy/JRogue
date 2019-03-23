@@ -1,9 +1,13 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import jr.JRogue;
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.val;
@@ -21,9 +25,9 @@ import java.util.Set;
  */
 @Getter
 @HasRegistry
-public abstract class AITrait<T extends StatefulAI> implements EventListener {
-	private Monster monster;
-	private T ai;
+public abstract class AITrait<T extends StatefulAI> implements Serialisable, EventListener {
+	protected Monster monster;
+	protected T ai;
 	
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
@@ -39,10 +43,6 @@ public abstract class AITrait<T extends StatefulAI> implements EventListener {
 	 * Called every turn when the AI's monster gets a turn to move.
 	 */
 	public abstract void update();
-	
-	public T getAI() {
-		return ai;
-	}
 	
 	/**
 	 * Instantiates and unserialises an AITrait from serialised JSON.
@@ -86,6 +86,22 @@ public abstract class AITrait<T extends StatefulAI> implements EventListener {
 		selves.add(ai);
 		selves.add(monster);
 		return selves;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster
+	 *         or {@link AI} is null.
+	 */
+	public Dungeon getDungeon() {
+		return ai != null ? ai.getDungeon() : null;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster
+	 *         or {@link AI} is null.
+	 */
+	public Level getLevel() {
+		return ai != null ? ai.getLevel() : null;
 	}
 	
 	@Override

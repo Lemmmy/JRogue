@@ -2,7 +2,9 @@ package jr.dungeon.entities.effects;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="statusEffectInjuredFoot")
 public class InjuredFoot extends StatusEffect {
 	public InjuredFoot(Dungeon dungeon, Entity entity, int duration) {
 		super(dungeon, entity, duration);

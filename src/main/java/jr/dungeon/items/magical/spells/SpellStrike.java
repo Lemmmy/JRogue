@@ -6,11 +6,13 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.projectiles.EntityStrike;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
 import jr.utils.Utils;
 
+@Registered(id="spellStrike")
 public class SpellStrike extends Spell {
 	@Override
 	public Noun getName() {

@@ -6,6 +6,7 @@ import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.stream.Collectors;
 
+@Registered(id="aiStateLurk")
 public class StateLurk extends AIState<StatefulAI> {
 	private static final int DEFAULT_LURK_RADIUS = 7;
 	private static final float DEFAULT_LURK_PROBABILITY = 0.8f;
@@ -24,7 +26,7 @@ public class StateLurk extends AIState<StatefulAI> {
 	
 	@Expose @Getter	@Setter private int lurkRadius = DEFAULT_LURK_RADIUS;
 	@Expose @Getter	@Setter private float lurkMoveProbability = DEFAULT_LURK_PROBABILITY;
-	@Expose @Getter	@Setter private EntityReference<Entity> lurkTarget = new EntityReference<>();
+	@Expose @Getter	private EntityReference<Entity> lurkTarget = new EntityReference<>();
 	
 	public StateLurk(StatefulAI ai, int duration, int lurkRadius, float lurkMoveProbability) {
 		super(ai, duration);
@@ -42,7 +44,7 @@ public class StateLurk extends AIState<StatefulAI> {
 	public void update() {
 		super.update();
 		
-		Monster m = getAI().getMonster();
+		Monster m = ai.getMonster();
 		
 		if (dest == null) dest = getRandomDestination();
 		if (dest == null) return;
@@ -51,17 +53,17 @@ public class StateLurk extends AIState<StatefulAI> {
 			dest = getRandomDestination();
 			
 			Point safePoint = Point.getPoint(m.getX(), m.getY());
-			getAI().addSafePoint(safePoint);
+			ai.addSafePoint(safePoint);
 		}
 		
 		if (dest == null) return;
 		
-		getAI().moveTowards(dest);
+		ai.moveTowards(dest);
 	}
 	
 	private Point getRandomDestination() {
-		Monster monster = getAI().getMonster();
-		Entity target = lurkTarget.orElse(getAI().getLevel(), monster);
+		Monster monster = ai.getMonster();
+		Entity target = lurkTarget.orElse(getLevel(), monster);
 		
 		if (RandomUtils.randomFloat() > lurkMoveProbability) return null;
 		

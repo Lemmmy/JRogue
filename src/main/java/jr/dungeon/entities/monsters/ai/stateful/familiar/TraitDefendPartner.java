@@ -3,10 +3,12 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateMeleeAttackTarget;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.Utils;
 
 import java.util.Comparator;
 
+@Registered(id="aiTraitFamiliarDefendPartner")
 public class TraitDefendPartner extends AITrait<FamiliarAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
@@ -19,7 +21,7 @@ public class TraitDefendPartner extends AITrait<FamiliarAI> {
 	
 	@Override
 	public void update() {
-		if (getAI().getCurrentState() == null || getAI().getCurrentState().getDuration() == 0) {
+		if (ai.getCurrentState() == null || ai.getCurrentState().getDuration() == 0) {
 			Monster m = getMonster();
 			
 			m.getDungeon().getLevel().entityStore.getEntities().stream()
@@ -28,12 +30,12 @@ public class TraitDefendPartner extends AITrait<FamiliarAI> {
 				.map(Monster.class::cast)
 				.filter(Monster::isHostile)
 				.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
-				.filter(e -> getAI().canSee(e))
-				.filter(e -> getAI().canReach(e))
+				.filter(e -> ai.canSee(e))
+				.filter(e -> ai.canReach(e))
 				.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 				.findFirst().ifPresent(e -> {
-					getAI().setCurrentTarget(e);
-					getAI().setCurrentState(new StateMeleeAttackTarget(getAI(), 0));
+				ai.getCurrentTarget().set(e);
+				ai.setCurrentState(new StateMeleeAttackTarget(ai, 0));
 				});
 		}
 	}

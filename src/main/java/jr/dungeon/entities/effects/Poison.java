@@ -3,8 +3,10 @@ package jr.dungeon.entities.effects;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.serialisation.Registered;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Registered(id="statusEffectPoison")
 public class Poison extends StatusEffect {
 	public Poison() {
 		this(-1);

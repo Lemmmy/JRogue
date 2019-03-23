@@ -1,5 +1,8 @@
 package jr.dungeon.entities.effects;
 
+import jr.dungeon.serialisation.Registered;
+
+@Registered(id="statusEffectStrainedLeg")
 public class StrainedLeg extends StatusEffect {
 	public StrainedLeg(int duration) {
 		super(duration);
