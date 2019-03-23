@@ -3,6 +3,7 @@ package jr.dungeon.generators.rooms.features;
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.tiles.TileType;
+import jr.language.Noun;
 
 public class FeatureSewerDrain extends SpecialRoomFeature {
 	private Pcg32 rand = new Pcg32();
@@ -31,7 +32,7 @@ public class FeatureSewerDrain extends SpecialRoomFeature {
 	}
 	
 	@Override
-	public String getName(boolean plural) {
+	public Noun getName() {
 		return null;
 	}
 }

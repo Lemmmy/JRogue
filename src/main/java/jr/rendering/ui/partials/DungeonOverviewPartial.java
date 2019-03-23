@@ -15,6 +15,7 @@ import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.language.transformers.Plural;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -253,16 +254,9 @@ public class DungeonOverviewPartial extends WidgetGroup {
 					SpecialRoomFeature feature = (SpecialRoomFeature) featureClass.newInstance();
 					
 					int count = roomFeatures.getInt(k);
-					String name = feature.getName(count != 1);
+					if (feature.getName() == null) return;
 					
-					if (name == null) return;
-					
-					Label featureLabel = new Label(String.format(
-						"%s %s",
-						count == 1 ? "a" : String.format("[P_YELLOW]%,d[]", count),
-						name
-					), skin);
-					
+					Label featureLabel = new Label(Plural.addCount(feature.getName(), count).build(), skin);
 					featuresTable.add(featureLabel).left().row();
 				} catch (Exception e) {
 					ErrorHandler.error("Error in dungeon overview partial", e);

@@ -16,4 +16,3 @@ indent_size=4
 [{*.wlua,*.lua,*.doclua,*.}]
 indent_style=space
 indent_size=4
-
