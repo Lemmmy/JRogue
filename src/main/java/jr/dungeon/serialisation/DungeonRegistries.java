@@ -13,7 +13,7 @@ public class DungeonRegistries {
 	
 	public static void findRegistries() {
 		JRogue.getReflections().getTypesAnnotatedWith(HasRegistry.class).stream()
-			.filter(clazz -> clazz.getAnnotation(HasRegistry.class) == null)
+			.filter(clazz -> clazz.getAnnotation(HasRegistry.class) != null)
 			.forEach(clazz -> {
 				JRogue.getLogger().debug("Making registry for {}", clazz);
 				

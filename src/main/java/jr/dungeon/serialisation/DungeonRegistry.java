@@ -15,30 +15,32 @@ public class DungeonRegistry<T> {
 	}
 	
 	public void scanClasses() {
-		JRogue.getReflections().getTypesAnnotatedWith(Registered.class).forEach(clazz -> {
-			if (!targetClass.isAssignableFrom(clazz)) {
-				throw new RuntimeException(String.format("Class `%s` has @Registered annotation but does not extend %s", clazz.getName(), targetClass.getSimpleName()));
-			}
-			
-			Registered registered = clazz.getAnnotation(Registered.class);
-			String id = registered.id();
-			
-			if (id.isEmpty()) {
-				throw new RuntimeException(String.format("%s `%s` has an empty ID", targetClass.getName(), clazz.getName()));
-			}
-			
-			if (entries.containsKey(id)) {
-				throw new RuntimeException(String.format(
-					"%s `%s` has ID `%s` but is already taken by `%s`",
-					targetClass.getSimpleName(),
-					clazz.getName(),
-					id,
-					entries.get(id)
-				));
-			}
-			
-			entries.put(id, (Class<? extends T>) clazz);
-		});
+		JRogue.getReflections().getTypesAnnotatedWith(Registered.class).stream()
+			.filter(clazz -> clazz.getAnnotation(Registered.class) != null)
+			.forEach(clazz -> {
+				if (!targetClass.isAssignableFrom(clazz)) return;
+				
+				Registered registered = clazz.getAnnotation(Registered.class);
+				String id = registered.id();
+				
+				if (id.isEmpty()) {
+					throw new RuntimeException(String.format("%s `%s` has an empty ID", targetClass.getSimpleName(), clazz.getName()));
+				}
+				
+				if (entries.containsKey(id)) {
+					throw new RuntimeException(String.format(
+						"%s `%s` has ID `%s` but is already taken by `%s`",
+						targetClass.getSimpleName(),
+						clazz.getName(),
+						id,
+						entries.get(id)
+					));
+				}
+				
+				JRogue.getLogger().debug("Registering {} {} with ID {}", targetClass.getSimpleName(), clazz.getName(), id);
+				
+				entries.put(id, (Class<? extends T>) clazz);
+			});
 	}
 	
 	public Optional<String> getID(Class<? extends T> clazz) {
