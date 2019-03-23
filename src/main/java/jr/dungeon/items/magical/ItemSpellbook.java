@@ -207,10 +207,11 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		// spells that the player already knows won't spawn
 		
 		Player player = chest.getDungeon().getPlayer();
+		int playerLevel = player != null ? player.getExperienceLevel() : 1;
 		
 		List<Class<? extends Spell>> spells = spellLevelMap.entrySet().stream()
-			.filter(e -> e.getValue() <= player.getExperienceLevel())
-			.filter(e -> player.getKnownSpells().values().stream()
+			.filter(e -> e.getValue() <= playerLevel)
+			.filter(e -> player == null || player.getKnownSpells().values().stream()
 							.noneMatch(s -> s.getClass().equals(e.getKey())))
 			.map(Map.Entry::getKey)
 			.collect(Collectors.toList());
