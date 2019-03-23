@@ -2,6 +2,7 @@ package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
@@ -23,7 +24,7 @@ public class StateLurk extends AIState<StatefulAI> {
 	
 	@Expose @Getter	@Setter private int lurkRadius = DEFAULT_LURK_RADIUS;
 	@Expose @Getter	@Setter private float lurkMoveProbability = DEFAULT_LURK_PROBABILITY;
-	@Expose @Getter	@Setter private Entity lurkTarget;
+	@Expose @Getter	@Setter private EntityReference<Entity> lurkTarget = new EntityReference<>();
 	
 	public StateLurk(StatefulAI ai, int duration, int lurkRadius, float lurkMoveProbability) {
 		super(ai, duration);
@@ -60,7 +61,7 @@ public class StateLurk extends AIState<StatefulAI> {
 	
 	private Point getRandomDestination() {
 		Monster monster = getAI().getMonster();
-		Entity target = lurkTarget != null ? lurkTarget : monster;
+		Entity target = lurkTarget.orElse(getAI().getLevel(), monster);
 		
 		if (RandomUtils.randomFloat() > lurkMoveProbability) return null;
 		

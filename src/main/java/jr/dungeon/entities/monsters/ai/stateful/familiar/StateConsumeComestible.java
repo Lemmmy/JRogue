@@ -1,6 +1,7 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import com.google.gson.annotations.Expose;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
@@ -8,10 +9,9 @@ import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
-import org.json.JSONObject;
 
 public class StateConsumeComestible extends AIState<FamiliarAI> {
-	@Expose private EntityItem targetComestible;
+	@Expose private EntityReference<EntityItem> targetComestible = new EntityReference<>();
 	
 	/**
 	 * @param ai       The {@link FamiliarAI} that hosts this state.
@@ -21,7 +21,7 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 	public StateConsumeComestible(FamiliarAI ai, int duration, EntityItem targetComestible) {
 		super(ai, duration);
 		
-		this.targetComestible = targetComestible;
+		this.targetComestible.set(targetComestible);
 	}
 	
 	@Override
@@ -31,22 +31,25 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 		assert getAI().getMonster() instanceof Familiar;
 		Familiar f = (Familiar) getAI().getMonster();
 		
+		EntityItem target = targetComestible.get(getAI().getLevel());
+		
 		if (
-			targetComestible == null ||
-			targetComestible.getLevel() != f.getLevel() ||
-			targetComestible.getLevel() == null ||
-			!f.getLevel().entityStore.hasEntity(targetComestible)
+			target == null ||
+			target.getLevel() != f.getLevel() ||
+			target.getLevel() == null ||
+			!f.getLevel().entityStore.hasEntity(target)
 		) {
 			setTurnsTaken(getDuration());
 			getAI().setCurrentState(null);
 			return;
 		}
 		
-		ItemStack stack = targetComestible.getItemStack();
-		ItemComestible item = (ItemComestible) targetComestible.getItem();
+		ItemStack stack = target.getItemStack();
+		ItemComestible item = (ItemComestible) target.getItem();
 		
 		if (stack.getCount() == 1) {
-			targetComestible.remove();
+			target.remove();
+			targetComestible.unset();
 		} else {
 			stack.subtractCount(1);
 		}
@@ -78,22 +81,5 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 				f.getLevel().entityStore.addEntity(newStack);
 			}
 		}));
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("targetComestible", targetComestible.getUUID().toString());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("targetComestible")) {
-			targetComestible = (EntityItem) getAI().getMonster().getLevel()
-				.entityStore.getEntityByUUID(obj.getString("targetComestible"));
-		}
 	}
 }

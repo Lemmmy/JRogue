@@ -32,6 +32,7 @@ public class EntityReference<T extends Entity> {
 	
 	/**
 	 * Stores an already evaluated {@link Entity} reference.
+	 *
 	 * @param entity The {@link Entity} to store.
 	 */
 	public EntityReference(T entity) {
@@ -41,6 +42,7 @@ public class EntityReference<T extends Entity> {
 	
 	/**
 	 * Stores an unevaluated {@link Entity} reference.
+	 *
 	 * @param uuid The {@link UUID} of the entity to look up later.
 	 */
 	public EntityReference(UUID uuid) {
@@ -56,6 +58,7 @@ public class EntityReference<T extends Entity> {
 	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated,
 	 * it will search every {@link Level} in the {@link Dungeon} for the entity. If it is not found,
 	 * it will return <code>null</code>.
+	 *
 	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
 	 * @return The {@link Entity} if one was found, or else <code>null</code>.
 	 */
@@ -75,6 +78,7 @@ public class EntityReference<T extends Entity> {
 	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated,
 	 * it will search the given {@link Level} for it. If it is not found, it will return
 	 * <code>null</code>.
+	 *
 	 * @param level The {@link Level} to search for the {@link Entity} in.
 	 * @return The {@link Entity} if one was found, or else <code>null</code>.
 	 */
@@ -86,6 +90,7 @@ public class EntityReference<T extends Entity> {
 	
 	/**
 	 * Sets the value of the {@link Entity} reference to an already evaluated entity.
+	 *
 	 * @param entity The {@link Entity} to set the reference to.
 	 * @return The same {@link Entity} (for chaining).
 	 */
@@ -101,6 +106,55 @@ public class EntityReference<T extends Entity> {
 	 */
 	public void set(UUID uuid) {
 		this.uuid = uuid;
+	}
+	
+	/**
+	 * @return Whether or not a UUID for this entity is set. This does not necessarily mean
+	 * 	       that the {@link Entity} definitely exists.
+	 */
+	public boolean isSet() {
+		return this.uuid != null;
+	}
+	
+	/**
+	 * Unsets this entity reference, making the {@link UUID} and {@link Entity} null.
+	 */
+	public void unset() {
+		this.uuid = null;
+		this.entity = null;
+	}
+	
+	/**
+	 * Return the value of the {@link Entity} reference if it is set and can be found. If the
+	 * reference has not yet been evaluated, it will search every {@link Level} in the
+	 * {@link Dungeon} for the entity. If it is not found, it will return, it will return
+	 * <code>other</code>.
+	 *
+	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
+	 * @param other the value to be returned if there is no value present, may be
+	 *              <code>null</code>.
+	 * @return The {@link Entity} if one was found, or else <code>other</code>.
+	 */
+	public T orElse(Dungeon dungeon, T other) {
+		if (uuid == null) return other;
+		T got = get(dungeon);
+		return got != null ? got : other;
+	}
+	
+	/**
+	 * Return the value of the {@link Entity} reference if it is set and can be found. If the
+	 * reference has not yet been evaluated, it will search the given {@link Level} for it.
+	 * If it is not found, it will return, it will return <code>other</code>.
+	 *
+	 * @param level The {@link Level} to search for the {@link Entity} in.
+	 * @param other the value to be returned if there is no value present, may be
+	 *              <code>null</code>.
+	 * @return The {@link Entity} if one was found, or else <code>other</code>.
+	 */
+	public T orElse(Level level, T other) {
+		if (uuid == null) return other;
+		T got = get(level);
+		return got != null ? got : other;
 	}
 	
 	public class EntityReferenceTypeAdapter extends TypeAdapter<EntityReference> {

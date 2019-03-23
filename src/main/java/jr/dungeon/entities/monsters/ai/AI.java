@@ -1,6 +1,8 @@
 package jr.dungeon.entities.monsters.ai;
 
 import jr.JRogue;
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.Action;
@@ -10,7 +12,10 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.tiles.TileType;
-import jr.utils.*;
+import jr.utils.DebugToStringStyle;
+import jr.utils.Path;
+import jr.utils.Point;
+import jr.utils.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -323,5 +328,19 @@ public abstract class AI implements EventListener {
 	
 	public void suppress(int turns) {
 		suppressTurns = turns;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster is null.
+	 */
+	public Dungeon getDungeon() {
+		return getMonster() != null ? getMonster().getDungeon() : null;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster is null.
+	 */
+	public Level getLevel() {
+		return getMonster() != null ? getMonster().getLevel() : null;
 	}
 }

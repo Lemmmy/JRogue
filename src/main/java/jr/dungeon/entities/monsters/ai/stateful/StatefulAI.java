@@ -1,8 +1,10 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import com.google.gson.annotations.Expose;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
@@ -29,7 +31,7 @@ public class StatefulAI extends AI {
 	@Expose private AIState defaultState;
 	@Expose private AIState currentState;
 	
-	@Expose private EntityLiving currentTarget;
+	@Expose private EntityReference<EntityLiving> currentTarget = new EntityReference<>();
 	@Expose private Point targetLastPos;
 	
 	@Getter(AccessLevel.NONE)
@@ -55,10 +57,11 @@ public class StatefulAI extends AI {
 		if (suppressTurns > 0 && suppressTurns-- > 0) return;
 		if (getMonster() == null) return;
 		
-		if (shouldTargetPlayer && currentTarget == null)
-			currentTarget = getMonster().getDungeon().getPlayer();
+		if (shouldTargetPlayer && !currentTarget.isSet())
+			currentTarget.set(getMonster().getDungeon().getPlayer());
 		
-		if (currentTarget != null && !currentTarget.isAlive()) currentTarget = null;
+		if (currentTarget.isSet() && !currentTarget.get(getLevel()).isAlive())
+			currentTarget.unset();
 		
 		traits.values().stream()
 			.sorted(Comparator.comparingInt(AITrait::getPriority))
@@ -119,16 +122,14 @@ public class StatefulAI extends AI {
 	}
 	
 	public boolean canSeeTarget() {
-		return getCurrentTarget() != null && canSee(getCurrentTarget());
+		return currentTarget.isSet() && canSee(currentTarget.get(getLevel()));
 	}
 	
 	public void updateTargetVisibility() {
-		if (getCurrentTarget() == null) {
-			return;
-		}
+		if (!currentTarget.isSet()) return;
 		
 		if (canSeeTarget()) {
-			targetLastPos = getCurrentTarget().getLastPosition();
+			targetLastPos = currentTarget.get(getLevel()).getLastPosition();
 		}
 	}
 	
@@ -222,7 +223,7 @@ public class StatefulAI extends AI {
 			.append("currentState", currentState == null ? "no state" : currentState.toStringBuilder())
 			.append("suppressTurns", suppressTurns)
 			.append("pos", getMonster().getPosition())
-			.append("currentTarget", currentTarget == null ? "no target" : currentTarget.getClass().getSimpleName())
+			.append("currentTarget", !currentTarget.isSet() ? "no target" : currentTarget.get(getLevel()).getClass().getSimpleName())
 			.append("safePoints", safePoints.size());
 		
 		traits.values().forEach(t -> tsb.append(t.toStringBuilder()));
@@ -246,15 +247,12 @@ public class StatefulAI extends AI {
 	}
 	
 	public Optional<Point> getSafePoint() {
-		if (currentTarget == null) {
-			return Optional.empty();
-		}
+		if (!currentTarget.isSet()) return Optional.empty();
 		
-		int tx = currentTarget.getX();
-		int ty = currentTarget.getY();
+		Point tp = currentTarget.get(getLevel()).getPosition();
 		
 		val ps = safePoints.stream()
-			.sorted(Comparator.comparingDouble(p -> Utils.chebyshevDistance(p.getX(), p.getY(), tx, ty)))
+			.sorted(Comparator.comparingDouble(p -> Utils.chebyshevDistance(p.getX(), p.getY(), tp.getX(), tp.getY())))
 			.collect(Collectors.toList());
 		
 		Collections.reverse(ps);
