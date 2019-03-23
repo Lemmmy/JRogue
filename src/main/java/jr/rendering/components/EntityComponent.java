@@ -6,9 +6,7 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.events.*;
-import jr.dungeon.events.BeforeTurnEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
@@ -18,22 +16,18 @@ import jr.rendering.entities.EntityRenderer;
 import jr.rendering.entities.animations.*;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
-import jr.utils.Vector;
-import lombok.val;
-import org.json.JSONObject;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EntityComponent extends RendererComponent {
-	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
-	
 	private SpriteBatch mainBatch;
 	
 	private Level level;
 	
-	private List<EntityAnimation> entityAnimations = new LinkedList<>();
-	private Map<Entity, Map<String, Object>> animationValues = new HashMap<>();
+	private List<EntityPooledEffect> entityPooledEffects = new ArrayList<>();
+	@Getter private AnimationProvider animationProvider;
 	
 	public EntityComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -45,6 +39,8 @@ public class EntityComponent extends RendererComponent {
 		level = dungeon.getLevel();
 		
 		level.entityStore.getEntities().forEach(e -> onEntityAdded(new EntityAddedEvent(e, false)));
+		
+		animationProvider = new AnimationProvider(renderer, settings);
 	}
 	
 	@Override
@@ -105,89 +101,15 @@ public class EntityComponent extends RendererComponent {
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 				
 				if (em.getRenderer() != null && em.getRenderer().shouldRenderReal(e)) {
-					em.getRenderer().draw(mainBatch, dungeon, e, true);
+					em.getRenderer().draw(mainBatch, dungeon, e, animationProvider.getEntityAnimationData(e), true);
 				}
 			});
 	}
 	
 	@Override
 	public void update(float dt) {
-		if (settings.isShowTurnAnimations()) {
-			if (renderer.isTurnLerping()) {
-				float lerpTime = renderer.getTurnLerpTime();
-				float lerpDuration = GameScreen.TURN_LERP_DURATION;
-				
-				float t = lerpTime / lerpDuration;
-				
-				animationValues.clear();
-				entityAnimations.forEach(anim -> anim.getEntity().getPersistence().remove("animationData"));
-				
-				entityAnimations.forEach(anim -> {
-					Entity e = anim.getEntity();
-					
-					if (!animationValues.containsKey(e)) {
-						animationValues.put(e, new HashMap<>());
-					}
-					
-					val originalValueMap = animationValues.get(e);
-					val newValueMap = anim.update(t);
-					
-					newValueMap.forEach((k, v) -> {
-						if (!originalValueMap.containsKey(k)) {
-							originalValueMap.put(k, v);
-						} else {
-							// TODO: more type merging here
-							
-							if (v instanceof Float) {
-								float oldV = (float) originalValueMap.get(k);
-								float newV = (float) newValueMap.get(k);
-								
-								originalValueMap.put(k, oldV * newV); // TODO: add or mul? which looks better
-							} else if (v instanceof Vector) {
-								Vector oldV = (Vector) originalValueMap.get(k);
-								Vector newV = (Vector) newValueMap.get(k);
-								
-								newValueMap.put(k, oldV.add(newV)); // TODO: add or mul? which looks better
-							} else {
-								originalValueMap.put(k, v);
-							}
-						}
-					});
-				});
-				
-				entityAnimations.forEach(anim -> {
-					Entity e = anim.getEntity();
-					
-					if (!animationValues.containsKey(e)) return;
-					
-					val valueMap = animationValues.get(e);
-					
-					JSONObject animData = e.getPersistence().has("animationData") ?
-										  e.getPersistence().getJSONObject("animationData") :
-										  new JSONObject();
-					
-					valueMap.forEach((k, v) -> {
-						if (v instanceof Vector) {
-							animData.put(k + "X", ((Vector) v).getX());
-							animData.put(k + "Y", ((Vector) v).getY());
-						} else {
-							animData.put(k, v);
-						}
-					});
-					
-					e.getPersistence().put("animationData", animData);
-					
-					entityParticleCheck(anim.getEntity());
-				});
-			} else if (renderer.isWasTurnLerping()) {
-				entityAnimations.forEach(a -> {
-					a.getEntity().getPersistence().put("offsetX", 0D).put("offsetY", 0D);
-					a.onTurnLerpStop();
-				});
-				entityAnimations.clear();
-				animationValues.clear();
-			}
-		}
+		animationProvider.update(dt);
+		animationProvider.getEntityAnimations().forEach(anim -> entityParticleCheck(anim.getEntity()));
 	}
 	
 	@Override
@@ -195,19 +117,11 @@ public class EntityComponent extends RendererComponent {
 		
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	private void onBeforeTurn(BeforeTurnEvent e) {
-		entityAnimations.clear();
-		animationValues.clear();
-	}
-	
 	@EventHandler()
 	private void onLevelChange(LevelChangeEvent event) {
 		level = event.getLevel();
 		
 		entityPooledEffects.clear();
-		entityAnimations.clear();
-		animationValues.clear();
 		
 		level.entityStore.getEntities().forEach(e -> onEntityAdded(new EntityAddedEvent(e, false)));
 	}
@@ -251,13 +165,9 @@ public class EntityComponent extends RendererComponent {
 		entityPooledEffects.add(entityPooledEffect);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH) // run before AnimationProvider
 	private void onEntityMoved(EntityMovedEvent event) {
 		entityParticleCheck(event.getEntity());
-		
-		if (settings.isShowTurnAnimations()) {
-			entityBeginLerp(event);
-		}
 	}
 	
 	private void entityParticleCheck(Entity entity) {
@@ -275,8 +185,10 @@ public class EntityComponent extends RendererComponent {
 					return;
 				}
 				
-				float offsetX = renderer.getAnimationFloat(entity, "offsetX", 0);
-				float offsetY = renderer.getAnimationFloat(entity, "offsetY", 0);
+				EntityAnimationData anim = animationProvider.getEntityAnimationData(entity);
+				
+				float offsetX = anim != null ? anim.offsetX : 0;
+				float offsetY = anim != null ? anim.offsetY : 0;
 				
 				e.getPooledEffect().setPosition(
 					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + offsetX,
@@ -286,39 +198,9 @@ public class EntityComponent extends RendererComponent {
 		}
 	}
 	
-	private void entityBeginLerp(EntityMovedEvent e) {
-		int dx = e.getNewX() - e.getLastX();
-		int dy = e.getNewY() - e.getLastY();
-		
-		addAnimation(new AnimationEntityMove(renderer, e.getEntity(), dx, dy));
-	}
-	
 	@EventHandler
 	private void onEntityRemoved(EntityRemovedEvent event) {
 		entityPooledEffects.removeIf(e -> e.getEntity().equals(event.getEntity()));
-	}
-	
-	@EventHandler
-	private void onItemDropped(ItemDroppedEvent e) {
-		addAnimation(new AnimationItemDrop(renderer, e.getItemEntity()));
-	}
-	
-	@EventHandler
-	private void onChestKicked(EntityKickedEntityEvent e) {
-		if (e.getVictim() instanceof EntityChest) {
-			addAnimation(new AnimationChestKick(renderer, e.getVictim()));
-		}
-	}
-	
-	@EventHandler
-	private void onEntityDamaged(EntityDamagedEvent e) {
-		if (e.getAttacker() == null) return;
-		
-		addAnimation(new AnimationEntityDamaged(renderer, e.getVictim(), e.getAttacker()));
-	}
-
-	public void addAnimation(EntityAnimation animation) {
-		entityAnimations.add(animation);
 	}
 	
 	@Override

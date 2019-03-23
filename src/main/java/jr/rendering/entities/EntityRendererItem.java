@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityItem;
+import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.items.ItemMap;
 import jr.rendering.items.ItemRenderer;
 import jr.rendering.tiles.TileMap;
@@ -36,7 +37,7 @@ public class EntityRendererItem extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
 		EntityItem item = (EntityItem) entity;
 		
 		if (item.getAppearance() != null) {
@@ -46,10 +47,10 @@ public class EntityRendererItem extends EntityRenderer {
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
 			if (renderer != null) {
-				float x = getPositionX(entity, useMemoryLocation);
-				float y = getPositionY(entity, useMemoryLocation);
+				float x = getPositionX(anim, entity, useMemoryLocation);
+				float y = getPositionY(anim, entity, useMemoryLocation);
 				
-				Color oldColour = setAnimationColour(batch, entity);
+				Color oldColour = setAnimationColour(anim, batch, entity);
 				
 				renderer.draw(
 					batch,

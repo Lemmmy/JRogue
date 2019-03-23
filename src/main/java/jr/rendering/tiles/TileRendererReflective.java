@@ -12,6 +12,7 @@ import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityRenderer;
+import jr.rendering.entities.animations.AnimationProvider;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.utils.ShaderLoader;
 import lombok.NonNull;
@@ -62,6 +63,8 @@ public class TileRendererReflective extends TileRendererBasic {
 		final float time = TimeUtils.timeSinceMillis(JRogue.START_TIME) / 1000.0f;
 		reflectionShader.setUniformf("u_time", time);
 		
+		AnimationProvider animationProvider = renderer.getEntityComponent().getAnimationProvider();
+		
 		List<Entity> entities = dungeon.getLevel().entityStore.getEntitiesAt(x, y - 1);
 		entities.stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
@@ -78,7 +81,7 @@ public class TileRendererReflective extends TileRendererBasic {
 				
 				EntityRenderer r = EntityMap.getRenderer(e.getAppearance());
 				r.setDrawingReflection(true);
-				r.draw(batch, dungeon, e, true);
+				r.draw(batch, dungeon, e, animationProvider.getEntityAnimationData(e), true);
 				r.setDrawingReflection(false);
 			});
 		

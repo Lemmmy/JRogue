@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
+import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public abstract class EntityRenderer {
 
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
 	
-	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation);
+	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation);
 	
 	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
 		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
@@ -73,29 +74,14 @@ public abstract class EntityRenderer {
 		return 0.25f;
 	}
 	
-	public float getAnimationFloat(Entity entity, String name, float def) {
-		if (!entity.getPersistence().has("animationData")) return def;
-		
-		return (float) entity.getPersistence().getJSONObject("animationData").optDouble(name, (double) def);
-	}
-	
-	public float[] getAnimationColour(Entity entity) {
-		return new float[] {
-			getAnimationFloat(entity, "r", 1),
-			getAnimationFloat(entity, "g", 1),
-			getAnimationFloat(entity, "b", 1),
-			getAnimationFloat(entity, "a", 1)
-		};
-	}
-	
-	public float getPositionX(Entity entity, boolean useMemoryLocation) {
+	public float getPositionX(EntityAnimationData anim, Entity entity, boolean useMemoryLocation) {
 		return (useMemoryLocation ? entity.getLastSeenX() : entity.getX()) +
-			getAnimationFloat(entity, "offsetX", 0);
+			(anim != null ? anim.offsetX : 0f);
 	}
 	
-	public float getPositionY(Entity entity, boolean useMemoryLocation) {
+	public float getPositionY(EntityAnimationData anim, Entity entity, boolean useMemoryLocation) {
 		return (useMemoryLocation ? entity.getLastSeenY() : entity.getY()) +
-			getAnimationFloat(entity, "offsetY", 0);
+			(anim != null ? anim.offsetY : 0f);
 	}
 	
 	/**
@@ -103,6 +89,7 @@ public abstract class EntityRenderer {
 	 * animation colour. Also multiplies the colour values by the multipliers past in via
 	 * mr, mg, mb and ma.
 	 *
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
 	 * @param mr Additional custom multiplier for the red component.
@@ -111,15 +98,13 @@ public abstract class EntityRenderer {
 	 * @param ma Additional custom multiplier for the alpha component.
 	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
 	 */
-	public Color setAnimationColour(SpriteBatch batch, Entity entity, float mr, float mg, float mb, float ma) {
-		float[] ac = getAnimationColour(entity);
-		
+	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity, float mr, float mg, float mb, float ma) {
 		oldAnimationColour.set(batch.getColor());
 		batch.setColor(
-			oldAnimationColour.r * ac[0] * mr,
-			oldAnimationColour.g * ac[1] * mg,
-			oldAnimationColour.b * ac[2] * mb,
-			oldAnimationColour.a * ac[3] * ma
+			oldAnimationColour.r * (anim != null ? anim.r : 1f) * mr,
+			oldAnimationColour.g * (anim != null ? anim.g : 1f) * mg,
+			oldAnimationColour.b * (anim != null ? anim.b : 1f) * mb,
+			oldAnimationColour.a * (anim != null ? anim.a : 1f) * ma
 		);
 		return oldAnimationColour;
 	}
@@ -128,24 +113,26 @@ public abstract class EntityRenderer {
 	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
 	 * animation colour. Also multiplies the alpha value by ma.
 	 *
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
 	 * @param ma Additional custom multiplier for the alpha component.
 	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
 	 */
-	public Color setAnimationColour(SpriteBatch batch, Entity entity, float ma) {
-		return setAnimationColour(batch, entity, 1f, 1f, 1f, ma);
+	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity, float ma) {
+		return setAnimationColour(anim, batch, entity, 1f, 1f, 1f, ma);
 	}
 	
 	/**
 	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
 	 * animation colour.
 	 *
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
 	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
 	 */
-	public Color setAnimationColour(SpriteBatch batch, Entity entity) {
-		return setAnimationColour(batch, entity, 1f, 1f, 1f, 1f);
+	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity) {
+		return setAnimationColour(anim, batch, entity, 1f, 1f, 1f, 1f);
 	}
 }

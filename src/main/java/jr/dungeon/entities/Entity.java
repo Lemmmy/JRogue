@@ -399,4 +399,9 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 			name, x, y
 		);
 	}
+	
+	@Override
+	public int hashCode() {
+		return uuid.hashCode();
+	}
 }

@@ -13,7 +13,7 @@ import jr.JRogue;
 import jr.Settings;
 import jr.debugger.DebugClient;
 import jr.debugger.utils.HideFromDebugger;
-import jr.dungeon.Dungeon;
+import jr.dungeon.serialisation.DungeonSerialiser;
 import jr.rendering.screens.BasicScreen;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
@@ -80,8 +80,8 @@ public class GameAdapter extends Game {
 		
 		inputMultiplexer = new InputMultiplexer();
 		
-		if (Dungeon.canLoad()) {
-			screen = new GameScreen(this, Dungeon.load());
+		if (DungeonSerialiser.canLoad()) {
+			screen = new GameScreen(this, DungeonSerialiser.load());
 		} else {
 			screen = new CharacterCreationScreen(this);
 		}

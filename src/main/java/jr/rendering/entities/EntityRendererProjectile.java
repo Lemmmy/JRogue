@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.projectiles.EntityProjectile;
+import jr.rendering.entities.animations.EntityAnimationData;
 
 public class EntityRendererProjectile extends EntityRenderer {
 	protected TextureRegion image;
@@ -20,27 +21,23 @@ public class EntityRendererProjectile extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
-		int worldX = useMemoryLocation ? entity.getLastSeenX() : entity.getX();
-		int worldY = useMemoryLocation ? entity.getLastSeenY() : entity.getY();
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
 		int width = EntityMap.ENTITY_WIDTH;
 		int height = EntityMap.ENTITY_HEIGHT;
-		int x = worldX * width;
-		int y = worldY * height;
-		int originX = width / 2;
-		int originY = height / 2;
+		float worldX = getPositionX(anim, entity, useMemoryLocation);
+		float worldY = getPositionY(anim, entity, useMemoryLocation);
+		float x = worldX * width;
+		float y = worldY * height;
+		float originX = width / 2f;
+		float originY = height / 2f;
 		float rotation = 0;
 		
-		float[] ac = getAnimationColour(entity);
-		
 		if (entity instanceof EntityProjectile) {
-			int dx = ((EntityProjectile) entity).getDeltaX();
-			int dy = ((EntityProjectile) entity).getDeltaY();
-			
-			rotation = (float) (Math.atan2(dy, dx) * (180 / Math.PI));
+			EntityProjectile projectile = (EntityProjectile) entity;
+			rotation = (float) (Math.atan2(projectile.getDeltaY(), projectile.getDeltaX()) * (180 / Math.PI));
 		}
 		
-		Color oldColour = setAnimationColour(batch, entity);
+		Color oldColour = setAnimationColour(anim, batch, entity);
 		
 		if (isDrawingReflection()) {
 			batch.draw(

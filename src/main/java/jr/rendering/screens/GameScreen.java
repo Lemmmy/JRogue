@@ -17,6 +17,7 @@ import jr.rendering.GameAdapter;
 import jr.rendering.GameInputProcessor;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
+import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.FontLoader;
@@ -25,7 +26,6 @@ import jr.rendering.utils.ShaderLoader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -199,15 +199,10 @@ public class GameScreen extends BasicScreen implements EventListener {
 		Player p = dungeon.getPlayer();
 		
 		if (p != null && !settings.isShowLevelDebug()) {
-			float worldX = p.getX();
-			float worldY = p.getY();
+			EntityAnimationData data = entityComponent.getAnimationProvider().getEntityAnimationData(p);
 			
-			if (p.getPersistence().has("animationData")) {
-				JSONObject ad = p.getPersistence().getJSONObject("animationData");
-				
-				worldX = p.getX() + (float) ad.optDouble("cameraX", 0);
-				worldY = p.getY() + (float) ad.optDouble("cameraY", 0);
-			}
+			float worldX = p.getX() + (data != null ? data.cameraX : 0);
+			float worldY = p.getY() + (data != null ? data.cameraY : 0);
 			
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
 			float camY = worldY * TileMap.TILE_HEIGHT;
@@ -282,7 +277,7 @@ public class GameScreen extends BasicScreen implements EventListener {
 	@Override
 	public void dispose() {
 		if (settings.isAutosave() && !dontSave && dungeon.getPlayer().isAlive()) {
-			dungeon.save();
+			dungeon.serialiser.save();
 		}
 		
 		mainBatch.dispose();
