@@ -1,7 +1,6 @@
 package jr.dungeon.entities;
 
 import com.google.gson.annotations.Expose;
-import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
@@ -23,8 +22,6 @@ import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.*;
 
@@ -61,8 +58,11 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	@Setter(AccessLevel.NONE)
 	@Expose private Container inventory;
 	
-	@Expose private Container.ContainerEntry leftHand;
-	@Expose private Container.ContainerEntry rightHand;
+	private Container.ContainerEntry leftHand;
+	private Container.ContainerEntry rightHand;
+	
+	@Expose private Character leftHandLetter;
+	@Expose private Character rightHandLetter;
 	
 	/**
 	 * known persistent aspects per item class
@@ -189,81 +189,15 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("health", getHealth());
-		obj.put("maxHealth", getMaxHealth());
-		obj.put("experienceLevel", getExperienceLevel());
-		obj.put("experience", getExperience());
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-			
-			if (leftHand != null) {
-				obj.put("leftHand", leftHand.getLetter());
-			}
-			
-			if (rightHand != null) {
-				obj.put("rightHand", rightHand.getLetter());
-			}
-		}
-		
-		JSONObject serialisedKnownAspects = new JSONObject();
-		knownAspects.forEach((k, v) -> {
-			JSONArray serialisedAspectList = new JSONArray();
-			v.forEach(a -> serialisedAspectList.put(a.getName()));
-			serialisedKnownAspects.put(k.toString(), serialisedAspectList);
-		});
-		obj.put("knownAspects", serialisedKnownAspects);
+	public void beforeSerialise() {
+		if (leftHand != null) leftHandLetter = leftHand.getLetter();
+		if (rightHand != null) rightHandLetter = rightHand.getLetter();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		health = obj.getInt("health");
-		maxHealth = obj.getInt("maxHealth");
-		experienceLevel = obj.getInt("experienceLevel");
-		experience = obj.getInt("experience");
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			setInventoryContainer(Container.createFromJSON(serialisedInventory));
-			
-			if (obj.has("leftHand") && !obj.isNull("leftHand") && obj.get("leftHand") instanceof String) {
-				Character letter = obj.getString("leftHand").charAt(0);
-				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
-				entryOptional.ifPresent(this::setLeftHand);
-			}
-			
-			if (obj.has("rightHand") && !obj.isNull("rightHand") && obj.get("rightHand") instanceof String) {
-				Character letter = obj.getString("rightHand").charAt(0);
-				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
-				entryOptional.ifPresent(this::setRightHand);
-			}
-		}
-		
-		JSONObject serialisedKnownAspects = obj.getJSONObject("knownAspects");
-		serialisedKnownAspects.keySet().forEach(k -> {
-			Integer code = Integer.parseInt(k);
-			JSONArray serialisedAspectList = serialisedKnownAspects.getJSONArray(k);
-			
-			Set<Class<? extends Aspect>> aspectSet = new HashSet<>();
-			serialisedAspectList.forEach(c -> {
-				try {
-					aspectSet.add((Class<? extends Aspect>) Class.forName((String) c));
-				} catch (ClassNotFoundException e) {
-					ErrorHandler.error("Error unserialising EntityLiving", e);
-				}
-			});
-			
-			knownAspects.put(code, aspectSet);
-		});
+	public void afterDeserialise() {
+		if (leftHandLetter != null) leftHand = inventory.get(leftHandLetter).orElse(null);
+		if (rightHandLetter != null) rightHand = inventory.get(rightHandLetter).orElse(null);
 	}
 	
 	@Override

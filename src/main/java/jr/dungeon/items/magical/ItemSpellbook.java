@@ -2,7 +2,6 @@ package jr.dungeon.items.magical;
 
 import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.Container;
@@ -23,7 +22,6 @@ import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -193,43 +191,6 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	@Override
 	public boolean shouldStack() {
 		return false;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		JSONObject spellJSON = new JSONObject();
-		spell.serialise(spellJSON);
-		obj.put("spell", spellJSON);
-		obj.put("spellClass", spell.getClass().getName());
-		
-		obj.put("timesRead", timesRead);
-		obj.put("readingProgress", readingProgress);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		String spellClassName = obj.getString("spellClass");
-		
-		try {
-			Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
-			Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
-			spell = spellConstructor.newInstance();
-			spell.unserialise(obj.getJSONObject("spell"));
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown spell class {}", spellClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
-		}
-		
-		timesRead = obj.optInt("timesRead", 0);
-		readingProgress = obj.optInt("readingProgress", 0);
 	}
 	
 	private float getReadingSuccessChance(Player player) {

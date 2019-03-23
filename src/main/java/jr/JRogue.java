@@ -8,7 +8,7 @@ import com.google.common.reflect.TypeToken;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Dungeon;
 import jr.dungeon.serialisation.DungeonRegistries;
-import jr.dungeon.serialisation.DungeonRegistry;
+import jr.dungeon.serialisation.DungeonSerialiser;
 import jr.rendering.GameAdapter;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
@@ -107,6 +107,7 @@ public class JRogue {
 		try {
 			initialiseReflections();
 			DungeonRegistries.findRegistries();
+			DungeonSerialiser.initialiseGson();
 			
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 			config.setResizable(true);

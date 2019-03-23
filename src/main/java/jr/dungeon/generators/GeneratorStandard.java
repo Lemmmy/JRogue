@@ -4,6 +4,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.monsters.fish.MonsterFish;
 import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -13,6 +14,7 @@ import jr.utils.RandomUtils;
 import java.util.Arrays;
 import java.util.List;
 
+@Registered(id="generatorStandard")
 public class GeneratorStandard extends GeneratorRooms {
 	protected double thresholdWaterNoise = 0.2;
 	protected double thresholdWaterNoisePuddle = 0.5;

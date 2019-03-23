@@ -1,9 +1,6 @@
 package jr.dungeon.items.comestibles;
 
 import com.google.gson.annotations.Expose;
-import jr.ErrorHandler;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.FoodPoisoning;
@@ -20,10 +17,7 @@ import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
 import lombok.Getter;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -162,47 +156,6 @@ public class ItemCorpse extends ItemComestible {
 		}
 		
 		return super.equals(other);
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		JSONObject serialisedEntity = new JSONObject();
-		entity.serialise(serialisedEntity);
-		
-		obj.put("entity", serialisedEntity);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		JSONObject serialisedEntity = obj.getJSONObject("entity");
-		
-		String entityClassName = serialisedEntity.getString("class");
-		int x = serialisedEntity.getInt("x");
-		int y = serialisedEntity.getInt("y");
-		
-		try {
-			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(entityClassName);
-			Constructor<? extends Entity> entityConstructor = entityClass.getConstructor(
-				Dungeon.class,
-				Level.class,
-				int.class,
-				int.class
-			);
-			
-			entity = (EntityLiving) entityConstructor.newInstance(null, null, x, y);
-			entity.unserialise(serialisedEntity);
-		} catch (ClassNotFoundException e) {
-			ErrorHandler.error("Unknown entity class " + entityClassName, e);
-		} catch (NoSuchMethodException e) {
-			ErrorHandler.error("Entity class has no unserialisation constructor " + entityClassName, e);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			ErrorHandler.error("Error loading entity class " + entityClassName, e);
-		}
 	}
 	
 	public class CorpseTransformer implements TransformerType {}

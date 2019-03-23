@@ -15,7 +15,6 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
 @Registered(id="entityGravestone")
 public class EntityGravestone extends Entity implements Readable {
@@ -68,19 +67,5 @@ public class EntityGravestone extends Entity implements Readable {
 	@Override
 	public boolean canRead(EntityLiving reader) {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("message", message);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		message = obj.getString("message");
 	}
 }

@@ -16,7 +16,6 @@ import jr.language.LanguageUtils;
 import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.util.Optional;
 
@@ -131,26 +130,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	public void killProjectile() {
 		remove();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("dx", dx);
-		obj.put("dy", dy);
-		obj.put("range", range);
-		obj.put("distanceTravelled", distanceTravelled);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		dx = obj.optInt("dx", 0);
-		dy = obj.optInt("dy", 0);
-		range = obj.optInt("range", 0);
-		distanceTravelled = obj.optInt("distanceTravelled", 0);
 	}
 	
 	@Override

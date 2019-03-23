@@ -1,9 +1,11 @@
 package jr.dungeon.generators;
 
 import jr.dungeon.Level;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 
+@Registered(id="generator_")
 public class Generator_ extends GeneratorStandard {
 	public Generator_(Level level, Tile sourceTile) {
 		super(level, sourceTile);

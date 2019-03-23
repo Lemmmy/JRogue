@@ -1,7 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import com.google.gson.annotations.Expose;
-import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.EntityReference;
@@ -20,8 +19,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,86 +134,11 @@ public class StatefulAI extends AI {
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
+	public void afterDeserialise() {
+		if (defaultState != null) defaultState.setAI(this);
+		if (currentState != null) currentState.setAI(this);
 		
-		if (getMonster() == null) {
-			return;
-		}
-		
-		if (defaultState != null) {
-			JSONObject serialisedDefaultState = new JSONObject();
-			defaultState.serialise(serialisedDefaultState);
-			obj.put("defaultState", serialisedDefaultState);
-		}
-		
-		if (currentState != null) {
-			JSONObject serialisedCurrentState = new JSONObject();
-			currentState.serialise(serialisedCurrentState);
-			obj.put("currentState", serialisedCurrentState);
-		}
-		
-		if (currentTarget != null) {
-			obj.put("currentTarget", currentTarget.getUUID().toString());
-			obj.put("targetLastPos", targetLastPos);
-		}
-		
-		obj.put("shouldTargetPlayer", shouldTargetPlayer);
-		obj.put("visibilityRange", visibilityRange);
-		
-		JSONObject serialisedTraits = new JSONObject();
-		
-		traits.forEach((c, t) -> {
-			JSONObject serialisedTrait = new JSONObject();
-			t.serialise(serialisedTrait);
-			serialisedTraits.put(c.getName(), serialisedTrait);
-		});
-		
-		obj.put("traits", serialisedTraits);
-		
-		obj.put("safePoints", new JSONArray(safePoints));
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (getMonster() == null || getMonster().getLevel() == null) {
-			return;
-		}
-		
-		defaultState = AIState.createFromJSON(obj.getJSONObject("defaultState"), this);
-		currentState = AIState.createFromJSON(obj.getJSONObject("currentState"), this);
-		
-		if (obj.has("currentTarget")) {
-			currentTarget = (EntityLiving) getMonster().getLevel().entityStore.getEntityByUUID(obj.optString("currentTarget"));
-
-			if (obj.has("targetLastPos")) {
-				targetLastPos = Point.unserialise(obj.getString("targetLastPos"));
-			}
-		}
-		
-		shouldTargetPlayer = obj.optBoolean("shouldTargetPlayer", true);
-		visibilityRange = obj.optInt("visibilityRange");
-		
-		if (obj.has("traits")) {
-			JSONObject serialisedTraits = obj.getJSONObject("traits");
-			
-			serialisedTraits.keySet().forEach(traitClassName -> {
-				JSONObject serialisedTrait = serialisedTraits.getJSONObject(traitClassName);
-				AITrait unserialisedTrait = AITrait.createFromJSON(traitClassName, serialisedTrait, this);
-				assert unserialisedTrait != null;
-				traits.put(unserialisedTrait.getClass(), unserialisedTrait);
-			});
-		}
-		
-		if (obj.has("safePoints")) {
-			obj.getJSONArray("safePoints").forEach(safePointObj -> {
-				JSONObject serialisedSafePoint = (JSONObject) safePointObj;
-				Point point = Point.getPoint(serialisedSafePoint.getInt("x"), serialisedSafePoint.getInt("y"));
-				safePoints.add(point);
-			});
-		}
+		traits.values().forEach(t -> t.setAI(this));
 	}
 	
 	@Override

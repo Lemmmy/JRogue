@@ -1,6 +1,7 @@
 package jr.dungeon.serialisation;
 
 import jr.JRogue;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Optional;
 
 public class DungeonRegistries {
 	private static final Map<Class, DungeonRegistry> registries = new HashMap<>();
+	@Getter private static final Map<Class, DungeonRegistryTypeAdapterFactory> typeAdapterFactories = new HashMap<>();
 	
 	public static void findRegistries() {
 		JRogue.getReflections().getTypesAnnotatedWith(HasRegistry.class).stream()
@@ -19,6 +21,8 @@ public class DungeonRegistries {
 				registries.put(clazz, registry);
 				
 				registry.scanClasses();
+				
+				typeAdapterFactories.put(clazz, new DungeonRegistryTypeAdapterFactory<>(clazz));
 			});
 	}
 	

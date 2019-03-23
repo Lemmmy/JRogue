@@ -1,5 +1,6 @@
 package jr.dungeon;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.MonsterSpawn;
@@ -12,17 +13,16 @@ import jr.utils.RandomUtils;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MonsterSpawner implements Serialisable {
+public class MonsterSpawner {
 	private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
 	
-	@Getter @Setter	private MonsterSpawningStrategy monsterSpawningStrategy;
+	@Expose @Getter @Setter	private MonsterSpawningStrategy monsterSpawningStrategy = MonsterSpawningStrategy.STANDARD;
 	
 	private Dungeon dungeon;
 	private Level level;
@@ -34,23 +34,6 @@ public class MonsterSpawner implements Serialisable {
 	
 	public void initialise() {
 		//
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		if (monsterSpawningStrategy != null) {
-			obj.put("monsterSpawningStrategy", monsterSpawningStrategy.name());
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		if (obj.has("monsterSpawningStrategy")) {
-			monsterSpawningStrategy = MonsterSpawningStrategy.valueOf(obj.optString(
-				"monsterSpawningStrategy",
-				MonsterSpawningStrategy.STANDARD.name()
-			));
-		}
 	}
 	
 	public void spawnMonsters() {

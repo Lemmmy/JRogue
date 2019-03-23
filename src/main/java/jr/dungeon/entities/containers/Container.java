@@ -1,7 +1,6 @@
 package jr.dungeon.entities.containers;
 
 import com.google.gson.annotations.Expose;
-import jr.ErrorHandler;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
@@ -15,11 +14,7 @@ import jr.language.transformers.Capitalise;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,50 +144,6 @@ public class Container implements EventListener {
 	
 	public void removeListener(ContainerListener listener) {
 		listeners.remove(listener);
-	}
-	
-	public static Container createFromJSON(JSONObject obj) {
-		return createFromJSON(Container.class, obj);
-	}
-	
-	public static Container createFromJSON(Class<? extends Container> clazz, JSONObject obj) {
-		try {
-			Constructor c = ConstructorUtils.getAccessibleConstructor(clazz, String.class);
-			Container container = (Container) c.newInstance(obj.getString("name"));
-			container.unserialise(obj);
-			return container;
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			ErrorHandler.error("Error unserialising Container", e);
-		}
-		
-		Container container = new Container(obj.getString("name"));
-		container.unserialise(obj);
-		return container;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("name", name);
-		
-		JSONObject serialisedItems = new JSONObject();
-		items.forEach((key, value) -> {
-			JSONObject serialisedItemStack = new JSONObject();
-			value.serialise(serialisedItemStack);
-			serialisedItems.put(key.toString(), serialisedItemStack);
-		});
-		obj.put("items", serialisedItems);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		JSONObject serialisedItems = obj.getJSONObject("items");
-		serialisedItems.keySet().forEach(k -> {
-			JSONObject v = serialisedItems.getJSONObject(k);
-			Character letter = k.charAt(0);
-			
-			Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(v);
-			itemStackOptional.ifPresent(itemStack -> items.put(letter, itemStack));
-		});
 	}
 	
 	public Map<Character, ItemStack> getWieldables() {

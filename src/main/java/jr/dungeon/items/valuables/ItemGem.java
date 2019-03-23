@@ -14,7 +14,6 @@ import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.json.JSONObject;
 
 @Registered(id="itemGem")
 public class ItemGem extends Item {
@@ -79,22 +78,6 @@ public class ItemGem extends Item {
 	
 	public boolean isWorthless() {
 		return worthless;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("gem", gem.name());
-		obj.put("worthless", worthless);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		worthless = obj.getBoolean("worthless");
-		gem = Gem.valueOf(obj.getString("gem"));
 	}
 	
 	@Getter

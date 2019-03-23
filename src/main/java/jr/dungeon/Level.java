@@ -1,47 +1,50 @@
 package jr.dungeon;
 
+import com.google.gson.*;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.debugger.utils.Debuggable;
-import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
+import java.lang.reflect.Type;
 import java.util.UUID;
 
 @Getter
-public class Level implements Debuggable {
-	private UUID uuid;
+@JsonAdapter(Level.LevelDeserialiser.class)
+public class Level implements Serialisable, Debuggable {
+	@Expose private UUID uuid;
 	
 	private Dungeon dungeon;
 	
-	private Climate climate;
+	@Expose private Climate climate;
 	
-	private int width;
-	private int height;
-	private int depth;
+	@Expose private int width;
+	@Expose private int height;
+	@Expose private int depth;
 	
-	private int spawnX;
-	private int spawnY;
+	@Expose private int spawnX;
+	@Expose private int spawnY;
 	
-	private long turnCreated;
+	@Expose private long turnCreated;
 	
-	@Setter private String name;
+	@Expose @Setter private String name;
 	
-	@Getter(AccessLevel.NONE) public final TileStore tileStore;
-	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
-	@Getter(AccessLevel.NONE) public final LightStore lightStore;
-	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
-	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
+	@Getter(AccessLevel.NONE) public final TileStore tileStore = new TileStore(this);
+	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore = new VisibilityStore(this);
+	@Getter(AccessLevel.NONE) public final LightStore lightStore = new LightStore(this);
+	@Expose @Getter(AccessLevel.NONE) public final EntityStore entityStore = new EntityStore(this);
+	@Expose @Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner = new MonsterSpawner(this);
+	
+	@Expose @Getter private DungeonGenerator generator;
 
 	/**
 	 * Constructs a level with a random UUID.
@@ -71,22 +74,16 @@ public class Level implements Debuggable {
 		this.height = height;
 		
 		this.depth = depth;
-		
-		tileStore = new TileStore();
-		entityStore = new EntityStore(this);
-		visibilityStore = new VisibilityStore(this);
-		lightStore = new LightStore(this);
-		monsterSpawner = new MonsterSpawner(this);
 	}
 
 	/**
 	 * Initialises the Level, including the initialisation of its stores.
 	 */
-	private void initialise() {
-		tileStore.initialise(this);
-		entityStore.initialise();
+	public void initialise() {
+		tileStore.initialise();
 		visibilityStore.initialise();
 		lightStore.initialise();
+		entityStore.initialise();
 		monsterSpawner.initialise();
 		
 		lightStore.initialiseLight();
@@ -109,7 +106,7 @@ public class Level implements Debuggable {
 			
 			try {
 				Constructor generatorConstructor = generatorClass.getConstructor(Level.class, Tile.class);
-				DungeonGenerator generator = (DungeonGenerator) generatorConstructor.newInstance(this, sourceTile);
+				generator = (DungeonGenerator) generatorConstructor.newInstance(this, sourceTile);
 				
 				if (!generator.generate()) {
 					continue;
@@ -130,79 +127,7 @@ public class Level implements Debuggable {
 		
 		monsterSpawner.spawnMonsters();
 	}
-
-	/**
-	 * Unserialises the level from a JSONObject.
-	 * @param uuid The UUID to give to the unserialised level.
-	 * @param obj The JSONObject containing the serialised level.
-	 * @param dungeon The {@link jr.dungeon.Dungeon} this level should belong to.
-	 * @return The unserialised level.
-	 */
-	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
-		Level level = null;
-		
-		try {
-			int width = obj.getInt("width");
-			int height = obj.getInt("height");
-			int depth = obj.getInt("depth");
-			
-			level = new Level(uuid, dungeon, width, height, depth);
-			level.unserialise(obj);
-			return Optional.of(level);
-		} catch (Exception e) {
-			if (level != null) {
-				JRogue.getLogger().error("Error loading level " + level.toString() + ":", e);
-			} else {
-				JRogue.getLogger().error("Error loading level:", e);
-			}
-		}
-		
-		return Optional.empty();
-	}
-
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("width", getWidth());
-		obj.put("height", getHeight());
-		obj.put("depth", getDepth());
-		obj.put("spawnX", getSpawnX());
-		obj.put("spawnY", getSpawnY());
-		obj.put("climate", getClimate().name());
-		obj.put("turnCreated", turnCreated);
-		obj.put("name", name);
-		
-		tileStore.serialise(obj);
-		entityStore.serialise(obj);
-		lightStore.serialise(obj);
-		visibilityStore.serialise(obj);
-		monsterSpawner.serialise(obj);
-	}
-
-	@Override
-	public void unserialise(JSONObject obj) {
-		initialise();
-		
-		try {
-			spawnX = obj.getInt("spawnX");
-			spawnY = obj.getInt("spawnY");
-			
-			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
-			
-			turnCreated = obj.optInt("turnCreated", 0);
-			name = obj.optString("name", "Dungeon");
-			
-			tileStore.unserialise(obj);
-			entityStore.unserialise(obj);
-			lightStore.unserialise(obj);
-			visibilityStore.unserialise(obj);
-			monsterSpawner.unserialise(obj);
-		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:", e);
-		}
-		
-		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
-	}
-
+	
 	/**
 	 * Sets the level's spawn point in tile coordinates. This is where the player will appear when entering the level.
 	 * @param x The x coordinate of the spawn point.
@@ -231,5 +156,15 @@ public class Level implements Debuggable {
 			"[P_GREY_3]%s[] %,d",
 			name, depth
 		);
+	}
+	
+	public class LevelDeserialiser implements JsonDeserializer<Level> {
+		@Override
+		public Level deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			JsonObject object = json.getAsJsonObject();
+			Level level = context.deserialize(json, typeOfT);
+			level.afterDeserialise();
+			return level;
+		}
 	}
 }

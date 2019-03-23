@@ -8,10 +8,10 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 
-public abstract class DungeonTypeAdapterFactory<T> implements TypeAdapterFactory {
+public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory {
 	private Class<T> targetClass;
 	
-	public DungeonTypeAdapterFactory(Class<T> targetClass) {
+	public DungeonRegistryTypeAdapterFactory(Class<T> targetClass) {
 		this.targetClass = targetClass;
 	}
 	
@@ -36,7 +36,7 @@ public abstract class DungeonTypeAdapterFactory<T> implements TypeAdapterFactory
 						targetClass.getSimpleName(), valueClass.getName()
 					)));
 				
-				TypeAdapter<T> delegate = (TypeAdapter<T>) gson.getDelegateAdapter(DungeonTypeAdapterFactory.this, TypeToken.get(valueClass));
+				TypeAdapter<T> delegate = (TypeAdapter<T>) gson.getDelegateAdapter(DungeonRegistryTypeAdapterFactory.this, TypeToken.get(valueClass));
 				
 				JsonObject serialised = delegate.toJsonTree(value).getAsJsonObject();
 				JsonObject clone = new JsonObject();
@@ -70,11 +70,11 @@ public abstract class DungeonTypeAdapterFactory<T> implements TypeAdapterFactory
 						targetClass.getSimpleName(), id
 					)));
 				
-				TypeAdapter<T> delegate = (TypeAdapter<T>) gson.getDelegateAdapter(DungeonTypeAdapterFactory.this, TypeToken.get(clazz));
+				TypeAdapter<T> delegate = (TypeAdapter<T>) gson.getDelegateAdapter(DungeonRegistryTypeAdapterFactory.this, TypeToken.get(clazz));
 				T result = delegate.fromJsonTree(element);
 				
 				if (result instanceof Serialisable) {
-					((Serialisable) result).onUnserialise(); // TODO: may want to pass context here
+					((Serialisable) result).afterDeserialise(); // TODO: may want to pass context here
 				}
 				
 				return result;

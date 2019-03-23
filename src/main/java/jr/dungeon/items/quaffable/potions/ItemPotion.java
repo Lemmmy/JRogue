@@ -15,7 +15,6 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Getter
 @Setter
@@ -72,28 +71,6 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	@Override
 	public ItemCategory getCategory() {
 		return ItemCategory.POTION;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("empty", empty);
-		obj.put("bottle", bottleType.name());
-		obj.put("type", potionType.name());
-		obj.put("colour", potionColour.name());
-		obj.put("potency", (double) potency);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		empty = obj.optBoolean("empty", false);
-		bottleType = BottleType.valueOf(obj.optString("bottle", "BOTTLE"));
-		potionType = PotionType.valueOf(obj.optString("type", "POTION_WATER"));
-		potionColour = PotionColour.valueOf(obj.optString("colour", "CLEAR"));
-		potency = (float) obj.optDouble("potency", 0.0);
 	}
 	
 	@Override

@@ -1,21 +1,25 @@
 package jr.dungeon.serialisation;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.utils.OperatingSystem;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import javax.swing.*;
-import java.io.File;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class DungeonSerialiser {
+	private static Gson GSON;
+	
 	private Dungeon dungeon;
 	
 	/**
@@ -27,84 +31,136 @@ public class DungeonSerialiser {
 		this.dungeon = dungeon;
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("version", JRogue.VERSION);
-		obj.put("name", dungeon.getName());
-		obj.put("originalName", dungeon.getOriginalName());
+	public static void initialiseGson() {
+		GsonBuilder builder = new GsonBuilder()
+			.excludeFieldsWithoutExposeAnnotation()
+			.registerTypeAdapterFactory(new LevelTypeAdapterFactory())
+			.setPrettyPrinting();
 		
-		JSONObject serialisedLevels = new JSONObject();
-		dungeon.getLevels().forEach((uuid, level) -> {
-			JSONObject j = new JSONObject();
-			level.serialise(j);
-			serialisedLevels.put(uuid.toString(), j);
-		});
-		obj.put("levels", serialisedLevels);
+		DungeonRegistries.getTypeAdapterFactories().values().forEach(builder::registerTypeAdapterFactory);
+		
+		GSON = builder.create();
 	}
 	
-	@Override
-	public void unserialise(JSONObject obj) {
-		try {
-			String version = obj.optString("version");
+	public void serialise(Writer writer) {
+		dungeon.setVersion(JRogue.VERSION);
+		GSON.toJson(dungeon, writer);
+	}
+	
+	public static Dungeon unserialise(Reader reader) {
+		Dungeon dungeon = GSON.fromJson(reader, Dungeon.class);
+		
+		dungeon.serialiser.checkVersion();
+		
+		if (dungeon.getPlayer() == null) {
+			File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 			
-			if (!version.equals(JRogue.VERSION)) {
-				int dialogResult = JOptionPane.showConfirmDialog(
-					null,
-					"This save was made in a different version of " +
-						"JRogue. Would you still like to try and load it?",
-					"JRogue",
-					JOptionPane.YES_NO_CANCEL_OPTION
-				);
-				
-				switch (dialogResult) {
-					case JOptionPane.YES_OPTION:
-						break;
-					case JOptionPane.NO_OPTION:
-						File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-						
-						if (file.exists() && !file.delete()) {
-							JRogue.getLogger().error("Failed to delete save file. Panic!");
-						}
-						
-						JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-						System.exit(0);
-						break;
-					default:
-						System.exit(0);
-						break;
-				}
+			if (file.exists() && !file.delete()) {
+				JRogue.getLogger().error("Failed to delete save file. Panic!");
 			}
 			
-			dungeon.setName(obj.getString("name"));
-			dungeon.setOriginalName(obj.getString("originalName"));
-			
-			JSONObject serialisedLevels = obj.getJSONObject("levels");
-			serialisedLevels.keySet().forEach(k -> {
-				UUID uuid = UUID.fromString(k);
-				JSONObject serialisedLevel = serialisedLevels.getJSONObject(k);
-				Level.createFromJSON(uuid, serialisedLevel, dungeon).ifPresent(level -> dungeon.getLevels().put(uuid, level));
-			});
-			
-			if (dungeon.getPlayer() == null) {
-				File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-				
-				if (file.exists() && !file.delete()) {
-					JRogue.getLogger().error("Failed to delete save file. Panic!");
-				}
-				
-				JOptionPane.showMessageDialog(null, "Please restart JRogue.");
-				System.exit(0);
-				
-				return;
-			}
-			
-			dungeon.level = dungeon.getPlayer().getLevel();
-			dungeon.eventSystem.triggerEvent(new LevelChangeEvent(dungeon.level));
-			
-			dungeon.level.lightStore.buildLight(true);
-			dungeon.level.visibilityStore.updateSight(dungeon.getPlayer());
-		} catch (Exception e) {
-			ErrorHandler.error("Error loading dungeon", e);
+			JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+			System.exit(0);
+			return null;
 		}
+		
+		dungeon.setLevelInternal(dungeon.getPlayer().getLevel());
+		dungeon.eventSystem.triggerEvent(new LevelChangeEvent(dungeon.getLevel()));
+		
+		dungeon.getLevel().lightStore.buildLight(true);
+		dungeon.getLevel().visibilityStore.updateSight(dungeon.getPlayer());
+		
+		return dungeon;
+	}
+	
+	public void checkVersion() {
+		if (!dungeon.getVersion().equals(JRogue.VERSION)) {
+			int dialogResult = JOptionPane.showConfirmDialog(
+				null,
+				"This save was made in a different version of " +
+					"JRogue. Would you still like to try and load it?",
+				"JRogue",
+				JOptionPane.YES_NO_CANCEL_OPTION
+			);
+			
+			switch (dialogResult) {
+				case JOptionPane.YES_OPTION:
+					break;
+				case JOptionPane.NO_OPTION:
+					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+					
+					if (file.exists() && !file.delete()) {
+						JRogue.getLogger().error("Failed to delete save file. Panic!");
+					}
+					
+					JOptionPane.showMessageDialog(null, "Please restart JRogue.");
+					System.exit(0);
+					break;
+				default:
+					System.exit(0);
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Saves this dungeon as dungeon.save.gz in the game data directory.
+	 */
+	public void save() {
+		java.nio.file.Path dataDir = DungeonSerialiser.getDataDir();
+		
+		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs
+			()) {
+			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
+			return;
+		}
+		
+		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
+		
+		try (
+			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))
+		) {
+			serialise(writer);
+		} catch (Exception e) {
+			ErrorHandler.error("Error saving dungeon", e);
+		}
+	}
+	
+	/**
+	 * Deletes the game save file.
+	 */
+	public void deleteSave() {
+		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
+		
+		if (file.exists() && !file.delete()) {
+			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
+		}
+	}
+	
+	public static boolean canLoad() {
+		return new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString()).exists();
+	}
+	
+	/**
+	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
+	 */
+	public static Dungeon load() {
+		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
+		
+		if (file.exists()) {
+			try (
+				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+			) {
+				return unserialise(reader);
+			} catch (Exception e) {
+				ErrorHandler.error("Error loading dungeon", e);
+			}
+		}
+		
+		Dungeon dungeon = new Dungeon();
+		dungeon.generateFirstLevel();
+		return dungeon;
 	}
 }

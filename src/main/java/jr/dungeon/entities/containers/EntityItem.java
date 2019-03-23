@@ -23,9 +23,6 @@ import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
-
-import java.util.Optional;
 
 @Registered(id="entityItem")
 public class EntityItem extends Entity {
@@ -119,23 +116,6 @@ public class EntityItem extends Entity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		JSONObject serialisedItem = new JSONObject();
-		itemStack.serialise(serialisedItem);
-		obj.put("itemStack", serialisedItem);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(obj.getJSONObject("itemStack"));
-		itemStackOptional.ifPresent(i -> itemStack = i);
 	}
 	
 	@Override

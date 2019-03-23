@@ -17,7 +17,6 @@ import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
 @Registered(id="entityLightOrb")
 public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
@@ -94,19 +93,5 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	@Override
 	public int getLightIntensity() {
 		return 100;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("turnsLeft", turnsLeft);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		turnsLeft = obj.getInt("turnsLeft");
 	}
 }

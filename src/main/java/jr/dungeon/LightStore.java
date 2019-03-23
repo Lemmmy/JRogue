@@ -1,17 +1,21 @@
 package jr.dungeon;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jr.JRogue;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
-import org.json.JSONObject;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.util.stream.Stream;
 
-public class LightStore implements Serialisable {
+public class LightStore implements LevelStore {
 	private static final int LIGHT_MAX_LIGHT_LEVEL = 100;
 	private static final int LIGHT_ABSOLUTE = 80;
 	
@@ -30,37 +34,32 @@ public class LightStore implements Serialisable {
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		serialiseLights().ifPresent(bytes -> obj.put("lights", new String(Base64.getEncoder().encode(bytes))));
+	public void serialise(Gson gson, JsonObject out) {
+		out.addProperty("lights", new String(Base64.getEncoder().encode(serialiseLights())));
 	}
 	
-	private Optional<byte[]> serialiseLights() {
+	private byte[] serialiseLights() {
 		try (
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos)
 		) {
-			Arrays.stream(level.tileStore.getTiles()).forEach(t -> {
-				try {
-					dos.writeInt(Colour.rgba8888(t.getLightColour()));
-					dos.writeByte(t.getLightIntensity());
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error saving level:", e);
-				}
-			});
+			for (Tile t : level.tileStore.getTiles()) {
+				dos.writeInt(Colour.rgba8888(t.getLightColour()));
+				dos.writeByte(t.getLightIntensity());
+			}
 			
 			dos.flush();
-			
-			return Optional.of(bos.toByteArray());
+			return bos.toByteArray();
 		} catch (IOException e) {
 			JRogue.getLogger().error("Error saving level:", e);
 		}
 		
-		return Optional.empty();
+		return new byte[] {};
 	}
 	
 	@Override
-	public void unserialise(JSONObject obj) {
-		unserialiseLights(Base64.getDecoder().decode(obj.getString("lights")));
+	public void deserialise(Gson gson, JsonObject in) {
+		unserialiseLights(Base64.getDecoder().decode(in.get("lights").getAsString()));
 	}
 	
 	private void unserialiseLights(byte[] bytes) {
@@ -68,17 +67,13 @@ public class LightStore implements Serialisable {
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis)
 		) {
-			Arrays.stream(level.tileStore.getTiles()).forEach(t -> {
-				try {
-					int colourInt = dis.readInt();
-					int intensity = dis.readByte();
-					
-					t.setLightColour(new Colour(colourInt));
-					t.setLightIntensity(intensity);
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level:", e);
-				}
-			});
+			for (Tile t : level.tileStore.getTiles()) {
+				int colourInt = dis.readInt();
+				int intensity = dis.readByte();
+				
+				t.setLightColour(new Colour(colourInt));
+				t.setLightIntensity(intensity);
+			}
 		} catch (IOException e) {
 			JRogue.getLogger().error("Error loading level:", e);
 		}

@@ -14,7 +14,6 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import org.json.JSONObject;
 
 import java.util.Optional;
 
@@ -69,27 +68,5 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(WeaponRackContainer.class, serialisedInventory);
-		}
 	}
 }

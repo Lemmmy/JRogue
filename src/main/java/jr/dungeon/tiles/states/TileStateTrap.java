@@ -1,12 +1,14 @@
 package jr.dungeon.tiles.states;
 
 import com.google.gson.annotations.Expose;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
 
+@Registered(id="tileStateTrap")
 public class TileStateTrap extends TileState {
 	@Getter @Setter @Expose private TileType disguise;
 	@Getter @Setter @Expose private boolean identified;

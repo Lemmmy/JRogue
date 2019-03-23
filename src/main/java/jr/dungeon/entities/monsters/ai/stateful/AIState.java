@@ -1,7 +1,6 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
 import com.google.gson.annotations.Expose;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.monsters.Monster;
@@ -14,11 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,45 +42,15 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		this.duration = duration;
 	}
 	
+	public void setAI(T ai) {
+		this.ai = ai;
+	}
+	
 	/**
 	 * Called every turn - this is the state's chance to assign an action, or assign another state.
 	 */
 	public void update() {
 		turnsTaken = Math.max(0, turnsTaken - 1);
-	}
-	
-	/**
-	 * Instantiates and unserialises an AIState from serialised JSON.
-	 *
-	 * @param serialisedState The previously serialised JSONObject containing the AIState information.
-	 * @param ai The {@link StatefulAI} that hosts this state.
-	 *
-	 * @return A fully unserialised AIState instance.
-	 */
-	@SuppressWarnings("unchecked")
-	public static AIState createFromJSON(JSONObject serialisedState, StatefulAI ai) {
-		String stateClassName = serialisedState.getString("class");
-		
-		try {
-			Class<? extends AIState> stateClass = (Class<? extends AIState>) Class.forName(stateClassName);
-			Class<? extends StatefulAI> stateGenericClass = (Class<? extends StatefulAI>) ((ParameterizedType)
-				stateClass.getGenericSuperclass()).getActualTypeArguments()[0];
-			Constructor<? extends AIState> stateConstructor = stateClass.getConstructor(stateGenericClass, int.class);
-			
-			int duration = serialisedState.optInt("duration");
-			
-			AIState state = stateConstructor.newInstance(ai, duration);
-			state.unserialise(serialisedState);
-			return state;
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown AIState class {}", stateClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("AIState class {} has no unserialisation constructor", stateClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AIState class {}", stateClassName, e);
-		}
-		
-		return null;
 	}
 	
 	@Override

@@ -2,6 +2,7 @@ package jr.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.Random;
 /**
  * Generic dungeon level generator class with many utilities for generation.
  */
+@HasRegistry
 public abstract class DungeonGenerator {
 	/**
 	 * The {@link Level} that this generator is generating for.

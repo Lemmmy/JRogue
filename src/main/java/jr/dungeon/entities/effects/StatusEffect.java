@@ -34,6 +34,11 @@ public abstract class StatusEffect implements Serialisable, EventListener {
 		this.duration = duration;
 	}
 	
+	public void init(Messenger messenger, Entity entity) {
+		this.messenger = messenger;
+		this.entity = entity;
+	}
+	
 	public void turn() {
 		turnsPassed++;
 	}

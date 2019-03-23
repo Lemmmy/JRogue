@@ -1,6 +1,8 @@
 package jr.dungeon.tiles.states;
 
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Colour;
 import lombok.AllArgsConstructor;
@@ -8,8 +10,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public abstract class TileState implements EventListener {
+@HasRegistry
+public abstract class TileState implements Serialisable, EventListener {
 	private Tile tile;
+	
+	public void init(Tile tile) {
+		this.tile = tile;
+	}
 	
 	public Colour getLightColour() {
 		return null;

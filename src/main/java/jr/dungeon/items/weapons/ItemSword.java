@@ -12,7 +12,6 @@ import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -107,20 +106,6 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	@Override
 	public int getLargeDamage() {
 		return getMaterial().getBaseDamage(); // TODO
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("material", getMaterial().name());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		material = Material.valueOf(obj.getString("material"));
 	}
 	
 	public class MaterialTransformer implements TransformerType {}

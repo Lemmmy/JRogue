@@ -26,7 +26,6 @@ import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Set;
@@ -213,27 +212,7 @@ public abstract class Monster extends EntityLiving {
 	public int getExperienceRewarded() {
 		return getSize() == Size.SMALL ? RandomUtils.roll(1, 2) : RandomUtils.roll(2, 2);
 	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		if (ai != null) {
-			JSONObject serialisedAI = new JSONObject();
-			ai.serialise(serialisedAI);
-			obj.put("ai", serialisedAI);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("ai")) {
-			ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
-		}
-	}
-	
+
 	@Override
 	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();

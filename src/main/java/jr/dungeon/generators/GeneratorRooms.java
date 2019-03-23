@@ -1,5 +1,6 @@
 package jr.dungeon.generators;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
@@ -19,7 +20,6 @@ import jr.utils.*;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -166,6 +166,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	private Tile endTile;
 	
+	@Expose private Map<Class<? extends SpecialRoomFeature>, Integer> roomFeatures = new HashMap<>();
+	
 	/**
 	 * @param level The level that this generator is generating for.
 	 * @param sourceTile The tile that the player came from in the previous level.
@@ -200,9 +202,6 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		int width = nextInt(minRoomWidth, maxRoomWidth);
 		int height = nextInt(minRoomHeight, maxRoomHeight);
-		
-		level.getPersistence().remove("generatorPersistence");
-		level.getPersistence().put("generatorPersistence", new JSONObject());
 
 		createRooms(
 			nextInt(1, level.getWidth() - width - 1),
@@ -473,21 +472,23 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		int featureCount = probabilitySpecialFeatureCount.next();
 		
-		JSONObject featuresJSON = new JSONObject();
-		
 		for (int i = 0; i < featureCount; i++) {
 			try {
 				Class<? extends SpecialRoomFeature> featureClass = probabilitySpecialFeatures.next();
 				Constructor featureConstructor = featureClass.getConstructor();
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
+				
 				feature.generate(RandomUtils.randomFrom(rooms));
-				featuresJSON.increment(feature.getClass().getName());
+				
+				if (roomFeatures.containsKey(featureClass)) {
+					roomFeatures.put(featureClass, roomFeatures.get(featureClass) + 1);
+				} else {
+					roomFeatures.put(featureClass, 1);
+				}
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				ErrorHandler.error("Error adding room features", e);
 			}
 		}
-		
-		level.getPersistence().getJSONObject("generatorPersistence").put("roomFeatures", featuresJSON);
 	}
 	
 	/**

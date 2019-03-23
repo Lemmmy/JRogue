@@ -8,7 +8,6 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 /**
  * An {@link Entity} that gets a chance to run an {@link Action} based on the turn timer. A turn consists of 12
@@ -37,20 +36,6 @@ public abstract class EntityTurnBased extends Entity {
 	 */
 	public EntityTurnBased(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("movementPoints", movementPoints);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		movementPoints = obj.getInt("movementPoints");
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package jr.dungeon.entities;
 
 import com.google.gson.annotations.Expose;
-import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.EntityStore;
@@ -25,10 +24,7 @@ import jr.utils.VectorInt;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -279,38 +275,11 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void unserialiseStatusEffect(JSONObject serialisedStatusEffect) {
-		String statusEffectClassName = serialisedStatusEffect.getString("class");
-		
-		try {
-			Class<? extends StatusEffect> statusEffectClass = (Class<? extends StatusEffect>) Class
-				.forName(statusEffectClassName);
-			Constructor<? extends StatusEffect> statusEffectConstructor = statusEffectClass.getConstructor(
-				Dungeon.class,
-				Entity.class,
-				int.class
-			);
-			
-			StatusEffect effect = statusEffectConstructor.newInstance(
-				getDungeon(),
-				this,
-				serialisedStatusEffect.getInt("duration")
-			);
-			effect.unserialise(serialisedStatusEffect);
-			statusEffects.add(effect);
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown status effect class {}", statusEffectClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error(
-				"Status effect class {} has no unserialisation constructor",
-				statusEffectClassName
-			);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName, e);
-		}
+	@Override
+	public void afterDeserialise() {
+		statusEffects.forEach(statusEffect -> statusEffect.init(dungeon, this));
 	}
-
+	
 	/**
 	 * Adds a {@link jr.dungeon.entities.effects.StatusEffect} to this entity and triggers related events.
 	 * @param effect The effect to be applied.

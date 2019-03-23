@@ -20,7 +20,6 @@ import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.List;
@@ -134,31 +133,5 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("locked", locked);
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		locked = obj.getBoolean("locked");
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(serialisedInventory);
-		}
 	}
 }

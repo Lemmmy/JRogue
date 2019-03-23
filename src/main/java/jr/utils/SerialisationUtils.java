@@ -3,35 +3,29 @@ package jr.utils;
 import jr.JRogue;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Optional;
 
 public class SerialisationUtils {
-	public static Optional<byte[]> serialiseBooleanArray(Boolean[] arr) {
+	public static byte[] serialiseBooleanArray(boolean[] arr) {
 		try (
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos)
 		) {
-			Arrays.stream(arr).forEach(t -> {
-				try {
-					dos.writeBoolean(t);
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error serialising boolean array:", e);
-				}
-			});
+			for (Boolean t : arr) {
+				dos.writeBoolean(t);
+			}
 			
 			dos.flush();
 			
-			return Optional.of(bos.toByteArray());
+			return bos.toByteArray();
 		} catch (IOException e) {
 			JRogue.getLogger().error("Error serialising boolean array:", e);
 		}
 		
-		return Optional.empty();
+		return new byte[] {};
 	}
 	
-	public static Boolean[] unserialiseBooleanArray(byte[] bytes, int count) {
-		Boolean[] out = new Boolean[count];
+	public static boolean[] unserialiseBooleanArray(byte[] bytes, int count) {
+		boolean[] out = new boolean[count];
 		
 		try (
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);

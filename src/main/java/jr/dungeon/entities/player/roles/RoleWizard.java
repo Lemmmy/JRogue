@@ -10,6 +10,7 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellStrike;
 import jr.dungeon.items.weapons.ItemStaff;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Registered(id="roleWizard")
 public class RoleWizard extends Role {
 	static {
 		registerRole(RoleWizard.class);

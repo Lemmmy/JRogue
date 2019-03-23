@@ -5,7 +5,12 @@ package jr.dungeon.serialisation;
  */
 public interface Serialisable {
 	/**
-	 * Called on unserialisation, as unserialisation does <b>not</b> call constructors.
+	 * Called just before serialisation.
 	 */
-	default void onUnserialise() {}
+	default void beforeSerialise() {}
+	
+	/**
+	 * Called just after unserialisation, as deserialisation does <b>not</b> call constructors.
+	 */
+	default void afterDeserialise() {}
 }

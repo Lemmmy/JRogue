@@ -1,20 +1,19 @@
 package jr.dungeon.entities.effects;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.io.Messenger;
-import jr.dungeon.items.Item;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.serialisation.Registered;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Registered(id="statusEffectFoodPoisoning")
 public class FoodPoisoning extends StatusEffect {
-	private ItemComestible sourceFood;
+	@Expose private ItemComestible sourceFood;
 	
 	public FoodPoisoning() {
 		super(RandomUtils.random(10, 20));
@@ -50,22 +49,6 @@ public class FoodPoisoning extends StatusEffect {
 			EntityLiving living /* well, not anymore */ = (EntityLiving) getEntity();
 			
 			living.kill(new DamageSource(null, null, DamageType.FOOD_POISONING), living.getHealth());
-		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("sourceFood", sourceFood);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("sourceFood")) {
-			Item.createFromJSON(obj.getJSONObject("sourceFood")).ifPresent(i -> sourceFood = (ItemComestible) i);
 		}
 	}
 	

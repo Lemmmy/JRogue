@@ -8,9 +8,6 @@ import jr.utils.DebugToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
-
-import java.util.Optional;
 
 @Getter
 public class ItemStack {
@@ -48,27 +45,6 @@ public class ItemStack {
 	
 	public float getWeight() {
 		return item.getWeight() * count;
-	}
-	
-	public static Optional<ItemStack> createFromJSON(JSONObject serialisedItemStack) {
-		Optional<Item> item = Item.createFromJSON(serialisedItemStack.getJSONObject("item"));
-		
-		if (item.isPresent()) {
-			int count = serialisedItemStack.getInt("count");
-			
-			ItemStack itemStack = new ItemStack(item.get(), count);
-			return Optional.of(itemStack);
-		}
-		
-		return Optional.empty();
-	}
-	
-	public void serialise(JSONObject obj) {
-		obj.put("count", getCount());
-		
-		JSONObject serialisedItem = new JSONObject();
-		item.serialise(serialisedItem);
-		obj.put("item", serialisedItem);
 	}
 	
 	@Override
