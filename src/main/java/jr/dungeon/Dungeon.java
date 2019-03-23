@@ -68,6 +68,9 @@ public class Dungeon implements Messenger {
 	 * Map of the Dungeon's {@link Level}s with unique UUIDs as keys for serialisation reference.
 	 */
 	@Expose @Getter private Map<UUID, Level> levels = new HashMap<>();
+	
+	@Expose @Getter private UUID firstLevelUUID;
+	
 	/**
 	 * The {@link Level} that the {@link Player} is currently on.
 	 */
@@ -159,6 +162,8 @@ public class Dungeon implements Messenger {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 			levels.put(level.getUUID(), level);
 		}
+		
+		firstLevelUUID = level.getUUID();
 		
 		level.generate(null, GeneratorStandard.class);
 		

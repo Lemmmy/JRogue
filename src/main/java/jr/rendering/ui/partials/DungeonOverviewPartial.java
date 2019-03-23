@@ -12,11 +12,12 @@ import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.generators.Climate;
+import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
+import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.language.transformers.Plural;
-import org.json.JSONObject;
 
 import java.util.*;
 
@@ -47,9 +48,13 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	
 	private Texture whiteTexture;
 	
+	private DungeonRegistry<SpecialRoomFeature> featureRegistry;
+	
 	public DungeonOverviewPartial(Skin skin, Dungeon dungeon) {
 		this.skin = skin;
 		this.dungeon = dungeon;
+		
+		featureRegistry = GeneratorRooms.getRoomFeatureRegistry();
 		
 		whiteTexture = skin.get("white", Texture.class);
 		
@@ -57,7 +62,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	}
 	
 	private Node analyseDungeon() {
-		UUID firstLevelUUID = UUID.fromString(dungeon.serialiser.getPersistence().getString("firstLevel"));
+		UUID firstLevelUUID = dungeon.getFirstLevelUUID();
 		Level firstLevel = dungeon.getLevelFromUUID(firstLevelUUID);
 		
 		rootNode = new Node(firstLevel, null);
@@ -233,27 +238,27 @@ public class DungeonOverviewPartial extends WidgetGroup {
 	}
 	
 	private void addTreePart(Node node) {
+		Level level = node.level;
+		
 		Table nodeTable = new Table(skin);
 		node.table = nodeTable;
 		
-		nodeTable.setBackground(getNodeBackground(node.level));
-		nodeTable.add(new Label(node.level.toString(), skin, "large")).left().row();
+		nodeTable.setBackground(getNodeBackground(level));
+		nodeTable.add(new Label(level.toString(), skin, "large")).left().row();
 		
-		if (
-			node.level.getPersistence().has("generatorPersistence") &&
-			node.level.getPersistence().getJSONObject("generatorPersistence").has("roomFeatures")
-		) {
-			JSONObject generatorPersistence = node.level.getPersistence().getJSONObject("generatorPersistence");
-			JSONObject roomFeatures = generatorPersistence.getJSONObject("roomFeatures");
+		if (level.getGenerator() != null && level.getGenerator() instanceof GeneratorRooms) {
+			GeneratorRooms generator = (GeneratorRooms) level.getGenerator();
+			Map<String, Integer> roomFeatures = generator.getRoomFeatures();
 			
 			Table featuresTable = new Table(skin);
 			
-			roomFeatures.keySet().forEach(k -> {
+			roomFeatures.keySet().forEach(featureID -> {
 				try {
-					Class featureClass = Class.forName(k);
+					Class featureClass = featureRegistry.getClassFromID(featureID)
+						.orElseThrow(() -> new RuntimeException(String.format("Couldn't find class for SpecialRoomFeature `%s` in GeneratorRooms", featureID)));
 					SpecialRoomFeature feature = (SpecialRoomFeature) featureClass.newInstance();
 					
-					int count = roomFeatures.getInt(k);
+					int count = roomFeatures.get(featureID);
 					if (feature.getName() == null) return;
 					
 					Label featureLabel = new Label(Plural.addCount(feature.getName(), count).build(), skin);
@@ -266,7 +271,7 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			nodeTable.add(featuresTable).left().row();
 		}
 		
-		if (dungeon.getPlayer().getLevel() == node.level) {
+		if (dungeon.getPlayer().getLevel() == level) {
 			nodeTable.add(new Label("[WHITE]You died here", skin, "redBackground"))
 				.padTop(4).padBottom(4).growX().row();
 		}

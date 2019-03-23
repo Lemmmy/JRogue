@@ -16,6 +16,7 @@ import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemLongsword;
 import jr.dungeon.items.weapons.ItemShortsword;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Registered(id="specialRoomFeatureChest")
 public class FeatureChest extends SpecialRoomFeature {
 	private static final WeightedCollection<ItemGroup> ITEM_GROUPS = new WeightedCollection<>();
 	

@@ -6,10 +6,12 @@ import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.magic.EntityAltar;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="specialRoomFeatureAltar")
 public class FeatureAltar extends SpecialRoomFeature {
 	private static final double PROBABILITY_ALTAR_CANDLESTICK = 0.5;
 	

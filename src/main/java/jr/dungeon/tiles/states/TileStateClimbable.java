@@ -37,14 +37,14 @@ public class TileStateClimbable extends TileState {
 		destY = y;
 	}
 	
-	public DungeonRegistry<DungeonGenerator> getGeneratorRegistry() {
+	public static DungeonRegistry<DungeonGenerator> getGeneratorRegistry() {
 		return DungeonRegistries.findRegistryForClass(DungeonGenerator.class)
 			.orElseThrow(() -> new RuntimeException("Couldn't find DungeonGenerator registry in TileStateClimbable"));
 	}
 	
 	public void setDestinationGenerator(Class<? extends DungeonGenerator> generatorClass) {
 		generatorName = getGeneratorRegistry().getID(generatorClass)
-			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for DungeonGenerator `%s` in TileStateClimbable", generatorClass)));
+			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for DungeonGenerator `%s` in TileStateClimbable", generatorClass.getName())));
 	}
 	
 	// TODO: move this to somewhere more centralised (climbable tiles aren't going to be

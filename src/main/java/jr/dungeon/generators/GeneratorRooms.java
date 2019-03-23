@@ -13,6 +13,8 @@ import jr.dungeon.generators.rooms.features.FeatureAltar;
 import jr.dungeon.generators.rooms.features.FeatureChest;
 import jr.dungeon.generators.rooms.features.FeatureFountain;
 import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
+import jr.dungeon.serialisation.DungeonRegistries;
+import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -166,7 +168,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	private Tile endTile;
 	
-	@Expose private Map<Class<? extends SpecialRoomFeature>, Integer> roomFeatures = new HashMap<>();
+	@Expose @Getter private Map<String, Integer> roomFeatures = new HashMap<>();
 	
 	/**
 	 * @param level The level that this generator is generating for.
@@ -462,6 +464,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		// TODO: do we actually remove the rooms tiles??
 	}
 	
+	public static DungeonRegistry<SpecialRoomFeature> getRoomFeatureRegistry() {
+		return DungeonRegistries.findRegistryForClass(SpecialRoomFeature.class)
+			.orElseThrow(() -> new RuntimeException("Couldn't find SpecialRoomFeature registry in GeneratorRooms"));
+	}
+	
 	/**
 	 * Adds room-specific features and special dungeon features to selected rooms.
 	 *
@@ -479,11 +486,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
 				
 				feature.generate(RandomUtils.randomFrom(rooms));
+				String featureID = getRoomFeatureRegistry().getID(featureClass)
+					.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for SpecialRoomFeature `%s` in GeneratorRooms", featureClass.getName())));
 				
-				if (roomFeatures.containsKey(featureClass)) {
-					roomFeatures.put(featureClass, roomFeatures.get(featureClass) + 1);
+				if (roomFeatures.containsKey(featureID)) {
+					roomFeatures.put(featureID, roomFeatures.get(featureID) + 1);
 				} else {
-					roomFeatures.put(featureClass, 1);
+					roomFeatures.put(featureID, 1);
 				}
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				ErrorHandler.error("Error adding room features", e);

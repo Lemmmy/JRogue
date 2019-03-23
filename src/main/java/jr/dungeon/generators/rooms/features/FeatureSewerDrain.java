@@ -2,9 +2,11 @@ package jr.dungeon.generators.rooms.features;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.Noun;
 
+@Registered(id="specialRoomFeatureSewerDrain")
 public class FeatureSewerDrain extends SpecialRoomFeature {
 	private Pcg32 rand = new Pcg32();
 	

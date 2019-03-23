@@ -4,9 +4,11 @@ import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.decoration.EntityFountain;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="specialRoomFeatureFountain")
 public class FeatureFountain extends SpecialRoomFeature {
 	private Pcg32 rand = new Pcg32();
 	
