@@ -4,6 +4,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
@@ -160,11 +161,19 @@ public class EntityReference<T extends Entity> {
 	public class EntityReferenceTypeAdapter extends TypeAdapter<EntityReference> {
 		@Override
 		public void write(JsonWriter out, EntityReference value) throws IOException {
-			out.value(value.uuid.toString());
+			if (value != null && value.uuid != null) {
+				out.value(value.uuid.toString());
+			} else {
+				out.nullValue();
+			}
 		}
 		
 		@Override
 		public EntityReference read(JsonReader in) throws IOException {
+			if (!in.hasNext()) return new EntityReference();
+			JsonToken token = in.peek();
+			if (token == JsonToken.NULL) return new EntityReference();
+			
 			UUID uuid = UUID.fromString(in.nextString());
 			return new EntityReference(uuid);
 		}
