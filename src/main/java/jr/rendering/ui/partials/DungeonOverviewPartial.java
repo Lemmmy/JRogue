@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import jr.ErrorHandler;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.entities.player.Player;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
@@ -271,9 +272,13 @@ public class DungeonOverviewPartial extends WidgetGroup {
 			nodeTable.add(featuresTable).left().row();
 		}
 		
-		if (dungeon.getPlayer().getLevel() == level) {
-			nodeTable.add(new Label("[WHITE]You died here", skin, "redBackground"))
-				.padTop(4).padBottom(4).growX().row();
+		Player player = dungeon.getPlayer();
+		if (player.getLevel() == level) {
+			nodeTable.add(new Label(
+				player.isAlive() ? "[WHITE]You are here" : "[WHITE]You died here",
+				skin,
+				player.isAlive() ? "greenBackground" : "redBackground"
+			)).padTop(4).padBottom(4).growX().row();
 		}
 		
 		nodeTable.setX(node.x);
