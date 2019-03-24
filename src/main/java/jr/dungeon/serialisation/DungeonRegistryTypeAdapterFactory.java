@@ -38,6 +38,10 @@ public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory 
 				
 				TypeAdapter<T> delegate = (TypeAdapter<T>) gson.getDelegateAdapter(DungeonRegistryTypeAdapterFactory.this, TypeToken.get(valueClass));
 				
+				if (value instanceof Serialisable) {
+					((Serialisable) value).beforeSerialise();
+				}
+				
 				JsonObject serialised = delegate.toJsonTree(value).getAsJsonObject();
 				JsonObject clone = new JsonObject();
 				
@@ -74,7 +78,7 @@ public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory 
 				T result = delegate.fromJsonTree(element);
 				
 				if (result instanceof Serialisable) {
-					((Serialisable) result).afterDeserialise(); // TODO: may want to pass context here
+					((Serialisable) result).afterDeserialise();
 				}
 				
 				return result;
