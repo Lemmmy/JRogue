@@ -54,6 +54,8 @@ public class StatefulAI extends AI {
 		addTrait(new TraitExtrinsicFear(this));
 	}
 	
+	protected StatefulAI() { super(); }
+	
 	@Override
 	public void update() {
 		if (suppressTurns > 0 && suppressTurns-- > 0) return;

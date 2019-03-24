@@ -25,6 +25,8 @@ public class MonsterHellhound extends MonsterHound implements LightEmitter {
 		getAI().addAvoidTile(TileType.TILE_ROOM_PUDDLE);
 	}
 	
+	protected MonsterHellhound() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.hellhound.clone();

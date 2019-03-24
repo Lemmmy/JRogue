@@ -32,6 +32,8 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 		setAI(ai);
 	}
 	
+	protected AITrait() {} // deserialisation constructor
+	
 	public void setAI(T ai) {
 		this.ai = ai;
 	}

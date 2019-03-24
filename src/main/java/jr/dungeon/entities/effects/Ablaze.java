@@ -1,5 +1,6 @@
 package jr.dungeon.entities.effects;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
@@ -12,7 +13,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 @Registered(id="statusEffectAblaze")
 public class Ablaze extends StatusEffect {
-	private Severity severity;
+	@Expose private Severity severity;
 	
 	private boolean putOut;
 	

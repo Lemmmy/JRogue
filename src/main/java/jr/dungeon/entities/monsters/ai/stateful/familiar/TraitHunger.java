@@ -23,6 +23,8 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 		super(ai);
 	}
 	
+	protected TraitHunger() { super(); }
+	
 	@Override
 	public void update() {
 		assert getMonster() instanceof Familiar;

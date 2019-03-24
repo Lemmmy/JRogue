@@ -32,6 +32,8 @@ public class GhoulAI extends AI {
 		super(monster);
 	}
 	
+	protected GhoulAI() { super(); }
+	
 	@Override
 	public void update() {
 		turnsSinceLastAttack++;

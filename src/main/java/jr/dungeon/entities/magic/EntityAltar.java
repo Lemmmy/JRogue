@@ -24,6 +24,8 @@ public class EntityAltar extends Entity {
 		super(dungeon, level, x, y);
 	}
 	
+	protected EntityAltar() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.holyAltar.clone();

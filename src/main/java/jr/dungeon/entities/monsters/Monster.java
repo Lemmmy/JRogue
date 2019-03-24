@@ -33,19 +33,15 @@ import java.util.Set;
 public abstract class Monster extends EntityLiving {
 	@Expose private AI ai;
 	
-	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-		
-		if (dungeon == null) {
-			return;
-		}
-		
-		this.setExperienceLevel(Math.abs(level.getDepth()));
-	}
-	
 	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y, experienceLevel);
 	}
+	
+	public Monster(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y, Math.abs(level.getDepth()));
+	}
+	
+	protected Monster() { super(); }
 	
 	public AI getAI() {
 		return ai;

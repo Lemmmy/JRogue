@@ -26,6 +26,8 @@ public class MonsterLizard extends Monster {
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
+	protected MonsterLizard() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.lizard.clone();

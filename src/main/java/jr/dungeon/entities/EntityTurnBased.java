@@ -38,6 +38,8 @@ public abstract class EntityTurnBased extends Entity {
 		super(dungeon, level, x, y);
 	}
 	
+	protected EntityTurnBased() { super(); }
+	
 	/**
 	 * @param action Sets the next action to perform when this Entity gets a chance to move.
 	 */

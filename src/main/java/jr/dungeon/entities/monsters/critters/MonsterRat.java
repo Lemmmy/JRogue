@@ -37,6 +37,8 @@ public class MonsterRat extends Monster {
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
+	protected MonsterRat() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.rat.clone(); // science

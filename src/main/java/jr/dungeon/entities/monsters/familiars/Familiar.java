@@ -39,9 +39,11 @@ public abstract class Familiar extends Monster implements Friendly {
 	@Expose @Getter @Setter private float nutrition = 1400;
 	@Getter private NutritionState lastNutritionState;
 	
-	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor
+	public Familiar(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
+	
+	protected Familiar() { super(); }
 	
 	@Override
 	public int getNutritionalValue() {

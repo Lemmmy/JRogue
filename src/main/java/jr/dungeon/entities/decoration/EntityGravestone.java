@@ -32,6 +32,8 @@ public class EntityGravestone extends Entity implements Readable {
 		message = RandomUtils.randomFrom(GRAVE_MESSAGES);
 	}
 	
+	protected EntityGravestone() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.gravestone.clone();

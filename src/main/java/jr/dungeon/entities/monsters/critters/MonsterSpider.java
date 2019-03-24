@@ -39,6 +39,8 @@ public class MonsterSpider extends Monster {
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
+	protected MonsterSpider() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.spider.clone();

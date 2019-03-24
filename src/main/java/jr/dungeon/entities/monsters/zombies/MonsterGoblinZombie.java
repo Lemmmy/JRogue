@@ -23,13 +23,11 @@ public class MonsterGoblinZombie extends MonsterZombie {
 	public MonsterGoblinZombie(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		if (dungeon == null) {
-			return;
-		}
-		
 		setAI(new StatefulAI(this));
 		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
 	}
+	
+	protected MonsterGoblinZombie() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

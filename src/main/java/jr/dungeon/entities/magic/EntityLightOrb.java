@@ -30,6 +30,8 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 		turnsLeft = RandomUtils.roll(3, 5);
 	}
 	
+	protected EntityLightOrb() { super(); }
+	
 	@Override
 	public int getMovementSpeed() {
 		return Dungeon.NORMAL_SPEED;

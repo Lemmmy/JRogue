@@ -31,6 +31,8 @@ public class MonsterSkeleton extends Monster {
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
+	protected MonsterSkeleton() { super(); }
+	
 	@Override
 	protected int getBaseMaxHealth() {
 		return RandomUtils.roll(getExperienceLevel() * 2, 6);

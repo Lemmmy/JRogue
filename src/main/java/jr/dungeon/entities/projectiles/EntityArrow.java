@@ -19,6 +19,8 @@ public class EntityArrow extends EntityProjectile {
 		super(dungeon, level, x, y);
 	}
 	
+	protected EntityArrow() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.arrow.clone();

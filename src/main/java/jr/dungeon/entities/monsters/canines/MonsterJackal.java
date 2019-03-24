@@ -17,6 +17,8 @@ public class MonsterJackal extends MonsterCanine {
 		super(dungeon, level, x, y);
 	}
 	
+	protected MonsterJackal() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.jackal.clone();

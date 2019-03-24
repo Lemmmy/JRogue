@@ -17,6 +17,8 @@ public class MonsterFox extends MonsterCanine {
 		super(dungeon, level, x, y);
 	}
 	
+	protected MonsterFox() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.fox.clone();

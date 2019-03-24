@@ -36,10 +36,6 @@ public class MonsterGoblin extends Monster {
 	public MonsterGoblin(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
-		if (dungeon == null) {
-			return;
-		}
-		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);
 		ai.setDefaultState(new StateLurk(ai, 0));
@@ -48,6 +44,8 @@ public class MonsterGoblin extends Monster {
 		
 		getContainer().ifPresent(c -> c.add(new ItemStack(new ItemDagger(Material.IRON))).ifPresent(this::setRightHand));
 	}
+	
+	protected MonsterGoblin() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

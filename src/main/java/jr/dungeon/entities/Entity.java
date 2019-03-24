@@ -112,8 +112,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	/**
 	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
 	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
-	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler}
-	 * methods.
+	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler} methods.
 	 *
 	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
 	 * @param level The {@link Level} that this Entity is inside.
@@ -135,6 +134,8 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 		
 		this.visualID = RandomUtils.random(1000);
 	}
+	
+	protected Entity() {} // deserialisation constructor
 
 	/**
 	 * @return An identifier unique to this entity.

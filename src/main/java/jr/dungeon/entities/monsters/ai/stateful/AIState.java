@@ -42,6 +42,8 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		this.duration = duration;
 	}
 	
+	protected AIState() {} // deserialisation constructor
+	
 	public void setAI(T ai) {
 		this.ai = ai;
 	}

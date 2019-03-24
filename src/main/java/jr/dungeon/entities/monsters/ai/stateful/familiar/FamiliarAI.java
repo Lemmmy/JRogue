@@ -9,10 +9,12 @@ import jr.dungeon.serialisation.Registered;
 
 @Registered(id="aiFamiliar")
 public class FamiliarAI extends StatefulAI {
+	{
+		setPathfinder(new FamiliarPathfinder());
+	}
+	
 	public FamiliarAI(Monster monster) {
 		super(monster);
-		
-		setPathfinder(new FamiliarPathfinder());
 		
 		setShouldTargetPlayer(false);
 		
@@ -25,4 +27,6 @@ public class FamiliarAI extends StatefulAI {
 		addTrait(new TraitAvoidCursed(this));
 		addTrait(new TraitHunger(this));
 	}
+	
+	protected FamiliarAI() { super(); }
 }

@@ -25,6 +25,8 @@ public class MonsterPufferfish extends Monster {
 		setAI(new FishAI(this));
 	}
 	
+	protected MonsterPufferfish() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.pufferfish.clone();

@@ -39,6 +39,8 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 		locked = RandomUtils.rollD2();
 	}
 	
+	protected EntityChest() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.chest.clone();

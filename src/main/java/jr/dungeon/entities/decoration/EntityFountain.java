@@ -21,6 +21,8 @@ public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaff
 		super(dungeon, level, x, y);
 	}
 	
+	protected EntityFountain() { super(); }
+	
 	public boolean isFrozen() {
 		return getLevel().getClimate() == Climate.COLD;
 	}

@@ -35,6 +35,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		setMovementPoints(getMovementSpeed());
 	}
 	
+	protected EntityProjectile() { super(); }
+	
 	public int getDeltaX() {
 		return dx;
 	}

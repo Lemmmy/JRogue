@@ -20,10 +20,6 @@ import java.util.List;
 public class MonsterFish extends Monster {
 	@Expose private FishColour colour;
 	
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-	}
-	
 	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
 		super(dungeon, level, x, y, 1);
 		
@@ -31,6 +27,8 @@ public class MonsterFish extends Monster {
 		
 		setAI(new FishAI(this));
 	}
+	
+	protected MonsterFish() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

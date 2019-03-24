@@ -24,6 +24,8 @@ public class FishAI extends AI {
 		super(monster);
 	}
 	
+	protected FishAI() { super(); }
+	
 	@Override
 	public void update() {
 		if (distanceFromPlayer() >= SLEEP_DISTANCE) {

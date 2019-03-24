@@ -50,6 +50,8 @@ public abstract class AI implements Serialisable, EventListener {
 		avoidTiles.add(TileType.TILE_TRAP);
 	}
 	
+	protected AI() {} // deserialisation constructor
+	
 	@Override
 	public void afterDeserialise() {
 		pathfinder = new AStarPathfinder();

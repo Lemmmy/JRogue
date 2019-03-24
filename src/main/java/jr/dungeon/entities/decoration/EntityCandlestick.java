@@ -32,6 +32,8 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 		lit = isLit;
 	}
 	
+	protected EntityCandlestick() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.candlestick.clone();

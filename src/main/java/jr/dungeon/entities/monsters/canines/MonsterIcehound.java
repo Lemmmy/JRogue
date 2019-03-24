@@ -21,6 +21,8 @@ public class MonsterIcehound extends MonsterHound implements LightEmitter {
 		super(dungeon, level, x, y);
 	}
 	
+	protected MonsterIcehound() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.icehound.clone();

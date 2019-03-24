@@ -23,6 +23,8 @@ public class Cat extends Familiar {
 		ai.setDefaultState(new StateFollowPlayer(ai, 0));
 	}
 	
+	protected Cat() { super(); }
+	
 	@Override
 	public Noun getDefaultName(EntityLiving observer) {
 		return Lexicon.cat.clone();

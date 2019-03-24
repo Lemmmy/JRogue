@@ -10,13 +10,11 @@ import jr.language.Noun;
 
 @Registered(id="monsterMoldRed")
 public class MonsterMoldRed extends MonsterMold {
-	public MonsterMoldRed(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
-	}
-	
 	public MonsterMoldRed(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y, experienceLevel);
 	}
+	
+	protected MonsterMoldRed() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

@@ -70,16 +70,14 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	 */
 	@Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
 	
-	public EntityLiving(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		this(dungeon, level, x, y, 1);
-	}
-	
 	public EntityLiving(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
 		
 		maxHealth = getBaseMaxHealth();
 		health = getMaxHealth();
 	}
+	
+	protected EntityLiving() { super(); }
 	
 	protected int getBaseMaxHealth() {
 		return RandomUtils.roll(experienceLevel, 6);

@@ -32,6 +32,8 @@ public class Container implements EventListener {
 		this.name = name;
 	}
 	
+	public Container() {} // deserialisation constructor
+	
 	public int getItemCount() {
 		return items.size();
 	}

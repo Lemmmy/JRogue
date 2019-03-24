@@ -27,6 +27,8 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 		container = new WeaponRackContainer(getName(null));
 	}
 	
+	protected EntityWeaponRack() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.weaponRack.clone();

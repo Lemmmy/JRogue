@@ -15,6 +15,8 @@ public class TraitFollowPartner extends AITrait<FamiliarAI> {
 		super(ai);
 	}
 	
+	protected TraitFollowPartner() { super(); }
+	
 	@Override
 	public void update() {
 		if (ai.getCurrentState() == null || ai.getCurrentState().getDuration() == 0) {

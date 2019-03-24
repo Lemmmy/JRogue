@@ -28,15 +28,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class EntityItem extends Entity {
 	@Expose	@Getter private ItemStack itemStack;
 	
-	public EntityItem(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-	}
-	
 	public EntityItem(Dungeon dungeon, Level level, int x, int y, ItemStack itemStack) {
 		super(dungeon, level, x, y);
 		
 		this.itemStack = itemStack;
 	}
+	
+	protected EntityItem() { super(); }
 	
 	public Item getItem() {
 		return itemStack.getItem();

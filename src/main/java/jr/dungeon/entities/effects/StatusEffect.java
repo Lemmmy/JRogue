@@ -16,16 +16,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Getter
 @HasRegistry
 public abstract class StatusEffect implements Serialisable, EventListener {
-	@Setter private Messenger messenger;
+	@Setter private Messenger messenger = new BlankMessenger();
 	@Setter private Entity entity;
 	
 	@Expose private int duration;
 	@Expose @Setter(AccessLevel.PROTECTED) int turnsPassed = 0;
-	
-	public StatusEffect(int duration) {
-		this.messenger = new BlankMessenger();
-		this.duration = duration;
-	}
 	
 	public StatusEffect(Messenger messenger, Entity entity, int duration) {
 		this.messenger = messenger;
@@ -33,6 +28,12 @@ public abstract class StatusEffect implements Serialisable, EventListener {
 		
 		this.duration = duration;
 	}
+	
+	public StatusEffect(int duration) {
+		this.duration = duration;
+	}
+	
+	public StatusEffect() {}
 	
 	public void init(Messenger messenger, Entity entity) {
 		this.messenger = messenger;

@@ -25,6 +25,8 @@ public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 		super(ai);
 	}
 	
+	protected TraitAvoidCursed() { super(); }
+	
 	@EventHandler(selfOnly = true)
 	private void onStepOnCursed(EntityMovedEvent event) {
 		Monster m = getMonster();

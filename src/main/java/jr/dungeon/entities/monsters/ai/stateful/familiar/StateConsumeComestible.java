@@ -19,21 +19,16 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 	private EntityReference<EntityItem> targetComestible = new EntityReference<>();
 	
 	/**
-	 * @param ai       The {@link FamiliarAI} that hosts this state.
+	 * @param ai The {@link FamiliarAI} that hosts this state.
 	 * @param duration How many turns the state should run for. 0 for indefinite.
 	 * @param targetComestible The comestible to approach.
 	 */
 	public StateConsumeComestible(FamiliarAI ai, int duration, EntityItem targetComestible) {
 		super(ai, duration);
-		
 		this.targetComestible.set(targetComestible);
 	}
 	
-	@Override
-	public void afterDeserialise() {
-		super.afterDeserialise();
-		if (targetComestible == null) targetComestible = new EntityReference<>();
-	}
+	protected StateConsumeComestible() { super(); }
 	
 	@Override
 	public void update() {

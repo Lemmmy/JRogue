@@ -9,10 +9,11 @@ public class StateFollowPlayer extends AIState<FamiliarAI> {
 		super(ai, duration);
 	}
 	
+	protected StateFollowPlayer() { super(); }
+	
 	@Override
 	public void update() {
 		super.update();
-		
 		ai.moveTowardsPlayer();
 	}
 }

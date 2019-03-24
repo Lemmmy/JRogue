@@ -110,14 +110,7 @@ public class Player extends EntityLiving {
 		spawnFamiliar();
 	}
 	
-	@Override
-	public void afterDeserialise() {
-		super.afterDeserialise();
-		
-		pathfinder = new AStarPathfinder();
-		defaultVisitors = new PlayerDefaultVisitors(this);
-		defaultEvents = new PlayerDefaultEvents();
-	}
+	protected Player() { super(); }
 	
 	private void spawnFamiliar() {
 		Class<? extends Familiar> familiarClass = getRole().getStartingFamiliar();

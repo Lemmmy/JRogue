@@ -21,6 +21,8 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
 		super(dungeon, level, x, y);
 	}
 	
+	protected EntityStrike() { super(); }
+	
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.strike.clone();
