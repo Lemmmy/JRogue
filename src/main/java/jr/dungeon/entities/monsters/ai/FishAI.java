@@ -24,6 +24,13 @@ public class FishAI extends AI {
 	}
 	
 	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		random = new Pcg32();
+		moveProbability = 0.1f;
+	}
+	
+	@Override
 	public void update() {
 		if (distanceFromPlayer() >= SLEEP_DISTANCE) {
 			return; // no need to move if we're far away from the player

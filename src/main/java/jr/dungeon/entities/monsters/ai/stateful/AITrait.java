@@ -21,7 +21,6 @@ import java.util.Set;
 @Getter
 @HasRegistry
 public abstract class AITrait<T extends StatefulAI> implements Serialisable, EventListener {
-	protected Monster monster;
 	protected T ai;
 	
 	/**
@@ -35,7 +34,6 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 	
 	public void setAI(T ai) {
 		this.ai = ai;
-		this.monster = ai.getMonster();
 	}
 	
 	/**
@@ -52,8 +50,12 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 		val selves = new HashSet<>();
 		selves.add(this);
 		selves.add(ai);
-		selves.add(monster);
+		selves.add(getMonster());
 		return selves;
+	}
+	
+	public Monster getMonster() {
+		return ai.getMonster();
 	}
 	
 	/**

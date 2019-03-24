@@ -26,6 +26,12 @@ public class StateApproachComestible extends AIState<FamiliarAI> {
 	}
 	
 	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		if (targetComestible == null) targetComestible = new EntityReference<>();
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		

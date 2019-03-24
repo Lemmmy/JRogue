@@ -41,6 +41,12 @@ public class StateLurk extends AIState<StatefulAI> {
 	}
 	
 	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		if (lurkTarget == null) lurkTarget = new EntityReference<>();
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		

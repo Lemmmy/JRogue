@@ -36,6 +36,12 @@ public class GhoulAI extends AI {
 	}
 	
 	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		random = new Random();
+	}
+	
+	@Override
 	public void update() {
 		turnsSinceLastAttack++;
 		

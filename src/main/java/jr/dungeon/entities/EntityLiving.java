@@ -204,6 +204,8 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	
 	@Override
 	public void afterDeserialise() {
+		super.afterDeserialise();
+		
 		if (leftHandLetter != null) leftHand = inventory.get(leftHandLetter).orElse(null);
 		if (rightHandLetter != null) rightHand = inventory.get(rightHandLetter).orElse(null);
 	}

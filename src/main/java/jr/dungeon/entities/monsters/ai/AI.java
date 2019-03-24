@@ -50,6 +50,11 @@ public abstract class AI implements Serialisable, EventListener {
 		avoidTiles.add(TileType.TILE_TRAP);
 	}
 	
+	@Override
+	public void afterDeserialise() {
+		pathfinder = new AStarPathfinder();
+	}
+	
 	/**
 	 * Adds a tile to the list of tiles to avoid during pathfinding. The AI will absolutely never try to step on this
 	 * tile.

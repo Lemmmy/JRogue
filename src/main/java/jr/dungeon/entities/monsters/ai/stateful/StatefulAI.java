@@ -137,6 +137,10 @@ public class StatefulAI extends AI {
 	
 	@Override
 	public void afterDeserialise() {
+		super.afterDeserialise();
+		
+		if (currentTarget == null) currentTarget = new EntityReference<>();
+		
 		if (defaultState != null) defaultState.setAI(this);
 		if (currentState != null) currentState.setAI(this);
 		
