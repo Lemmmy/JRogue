@@ -46,12 +46,12 @@ public class VisibilityStore implements LevelStore {
 	
 	@Override
 	public void deserialise(Gson gson, JsonObject in) {
-		visibleTiles = SerialisationUtils.unserialiseBooleanArray(
+		visibleTiles = SerialisationUtils.deserialiseBooleanArray(
 			Base64.getDecoder().decode(in.get("visibleTiles").getAsString()),
 			width * height
 		);
 		
-		discoveredTiles = SerialisationUtils.unserialiseBooleanArray(
+		discoveredTiles = SerialisationUtils.deserialiseBooleanArray(
 			Base64.getDecoder().decode(in.get("discoveredTiles").getAsString()),
 			width * height
 		);

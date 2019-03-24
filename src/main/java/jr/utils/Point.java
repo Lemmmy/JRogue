@@ -25,11 +25,6 @@ public class Point implements Pool.Poolable {
 		return p;
 	}
 	
-	public static Point unserialise(String serialised) {
-		String[] coords = serialised.split(", ");
-		return getPoint(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
-	}
-
 	private Point() {
 		reset();
 	}

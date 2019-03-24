@@ -24,7 +24,7 @@ public class SerialisationUtils {
 		return new byte[] {};
 	}
 	
-	public static boolean[] unserialiseBooleanArray(byte[] bytes, int count) {
+	public static boolean[] deserialiseBooleanArray(byte[] bytes, int count) {
 		boolean[] out = new boolean[count];
 		
 		try (

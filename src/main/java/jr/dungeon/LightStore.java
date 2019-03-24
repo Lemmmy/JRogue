@@ -59,10 +59,10 @@ public class LightStore implements LevelStore {
 	
 	@Override
 	public void deserialise(Gson gson, JsonObject in) {
-		unserialiseLights(Base64.getDecoder().decode(in.get("lights").getAsString()));
+		deserialiseLights(Base64.getDecoder().decode(in.get("lights").getAsString()));
 	}
 	
-	private void unserialiseLights(byte[] bytes) {
+	private void deserialiseLights(byte[] bytes) {
 		try (
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis)

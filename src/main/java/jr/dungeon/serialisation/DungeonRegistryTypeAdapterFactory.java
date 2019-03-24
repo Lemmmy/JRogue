@@ -59,14 +59,14 @@ public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory 
 				
 				if (sourceID == null)
 					throw new JsonParseException(String.format(
-						"Cannot unserialise %s because the `%s` field is missing",
+						"Cannot deserialise %s because the `%s` field is missing",
 						targetClass.getSimpleName(), getFieldName()
 					));
 				
 				String id = sourceID.getAsString();
 				Class clazz = registry.getClassFromID(id)
 					.orElseThrow(() -> new JsonParseException(String.format(
-						"Attempting to unserialise unregistered %s `%s`",
+						"Attempting to deserialise unregistered %s `%s`",
 						targetClass.getSimpleName(), id
 					)));
 				

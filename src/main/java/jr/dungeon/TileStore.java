@@ -94,7 +94,7 @@ public class TileStore implements LevelStore {
 	public void deserialise(Gson gson, JsonObject in) {
 		eventsSuppressed = true;
 		
-		unserialiseTiles(Base64.getDecoder().decode(in.get("tiles").getAsString()));
+		deserialiseTiles(Base64.getDecoder().decode(in.get("tiles").getAsString()));
 		
 		TypeAdapter<TileState> tileStateAdapter = gson.getAdapter(TypeToken.get(TileState.class));
 		in.getAsJsonArray("tileStates").forEach(raw -> {
@@ -110,9 +110,7 @@ public class TileStore implements LevelStore {
 		eventsSuppressed = false;
 	}
 	
-	private void unserialiseTiles(byte[] bytes) {
-		Tile[] tiles = newTiles();
-		
+	private void deserialiseTiles(byte[] bytes) {
 		try (
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis)
@@ -123,7 +121,7 @@ public class TileStore implements LevelStore {
 				t.setType(type);
 			}
 		} catch (IOException e) {
-			JRogue.getLogger().error("IO error loading level - during TileStore unserialiseTiles:", e);
+			JRogue.getLogger().error("IO error loading level - during TileStore deserialiseTiles:", e);
 		}
 	}
 	
