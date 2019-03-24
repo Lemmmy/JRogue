@@ -12,6 +12,7 @@ import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.serialisation.DungeonSerialiser;
 import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
@@ -320,19 +321,10 @@ public class Dungeon implements Serialisable, Messenger {
 	 * Triggers the "Really quit without saving?" prompt.
 	 */
 	public void quit() {
-		prompt(new Prompt("Really quit without saving?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
-			@Override
-			public void onResponse(char response) {
-				if (response == 'y') {
-					serialiser.deleteSave();
-					eventSystem.triggerEvent(new QuitEvent());
-				}
+		prompt(new YesNoPrompt("Really quit without saving?", true, yes -> {
+			if (yes) {
+				serialiser.deleteSave();
+				eventSystem.triggerEvent(new QuitEvent());
 			}
 		}));
 	}
@@ -341,19 +333,10 @@ public class Dungeon implements Serialisable, Messenger {
 	 * Triggers the "Really save and quit?" prompt.
 	 */
 	public void saveAndQuit() {
-		prompt(new Prompt("Really save and quit?", new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
-			@Override
-			public void onNoResponse() {}
-			
-			@Override
-			public void onInvalidResponse(char response) {}
-			
-			@Override
-			public void onResponse(char response) {
-				if (response == 'y' && player.isAlive()) {
-					serialiser.save();
-					eventSystem.triggerEvent(new SaveAndQuitEvent());
-				}
+		prompt(new YesNoPrompt("Really save and quit?", true, yes -> {
+			if (yes && player.isAlive()) {
+				serialiser.save();
+				eventSystem.triggerEvent(new SaveAndQuitEvent());
 			}
 		}));
 	}

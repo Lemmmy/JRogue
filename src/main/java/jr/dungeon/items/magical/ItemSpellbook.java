@@ -8,7 +8,7 @@ import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.items.Readable;
 import jr.dungeon.items.*;
 import jr.dungeon.items.identity.AspectBookContents;
@@ -114,15 +114,8 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 						 "This spellbook is difficult to understand. Continue?" :
 						 "This spellbook is very difficult to understand. Continue?";
 			
-			reader.getDungeon().prompt(new Prompt(msg, new char[] {'y', 'n'}, true, new Prompt.SimplePromptCallback(reader.getDungeon()) {
-				@Override
-				public void onResponse(char response) {
-					if (response != 'y') {
-						return;
-					}
-					
-					read(reader, chance, alreadyKnown.get(), (char) letter.get());
-				}
+			reader.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+				if (yes) read(reader, chance, alreadyKnown.get(), (char) letter.get());
 			}));
 		} else {
 			read(reader, chance, alreadyKnown.get(), (char) letter.get());

@@ -8,7 +8,7 @@ import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.events.PlayerWalkedIntoSolidEvent;
-import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
@@ -81,18 +81,12 @@ public class PlayerWalk implements PlayerVisitor {
 	private void friendlyQuery(Player player, Entity ent) {
 		String msg = "Are you sure you want to attack [CYAN]" + ent.getName(player) + "[]?";
 		
-		player.getDungeon().prompt(new Prompt(
-			msg, new char[]{'y', 'n'}, true,
-			new Prompt.SimplePromptCallback(player.getDungeon()) {
-				@Override
-				public void onResponse(char response) {
-					if (response == 'y') {
-						meleeAction(player, ent);
-						player.getDungeon().turnSystem.turn(player.getDungeon());
-					}
-				}
+		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+			if (yes) {
+				meleeAction(player, ent);
+				player.getDungeon().turnSystem.turn(player.getDungeon());
 			}
-		));
+		}));
 	}
 	
 	private void meleeAction(Player player, Entity ent) {

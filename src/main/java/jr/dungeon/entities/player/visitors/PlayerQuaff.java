@@ -6,7 +6,7 @@ import jr.dungeon.entities.actions.ActionQuaffItem;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
@@ -26,16 +26,9 @@ public class PlayerQuaff extends PlayerItemVisitor {
 			.ifPresent(q -> {
 				String msg = q.getQuaffConfirmationMessage(player);
 				
-				player.getDungeon().prompt(new Prompt(msg, new char[] {'y', 'n'}, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
-					@Override
-					public void onResponse(char response) {
-						if (response != 'y') {
-							quaffItem(player);
-							return;
-						}
-						
-						quaffEntity(player, q);
-					}
+				player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+					if (yes) quaffEntity(player, q);
+					else quaffItem(player);
 				}));
 				
 				cancelled.set(true);

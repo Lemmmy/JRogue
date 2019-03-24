@@ -9,7 +9,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
-import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateDoor;
@@ -36,38 +36,35 @@ public class PlayerDefaultEvents implements EventListener {
 	private void onPlayerWalkedLockedDoor(Player player, Tile tile, int dx, int dy) {
 		String msg = "The door is locked. Kick it down?";
 		
-		player.getDungeon().prompt(new Prompt(msg, new char[]{'y', 'n'}, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (response == 'n') {
-					player.getDungeon().log("Nevermind.");
+		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+			if (!yes) {
+				player.getDungeon().log("Nevermind.");
+				return;
+			}
+			
+			for (int i = 0; i < 15; i++) {
+				if (i != 0) {
+					player.getDungeon().turnSystem.setDoingBulkAction(true);
+				}
+				
+				player.setAction(new ActionKick(new VectorInt(dx, dy), null));
+				player.getDungeon().turnSystem.turn(player.getDungeon());
+				
+				if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
+					player.getDungeon().turnSystem.setDoingBulkAction(false);
 					return;
 				}
 				
-				for (int i = 0; i < 15; i++) {
-					if (i != 0) {
-						player.getDungeon().turnSystem.setDoingBulkAction(true);
-					}
-					
-					player.setAction(new ActionKick(new VectorInt(dx, dy), null));
-					player.getDungeon().turnSystem.turn(player.getDungeon());
-					
-					if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
-						player.getDungeon().turnSystem.setDoingBulkAction(false);
-						return;
-					}
-					
-					if (player.getDungeon().turnSystem.isSomethingHappened()) {
-						player.getDungeon().turnSystem.setDoingBulkAction(false);
-						player.getDungeon().log("You stop kicking the door.");
-						return;
-					}
+				if (player.getDungeon().turnSystem.isSomethingHappened()) {
+					player.getDungeon().turnSystem.setDoingBulkAction(false);
+					player.getDungeon().log("You stop kicking the door.");
+					return;
 				}
-				
-				player.getDungeon().turnSystem.setDoingBulkAction(false);
-				
-				player.getDungeon().log("Unable to kick the door down after 15 turns.");
 			}
+			
+			player.getDungeon().turnSystem.setDoingBulkAction(false);
+			
+			player.getDungeon().log("Unable to kick the door down after 15 turns.");
 		}));
 	}
 	

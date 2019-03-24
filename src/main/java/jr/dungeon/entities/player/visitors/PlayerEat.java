@@ -4,7 +4,7 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.io.Prompt;
+import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.language.LanguageUtils;
@@ -35,35 +35,31 @@ public class PlayerEat extends PlayerItemVisitor {
 		ItemComestible item = (ItemComestible) entity.getItem();
 		
 		String msg = String.format("There is [YELLOW]%s[] here. Eat it?", LanguageUtils.anObject(player, item));
-		char[] options = new char[]{'y', 'n'};
 		
-		player.getDungeon().prompt(new Prompt(msg, options, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
-			@Override
-			public void onResponse(char response) {
-				if (response == 'n') {
-					eatFromInventory(player);
-					return;
-				}
+		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+			if (!yes) {
+				eatFromInventory(player);
+				return;
+			}
+			
+			if (stack.getCount() == 1) {
+				entity.remove();
+			} else {
+				stack.subtractCount(1);
+			}
+			
+			eatTurns(player, item);
+			
+			if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
+				EntityItem newStack = new EntityItem(
+					player.getDungeon(),
+					player.getLevel(),
+					player.getX(),
+					player.getY(),
+					new ItemStack(item, 1)
+				);
 				
-				if (stack.getCount() == 1) {
-					entity.remove();
-				} else {
-					stack.subtractCount(1);
-				}
-				
-				eatTurns(player, item);
-				
-				if (item.getEatenState() != ItemComestible.EatenState.EATEN) {
-					EntityItem newStack = new EntityItem(
-						player.getDungeon(),
-						player.getLevel(),
-						player.getX(),
-						player.getY(),
-						new ItemStack(item, 1)
-					);
-					
-					player.getLevel().entityStore.addEntity(newStack);
-				}
+				player.getLevel().entityStore.addEntity(newStack);
 			}
 		}));
 	}

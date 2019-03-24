@@ -132,7 +132,7 @@ public class Prompt {
 	 * Simple {@link Prompt} callback that responds with a static message when no response or an invalid response is
 	 * received.
 	 */
-	public abstract static class SimplePromptCallback implements PromptCallback {
+	public static abstract class SimplePromptCallback implements PromptCallback {
 		/**
 		 * Message to log if the user provides no response ({@link Prompt#escape escapes} the prompt).
 		 */
