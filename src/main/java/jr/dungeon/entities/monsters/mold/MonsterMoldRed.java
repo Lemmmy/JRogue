@@ -10,8 +10,8 @@ import jr.language.Noun;
 
 @Registered(id="monsterMoldRed")
 public class MonsterMoldRed extends MonsterMold {
-	public MonsterMoldRed(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
+	public MonsterMoldRed(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y);
 	}
 	
 	protected MonsterMoldRed() { super(); }

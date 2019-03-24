@@ -14,8 +14,8 @@ import jr.utils.RandomUtils;
 import java.util.List;
 
 public abstract class MonsterMold extends Monster {
-	public MonsterMold(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
+	public MonsterMold(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y);
 	}
 	
 	protected MonsterMold() { super(); }
