@@ -104,6 +104,7 @@ public class TileStore implements LevelStore {
 			
 			Tile tile = getTile(x, y);
 			TileState tileState = tileStateAdapter.fromJsonTree(serialisedTileState);
+			tileState.init(tile);
 			tile.setState(tileState);
 		});
 		
