@@ -1,12 +1,13 @@
 package jr.dungeon.items.identity;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.items.Item;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 /**
  * Beatitude aspect - the 'holiness' of an item.
@@ -16,8 +17,9 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
+@Registered(id="aspectBeatitude")
 public class AspectBeatitude extends Aspect {
-	private Beatitude beatitude = Beatitude.UNCURSED;
+	@Expose private Beatitude beatitude = Beatitude.UNCURSED;
 	
 	@Override
 	public String getName() {
@@ -32,16 +34,6 @@ public class AspectBeatitude extends Aspect {
 	@Override
 	public boolean isPersistent() {
 		return false;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("beatitude", beatitude.name());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		beatitude = Beatitude.valueOf(obj.optString("beatitude", Beatitude.UNCURSED.name()));
 	}
 	
 	@Override

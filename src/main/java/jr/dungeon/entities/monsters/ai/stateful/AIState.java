@@ -1,18 +1,19 @@
 package jr.dungeon.entities.monsters.ai.stateful;
 
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
+import jr.dungeon.entities.monsters.Monster;
+import jr.dungeon.entities.monsters.ai.AI;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,11 +26,12 @@ import java.util.Set;
  * This AI system may be replaced soon.
  */
 @Getter
+@HasRegistry
 public class AIState<T extends StatefulAI> implements Serialisable, EventListener {
-	private T ai;
+	protected T ai;
 	
-	@Setter private int duration;
-	@Setter private int turnsTaken = 0;
+	@Expose @Setter private int duration;
+	@Expose @Setter private int turnsTaken = 0;
 	
 	/**
 	 * @param ai The {@link StatefulAI} that hosts this state.
@@ -40,8 +42,10 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 		this.duration = duration;
 	}
 	
-	public T getAI() {
-		return ai;
+	protected AIState() {} // deserialisation constructor
+	
+	public void setAI(T ai) {
+		this.ai = ai;
 	}
 	
 	/**
@@ -52,59 +56,28 @@ public class AIState<T extends StatefulAI> implements Serialisable, EventListene
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		
-		obj.put("duration", duration);
-		obj.put("turnsTaken", turnsTaken);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		turnsTaken = obj.optInt("turnsTaken");
-	}
-	
-	/**
-	 * Instantiates and unserialises an AIState from serialised JSON.
-	 *
-	 * @param serialisedState The previously serialised JSONObject containing the AIState information.
-	 * @param ai The {@link StatefulAI} that hosts this state.
-	 *
-	 * @return A fully unserialised AIState instance.
-	 */
-	@SuppressWarnings("unchecked")
-	public static AIState createFromJSON(JSONObject serialisedState, StatefulAI ai) {
-		String stateClassName = serialisedState.getString("class");
-		
-		try {
-			Class<? extends AIState> stateClass = (Class<? extends AIState>) Class.forName(stateClassName);
-			Class<? extends StatefulAI> stateGenericClass = (Class<? extends StatefulAI>) ((ParameterizedType)
-				stateClass.getGenericSuperclass()).getActualTypeArguments()[0];
-			Constructor<? extends AIState> stateConstructor = stateClass.getConstructor(stateGenericClass, int.class);
-			
-			int duration = serialisedState.optInt("duration");
-			
-			AIState state = stateConstructor.newInstance(ai, duration);
-			state.unserialise(serialisedState);
-			return state;
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown AIState class {}", stateClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("AIState class {} has no unserialisation constructor", stateClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AIState class {}", stateClassName, e);
-		}
-		
-		return null;
-	}
-	
-	@Override
 	public Set<Object> getListenerSelves() {
 		val selves = new HashSet<>();
 		selves.add(this);
 		selves.add(ai);
 		selves.add(ai.getMonster());
 		return selves;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster
+	 *         or {@link AI} is null.
+	 */
+	public Dungeon getDungeon() {
+		return ai != null ? ai.getDungeon() : null;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster
+	 *         or {@link AI} is null.
+	 */
+	public Level getLevel() {
+		return ai != null ? ai.getLevel() : null;
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -9,21 +10,24 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Registered(id="entityWeaponRack")
 public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
-	private Container container;
+	@Expose private Container container;
 	
 	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
 		container = new WeaponRackContainer(getName(null));
 	}
+	
+	protected EntityWeaponRack() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
@@ -66,27 +70,5 @@ public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(WeaponRackContainer.class, serialisedInventory);
-		}
 	}
 }

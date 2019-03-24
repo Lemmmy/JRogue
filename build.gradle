@@ -47,8 +47,8 @@ dependencies {
 
 	compile group: "com.github.alexeyr.pcg", name: "pcg", version: "0.9.1"
 	compile group: "org.ini4j", name: "ini4j", version: "0.5.4"
-	compile group: "org.json", name: "json", version: "20180813"
 	compile group: "org.reflections", name: "reflections", version: "0.9.11"
+	compile group: "com.google.code.gson", name: "gson", version: "2.8.5"
 
 	compile group: "org.fusesource.jansi", name: "jansi", version: "1.17.1"
 
@@ -113,7 +113,7 @@ task obfuscate(type: ProGuardTask, dependsOn: "subJar") {
 	injars "$buildDir/tmp/${jarName}-deobf-${version}.jar"
 	outjars "$buildDir/tmp/${jarName}-obf-${version}.jar"
 
-	libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+	libraryjars "${System.getProperty("java.home")}/lib/rt.jar"
 	libraryjars files(configurations.compile.collect())
 
 	printmapping "proguard.map"
@@ -145,6 +145,6 @@ javadoc {
 
 gradle.projectsEvaluated {
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint:-processing" << "-Xlint:unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999" << "-Xlint:deprecation"
+		options.compilerArgs << "-Xlint:-processing" << "-Xlint:-unchecked" << "-Xlint:-rawtypes" << "-Xmaxerrs" << "9999" << "-Xlint:deprecation"
 	}
 }

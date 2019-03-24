@@ -1,5 +1,6 @@
 package jr.dungeon.entities.magic;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
@@ -8,6 +9,7 @@ import jr.dungeon.entities.EntityTurnBased;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
@@ -15,18 +17,20 @@ import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.Colour;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
+@Registered(id="entityLightOrb")
 public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xAAFFECFF);
 	
-	private int turnsLeft;
+	@Expose private int turnsLeft;
 	
 	public EntityLightOrb(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
 		turnsLeft = RandomUtils.roll(3, 5);
 	}
+	
+	protected EntityLightOrb() { super(); }
 	
 	@Override
 	public int getMovementSpeed() {
@@ -91,19 +95,5 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	@Override
 	public int getLightIntensity() {
 		return 100;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("turnsLeft", turnsLeft);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		turnsLeft = obj.getInt("turnsLeft");
 	}
 }

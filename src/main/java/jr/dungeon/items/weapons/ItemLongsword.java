@@ -5,9 +5,11 @@ import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.Material;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="itemLongsword")
 public class ItemLongsword extends ItemSword {
 	public ItemLongsword() { // unserialisation constructor
 		super();

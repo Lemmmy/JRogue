@@ -1,64 +1,56 @@
 package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
+import com.google.gson.annotations.Expose;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.Utils;
-import org.json.JSONObject;
+import lombok.AccessLevel;
+import lombok.Setter;
 
+@Registered(id="aiStateFamiliarApproachComestible")
 public class StateApproachComestible extends AIState<FamiliarAI> {
-	private EntityItem targetComestible;
+	@Expose @Setter(AccessLevel.NONE)
+	private EntityReference<EntityItem> targetComestible = new EntityReference<>();
 	
 	/**
-	 * @param ai       The {@link FamiliarAI} that hosts this state.
+	 * @param ai The {@link FamiliarAI} that hosts this state.
 	 * @param duration How many turns the state should run for. 0 for indefinite.
 	 * @param targetComestible The comestible to approach.
 	 */
 	public StateApproachComestible(FamiliarAI ai, int duration, EntityItem targetComestible) {
 		super(ai, duration);
-		
-		this.targetComestible = targetComestible;
+		this.targetComestible.set(targetComestible);
 	}
+	
+	protected StateApproachComestible() { super(); }
 	
 	@Override
 	public void update() {
 		super.update();
 		
+		EntityItem target = targetComestible.get(getLevel());
+		
 		if (
-			targetComestible == null ||
-			targetComestible.getLevel() != getAI().getMonster().getLevel() ||
-			targetComestible.getLevel() == null ||
-			!getAI().getMonster().getLevel().entityStore.hasEntity(targetComestible)
+			target == null ||
+			target.getLevel() != getLevel() ||
+			target.getLevel() == null ||
+			!getLevel().entityStore.hasEntity(target)
 		) {
-			getAI().setCurrentState(null);
+			ai.setCurrentState(null);
 			return;
 		}
 		
-		if (Utils.chebyshevDistance(targetComestible.getPosition(), getAI().getMonster().getPosition()) <= 1) {
-			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, targetComestible));
+		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 			return;
 		}
 		
-		getAI().moveTowards(targetComestible);
+		ai.moveTowards(target);
 		
-		if (Utils.chebyshevDistance(targetComestible.getPosition(), getAI().getMonster().getPosition()) <= 1) {
-			getAI().setCurrentState(new StateConsumeComestible(getAI(), 3, targetComestible));
-		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("targetComestible", targetComestible.getUUID().toString());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("targetComestible")) {
-			targetComestible = (EntityItem) getAI().getMonster().getLevel()
-				.entityStore.getEntityByUUID(obj.getString("targetComestible"));
+		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 		}
 	}
 }

@@ -1,24 +1,29 @@
 package jr.dungeon.entities.monsters.ai;
 
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
+import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.TileType;
-import jr.utils.*;
+import jr.utils.DebugToStringStyle;
+import jr.utils.Path;
+import jr.utils.Point;
+import jr.utils.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,13 +35,12 @@ import java.util.Set;
  *
  * @see jr.dungeon.entities.monsters.ai.stateful.StatefulAI
  */
-public abstract class AI implements Serialisable, Persisting, EventListener {
-	@NonNull @Getter private Monster monster;
+@HasRegistry
+public abstract class AI implements Serialisable, EventListener {
+	@NonNull @Getter @Setter private Monster monster;
 	
 	@Getter @Setter	private AStarPathfinder pathfinder = new AStarPathfinder();
-	private List<TileType> avoidTiles = new ArrayList<>();
-	
-	private JSONObject persistence = new JSONObject();
+	@Expose private List<TileType> avoidTiles = new ArrayList<>();
 	
 	protected int suppressTurns = 0;
 	
@@ -44,6 +48,13 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 		this.monster = monster;
 		
 		avoidTiles.add(TileType.TILE_TRAP);
+	}
+	
+	protected AI() {} // deserialisation constructor
+	
+	@Override
+	public void afterDeserialise() {
+		pathfinder = new AStarPathfinder();
 	}
 	
 	/**
@@ -205,6 +216,17 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	}
 	
 	/**
+	 * {@link #moveTowards(Point) Moves towards} the {@link Entity} serialised within an
+	 * {@link EntityReference}.
+	 *
+	 * @param entity The entity to {@link #moveTowards(Point) move towards.}
+	 */
+	public void moveTowards(EntityReference entity) {
+		if (!entity.isSet()) return;
+		moveTowards(entity.get(getLevel()).getPosition());
+	}
+	
+	/**
 	 * {@link #moveTowards(int, int) Moves towards} the specified point.
 	 *
 	 * @param point The position to {@link #moveTowards(int, int) move towards.}
@@ -271,53 +293,6 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	public abstract void update();
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		
-		serialisePersistence(obj);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		unserialisePersistence(obj);
-	}
-	
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
-	
-	/**
-	 * Instantiates and unserialises an AI from serialised JSON.
-	 *
-	 * @param serialisedAI The previously serialised JSONObject containing the AI information.
-	 * @param monster The {@link Monster} that hosts this AI.
-	 *
-	 * @return A fully unserialised AI instance.
-	 */
-	@SuppressWarnings("unchecked")
-	public static AI createFromJSON(JSONObject serialisedAI, Monster monster) {
-		String aiClassName = serialisedAI.getString("class");
-		
-		try {
-			Class<? extends AI> aiClass = (Class<? extends AI>) Class.forName(aiClassName);
-			Constructor<? extends AI> aiConstructor = aiClass.getConstructor(Monster.class);
-			
-			AI ai = aiConstructor.newInstance(monster);
-			ai.unserialise(serialisedAI);
-			return ai;
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown AI class {}", aiClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("AI class {} has no unserialisation constructor", aiClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading AI class {}", aiClassName, e);
-		}
-		
-		return null;
-	}
-	
-	@Override
 	public Set<Object> getListenerSelves() {
 		val selves = new HashSet<>();
 		selves.add(this);
@@ -340,5 +315,19 @@ public abstract class AI implements Serialisable, Persisting, EventListener {
 	
 	public void suppress(int turns) {
 		suppressTurns = turns;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster is null.
+	 */
+	public Dungeon getDungeon() {
+		return getMonster() != null ? getMonster().getDungeon() : null;
+	}
+	
+	/**
+	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster is null.
+	 */
+	public Level getLevel() {
+		return getMonster() != null ? getMonster().getLevel() : null;
 	}
 }

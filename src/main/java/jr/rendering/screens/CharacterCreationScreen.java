@@ -13,9 +13,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.player.Attributes;
 import jr.dungeon.entities.player.roles.Role;
+import jr.dungeon.serialisation.DungeonSerialiser;
 import jr.rendering.GameAdapter;
 import jr.rendering.entities.RoleMap;
 import jr.rendering.screens.utils.SlidingTransition;
@@ -169,7 +169,7 @@ public class CharacterCreationScreen extends BasicScreen {
 				JRogue.getSettings().setRole(selectedRole);
 				JRogue.getSettings().setAttributes(attributes);
 				
-				game.setScreen(new GameScreen(game, Dungeon.load()), new SlidingTransition(
+				game.setScreen(new GameScreen(game, DungeonSerialiser.load()), new SlidingTransition(
 					SlidingTransition.Direction.LEFT,
 					false,
 					Interpolation.pow4

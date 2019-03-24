@@ -176,7 +176,7 @@ public class Wishes {
 			}
 		});
 		registerWish("identify all", (d, p, a) -> p.getContainer().ifPresent(c -> c.getItems().forEach((ch, i) -> {
-			i.getItem().getAspects().forEach((aClass, aspect) -> i.getItem().observeAspect(p, aClass));
+			i.getItem().getAspects().forEach((aspectID, aspect) -> i.getItem().observeAspect(p, aspectID));
 			i.getItem().getPersistentAspects().forEach(aspect -> p.observeAspect(i.getItem(), aspect.getClass()));
 		})));
 		registerWish("bless (.)", (d, p, a) -> {

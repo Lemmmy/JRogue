@@ -1,6 +1,6 @@
 package jr.dungeon;
 
-import jr.ErrorHandler;
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.entities.EntityLiving;
@@ -12,26 +12,21 @@ import jr.dungeon.generators.DungeonNameGenerator;
 import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
+import jr.dungeon.serialisation.DungeonSerialiser;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
  * levels, and player.
  */
-public class Dungeon implements Messenger {
+public class Dungeon implements Serialisable, Messenger {
 	/**
 	 * The amount of 'ticks' in a turn.
 	 *
@@ -56,19 +51,27 @@ public class Dungeon implements Messenger {
 	private static org.apache.logging.log4j.Level gameLogLevel;
 	
 	/**
+	 * The version of the game this dungeon was last saved on
+	 */
+	@Expose @Getter @Setter private String version = JRogue.VERSION;
+	
+	/**
 	 * Randomly generated name of this dungeon
 	 */
-	@Getter @Setter private String originalName;
+	@Expose @Getter @Setter private String originalName;
 	
 	/**
 	 * User-chosen name of this dungeon
 	 */
-	@Getter @Setter private String name;
+	@Expose @Getter @Setter private String name;
 	
 	/**
 	 * Map of the Dungeon's {@link Level}s with unique UUIDs as keys for serialisation reference.
 	 */
-	@Getter private Map<UUID, Level> levels = new HashMap<>();
+	@Expose @Getter private Map<UUID, Level> levels = new HashMap<>();
+	
+	@Expose @Getter private UUID firstLevelUUID;
+	
 	/**
 	 * The {@link Level} that the {@link Player} is currently on.
 	 */
@@ -78,11 +81,11 @@ public class Dungeon implements Messenger {
 	 */
 	@Getter @Setter private Player player;
 	
-	public final EventSystem eventSystem;
+	public EventSystem eventSystem;
 	
-	public final TurnSystem turnSystem;
+	@Expose public final TurnSystem turnSystem;
 	
-	public final DungeonSerialiser serialiser;
+	public DungeonSerialiser serialiser;
 	
 	/**
 	 * @see Prompt
@@ -107,8 +110,17 @@ public class Dungeon implements Messenger {
 		serialiser = new DungeonSerialiser(this);
 		eventSystem = new EventSystem(this);
 		turnSystem = new TurnSystem(this);
-		
+	}
+	
+	public void initialise() {
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
+	}
+	
+	@Override
+	public void afterDeserialise() {
+		serialiser = new DungeonSerialiser(this);
+		eventSystem = new EventSystem(this);
+		turnSystem.setDungeon(this);
 	}
 	
 	/**
@@ -160,6 +172,8 @@ public class Dungeon implements Messenger {
 			level = new Level(this, LEVEL_WIDTH, LEVEL_HEIGHT, -1);
 			levels.put(level.getUUID(), level);
 		}
+		
+		firstLevelUUID = level.getUUID();
 		
 		level.generate(null, GeneratorStandard.class);
 		
@@ -316,7 +330,7 @@ public class Dungeon implements Messenger {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'y') {
-					deleteSave();
+					serialiser.deleteSave();
 					eventSystem.triggerEvent(new QuitEvent());
 				}
 			}
@@ -337,7 +351,7 @@ public class Dungeon implements Messenger {
 			@Override
 			public void onResponse(char response) {
 				if (response == 'y' && player.isAlive()) {
-					save();
+					serialiser.save();
 					eventSystem.triggerEvent(new SaveAndQuitEvent());
 				}
 			}
@@ -345,71 +359,20 @@ public class Dungeon implements Messenger {
 	}
 	
 	/**
-	 * Saves this dungeon as dungeon.save.gz in the game data directory.
+	 * Sets the level for internal usage from the {@link DungeonSerialiser}. Do not use this method.
+	 * @param level The level to set as the current level.
 	 */
-	public void save() {
-		java.nio.file.Path dataDir = DungeonSerialiser.getDataDir();
-		
-		if (!dataDir.toFile().isDirectory() && !dataDir.toFile().mkdirs
-			()) {
-			JRogue.getLogger().error("Failed to create save directory. Permissions problem?");
-			return;
-		}
-		
-		File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-		
-		try (
-			GZIPOutputStream os = new GZIPOutputStream(new FileOutputStream(file));
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))
-		) {
-			JSONObject serialisedDungeon = new JSONObject();
-			serialiser.serialise(serialisedDungeon);
-			writer.append(serialisedDungeon.toString());
-		} catch (Exception e) {
-			ErrorHandler.error("Error saving dungeon", e);
-		}
+	public void setLevelInternal(Level level) {
+		this.level = level;
 	}
 	
-	public static boolean canLoad() {
-		return new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString()).exists();
-	}
-	
-	/**
-	 * @return The dungeon specified in dungeon.save.gz in the game data directory.
-	 */
-	public static Dungeon load() {
-		Dungeon dungeon = new Dungeon();
-		
-		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
-		
-		if (file.exists()) {
-			try (
-				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-			) {
-				JSONTokener tokener = new JSONTokener(reader);
-				JSONObject serialisedDungeon = new JSONObject(tokener);
-				
-				dungeon.serialiser.unserialise(serialisedDungeon);
-				return dungeon;
-			} catch (Exception e) {
-				ErrorHandler.error("Error loading dungeon", e);
-			}
-		}
-		
-		Level firstLevel = dungeon.generateFirstLevel();
-		dungeon.serialiser.getPersistence().put("firstLevel", firstLevel.getUUID().toString());
-		return dungeon;
-	}
-	
-	/**
-	 * Deletes the game save file.
-	 */
-	public void deleteSave() {
-		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
-		
-		if (file.exists() && !file.delete()) {
-			ErrorHandler.error("Failed to delete save file. Please delete the file at " + file.getAbsolutePath(), null);
-		}
+	public void searchForPlayer() {
+		levels.values().stream()
+			.map(l -> l.entityStore.getEntities())
+			.flatMap(Collection::stream)
+			.filter(Player.class::isInstance)
+			.findFirst()
+			.map(Player.class::cast)
+			.ifPresent(this::setPlayer);
 	}
 }

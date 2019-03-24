@@ -1,21 +1,14 @@
 package jr.dungeon;
 
-import jr.ErrorHandler;
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.entities.monsters.Monster;
-import jr.dungeon.entities.player.Player;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,11 +16,11 @@ import java.util.stream.Collectors;
  * Store class for {@link Entity Entities}. Handles storage, serialisation, unserialisation, getters and setters
  * related to {@link Entity Entities}.
  */
-public class EntityStore implements Serialisable {
+public class EntityStore {
 	/**
 	 * The map of {@link Entity Entities} in the {@link Level}.
 	 */
-	private Map<UUID, Entity> entities;
+	@Expose private Map<UUID, Entity> entities;
 	
 	/**
 	 * Queue of {@link Entity Entities} that are being added. Queues are processed and flushed at the start and end
@@ -53,75 +46,25 @@ public class EntityStore implements Serialisable {
 	 * @param level The {@link Level} this EntityStore is storing {@link Entity Entities} for.
 	 */
 	public EntityStore(Level level) {
-		this.dungeon = level.getDungeon();
 		this.level = level;
 	}
 	
 	public void initialise() {
+		dungeon = level.getDungeon();
+		
 		entities = new HashMap<>();
 		entityAddQueue = new ArrayList<>();
 		entityRemoveQueue = new ArrayList<>();
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		entities.values().forEach(e -> {
-			JSONObject serialisedEntity = new JSONObject();
-			e.serialise(serialisedEntity);
-			obj.append("entities", serialisedEntity);
-		});
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		try {
-			JSONArray serialisedEntities = obj.getJSONArray("entities");
-			serialisedEntities.forEach(serialisedEntity -> unserialiseEntity((JSONObject) serialisedEntity));
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error loading level - during EntityStore unserialisation:", e);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void unserialiseEntity(JSONObject serialisedEntity) {
-		String entityClassName = serialisedEntity.getString("class");
-		int x = serialisedEntity.getInt("x");
-		int y = serialisedEntity.getInt("y");
+	public void setLevel(Level level) {
+		this.dungeon = level.getDungeon();
+		this.level = level;
 		
-		Entity entity = null;
+		this.getEntities().forEach(entity -> entity.setLevelInternal(level));
 		
-		try {
-			Class<? extends Entity> entityClass = (Class<? extends Entity>) Class.forName(entityClassName);
-			Constructor<? extends Entity> entityConstructor = entityClass.getConstructor(
-				Dungeon.class,
-				Level.class,
-				int.class,
-				int.class
-			);
-			
-			entity = entityConstructor.newInstance(dungeon, level, x, y);
-			entity.unserialise(serialisedEntity);
-			addEntity(entity);
-			
-			if (entity instanceof Player) {
-				dungeon.setPlayer((Player) entity);
-			}
-		} catch (ClassNotFoundException e) {
-			ErrorHandler.error("Unknown entity class " + entityClassName, e);
-		} catch (NoSuchMethodException e) {
-			ErrorHandler.error("Entity class has no unserialisation constructor " + entityClassName, e);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			ErrorHandler.error("Error loading entity class " + entityClassName, e);
-		} catch (Exception e) {
-			if (entity != null) {
-				JRogue.getLogger().error(
-					"Error loading entity in level " + level.toString() + " - entity information:\n" + entity.toString(),
-					e
-				);
-			} else {
-				JRogue.getLogger().error("Error loading entity:", e);
-			}
-		}
+		entityAddQueue = new ArrayList<>();
+		entityRemoveQueue = new ArrayList<>();
 	}
 	
 	/**

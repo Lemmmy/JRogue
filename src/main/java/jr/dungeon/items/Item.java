@@ -1,39 +1,36 @@
 package jr.dungeon.items;
 
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.serialisation.DungeonRegistries;
+import jr.dungeon.serialisation.DungeonRegistry;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Persisting;
 import jr.utils.RandomUtils;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public abstract class Item implements Serialisable, Persisting, EventListener {
-	private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
-	private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
+@HasRegistry
+public abstract class Item implements Serialisable, EventListener {
+	@Expose private Map<String, Aspect> aspects = new HashMap<>();
+	@Expose private Set<String> knownAspects = new HashSet<>();
 	
-	private int visualID;
-	private int age;
-
-	private final JSONObject persistence = new JSONObject();
+	@Expose private int visualID;
+	@Expose private int age;
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
-		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
+		addAspect(new AspectBeatitude());
 	}
 	
 	public void update(Entity owner) {
@@ -75,142 +72,59 @@ public abstract class Item implements Serialisable, Persisting, EventListener {
 			other.getAspects() == getAspects();
 	}
 	
+	public static DungeonRegistry<Aspect> getAspectRegistry() {
+		return DungeonRegistries.findRegistryForClass(Aspect.class)
+			.orElseThrow(() -> new RuntimeException("Couldn't find Aspect registry in Item"));
+	}
+	
+	public static String getAspectID(Class<? extends Aspect> aspectClass) {
+		return getAspectRegistry().getID(aspectClass)
+			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for Aspect `%s` in Item", aspectClass.getName())));
+	}
+	
 	public List<Aspect> getPersistentAspects() {
 		return aspects.values().stream().filter(Aspect::isPersistent).collect(Collectors.toList());
 	}
 	
 	public Optional<Aspect> getAspect(Class<? extends Aspect> aspectClass) {
-		return Optional.ofNullable(aspects.get(aspectClass));
+		return Optional.ofNullable(aspects.get(getAspectID(aspectClass)));
 	}
 	
 	public boolean isAspectKnown(EntityLiving observer, Class<? extends Aspect> aspectClass) {
-		if (aspects.get(aspectClass).isPersistent()) {
-			return observer.isAspectKnown(this, aspectClass);
+		return isAspectKnown(observer, getAspectID(aspectClass));
+	}
+	
+	public boolean isAspectKnown(EntityLiving observer, String aspectID) {
+		if (aspects.get(aspectID).isPersistent()) {
+			return observer.isAspectKnown(this, aspectID);
 		} else {
-			return knownAspects.contains(aspectClass);
+			return knownAspects.contains(aspectID);
 		}
 	}
 	
 	public void addAspect(Aspect aspect) {
-		aspects.put(aspect.getClass(), aspect);
+		aspects.put(getAspectID(aspect.getClass()), aspect);
 	}
 	
 	public void observeAspect(EntityLiving observer, Class<? extends Aspect> aspectClass) {
-		if (!aspects.containsKey(aspectClass)) {
+		observeAspect(observer, getAspectID(aspectClass));
+	}
+	
+	public void observeAspect(EntityLiving observer, String aspectID) {
+		if (!aspects.containsKey(aspectID)) {
 			return; // can't observe an aspect that doesn't exist!!
 		}
 		
-		if (aspects.get(aspectClass).isPersistent()) {
-			observer.observeAspect(this, aspectClass);
+		if (aspects.get(aspectID).isPersistent()) {
+			observer.observeAspect(this, aspectID);
 		} else {
-			knownAspects.add(aspectClass);
+			knownAspects.add(aspectID);
 		}
 	}
 	
 	public abstract ItemAppearance getAppearance();
 	
 	public abstract ItemCategory getCategory();
-	
-	@SuppressWarnings("unchecked")
-	public static Optional<Item> createFromJSON(JSONObject serialisedItem) {
-		String itemClassName = serialisedItem.getString("class");
-		
-		try {
-			Class<? extends Item> itemClass = (Class<? extends Item>) Class.forName(itemClassName);
-			Constructor<? extends Item> itemConstructor = itemClass.getConstructor();
-			
-			Item item = itemConstructor.newInstance();
-			item.unserialise(serialisedItem);
-			return Optional.of(item);
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown item class {}", itemClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Item class {} has no unserialisation constructor", itemClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading item class {}", itemClassName, e);
-		}
-		
-		return Optional.empty();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		obj.put("visualID", getVisualID());
-		obj.put("age", age);
-		
-		JSONObject serialisedAspects = new JSONObject();
-		aspects.forEach((k, v) -> {
-			JSONObject serialisedAspect = new JSONObject();
-			v.serialise(serialisedAspect);
-			
-			serialisedAspects.put(k.getName(), serialisedAspect);
-		});
-		obj.put("aspects", serialisedAspects);
-		
-		JSONArray serialisedKnownAspects = new JSONArray();
-		knownAspects.forEach(a -> serialisedKnownAspects.put(a.getName()));
-		obj.put("knownAspects", serialisedKnownAspects);
-
-		serialisePersistence(obj);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void unserialise(JSONObject obj) {
-		visualID = obj.getInt("visualID");
-		age = obj.optInt("age");
-		
-		JSONObject serialisedAspects = obj.getJSONObject("aspects");
-		serialisedAspects.keySet().forEach(aspectClassName -> {
-			JSONObject serialisedAspect = serialisedAspects.getJSONObject(aspectClassName);
-			
-			try {
-				Class<? extends Aspect> aspectClass = (Class<? extends Aspect>) Class.forName(aspectClassName);
-				Constructor<? extends Aspect> aspectConstructor = aspectClass.getConstructor();
-				
-				Aspect aspect = aspectConstructor.newInstance();
-				aspect.unserialise(serialisedAspect);
-				aspects.put(aspectClass, aspect);
-			} catch (ClassNotFoundException e) {
-				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
-			} catch (NoSuchMethodException e) {
-				JRogue.getLogger().error("Aspect class {} has no unserialisation constructor", aspectClassName);
-			} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error loading aspect class {}", aspectClassName, e);
-			}
-		});
-		
-		obj.getJSONArray("knownAspects").forEach(aspectClassName -> {
-			try {
-				Class<? extends Aspect> aspectClass = (Class<? extends Aspect>) Class.forName((String) aspectClassName);
-				knownAspects.add(aspectClass);
-			} catch (ClassNotFoundException e) {
-				JRogue.getLogger().error("Unknown aspect class {}", aspectClassName);
-			}
-		});
-
-		try {
-			unserialisePersistence(obj);
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error unserialising item persistence", e);
-		}
-	}
-	
-	public Item copy() {
-		// /shrug
-		
-		JSONObject serialisedItem = new JSONObject();
-		serialise(serialisedItem);
-		
-		Optional<Item> itemOptional = createFromJSON(serialisedItem);
-		return itemOptional.orElse(null);
-	}
-
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
 	
 	@Override
 	public String toString() {

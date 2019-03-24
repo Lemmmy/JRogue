@@ -165,17 +165,17 @@ public class GameInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.RIGHT) {
 			if (dungeon.getPlayer().isDebugger()) {
-				AtomicBoolean fucked = new AtomicBoolean(false);
+				AtomicBoolean handled = new AtomicBoolean(false);
 				
 				dungeon.getLevel().entityStore.getEntitiesAt(pos).stream()
 					.findFirst()
-					.ifPresent(e -> {
-						e.getPersistence().put("showDebug", !e.getPersistence().optBoolean("showDebug"));
-						fucked.set(true);
+					.ifPresent(entity -> {
+						hudComponent.toggleShowEntityDebug(entity);
+						handled.set(true);
 						dungeon.eventSystem.triggerEvent(new EntityDebugUpdatedEvent());
 					});
 				
-				return fucked.get();
+				return handled.get();
 			}
 		}
 		

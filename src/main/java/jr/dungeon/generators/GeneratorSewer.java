@@ -2,10 +2,12 @@ package jr.dungeon.generators;
 
 import jr.dungeon.Level;
 import jr.dungeon.generators.rooms.features.FeatureSewerDrain;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.OpenSimplexNoise;
 
+@Registered(id="generatorSewer")
 public class GeneratorSewer extends GeneratorRooms {
 	private static final double THRESHOLD_WATER_NOISE = 0.1;
 	private static final double SCALE_WATER_NOISE = 0.3;
@@ -45,7 +47,7 @@ public class GeneratorSewer extends GeneratorRooms {
 			return false;
 		}
 		
-		simplexNoise = new OpenSimplexNoise(rand.nextLong());
+		simplexNoise = new OpenSimplexNoise(RAND.nextLong());
 		
 		addWaterBodies();
 		

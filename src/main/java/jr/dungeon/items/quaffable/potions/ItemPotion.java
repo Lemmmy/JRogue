@@ -1,11 +1,13 @@
 package jr.dungeon.items.quaffable.potions;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.quaffable.ItemQuaffable;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
@@ -13,16 +15,16 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Getter
 @Setter
+@Registered(id="itemPotion")
 public class ItemPotion extends ItemQuaffable implements Shatterable {
-	private boolean empty = false;
-	private BottleType bottleType = BottleType.BOTTLE_LABELLED;
-	private PotionType potionType = PotionType.POTION_HEALTH;
-	private PotionColour potionColour;
-	private float potency = 0.0f;
+	@Expose private boolean empty = false;
+	@Expose private BottleType bottleType = BottleType.BOTTLE_LABELLED;
+	@Expose private PotionType potionType = PotionType.POTION_HEALTH;
+	@Expose private PotionColour potionColour;
+	@Expose private float potency = 0.0f;
 	
 	public ItemPotion() {
 		potionColour = RandomUtils.randomFrom(PotionColour.values());
@@ -69,28 +71,6 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
 	@Override
 	public ItemCategory getCategory() {
 		return ItemCategory.POTION;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("empty", empty);
-		obj.put("bottle", bottleType.name());
-		obj.put("type", potionType.name());
-		obj.put("colour", potionColour.name());
-		obj.put("potency", (double) potency);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		empty = obj.optBoolean("empty", false);
-		bottleType = BottleType.valueOf(obj.optString("bottle", "BOTTLE"));
-		potionType = PotionType.valueOf(obj.optString("type", "POTION_WATER"));
-		potionColour = PotionColour.valueOf(obj.optString("colour", "CLEAR"));
-		potency = (float) obj.optDouble("potency", 0.0);
 	}
 	
 	@Override

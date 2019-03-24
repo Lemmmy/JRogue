@@ -1,5 +1,6 @@
 package jr.dungeon.entities.projectiles;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -8,20 +9,21 @@ import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.util.Optional;
 
+@Registered(id="projectile")
 public abstract class EntityProjectile extends EntityTurnBased {
-	private int dx = 0, dy = 0;
-	@Getter private int range = Integer.MAX_VALUE;
-	@Getter private int distanceTravelled = 0;
+	@Expose private int dx = 0, dy = 0;
+	@Expose @Getter private int range = Integer.MAX_VALUE;
+	@Expose @Getter private int distanceTravelled = 0;
 	
 	@Getter @Setter private Entity source = null;
 	
@@ -32,6 +34,8 @@ public abstract class EntityProjectile extends EntityTurnBased {
 		
 		setMovementPoints(getMovementSpeed());
 	}
+	
+	protected EntityProjectile() { super(); }
 	
 	public int getDeltaX() {
 		return dx;
@@ -128,26 +132,6 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	public void killProjectile() {
 		remove();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("dx", dx);
-		obj.put("dy", dy);
-		obj.put("range", range);
-		obj.put("distanceTravelled", distanceTravelled);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		dx = obj.optInt("dx", 0);
-		dy = obj.optInt("dy", 0);
-		range = obj.optInt("range", 0);
-		distanceTravelled = obj.optInt("distanceTravelled", 0);
 	}
 	
 	@Override

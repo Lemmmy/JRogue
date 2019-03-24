@@ -1,5 +1,6 @@
 package jr.dungeon.tiles;
 
+import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Level;
@@ -19,12 +20,12 @@ public class Tile implements Debuggable {
 	private int x;
 	private int y;
 	
-	private TileType type;
-	private TileState state;
+	@Expose private TileType type;
+	@Expose private TileState state;
 	
-	private Colour lightColour;
-	private int lightIntensity;
-	private int lightAbsorb;
+	@Expose private Colour lightColour;
+	@Expose private int lightIntensity;
+	@Expose private int lightAbsorb;
 	
 	private Level level;
 

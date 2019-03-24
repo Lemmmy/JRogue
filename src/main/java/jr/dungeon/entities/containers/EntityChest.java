@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -12,13 +13,13 @@ import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.List;
@@ -26,9 +27,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Registered(id="entityChest")
 public class EntityChest extends Entity implements Lootable, ContainerOwner {
-	private Container container;
-	@Getter private boolean locked;
+	@Expose private Container container;
+	@Expose	@Getter private boolean locked;
 	
 	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
@@ -36,6 +38,8 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 		container = new Container(getName(null));
 		locked = RandomUtils.rollD2();
 	}
+	
+	protected EntityChest() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
@@ -131,31 +135,5 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("locked", locked);
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		locked = obj.getBoolean("locked");
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			container = Container.createFromJSON(serialisedInventory);
-		}
 	}
 }

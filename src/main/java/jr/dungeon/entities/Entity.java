@@ -1,6 +1,6 @@
 package jr.dungeon.entities;
 
-import jr.JRogue;
+import com.google.gson.annotations.Expose;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.EntityStore;
@@ -11,19 +11,20 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.Event;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.language.transformers.Possessive;
 import jr.language.transformers.Transformer;
-import jr.utils.*;
+import jr.utils.DebugToStringStyle;
+import jr.utils.Point;
+import jr.utils.RandomUtils;
+import jr.utils.VectorInt;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -33,49 +34,50 @@ import java.util.*;
  * methods.
  */
 @Getter
-public abstract class Entity implements Serialisable, Persisting, EventListener, Debuggable {
+@HasRegistry
+public abstract class Entity implements Serialisable, EventListener, Debuggable {
 	/**
 	 * The unique identifier for this Entity instance, mainly used for referencing during serialisation.
 	 */
-	private UUID uuid;
+	@Expose private UUID uuid;
 	
 	/**
 	 * The X position of this Entity in the {@link Level}.
 	 */
-	@Setter private int x;
+	@Setter @Expose private int x;
 	/**
 	 * The Y position of this Entity in the {@link Level}.
 	 */
-	@Setter private int y;
+	@Setter @Expose private int y;
 	
 	/**
 	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
 	 * the position before it was last assigned.
 	 */
-	@Setter private int lastX;
+	@Setter @Expose private int lastX;
 	/**
 	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
 	 * the position before it was last assigned.
 	 */
-	@Setter private int lastY;
+	@Setter @Expose private int lastY;
 	
 	/**
 	 * The last X position of this Entity in the {@link Level} that was seen by the
 	 * {@link jr.dungeon.entities.player.Player}.
 	 */
-	@Setter private int lastSeenX;
+	@Setter @Expose private int lastSeenX;
 	/**
 	 * The last Y position of this Entity in the {@link Level} that was seen by the
 	 * {@link jr.dungeon.entities.player.Player}.
 	 */
-	@Setter private int lastSeenY;
+	@Setter @Expose private int lastSeenY;
 	
 	/**
 	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this
 	 * number for persistent random effects with no actual gameplay effect, e.g. the colour of a spider could be
 	 * visualID % 2.
 	 */
-	private int visualID;
+	@Expose private int visualID;
 	
 	/**
 	 * Assigned by the {@link jr.dungeon.EntityStore} when the Entity is in the removal queue. Do not set this yourself,
@@ -105,19 +107,12 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	 *
 	 * @see StatusEffect
 	 */
-	private List<StatusEffect> statusEffects = new ArrayList<>();
-	
-	/**
-	 * An object of persistent properties that will be serialised with the Entity. Can contain absolutely any data
-	 * for any purpose - typically for use by mods or the renderer.
-	 */
-	private final JSONObject persistence = new JSONObject();
+	@Expose private List<StatusEffect> statusEffects = new ArrayList<>();
 	
 	/**
 	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
 	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
-	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler}
-	 * methods.
+	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler} methods.
 	 *
 	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
 	 * @param level The {@link Level} that this Entity is inside.
@@ -139,6 +134,8 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 		
 		this.visualID = RandomUtils.random(1000);
 	}
+	
+	protected Entity() {} // deserialisation constructor
 
 	/**
 	 * @return An identifier unique to this entity.
@@ -274,86 +271,16 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 			if (effect.getDuration() >= 0 && effect.getTurnsPassed() >= effect.getDuration()) {
 				effect.onEnd();
 				iterator.remove();
-				dungeon.eventSystem
-					.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED)
-					);
+				dungeon.eventSystem.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.REMOVED));
 			}
 		}
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("class", getClass().getName());
-		obj.put("uuid", getUUID().toString());
-		obj.put("x", getX());
-		obj.put("y", getY());
-		obj.put("lastX", getLastX());
-		obj.put("lastY", getLastY());
-		obj.put("lastSeenX", getLastSeenX());
-		obj.put("lastSeenY", getLastSeenY());
-		obj.put("visualID", getVisualID());
-		
-		statusEffects.forEach(e -> {
-			JSONObject serialisedStatusEffect = new JSONObject();
-			e.serialise(serialisedStatusEffect);
-			obj.append("statusEffects", serialisedStatusEffect);
-		});
-
-		serialisePersistence(obj);
+	public void afterDeserialise() {
+		statusEffects.forEach(statusEffect -> statusEffect.init(dungeon, this));
 	}
 	
-	@Override
-	public void unserialise(JSONObject obj) {
-		uuid = UUID.fromString(obj.getString("uuid"));
-		x = obj.getInt("x");
-		y = obj.getInt("y");
-		lastX = obj.getInt("lastX");
-		lastY = obj.getInt("lastY");
-		lastSeenX = obj.getInt("lastSeenX");
-		lastSeenY = obj.getInt("lastSeenY");
-		visualID = obj.getInt("visualID");
-		
-		if (obj.has("statusEffects")) {
-			JSONArray serialisedStatusEffects = obj.getJSONArray("statusEffects");
-			serialisedStatusEffects.forEach(serialisedStatusEffect ->
-				unserialiseStatusEffect((JSONObject) serialisedStatusEffect));
-		}
-
-		unserialisePersistence(obj);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void unserialiseStatusEffect(JSONObject serialisedStatusEffect) {
-		String statusEffectClassName = serialisedStatusEffect.getString("class");
-		
-		try {
-			Class<? extends StatusEffect> statusEffectClass = (Class<? extends StatusEffect>) Class
-				.forName(statusEffectClassName);
-			Constructor<? extends StatusEffect> statusEffectConstructor = statusEffectClass.getConstructor(
-				Dungeon.class,
-				Entity.class,
-				int.class
-			);
-			
-			StatusEffect effect = statusEffectConstructor.newInstance(
-				getDungeon(),
-				this,
-				serialisedStatusEffect.getInt("duration")
-			);
-			effect.unserialise(serialisedStatusEffect);
-			statusEffects.add(effect);
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown status effect class {}", statusEffectClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error(
-				"Status effect class {} has no unserialisation constructor",
-				statusEffectClassName
-			);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading status effect class {}", statusEffectClassName, e);
-		}
-	}
-
 	/**
 	 * Adds a {@link jr.dungeon.entities.effects.StatusEffect} to this entity and triggers related events.
 	 * @param effect The effect to be applied.
@@ -362,9 +289,9 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 		effect.setEntity(this);
 		effect.setMessenger(dungeon);
 		statusEffects.add(effect);
-		dungeon.eventSystem
-			.triggerEvent(new EntityStatusEffectChangedEvent(this, effect, EntityStatusEffectChangedEvent.Change.ADDED)
-			);
+		dungeon.eventSystem.triggerEvent(new EntityStatusEffectChangedEvent(
+			this, effect, EntityStatusEffectChangedEvent.Change.ADDED
+		));
 	}
 
 	/**
@@ -416,14 +343,6 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 	 * @return Whether this entity is solid or can be walked on.
 	 */
 	public abstract boolean canBeWalkedOn();
-
-	/**
-	 * @return Persistence data. Anything stored in this JSONObject will persist across saves.
-	 */
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
 	
 	/**
 	 * This is a set of objects related to the Entity which should receive {@link Event
@@ -440,10 +359,15 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 		this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
 		this.level.entityStore.processEntityQueues(false);
 		
-		this.level = level;
+		setLevelInternal(level);
 		
 		level.entityStore.addEntity(this);
 		level.entityStore.processEntityQueues(false);
+	}
+	
+	public void setLevelInternal(Level level) {
+		this.level = level;
+		this.dungeon = level.getDungeon();
 	}
 	
 	@Override
@@ -480,5 +404,10 @@ public abstract class Entity implements Serialisable, Persisting, EventListener,
 			"[P_GREY_3]%s[] %,d, %,d",
 			name, x, y
 		);
+	}
+	
+	@Override
+	public int hashCode() {
+		return uuid.hashCode();
 	}
 }

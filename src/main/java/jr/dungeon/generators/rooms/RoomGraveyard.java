@@ -26,7 +26,7 @@ public class RoomGraveyard extends RoomBasic {
 		ZOMBIE_CLASSES.add(MonsterGoblinZombie.class);
 	}
 	
-	private Pcg32 rand = new Pcg32();
+	private static final Pcg32 RAND = new Pcg32();
 	
 	public RoomGraveyard(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
 		super(level, roomX, roomY, roomWidth, roomHeight);
@@ -47,8 +47,8 @@ public class RoomGraveyard extends RoomBasic {
 	}
 	
 	private void addGravestone() {
-		int x = rand.nextInt(getWidth() - 2) + getX() + 1;
-		int y = rand.nextInt(getHeight() - 2) + getY() + 1;
+		int x = RAND.nextInt(getWidth() - 2) + getX() + 1;
+		int y = RAND.nextInt(getHeight() - 2) + getY() + 1;
 		
 		if (
 			getLevel().tileStore.getTileType(x, y).isFloor() &&

@@ -1,22 +1,24 @@
 package jr.dungeon.items.valuables;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.items.identity.AspectGemValue;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.json.JSONObject;
 
+@Registered(id="itemGem")
 public class ItemGem extends Item {
-	private Gem gem;
-	private boolean worthless = false;
+	@Expose private Gem gem;
+	@Expose private boolean worthless = false;
 	
 	public ItemGem() { // unserialisation constructor
 		super();
@@ -76,22 +78,6 @@ public class ItemGem extends Item {
 	
 	public boolean isWorthless() {
 		return worthless;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("gem", gem.name());
-		obj.put("worthless", worthless);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		worthless = obj.getBoolean("worthless");
-		gem = Gem.valueOf(obj.getString("gem"));
 	}
 	
 	@Getter

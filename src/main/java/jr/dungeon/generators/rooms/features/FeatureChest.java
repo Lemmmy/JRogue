@@ -16,6 +16,7 @@ import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemLongsword;
 import jr.dungeon.items.weapons.ItemShortsword;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Registered(id="specialRoomFeatureChest")
 public class FeatureChest extends SpecialRoomFeature {
 	private static final WeightedCollection<ItemGroup> ITEM_GROUPS = new WeightedCollection<>();
 	
@@ -63,12 +65,12 @@ public class FeatureChest extends SpecialRoomFeature {
 		));
 	}
 	
-	private Pcg32 rand = new Pcg32();
+	private static final Pcg32 RAND = new Pcg32();
 	
 	@Override
 	public void generate(Room room) {
-		int chestX = rand.nextInt(room.getWidth() - 2) + room.getX() + 1;
-		int chestY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
+		int chestX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
+		int chestY = RAND.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		EntityChest chest = new EntityChest(room.getLevel().getDungeon(), room.getLevel(), chestX, chestY);
 		populateChest(room, chest);

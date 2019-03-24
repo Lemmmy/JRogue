@@ -1,5 +1,6 @@
 package jr.dungeon.entities.containers;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -15,30 +16,25 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.valuables.ItemThermometer;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
-import java.util.Optional;
-
+@Registered(id="entityItem")
 public class EntityItem extends Entity {
-	@Getter private ItemStack itemStack;
-
-	private final JSONObject persistence = new JSONObject();
-	
-	public EntityItem(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-	}
+	@Expose	@Getter private ItemStack itemStack;
 	
 	public EntityItem(Dungeon dungeon, Level level, int x, int y, ItemStack itemStack) {
 		super(dungeon, level, x, y);
 		
 		this.itemStack = itemStack;
 	}
+	
+	protected EntityItem() { super(); }
 	
 	public Item getItem() {
 		return itemStack.getItem();
@@ -118,28 +114,6 @@ public class EntityItem extends Entity {
 	@Override
 	public boolean canBeWalkedOn() {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		JSONObject serialisedItem = new JSONObject();
-		itemStack.serialise(serialisedItem);
-		obj.put("itemStack", serialisedItem);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		Optional<ItemStack> itemStackOptional = ItemStack.createFromJSON(obj.getJSONObject("itemStack"));
-		itemStackOptional.ifPresent(i -> itemStack = i);
-	}
-
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
 	}
 	
 	@Override

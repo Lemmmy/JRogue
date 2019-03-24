@@ -1,5 +1,6 @@
 package jr.dungeon.items.magical.spells;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -8,17 +9,18 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.entities.skills.SkillLevel;
 import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.MagicalSchool;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
-import jr.utils.Serialisable;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 @Getter
 @Setter
+@HasRegistry
 public abstract class Spell implements Serialisable {
-	private int knowledgeTimeout = 20000;
-	private boolean known = false;
+	@Expose private int knowledgeTimeout = 20000;
+	@Expose private boolean known = false;
 	
 	public abstract Noun getName();
 	
@@ -44,18 +46,6 @@ public abstract class Spell implements Serialisable {
 		if (knowledgeTimeout <= 0) {
 			known = false;
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("knowledgeTimeout", knowledgeTimeout);
-		obj.put("known", known);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		knowledgeTimeout = obj.getInt("knowledgeTimeout");
-		known = obj.getBoolean("known");
 	}
 	
 	public int getCastingCost() {

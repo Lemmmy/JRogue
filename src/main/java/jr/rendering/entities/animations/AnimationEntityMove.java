@@ -4,11 +4,6 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.screens.GameScreen;
 import jr.utils.Utils;
-import jr.utils.Vector;
-import lombok.val;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AnimationEntityMove extends EntityAnimation {
 	private int dx, dy;
@@ -21,21 +16,13 @@ public class AnimationEntityMove extends EntityAnimation {
 	}
 	
 	@Override
-	public Map<String, Object> update(float t) {
-		val values = new HashMap<String, Object>();
-		
-		values.put("offset", new Vector(
-			Utils.easeInOut(t, -dx, dx, 1),
-			Utils.easeInOut(t, -dy, dy, 1)
-		));
+	public void update(EntityAnimationData data, float t) {
+		data.offsetX += Utils.easeInOut(t, -dx, dx, 1);
+		data.offsetY += Utils.easeInOut(t, -dy, dy, 1);
 		
 		if (getEntity() instanceof Player) {
-			values.put("camera", new Vector(
-				Utils.easeInOut(t, -dx, dx, 1),
-				Utils.easeInOut(t, -dy, dy, 1)
-			));
+			data.cameraX += Utils.easeInOut(t, -dx, dx, 1);
+			data.cameraY += Utils.easeInOut(t, -dy, dy, 1);
 		}
-		
-		return values;
 	}
 }

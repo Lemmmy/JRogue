@@ -1,6 +1,6 @@
 package jr.dungeon.entities;
 
-import jr.ErrorHandler;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
@@ -22,8 +22,6 @@ import lombok.Setter;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.*;
 
@@ -33,45 +31,44 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	/**
 	 * The Entity's health.
 	 */
-	private int health;
+	@Expose private int health;
 	/**
 	 * The Entity's maximum health.
 	 */
-	protected int maxHealth;
+	@Expose protected int maxHealth;
 	
 	/**
 	 * The Entity's experience level - i.e. how much they've levelled up.
 	 */
-	private int experienceLevel = 1;
+	@Expose private int experienceLevel = 1;
 	/**
 	 * The Entity's progress through their current experience level.
 	 *
 	 * @see #getXPForLevel(int)
 	 */
-	private int experience = 0;
+	@Expose private int experience = 0;
 	
 	/**
-	 * The current turn counter for the Entity's
+	 * The current turn counter for the Entity's healing cooldown.
 	 */
 	@Setter(AccessLevel.NONE)
-	private int healingTurns = 0;
+	@Expose private int healingTurns = 0;
 	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
-	private Container inventory;
+	@Expose private Container inventory;
 	
 	private Container.ContainerEntry leftHand;
 	private Container.ContainerEntry rightHand;
+	
+	@Expose private Character leftHandLetter;
+	@Expose private Character rightHandLetter;
 	
 	/**
 	 * known persistent aspects per item class
 	 * the key is the hashcode of an items list of persistent aspects
 	 */
-	private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
-	
-	public EntityLiving(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		this(dungeon, level, x, y, 1);
-	}
+	@Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
 	
 	public EntityLiving(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y);
@@ -79,6 +76,8 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 		maxHealth = getBaseMaxHealth();
 		health = getMaxHealth();
 	}
+	
+	protected EntityLiving() { super(); }
 	
 	protected int getBaseMaxHealth() {
 		return RandomUtils.roll(experienceLevel, 6);
@@ -157,17 +156,25 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	public abstract Size getSize();
 	
 	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
-		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectClass);
+		return isAspectKnown(item, Item.getAspectID(aspectClass));
+	}
+	
+	public boolean isAspectKnown(Item item, String aspectID) {
+		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectID);
 	}
 	
 	public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
+		observeAspect(item, Item.getAspectID(aspectClass));
+	}
+	
+	public void observeAspect(Item item, String aspectID) {
 		int code = item.getPersistentAspects().hashCode();
 		
 		if (!knownAspects.containsKey(code)) {
 			knownAspects.put(code, new HashSet<>());
 		}
 		
-		knownAspects.get(code).add(aspectClass);
+		knownAspects.get(code).add(aspectID);
 	}
 	
 	@Override
@@ -188,81 +195,17 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("health", getHealth());
-		obj.put("maxHealth", getMaxHealth());
-		obj.put("experienceLevel", getExperienceLevel());
-		obj.put("experience", getExperience());
-		
-		if (getContainer().isPresent()) {
-			JSONObject serialisedInventory = new JSONObject();
-			getContainer().get().serialise(serialisedInventory);
-			
-			obj.put("inventory", serialisedInventory);
-			
-			if (leftHand != null) {
-				obj.put("leftHand", leftHand.getLetter());
-			}
-			
-			if (rightHand != null) {
-				obj.put("rightHand", rightHand.getLetter());
-			}
-		}
-		
-		JSONObject serialisedKnownAspects = new JSONObject();
-		knownAspects.forEach((k, v) -> {
-			JSONArray serialisedAspectList = new JSONArray();
-			v.forEach(a -> serialisedAspectList.put(a.getName()));
-			serialisedKnownAspects.put(k.toString(), serialisedAspectList);
-		});
-		obj.put("knownAspects", serialisedKnownAspects);
+	public void beforeSerialise() {
+		if (leftHand != null) leftHandLetter = leftHand.getLetter();
+		if (rightHand != null) rightHandLetter = rightHand.getLetter();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
+	public void afterDeserialise() {
+		super.afterDeserialise();
 		
-		health = obj.getInt("health");
-		maxHealth = obj.getInt("maxHealth");
-		experienceLevel = obj.getInt("experienceLevel");
-		experience = obj.getInt("experience");
-		
-		if (obj.has("inventory")) {
-			JSONObject serialisedInventory = obj.getJSONObject("inventory");
-			setInventoryContainer(Container.createFromJSON(serialisedInventory));
-			
-			if (obj.has("leftHand") && !obj.isNull("leftHand") && obj.get("leftHand") instanceof String) {
-				Character letter = obj.getString("leftHand").charAt(0);
-				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
-				entryOptional.ifPresent(this::setLeftHand);
-			}
-			
-			if (obj.has("rightHand") && !obj.isNull("rightHand") && obj.get("rightHand") instanceof String) {
-				Character letter = obj.getString("rightHand").charAt(0);
-				Optional<Container.ContainerEntry> entryOptional = inventory.get(letter);
-				entryOptional.ifPresent(this::setRightHand);
-			}
-		}
-		
-		JSONObject serialisedKnownAspects = obj.getJSONObject("knownAspects");
-		serialisedKnownAspects.keySet().forEach(k -> {
-			Integer code = Integer.parseInt(k);
-			JSONArray serialisedAspectList = serialisedKnownAspects.getJSONArray(k);
-			
-			Set<Class<? extends Aspect>> aspectSet = new HashSet<>();
-			serialisedAspectList.forEach(c -> {
-				try {
-					aspectSet.add((Class<? extends Aspect>) Class.forName((String) c));
-				} catch (ClassNotFoundException e) {
-					ErrorHandler.error("Error unserialising EntityLiving", e);
-				}
-			});
-			
-			knownAspects.put(code, aspectSet);
-		});
+		if (leftHandLetter != null) leftHand = inventory.get(leftHandLetter).orElse(null);
+		if (rightHandLetter != null) rightHand = inventory.get(rightHandLetter).orElse(null);
 	}
 	
 	@Override
@@ -358,7 +301,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			.append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
 			.append("hasInventory", getContainer().isPresent());
 		
-		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a.stream().map(Class::getSimpleName).toArray(String[]::new))));
+		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a)));
 		
 		return tsb;
 	}

@@ -26,10 +26,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HUDComponent extends RendererComponent {
@@ -52,8 +50,10 @@ public class HUDComponent extends RendererComponent {
 	@Getter	private List<WindowBase> windows = new ArrayList<>();
 	
 	@Getter	private List<Actor> singleTurnActors = new ArrayList<>();
+	private Map<Entity, Boolean> entityShowDebug = new HashMap<>();
 	private List<Actor> entityDebugActors = new ArrayList<>();
 	private List<Runnable> nextFrameDeferred = new ArrayList<>();
+	
 	
 	public HUDComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
@@ -247,8 +247,7 @@ public class HUDComponent extends RendererComponent {
 		int w = dungeon.getLevel().getWidth();
 		
 		dungeon.getLevel().entityStore.getEntities().stream()
-			.filter(e -> e.getPersistence() != null)
-			.filter(e -> e.getPersistence().optBoolean("showDebug"))
+			.filter(this::getShowEntityDebug)
 			.sorted((e1, e2) -> Integer.compare(e1.getY() * w + e1.getX(), e2.getY() * w + e1.getY()))
 			.forEach(e -> {
 				int x = e.getX();
@@ -457,6 +456,18 @@ public class HUDComponent extends RendererComponent {
 		nextFrameDeferred
 			.add(() -> new SpellWindow(this, stage, skin, player)
 				.show());
+	}
+	
+	public void toggleShowEntityDebug(Entity entity) {
+		entityShowDebug.put(entity, !getShowEntityDebug(entity));
+	}
+	
+	public void setShowEntityDebug(Entity entity, boolean show) {
+		entityShowDebug.put(entity, show);
+	}
+	
+	public boolean getShowEntityDebug(Entity entity) {
+		return entityShowDebug.getOrDefault(entity, false);
 	}
 	
 	@Getter

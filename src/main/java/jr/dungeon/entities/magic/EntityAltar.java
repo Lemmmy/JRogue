@@ -13,14 +13,18 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="entityAltar")
 public class EntityAltar extends Entity {
 	public EntityAltar(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
+	
+	protected EntityAltar() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.familiars;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -20,8 +21,6 @@ import jr.language.transformers.Possessive;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,16 +32,18 @@ public abstract class Familiar extends Monster implements Friendly {
 	/**
 	 * The familiar's age from 0 to 2. 0 is youngest, 2 is oldest.
 	 */
-	@Getter private int age;
+	@Expose @Getter private int age;
 	
-	private String name;
+	@Expose private String name;
 	
-	@Getter @Setter private float nutrition = 1400;
+	@Expose @Getter @Setter private float nutrition = 1400;
 	@Getter private NutritionState lastNutritionState;
 	
-	public Familiar(Dungeon dungeon, Level level, int x, int y) { // unserialiastion constructor
+	public Familiar(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
+	
+	protected Familiar() { super(); }
 	
 	@Override
 	public int getNutritionalValue() {
@@ -138,24 +139,6 @@ public abstract class Familiar extends Monster implements Friendly {
 		if (e.isAttackerPlayer()) {
 			// TODO: cripple player's luck and god relationship. they are a terrible person
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("age", age);
-		obj.put("nutrition", nutrition);
-		obj.put("name", name);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-
-		age = obj.getInt("age");
-		nutrition = obj.getInt("nutrition");
-		try { name = obj.getString("name"); } catch (JSONException ignored) {}
 	}
 	
 	@Override

@@ -18,7 +18,7 @@ public class PlayerClimb implements PlayerVisitor {
 			return;
 		}
 		
-		switch (tile.getType()) {
+		switch (tile.getType()) { // TODO: make this not hardcoded
 			case TILE_ROOM_STAIRS_UP:
 				player.getDungeon().You("ascend the stairs.");
 				break;
@@ -36,11 +36,7 @@ public class PlayerClimb implements PlayerVisitor {
 		TileStateClimbable tsc = (TileStateClimbable) tile.getState();
 		
 		if (!tsc.getLinkedLevel().isPresent()) {
-			int depth = player.getLevel().getDepth() + (up ? 1 : -1);
-			Level level = player.getDungeon().newLevel(depth, tile, tsc.getGeneratorClass());
-			level.entityStore.processEntityQueues(false);
-			tsc.setLinkedLevelUUID(level.getUUID());
-			tsc.setDestinationPosition(level.getSpawnX(), level.getSpawnY());
+			tsc.generateLevel(tile, up);
 		}
 		
 		if (tsc.getLinkedLevel().isPresent()) {

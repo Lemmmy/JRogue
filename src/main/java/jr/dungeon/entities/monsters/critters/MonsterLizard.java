@@ -9,12 +9,14 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 
 import java.util.List;
 
+@Registered(id="monsterLizard")
 public class MonsterLizard extends Monster {
 	public MonsterLizard(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
@@ -23,6 +25,8 @@ public class MonsterLizard extends Monster {
 		setAI(ai);
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
+	
+	protected MonsterLizard() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

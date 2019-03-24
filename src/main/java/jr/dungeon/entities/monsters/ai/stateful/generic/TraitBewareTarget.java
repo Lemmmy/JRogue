@@ -2,8 +2,9 @@ package jr.dungeon.entities.monsters.ai.stateful.generic;
 
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
-import org.json.JSONObject;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="aiTraitBewareTarget")
 public class TraitBewareTarget extends AITrait<StatefulAI> {
 	/**
 	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link StatefulAI} behaves.
@@ -17,21 +18,11 @@ public class TraitBewareTarget extends AITrait<StatefulAI> {
 	@Override
 	public void update() {
 		if (
-			(getAI().getCurrentState() == null || getAI().getCurrentState().getDuration() == 0) &&
-			getAI().canSeeTarget()
+			(ai.getCurrentState() == null || ai.getCurrentState().getDuration() == 0) &&
+			ai.canSeeTarget()
 		) {
-			getAI().setCurrentState(new StateApproachTarget(getAI(), 0));
+			ai.setCurrentState(new StateApproachTarget(ai, 0));
 		}
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-	
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-	
 	}
 	
 	@Override

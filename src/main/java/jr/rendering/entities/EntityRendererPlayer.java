@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.entities.animations.EntityAnimationData;
 
 public class EntityRendererPlayer extends EntityRenderer {
 	private TextureRegion playerJustyn;
@@ -31,15 +32,15 @@ public class EntityRendererPlayer extends EntityRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, boolean useMemoryLocation) {
-		float x = getPositionX(entity, useMemoryLocation);
-		float y = getPositionY(entity, useMemoryLocation);
+	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
+		float x = getPositionX(anim, entity, useMemoryLocation);
+		float y = getPositionY(anim, entity, useMemoryLocation);
 		
 		if (!isDrawingReflection()) {
 			drawEntity(batch, playerHighlight, x, y);
 		}
 		
-		Color oldColour = setAnimationColour(batch, entity);
+		Color oldColour = setAnimationColour(anim, batch, entity);
 		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
 		batch.setColor(oldColour);
 	}

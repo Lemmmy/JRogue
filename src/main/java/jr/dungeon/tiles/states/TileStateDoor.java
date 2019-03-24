@@ -1,14 +1,16 @@
 package jr.dungeon.tiles.states;
 
+import com.google.gson.annotations.Expose;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
-import org.json.JSONObject;
 
 @Getter
+@Registered(id="tileStateDoor")
 public class TileStateDoor extends TileState {
-	private int health = 0;
+	@Expose private int health = 0;
 	
 	public TileStateDoor(Tile tile) {
 		super(tile);
@@ -26,19 +28,5 @@ public class TileStateDoor extends TileState {
 		}
 		
 		return health;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("health", getHealth());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		health = obj.getInt("health");
 	}
 }

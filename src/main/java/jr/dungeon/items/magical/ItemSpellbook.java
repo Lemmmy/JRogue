@@ -1,7 +1,7 @@
 package jr.dungeon.items.magical;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.Container;
@@ -15,13 +15,13 @@ import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.magical.spells.SpellLightOrb;
 import jr.dungeon.items.magical.spells.SpellStrike;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Getter
+@Registered(id="itemSpellbook")
 public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 	private static final Map<Class<? extends Spell>, Integer> spellLevelMap = new HashMap<>();
 	
@@ -41,10 +42,10 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		spellLevelMap.put(SpellStrike.class, 0);
 	}
 	
-	@Setter private Spell spell;
+	@Expose @Setter private Spell spell;
 	
-	private int timesRead = 0;
-	private int readingProgress = 0;
+	@Expose private int timesRead = 0;
+	@Expose private int readingProgress = 0;
 	
 	public ItemSpellbook() {
 		super();
@@ -192,43 +193,6 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		return false;
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		JSONObject spellJSON = new JSONObject();
-		spell.serialise(spellJSON);
-		obj.put("spell", spellJSON);
-		obj.put("spellClass", spell.getClass().getName());
-		
-		obj.put("timesRead", timesRead);
-		obj.put("readingProgress", readingProgress);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		String spellClassName = obj.getString("spellClass");
-		
-		try {
-			Class<? extends Spell> spellClass = (Class<? extends Spell>) Class.forName(spellClassName);
-			Constructor<? extends Spell> spellConstructor = spellClass.getConstructor();
-			spell = spellConstructor.newInstance();
-			spell.unserialise(obj.getJSONObject("spell"));
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown spell class {}", spellClassName);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Spell class {} has no unserialisation constructor", spellClassName);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading spell class {}", spellClassName, e);
-		}
-		
-		timesRead = obj.optInt("timesRead", 0);
-		readingProgress = obj.optInt("readingProgress", 0);
-	}
-	
 	private float getReadingSuccessChance(Player player) {
 		int intelligence = player.getAttributes().getAttribute(Attribute.INTELLIGENCE);
 		int experience = player.getExperienceLevel();
@@ -243,10 +207,11 @@ public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
 		// spells that the player already knows won't spawn
 		
 		Player player = chest.getDungeon().getPlayer();
+		int playerLevel = player != null ? player.getExperienceLevel() : 1;
 		
 		List<Class<? extends Spell>> spells = spellLevelMap.entrySet().stream()
-			.filter(e -> e.getValue() <= player.getExperienceLevel())
-			.filter(e -> player.getKnownSpells().values().stream()
+			.filter(e -> e.getValue() <= playerLevel)
+			.filter(e -> player == null || player.getKnownSpells().values().stream()
 							.noneMatch(s -> s.getClass().equals(e.getKey())))
 			.map(Map.Entry::getKey)
 			.collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.fish;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
@@ -9,18 +10,15 @@ import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
-import org.json.JSONObject;
 
 import java.util.List;
 
+@Registered(id="monsterFish")
 public class MonsterFish extends Monster {
-	private FishColour colour;
-	
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-	}
+	@Expose private FishColour colour;
 	
 	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
 		super(dungeon, level, x, y, 1);
@@ -29,6 +27,8 @@ public class MonsterFish extends Monster {
 		
 		setAI(new FishAI(this));
 	}
+	
+	protected MonsterFish() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
@@ -128,20 +128,6 @@ public class MonsterFish extends Monster {
 	@Override
 	public int getExperienceRewarded() {
 		return 0;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("colour", colour.name());
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		colour = FishColour.valueOf(obj.getString("colour"));
 	}
 	
 	public enum FishColour {

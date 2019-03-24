@@ -2,23 +2,25 @@ package jr.dungeon.generators.rooms.features;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.Noun;
 
+@Registered(id="specialRoomFeatureSewerDrain")
 public class FeatureSewerDrain extends SpecialRoomFeature {
-	private Pcg32 rand = new Pcg32();
+	private static final Pcg32 RAND = new Pcg32();
 	
 	@Override
 	public void generate(Room room) {
-		int drainX = rand.nextInt(room.getWidth() - 2) + room.getX() + 1;
+		int drainX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
 		int drainY = room.getY();
 		
 		if (
 			room.getLevel().tileStore.getTileType(drainX, drainY).isWallTile() &&
 			!room.getLevel().tileStore.getTileType(drainX, drainY).isDoor()
 		) {
-			TileType drainTile = rand.nextBoolean() ? TileType.TILE_SEWER_DRAIN :
-								 					  TileType.TILE_SEWER_DRAIN_EMPTY;
+			TileType drainTile = RAND.nextBoolean() ? TileType.TILE_SEWER_DRAIN :
+								 TileType.TILE_SEWER_DRAIN_EMPTY;
 			
 			room.getLevel().tileStore.setTileType(drainX, drainY, drainTile);
 			

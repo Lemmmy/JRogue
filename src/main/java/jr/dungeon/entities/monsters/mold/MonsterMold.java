@@ -18,9 +18,7 @@ public abstract class MonsterMold extends Monster {
 		super(dungeon, level, x, y);
 	}
 	
-	public MonsterMold(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
-	}
+	protected MonsterMold() { super(); }
 	
 	@Override
 	public boolean isHostile() {

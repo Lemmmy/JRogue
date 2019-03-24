@@ -17,6 +17,8 @@ public abstract class MonsterZombie extends Monster {
 		super(dungeon, level, x, y);
 	}
 	
+	protected MonsterZombie() { super(); }
+	
 	@Override
 	public boolean isHostile() {
 		return true;

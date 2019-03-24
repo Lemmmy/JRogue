@@ -2,6 +2,7 @@ package jr.dungeon.generators;
 
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Registered(id="generatorCave")
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.4f;
 	
@@ -94,7 +96,7 @@ public class GeneratorCave extends DungeonGenerator {
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(this::isTileInBounds)
 			.forEach(t -> {
-				if (rand.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
+				if (RAND.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
 					t.setType(TileType.TILE_CAVE_FLOOR); // TODO: cave floor tile
 				}
 			});
@@ -201,7 +203,7 @@ public class GeneratorCave extends DungeonGenerator {
 		int height = level.getHeight();
 		
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
-		return tempTiles[width * y + x];
+		return tempTiles[y * width + x];
 	}
 
 	public Tile getTempTile(Point p) {
@@ -222,7 +224,7 @@ public class GeneratorCave extends DungeonGenerator {
 		
 		if (tile.getID() < 0) return;
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
-		tempTiles[width * y + x].setType(tile);
+		tempTiles[y * width + x].setType(tile);
 	}
 
 	public void setTempTileType(Point p, TileType tile) {

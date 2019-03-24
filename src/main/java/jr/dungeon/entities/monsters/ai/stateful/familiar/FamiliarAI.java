@@ -5,20 +5,18 @@ import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="aiFamiliar")
 public class FamiliarAI extends StatefulAI {
+	{
+		setPathfinder(new FamiliarPathfinder());
+	}
+	
 	public FamiliarAI(Monster monster) {
 		super(monster);
 		
-		setPathfinder(new FamiliarPathfinder());
-		
 		setShouldTargetPlayer(false);
-		
-		getPersistence().putOnce("lurkRadius", 3);
-		
-		if (monster.getDungeon().getPlayer() != null) {
-			getPersistence().putOnce("lurkTarget", monster.getDungeon().getPlayer().getUUID().toString());
-		}
 		
 		removeTrait(TraitIntrinsicFear.class);
 		removeTrait(TraitExtrinsicFear.class);
@@ -29,4 +27,6 @@ public class FamiliarAI extends StatefulAI {
 		addTrait(new TraitAvoidCursed(this));
 		addTrait(new TraitHunger(this));
 	}
+	
+	protected FamiliarAI() { super(); }
 }

@@ -32,6 +32,8 @@ public abstract class MonsterCanine extends Monster {
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
 	
+	protected MonsterCanine() { super(); }
+	
 	@Override
 	public boolean isHostile() {
 		return true;

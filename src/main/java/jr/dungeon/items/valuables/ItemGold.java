@@ -4,9 +4,11 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Registered(id="itemGold")
 public class ItemGold extends Item {
 	public boolean isUncountable() {
 		return true;

@@ -1,5 +1,6 @@
 package jr.dungeon.entities;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.actions.Action;
@@ -7,7 +8,6 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 /**
  * An {@link Entity} that gets a chance to run an {@link Action} based on the turn timer. A turn consists of 12
@@ -22,7 +22,7 @@ public abstract class EntityTurnBased extends Entity {
 	/**
 	 * The amount of movement points the Entity currently has free.
 	 */
-	@Getter @Setter private int movementPoints = 0;
+	@Expose @Getter @Setter private int movementPoints = 0;
 	/**
 	 * The next {@link Action} this Entity is going to perform when it gets a chance to move.
 	 */
@@ -38,19 +38,7 @@ public abstract class EntityTurnBased extends Entity {
 		super(dungeon, level, x, y);
 	}
 	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("movementPoints", movementPoints);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		movementPoints = obj.getInt("movementPoints");
-	}
+	protected EntityTurnBased() { super(); }
 	
 	/**
 	 * @param action Sets the next action to perform when this Entity gets a chance to move.

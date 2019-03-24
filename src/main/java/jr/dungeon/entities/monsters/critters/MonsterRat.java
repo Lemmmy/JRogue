@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters.critters;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -14,16 +15,17 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
 import java.util.List;
 
+@Registered(id="monsterRat")
 public class MonsterRat extends Monster {
-	private int speed;
+	@Expose private int speed;
 	
 	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y, 1);
@@ -34,6 +36,8 @@ public class MonsterRat extends Monster {
 		setAI(ai);
 		ai.setDefaultState(new StateLurk(ai, 0));
 	}
+	
+	protected MonsterRat() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
@@ -133,12 +137,5 @@ public class MonsterRat extends Monster {
 	@Override
 	public Verb getMeleeAttackVerb(EntityLiving victim) {
 		return Lexicon.bite.clone();
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("speed", speed);
 	}
 }

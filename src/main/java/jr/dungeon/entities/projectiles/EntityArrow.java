@@ -4,18 +4,22 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 
+@Registered(id="projectileArrow")
 public class EntityArrow extends EntityProjectile {
 	private boolean canPenetrate = false;
 	
 	public EntityArrow(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 	}
+	
+	protected EntityArrow() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

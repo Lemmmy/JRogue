@@ -2,6 +2,7 @@ package jr.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
+import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.Random;
 /**
  * Generic dungeon level generator class with many utilities for generation.
  */
+@HasRegistry
 public abstract class DungeonGenerator {
 	/**
 	 * The {@link Level} that this generator is generating for.
@@ -26,11 +28,11 @@ public abstract class DungeonGenerator {
 	 * Local random number generator instance - uses the <a href="http://www.pcg-random.org/">PCG32</a> algorithm.
 	 * @see <a href="http://www.pcg-random.org/">pcg-random.org</a>
 	 */
-	protected Pcg32 rand = new Pcg32();
+	protected static final Pcg32 RAND = new Pcg32();
 	/**
 	 * Local random number generator instance - uses Java's inbuilt PRNG algorithm.
 	 */
-	protected Random jrand = new Random();
+	protected static final Random JRAND = new Random();
 	
 	/**
 	 * @param level The {@link Level} that this generator is generating for.
@@ -54,7 +56,7 @@ public abstract class DungeonGenerator {
 	public abstract boolean generate();
 	
 	/**
-	 * Quick utility method for generating a random number within a range. Uses the {@link #rand} instance
+	 * Quick utility method for generating a random number within a range. Uses the {@link #RAND} instance
 	 * (<a href="http://www.pcg-random.org/">PCG32</a> algorithm).
 	 *
 	 * @param min The minimum bound for the random number (inclusive).
@@ -63,7 +65,7 @@ public abstract class DungeonGenerator {
 	 * @return A (hopefully) random number within the min/max bounds.
 	 */
 	protected int nextInt(int min, int max) {
-		return rand.nextInt(max - min) + min;
+		return RAND.nextInt(max - min) + min;
 	}
 	
 	/**

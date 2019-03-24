@@ -20,6 +20,7 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -28,15 +29,12 @@ import jr.utils.RandomUtils;
 
 import java.util.List;
 
+@Registered(id="monsterGoblin")
 public class MonsterGoblin extends Monster {
 	private static final float DAGGER_DROP_CHANCE = 0.75f;
 	
 	public MonsterGoblin(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
-		
-		if (dungeon == null) {
-			return;
-		}
 		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);
@@ -46,6 +44,8 @@ public class MonsterGoblin extends Monster {
 		
 		getContainer().ifPresent(c -> c.add(new ItemStack(new ItemDagger(Material.IRON))).ifPresent(this::setRightHand));
 	}
+	
+	protected MonsterGoblin() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

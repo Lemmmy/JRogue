@@ -1,5 +1,6 @@
 package jr.dungeon.generators;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
@@ -12,6 +13,8 @@ import jr.dungeon.generators.rooms.features.FeatureAltar;
 import jr.dungeon.generators.rooms.features.FeatureChest;
 import jr.dungeon.generators.rooms.features.FeatureFountain;
 import jr.dungeon.generators.rooms.features.SpecialRoomFeature;
+import jr.dungeon.serialisation.DungeonRegistries;
+import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
@@ -19,7 +22,6 @@ import jr.utils.*;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -166,6 +168,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	private Tile endTile;
 	
+	@Expose @Getter private Map<String, Integer> roomFeatures = new HashMap<>();
+	
 	/**
 	 * @param level The level that this generator is generating for.
 	 * @param sourceTile The tile that the player came from in the previous level.
@@ -200,9 +204,6 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		int width = nextInt(minRoomWidth, maxRoomWidth);
 		int height = nextInt(minRoomHeight, maxRoomHeight);
-		
-		level.getPersistence().remove("generatorPersistence");
-		level.getPersistence().put("generatorPersistence", new JSONObject());
 
 		createRooms(
 			nextInt(1, level.getWidth() - width - 1),
@@ -463,6 +464,11 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		// TODO: do we actually remove the rooms tiles??
 	}
 	
+	public static DungeonRegistry<SpecialRoomFeature> getRoomFeatureRegistry() {
+		return DungeonRegistries.findRegistryForClass(SpecialRoomFeature.class)
+			.orElseThrow(() -> new RuntimeException("Couldn't find SpecialRoomFeature registry in GeneratorRooms"));
+	}
+	
 	/**
 	 * Adds room-specific features and special dungeon features to selected rooms.
 	 *
@@ -473,21 +479,25 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		int featureCount = probabilitySpecialFeatureCount.next();
 		
-		JSONObject featuresJSON = new JSONObject();
-		
 		for (int i = 0; i < featureCount; i++) {
 			try {
 				Class<? extends SpecialRoomFeature> featureClass = probabilitySpecialFeatures.next();
 				Constructor featureConstructor = featureClass.getConstructor();
 				SpecialRoomFeature feature = (SpecialRoomFeature) featureConstructor.newInstance();
+				
 				feature.generate(RandomUtils.randomFrom(rooms));
-				featuresJSON.increment(feature.getClass().getName());
+				String featureID = getRoomFeatureRegistry().getID(featureClass)
+					.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for SpecialRoomFeature `%s` in GeneratorRooms", featureClass.getName())));
+				
+				if (roomFeatures.containsKey(featureID)) {
+					roomFeatures.put(featureID, roomFeatures.get(featureID) + 1);
+				} else {
+					roomFeatures.put(featureID, 1);
+				}
 			} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 				ErrorHandler.error("Error adding room features", e);
 			}
 		}
-		
-		level.getPersistence().getJSONObject("generatorPersistence").put("roomFeatures", featuresJSON);
 	}
 	
 	/**
@@ -495,9 +505,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void addRandomDrops() {
 		rooms.forEach(r -> {
-			if (rand.nextDouble() < PROBABILITY_GOLD_DROP) {
-				int x = rand.nextInt(r.getWidth() - 2) + r.getX() + 1;
-				int y = rand.nextInt(r.getHeight() - 2) + r.getY() + 1;
+			if (RAND.nextDouble() < PROBABILITY_GOLD_DROP) {
+				int x = RAND.nextInt(r.getWidth() - 2) + r.getX() + 1;
+				int y = RAND.nextInt(r.getHeight() - 2) + r.getY() + 1;
 				
 				QuickSpawn.spawnGold(level, x, y, RandomUtils.roll(Math.abs(level.getDepth()) + 2, 6));
 			}

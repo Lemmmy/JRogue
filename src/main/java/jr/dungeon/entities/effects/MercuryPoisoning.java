@@ -1,7 +1,9 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.entities.DamageType;
+import jr.dungeon.serialisation.Registered;
 
+@Registered(id="statusEffectMercuryPoisoning")
 public class MercuryPoisoning extends Poison {
 	@Override
 	public String getName() {

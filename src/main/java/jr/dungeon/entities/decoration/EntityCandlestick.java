@@ -1,5 +1,6 @@
 package jr.dungeon.entities.decoration;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -9,16 +10,18 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
 
+@Registered(id="entityCandlestick")
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private static final int LIGHT_INTENSITY = 60;
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9329FF);
 	
-	private boolean lit = true;
+	@Expose private boolean lit = true;
 	
 	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
@@ -28,6 +31,8 @@ public class EntityCandlestick extends Entity implements LightEmitter, Extinguis
 		super(dungeon, level, x, y);
 		lit = isLit;
 	}
+	
+	protected EntityCandlestick() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {

@@ -1,21 +1,22 @@
 package jr.dungeon.entities.player;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.events.EntityLevelledUpEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.GameStartedEvent;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Attributes implements EventListener {
 	private static final int MAX_ATTRIBUTE_LEVEL = 30;
 	
-	private EnumMap<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
-	private EnumMap<Attribute, Integer> defaults = new EnumMap<>(Attribute.class);
-	@Getter private int spendableSkillPoints = 3;
+	@Expose private Map<Attribute, Integer> attributes = new HashMap<>();
+	private Map<Attribute, Integer> defaults = new HashMap<>();
+	@Expose @Getter private int spendableSkillPoints = 3;
 	
 	public Attributes() {
 		clear();
@@ -26,7 +27,7 @@ public class Attributes implements EventListener {
 		Arrays.stream(Attribute.values()).forEach(a -> { attributes.put(a, 0); defaults.put(a, 0); });
 	}
 	
-	public EnumMap<Attribute, Integer> getAttributeMap() {
+	public Map<Attribute, Integer> getAttributeMap() {
 		return attributes;
 	}
 	
@@ -68,29 +69,6 @@ public class Attributes implements EventListener {
 	public boolean canIncrementAttribute(Attribute attribute) {
 		return spendableSkillPoints > 0 && getAttribute(attribute) < 30;
 	}
-	
-	public void serialise(JSONObject obj) {
-		obj.put("spendableSkillPoints", spendableSkillPoints);
-		
-		attributes.forEach((attribute, level) -> {
-			String keyName = "attribute" + attribute.getName();
-			
-			obj.put(keyName, level);
-		});
-	}
-	
-	public void unserialise(JSONObject obj) {
-		spendableSkillPoints = obj.getInt("spendableSkillPoints");
-		
-		Arrays.stream(Attribute.values()).forEach(attribute -> {
-			String keyName = "attribute" + attribute.getName();
-			
-			if (obj.has(keyName)) {
-				attributes.put(attribute, obj.getInt(keyName));
-			}
-		});
-	}
-	
 	
 	@EventHandler
 	private void onGameStarted(GameStartedEvent event) {

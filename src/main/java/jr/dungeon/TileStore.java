@@ -1,142 +1,128 @@
 package jr.dungeon;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 import jr.JRogue;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.events.TileChangedEvent;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
-public class TileStore implements Serialisable {
+public class TileStore implements LevelStore {
 	private Level level;
 	
-	private Tile[] tiles;
+	@Expose private Tile[] tiles;
 	
-	private int width;
-	private int height;
+	@Expose private int width;
+	@Expose private int height;
 	
-	@Setter	private boolean eventsSuppressed;
+	@Setter	private boolean eventsSuppressed = true; // start off suppressed during initialisation
 	
-	public void initialise(Level level) {
+	public TileStore(Level level) {
 		this.level = level;
-		
+	}
+	
+	@Override
+	public void initialise() {
 		this.width = level.getWidth();
 		this.height = level.getHeight();
 		
-		tiles = new Tile[width * height];
+		this.tiles = newTiles();
+	}
+	
+	private Tile[] newTiles() {
+		Tile[] tiles = new Tile[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
 			tiles[i] = new Tile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
 		}
+		
+		return tiles;
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		serialiseTiles().ifPresent(bytes -> obj.put("tiles", new String(Base64.getEncoder().encode(bytes))));
+	public void serialise(Gson gson, JsonObject out) {
+		out.addProperty("tiles", new String(Base64.getEncoder().encode(serialiseTiles())));
 		
-		Arrays.stream(tiles).forEach(t -> {
-			if (t.hasState()) {
-				JSONObject serialisedTileState = new JSONObject();
-				serialisedTileState.put("x", t.getX());
-				serialisedTileState.put("y", t.getY());
-				serialisedTileState.put("class", t.getState().getClass().getName());
-				t.getState().serialise(serialisedTileState);
-				obj.append("tileStates", serialisedTileState);
-			}
-		});
+		TypeAdapter<TileState> tileStateAdapter = gson.getAdapter(TypeToken.get(TileState.class));
+		JsonArray tileStates = new JsonArray();
+		Arrays.stream(tiles)
+			.filter(Tile::hasState)
+			.forEach(tile -> {
+				JsonObject serialisedTileState = tileStateAdapter.toJsonTree(tile.getState()).getAsJsonObject();
+				serialisedTileState.addProperty("x", tile.getX());
+				serialisedTileState.addProperty("y", tile.getY());
+				tileStates.add(serialisedTileState);
+			});
+		out.add("tileStates", tileStates);
 	}
 	
-	private Optional<byte[]> serialiseTiles() {
+	private byte[] serialiseTiles() {
 		try (
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos)
 		) {
-			Arrays.stream(tiles).forEach(t -> {
-				try {
-					dos.writeShort(t.getType().getID());
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error saving level:", e);
-				}
-			});
+			for (Tile t : tiles) {
+				dos.writeShort(t.getType().getID());
+			}
 			
 			dos.flush();
-			
-			return Optional.of(bos.toByteArray());
+			return bos.toByteArray();
 		} catch (IOException e) {
 			JRogue.getLogger().error("Error saving level:", e);
 		}
 		
-		return Optional.empty();
+		return new byte[] {};
 	}
 	
 	@Override
-	public void unserialise(JSONObject obj) {
+	public void deserialise(Gson gson, JsonObject in) {
 		eventsSuppressed = true;
 		
-		try {
-			unserialiseTiles(Base64.getDecoder().decode(obj.getString("tiles")));
+		deserialiseTiles(Base64.getDecoder().decode(in.get("tiles").getAsString()));
+		
+		TypeAdapter<TileState> tileStateAdapter = gson.getAdapter(TypeToken.get(TileState.class));
+		in.getAsJsonArray("tileStates").forEach(raw -> {
+			JsonObject serialisedTileState = raw.getAsJsonObject();
+			int x = serialisedTileState.get("x").getAsInt();
+			int y = serialisedTileState.get("y").getAsInt();
 			
-			JSONArray serialisedTileStates = obj.getJSONArray("tileStates");
-			serialisedTileStates.forEach(serialisedTileState -> unserialiseTileState((JSONObject) serialisedTileState));
-		} catch (Exception e) {
-			JRogue.getLogger().error("Error loading level - during TileStore unserialisation:", e);
-		}
+			Tile tile = getTile(x, y);
+			TileState tileState = tileStateAdapter.fromJsonTree(serialisedTileState);
+			tileState.init(tile);
+			tile.setState(tileState);
+		});
 		
 		eventsSuppressed = false;
 	}
 	
-	private void unserialiseTiles(byte[] bytes) {
+	private void deserialiseTiles(byte[] bytes) {
 		try (
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			DataInputStream dis = new DataInputStream(bis)
 		) {
-			Arrays.stream(tiles).forEach(t -> {
-				try {
-					short id = dis.readShort();
-					TileType type = TileType.fromID(id);
-					t.setType(type);
-				} catch (IOException e) {
-					JRogue.getLogger().error("Error loading level - during TileStore unserialiseTiles:", e);
-				}
-			});
+			for (Tile t : tiles) {
+				short id = dis.readShort();
+				TileType type = TileType.fromID(id);
+				t.setType(type);
+			}
 		} catch (IOException e) {
-			JRogue.getLogger().error("IO error loading level - during TileStore unserialiseTiles:", e);
-		}
-	}
-	
-	private void unserialiseTileState(JSONObject serialisedTileState) {
-		String tileStateClassName = serialisedTileState.getString("class");
-		int x = serialisedTileState.getInt("x");
-		int y = serialisedTileState.getInt("y");
-		
-		Tile tile = getTile(x, y);
-		
-		try {
-			@SuppressWarnings("unchecked")
-			Class<? extends TileState> tileStateClass = (Class<? extends TileState>) Class.forName(tileStateClassName);
-			Constructor<? extends TileState> tileStateConstructor = tileStateClass.getConstructor(Tile.class);
-			
-			TileState tileState = tileStateConstructor.newInstance(tile);
-			tileState.unserialise(serialisedTileState);
-			tile.setState(tileState);
-		} catch (ClassNotFoundException e) {
-			JRogue.getLogger().error("Unknown tile state class {}", tileStateClassName, e);
-		} catch (NoSuchMethodException e) {
-			JRogue.getLogger().error("Tile state class {} has no unserialisation constructor", tileStateClassName, e);
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			JRogue.getLogger().error("Error loading tile state class {}", tileStateClassName, e);
+			JRogue.getLogger().error("IO error loading level - during TileStore deserialiseTiles:", e);
 		}
 	}
 	
@@ -154,7 +140,7 @@ public class TileStore implements Serialisable {
 
 	public Tile getTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
-		return tiles[width * y + x];
+		return tiles[y * width + x];
 	}
 	
 	public Tile getTile(Point point) {
@@ -173,7 +159,7 @@ public class TileStore implements Serialisable {
 	public void setTileType(int x, int y, TileType tile) {
 		if (tile.getID() < 0) return;
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
-		tiles[width * y + x].setType(tile);
+		tiles[y * width + x].setType(tile);
 	}
 
 	public void setTileType(Point p, TileType tile) {

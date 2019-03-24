@@ -1,19 +1,19 @@
 package jr.dungeon;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
-import jr.utils.Serialisable;
 import jr.utils.SerialisationUtils;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Base64;
 
-public class VisibilityStore implements Serialisable {
-	@Getter private Boolean[] discoveredTiles;
-	@Getter private Boolean[] visibleTiles;
+public class VisibilityStore implements LevelStore {
+	@Getter private boolean[] discoveredTiles;
+	@Getter private boolean[] visibleTiles;
 	
 	@Getter private int width;
 	@Getter private int height;
@@ -22,39 +22,44 @@ public class VisibilityStore implements Serialisable {
 	
 	public VisibilityStore(Level level) {
 		this.level = level;
-		
-		width = level.getWidth();
-		height = level.getHeight();
 	}
 	
 	public void initialise() {
-		discoveredTiles = new Boolean[width * height];
-		visibleTiles = new Boolean[width * height];
+		width = level.getWidth();
+		height = level.getHeight();
+		
+		discoveredTiles = new boolean[width * height];
+		visibleTiles = new boolean[width * height];
 		
 		Arrays.fill(discoveredTiles, false);
 		Arrays.fill(visibleTiles, false);
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		SerialisationUtils.serialiseBooleanArray(visibleTiles)
-			.ifPresent(bytes -> obj.put("visibleTiles", new String(Base64.getEncoder().encode(bytes))));
+	public void serialise(Gson gson, JsonObject out) {
+		out.addProperty("visibleTiles", new String(Base64.getEncoder().encode(
+			SerialisationUtils.serialiseBooleanArray(visibleTiles))));
 		
-		SerialisationUtils.serialiseBooleanArray(discoveredTiles)
-			.ifPresent(bytes -> obj.put("discoveredTiles", new String(Base64.getEncoder().encode(bytes))));
+		out.addProperty("discoveredTiles", new String(Base64.getEncoder().encode(
+			SerialisationUtils.serialiseBooleanArray(discoveredTiles))));
 	}
 	
 	@Override
-	public void unserialise(JSONObject obj) {
-		visibleTiles = SerialisationUtils.unserialiseBooleanArray(
-			Base64.getDecoder().decode(obj.getString("visibleTiles")),
+	public void deserialise(Gson gson, JsonObject in) {
+		visibleTiles = SerialisationUtils.deserialiseBooleanArray(
+			Base64.getDecoder().decode(in.get("visibleTiles").getAsString()),
 			width * height
 		);
 		
-		discoveredTiles = SerialisationUtils.unserialiseBooleanArray(
-			Base64.getDecoder().decode(obj.getString("discoveredTiles")),
+		discoveredTiles = SerialisationUtils.deserialiseBooleanArray(
+			Base64.getDecoder().decode(in.get("discoveredTiles").getAsString()),
 			width * height
 		);
+	}
+	
+	public void markTile(boolean[] arr, int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) return;
+		arr[y * width + x] = true;
 	}
 	
 	public boolean isTileDiscovered(int x, int y) {
@@ -66,11 +71,7 @@ public class VisibilityStore implements Serialisable {
 	}
 
 	public void discoverTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-		
-		discoveredTiles[width * y + x] = true;
+		markTile(discoveredTiles, x, y);
 	}
 
 	public void discoverTile(Point p) {
@@ -86,7 +87,7 @@ public class VisibilityStore implements Serialisable {
 	}
 	
 	public boolean isTileInvisible(int x, int y) {
-		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[width * y + x];
+		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[y * width + x];
 	}
 	
 	public boolean isTileInvisible(Point p) {
@@ -94,11 +95,7 @@ public class VisibilityStore implements Serialisable {
 	}
 	
 	public void seeTile(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			return;
-		}
-		
-		visibleTiles[y * width + x] = true;
+		markTile(visibleTiles, x, y);
 		
 		level.entityStore.getEntities().stream()
 			.filter(e -> e.getX() == x && e.getY() == y)

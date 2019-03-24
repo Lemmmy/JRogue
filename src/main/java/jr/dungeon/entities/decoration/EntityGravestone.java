@@ -1,5 +1,6 @@
 package jr.dungeon.entities.decoration;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
@@ -9,12 +10,13 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.Readable;
 import jr.dungeon.events.EventHandler;
+import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.RandomUtils;
-import org.json.JSONObject;
 
+@Registered(id="entityGravestone")
 public class EntityGravestone extends Entity implements Readable {
 	private static final String[] GRAVE_MESSAGES = new String[] {
 		"Rest in peace",
@@ -22,13 +24,15 @@ public class EntityGravestone extends Entity implements Readable {
 		// TODO: come up with some funny gravestone messages
 	};
 	
-	private String message;
+	@Expose private String message;
 	
 	public EntityGravestone(Dungeon dungeon, Level level, int x, int y) {
 		super(dungeon, level, x, y);
 		
 		message = RandomUtils.randomFrom(GRAVE_MESSAGES);
 	}
+	
+	protected EntityGravestone() { super(); }
 	
 	@Override
 	public Noun getName(EntityLiving observer) {
@@ -65,19 +69,5 @@ public class EntityGravestone extends Entity implements Readable {
 	@Override
 	public boolean canRead(EntityLiving reader) {
 		return true;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("message", message);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		message = obj.getString("message");
 	}
 }

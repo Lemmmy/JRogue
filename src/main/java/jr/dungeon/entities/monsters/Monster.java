@@ -1,5 +1,6 @@
 package jr.dungeon.entities.monsters;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -25,27 +26,22 @@ import jr.language.transformers.Capitalise;
 import jr.utils.RandomUtils;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Set;
 
 public abstract class Monster extends EntityLiving {
-	private AI ai;
-	
-	public Monster(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-		
-		if (dungeon == null) {
-			return;
-		}
-		
-		this.setExperienceLevel(Math.abs(level.getDepth()));
-	}
+	@Expose private AI ai;
 	
 	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
 		super(dungeon, level, x, y, experienceLevel);
 	}
+	
+	public Monster(Dungeon dungeon, Level level, int x, int y) {
+		super(dungeon, level, x, y, Math.abs(level.getDepth()));
+	}
+	
+	protected Monster() { super(); }
 	
 	public AI getAI() {
 		return ai;
@@ -53,6 +49,13 @@ public abstract class Monster extends EntityLiving {
 	
 	public void setAI(AI ai) {
 		this.ai = ai;
+	}
+	
+	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		
+		if (ai != null) ai.setMonster(this);
 	}
 	
 	@Override
@@ -212,27 +215,7 @@ public abstract class Monster extends EntityLiving {
 	public int getExperienceRewarded() {
 		return getSize() == Size.SMALL ? RandomUtils.roll(1, 2) : RandomUtils.roll(2, 2);
 	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		if (ai != null) {
-			JSONObject serialisedAI = new JSONObject();
-			ai.serialise(serialisedAI);
-			obj.put("ai", serialisedAI);
-		}
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		if (obj.has("ai")) {
-			ai = AI.createFromJSON(obj.getJSONObject("ai"), this);
-		}
-	}
-	
+
 	@Override
 	public Set<EventListener> getSubListeners() {
 		val subListeners = super.getSubListeners();

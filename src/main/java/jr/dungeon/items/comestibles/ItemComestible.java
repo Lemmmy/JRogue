@@ -1,17 +1,17 @@
 package jr.dungeon.items.comestibles;
 
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemCategory;
 import lombok.Getter;
-import org.json.JSONObject;
 
 import java.util.List;
 
 @Getter
 public abstract class ItemComestible extends Item {
-	private int turnsEaten = 0;
+	@Expose private int turnsEaten = 0;
 	
 	public EatenState getEatenState() {
 		if (turnsEaten == 0) {
@@ -40,20 +40,6 @@ public abstract class ItemComestible extends Item {
 	@Override
 	public ItemCategory getCategory() {
 		return ItemCategory.COMESTIBLE;
-	}
-	
-	@Override
-	public void serialise(JSONObject obj) {
-		super.serialise(obj);
-		
-		obj.put("turnsEaten", turnsEaten);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		super.unserialise(obj);
-		
-		turnsEaten = obj.getInt("turnsEaten");
 	}
 	
 	@Override

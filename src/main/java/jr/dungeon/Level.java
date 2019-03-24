@@ -1,51 +1,46 @@
 package jr.dungeon;
 
+import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
-import jr.JRogue;
 import jr.debugger.utils.Debuggable;
-import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
-import jr.utils.Persisting;
-import jr.utils.Serialisable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class Level implements Serialisable, Persisting, Debuggable {
-	private UUID uuid;
+public class Level implements Serialisable, Debuggable {
+	@Expose private UUID uuid;
 	
 	private Dungeon dungeon;
 	
-	private Climate climate;
+	@Expose private Climate climate;
 	
-	private int width;
-	private int height;
-	private int depth;
+	@Expose private int width;
+	@Expose private int height;
+	@Expose private int depth;
 	
-	private int spawnX;
-	private int spawnY;
+	@Expose private int spawnX;
+	@Expose private int spawnY;
 	
-	private long turnCreated;
+	@Expose private long turnCreated;
 	
-	@Setter private String name;
+	@Expose @Setter private String name;
 	
-	@Getter(AccessLevel.NONE) public final TileStore tileStore;
-	@Getter(AccessLevel.NONE) public final EntityStore entityStore;
-	@Getter(AccessLevel.NONE) public final LightStore lightStore;
-	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore;
-	@Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner;
+	@Getter(AccessLevel.NONE) public TileStore tileStore;
+	@Getter(AccessLevel.NONE) public VisibilityStore visibilityStore;
+	@Getter(AccessLevel.NONE) public LightStore lightStore;
+	@Expose @Getter(AccessLevel.NONE) public EntityStore entityStore;
+	@Expose @Getter(AccessLevel.NONE) public MonsterSpawner monsterSpawner;
 	
-	private JSONObject persistence;
+	@Expose @Getter private DungeonGenerator generator;
 
 	/**
 	 * Constructs a level with a random UUID.
@@ -75,29 +70,23 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		this.height = height;
 		
 		this.depth = depth;
-		
-		tileStore = new TileStore();
-		entityStore = new EntityStore(this);
-		visibilityStore = new VisibilityStore(this);
-		lightStore = new LightStore(this);
-		monsterSpawner = new MonsterSpawner(this);
 	}
 
 	/**
 	 * Initialises the Level, including the initialisation of its stores.
 	 */
-	private void initialise() {
-		tileStore.initialise(this);
-		entityStore.initialise();
-		visibilityStore.initialise();
-		lightStore.initialise();
-		monsterSpawner.initialise();
+	public void initialise(Dungeon dungeon) {
+		this.dungeon = dungeon;
 		
-		lightStore.initialiseLight();
-		
-		turnCreated = dungeon.turnSystem.getTurn();
-
-		persistence = new JSONObject();
+		(tileStore = new TileStore(this)).initialise();
+		(visibilityStore = new VisibilityStore(this)).initialise();
+		(lightStore = new LightStore(this)).initialise();
+		(entityStore = new EntityStore(this)).initialise();
+		(monsterSpawner = new MonsterSpawner(this)).initialise();
+	}
+	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
 	}
 
 	/**
@@ -108,14 +97,14 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
-		tileStore.setEventsSuppressed(true);
-		
 		do {
-			initialise();
+			initialise(dungeon);
+			
+			turnCreated = dungeon.turnSystem.getTurn();
 			
 			try {
 				Constructor generatorConstructor = generatorClass.getConstructor(Level.class, Tile.class);
-				DungeonGenerator generator = (DungeonGenerator) generatorConstructor.newInstance(this, sourceTile);
+				generator = (DungeonGenerator) generatorConstructor.newInstance(this, sourceTile);
 				
 				if (!generator.generate()) {
 					continue;
@@ -136,83 +125,7 @@ public class Level implements Serialisable, Persisting, Debuggable {
 		
 		monsterSpawner.spawnMonsters();
 	}
-
-	/**
-	 * Unserialises the level from a JSONObject.
-	 * @param uuid The UUID to give to the unserialised level.
-	 * @param obj The JSONObject containing the serialised level.
-	 * @param dungeon The {@link jr.dungeon.Dungeon} this level should belong to.
-	 * @return The unserialised level.
-	 */
-	public static Optional<Level> createFromJSON(UUID uuid, JSONObject obj, Dungeon dungeon) {
-		Level level = null;
-		
-		try {
-			int width = obj.getInt("width");
-			int height = obj.getInt("height");
-			int depth = obj.getInt("depth");
-			
-			level = new Level(uuid, dungeon, width, height, depth);
-			level.unserialise(obj);
-			return Optional.of(level);
-		} catch (Exception e) {
-			if (level != null) {
-				JRogue.getLogger().error("Error loading level " + level.toString() + ":", e);
-			} else {
-				JRogue.getLogger().error("Error loading level:", e);
-			}
-		}
-		
-		return Optional.empty();
-	}
-
-	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("width", getWidth());
-		obj.put("height", getHeight());
-		obj.put("depth", getDepth());
-		obj.put("spawnX", getSpawnX());
-		obj.put("spawnY", getSpawnY());
-		obj.put("climate", getClimate().name());
-		obj.put("turnCreated", turnCreated);
-		obj.put("name", name);
-		
-		tileStore.serialise(obj);
-		entityStore.serialise(obj);
-		lightStore.serialise(obj);
-		visibilityStore.serialise(obj);
-		monsterSpawner.serialise(obj);
-		
-		serialisePersistence(obj);
-	}
-
-	@Override
-	public void unserialise(JSONObject obj) {
-		initialise();
-		
-		try {
-			spawnX = obj.getInt("spawnX");
-			spawnY = obj.getInt("spawnY");
-			
-			climate = Climate.valueOf(obj.optString("climate", Climate.WARM.name()));
-			
-			turnCreated = obj.optInt("turnCreated", 0);
-			name = obj.optString("name", "Dungeon");
-			
-			tileStore.unserialise(obj);
-			entityStore.unserialise(obj);
-			lightStore.unserialise(obj);
-			visibilityStore.unserialise(obj);
-			monsterSpawner.unserialise(obj);
-		} catch (JSONException e) {
-			JRogue.getLogger().error("Error loading level:", e);
-		}
-		
-		dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
-
-		unserialisePersistence(obj);
-	}
-
+	
 	/**
 	 * Sets the level's spawn point in tile coordinates. This is where the player will appear when entering the level.
 	 * @param x The x coordinate of the spawn point.
@@ -229,14 +142,6 @@ public class Level implements Serialisable, Persisting, Debuggable {
 	public UUID getUUID() {
 		return uuid;
 	}
-
-	/**
-	 * @return A JSONObject containing data that will persist across game sessions.
-	 */
-	@Override
-	public JSONObject getPersistence() {
-		return persistence;
-	}
 	
 	@Override
 	public String toString() {
@@ -249,5 +154,9 @@ public class Level implements Serialisable, Persisting, Debuggable {
 			"[P_GREY_3]%s[] %,d",
 			name, depth
 		);
+	}
+	
+	void setDungeonInternal(Dungeon dungeon) {
+		this.dungeon = dungeon;
 	}
 }

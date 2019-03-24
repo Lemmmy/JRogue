@@ -1,11 +1,11 @@
 package jr.dungeon.items.identity;
 
 import jr.dungeon.items.Item;
+import jr.dungeon.serialisation.HasRegistry;
+import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
 import jr.utils.DebugToStringStyle;
-import jr.utils.Serialisable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 /**
  * An aspect is something an entity knows about an item. A persistent aspect is known by all entities with the same
@@ -17,6 +17,7 @@ import org.json.JSONObject;
  * An example of a non-persistent aspect is the beatitude (blessed, uncursed or cursed status) of an item. The
  * beatitude differs between every item, so it's non-persistent.
  */
+@HasRegistry
 public abstract class Aspect implements Serialisable {
 	public abstract String getName();
 	
@@ -39,12 +40,6 @@ public abstract class Aspect implements Serialisable {
 	 * @return Whether or not the Aspect is persistent.
 	 */
 	public abstract boolean isPersistent();
-	
-	@Override
-	public void serialise(JSONObject obj) {}
-	
-	@Override
-	public void unserialise(JSONObject obj) {}
 	
 	@Override
 	public String toString() {

@@ -1,39 +1,34 @@
 package jr.dungeon.entities.monsters.ai.stateful.humanoid;
 
+import com.google.gson.annotations.Expose;
+import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
+import jr.dungeon.serialisation.Registered;
 import jr.utils.Utils;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.json.JSONObject;
 
 @Getter
+@Registered(id="aiTraitHumanoidIntrinsicFear")
 public class TraitIntrinsicFear extends AITrait<StatefulAI> {
-	private float fear;
+	@Expose private float fear;
 	
 	public TraitIntrinsicFear(StatefulAI ai) {
 		super(ai);
 	}
 	
 	@Override
-	public void serialise(JSONObject obj) {
-		obj.put("intrinsicFear", fear);
-	}
-	
-	@Override
-	public void unserialise(JSONObject obj) {
-		fear = obj.getInt("intrinsicFear");
-	}
-	
-	@Override
 	public void update() {
 		// TODO: ensure this is balanced
 		
+		EntityLiving currentTarget = ai.getCurrentTarget().get(getLevel());
+		
 		if (
-			getAI().getCurrentTarget() != null &&
-			Utils.chebyshevDistance(getAI().getCurrentTarget().getPosition(), getMonster().getPosition()) < 5
+			currentTarget != null &&
+			Utils.chebyshevDistance(currentTarget.getPosition(), getMonster().getPosition()) < 5
 		) {
-			fear = (getMonster().getArmourClass() - getAI().getCurrentTarget().getArmourClass()) / 10;
+			fear = (getMonster().getArmourClass() - currentTarget.getArmourClass()) / 10f;
 			fear = Math.max(0, Math.min(1, fear));
 		}
 	}
