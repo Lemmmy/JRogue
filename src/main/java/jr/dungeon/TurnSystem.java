@@ -30,6 +30,7 @@ public class TurnSystem {
 	 */
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
+	private static final Pcg32 RAND = new Pcg32();
 	
 	@Setter private Dungeon dungeon;
 	
@@ -72,11 +73,6 @@ public class TurnSystem {
 	 * @see MonsterSpawner
 	 */
 	@Expose @Getter private long monsterSpawnCounter = 50;
-	
-	/**
-	 * rand
-	 */
-	private Pcg32 rand = new Pcg32();
 	
 	public TurnSystem(Dungeon dungeon) {
 		this.dungeon = dungeon;
@@ -246,7 +242,7 @@ public class TurnSystem {
 		Collections.shuffle(emitters);
 		PassiveSoundEmitter soundEmitter = (PassiveSoundEmitter) emitters.get(0);
 		
-		if (rand.nextFloat() <= soundEmitter.getSoundProbability()) {
+		if (RAND.nextFloat() <= soundEmitter.getSoundProbability()) {
 			String sound = RandomUtils.randomFrom(soundEmitter.getSounds());
 			
 			dungeon.log(sound);

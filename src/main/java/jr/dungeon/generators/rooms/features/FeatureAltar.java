@@ -15,13 +15,13 @@ import jr.language.Noun;
 public class FeatureAltar extends SpecialRoomFeature {
 	private static final double PROBABILITY_ALTAR_CANDLESTICK = 0.5;
 	
-	private Pcg32 rand = new Pcg32();
+	private static final Pcg32 RAND = new Pcg32();
 	
 	@Override
 	public void generate(Room room) {
 		Level level = room.getLevel();
-		int altarX = rand.nextInt(room.getWidth() - 2) + room.getX() + 1;
-		int altarY = rand.nextInt(room.getHeight() - 2) + room.getY() + 1;
+		int altarX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
+		int altarY = RAND.nextInt(room.getHeight() - 2) + room.getY() + 1;
 		
 		EntityAltar altar = new EntityAltar(level.getDungeon(), level, altarX, altarY);
 		level.entityStore.addEntity(altar);
@@ -34,7 +34,7 @@ public class FeatureAltar extends SpecialRoomFeature {
 			}
 		}
 		
-		if (rand.nextDouble() < PROBABILITY_ALTAR_CANDLESTICK) {
+		if (RAND.nextDouble() < PROBABILITY_ALTAR_CANDLESTICK) {
 			int currentX = altarX - 1;
 			
 			if (level.tileStore.getTileType(currentX, altarY).isFloor())

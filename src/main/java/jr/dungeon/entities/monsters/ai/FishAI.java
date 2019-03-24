@@ -1,6 +1,7 @@
 package jr.dungeon.entities.monsters.ai;
 
 import com.github.alexeyr.pcg.Pcg32;
+import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
@@ -15,19 +16,12 @@ import java.util.Arrays;
 public class FishAI extends AI {
 	private static final int SLEEP_DISTANCE = 20;
 	
-	private Pcg32 random = new Pcg32();
+	private static final Pcg32 RAND = new Pcg32();
 	
-	@Getter @Setter private float moveProbability = 0.1f;
+	@Expose @Getter @Setter private float moveProbability = 0.1f;
 	
 	public FishAI(Monster monster) {
 		super(monster);
-	}
-	
-	@Override
-	public void afterDeserialise() {
-		super.afterDeserialise();
-		random = new Pcg32();
-		moveProbability = 0.1f;
 	}
 	
 	@Override
@@ -36,7 +30,7 @@ public class FishAI extends AI {
 			return; // no need to move if we're far away from the player
 		}
 		
-		if (random.nextFloat() < moveProbability) {
+		if (RAND.nextFloat() < moveProbability) {
 			Tile[] tiles = getMonster().getLevel().tileStore
 				.getAdjacentTiles(getMonster().getX(), getMonster().getY());
 			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t

@@ -47,7 +47,7 @@ public class GeneratorSewer extends GeneratorRooms {
 			return false;
 		}
 		
-		simplexNoise = new OpenSimplexNoise(rand.nextLong());
+		simplexNoise = new OpenSimplexNoise(RAND.nextLong());
 		
 		addWaterBodies();
 		

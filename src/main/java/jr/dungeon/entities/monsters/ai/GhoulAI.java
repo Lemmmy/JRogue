@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.serialisation.Registered;
 import jr.utils.DebugToStringStyle;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -21,9 +20,7 @@ import java.util.Random;
 @Setter
 @Registered(id="aiGhoul")
 public class GhoulAI extends AI {
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	private Random random = new Random();
+	private static final Random RAND = new Random();
 	
 	@Expose private float moveProbability = 0.25f;
 	@Expose private float attackProbability = 0.25f;
@@ -36,24 +33,18 @@ public class GhoulAI extends AI {
 	}
 	
 	@Override
-	public void afterDeserialise() {
-		super.afterDeserialise();
-		random = new Random();
-	}
-	
-	@Override
 	public void update() {
 		turnsSinceLastAttack++;
 		
 		if (
 			canMeleeAttackPlayer() &&
-			random.nextFloat() < attackProbability &&
+			RAND.nextFloat() < attackProbability &&
 			turnsSinceLastAttack >= attackCooldownDuration
 		) {
 			meleeAttackPlayer();
 			
 			turnsSinceLastAttack = 0;
-		} else if (canMoveTowardsPlayer() && (random.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
+		} else if (canMoveTowardsPlayer() && (RAND.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
 			moveTowardsPlayer();
 		}
 	}

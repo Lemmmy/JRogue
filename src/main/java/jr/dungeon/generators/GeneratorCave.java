@@ -96,7 +96,7 @@ public class GeneratorCave extends DungeonGenerator {
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(this::isTileInBounds)
 			.forEach(t -> {
-				if (rand.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
+				if (RAND.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
 					t.setType(TileType.TILE_CAVE_FLOOR); // TODO: cave floor tile
 				}
 			});

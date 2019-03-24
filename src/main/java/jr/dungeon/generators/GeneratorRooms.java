@@ -505,9 +505,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void addRandomDrops() {
 		rooms.forEach(r -> {
-			if (rand.nextDouble() < PROBABILITY_GOLD_DROP) {
-				int x = rand.nextInt(r.getWidth() - 2) + r.getX() + 1;
-				int y = rand.nextInt(r.getHeight() - 2) + r.getY() + 1;
+			if (RAND.nextDouble() < PROBABILITY_GOLD_DROP) {
+				int x = RAND.nextInt(r.getWidth() - 2) + r.getX() + 1;
+				int y = RAND.nextInt(r.getHeight() - 2) + r.getY() + 1;
 				
 				QuickSpawn.spawnGold(level, x, y, RandomUtils.roll(Math.abs(level.getDepth()) + 2, 6));
 			}
