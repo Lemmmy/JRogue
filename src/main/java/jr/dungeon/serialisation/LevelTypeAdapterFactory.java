@@ -9,6 +9,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import jr.dungeon.Level;
+import jr.dungeon.LightStore;
+import jr.dungeon.TileStore;
+import jr.dungeon.VisibilityStore;
 
 import java.io.IOException;
 
@@ -42,7 +45,16 @@ public class LevelTypeAdapterFactory implements TypeAdapterFactory {
 				JsonObject inLevel = Streams.parse(in).getAsJsonObject();
 				
 				Level level = levelTypeAdapter.fromJsonTree(inLevel);
-				level.initialise(DungeonSerialiser.currentDeserialisingDungeon);
+				
+				level.setDungeon(DungeonSerialiser.currentDeserialisingDungeon);
+				
+				level.entityStore.setLevel(level);
+				level.monsterSpawner.setLevel(level);
+				
+				// TODO: find a better way
+				(level.tileStore = new TileStore(level)).initialise();
+				(level.visibilityStore = new VisibilityStore(level)).initialise();
+				(level.lightStore = new LightStore(level)).initialise();
 				
 				level.tileStore.deserialise(gson, inLevel);
 				level.visibilityStore.deserialise(gson, inLevel);

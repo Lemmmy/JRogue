@@ -8,13 +8,14 @@ import jr.dungeon.events.GameStartedEvent;
 import lombok.Getter;
 
 import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Attributes implements EventListener {
 	private static final int MAX_ATTRIBUTE_LEVEL = 30;
 	
-	@Expose private EnumMap<Attribute, Integer> attributes = new EnumMap<>(Attribute.class);
-	private EnumMap<Attribute, Integer> defaults = new EnumMap<>(Attribute.class);
+	@Expose private Map<Attribute, Integer> attributes = new HashMap<>();
+	private Map<Attribute, Integer> defaults = new HashMap<>();
 	@Expose @Getter private int spendableSkillPoints = 3;
 	
 	public Attributes() {
@@ -26,7 +27,7 @@ public class Attributes implements EventListener {
 		Arrays.stream(Attribute.values()).forEach(a -> { attributes.put(a, 0); defaults.put(a, 0); });
 	}
 	
-	public EnumMap<Attribute, Integer> getAttributeMap() {
+	public Map<Attribute, Integer> getAttributeMap() {
 		return attributes;
 	}
 	

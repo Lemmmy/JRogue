@@ -35,6 +35,11 @@ public class MonsterSpawner {
 		this.dungeon = level.getDungeon();
 	}
 	
+	public void setLevel(Level level) {
+		this.dungeon = level.getDungeon();
+		this.level = level;
+	}
+	
 	public void spawnMonsters() {
 		if (monsterSpawningStrategy == null) {
 			return;

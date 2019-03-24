@@ -356,4 +356,14 @@ public class Dungeon implements Serialisable, Messenger {
 	public void setLevelInternal(Level level) {
 		this.level = level;
 	}
+	
+	public void searchForPlayer() {
+		levels.values().stream()
+			.map(l -> l.entityStore.getEntities())
+			.flatMap(Collection::stream)
+			.filter(Player.class::isInstance)
+			.findFirst()
+			.map(Player.class::cast)
+			.ifPresent(this::setPlayer);
+	}
 }

@@ -56,6 +56,8 @@ public class DungeonSerialiser {
 		
 		dungeon.serialiser.checkVersion();
 		
+		dungeon.searchForPlayer();
+		
 		if (dungeon.getPlayer() == null) {
 			File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 			

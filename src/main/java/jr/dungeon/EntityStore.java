@@ -57,6 +57,16 @@ public class EntityStore {
 		entityRemoveQueue = new ArrayList<>();
 	}
 	
+	public void setLevel(Level level) {
+		this.dungeon = level.getDungeon();
+		this.level = level;
+		
+		this.getEntities().forEach(entity -> entity.setLevelInternal(level));
+		
+		entityAddQueue = new ArrayList<>();
+		entityRemoveQueue = new ArrayList<>();
+	}
+	
 	/**
 	 * Goes through the {@link #entityAddQueue} and {@link #entityRemoveQueue}, adding new {@link Entity Entities} to
 	 * the level and store, and removing ones that should be removed. Queues are processed at the start and end of

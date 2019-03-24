@@ -358,10 +358,14 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 		this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
 		this.level.entityStore.processEntityQueues(false);
 		
-		this.level = level;
+		setLevelInternal(level);
 		
 		level.entityStore.addEntity(this);
 		level.entityStore.processEntityQueues(false);
+	}
+	
+	public void setLevelInternal(Level level) {
+		this.level = level;
 	}
 	
 	@Override

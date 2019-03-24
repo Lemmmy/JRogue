@@ -86,6 +86,10 @@ public class Level implements Serialisable, Debuggable {
 		
 		lightStore.initialiseLight();
 	}
+	
+	public void setDungeon(Dungeon dungeon) {
+		this.dungeon = dungeon;
+	}
 
 	/**
 	 * Generates the level.
