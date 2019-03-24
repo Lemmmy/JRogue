@@ -31,6 +31,13 @@ public class LightStore implements LevelStore {
 	
 	public void initialise() {
 		lightTiles = new ArrayList<>();
+		
+		for (int i = 0; i < LIGHT_MAX_LIGHT_LEVEL; i++) {
+			lightTiles.add(i, new ArrayList<>());
+		}
+		
+		Arrays.stream(level.tileStore.getTiles())
+			.forEach(Tile::resetLight);
 	}
 	
 	@Override
@@ -144,17 +151,6 @@ public class LightStore implements LevelStore {
 				propagateLighting(tile, isInitial);
 			}
 		}
-	}
-	
-	public void initialiseLight() {
-		lightTiles = new ArrayList<>();
-		
-		for (int i = 0; i < LIGHT_MAX_LIGHT_LEVEL; i++) {
-			lightTiles.add(i, new ArrayList<>());
-		}
-		
-		Arrays.stream(level.tileStore.getTiles())
-			.forEach(Tile::resetLight);
 	}
 	
 	public void resetLight() {

@@ -83,8 +83,6 @@ public class Level implements Serialisable, Debuggable {
 		(lightStore = new LightStore(this)).initialise();
 		(entityStore = new EntityStore(this)).initialise();
 		(monsterSpawner = new MonsterSpawner(this)).initialise();
-		
-		lightStore.initialiseLight();
 	}
 	
 	public void setDungeon(Dungeon dungeon) {
