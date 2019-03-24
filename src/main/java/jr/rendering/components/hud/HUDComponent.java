@@ -447,6 +447,12 @@ public class HUDComponent extends RendererComponent {
 				.show());
 	}
 	
+	public void showDungeonOverviewWindow() {
+		nextFrameDeferred
+			.add(() -> new DungeonOverviewWindow(this, stage, skin, dungeon, dungeon.getLevel())
+				.show());
+	}
+	
 	public void showSpellWindow() {
 		nextFrameDeferred
 			.add(() -> new SpellWindow(this, stage, skin, player)
