@@ -8,8 +8,24 @@ import jr.dungeon.items.Wieldable;
 import jr.language.LanguageUtils;
 
 public class PlayerWield extends PlayerItemVisitor {
+	private Container.ContainerEntry containerEntry;
+	
+	public PlayerWield(Container.ContainerEntry containerEntry) {
+		this.containerEntry = containerEntry;
+	}
+	
+	public PlayerWield() {}
+	
 	@Override
 	public void visit(Player player) {
+		if (containerEntry == null) {
+			askWield(player);
+		} else {
+			wield(player, containerEntry.getLetter(), containerEntry);
+		}
+	}
+	
+	private void askWield(Player player) {
 		String msg = "Wield what?";
 		
 		InventoryUseResult result = useInventoryItem(player, msg, s -> s.getItem() instanceof Wieldable, (c, ce, inv) -> {

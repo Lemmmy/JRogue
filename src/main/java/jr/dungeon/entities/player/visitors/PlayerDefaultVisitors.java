@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.magical.DirectionType;
@@ -78,6 +79,10 @@ public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 	
 	public void wield() {
 		getPlayer().acceptVisitor(new PlayerWield());
+	}
+	
+	public void wield(Container.ContainerEntry containerEntry) {
+		getPlayer().acceptVisitor(new PlayerWield(containerEntry));
 	}
 	
 	public void fire() {

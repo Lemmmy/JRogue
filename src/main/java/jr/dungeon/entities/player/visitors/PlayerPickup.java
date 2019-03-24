@@ -4,8 +4,10 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.Container;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.io.Prompt;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
+import jr.dungeon.items.Wieldable;
 import jr.dungeon.items.valuables.ItemGold;
 import jr.language.LanguageUtils;
 
@@ -43,6 +45,24 @@ public class PlayerPickup implements PlayerVisitor {
 						LanguageUtils.anObject(player, stack),
 						result.get().getLetter()
 					);
+					
+					if (item instanceof Wieldable) { // TODO: setting to disable this behaviour
+						String wieldMsg = String.format("Do you want to wield [YELLOW]%s[]?", LanguageUtils.object(player, stack));
+						player.getDungeon().prompt(new Prompt(wieldMsg, new char[]{'y', 'n'}, true, new Prompt.PromptCallback() {
+							@Override
+							public void onNoResponse() {}
+							
+							@Override
+							public void onInvalidResponse(char response) {}
+							
+							@Override
+							public void onResponse(char response) {
+								if (response == 'y') {
+									player.defaultVisitors.wield(result.get());
+								}
+							}
+						}));
+					}
 					
 					break;
 				} else {
