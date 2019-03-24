@@ -6,6 +6,8 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.items.identity.Aspect;
 import jr.dungeon.items.identity.AspectBeatitude;
+import jr.dungeon.serialisation.DungeonRegistries;
+import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
@@ -20,16 +22,15 @@ import java.util.stream.Collectors;
 @Getter
 @HasRegistry
 public abstract class Item implements Serialisable, EventListener {
-	// TODO: verify this works with gson system
-	@Expose private Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
-	@Expose private Set<Class<? extends Aspect>> knownAspects = new HashSet<>();
+	@Expose private Map<String, Aspect> aspects = new HashMap<>();
+	@Expose private Set<String> knownAspects = new HashSet<>();
 	
 	@Expose private int visualID;
 	@Expose private int age;
 	
 	public Item() {
 		this.visualID = RandomUtils.random(1000);
-		this.aspects.put(AspectBeatitude.class, new AspectBeatitude());
+		addAspect(new AspectBeatitude());
 	}
 	
 	public void update(Entity owner) {
@@ -71,35 +72,53 @@ public abstract class Item implements Serialisable, EventListener {
 			other.getAspects() == getAspects();
 	}
 	
+	public static DungeonRegistry<Aspect> getAspectRegistry() {
+		return DungeonRegistries.findRegistryForClass(Aspect.class)
+			.orElseThrow(() -> new RuntimeException("Couldn't find Aspect registry in Item"));
+	}
+	
+	public static String getAspectID(Class<? extends Aspect> aspectClass) {
+		return getAspectRegistry().getID(aspectClass)
+			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for Aspect `%s` in Item", aspectClass.getName())));
+	}
+	
 	public List<Aspect> getPersistentAspects() {
 		return aspects.values().stream().filter(Aspect::isPersistent).collect(Collectors.toList());
 	}
 	
 	public Optional<Aspect> getAspect(Class<? extends Aspect> aspectClass) {
-		return Optional.ofNullable(aspects.get(aspectClass));
+		return Optional.ofNullable(aspects.get(getAspectID(aspectClass)));
 	}
 	
 	public boolean isAspectKnown(EntityLiving observer, Class<? extends Aspect> aspectClass) {
-		if (aspects.get(aspectClass).isPersistent()) {
-			return observer.isAspectKnown(this, aspectClass);
+		return isAspectKnown(observer, getAspectID(aspectClass));
+	}
+	
+	public boolean isAspectKnown(EntityLiving observer, String aspectID) {
+		if (aspects.get(aspectID).isPersistent()) {
+			return observer.isAspectKnown(this, aspectID);
 		} else {
-			return knownAspects.contains(aspectClass);
+			return knownAspects.contains(aspectID);
 		}
 	}
 	
 	public void addAspect(Aspect aspect) {
-		aspects.put(aspect.getClass(), aspect);
+		aspects.put(getAspectID(aspect.getClass()), aspect);
 	}
 	
 	public void observeAspect(EntityLiving observer, Class<? extends Aspect> aspectClass) {
-		if (!aspects.containsKey(aspectClass)) {
+		observeAspect(observer, getAspectID(aspectClass));
+	}
+	
+	public void observeAspect(EntityLiving observer, String aspectID) {
+		if (!aspects.containsKey(aspectID)) {
 			return; // can't observe an aspect that doesn't exist!!
 		}
 		
-		if (aspects.get(aspectClass).isPersistent()) {
-			observer.observeAspect(this, aspectClass);
+		if (aspects.get(aspectID).isPersistent()) {
+			observer.observeAspect(this, aspectID);
 		} else {
-			knownAspects.add(aspectClass);
+			knownAspects.add(aspectID);
 		}
 	}
 	

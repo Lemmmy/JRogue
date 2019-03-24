@@ -1,8 +1,6 @@
 package jr.dungeon;
 
-import com.google.gson.*;
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
 import jr.ErrorHandler;
 import jr.debugger.utils.Debuggable;
 import jr.dungeon.generators.Climate;
@@ -15,11 +13,9 @@ import lombok.Setter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.UUID;
 
 @Getter
-@JsonAdapter(Level.LevelDeserialiser.class)
 public class Level implements Serialisable, Debuggable {
 	@Expose private UUID uuid;
 	
@@ -38,11 +34,11 @@ public class Level implements Serialisable, Debuggable {
 	
 	@Expose @Setter private String name;
 	
-	@Getter(AccessLevel.NONE) public final TileStore tileStore = new TileStore(this);
-	@Getter(AccessLevel.NONE) public final VisibilityStore visibilityStore = new VisibilityStore(this);
-	@Getter(AccessLevel.NONE) public final LightStore lightStore = new LightStore(this);
-	@Expose @Getter(AccessLevel.NONE) public final EntityStore entityStore = new EntityStore(this);
-	@Expose @Getter(AccessLevel.NONE) public final MonsterSpawner monsterSpawner = new MonsterSpawner(this);
+	@Getter(AccessLevel.NONE) public TileStore tileStore;
+	@Getter(AccessLevel.NONE) public VisibilityStore visibilityStore;
+	@Getter(AccessLevel.NONE) public LightStore lightStore;
+	@Expose @Getter(AccessLevel.NONE) public EntityStore entityStore;
+	@Expose @Getter(AccessLevel.NONE) public MonsterSpawner monsterSpawner;
 	
 	@Expose @Getter private DungeonGenerator generator;
 
@@ -79,16 +75,16 @@ public class Level implements Serialisable, Debuggable {
 	/**
 	 * Initialises the Level, including the initialisation of its stores.
 	 */
-	public void initialise() {
-		tileStore.initialise();
-		visibilityStore.initialise();
-		lightStore.initialise();
-		entityStore.initialise();
-		monsterSpawner.initialise();
+	public void initialise(Dungeon dungeon) {
+		this.dungeon = dungeon;
+		
+		(tileStore = new TileStore(this)).initialise();
+		(visibilityStore = new VisibilityStore(this)).initialise();
+		(lightStore = new LightStore(this)).initialise();
+		(entityStore = new EntityStore(this)).initialise();
+		(monsterSpawner = new MonsterSpawner(this)).initialise();
 		
 		lightStore.initialiseLight();
-		
-		turnCreated = dungeon.turnSystem.getTurn();
 	}
 
 	/**
@@ -99,10 +95,10 @@ public class Level implements Serialisable, Debuggable {
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
-		tileStore.setEventsSuppressed(true);
-		
 		do {
-			initialise();
+			initialise(dungeon);
+			
+			turnCreated = dungeon.turnSystem.getTurn();
 			
 			try {
 				Constructor generatorConstructor = generatorClass.getConstructor(Level.class, Tile.class);
@@ -158,13 +154,7 @@ public class Level implements Serialisable, Debuggable {
 		);
 	}
 	
-	public class LevelDeserialiser implements JsonDeserializer<Level> {
-		@Override
-		public Level deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			JsonObject object = json.getAsJsonObject();
-			Level level = context.deserialize(json, typeOfT);
-			level.afterDeserialise();
-			return level;
-		}
+	void setDungeonInternal(Dungeon dungeon) {
+		this.dungeon = dungeon;
 	}
 }

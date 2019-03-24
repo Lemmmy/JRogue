@@ -18,6 +18,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class DungeonSerialiser {
+	public static Dungeon currentDeserialisingDungeon;
+	
 	private static Gson GSON;
 	
 	private Dungeon dungeon;
@@ -34,6 +36,8 @@ public class DungeonSerialiser {
 	public static void initialiseGson() {
 		GsonBuilder builder = new GsonBuilder()
 			.excludeFieldsWithoutExposeAnnotation()
+			.enableComplexMapKeySerialization()
+			.registerTypeAdapter(Dungeon.class, new DungeonInstanceCreator())
 			.registerTypeAdapterFactory(new LevelTypeAdapterFactory())
 			.setPrettyPrinting();
 		
@@ -47,7 +51,7 @@ public class DungeonSerialiser {
 		GSON.toJson(dungeon, writer);
 	}
 	
-	public static Dungeon unserialise(Reader reader) {
+	public static Dungeon deserialise(Reader reader) {
 		Dungeon dungeon = GSON.fromJson(reader, Dungeon.class);
 		
 		dungeon.serialiser.checkVersion();
@@ -69,6 +73,8 @@ public class DungeonSerialiser {
 		
 		dungeon.getLevel().lightStore.buildLight(true);
 		dungeon.getLevel().visibilityStore.updateSight(dungeon.getPlayer());
+		
+		currentDeserialisingDungeon = null;
 		
 		return dungeon;
 	}
@@ -153,7 +159,7 @@ public class DungeonSerialiser {
 				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file));
 				BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
 			) {
-				return unserialise(reader);
+				return deserialise(reader);
 			} catch (Exception e) {
 				ErrorHandler.error("Error loading dungeon", e);
 			}

@@ -68,7 +68,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	 * known persistent aspects per item class
 	 * the key is the hashcode of an items list of persistent aspects
 	 */
-	@Expose private final Map<Integer, Set<Class<? extends Aspect>>> knownAspects = new HashMap<>();
+	@Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
 	
 	public EntityLiving(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
 		this(dungeon, level, x, y, 1);
@@ -158,17 +158,25 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	public abstract Size getSize();
 	
 	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
-		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectClass);
+		return isAspectKnown(item, Item.getAspectID(aspectClass));
+	}
+	
+	public boolean isAspectKnown(Item item, String aspectID) {
+		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectID);
 	}
 	
 	public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
+		observeAspect(item, Item.getAspectID(aspectClass));
+	}
+	
+	public void observeAspect(Item item, String aspectID) {
 		int code = item.getPersistentAspects().hashCode();
 		
 		if (!knownAspects.containsKey(code)) {
 			knownAspects.put(code, new HashSet<>());
 		}
 		
-		knownAspects.get(code).add(aspectClass);
+		knownAspects.get(code).add(aspectID);
 	}
 	
 	@Override
@@ -293,7 +301,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			.append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
 			.append("hasInventory", getContainer().isPresent());
 		
-		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a.stream().map(Class::getSimpleName).toArray(String[]::new))));
+		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a)));
 		
 		return tsb;
 	}

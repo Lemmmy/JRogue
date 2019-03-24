@@ -10,6 +10,8 @@ import jr.dungeon.entities.monsters.ai.stateful.generic.TraitBewareTarget;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitExtrinsicFear;
 import jr.dungeon.entities.monsters.ai.stateful.humanoid.TraitIntrinsicFear;
 import jr.dungeon.events.EventListener;
+import jr.dungeon.serialisation.DungeonRegistries;
+import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
@@ -40,7 +42,7 @@ public class StatefulAI extends AI {
 	private boolean shouldTargetPlayer = true;
 	@Expose private int visibilityRange = 15;
 	
-	@Expose private Map<Class<? extends AITrait>, AITrait> traits = new HashMap<>();
+	@Expose private Map<String, AITrait> traits = new HashMap<>();
 	
 	@Expose private Set<Point> safePoints = new HashSet<>();
 	
@@ -185,16 +187,26 @@ public class StatefulAI extends AI {
 		return Optional.ofNullable(ps.get(0));
 	}
 	
+	public static DungeonRegistry<AITrait> getAITraitRegistry() {
+		return DungeonRegistries.findRegistryForClass(AITrait.class)
+			.orElseThrow(() -> new RuntimeException("Couldn't find AITrait registry in StatefulAI"));
+	}
+	
+	public static String getAITraitID(Class<? extends AITrait> traitClass) {
+		return getAITraitRegistry().getID(traitClass)
+			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for AITrait `%s` in StatefulAI", traitClass.getName())));
+	}
+	
 	public void addTrait(AITrait trait) {
-		traits.put(trait.getClass(), trait);
+		traits.put(getAITraitID(trait.getClass()), trait);
 	}
 	
 	public void removeTrait(Class<? extends AITrait> traitClass) {
-		traits.remove(traitClass);
+		traits.remove(getAITraitID(traitClass));
 	}
 	
 	public AITrait getTrait(Class<? extends AITrait> traitClass) {
-		return traits.get(traitClass);
+		return traits.get(getAITraitID(traitClass));
 	}
 	
 	public void setCurrentState(AIState currentState) {

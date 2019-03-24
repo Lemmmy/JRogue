@@ -381,11 +381,11 @@ public class Player extends EntityLiving {
 		getContainer().ifPresent(inv -> inv.getItems().forEach((character, itemStack) -> {
 			Item i = itemStack.getItem();
 			
-			i.getAspects().forEach((aClass, aspect) -> {
+			i.getAspects().forEach((aspectID, aspect) -> {
 				if (aspect.isPersistent()) {
-					observeAspect(i, aClass);
+					observeAspect(i, aspectID);
 				} else {
-					i.observeAspect(this, aClass);
+					i.observeAspect(this, aspectID);
 				}
 			});
 		}));

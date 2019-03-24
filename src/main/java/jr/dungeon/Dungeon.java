@@ -13,6 +13,7 @@ import jr.dungeon.generators.GeneratorStandard;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.serialisation.DungeonSerialiser;
+import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.wishes.Wishes;
 import jr.utils.Point;
@@ -25,7 +26,7 @@ import java.util.*;
  * The entire Dungeon object. This object contains all information about the actual game state, including the turn,
  * levels, and player.
  */
-public class Dungeon implements Messenger {
+public class Dungeon implements Serialisable, Messenger {
 	/**
 	 * The amount of 'ticks' in a turn.
 	 *

@@ -29,22 +29,31 @@ public class LevelTypeAdapterFactory implements TypeAdapterFactory {
 				JsonObject serialisedLevel = levelTypeAdapter.toJsonTree(level).getAsJsonObject();
 				serialisedLevel.entrySet().forEach(e -> outLevel.add(e.getKey(), e.getValue()));
 				
-				level.initialise();
-				
 				// serialise the stores
 				level.tileStore.serialise(gson, outLevel);
 				level.visibilityStore.serialise(gson, outLevel);
 				level.lightStore.serialise(gson, outLevel);
-				
-				// TODO: what was this? it was called on every single level
-				// dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
 				
 				Streams.write(outLevel, out);
 			}
 			
 			@Override
 			public T read(JsonReader in) throws IOException {
-				return null;
+				JsonObject inLevel = Streams.parse(in).getAsJsonObject();
+				
+				Level level = levelTypeAdapter.fromJsonTree(inLevel);
+				level.initialise(DungeonSerialiser.currentDeserialisingDungeon);
+				
+				level.tileStore.deserialise(gson, inLevel);
+				level.visibilityStore.deserialise(gson, inLevel);
+				level.lightStore.deserialise(gson, inLevel);
+				
+				level.tileStore.setEventsSuppressed(false);
+				
+				// TODO: what was this? it was called on every single level
+				// dungeon.eventSystem.triggerEvent(new EntityAddedEvent(dungeon.getPlayer(), false));
+				
+				return (T) level;
 			}
 		};
 	}
