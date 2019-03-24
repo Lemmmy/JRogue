@@ -47,12 +47,8 @@ public class Ablaze extends StatusEffect {
 				getMessenger().greenYou("douse the flames in the water!");
 				return;
 			}
-
-			if (getDamage() >= el.getMaxHealth()) {
-				el.kill(new DamageSource(null, null, DamageType.FIRE), getDamage());
-			} else {
-				el.damage(new DamageSource(null, null, DamageType.FIRE), getDamage());
-			}
+			
+			el.damage(new DamageSource(null, null, DamageType.FIRE), getDamage());
 		}
 	}
 
