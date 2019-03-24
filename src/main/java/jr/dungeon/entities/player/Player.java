@@ -64,14 +64,9 @@ public class Player extends EntityLiving {
 	@Expose @Getter @Setter private boolean godmode = false;
 	
 	public PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
+	private PlayerDefaultEvents defaultEvents = new PlayerDefaultEvents();
 	
 	@Getter @Setter private Familiar familiar;
-	
-	public Player(Dungeon dungeon, Level level, int x, int y) { // unserialisation constructor
-		super(dungeon, level, x, y);
-		
-		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
-	}
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
@@ -113,8 +108,6 @@ public class Player extends EntityLiving {
 		setMovementPoints(Dungeon.NORMAL_SPEED);
 		
 		spawnFamiliar();
-		
-		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
 	}
 	
 	@Override
@@ -123,16 +116,7 @@ public class Player extends EntityLiving {
 		
 		pathfinder = new AStarPathfinder();
 		defaultVisitors = new PlayerDefaultVisitors(this);
-	}
-	
-	@Override
-	public void setLevelInternal(Level level) {
-		Dungeon oldDungeon = getDungeon();
-		super.setLevelInternal(level);
-		
-		if (oldDungeon == null) {
-			getDungeon().eventSystem.addListener(new PlayerDefaultEvents());
-		}
+		defaultEvents = new PlayerDefaultEvents();
 	}
 	
 	private void spawnFamiliar() {
@@ -532,6 +516,7 @@ public class Player extends EntityLiving {
 	public Set<EventListener> getSubListeners() {
 		val l = super.getSubListeners();
 		l.add(attributes);
+		l.add(defaultEvents);
 		return l;
 	}
 }
