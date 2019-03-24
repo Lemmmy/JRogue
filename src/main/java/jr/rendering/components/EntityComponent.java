@@ -40,7 +40,7 @@ public class EntityComponent extends RendererComponent {
 		
 		level.entityStore.getEntities().forEach(e -> onEntityAdded(new EntityAddedEvent(e, false)));
 		
-		animationProvider = new AnimationProvider(renderer, settings);
+		dungeon.eventSystem.addListener(animationProvider = new AnimationProvider(renderer, settings));
 	}
 	
 	@Override
