@@ -53,11 +53,11 @@ public class DungeonSerialiser {
 	
 	public static Dungeon deserialise(Reader reader) {
 		Dungeon dungeon = GSON.fromJson(reader, Dungeon.class);
+		dungeon.afterDeserialise();
 		
 		dungeon.serialiser.checkVersion();
 		
 		dungeon.searchForPlayer();
-		
 		if (dungeon.getPlayer() == null) {
 			File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
 			

@@ -63,7 +63,7 @@ public class Player extends EntityLiving {
 	
 	@Expose @Getter @Setter private boolean godmode = false;
 	
-	public final PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
+	public PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
 	
 	@Getter @Setter private Familiar familiar;
 	
@@ -115,6 +115,24 @@ public class Player extends EntityLiving {
 		spawnFamiliar();
 		
 		dungeon.eventSystem.addListener(new PlayerDefaultEvents());
+	}
+	
+	@Override
+	public void afterDeserialise() {
+		super.afterDeserialise();
+		
+		pathfinder = new AStarPathfinder();
+		defaultVisitors = new PlayerDefaultVisitors(this);
+	}
+	
+	@Override
+	public void setLevelInternal(Level level) {
+		Dungeon oldDungeon = getDungeon();
+		super.setLevelInternal(level);
+		
+		if (oldDungeon == null) {
+			getDungeon().eventSystem.addListener(new PlayerDefaultEvents());
+		}
 	}
 	
 	private void spawnFamiliar() {

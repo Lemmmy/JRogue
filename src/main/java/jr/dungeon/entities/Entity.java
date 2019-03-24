@@ -366,6 +366,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	
 	public void setLevelInternal(Level level) {
 		this.level = level;
+		this.dungeon = level.getDungeon();
 	}
 	
 	@Override

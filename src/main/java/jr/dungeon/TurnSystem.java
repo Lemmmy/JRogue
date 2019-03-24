@@ -31,7 +31,7 @@ public class TurnSystem {
 	private static final Range<Integer> PROBABILITY_MONSTER_SPAWN_COUNTER = Range.between(40, 100);
 	
 	
-	private Dungeon dungeon;
+	@Setter private Dungeon dungeon;
 	
 	/**
 	 * The number of turns that have passed.

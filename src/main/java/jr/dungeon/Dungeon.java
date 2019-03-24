@@ -81,11 +81,11 @@ public class Dungeon implements Serialisable, Messenger {
 	 */
 	@Getter @Setter private Player player;
 	
-	public final EventSystem eventSystem;
+	public EventSystem eventSystem;
 	
 	@Expose public final TurnSystem turnSystem;
 	
-	public final DungeonSerialiser serialiser;
+	public DungeonSerialiser serialiser;
 	
 	/**
 	 * @see Prompt
@@ -110,8 +110,17 @@ public class Dungeon implements Serialisable, Messenger {
 		serialiser = new DungeonSerialiser(this);
 		eventSystem = new EventSystem(this);
 		turnSystem = new TurnSystem(this);
-		
+	}
+	
+	public void initialise() {
 		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
+	}
+	
+	@Override
+	public void afterDeserialise() {
+		serialiser = new DungeonSerialiser(this);
+		eventSystem = new EventSystem(this);
+		turnSystem.setDungeon(this);
 	}
 	
 	/**
