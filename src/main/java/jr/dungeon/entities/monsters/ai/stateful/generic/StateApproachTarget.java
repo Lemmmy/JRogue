@@ -8,7 +8,7 @@ import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 
-@Registered(id="stateApproachTarget")
+@Registered(id="aiStateApproachTarget")
 public class StateApproachTarget extends AIState<StatefulAI> {
 	// TODO: these are remnants from pre-gson; they used to be stored in persistence, however they are never actually set.
 	//       they are probably not needed, or could be moved to constructors or something
