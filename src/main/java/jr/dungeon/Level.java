@@ -97,10 +97,10 @@ public class Level implements Serialisable, Debuggable {
 	protected void generate(Tile sourceTile, Class<? extends DungeonGenerator> generatorClass) {
 		boolean gotLevel = false;
 		
-		tileStore.setEventsSuppressed(true);
-		
 		do {
 			initialise(dungeon);
+			
+			tileStore.setEventsSuppressed(true);
 			
 			turnCreated = dungeon.turnSystem.getTurn();
 			
