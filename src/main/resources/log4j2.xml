@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="jr.utils.log4j2">
-    <CustomLevels>
-        <CustomLevel name="GAME" intLevel="350" />
-    </CustomLevels>
-
     <Appenders>
         <AnsiConsoleAppender name="CONSOLE">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%-5level] %msg%n" />
@@ -33,7 +29,7 @@
     <Loggers>
         <Logger name="org.apache.log4j.xml" level="INFO" />
 
-        <Root level="TRACE">
+        <Root level="ALL">
             <AppenderRef ref="FILE" />
             <AppenderRef ref="CONSOLE" />
         </Root>

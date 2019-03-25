@@ -49,7 +49,7 @@ public class Dungeon implements Serialisable, Messenger {
 	/**
 	 * The 'GAME' log level.
 	 */
-	private static org.apache.logging.log4j.Level gameLogLevel;
+	private static org.apache.logging.log4j.Level gameLogLevel = org.apache.logging.log4j.Level.forName("GAME", 350);
 	
 	/**
 	 * The version of the game this dungeon was last saved on
@@ -114,7 +114,7 @@ public class Dungeon implements Serialisable, Messenger {
 	}
 	
 	public void initialise() {
-		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
+		// gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
 	
 	@Override

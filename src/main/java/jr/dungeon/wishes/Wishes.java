@@ -1,5 +1,6 @@
 package jr.dungeon.wishes;
 
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
@@ -37,6 +38,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
+import jr.utils.Profiler;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -329,9 +331,15 @@ public class Wishes {
 	public boolean makeWish(Dungeon dungeon, String wish) {
 		String[] wishes = wish.split("\\s*;\\s*");
 
-		return Arrays.stream(wishes)
+		long start = System.nanoTime();
+		boolean result = Arrays.stream(wishes)
 			.filter(w -> !w.isEmpty())
 			.map(w -> wish(dungeon, w))
 			.reduce(true, (a, b) -> a && b);
+		long end = System.nanoTime();
+		
+		JRogue.getLogger().log(Profiler.LEVEL, String.format("Wish %s took %,d ms", wish, (end - start) / 1_000_000));
+		
+		return result;
 	}
 }
