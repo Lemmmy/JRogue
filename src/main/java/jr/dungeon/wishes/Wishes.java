@@ -81,7 +81,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
 				.findFirst().ifPresent(t -> {
-					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.setPosition(t.getPosition());
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -89,7 +89,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst().ifPresent(t -> {
-					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.setPosition(t.getPosition());
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -112,7 +112,7 @@ public class Wishes {
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.setPosition(t.getPosition());
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -126,7 +126,7 @@ public class Wishes {
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.setPosition(t.getPosition());
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -135,7 +135,7 @@ public class Wishes {
 					Arrays.stream(p.getLevel().tileStore.getTiles())
 						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 						.findFirst().ifPresent(t -> {
-							p.defaultVisitors.teleport(t.getX(), t.getY());
+							p.setPosition(t.getPosition());
 							p.defaultVisitors.climbDown();
 							d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 						});
