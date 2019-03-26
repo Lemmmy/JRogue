@@ -133,7 +133,7 @@ public class EntityReference<T extends Entity> {
 	 * <code>other</code>.
 	 *
 	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
-	 * @param other the value to be returned if there is no value present, may be
+	 * @param other The value to be returned if there is no value present, may be
 	 *              <code>null</code>.
 	 * @return The {@link Entity} if one was found, or else <code>other</code>.
 	 */
@@ -149,7 +149,7 @@ public class EntityReference<T extends Entity> {
 	 * If it is not found, it will return, it will return <code>other</code>.
 	 *
 	 * @param level The {@link Level} to search for the {@link Entity} in.
-	 * @param other the value to be returned if there is no value present, may be
+	 * @param other The value to be returned if there is no value present, may be
 	 *              <code>null</code>.
 	 * @return The {@link Entity} if one was found, or else <code>other</code>.
 	 */
@@ -159,8 +159,27 @@ public class EntityReference<T extends Entity> {
 		return got != null ? got : other;
 	}
 	
+	/**
+	 * If an {@link Entity} is {@link #isSet set}, and can be found, invoke the specified consumer
+	 * with the entity's value, otherwise do nothing.
+	 *
+	 * @param level The {@link Level} to search for the {@link Entity} in.
+	 * @param consumer The {@link Consumer} to be executed if the {@link Entity} is present and exists.
+	 */
 	public void ifPresent(Level level, Consumer<T> consumer) {
 		T got = get(level);
+		if (got != null) consumer.accept(got);
+	}
+	
+	/**
+	 * If an {@link Entity} is {@link #isSet set}, and can be found, invoke the specified consumer
+	 * with the entity's value, otherwise do nothing.
+	 *
+	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
+	 * @param consumer The {@link Consumer} to be executed if the {@link Entity} is present and exists.
+	 */
+	public void ifPresent(Dungeon dungeon, Consumer<T> consumer) {
+		T got = get(dungeon);
 		if (got != null) consumer.accept(got);
 	}
 	
