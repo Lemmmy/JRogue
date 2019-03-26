@@ -35,7 +35,7 @@ public class SerialisationUtils {
 				out[i] = dis.readBoolean();
 			}
 		} catch (IOException e) {
-			JRogue.getLogger().error("Error unserialising boolean array:", e);
+			JRogue.getLogger().error("Error deserialising boolean array:", e);
 		}
 		
 		return out;

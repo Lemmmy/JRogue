@@ -208,7 +208,8 @@ public class Dungeon implements Serialisable, Messenger {
 	}
 
 	/**
-	 * Switches the level to <code>level</code>.
+	 * Switches the level to {@code level}.
+	 *
 	 * @param level The level to switch to.
 	 * @param point The position to spawn the player at.
 	 */
@@ -228,7 +229,8 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Displays a message in the dungeon's event log.
-	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
+	 * All messages are formatted using {@link java.lang.String}'s {@code format} method.
+	 *
 	 * @param s The format used for the message.
 	 * @param objects The format parameters.
 	 */
@@ -242,6 +244,7 @@ public class Dungeon implements Serialisable, Messenger {
 
 	/**
 	 * Triggers a {@link Prompt}.
+	 *
 	 * @param prompt The prompt to trigger.
 	 */
 	public void prompt(Prompt prompt) {
@@ -251,6 +254,7 @@ public class Dungeon implements Serialisable, Messenger {
 
 	/**
 	 * Responds to a prompt.
+	 *
 	 * @param response The char response to send.
 	 */
 	public void promptRespond(char response) {
@@ -294,6 +298,7 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Make a wish, used in debug mode.
+	 *
 	 * @see jr.dungeon.wishes.Wishes
 	 * @param wish The wish to make.
 	 */
@@ -336,6 +341,7 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Sets the level for internal usage from the {@link DungeonSerialiser}. Do not use this method.
+	 *
 	 * @param level The level to set as the current level.
 	 */
 	public void setLevelInternal(Level level) {

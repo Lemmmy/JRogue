@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ItemCorpse extends ItemComestible {
 	@Expose private EntityLiving entity;
 	
-	public ItemCorpse() { // unserialisation constructor
+	public ItemCorpse() { // deserialisation constructor
 		super();
 		
 		addAspect(new AspectRottenness());

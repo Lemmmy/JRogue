@@ -16,6 +16,7 @@ public class Profiler {
 	
 	/**
 	 * Starts a timer under the name {@code name}.
+	 *
 	 * @param name The name of the timer.
 	 */
 	public static void start(String name) {

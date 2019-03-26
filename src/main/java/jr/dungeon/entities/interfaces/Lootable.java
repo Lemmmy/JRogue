@@ -7,7 +7,7 @@ import java.util.Optional;
  */
 public interface Lootable {
 	/**
-	 * @return true if the object is lootable right now. Used, for example, to implement locking behaviour.
+	 * @return Whether or not the object is lootable right now. Used, for example, to implement locking behaviour.
 	 */
 	default boolean isLootable() {
 		return true;

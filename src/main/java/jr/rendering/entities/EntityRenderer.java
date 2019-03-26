@@ -85,18 +85,18 @@ public abstract class EntityRenderer {
 	}
 	
 	/**
-	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
-	 * animation colour. Also multiplies the colour values by the multipliers past in via
-	 * mr, mg, mb and ma.
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's animation colour. Also
+	 * multiplies the colour values by the multipliers past in via {@code mr}, {@code mg}, {@code mb} and {@code ma}.
 	 *
-	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be {@code null}.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
 	 * @param mr Additional custom multiplier for the red component.
 	 * @param mg Additional custom multiplier for the green component.
 	 * @param mb Additional custom multiplier for the blue component.
 	 * @param ma Additional custom multiplier for the alpha component.
-	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called
+	 *         again.
 	 */
 	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity, float mr, float mg, float mb, float ma) {
 		oldAnimationColour.set(batch.getColor());
@@ -110,27 +110,28 @@ public abstract class EntityRenderer {
 	}
 	
 	/**
-	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
-	 * animation colour. Also multiplies the alpha value by ma.
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's animation colour. Also
+	 * multiplies the alpha value by {@code ma}.
 	 *
-	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be {@code null}.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
 	 * @param ma Additional custom multiplier for the alpha component.
-	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called
+	 *         again.
 	 */
 	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity, float ma) {
 		return setAnimationColour(anim, batch, entity, 1f, 1f, 1f, ma);
 	}
 	
 	/**
-	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's
-	 * animation colour.
+	 * Temporarily sets the batch colour to an the current colour, multiplied by the entity's animation colour.
 	 *
-	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be <code>null</code>.
+	 * @param anim The {@link EntityAnimationData} of this {@link Entity}. May be {@code null}.
 	 * @param batch The sprite batch currently being drawn.
 	 * @param entity The entity currently being drawn.
-	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called again.
+	 * @return The old colour. Warning: this value should not be mutated, and may change if setAnimationColour is called
+	 *         again.
 	 */
 	public Color setAnimationColour(EntityAnimationData anim, SpriteBatch batch, Entity entity) {
 		return setAnimationColour(anim, batch, entity, 1f, 1f, 1f, 1f);

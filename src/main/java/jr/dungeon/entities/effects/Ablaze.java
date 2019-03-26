@@ -27,9 +27,10 @@ public class Ablaze extends StatusEffect {
 	/**
 	 * Fire status effect.
 	 *
-	 * @param severity How severe the effect is in the HUD. See
-	 * {@link jr.dungeon.entities.effects.StatusEffect.Severity}
+	 * @param severity How severe the effect appears in the HUD.
 	 * @param duration How long the effect lasts for.
+	 *
+	 * @see StatusEffect.Severity
 	 */
 	public Ablaze(Severity severity, int duration) {
 		super(duration);

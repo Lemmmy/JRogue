@@ -21,6 +21,7 @@ public class Colour {
 
 	/**
 	 * A copy constructor. Creates a {@link Colour} that matches the given {@link Colour}.
+	 *
 	 * @param colour The colour to copy.
 	 */
 	public Colour(Colour colour) {
@@ -29,6 +30,7 @@ public class Colour {
 
 	/**
 	 * Constructs a Colour from RGBA components ranging from 0.0f to 1.0f.
+	 *
 	 * @param r The red component (0.0 - 1.0).
 	 * @param g The green component (0.0 - 1.0).
 	 * @param b The blue component (0.0 - 1.0).
@@ -45,6 +47,7 @@ public class Colour {
 
 	/**
 	 * Constructs a Colour from RGBA components ranging from 0 to 255.
+	 *
 	 * @param r The red component (0 - 255).
 	 * @param g The green component (0 - 255).
 	 * @param b The blue component (0 - 255).
@@ -61,7 +64,8 @@ public class Colour {
 
 	/**
 	 * Constructs a Colour from an RGBA8888 bitfield.
-	 * @param rgba8888 The colour bitfield in the format <code>0xRRGGBBAA</code>.
+	 *
+	 * @param rgba8888 The colour bitfield in the format {@code 0xRRGGBBAA}.
 	 */
 	public Colour(int rgba8888) {
 		rgba8888ToColour(this, rgba8888);
@@ -69,8 +73,9 @@ public class Colour {
 
 	/**
 	 * Copies the given colour's attributes into the colour.
+	 *
 	 * @param colour The colour to copy.
-	 * @return <code>this</code>, can be used for method chaining.
+	 * @return {@code this}, can be used for method chaining.
 	 */
 	public Colour set(Colour colour) {
 		this.r = colour.r;
@@ -119,7 +124,8 @@ public class Colour {
 
 	/**
 	 * Ensures no colour component is out of range.
-	 * @return <code>this</code>, can be used for method chaining.
+	 *
+	 * @return {@code this}, can be used for method chaining.
 	 */
 	public Colour clamp() {
 		if (r < 0) { r = 0; } else if (r > 1) { r = 1; }

@@ -110,7 +110,7 @@ public abstract class AI implements Serialisable, EventListener {
 	}
 	
 	/**
-	 * @param target The target to attack.'
+	 * @param target The target to attack.
 	 *
 	 * @return Whether or not the monster is able to melee attack, and if it is adjacent to the target.
 	 */
@@ -216,8 +216,7 @@ public abstract class AI implements Serialisable, EventListener {
 	}
 	
 	/**
-	 * {@link #moveTowards(Point) Moves towards} the {@link Entity} serialised within an
-	 * {@link EntityReference}.
+	 * {@link #moveTowards(Point) Moves towards} the {@link Entity} serialised within an {@link EntityReference}.
 	 *
 	 * @param entity The entity to {@link #moveTowards(Point) move towards.}
 	 */
@@ -318,14 +317,14 @@ public abstract class AI implements Serialisable, EventListener {
 	}
 	
 	/**
-	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster is null.
+	 * @return The {@link Monster}'s current {@link Dungeon}, or {@code null} if the monster is null.
 	 */
 	public Dungeon getDungeon() {
 		return getMonster() != null ? getMonster().getDungeon() : null;
 	}
 	
 	/**
-	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster is null.
+	 * @return The {@link Monster}'s current {@link Level}, or {@code null} if the monster is null.
 	 */
 	public Level getLevel() {
 		return getMonster() != null ? getMonster().getLevel() : null;

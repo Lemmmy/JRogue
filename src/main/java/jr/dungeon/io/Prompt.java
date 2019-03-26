@@ -7,8 +7,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.Arrays;
 
 /**
- * A prompt is a request for user input from a list of single-character options. Long lists of options will be
- * collapsed into ranges, e.g. <code>abcdef</code> collapses into <code>a-f</code>.
+ * A prompt is a request for user input from a list of single-character options. Long lists of options will be collapsed
+ * into ranges, e.g. {@code abcdef} collapses into {@code a-f}.
  */
 public class Prompt {
 	/**
@@ -16,8 +16,8 @@ public class Prompt {
 	 */
 	@Getter private String message;
 	/**
-	 * The list of single-character options that are valid responses from the prompt. Can be null. If null, any
-	 * response is valid.
+	 * The list of single-character options that are valid responses from the prompt. Can be null. If null, any response
+	 * is valid.
 	 */
 	@Getter private char[] options;
 	/**
@@ -32,7 +32,7 @@ public class Prompt {
 	/**
 	 * @param message The message of the prompt (i.e. the question).
 	 * @param options The list of single-character options that are valid responses from the prompt. Can be null. If
-	 *                   null, any response is valid.
+	 *                null, any response is valid.
 	 * @param escapable Whether or not the user can quit the prompt with no input, with the escape key.
 	 * @param callback The {@link PromptCallback} to call when the prompt is responded to, or cancelled.
 	 */
@@ -156,9 +156,9 @@ public class Prompt {
 		/**
 		 * @param messenger The {@link Messenger} to log to. Typically the {@link Dungeon}.
 		 * @param noResponseMsg The message to log if the user provides no response ({@link Prompt#escape escapes} the
-		 *                            prompt).
+		 *                      prompt).
 		 * @param invalidResponseMsg The message to log if the user provides an invalid response (a response that is
-		 *                                 not in {@link Prompt#options}).
+		 *                           not in {@link Prompt#options}).
 		 */
 		public SimplePromptCallback(Messenger messenger, String noResponseMsg, String invalidResponseMsg) {
 			this.messenger = messenger;

@@ -30,10 +30,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.*;
 
 /**
- * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
- * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
- * {@link jr.dungeon.events.EventListener}, and can listen to dungeon events with {@link EventHandler}
- * methods.
+ * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a position
+ * and a UUID, as well as a few other intrinsic properties. Additionally, all entities are an
+ * {@link jr.dungeon.events.EventListener}, and can listen to dungeon events with {@link EventHandler} methods.
  */
 @Getter
 @HasRegistry
@@ -53,13 +52,13 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	@Setter @Expose private int y;
 	
 	/**
-	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
-	 * the position before it was last assigned.
+	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but the
+	 * position before it was last assigned.
 	 */
 	@Setter @Expose private int lastX;
 	/**
-	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but
-	 * the position before it was last assigned.
+	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but the
+	 * position before it was last assigned.
 	 */
 	@Setter @Expose private int lastY;
 	
@@ -75,9 +74,8 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	@Setter @Expose private int lastSeenY;
 	
 	/**
-	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this
-	 * number for persistent random effects with no actual gameplay effect, e.g. the colour of a spider could be
-	 * visualID % 2.
+	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this number
+	 * for persistent random effects with no actual gameplay effect, e.g. the colour of a spider could be visualID % 2.
 	 */
 	@Expose private int visualID;
 	
@@ -95,10 +93,6 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	private Dungeon dungeon;
 	/**
 	 * The {@link Level} this Entity is part of.
-	 * -- SETTER --
-	 * Sets the  {@link Level} this Entity is part of. Do not set this without removing it from the old Level's
-	 * {@link jr.dungeon.EntityStore} and placing it in the new Level's one. This value is not automatically synced
-	 * with {@link jr.dungeon.EntityStore EntityStores}.
 	 */
 	private Level level;
 	
@@ -196,8 +190,8 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	}
 	
 	/**
-	 * Sets the Entity's X and Y coordinates in the {@link Level}, resets the last position,
-	 * and triggers an {@link EntityMovedEvent},
+	 * Sets the Entity's X and Y coordinates in the {@link Level}, resets the last position, and triggers an
+	 * {@link EntityMovedEvent},
 	 *
 	 * @param x The Entity's new X position.
 	 * @param y The Entity's new Y position.
@@ -212,8 +206,8 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	}
 	
 	/**
-	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates,
-	 * and triggers an {@link EntityMovedEvent},
+	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates, and triggers
+	 * an {@link EntityMovedEvent},
 	 *
 	 * @param point The entity's new position.
 	 */
@@ -223,7 +217,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	
 	/**
 	 * Sets the Entity's position in the {@link Level}, resets the last position, and triggers an
-	 * {@link EntityMovedEvent},
+	 * {@link EntityMovedEvent}.
 	 *
 	 * @param point The entity's new position.
 	 */
@@ -260,10 +254,6 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 		return false;
 	}
 
-	/**
-	 * This method is called every frame.
-	 * It's possible to get the time since the last frame using <code>Gdx.graphics.getDeltaTime()</code>.
-	 */
 	public void update() {
 		for (Iterator<StatusEffect> iterator = statusEffects.iterator(); iterator.hasNext(); ) {
 			StatusEffect effect = iterator.next();
@@ -285,6 +275,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	
 	/**
 	 * Adds a {@link jr.dungeon.entities.effects.StatusEffect} to this entity and triggers related events.
+	 *
 	 * @param effect The effect to be applied.
 	 */
 	public void addStatusEffect(StatusEffect effect) {
@@ -298,7 +289,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 
 	/**
 	 * @param statusEffect The class of a {@link jr.dungeon.entities.effects.StatusEffect}.
-	 * @return Whether this entity is affected by <code>statusEffect</code>.
+	 * @return Whether this entity is affected by {@code statusEffect}.
 	 */
 	public boolean hasStatusEffect(Class<? extends StatusEffect> statusEffect) {
 		return statusEffects.stream().anyMatch(statusEffect::isInstance);
@@ -306,6 +297,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 
 	/**
 	 * Kicks this entity. Will trigger an {@link jr.dungeon.entities.events.EntityKickedEntityEvent}.
+	 *
 	 * @param kicker The entity that is kicking this entity.
 	 * @param dx The x direction to kick in.
 	 * @param dy The y direction to kick in.
@@ -316,6 +308,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 
 	/**
 	 * Walk on top of this entity. Will trigger an {@link jr.dungeon.entities.events.EntityWalkedOnEvent}.
+	 *
 	 * @param walker The entity walking on top of this entity.
 	 */
 	public void walk(EntityLiving walker) {
@@ -324,6 +317,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 
 	/**
 	 * Teleports this entity to the given entity. Will trigger an {@link jr.dungeon.entities.events.EntityTeleportedToEvent}.
+	 *
 	 * @param teleporter The entity to teleport to.
 	 */
 	public void teleport(EntityLiving teleporter) {
@@ -348,9 +342,8 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	public abstract boolean canBeWalkedOn();
 	
 	/**
-	 * This is a set of objects related to the Entity which should receive {@link Event
-	 * dungeon events}. When overriding this to add your own, you must always concatenate super's getSubListeners()
-	 * to the list that you return.
+	 * This is a set of objects related to the Entity which should receive {@link Event dungeon events}. When overriding
+	 * this to add your own, you must always concatenate super's getSubListeners() to the list that you return.
 	 *
 	 * @return A set of {@link EventListener DunegonEventListeners} to receive events.
 	 */

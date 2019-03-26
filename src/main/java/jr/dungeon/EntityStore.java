@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Store class for {@link Entity Entities}. Handles storage, serialisation, unserialisation, getters and setters
+ * Store class for {@link Entity Entities}. Handles storage, serialisation, deserialisation, getters and setters
  * related to {@link Entity Entities}.
  */
 public class EntityStore {
@@ -72,7 +72,7 @@ public class EntityStore {
 	 * the level and store, and removing ones that should be removed. Queues are processed at the start and end of
 	 * every turn. Queue processing triggers {@link EntityAddedEvent}s and {@link EntityRemovedEvent}s.
 	 *
-	 * @param isNew Whether or not the entities were created, and not just spawned from a new level or unserialisation.
+	 * @param isNew Whether or not the entities were created, and not just spawned from a new level or deserialisation.
 	 */
 	public void processEntityQueues(boolean isNew) {
 		for (Iterator<Entity> iterator = entityAddQueue.iterator(); iterator.hasNext(); ) {
@@ -107,7 +107,7 @@ public class EntityStore {
 	}
 	
 	/**
-	 * @param uuid The UUID to search by, as a <tt>String</tt>.
+	 * @param uuid The UUID to search by, as a {@code String}.
 	 *
 	 * @return The {@link Entity} associated with this UUID.
 	 */
@@ -220,7 +220,7 @@ public class EntityStore {
 	 *
 	 * @param entity The {@link Entity} to add.
 	 *
-	 * @return <tt>true</tt> if the collection changed as a result of the call, as per {@link Collection#add(Object)}.
+	 * @return {@code true} if the collection changed as a result of the call, as per {@link Collection#add(Object)}.
 	 */
 	public boolean addEntity(Entity entity) {
 		return entityAddQueue.add(entity);
@@ -228,13 +228,13 @@ public class EntityStore {
 	
 	/**
 	 * Adds an {@link Entity} to the {@link #entityRemoveQueue}. It will be removed from the store when the queues are
-	 * {@link #processEntityQueues(boolean) next processed}. The {@link Entity}'s {@link Entity#isBeingRemoved()} flag will be
-	 * assigned instantly, so the {@link Entity} knows it will be removed from the store/{@link Level} when the queues
-	 * are {@link #processEntityQueues(boolean) next processed}.
+	 * {@link #processEntityQueues(boolean) next processed}. The {@link Entity}'s {@link Entity#isBeingRemoved()} flag
+	 * will be assigned instantly, so the {@link Entity} knows it will be removed from the store/{@link Level} when the
+	 * queues are {@link #processEntityQueues(boolean) next processed}.
 	 *
 	 * @param entity The {@link Entity} to remove.
 	 *
-	 * @return <tt>true</tt> if the collection changed as a result of the call, as per {@link Collection#add(Object)}.
+	 * @return {@code true} if the collection changed as a result of the call, as per {@link Collection#add(Object)}.
 	 */
 	public boolean removeEntity(Entity entity) {
 		entity.setBeingRemoved(true);

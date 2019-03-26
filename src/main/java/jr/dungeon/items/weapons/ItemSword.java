@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	@Expose private Material material;
 	
-	public ItemSword() { // unserialisation constructor
+	public ItemSword() { // deserialisation constructor
 		super();
 	}
 	

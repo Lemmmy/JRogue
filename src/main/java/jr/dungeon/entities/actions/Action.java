@@ -85,9 +85,7 @@ public abstract class Action {
 	 * for convenience.
 	 *
 	 * This is a {@link FunctionalInterface}, so it can be used with a lambda function. Example usage:
-	 * <pre><code>
-	 * entity.setAction(new ActionX(..., (Action.CompleteCallback) entity -&gt; { doSomething() })
-	 * </code></pre>
+	 * <pre>entity.setAction(new ActionX(..., (Action.CompleteCallback) entity -> { doSomething() })</pre>
  	 */
 	@FunctionalInterface
 	public interface CompleteCallback extends ActionCallback {
@@ -103,7 +101,7 @@ public abstract class Action {
 	}
 	
 	/**
-	 * An {@link ActionCallback} handler that does nothing for convenience. You can also pass <code>null</code> as the
+	 * An {@link ActionCallback} handler that does nothing for convenience. You can also pass {@code null} as the
 	 * callback argument in most cases.
 	 */
 	public static class NoCallback implements ActionCallback {}

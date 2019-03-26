@@ -22,8 +22,7 @@ public class ActionTeleport extends Action {
 	 * Teleport action.
 	 *
 	 * @param point The point to teleport to.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionTeleport(Point point, ActionCallback callback) {
 		this(point.getX(), point.getY(), callback);
@@ -34,8 +33,7 @@ public class ActionTeleport extends Action {
 	 *
 	 * @param x The X position to teleport to.
 	 * @param y The Y position to teleport to.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionTeleport(int x, int y, ActionCallback callback) {
 		super(callback);

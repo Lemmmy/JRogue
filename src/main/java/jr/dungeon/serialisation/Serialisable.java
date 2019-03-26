@@ -10,7 +10,7 @@ public interface Serialisable {
 	default void beforeSerialise() {}
 	
 	/**
-	 * Called just after unserialisation, as deserialisation does <b>not</b> call constructors.
+	 * Called just after deserialisation, as deserialisation does <b>not</b> call constructors.
 	 */
 	default void afterDeserialise() {}
 }

@@ -11,7 +11,7 @@ public class EntityAddedEvent extends Event {
 	private Entity entity;
 	
 	/**
-	 * Whether or not the entity was created, and not just spawned from a new level or unserialisation.
+	 * Whether or not the entity was created, and not just spawned from a new level or deserialisation.
 	 */
 	private boolean isNew;
 	

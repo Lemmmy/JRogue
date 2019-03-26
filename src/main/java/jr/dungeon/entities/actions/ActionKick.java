@@ -31,8 +31,7 @@ public class ActionKick extends Action {
 	 *
 	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
 	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionKick(VectorInt direction, ActionCallback callback) {
 		this(direction, null, callback);
@@ -44,8 +43,7 @@ public class ActionKick extends Action {
 	 * @param direction The direction to kick in, as a 2-element array as [dx, dy].
 	 *                  For example, [1, 0] kicks to the right. [-1, -1] kicks north-west.
 	 * @param kicked The entity that was kicked.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionKick(VectorInt direction, Entity kicked, ActionCallback callback) {
 		super(callback);

@@ -51,11 +51,12 @@ public class TileStateClimbable extends TileState {
 		generatorName = getGeneratorRegistry().getID(generatorClass)
 			.orElseThrow(() -> new RuntimeException(String.format("Couldn't find ID for DungeonGenerator `%s` in TileStateClimbable", generatorClass.getName())));
 	}
+	
 	/**
-	 *
-	 * @param sourceTile The tile
-	 * @param up
+	 * @param sourceTile The tile the player is coming from.
+	 * @param up {@code true} if the player is ascending, {@code false} if they are descending.
 	 * @return The newly generated {@link Level}.
+	 * @see jr.dungeon.Dungeon#newLevel
 	 */
 	public Level generateLevel(Tile sourceTile, boolean up) {
 		Level sourceLevel = sourceTile.getLevel();
