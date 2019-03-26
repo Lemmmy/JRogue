@@ -22,7 +22,7 @@ public class PlayerLoot implements PlayerVisitor {
 			return;
 		}
 		
-		player.getDungeon().turnSystem.turn(player.getDungeon());
+		player.getDungeon().turnSystem.turn();
 		
 		Entity containerEntity = containerEntities.get(0);
 

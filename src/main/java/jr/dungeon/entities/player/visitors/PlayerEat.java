@@ -101,7 +101,7 @@ public class PlayerEat extends PlayerItemVisitor {
 			}
 			
 			player.setAction(new ActionEat(item,null));
-			player.getDungeon().turnSystem.turn(player.getDungeon());
+			player.getDungeon().turnSystem.turn();
 			
 			if (item.getEatenState() == ItemComestible.EatenState.EATEN) {
 				break;

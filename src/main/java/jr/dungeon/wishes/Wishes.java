@@ -6,6 +6,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.ActionTeleport;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
@@ -237,6 +238,10 @@ public class Wishes {
 		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
 		
 		registerWish("cat", new WishSpawn<>(Cat.class));
+		registerWish("summon familiar", (d, p, a) -> p.getFamiliar().ifPresent(p.getLevel(), f -> {
+			f.setAction(new ActionTeleport(p.getPosition(), null));
+			d.turnSystem.turn();
+		}));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
@@ -256,7 +261,7 @@ public class Wishes {
 
 			if (item != null && p.getContainer().isPresent()) {
 				p.getContainer().get().add(new ItemStack(item));
-				d.turnSystem.turn(d);
+				d.turnSystem.turn();
 			}
 		});
 

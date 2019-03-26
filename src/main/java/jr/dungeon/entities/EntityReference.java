@@ -11,6 +11,7 @@ import jr.dungeon.Level;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Stores a reference to an {@link Entity} within a level via its {@link UUID}. This is primarily used
@@ -156,6 +157,11 @@ public class EntityReference<T extends Entity> {
 		if (uuid == null) return other;
 		T got = get(level);
 		return got != null ? got : other;
+	}
+	
+	public void ifPresent(Level level, Consumer<T> consumer) {
+		T got = get(level);
+		if (got != null) consumer.accept(got);
 	}
 	
 	public class EntityReferenceTypeAdapter extends TypeAdapter<EntityReference> {

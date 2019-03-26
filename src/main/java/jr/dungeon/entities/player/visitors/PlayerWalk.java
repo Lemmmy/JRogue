@@ -67,7 +67,7 @@ public class PlayerWalk implements PlayerVisitor {
 		}
 		
 		if (acted) {
-			player.getDungeon().turnSystem.turn(player.getDungeon());
+			player.getDungeon().turnSystem.turn();
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class PlayerWalk implements PlayerVisitor {
 		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
 			if (yes) {
 				meleeAction(player, ent);
-				player.getDungeon().turnSystem.turn(player.getDungeon());
+				player.getDungeon().turnSystem.turn();
 			}
 		}));
 	}

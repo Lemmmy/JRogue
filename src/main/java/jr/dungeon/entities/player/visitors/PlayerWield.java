@@ -33,7 +33,7 @@ public class PlayerWield extends PlayerItemVisitor {
 				player.setLeftHand(null);
 				player.setRightHand(null);
 				player.getDungeon().You("unwield everything.");
-				player.getDungeon().turnSystem.turn(player.getDungeon());
+				player.getDungeon().turnSystem.turn();
 				return;
 			}
 			
@@ -75,6 +75,6 @@ public class PlayerWield extends PlayerItemVisitor {
 			c
 		);
 		
-		player.getDungeon().turnSystem.turn(player.getDungeon());
+		player.getDungeon().turnSystem.turn();
 	}
 }

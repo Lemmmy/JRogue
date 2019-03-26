@@ -89,7 +89,7 @@ public class TurnSystem {
 		// TODO: trigger event here?
 	}
 	
-	public void turn(Dungeon dungeon) {
+	public void turn() {
 		turn(false);
 	}
 	

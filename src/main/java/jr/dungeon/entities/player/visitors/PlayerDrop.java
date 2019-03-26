@@ -23,7 +23,7 @@ public class PlayerDrop extends PlayerItemVisitor {
 				c
 			);
 			
-			player.getDungeon().turnSystem.turn(player.getDungeon());
+			player.getDungeon().turnSystem.turn();
 		});
 		
 		switch (result) {
