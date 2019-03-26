@@ -13,6 +13,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.serialisation.Serialisable;
+import jr.dungeon.tiles.Tile;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.language.transformers.Possessive;
@@ -22,6 +23,7 @@ import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -215,7 +217,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 *
 	 * @param point The entity's new position.
 	 */
-	public void setPosition(Point point) {
+	public void setPosition(@NonNull Point point) {
 		setPosition(point.getX(), point.getY());
 	}
 	
@@ -225,7 +227,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 *
 	 * @param point The entity's new position.
 	 */
-	public void setPositionFresh(Point point) {
+	public void setPositionFresh(@NonNull Point point) {
 		setPositionFresh(point.getX(), point.getY());
 	}
 	
@@ -330,8 +332,9 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	
 	/**
 	 * Queue this entity to be removed. The entity will be removed when the
-	 * {@link EntityStore#processEntityQueues(boolean) entity queues} are next processed - this is
-	 * typically at the start and end of each turn, though it is sometimes called manually (e.g. in {@link #setLevel(Level)})
+	 * {@link EntityStore#processEntityQueues(boolean) entity queues} are next processed - this is typically at the
+	 * start and end of each turn.
+	 *
 	 * @see EntityStore#removeEntity
 	 */
 	public void remove() {
@@ -355,14 +358,23 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 		return new HashSet<>(statusEffects);
 	}
 	
-	public void setLevel(Level level) {
+	public void setLevel(Level level, Point newPosition) {
+		Tile oldTile = newPosition != null ? this.level.tileStore.getTile(getPosition()) : null;
+		
 		this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
 		this.level.entityStore.processEntityQueues(false);
 		
 		setLevelInternal(level);
+		if (newPosition != null) setPositionFresh(newPosition);
 		
 		level.entityStore.addEntity(this);
 		level.entityStore.processEntityQueues(false);
+		
+		dungeon.eventSystem.triggerEvent(new EntityChangeLevelEvent(
+			this,
+			oldTile,
+			level.tileStore.getTile(newPosition)
+		));
 	}
 	
 	public void setLevelInternal(Level level) {

@@ -77,6 +77,10 @@ public class Wishes {
 				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
+		registerWish("(?:discover|see all)", (d, p, a) -> {
+			p.getLevel().visibilityStore.seeAll();
+			p.getLevel().lightStore.buildLight(false);
+		});
 		registerWish("(?:us|upstairs)", (d, p, a) ->
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
