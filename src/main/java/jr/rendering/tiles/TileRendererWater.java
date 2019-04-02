@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
 
 public class TileRendererWater extends TileRendererBlob8 {
-	private TextureRegion water;
-	private TextureRegion floor;
+	private TextureRegion water; private String waterFileName;
+	private TextureRegion floor; private String floorFileName;
 	
 	private TextureRegion[] overlayImages = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 	
@@ -21,28 +22,30 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	private Color oldColour = new Color();
 	
-	public TileRendererWater(int sheetX, int sheetY, int floorSheetX, int floorSheetY, float waterTransparency) {
-		this(sheetX, sheetY, floorSheetX, floorSheetY, waterTransparency, true, null);
+	public TileRendererWater(String waterFileName, String floorFileName, float waterTransparency) {
+		this(waterFileName, floorFileName, waterTransparency, true, null);
 	}
 	
-	public TileRendererWater(int sheetX,
-							 int sheetY,
-							 int floorSheetX,
-							 int floorSheetY,
-							 float waterTransparency,
-							 boolean connectToOthers,
-							 TileType self) {
+	public TileRendererWater(String waterFileName, String floorFileName, float waterTransparency,
+							 boolean connectToOthers, TileType self) {
 		super(1, 0);
 		
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		water = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
+		this.waterFileName = textureName(waterFileName);
+		this.floorFileName = textureName(floorFileName);
 		
 		this.waterTransparency = waterTransparency;
 		
 		loadBlob(overlayImages, 2, 0);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		assets.textures.load(waterFileName, t -> water = new TextureRegion(t));
+		assets.textures.load(floorFileName, t -> floor = new TextureRegion(t));
 	}
 	
 	@Override

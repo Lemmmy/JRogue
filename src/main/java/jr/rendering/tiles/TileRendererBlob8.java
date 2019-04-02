@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
 import jr.rendering.utils.BlobUtils;
 import jr.rendering.utils.ImageLoader;
+import jr.rendering.utils.ImageUtils;
 
 import java.util.Arrays;
 
@@ -40,21 +42,35 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected TextureRegion[] images = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
+	private String fileName;
 	
 	public TileRendererBlob8() {
-		this(0, 0);
+		this("blob");
 	}
 	
-	public TileRendererBlob8(int blobOffsetX, int blobOffsetY) {
-		loadBlob(images, blobOffsetX, blobOffsetY);
+	public TileRendererBlob8(String fileName) {
+		this.fileName = fileName;
 	}
 	
-	protected void loadBlob(TextureRegion[] set, int blobOffsetX, int blobOffsetY) {
+	public static String blobName(String fileName) {
+		return "blobs/" + fileName + ".png";
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		if (fileName != null) {
+			assets.textures.load(blobName("blob"), t -> loadBlob(new TextureRegion(t), images));
+		}
+	}
+	
+	protected void loadBlob(TextureRegion sheet, TextureRegion[] set) {
 		for (int i = 0; i < BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT; i++) {
-			int sheetX = i % BLOB_SHEET_WIDTH + BLOB_SHEET_WIDTH * blobOffsetX;
-			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + BLOB_SHEET_HEIGHT * blobOffsetY;
+			int sheetX = i % BLOB_SHEET_WIDTH + BLOB_SHEET_WIDTH;
+			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + BLOB_SHEET_HEIGHT;
 			
-			set[i] = getImageFromSheet("textures/blobs.png", sheetX, sheetY);
+			set[i] = ImageUtils.getTile(sheet, sheetX, sheetY);
 		}
 	}
 	

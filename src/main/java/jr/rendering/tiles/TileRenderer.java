@@ -13,8 +13,9 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.UsesAssets;
 import jr.rendering.screens.GameScreen;
-import jr.rendering.utils.ImageLoader;
 import jr.utils.Colour;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -23,7 +24,7 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TileRenderer {
+public abstract class TileRenderer implements UsesAssets {
 	private static final boolean AO_ENABLED = true;
 
 	private static final Map<Integer, Integer[]> AO_MODES = new HashMap<>();
@@ -43,6 +44,7 @@ public abstract class TileRenderer {
 
 	private static TextureRegion dim;
 	private static TextureRegion dimLight;
+	private static boolean dimLoaded = false;
 	
 	@Getter @Setter
 	protected GameScreen renderer;
@@ -50,15 +52,20 @@ public abstract class TileRenderer {
 	@Getter @Setter
 	private boolean drawingReflection = false;
 	
-	static {
-		dim = getImageFromSheet("textures/tiles.png", 9, 1);
-		dimLight = getImageFromSheet("textures/tiles.png", 10, 1);
-	}
-	
 	protected ParticleEffectPool effectPool;
 	
-	protected static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
-		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
+	public static String textureName(String fileName) {
+		return "tiles/" + fileName + ".png";
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		if (!dimLoaded) {
+			assets.textures.load(textureName("dim"), t -> dim = new TextureRegion(t));
+			assets.textures.load(textureName("dim_light"), t -> dimLight = new TextureRegion(t));
+			
+			dimLoaded = true;
+		}
 	}
 	
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, int x, int y);

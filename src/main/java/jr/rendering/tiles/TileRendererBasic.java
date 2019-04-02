@@ -3,12 +3,24 @@ package jr.rendering.tiles;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
+import jr.rendering.assets.Assets;
 
 public class TileRendererBasic extends TileRenderer {
 	protected TextureRegion image;
+	protected String fileName;
 	
-	public TileRendererBasic(String sheetName, int sheetX, int sheetY) {
-		image = getImageFromSheet(sheetName, sheetX, sheetY);
+	/**
+	 * @param fileName The file name of the texture to load. It is automatically loaded from the {@code textures/tiles/}
+	 *                 directory, and suffixed with {@code .png}. {@see {@link TileRenderer#textureName(String)}}
+	 */
+	public TileRendererBasic(String fileName) {
+		this.fileName = textureName(fileName);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		assets.textures.load(fileName, t -> image = new TextureRegion(t));
 	}
 	
 	@Override
