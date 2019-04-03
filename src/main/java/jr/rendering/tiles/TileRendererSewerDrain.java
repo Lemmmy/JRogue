@@ -3,16 +3,18 @@ package jr.rendering.tiles;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
+import jr.rendering.assets.Assets;
 
 public class TileRendererSewerDrain extends TileRenderer {
 	private static TextureRegion drain;
 	private static TextureRegion water;
 	
-	public TileRendererSewerDrain() {
-		if (drain == null || water == null) {
-			drain = getImageFromSheet("textures/tiles.png", 15, 1);
-			water = getImageFromSheet("textures/tiles.png", 15, 2);
-		}
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.load(tileFile("sewer_drain"), t -> drain = new TextureRegion(t));
+		assets.textures.load(tileFile("sewer_drain_water"), t -> water = new TextureRegion(t));
 	}
 	
 	@Override

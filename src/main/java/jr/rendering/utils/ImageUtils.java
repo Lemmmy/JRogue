@@ -25,4 +25,13 @@ public class ImageUtils {
 		
 		return region;
 	}
+	
+	public static void loadSheet(TextureRegion sheet, TextureRegion[] images, int width, int height) {
+		for (int i = 0; i < width * height; i++) {
+			int sheetX = i % width + width;
+			int sheetY = (int) Math.floor(i / width) + height;
+			
+			images[i] = ImageUtils.getTile(sheet, sheetX, sheetY);
+		}
+	}
 }

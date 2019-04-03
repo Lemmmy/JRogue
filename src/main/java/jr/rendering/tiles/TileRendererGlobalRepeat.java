@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
+import jr.rendering.assets.Assets;
 import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,30 +14,44 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TileRendererGlobalRepeat extends TileRenderer {
+	private String fileName;
 	private TextureRegion texRegion;
 	private ShaderProgram program;
 	
 	private float offsetX, offsetY;
 	private float scaleX, scaleY;
 	
-	public TileRendererGlobalRepeat(Texture texture, float offsetX, float offsetY, float scaleX, float scaleY) {
+	public TileRendererGlobalRepeat(String fileName, float offsetX, float offsetY, float scaleX, float scaleY) {
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
 		
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 		
-		texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-		texRegion = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
-		program = ShaderLoader.getProgram("shaders/global_repeat");
+		this.fileName = fileName;
 	}
 	
-	public TileRendererGlobalRepeat(Texture texture, float scaleX, float scaleY) {
-		this(texture, 0.0f, 0.0f, scaleX, scaleY);
+	public TileRendererGlobalRepeat(String fileName, float scaleX, float scaleY) {
+		this(fileName, 0.0f, 0.0f, scaleX, scaleY);
 	}
 	
-	public TileRendererGlobalRepeat(Texture texture) {
-		this(texture, 0.0f, 0.0f, 1.0f, 1.0f);
+	public TileRendererGlobalRepeat(String fileName) {
+		this(fileName, 0.0f, 0.0f, 1.0f, 1.0f);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.load(fileName, t -> {
+			t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+			texRegion = new TextureRegion(t, 0, 0, t.getWidth(), t.getHeight());
+		});
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		program = ShaderLoader.getProgram("shaders/global_repeat"); // TODO: AssetManager-based shader loader
 	}
 	
 	@Override

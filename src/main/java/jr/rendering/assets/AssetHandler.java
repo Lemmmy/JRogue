@@ -1,8 +1,12 @@
 package jr.rendering.assets;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import jr.JRogue;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Used by classes that handles specific types of assets, e.g. {@link Textures}.
@@ -12,7 +16,7 @@ import java.util.*;
  *
  * @param <T> The type of asset that this class handles.
  */
-public abstract class AssetHandler<T> {
+public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	private Map<String, Set<AssetCallback<T>>> callbacks = new HashMap<>();
 	
 	protected Assets assets;
@@ -49,6 +53,10 @@ public abstract class AssetHandler<T> {
 		callbacks.clear();
 	}
 	
+	public P getAssetParameters(String fileName) {
+		return null;
+	}
+	
 	/**
 	 * Queues an asset to be loaded.
 	 *
@@ -56,7 +64,7 @@ public abstract class AssetHandler<T> {
 	 */
 	public void load(String fileName) {
 		JRogue.getLogger().debug("Loading asset {}", fileName);
-		assets.manager.load(fileName, getAssetClass());
+		assets.manager.load(fileName, getAssetClass(), getAssetParameters(fileName));
 	}
 	
 	/**

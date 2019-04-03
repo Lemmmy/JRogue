@@ -1,15 +1,13 @@
 package jr.rendering.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateTorch;
+import jr.rendering.assets.Assets;
 import jr.rendering.tiles.walls.TileRendererWall;
 import jr.utils.Colour;
 import jr.utils.Utils;
@@ -20,32 +18,29 @@ public class TileRendererTorch extends TileRendererWall {
 	private TextureRegion torch;
 	private TextureRegion torchGlow;
 	
+	private String particleName;
+	
 	private Color oldColour = new Color();
 	
-	public TileRendererTorch(int sheetX, int sheetY, int glowX, int glowY, String particleName) {
+	public TileRendererTorch(String particleName) {
 		super();
+		this.particleName = particleName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		torch = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		torchGlow = getImageFromSheet("textures/tiles.png", glowX, glowY);
+		assets.textures.load("torch", t -> torch = new TextureRegion(t));
+		assets.textures.load("torch_glow", t -> torchGlow = new TextureRegion(t));
 		
-		ParticleEffect torchEffect = new ParticleEffect();
-		torchEffect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
-		
-		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
+		assets.particles.load(particleName, p -> effectPool = new ParticleEffectPool(p, 50, 500));
 	}
 	
 	@Override
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		
-		if (h && !v && adjacentTiles[2].isInnerRoomTile()) {
-			return torch;
-		}
-		
-		return null;
+		// TODO: this is slightly different than what it used to be. is this still correct?
+		return isTopHorizontal(dungeon, x, y) ? torch : null;
 	}
 	
 	@Override
@@ -85,12 +80,7 @@ public class TileRendererTorch extends TileRendererWall {
 	
 	@Override
 	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		
-		return h && !v && adjacentTiles[2].isInnerRoomTile();
+		return isTopHorizontal(dungeon, x, y);
 	}
 	
 	@Override

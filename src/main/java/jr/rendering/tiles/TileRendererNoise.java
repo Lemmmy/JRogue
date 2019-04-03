@@ -1,13 +1,12 @@
 package jr.rendering.tiles;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.dungeon.Dungeon;
 import jr.utils.RandomUtils;
 
 public class TileRendererNoise extends TileRendererGlobalRepeat {
-	public TileRendererNoise(Texture texture, float scaleX, float scaleY) {
-		super(texture, scaleX, scaleY);
+	public TileRendererNoise(String fileName, float scaleX, float scaleY) {
+		super(fileName, scaleX, scaleY);
 	}
 
 	@Override

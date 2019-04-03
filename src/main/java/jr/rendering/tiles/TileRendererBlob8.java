@@ -52,7 +52,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		this.fileName = fileName;
 	}
 	
-	public static String blobName(String fileName) {
+	public static String blobFile(String fileName) {
 		return "blobs/" + fileName + ".png";
 	}
 	
@@ -61,20 +61,15 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		super.onLoad(assets);
 		
 		if (fileName != null) {
-			assets.textures.load(blobName("blob"), t -> loadBlob(new TextureRegion(t), images));
+			assets.textures.load(blobFile("blob"), t -> loadBlob(new TextureRegion(t), images));
 		}
 	}
 	
 	protected void loadBlob(TextureRegion sheet, TextureRegion[] set) {
-		for (int i = 0; i < BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT; i++) {
-			int sheetX = i % BLOB_SHEET_WIDTH + BLOB_SHEET_WIDTH;
-			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + BLOB_SHEET_HEIGHT;
-			
-			set[i] = ImageUtils.getTile(sheet, sheetX, sheetY);
-		}
+		ImageUtils.loadSheet(sheet, set, BLOB_SHEET_WIDTH, BLOB_SHEET_HEIGHT);
 	}
 	
-	protected void bakeBlobs(TextureRegion[] set, String name, TextureRegion fg, TextureRegion bg) {
+	protected void bakeBlobs(TextureRegion[] set, String atlasName, TextureRegion fg, TextureRegion bg) {
 		PixmapPacker packer = ImageLoader.getPixmapPacker();
 		
 		Pixmap pixmapFg = ImageLoader.getPixmapFromTextureRegion(fg);
@@ -115,7 +110,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 				}
 			}
 			
-			packer.pack(name + "_" + i, pixmapResult);
+			packer.pack(atlasName + "_" + i, pixmapResult);
 		}
 		
 		ImageLoader.getPixmapPacker().updateTextureAtlas(ImageLoader.getPixmapAtlas(), Nearest, Nearest, false);

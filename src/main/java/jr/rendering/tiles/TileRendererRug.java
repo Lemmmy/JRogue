@@ -21,26 +21,31 @@ public class TileRendererRug extends TileRendererBlob8 {
 	}
 
 	public TileRendererRug(String rugFileName, String floorFileName, boolean connectToOthers, TileType self) {
-		super("rug_overlay");
+		super(null);
 		
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		rug = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
-
-		loadBlob(overlayImages, 3, 0);
-		loadBlob(cutoutImages, 0, 1);
-		
-		bakeBlobs(cutoutImages, "rug", rug, floor);
+		this.rugFileName = rugFileName;
+		this.floorFileName = floorFileName;
 	}
 	
 	@Override
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load("blobs/" + fileName + ".png", t -> loadBlob(new TextureRegion(t), images));
-		assets.textures.load("blobs/" + fileName + ".png", t -> loadBlob(new TextureRegion(t), images));
+		assets.textures.load(tileFile(rugFileName), t -> rug = new TextureRegion(t));
+		assets.textures.load(tileFile(floorFileName), t -> floor = new TextureRegion(t));
+		
+		assets.textures.load(blobFile("rug_overlay"), t -> loadBlob(new TextureRegion(t), overlayImages));
+		assets.textures.load(blobFile("rug_cutout"), t -> loadBlob(new TextureRegion(t), cutoutImages));
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
+		
+		bakeBlobs(cutoutImages, "rug", rug, floor);
 	}
 	
 	@Override

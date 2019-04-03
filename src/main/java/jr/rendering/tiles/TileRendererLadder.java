@@ -8,8 +8,8 @@ import jr.dungeon.tiles.TileType;
 import java.util.Arrays;
 
 public class TileRendererLadder extends TileRendererBasic {
-	public TileRendererLadder(int sheetX, int sheetY) {
-		super("textures/tiles.png", sheetX, sheetY);
+	public TileRendererLadder(String fileName) {
+		super(fileName);
 	}
 	
 	@Override

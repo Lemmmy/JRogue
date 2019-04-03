@@ -4,16 +4,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
 
 public class TileRendererSewerWall extends TileRendererWall {
-	private static TextureRegion[] mosses;
+	protected static final int SHEET_WIDTH = 3;
+	protected static final int SHEET_HEIGHT = 1;
 	
-	public TileRendererSewerWall() {
-		mosses = new TextureRegion[3];
+	private static TextureRegion[] mosses = new TextureRegion[SHEET_WIDTH * SHEET_HEIGHT];
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		for (int i = 0; i < mosses.length; i++) {
-			mosses[i] = getImageFromSheet("textures/tiles.png", i + 1, 2);
-		}
+		assets.textures.load(tileFile("sewer_moss"), t -> ImageUtils.loadSheet(new TextureRegion(t), mosses, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
 	@Override

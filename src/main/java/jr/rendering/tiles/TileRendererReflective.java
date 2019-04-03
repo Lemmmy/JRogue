@@ -90,12 +90,8 @@ public class TileRendererReflective extends TileRendererBasic {
 	
 	private final ReflectionSettings settings;
 	
-	public TileRendererReflective(int sheetX, int sheetY, @NonNull ReflectionSettings settings) {
-		this("textures/tiles.png", sheetX, sheetY, settings);
-	}
-	
-	public TileRendererReflective(@NonNull String sheetName, int sheetX, int sheetY, @NonNull ReflectionSettings settings) {
-		super(sheetName, sheetX, sheetY);
+	public TileRendererReflective(String fileName, @NonNull ReflectionSettings settings) {
+		super(fileName);
 		this.settings = settings;
 	}
 	

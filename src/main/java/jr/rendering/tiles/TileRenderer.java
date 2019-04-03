@@ -54,15 +54,15 @@ public abstract class TileRenderer implements UsesAssets {
 	
 	protected ParticleEffectPool effectPool;
 	
-	public static String textureName(String fileName) {
+	public static String tileFile(String fileName) {
 		return "tiles/" + fileName + ".png";
 	}
 	
 	@Override
 	public void onLoad(Assets assets) {
 		if (!dimLoaded) {
-			assets.textures.load(textureName("dim"), t -> dim = new TextureRegion(t));
-			assets.textures.load(textureName("dim_light"), t -> dimLight = new TextureRegion(t));
+			assets.textures.load(tileFile("dim"), t -> dim = new TextureRegion(t));
+			assets.textures.load(tileFile("dim_light"), t -> dimLight = new TextureRegion(t));
 			
 			dimLoaded = true;
 		}

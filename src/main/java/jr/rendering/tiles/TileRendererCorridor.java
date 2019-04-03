@@ -4,17 +4,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
 
 public class TileRendererCorridor extends TileRendererBlob8 {
 	private TextureRegion corridor;
 	private TextureRegion empty;
 	
 	public TileRendererCorridor() {
-		super(1, 0);
+		super("connecting");
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		corridor = getImageFromSheet("textures/tiles.png", 0, 1);
-		empty = getImageFromSheet("textures/tiles.png", 1, 1);
-		
+		assets.textures.load(tileFile("corridor"), t -> corridor = new TextureRegion(t));
+		assets.textures.load(tileFile("ground"), t -> empty = new TextureRegion(t));
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
+	
 		bakeBlobs(images, "corridor", corridor, empty);
 	}
 	

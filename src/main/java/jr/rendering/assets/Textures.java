@@ -1,8 +1,9 @@
 package jr.rendering.assets;
 
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Textures extends AssetHandler<Texture> {
+public class Textures extends AssetHandler<Texture, TextureLoader.TextureParameter> {
 	public Textures(Assets assets) {
 		super(assets);
 	}

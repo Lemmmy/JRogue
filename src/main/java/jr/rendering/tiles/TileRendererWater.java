@@ -28,24 +28,25 @@ public class TileRendererWater extends TileRendererBlob8 {
 	
 	public TileRendererWater(String waterFileName, String floorFileName, float waterTransparency,
 							 boolean connectToOthers, TileType self) {
-		super(1, 0);
+		super(null);
 		
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		this.waterFileName = textureName(waterFileName);
-		this.floorFileName = textureName(floorFileName);
+		this.waterFileName = tileFile(waterFileName);
+		this.floorFileName = tileFile(floorFileName);
 		
 		this.waterTransparency = waterTransparency;
-		
-		loadBlob(overlayImages, 2, 0);
 	}
 	
 	@Override
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
+		
 		assets.textures.load(waterFileName, t -> water = new TextureRegion(t));
 		assets.textures.load(floorFileName, t -> floor = new TextureRegion(t));
+		
+		assets.textures.load(blobFile("water"), t -> loadBlob(new TextureRegion(t), overlayImages));
 	}
 	
 	@Override
