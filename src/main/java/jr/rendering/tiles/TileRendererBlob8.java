@@ -84,7 +84,9 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		Pixmap pixmapBg = ImageUtils.getPixmapFromTextureRegion(bg);
 		Pixmap pixmapMask = ImageUtils.getPixmapFromTextureRegion(set[0]);
 		
-		int width = fg.getRegionWidth(); // assumes fg and bg are equal in size
+		assert(fg.getRegionWidth() == bg.getRegionWidth() && fg.getRegionHeight() == bg.getRegionHeight());
+		
+		int width = fg.getRegionWidth();
 		int height = fg.getRegionHeight();
 		
 		Color pixelColour = new Color();
