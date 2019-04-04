@@ -3,49 +3,49 @@ package jr.rendering.entities;
 import jr.dungeon.entities.EntityAppearance;
 
 public enum EntityMap {
-	APPEARANCE_PLAYER(new EntityRendererPlayer(1, 0)),
+	APPEARANCE_PLAYER(new EntityRendererPlayer()),
 	
 	APPEARANCE_TAMED_CAT(new EntityRendererCat()),
 	
-	APPEARANCE_JACKAL(0, 2),
-	APPEARANCE_FOX(1, 2),
-	APPEARANCE_HOUND(2, 2),
-	APPEARANCE_HELLHOUND(new EntityRendererParticleHound(3, 2, "hellhound")),
-	APPEARANCE_ICEHOUND(new EntityRendererParticleHound(4, 2, "icehound")),
-	APPEARANCE_SPIDER(new EntityRendererRandom(5, 2, 2)),
-	APPEARANCE_RAT(new EntityRendererRandom(7, 2, 2)),
-	APPEARANCE_LIZARD(new EntityRendererRandom(19, 2, 3)),
-	APPEARANCE_SKELETON(9, 2),
-	APPEARANCE_GOBLIN(15, 2),
-	APPEARANCE_GOBLIN_ZOMBIE(23, 2),
-	APPEARANCE_MOLD_RED(10, 2),
-	APPEARANCE_MOLD_YELLOW(11, 2),
-	APPEARANCE_MOLD_GREEN(12, 2),
-	APPEARANCE_MOLD_BLUE(13, 2),
-	APPEARANCE_FISH_RED(new EntityRendererFish(1, 3)),
-	APPEARANCE_FISH_ORANGE(new EntityRendererFish(2, 3)),
-	APPEARANCE_FISH_YELLOW(new EntityRendererFish(3, 3)),
-	APPEARANCE_FISH_GREEN(new EntityRendererFish(4, 3)),
-	APPEARANCE_FISH_BLUE(new EntityRendererFish(5, 3)),
-	APPEARANCE_FISH_PURPLE(new EntityRendererFish(6, 3)),
-	APPEARANCE_PUFFERFISH(new EntityRendererFish(7, 3)),
+	APPEARANCE_JACKAL("jackal"),
+	APPEARANCE_FOX("fox"),
+	APPEARANCE_HOUND("hound"),
+	APPEARANCE_HELLHOUND(new EntityRendererParticleHound("hellhound", "hellhound")),
+	APPEARANCE_ICEHOUND(new EntityRendererParticleHound("icehound", "icehound")),
+	APPEARANCE_SPIDER(new EntityRendererRandom("spiders", 2)),
+	APPEARANCE_RAT(new EntityRendererRandom("rats", 2)),
+	APPEARANCE_LIZARD(new EntityRendererRandom("lizards", 3)),
+	APPEARANCE_SKELETON("skeleton"),
+	APPEARANCE_GOBLIN("goblin"),
+	APPEARANCE_GOBLIN_ZOMBIE("goblin_zombie"),
+	APPEARANCE_MOLD_RED("mold_red"),
+	APPEARANCE_MOLD_YELLOW("mold_yellow"),
+	APPEARANCE_MOLD_GREEN("mold_green"),
+	APPEARANCE_MOLD_BLUE("mold_blue"),
+	APPEARANCE_FISH_RED("fish_red"),
+	APPEARANCE_FISH_ORANGE("fish_orange"),
+	APPEARANCE_FISH_YELLOW("fish_yellow"),
+	APPEARANCE_FISH_GREEN("fish_green"),
+	APPEARANCE_FISH_BLUE("fish_blue"),
+	APPEARANCE_FISH_PURPLE("fish_purple"),
+	APPEARANCE_PUFFERFISH("pufferfish"),
 	
-	APPEARANCE_CHEST(new EntityRendererRandom(1, 1, 12)),
-	APPEARANCE_FOUNTAIN(new EntityRendererFountain(13, 1, 2)),
-	APPEARANCE_FOUNTAIN_FROZEN(new EntityRendererRandom(21, 1, 2)),
-	APPEARANCE_CANDLESTICK(new EntityRendererCandlestick(15, 1)),
-	APPEARANCE_CANDLESTICK_EXTINGUISHED(new EntityRendererCandlestick(15, 1)),
-	APPEARANCE_WEAPON_RACK(16, 1),
-	APPEARANCE_WEAPON_RACK_STOCKED(17, 1),
-	APPEARANCE_ALTAR(20, 1),
-	APPEARANCE_GRAVESTONE(new EntityRendererRandom(23, 1, 3)),
+	APPEARANCE_CHEST(new EntityRendererRandom("chests", 12)),
+	APPEARANCE_FOUNTAIN(new EntityRendererFountain("fountains", 2)),
+	APPEARANCE_FOUNTAIN_FROZEN(new EntityRendererRandom("fountains_frozen", 2)),
+	APPEARANCE_CANDLESTICK(new EntityRendererCandlestick("candlestick")),
+	APPEARANCE_CANDLESTICK_EXTINGUISHED("candlestick"),
+	APPEARANCE_WEAPON_RACK("weapon_rack_empty"),
+	APPEARANCE_WEAPON_RACK_STOCKED("weapon_rack"),
+	APPEARANCE_ALTAR("altar"),
+	APPEARANCE_GRAVESTONE(new EntityRendererRandom("gravestones", 3)),
 	
 	APPEARANCE_ITEM(new EntityRendererItem()),
 	
-	APPEARANCE_ARROW(new EntityRendererProjectile("textures/entities.png", 1, 4)),
-	APPEARANCE_STRIKE(new EntityRendererProjectile("textures/entities.png", 0, 4)),
+	APPEARANCE_ARROW(new EntityRendererProjectile("projectile_arrow")),
+	APPEARANCE_STRIKE(new EntityRendererProjectile("projectile_strike")),
 	
-	APPEARANCE_LIGHT_ORB(2, 4);
+	APPEARANCE_LIGHT_ORB("light_orb");
 	
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;
@@ -56,12 +56,8 @@ public enum EntityMap {
 		this.renderer = renderer;
 	}
 	
-	EntityMap(int sheetX, int sheetY) {
-		this("textures/entities.png", sheetX, sheetY);
-	}
-	
-	EntityMap(String sheetName, int sheetX, int sheetY) {
-		this.renderer = new EntityRendererBasic(sheetName, sheetX, sheetY);
+	EntityMap(String fileName) {
+		this.renderer = new EntityRendererBasic(fileName);
 	}
 	
 	public EntityAppearance getAppearance() {

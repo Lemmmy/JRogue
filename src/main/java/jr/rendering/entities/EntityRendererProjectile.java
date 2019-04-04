@@ -6,13 +6,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.projectiles.EntityProjectile;
+import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
 
 public class EntityRendererProjectile extends EntityRenderer {
-	protected TextureRegion image;
+	protected TextureRegion image; private String fileName;
 	
-	public EntityRendererProjectile(String sheetName, int sheetX, int sheetY) {
-		image = getImageFromSheet(sheetName, sheetX, sheetY);
+	public EntityRendererProjectile(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(entityFile(fileName), t -> image = t);
 	}
 	
 	@Override

@@ -9,8 +9,8 @@ import jr.dungeon.entities.Entity;
 public class EntityRendererFountain extends EntityRendererRandom {
 	private static final int[] PARTICLE_Y_OFFSETS = new int[]{6, 3};
 	
-	public EntityRendererFountain(int sheetX, int sheetY, int count) {
-		super(sheetX, sheetY, count);
+	public EntityRendererFountain(String fileName, int count) {
+		super(fileName, count);
 		
 		ParticleEffect effect = new ParticleEffect();
 		effect.load(Gdx.files.internal("particles/fountain.particle"), Gdx.files.internal("textures"));

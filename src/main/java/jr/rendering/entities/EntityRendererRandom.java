@@ -3,24 +3,29 @@ package jr.rendering.entities;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
 
 public class EntityRendererRandom extends EntityRendererBasic {
+	private String fileName;
 	protected TextureRegion[] images;
-	private int count;
 	
-	public EntityRendererRandom(int sheetX, int sheetY, int count) {
-		super("textures/entities.png", sheetX, sheetY);
+	public EntityRendererRandom(String fileName, int count) {
+		super(null);
 		
-		images = new TextureRegion[count];
-		this.count = count;
+		this.fileName = fileName;
+		this.images = new TextureRegion[count];
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		for (int i = 0; i < count; i++) {
-			images[i] = getImageFromSheet("textures/entities.png", sheetX + i, sheetY);
-		}
+		assets.textures.loadPacked(entityFile(fileName), t -> ImageUtils.loadSheet(t, images, images.length, 1));
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
-		return images[entity.getVisualID() % count];
+		return images[entity.getVisualID() % images.length];
 	}
 }

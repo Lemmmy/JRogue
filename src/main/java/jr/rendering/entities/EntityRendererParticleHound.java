@@ -10,8 +10,8 @@ import jr.dungeon.entities.Entity;
 public class EntityRendererParticleHound extends EntityRendererBasic {
 	protected TextureRegion image;
 	
-	public EntityRendererParticleHound(int sheetX, int sheetY, String particleName) {
-		super("textures/entities.png", sheetX, sheetY);
+	public EntityRendererParticleHound(String fileName, String particleName) {
+		super(fileName);
 		
 		ParticleEffect effect = new ParticleEffect();
 		effect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));

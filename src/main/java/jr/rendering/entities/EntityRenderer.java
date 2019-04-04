@@ -7,16 +7,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
+import jr.rendering.assets.UsesAssets;
 import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class EntityRenderer {
+public abstract class EntityRenderer implements UsesAssets {
 	protected ParticleEffectPool effectPool;
 	@Getter @Setter private boolean drawingReflection = false;
 	
 	private Color oldAnimationColour = new Color();
+	
+	public static String entityFile(String fileName) {
+		return "entities/" + fileName + ".png";
+	}
 	
 	public boolean shouldBeReflected(Entity entity) {
 		return true;

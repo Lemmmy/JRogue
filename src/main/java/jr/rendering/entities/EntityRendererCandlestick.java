@@ -8,8 +8,8 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
-	public EntityRendererCandlestick(int sheetX, int sheetY) {
-		super("textures/entities.png", sheetX, sheetY);
+	public EntityRendererCandlestick(String fileName) {
+		super(fileName);
 		
 		ParticleEffect torchEffect = new ParticleEffect();
 		torchEffect.load(Gdx.files.internal("particles/candlestick_fire.particle"), Gdx.files.internal("textures"));

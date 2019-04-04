@@ -2,28 +2,20 @@ package jr.rendering.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.rendering.entities.animations.EntityAnimationData;
 
-public class EntityRendererFish extends EntityRenderer {
+public class EntityRendererFish extends EntityRendererBasic {
 	private static final float FISH_ALPHA = 0.7f;
 	
-	protected TextureRegion image;
-	
-	public EntityRendererFish(int sheetX, int sheetY) {
-		image = getImageFromSheet("textures/entities.png", sheetX, sheetY);
+	public EntityRendererFish(String fileName) {
+		super(fileName);
 	}
 	
 	@Override
 	public boolean shouldBeReflected(Entity entity) {
 		return false;
-	}
-	
-	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
-		return image;
 	}
 	
 	@Override

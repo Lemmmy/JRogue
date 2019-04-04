@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
+import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
+
+import static jr.rendering.tiles.TileRenderer.tileFile;
 
 public class EntityRendererPlayer extends EntityRenderer {
 	private TextureRegion playerJustyn;
@@ -14,13 +17,15 @@ public class EntityRendererPlayer extends EntityRenderer {
 	
 	private TextureRegion playerHighlight;
 	
-	public EntityRendererPlayer(int sheetX, int sheetY) {
-		playerJustyn = getImageFromSheet("textures/entities.png", 0, 1);
-		playerWizard = getImageFromSheet("textures/entities.png", 1, 0);
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		playerHighlight = getImageFromSheet("textures/tiles.png", 8, 1);
+		assets.textures.loadPacked(entityFile("player_justyn"), t -> playerJustyn = t);
+		assets.textures.loadPacked(entityFile("player_wizard"), t -> playerWizard = t);
+		assets.textures.loadPacked(tileFile("highlight"), t -> playerHighlight = t);
 	}
-
+	
 	@Override
 	public boolean shouldRenderReal(Entity entity) {
 		return true;
