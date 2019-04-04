@@ -30,7 +30,7 @@ public class StatsPartial extends Table {
 	
 	
 	private void addArmourClass(Table container) {
-		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 15, 10, 16, 16, false))).padRight(6).padTop(8);
+		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 15, 10, 16, 16))).padRight(6).padTop(8);
 		
 		String label = String.format("[WHITE]Armour Class:  [P_GREEN_3]%,d[][]", player.getArmourClass());
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(243).left().padTop(8);

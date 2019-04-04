@@ -54,16 +54,11 @@ public class ImageLoader {
 		return getImageFromSheet(sheetName, sheetX, sheetY, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 	}
 	
-	public static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY, int width, int height) {
-		return getImageFromSheet(sheetName, sheetX, sheetY, width, height, true);
-	}
-	
 	public static TextureRegion getImageFromSheet(String sheetName,
 												  int sheetX,
 												  int sheetY,
 												  int width,
-												  int height,
-												  boolean flipped) {
+												  int height) {
 		Texture sheet = ImageLoader.getImage(sheetName);
 		
 		if (sheet == null) {
@@ -71,10 +66,7 @@ public class ImageLoader {
 			System.exit(1);
 		}
 		
-		TextureRegion region = new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
-		region.flip(false, flipped);
-		
-		return region;
+		return new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
 	}
 	
 	public static void disposeAll() {

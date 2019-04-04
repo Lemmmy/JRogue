@@ -49,11 +49,11 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	 * Called after all assets have been loaded and are ready for use.
 	 */
 	public void onLoaded() {
-		System.out.println("AssetHandler.onLoaded");
-		
 		callbacks.forEach((fileName, callbackSet) -> callbackSet.forEach(c -> c.onLoad(getLoaded(fileName))));
 				callbacks.clear();
 	}
+	
+	public void afterLoaded() {}
 	
 	public P getAssetParameters(String fileName) {
 		return null;

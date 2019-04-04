@@ -49,7 +49,7 @@ public class TileRendererWater extends TileRendererBlob8 {
 		assets.textures.loadPacked(waterFileName, t -> water = t);
 		assets.textures.loadPacked(floorFileName, t -> floor = t);
 		
-		assets.textures.loadPacked(blobFile("water"), t -> loadBlob(t, overlayImages));
+		assets.textures.load(blobFile("water"), t -> loadBlob(new TextureRegion(t), overlayImages));
 	}
 	
 	@Override

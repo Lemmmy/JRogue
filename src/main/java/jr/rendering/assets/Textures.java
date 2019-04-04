@@ -16,8 +16,11 @@ import java.util.Set;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 
 public class Textures extends AssetHandler<Texture, TextureLoader.TextureParameter> {
-	@Getter private final PixmapPacker pixmapPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
-	@Getter private final TextureAtlas pixmapAtlas = new TextureAtlas();
+	@Getter private final PixmapPacker mainPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
+	@Getter private final TextureAtlas mainAtlas = new TextureAtlas();
+	
+	@Getter private final PixmapPacker blobPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
+	@Getter private final TextureAtlas blobAtlas = new TextureAtlas();
 	
 	private Map<String, Set<PackedTextureCallback>> callbacks = new HashMap<>();
 	private Set<String> packedTextures = new HashSet<>();
@@ -62,8 +65,14 @@ public class Textures extends AssetHandler<Texture, TextureLoader.TextureParamet
 		callbacks.clear();
 	}
 	
+	@Override
+	public void afterLoaded() {
+		super.afterLoaded();
+		blobPacker.updateTextureAtlas(blobAtlas, Nearest, Nearest, false);
+	}
+	
 	private TextureRegion getPacked(String fileName) {
-		TextureRegion region = pixmapAtlas.findRegion(fileName);
+		TextureRegion region = mainAtlas.findRegion(fileName);
 		assert region != null : "Couldn't find atlas region " + fileName;
 		return region;
 	}
@@ -72,9 +81,9 @@ public class Textures extends AssetHandler<Texture, TextureLoader.TextureParamet
 		packedTextures.forEach(fileName -> {
 			Texture texture = getLoaded(fileName);
 			if (!texture.getTextureData().isPrepared()) texture.getTextureData().prepare();
-			pixmapPacker.pack(fileName, texture.getTextureData().consumePixmap());
+			mainPacker.pack(fileName, texture.getTextureData().consumePixmap());
 		});
-		pixmapPacker.updateTextureAtlas(pixmapAtlas, Nearest, Nearest, false);
+		mainPacker.updateTextureAtlas(mainAtlas, Nearest, Nearest, false);
 	}
 	
 	public void loadPacked(String rawFileName) {

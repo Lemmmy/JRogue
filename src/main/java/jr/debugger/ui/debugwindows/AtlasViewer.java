@@ -25,28 +25,36 @@ public class AtlasViewer extends Window {
 	
 	@Override
 	public void populateWindow() {
-		getWindowBorder().setSize(580, 400);
+		getWindowBorder().setSize(580, 580);
 		
 		Table atlasTable = new Table();
-		PixmapPacker pixmapPacker = assets.textures.getPixmapPacker();
 		
+		addFromPacker(atlasTable, assets.textures.getMainPacker(), "Main");
+		addFromPacker(atlasTable, assets.textures.getBlobPacker(), "Baked blobs");
+		
+		ScrollPane scrollPane = new ScrollPane(atlasTable, getSkin());
+		getWindowBorder().getContentTable().add(scrollPane).grow().left().top();
+	}
+	
+	private void addFromPacker(Table atlasTable, PixmapPacker pixmapPacker, String name) {
 		for (int i = 0; i < pixmapPacker.getPages().size; i++) {
 			PixmapPacker.Page page = pixmapPacker.getPages().get(i);
 			Texture texture = page.getTexture();
 			
 			Table pageTable = new Table();
 			
-			pageTable.add(new Label(String.format(
-				"Page %,d (%,d x %,d)",
-				i,
-				texture.getWidth(), texture.getHeight()
-			), getSkin())).left().row();
-			pageTable.add(new Image(new TextureRegionDrawable(new TextureRegion(texture)))).left();
+			if (texture != null) {
+				pageTable.add(new Label(String.format(
+					"%s - page %,d (%,d x %,d)",
+					name, i,
+					texture.getWidth(), texture.getHeight()
+				), getSkin())).left().row();
+				pageTable.add(new Image(new TextureRegionDrawable(new TextureRegion(texture)))).left();
+			} else {
+				pageTable.add(new Label(String.format("%s - page %,d ([RED]NULL[])", name, i), getSkin())).left().row();
+			}
 			
-			atlasTable.add(pageTable);
+			atlasTable.add(pageTable).left().row();
 		}
-		
-		ScrollPane scrollPane = new ScrollPane(atlasTable, getSkin());
-		getWindowBorder().getContentTable().add(scrollPane).grow().left().top();
 	}
 }

@@ -11,29 +11,13 @@ public class ImageUtils {
 	}
 	
 	public static TextureRegion getTile(TextureRegion sheet, int sheetX, int sheetY, int width, int height) {
-		return getTile(sheet, sheetX, sheetY, width, height, true);
-	}
-	
-	public static TextureRegion getTile(TextureRegion sheet,
-										int sheetX,
-										int sheetY,
-										int width,
-										int height,
-										boolean flipped) {
 		if (sheet == null) return null;
-		
-		TextureRegion region = new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
-		region.flip(false, flipped);
-		
-		return region;
+		return new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
 	}
 	
 	public static void loadSheet(TextureRegion sheet, TextureRegion[] images, int width, int height) {
-		for (int i = 0; i < width * height; i++) {
-			int sheetX = i % width + width;
-			int sheetY = (int) Math.floor(i / width) + height;
-			
-			images[i] = ImageUtils.getTile(sheet, sheetX, sheetY);
+		for (int i = 0; i < images.length; i++) {
+			images[i] = ImageUtils.getTile(sheet, i % width, i / width);
 		}
 	}
 	

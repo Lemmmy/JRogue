@@ -132,7 +132,7 @@ public class GameScreen extends BasicScreen implements EventListener {
 		zoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 4f;
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		updateCameraZoom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		

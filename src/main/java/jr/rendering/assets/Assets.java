@@ -30,6 +30,9 @@ public class Assets implements Disposable {
 		Arrays.stream(EntityMap.values()).map(EntityMap::getRenderer).forEach(er -> er.onLoaded(this));
 		Arrays.stream(ItemMap.values()).map(ItemMap::getRenderer).forEach(ir -> ir.onLoaded(this));
 		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoaded(this));
+		
+		textures.afterLoaded();
+		particles.afterLoaded();
 	}
 	
 	public void syncLoad() {

@@ -17,7 +17,6 @@ import jr.rendering.utils.ImageUtils;
 
 import java.util.Arrays;
 
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static jr.rendering.assets.Textures.blobFile;
 
 public abstract class TileRendererBlob8 extends TileRenderer {
@@ -45,8 +44,8 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	protected TextureRegion[] images = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 	private String fileName;
 	
-	private PixmapPacker pixmapPacker;
-	private TextureAtlas pixmapAtlas;
+	private PixmapPacker packer;
+	private TextureAtlas atlas;
 	
 	public TileRendererBlob8() {
 		this("blob");
@@ -60,11 +59,11 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		pixmapPacker = assets.textures.getPixmapPacker();
-		pixmapAtlas = assets.textures.getPixmapAtlas();
+		packer = assets.textures.getBlobPacker();
+		atlas = assets.textures.getBlobAtlas();
 		
 		if (fileName != null) {
-			assets.textures.loadPacked(blobFile("blob"), t -> loadBlob(t, images));
+			assets.textures.load(blobFile("blob"), t -> loadBlob(new TextureRegion(t), images));
 		}
 	}
 	
@@ -81,10 +80,9 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		Pixmap pixmapBg = ImageUtils.getPixmapFromTextureRegion(bg);
 		Pixmap pixmapMask = ImageUtils.getPixmapFromTextureRegion(set[0]);
 		
-		assert fg.getRegionWidth() == bg.getRegionWidth() && fg.getRegionHeight() == bg.getRegionHeight();
-		
 		int width = fg.getRegionWidth();
 		int height = fg.getRegionHeight();
+		assert width == bg.getRegionWidth() && height == bg.getRegionHeight();
 		
 		Color pixelColour = new Color();
 		Color maskColour = new Color();
@@ -95,21 +93,12 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 			
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					Color.rgba8888ToColor(maskColour, pixmapMask.getPixel(
-						mask.getRegionX() + x,
-						mask.getRegionY() - y - 1
-					));
+					Color.rgba8888ToColor(maskColour, pixmapMask.getPixel(mask.getRegionX() + x, mask.getRegionY() + y));
 					
 					if (maskColour.a > 0.5f) { // TODO: blending
-						Color.rgba8888ToColor(pixelColour, pixmapBg.getPixel(
-							bg.getRegionX() + x,
-							bg.getRegionY() - y - 1
-						));
+						Color.rgba8888ToColor(pixelColour, pixmapBg.getPixel(bg.getRegionX() + x, bg.getRegionY() + y));
 					} else {
-						Color.rgba8888ToColor(pixelColour, pixmapFg.getPixel(
-							fg.getRegionX() + x,
-							fg.getRegionY() - y - 1
-						));
+						Color.rgba8888ToColor(pixelColour, pixmapFg.getPixel(fg.getRegionX() + x, fg.getRegionY() + y));
 					}
 					
 					pixmapResult.setColor(pixelColour);
@@ -117,10 +106,8 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 				}
 			}
 			
-			pixmapPacker.pack(getBlobAtlasName(atlasName, i), pixmapResult);
+			packer.pack(getBlobAtlasName(atlasName, i), pixmapResult);
 		}
-		
-		pixmapPacker.updateTextureAtlas(pixmapAtlas, Nearest, Nearest, false);
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {
@@ -138,7 +125,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected TextureRegion getBakedImageFromMask(String name, int mask) {
-		return pixmapAtlas.findRegion(getBlobAtlasName(name, MAP[mask]));
+		return atlas.findRegion(getBlobAtlasName(name, MAP[mask]));
 	}
 
 	@Deprecated
