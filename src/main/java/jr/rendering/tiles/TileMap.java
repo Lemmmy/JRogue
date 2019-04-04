@@ -4,7 +4,6 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.tiles.walls.TileRendererSewerWall;
 import jr.rendering.tiles.walls.TileRendererWall;
-import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 
 public enum TileMap {
@@ -41,10 +40,10 @@ public enum TileMap {
 	TILE_CAVE_FLOOR(new TileRendererCaveFloor()),
 
 	TILE__NOISE(new TileRendererNoise("noise_bg.png", 0.2f, 0.2f * Dungeon.LEVEL_WIDTH / (float) Dungeon.LEVEL_HEIGHT)),
-	TILE__FLOOR(new TileRenderer_Floor(6, 6, ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f), false, TileType.TILE__FLOOR)),
-	TILE__BRIDGE(new TileRenderer_Bridge(7, 6)),
+	TILE__FLOOR(new TileRenderer_Floor( ReflectionSettings.create(0.0f, 0.0f, 0.0f, 3.0f, -0.2f), false, TileType.TILE__FLOOR)),
+	TILE__BRIDGE(new TileRenderer_Bridge()),
 
-	TILE_TRAP(new TileRendererTrap(ImageLoader.getImageFromSheet("textures/tiles.png", 1, 15)));
+	TILE_TRAP(new TileRendererTrap("rug")); // TODO: trap image
 
 	public static final int TILE_WIDTH = 16;
 	public static final int TILE_HEIGHT = 16;
