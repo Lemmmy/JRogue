@@ -9,7 +9,6 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
 import jr.rendering.assets.UsesAssets;
 import jr.rendering.entities.animations.EntityAnimationData;
-import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,10 +33,6 @@ public abstract class EntityRenderer implements UsesAssets {
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
 	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation);
-	
-	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
-		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
-	}
 	
 	protected void drawEntity(SpriteBatch batch, TextureRegion image, float x, float y) {
 		if (image != null) {
