@@ -14,6 +14,9 @@ import jr.utils.Utils;
 
 import java.util.Arrays;
 
+import static jr.rendering.assets.Particles.particleFile;
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererTorch extends TileRendererWall {
 	private TextureRegion torch;
 	private TextureRegion torchGlow;
@@ -31,10 +34,10 @@ public class TileRendererTorch extends TileRendererWall {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.loadPacked("torch", t -> torch = t);
-		assets.textures.loadPacked("torch_glow", t -> torchGlow = t);
+		assets.textures.loadPacked(tileFile("torch"), t -> torch = t);
+		assets.textures.loadPacked(tileFile("torch_glow"), t -> torchGlow = t);
 		
-		assets.particles.load(particleName, p -> effectPool = new ParticleEffectPool(p, 50, 500));
+		assets.particles.load(particleFile(particleName), p -> effectPool = new ParticleEffectPool(p, 50, 500));
 	}
 	
 	@Override

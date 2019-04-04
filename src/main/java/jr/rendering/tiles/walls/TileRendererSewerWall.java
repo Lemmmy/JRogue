@@ -7,6 +7,8 @@ import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererSewerWall extends TileRendererWall {
 	protected static final int SHEET_WIDTH = 3;
 	protected static final int SHEET_HEIGHT = 1;

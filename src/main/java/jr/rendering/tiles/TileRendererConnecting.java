@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererConnecting extends TileRendererBlob8 {
 	private String fileName, bgFileName;
 	private TextureRegion fg, bg;

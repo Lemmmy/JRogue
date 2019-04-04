@@ -1,20 +1,23 @@
 package jr.rendering.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Particles.particleFile;
 
 public class EntityRendererCandlestick extends EntityRendererBasic {
 	public EntityRendererCandlestick(String fileName) {
 		super(fileName);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		ParticleEffect torchEffect = new ParticleEffect();
-		torchEffect.load(Gdx.files.internal("particles/candlestick_fire.particle"), Gdx.files.internal("textures"));
-		
-		effectPool = new ParticleEffectPool(torchEffect, 50, 500);
+		assets.particles.load(particleFile("candlestick_fire"), p -> effectPool = new ParticleEffectPool(p, 50, 500));
 	}
 	
 	@Override

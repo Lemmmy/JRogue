@@ -9,7 +9,8 @@ import jr.dungeon.entities.player.Player;
 import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
 
-import static jr.rendering.tiles.TileRenderer.tileFile;
+import static jr.rendering.assets.Textures.entityFile;
+import static jr.rendering.assets.Textures.tileFile;
 
 public class EntityRendererPlayer extends EntityRenderer {
 	private TextureRegion playerJustyn;

@@ -7,6 +7,8 @@ import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
 
+import static jr.rendering.assets.Textures.entityFile;
+
 public class EntityRendererCat extends EntityRendererBasic {
 	private static final int imageCount = 12;
 	private static final int ageCount = 3;

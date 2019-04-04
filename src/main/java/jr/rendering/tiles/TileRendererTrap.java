@@ -7,6 +7,8 @@ import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateTrap;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererTrap extends TileRenderer {
 	private TextureRegion trapImage; private String fileName;
 

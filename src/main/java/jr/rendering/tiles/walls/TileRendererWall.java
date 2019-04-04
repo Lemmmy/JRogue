@@ -13,6 +13,8 @@ import jr.utils.WeightedCollection;
 
 import java.util.Random;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererWall extends TileRenderer {
 	protected static final int SHEET_WIDTH = 4;
 	protected static final int SHEET_HEIGHT = 4;
@@ -40,7 +42,7 @@ public class TileRendererWall extends TileRenderer {
 		assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> wallHPillar = t);
 		assets.textures.loadPacked(tileFile("room_wall_pillar_extra"), t -> wallHPillarExtra = t);
 		
-		assets.textures.loadPacked(tileFile("walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
+		assets.textures.loadPacked(tileFile("room_walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
 	protected boolean isTopHorizontal(Dungeon dungeon, int x, int y) {

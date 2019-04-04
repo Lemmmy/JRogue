@@ -24,6 +24,8 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public abstract class TileRenderer implements UsesAssets {
 	private static final boolean AO_ENABLED = true;
 
@@ -53,10 +55,6 @@ public abstract class TileRenderer implements UsesAssets {
 	private boolean drawingReflection = false;
 	
 	protected ParticleEffectPool effectPool;
-	
-	public static String tileFile(String fileName) {
-		return "tiles/" + fileName + ".png";
-	}
 	
 	@Override
 	public void onLoad(Assets assets) {

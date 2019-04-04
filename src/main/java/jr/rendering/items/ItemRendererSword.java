@@ -14,6 +14,8 @@ import jr.rendering.assets.Assets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static jr.rendering.assets.Textures.itemFile;
+
 public class ItemRendererSword extends ItemRenderer {
 	private String fileNamePrefix;
 	protected Map<Material, TextureRegion> images = new HashMap<>();
@@ -27,7 +29,7 @@ public class ItemRendererSword extends ItemRenderer {
 		super.onLoad(assets);
 		
 		for (Material material : Material.values()) {
-			String materialName = MaterialMap.valueOf(material.getName()).getFileName();
+			String materialName = MaterialMap.valueOf(material.name()).getFileName();
 			String fileName = fileNamePrefix + "_" + materialName;
 			
 			assets.textures.loadPacked(itemFile(fileName), t -> images.put(material, t));

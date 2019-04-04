@@ -6,6 +6,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererDoor extends TileRenderer {
 	private TextureRegion openH, openV;
 	

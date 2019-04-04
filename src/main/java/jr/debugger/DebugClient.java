@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class DebugClient extends ApplicationAdapter implements EventListener {
 	public static final String WINDOW_TITLE = "JRogue Debug Client";
 	
-	private GameAdapter gameAdapter;
+	@Getter private GameAdapter gameAdapter;
 	@Getter private Dungeon dungeon;
 	
 	private Object rootObject;

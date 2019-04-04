@@ -9,6 +9,10 @@ public class Particles extends AssetHandler<ParticleEffect, ParticleEffectParame
 		super(assets);
 	}
 	
+	public static String particleFile(String fileName) {
+		return "particles/" + fileName + ".particle";
+	}
+	
 	@Override
 	protected Class<ParticleEffect> getAssetClass() {
 		return ParticleEffect.class;

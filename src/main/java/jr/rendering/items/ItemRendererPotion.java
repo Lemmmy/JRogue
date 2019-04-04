@@ -12,6 +12,8 @@ import jr.dungeon.items.quaffable.potions.ItemPotion;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.CompositeDrawable;
 
+import static jr.rendering.assets.Textures.itemFile;
+
 public class ItemRendererPotion extends ItemRenderer {
 	private final String fluidFileName, bottleFileName;
 	private TextureRegion fluidTex, bottleTex;

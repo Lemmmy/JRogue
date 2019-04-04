@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererStairs extends TileRenderer {
 	private static TextureRegion up;
 	private static TextureRegion down;

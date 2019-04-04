@@ -9,9 +9,6 @@ import jr.dungeon.items.ItemStack;
 import jr.rendering.assets.UsesAssets;
 
 public abstract class ItemRenderer implements UsesAssets {
-	public static String itemFile(String fileName) {
-		return "item/" + fileName + ".png";
-	}
 	
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect);
 	

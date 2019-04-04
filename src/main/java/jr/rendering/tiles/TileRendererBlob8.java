@@ -18,6 +18,7 @@ import jr.rendering.utils.ImageUtils;
 import java.util.Arrays;
 
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
+import static jr.rendering.assets.Textures.blobFile;
 
 public abstract class TileRendererBlob8 extends TileRenderer {
 	protected static final int BLOB_SHEET_WIDTH = 8;
@@ -55,10 +56,6 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		this.fileName = fileName;
 	}
 	
-	public static String blobFile(String fileName) {
-		return "blobs/" + fileName + ".png";
-	}
-	
 	@Override
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
@@ -84,7 +81,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		Pixmap pixmapBg = ImageUtils.getPixmapFromTextureRegion(bg);
 		Pixmap pixmapMask = ImageUtils.getPixmapFromTextureRegion(set[0]);
 		
-		assert(fg.getRegionWidth() == bg.getRegionWidth() && fg.getRegionHeight() == bg.getRegionHeight());
+		assert fg.getRegionWidth() == bg.getRegionWidth() && fg.getRegionHeight() == bg.getRegionHeight();
 		
 		int width = fg.getRegionWidth();
 		int height = fg.getRegionHeight();

@@ -8,7 +8,7 @@ import jr.rendering.tiles.TileRenderer;
 
 import java.util.Random;
 
-import static jr.rendering.tiles.TileRenderer.tileFile;
+import static jr.rendering.assets.Textures.tileFile;
 
 public class WallDecorationGrate extends WallDecoration {
 	private static TextureRegion grate;

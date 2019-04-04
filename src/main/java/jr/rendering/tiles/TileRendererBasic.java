@@ -5,13 +5,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererBasic extends TileRenderer {
 	protected TextureRegion image;
 	protected String fileName;
 	
 	/**
 	 * @param fileName The file name of the texture to load. It is automatically loaded from the {@code textures/tiles/}
-	 *                 directory, and suffixed with {@code .png}. {@see {@link TileRenderer#tileFile(String)}}
+	 *                 directory, and suffixed with {@code .png}. {@see {@link tileFile(String) }}
 	 */
 	public TileRendererBasic(String fileName) {
 		this.fileName = fileName;

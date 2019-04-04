@@ -9,6 +9,8 @@ import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
 
+import static jr.rendering.assets.Textures.entityFile;
+
 public class EntityRendererProjectile extends EntityRenderer {
 	protected TextureRegion image; private String fileName;
 	

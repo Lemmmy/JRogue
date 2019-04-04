@@ -17,7 +17,7 @@ public enum EntityMap {
 	APPEARANCE_LIZARD(new EntityRendererRandom("lizards", 3)),
 	APPEARANCE_SKELETON("skeleton"),
 	APPEARANCE_GOBLIN("goblin"),
-	APPEARANCE_GOBLIN_ZOMBIE("goblin_zombie"),
+	APPEARANCE_GOBLIN_ZOMBIE("zombie_goblin"),
 	APPEARANCE_MOLD_RED("mold_red"),
 	APPEARANCE_MOLD_YELLOW("mold_yellow"),
 	APPEARANCE_MOLD_GREEN("mold_green"),

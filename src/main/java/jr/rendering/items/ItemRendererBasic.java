@@ -9,6 +9,8 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.itemFile;
+
 public class ItemRendererBasic extends ItemRenderer {
 	private TextureRegion image;
 	

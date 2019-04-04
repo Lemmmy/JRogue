@@ -18,10 +18,6 @@ public abstract class EntityRenderer implements UsesAssets {
 	
 	private Color oldAnimationColour = new Color();
 	
-	public static String entityFile(String fileName) {
-		return "entities/" + fileName + ".png";
-	}
-	
 	public boolean shouldBeReflected(Entity entity) {
 		return true;
 	}

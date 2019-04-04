@@ -6,6 +6,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRenderer_Bridge extends TileRendererBlob8 {
 	private static final float TEXTURE_SPEED = 8;
 	

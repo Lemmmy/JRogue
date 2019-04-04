@@ -6,6 +6,8 @@ import jr.dungeon.entities.Entity;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
 
+import static jr.rendering.assets.Textures.entityFile;
+
 public class EntityRendererRandom extends EntityRendererBasic {
 	private String fileName;
 	protected TextureRegion[] images;

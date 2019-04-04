@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRenderer_Floor extends TileRendererBlob8 {
 	private static final float TEXTURE_SPEED = 6;
 	

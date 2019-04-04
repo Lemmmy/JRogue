@@ -6,19 +6,25 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
-import jr.dungeon.entities.events.*;
+import jr.dungeon.entities.events.EntityAddedEvent;
+import jr.dungeon.entities.events.EntityMovedEvent;
+import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventPriority;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.EntityPooledEffect;
 import jr.rendering.entities.EntityRenderer;
-import jr.rendering.entities.animations.*;
+import jr.rendering.entities.animations.AnimationProvider;
+import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EntityComponent extends RendererComponent {

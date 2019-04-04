@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererSewerDrain extends TileRenderer {
 	private static TextureRegion drain;
 	private static TextureRegion water;

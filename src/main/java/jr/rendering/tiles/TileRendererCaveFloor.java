@@ -9,6 +9,8 @@ import jr.rendering.utils.ImageUtils;
 
 import java.util.Random;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererCaveFloor extends TileRendererConnecting {
 	private static final int PROBABILITY_ROCK = 25;
 	

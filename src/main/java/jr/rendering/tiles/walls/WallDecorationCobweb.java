@@ -10,7 +10,7 @@ import jr.rendering.utils.ImageUtils;
 
 import java.util.Random;
 
-import static jr.rendering.tiles.TileRenderer.tileFile;
+import static jr.rendering.assets.Textures.tileFile;
 
 public class WallDecorationCobweb extends WallDecoration {
 	protected static final int SHEET_WIDTH = 2;

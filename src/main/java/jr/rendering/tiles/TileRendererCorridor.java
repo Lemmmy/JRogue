@@ -6,6 +6,8 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererCorridor extends TileRendererBlob8 {
 	private TextureRegion corridor;
 	private TextureRegion empty;

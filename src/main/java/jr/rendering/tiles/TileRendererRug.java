@@ -6,6 +6,9 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 
+import static jr.rendering.assets.Textures.blobFile;
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererRug extends TileRendererBlob8 {
 	private TextureRegion rug; private String rugFileName;
 	private TextureRegion floor; private String floorFileName;

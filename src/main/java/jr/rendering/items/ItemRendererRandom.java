@@ -10,6 +10,8 @@ import jr.dungeon.items.ItemStack;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
 
+import static jr.rendering.assets.Textures.itemFile;
+
 public class ItemRendererRandom extends ItemRenderer {
 	private String fileName;
 	protected TextureRegion[] images;

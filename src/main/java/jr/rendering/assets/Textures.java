@@ -26,6 +26,22 @@ public class Textures extends AssetHandler<Texture, TextureLoader.TextureParamet
 		super(assets);
 	}
 	
+	public static String tileFile(String fileName) {
+		return "tiles/" + fileName + ".png";
+	}
+	
+	public static String blobFile(String fileName) {
+		return "blobs/" + fileName + ".png";
+	}
+	
+	public static String entityFile(String fileName) {
+		return "entities/" + fileName + ".png";
+	}
+	
+	public static String itemFile(String fileName) {
+		return "items/" + fileName + ".png";
+	}
+	
 	@Override
 	protected Class<Texture> getAssetClass() {
 		return Texture.class;
@@ -42,26 +58,38 @@ public class Textures extends AssetHandler<Texture, TextureLoader.TextureParamet
 		
 		super.onLoaded();
 		
-		callbacks.forEach((fileName, callback) ->
-			callback.forEach(c -> c.onLoad(pixmapAtlas.findRegion(fileName))));
+		callbacks.forEach((fileName, callbackSet) -> callbackSet.forEach(c -> c.onLoad(getPacked(fileName))));
 		callbacks.clear();
 	}
 	
+	private TextureRegion getPacked(String fileName) {
+		TextureRegion region = pixmapAtlas.findRegion(fileName);
+		assert region != null : "Couldn't find atlas region " + fileName;
+		return region;
+	}
+	
 	private void loadPackedTextures() {
-		packedTextures.forEach(fileName -> pixmapPacker.pack(fileName, assets.manager.get(fileName)));
+		packedTextures.forEach(fileName -> {
+			Texture texture = getLoaded(fileName);
+			if (!texture.getTextureData().isPrepared()) texture.getTextureData().prepare();
+			pixmapPacker.pack(fileName, texture.getTextureData().consumePixmap());
+		});
 		pixmapPacker.updateTextureAtlas(pixmapAtlas, Nearest, Nearest, false);
 	}
 	
-	public void loadPacked(String fileName) {
+	public void loadPacked(String rawFileName) {
+		String fileName = getPrefixedFileName(rawFileName);
 		load(fileName);
 		packedTextures.add(fileName);
 	}
 	
-	public void loadPacked(String fileName, PackedTextureCallback callback) {
-		load(fileName);
+	public void loadPacked(String rawFileName, PackedTextureCallback callback) {
+		String fileName = getPrefixedFileName(rawFileName);
+		
+		loadPacked(fileName);
 		
 		if (assets.manager.isLoaded(fileName)) {
-			callback.onLoad(pixmapAtlas.findRegion(fileName));
+			callback.onLoad(getPacked(fileName));
 		} else {
 			if (!callbacks.containsKey(fileName))
 				callbacks.put(fileName, new HashSet<>());

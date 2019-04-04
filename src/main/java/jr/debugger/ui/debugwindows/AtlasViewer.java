@@ -6,12 +6,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import jr.rendering.assets.Assets;
 import jr.rendering.ui.windows.Window;
-import jr.rendering.utils.ImageLoader;
 
 public class AtlasViewer extends Window {
-	public AtlasViewer(Stage stage, Skin skin) {
+	private Assets assets;
+	
+	public AtlasViewer(Stage stage, Skin skin, Assets assets) {
 		super(stage, skin);
+		
+		this.assets = assets;
 	}
 	
 	@Override
@@ -24,7 +28,7 @@ public class AtlasViewer extends Window {
 		getWindowBorder().setSize(580, 400);
 		
 		Table atlasTable = new Table();
-		PixmapPacker pixmapPacker = ImageLoader.getPixmapPacker();
+		PixmapPacker pixmapPacker = assets.textures.getPixmapPacker();
 		
 		for (int i = 0; i < pixmapPacker.getPages().size; i++) {
 			PixmapPacker.Page page = pixmapPacker.getPages().get(i);

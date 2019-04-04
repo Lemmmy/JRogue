@@ -37,20 +37,22 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 		return "";
 	}
 	
-	private String getPrefixedFileName(String fileName) {
-		return fileName.startsWith("/") ? fileName : getFileNamePrefix() + fileName;
+	protected String getPrefixedFileName(String fileName) {
+		return fileName.startsWith("/")
+			   ? fileName.replaceFirst("/", "")
+			   : fileName.startsWith(getFileNamePrefix())
+				 	? fileName
+					: getFileNamePrefix() + fileName;
 	}
 	
 	/**
 	 * Called after all assets have been loaded and are ready for use.
 	 */
 	public void onLoaded() {
-		callbacks.forEach((fileName, callback) -> {
-			T asset = assets.manager.get(fileName);
-			callback.forEach(c -> c.onLoad(asset));
-		});
+		System.out.println("AssetHandler.onLoaded");
 		
-		callbacks.clear();
+		callbacks.forEach((fileName, callbackSet) -> callbackSet.forEach(c -> c.onLoad(getLoaded(fileName))));
+				callbacks.clear();
 	}
 	
 	public P getAssetParameters(String fileName) {
@@ -60,9 +62,13 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	/**
 	 * Queues an asset to be loaded.
 	 *
-	 * @param fileName The file name of the asset to load.
+	 * @param rawFileName The file name of the asset to load.
 	 */
-	public void load(String fileName) {
+	public void load(String rawFileName) {
+		String fileName = getPrefixedFileName(rawFileName);
+		
+		if (assets.manager.contains(fileName)) return;
+		
 		JRogue.getLogger().debug("Loading asset {}", fileName);
 		assets.manager.load(fileName, getAssetClass(), getAssetParameters(fileName));
 	}
@@ -70,14 +76,18 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	/**
 	 * Queues an asset to be loaded, and registers a callback to be called when it has loaded.
 	 *
-	 * @param fileName The file name of the asset to load.
+	 * @param rawFileName The file name of the asset to load.
 	 * @param callback The callback to be called when the asset has been loaded.
 	 */
-	public void load(String fileName, AssetCallback<T> callback) {
-		load(fileName);
+	public void load(String rawFileName, AssetCallback<T> callback) {
+		String fileName = getPrefixedFileName(rawFileName);
+		
+		if (!assets.manager.contains(fileName)) {
+			load(fileName);
+		}
 		
 		if (assets.manager.isLoaded(fileName)) {
-			callback.onLoad(assets.manager.get(fileName));
+			callback.onLoad(getLoaded(fileName));
 		} else {
 			if (!callbacks.containsKey(fileName))
 				callbacks.put(fileName, new HashSet<>());
@@ -88,12 +98,19 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	/**
 	 * Immediately loads an asset. Useful for the loading screen.
 	 *
-	 * @param fileName The file name of the asset to load.
+	 * @param rawFileName The file name of the asset to load.
 	 */
-	public T loadImmediately(String fileName) {
-		assets.manager.load(fileName, getAssetClass());
-		assets.manager.finishLoadingAsset(fileName);
+	public T loadImmediately(String rawFileName) {
+		String fileName = getPrefixedFileName(rawFileName);
+		if (!assets.manager.contains(fileName)) assets.manager.load(fileName, getAssetClass());
+		if (!assets.manager.isLoaded(fileName)) assets.manager.finishLoadingAsset(fileName);
 		return assets.manager.get(fileName);
+	}
+	
+	protected T getLoaded(String fileName) {
+		T asset = assets.manager.get(fileName);
+		assert asset != null : "Missing asset " + fileName;
+		return asset;
 	}
 	
 	@FunctionalInterface
