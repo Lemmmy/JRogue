@@ -23,13 +23,13 @@ public class TileRendererStairs extends TileRenderer {
 		super.onLoad(assets);
 		
 		if (!arrowsLoaded) {
-			assets.textures.load(tileFile("arrow_up"), t -> up = new TextureRegion(t));
-			assets.textures.load(tileFile("arrow_down"), t -> down = new TextureRegion(t));
+			assets.textures.loadPacked(tileFile("arrow_up"), t -> up = t);
+			assets.textures.loadPacked(tileFile("arrow_down"), t -> down = t);
 			
 			arrowsLoaded = true;
 		}
 		
-		assets.textures.load(tileFile(fileName), t -> image = new TextureRegion(image));
+		assets.textures.loadPacked(tileFile(fileName), t -> image = t);
 	}
 	
 	@Override

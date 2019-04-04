@@ -31,8 +31,8 @@ public class TileRendererTorch extends TileRendererWall {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load("torch", t -> torch = new TextureRegion(t));
-		assets.textures.load("torch_glow", t -> torchGlow = new TextureRegion(t));
+		assets.textures.loadPacked("torch", t -> torch = t);
+		assets.textures.loadPacked("torch_glow", t -> torchGlow = t);
 		
 		assets.particles.load(particleName, p -> effectPool = new ParticleEffectPool(p, 50, 500));
 	}

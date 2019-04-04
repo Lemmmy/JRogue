@@ -21,7 +21,7 @@ public class TileRendererBasic extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile(fileName), t -> image = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile(fileName), t -> image = t);
 	}
 	
 	@Override

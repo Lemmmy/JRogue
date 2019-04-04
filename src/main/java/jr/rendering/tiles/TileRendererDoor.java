@@ -13,8 +13,8 @@ public class TileRendererDoor extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("room_door_open_horizontal"), t -> openH = new TextureRegion(t));
-		assets.textures.load(tileFile("room_door_open_vertical"), t -> openV = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("room_door_open_horizontal"), t -> openH = t);
+		assets.textures.loadPacked(tileFile("room_door_open_vertical"), t -> openV = t);
 	}
 	
 	@Override

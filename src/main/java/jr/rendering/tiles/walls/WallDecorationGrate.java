@@ -17,7 +17,7 @@ public class WallDecorationGrate extends WallDecoration {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("grate"), t -> grate = new TextureRegion(grate));
+		assets.textures.loadPacked(tileFile("grate"), t -> grate = t);
 	}
 	
 	@Override

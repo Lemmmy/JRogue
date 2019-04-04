@@ -13,8 +13,8 @@ public class TileRendererSewerDrain extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("sewer_drain"), t -> drain = new TextureRegion(t));
-		assets.textures.load(tileFile("sewer_drain_water"), t -> water = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("sewer_drain"), t -> drain = t);
+		assets.textures.loadPacked(tileFile("sewer_drain_water"), t -> water = t);
 	}
 	
 	@Override

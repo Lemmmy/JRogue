@@ -18,8 +18,8 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("corridor"), t -> corridor = new TextureRegion(t));
-		assets.textures.load(tileFile("ground"), t -> empty = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("corridor"), t -> corridor = t);
+		assets.textures.loadPacked(tileFile("ground"), t -> empty = t);
 	}
 	
 	@Override

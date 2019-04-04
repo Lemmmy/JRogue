@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.BlobUtils;
-import jr.rendering.utils.ImageLoader;
 import jr.rendering.utils.ImageUtils;
 
 import java.util.Arrays;
@@ -44,6 +44,9 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	protected TextureRegion[] images = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 	private String fileName;
 	
+	private PixmapPacker pixmapPacker;
+	private TextureAtlas pixmapAtlas;
+	
 	public TileRendererBlob8() {
 		this("blob");
 	}
@@ -60,9 +63,16 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
+		pixmapPacker = assets.textures.getPixmapPacker();
+		pixmapAtlas = assets.textures.getPixmapAtlas();
+		
 		if (fileName != null) {
-			assets.textures.load(blobFile("blob"), t -> loadBlob(new TextureRegion(t), images));
+			assets.textures.loadPacked(blobFile("blob"), t -> loadBlob(t, images));
 		}
+	}
+	
+	protected static String getBlobAtlasName(String atlasName, int i) {
+		return "bakedblob_" + atlasName + "_" + i;
 	}
 	
 	protected void loadBlob(TextureRegion sheet, TextureRegion[] set) {
@@ -70,11 +80,9 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected void bakeBlobs(TextureRegion[] set, String atlasName, TextureRegion fg, TextureRegion bg) {
-		PixmapPacker packer = ImageLoader.getPixmapPacker();
-		
-		Pixmap pixmapFg = ImageLoader.getPixmapFromTextureRegion(fg);
-		Pixmap pixmapBg = ImageLoader.getPixmapFromTextureRegion(bg);
-		Pixmap pixmapMask = ImageLoader.getPixmapFromTextureRegion(set[0]);
+		Pixmap pixmapFg = ImageUtils.getPixmapFromTextureRegion(fg);
+		Pixmap pixmapBg = ImageUtils.getPixmapFromTextureRegion(bg);
+		Pixmap pixmapMask = ImageUtils.getPixmapFromTextureRegion(set[0]);
 		
 		int width = fg.getRegionWidth(); // assumes fg and bg are equal in size
 		int height = fg.getRegionHeight();
@@ -110,10 +118,10 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 				}
 			}
 			
-			packer.pack(atlasName + "_" + i, pixmapResult);
+			pixmapPacker.pack(getBlobAtlasName(atlasName, i), pixmapResult);
 		}
 		
-		ImageLoader.getPixmapPacker().updateTextureAtlas(ImageLoader.getPixmapAtlas(), Nearest, Nearest, false);
+		pixmapPacker.updateTextureAtlas(pixmapAtlas, Nearest, Nearest, false);
 	}
 	
 	protected int getPositionMask(Level level, int x, int y) {
@@ -131,7 +139,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	}
 	
 	protected TextureRegion getBakedImageFromMask(String name, int mask) {
-		return ImageLoader.getPixmapAtlas().findRegion(name + "_" + MAP[mask]);
+		return pixmapAtlas.findRegion(getBlobAtlasName(name, MAP[mask]));
 	}
 
 	@Deprecated

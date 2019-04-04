@@ -20,7 +20,7 @@ public class WallDecorationCobweb extends WallDecoration {
 	
 	@Override
 	public void onLoad(Assets assets) {
-		assets.textures.load(tileFile("cobwebs"), t -> ImageUtils.loadSheet(new TextureRegion(t), cobwebs, SHEET_WIDTH, SHEET_HEIGHT));
+		assets.textures.loadPacked(tileFile("cobwebs"), t -> ImageUtils.loadSheet(t, cobwebs, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
 	@Override

@@ -61,8 +61,8 @@ public abstract class TileRenderer implements UsesAssets {
 	@Override
 	public void onLoad(Assets assets) {
 		if (!dimLoaded) {
-			assets.textures.load(tileFile("dim"), t -> dim = new TextureRegion(t));
-			assets.textures.load(tileFile("dim_light"), t -> dimLight = new TextureRegion(t));
+			assets.textures.loadPacked(tileFile("dim"), t -> dim = t);
+			assets.textures.loadPacked(tileFile("dim_light"), t -> dimLight = t);
 			
 			dimLoaded = true;
 		}

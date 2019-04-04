@@ -1,5 +1,7 @@
 package jr.rendering.utils;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.rendering.tiles.TileMap;
 
@@ -33,5 +35,11 @@ public class ImageUtils {
 			
 			images[i] = ImageUtils.getTile(sheet, sheetX, sheetY);
 		}
+	}
+	
+	public static Pixmap getPixmapFromTextureRegion(TextureRegion region) {
+		Texture texture = region.getTexture();
+		if (!texture.getTextureData().isPrepared()) texture.getTextureData().prepare();
+		return texture.getTextureData().consumePixmap();
 	}
 }

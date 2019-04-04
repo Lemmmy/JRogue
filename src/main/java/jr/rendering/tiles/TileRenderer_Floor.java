@@ -35,7 +35,7 @@ public class TileRenderer_Floor extends TileRendererBlob8 {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("__floor"), t -> floor = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("__floor"), t -> floor = t);
 	}
 	
 	@Override

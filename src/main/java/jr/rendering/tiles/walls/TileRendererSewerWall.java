@@ -17,7 +17,7 @@ public class TileRendererSewerWall extends TileRendererWall {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("sewer_moss"), t -> ImageUtils.loadSheet(new TextureRegion(t), mosses, SHEET_WIDTH, SHEET_HEIGHT));
+		assets.textures.loadPacked(tileFile("sewer_moss"), t -> ImageUtils.loadSheet(t, mosses, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
 	@Override

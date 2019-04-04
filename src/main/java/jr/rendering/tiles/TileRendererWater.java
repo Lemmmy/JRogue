@@ -43,10 +43,10 @@ public class TileRendererWater extends TileRendererBlob8 {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(waterFileName, t -> water = new TextureRegion(t));
-		assets.textures.load(floorFileName, t -> floor = new TextureRegion(t));
+		assets.textures.loadPacked(waterFileName, t -> water = t);
+		assets.textures.loadPacked(floorFileName, t -> floor = t));
 		
-		assets.textures.load(blobFile("water"), t -> loadBlob(new TextureRegion(t), overlayImages));
+		assets.textures.loadPacked(blobFile("water"), t -> loadBlob(t, overlayImages));
 	}
 	
 	@Override

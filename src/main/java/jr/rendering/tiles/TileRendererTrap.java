@@ -18,7 +18,7 @@ public class TileRendererTrap extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile(fileName), t -> trapImage = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile(fileName), t -> trapImage = t);
 	}
 	
 	@Override

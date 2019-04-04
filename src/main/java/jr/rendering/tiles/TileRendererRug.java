@@ -34,11 +34,11 @@ public class TileRendererRug extends TileRendererBlob8 {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile(rugFileName), t -> rug = new TextureRegion(t));
-		assets.textures.load(tileFile(floorFileName), t -> floor = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile(rugFileName), t -> rug = t);
+		assets.textures.loadPacked(tileFile(floorFileName), t -> floor = t);
 		
-		assets.textures.load(blobFile("rug_overlay"), t -> loadBlob(new TextureRegion(t), overlayImages));
-		assets.textures.load(blobFile("rug_cutout"), t -> loadBlob(new TextureRegion(t), cutoutImages));
+		assets.textures.loadPacked(blobFile("rug_overlay"), t -> loadBlob(t, overlayImages));
+		assets.textures.loadPacked(blobFile("rug_cutout"), t -> loadBlob(t, cutoutImages));
 	}
 	
 	@Override

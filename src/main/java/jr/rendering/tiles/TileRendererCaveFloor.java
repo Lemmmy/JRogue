@@ -30,7 +30,7 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("rocks"), t -> ImageUtils.loadSheet(new TextureRegion(t), rocks, ROCK_SHEET_WIDTH, ROCK_SHEET_HEIGHT));
+		assets.textures.loadPacked(tileFile("rocks"), t -> ImageUtils.loadSheet(t, rocks, ROCK_SHEET_WIDTH, ROCK_SHEET_HEIGHT));
 	}
 	
 	@Override

@@ -36,8 +36,8 @@ public class TileRendererConnecting extends TileRendererBlob8 {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile(fileName), t -> fg = new TextureRegion(t));
-		assets.textures.load(tileFile(bgFileName), t -> bg = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile(fileName), t -> fg = t);
+		assets.textures.loadPacked(tileFile(bgFileName), t -> bg = t);
 	}
 	
 	@Override

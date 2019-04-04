@@ -25,7 +25,7 @@ public class TileRenderer_Bridge extends TileRendererBlob8 {
 		
 		// TODO: ^^ is no longer relevant after AssetManager
 		
-		assets.textures.load(tileFile("__bridge"), t -> bridge = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("__bridge"), t -> bridge = t);
 	}
 	
 	@Override

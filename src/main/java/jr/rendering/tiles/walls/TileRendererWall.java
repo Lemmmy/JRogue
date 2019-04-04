@@ -37,10 +37,10 @@ public class TileRendererWall extends TileRenderer {
 	public void onLoad(Assets assets) {
 		super.onLoad(assets);
 		
-		assets.textures.load(tileFile("room_wall_pillar"), t -> wallHPillar = new TextureRegion(t));
-		assets.textures.load(tileFile("room_wall_pillar_extra"), t -> wallHPillarExtra = new TextureRegion(t));
+		assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> wallHPillar = t);
+		assets.textures.loadPacked(tileFile("room_wall_pillar_extra"), t -> wallHPillarExtra = t);
 		
-		assets.textures.load(tileFile("walls"), t -> ImageUtils.loadSheet(new TextureRegion(t), images, SHEET_WIDTH, SHEET_HEIGHT));
+		assets.textures.loadPacked(tileFile("walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
 	protected boolean isTopHorizontal(Dungeon dungeon, int x, int y) {
