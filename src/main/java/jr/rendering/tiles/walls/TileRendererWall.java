@@ -96,7 +96,7 @@ public class TileRendererWall extends TileRenderer {
 			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			decoration.draw(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.draw(this, batch, dungeon, x, y, rand);
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class TileRendererWall extends TileRenderer {
 			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			decoration.drawExtra(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.drawExtra(this, batch, dungeon, x, y, rand);
 		}
 	}
 }
