@@ -3,6 +3,7 @@ package jr.rendering.assets;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Disposable;
 import jr.rendering.entities.EntityMap;
+import jr.rendering.entities.RoleMap;
 import jr.rendering.items.ItemMap;
 import jr.rendering.tiles.TileMap;
 
@@ -18,6 +19,7 @@ public class Assets implements Disposable {
 		Arrays.stream(TileMap.values()).map(TileMap::getRenderer).forEach(tr -> tr.onLoad(this));
 		Arrays.stream(EntityMap.values()).map(EntityMap::getRenderer).forEach(er -> er.onLoad(this));
 		Arrays.stream(ItemMap.values()).map(ItemMap::getRenderer).forEach(ir -> ir.onLoad(this));
+		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoad(this));
 	}
 	
 	private void loaded() {
@@ -27,6 +29,7 @@ public class Assets implements Disposable {
 		Arrays.stream(TileMap.values()).map(TileMap::getRenderer).forEach(tr -> tr.onLoaded(this));
 		Arrays.stream(EntityMap.values()).map(EntityMap::getRenderer).forEach(er -> er.onLoaded(this));
 		Arrays.stream(ItemMap.values()).map(ItemMap::getRenderer).forEach(ir -> ir.onLoaded(this));
+		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoaded(this));
 	}
 	
 	public void syncLoad() {
