@@ -260,11 +260,11 @@ public class GameScreen extends BasicScreen implements EventListener {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		camera.setToOrtho(true, width, height);
+		camera.setToOrtho(false, width, height);
 		updateCameraZoom(width, height);
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
-		debugCamera.setToOrtho(true, width, height);
+		debugCamera.setToOrtho(false, width, height);
 	}
 	
 	@Override
