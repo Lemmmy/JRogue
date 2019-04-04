@@ -9,32 +9,34 @@ import jr.dungeon.items.HasMaterial;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemRendererSword extends ItemRenderer {
-	private List<TextureRegion> images = new ArrayList<>();
-	private List<TextureRegion> imagesDrawable = new ArrayList<>();
+	private String fileNamePrefix;
+	protected Map<Material, TextureRegion> images = new HashMap<>();
 	
-	public ItemRendererSword(int sheetX, int sheetY) {
-		for (int i = 0; i < 9; i++) {
-			images.add(getImageFromSheet("textures/items.png", sheetX + i, sheetY));
-			imagesDrawable.add(ImageLoader.getImageFromSheet(
-					"textures/items.png",
-				sheetX + i,
-				sheetY,
-				ItemMap.ITEM_WIDTH,
-				ItemMap.ITEM_HEIGHT,
-				false
-			));
+	public ItemRendererSword(String fileNamePrefix) {
+		this.fileNamePrefix = fileNamePrefix;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		for (Material material : Material.values()) {
+			String materialName = MaterialMap.valueOf(material.getName()).getFileName();
+			String fileName = fileNamePrefix + "_" + materialName;
+			
+			assets.textures.loadPacked(itemFile(fileName), t -> images.put(material, t));
 		}
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect) {
-		return getImageFromMaterial(((HasMaterial) item).getMaterial(), true);
+		return getImageFromMaterial(((HasMaterial) item).getMaterial());
 	}
 	
 	@Override
@@ -42,18 +44,13 @@ public class ItemRendererSword extends ItemRenderer {
 		drawItem(batch, getTextureRegion(dungeon, itemStack, item, reflect), x, y, reflect);
 	}
 	
-	private TextureRegion getImageFromMaterial(Material material, boolean flipped) {
-		int i = material.ordinal();
-		
-		if (flipped) {
-			return images.get(i);
-		} else {
-			return imagesDrawable.get(i);
-		}
+	private TextureRegion getImageFromMaterial(Material material) {
+		return images.get(material);
 	}
 	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(getImageFromMaterial(((HasMaterial) item).getMaterial(), false));
+		return new TextureRegionDrawable(getImageFromMaterial(((HasMaterial) item).getMaterial()));
 	}
+	
 }

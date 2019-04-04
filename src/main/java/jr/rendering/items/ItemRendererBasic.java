@@ -11,7 +11,6 @@ import jr.rendering.assets.Assets;
 
 public class ItemRendererBasic extends ItemRenderer {
 	private TextureRegion image;
-	private TextureRegion imageDrawable;
 	
 	private String fileName;
 	
@@ -24,13 +23,6 @@ public class ItemRendererBasic extends ItemRenderer {
 		super.onLoad(assets);
 		
 		assets.textures.loadPacked(itemFile(fileName), t -> image = t);
-		assets.textures.loadPacked(itemFile(fileName), t -> {
-			imageDrawable = new TextureRegion(t);
-			imageDrawable.flip(false, false);
-			// TODO: it seems that all entities and tiles are flipped, but items when drawn in the GUI are not.
-			//       the new asset system currently does not flip any textureregions when packed, so this could be
-			//       problematic.
-		});
 	}
 	
 	@Override
@@ -45,6 +37,6 @@ public class ItemRendererBasic extends ItemRenderer {
 	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(imageDrawable);
+		return new TextureRegionDrawable(image);
 	}
 }

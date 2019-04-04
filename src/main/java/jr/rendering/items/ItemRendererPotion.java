@@ -9,23 +9,32 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
+import jr.rendering.assets.Assets;
 import jr.rendering.utils.CompositeDrawable;
-import jr.rendering.utils.ImageLoader;
 
 public class ItemRendererPotion extends ItemRenderer {
-	private final TextureRegion fluidTex, bottleTex;
-	private final TextureRegionDrawable fluidDrawable, bottleDrawable;
+	private final String fluidFileName, bottleFileName;
+	private TextureRegion fluidTex, bottleTex;
+	private TextureRegionDrawable fluidDrawable, bottleDrawable;
 	
 	private Color oldColour = new Color();
 	
-	public ItemRendererPotion(int sheetX, int sheetY, int liquidX, int liquidY) {
-		bottleTex = ImageLoader.getImageFromSheet("textures/items.png", sheetX, sheetY);
-		fluidTex = ImageLoader.getImageFromSheet("textures/items.png", liquidX, liquidY);
+	public ItemRendererPotion(String fluidFileName, String bottleFileName) {
+		this.fluidFileName = fluidFileName;
+		this.bottleFileName = bottleFileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		fluidDrawable = new TextureRegionDrawable(ImageLoader
-			.getImageFromSheet("textures/items.png", liquidX, liquidY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
-		bottleDrawable = new TextureRegionDrawable(ImageLoader
-			.getImageFromSheet("textures/items.png", sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
+		assets.textures.loadPacked(itemFile(fluidFileName), t -> {
+			fluidTex = t; fluidDrawable = new TextureRegionDrawable(t);
+		});
+		
+		assets.textures.loadPacked(itemFile(bottleFileName), t -> {
+			bottleTex = t; bottleDrawable = new TextureRegionDrawable(t);
+		});
 	}
 	
 	@Override

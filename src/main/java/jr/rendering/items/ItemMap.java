@@ -22,9 +22,9 @@ public enum ItemMap {
 	APPEARANCE_POTATO_RAW("potato"),
 	
 	APPEARANCE_STAFF("staff"),
-	APPEARANCE_DAGGER(new ItemRendererSword(18, 2)),
-	APPEARANCE_SHORTSWORD(new ItemRendererSword(0, 2)),
-	APPEARANCE_LONGSWORD(new ItemRendererSword(9, 2)),
+	APPEARANCE_DAGGER(new ItemRendererSword("dagger")),
+	APPEARANCE_SHORTSWORD(new ItemRendererSword("shortsword")),
+	APPEARANCE_LONGSWORD(new ItemRendererSword("longsword")),
 	
 	APPEARANCE_BOW("bow"),
 	APPEARANCE_ARROW("arrow"),
@@ -43,7 +43,7 @@ public enum ItemMap {
 	APPEARANCE_GEM_PINK("gem_pink"),
 	APPEARANCE_GEM_BLACK("gem_black"),
 	
-	APPEARANCE_SPELLBOOK(new ItemRendererRandom(1, 6, 9)),
+	APPEARANCE_SPELLBOOK(new ItemRendererRandom("spellbooks", 9)),
 	
 	APPEARANCE_POTION_EMPTY("potion"),
 	APPEARANCE_POTION_LABEL_EMPTY("potion_label"),
@@ -51,11 +51,11 @@ public enum ItemMap {
 	APPEARANCE_POTION_CORK_LABEL_EMPTY("potion_cork_label"),
 	APPEARANCE_POTION_FAT_EMPTY("potion_fat"),
 	
-	APPEARANCE_POTION(new ItemRendererPotion(10, 6, 15, 6)),
-	APPEARANCE_POTION_LABEL(new ItemRendererPotion(11, 6, 15, 6)),
-	APPEARANCE_POTION_CORK(new ItemRendererPotion(12, 6, 15, 6)),
-	APPEARANCE_POTION_CORK_LABEL(new ItemRendererPotion(13, 6, 15, 6)),
-	APPEARANCE_POTION_FAT(new ItemRendererPotion(14, 6, 16, 6)),
+	APPEARANCE_POTION(new ItemRendererPotion("potion", "potion_liquid")),
+	APPEARANCE_POTION_LABEL(new ItemRendererPotion("potion_label", "potion_liquid")),
+	APPEARANCE_POTION_CORK(new ItemRendererPotion("potion_cork", "potion_liquid")),
+	APPEARANCE_POTION_CORK_LABEL(new ItemRendererPotion("potion_cork_label", "potion_liquid")),
+	APPEARANCE_POTION_FAT(new ItemRendererPotion("potion_fat", "potion_fat_liquid")),
 	
 	APPEARANCE_THERMOMETER("thermometer");
 	

@@ -7,28 +7,28 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
 
 public class ItemRendererRandom extends ItemRenderer {
+	private String fileName;
 	protected TextureRegion[] images;
-	protected TextureRegion[] imagesDrawable;
-	private int count;
 	
-	public ItemRendererRandom(int sheetX, int sheetY, int count) {
-		images = new TextureRegion[count];
-		imagesDrawable = new TextureRegion[count];
-		this.count = count;
+	public ItemRendererRandom(String fileName, int count) {
+		this.fileName = fileName;
+		this.images = new TextureRegion[count];
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		for (int i = 0; i < count; i++) {
-			images[i] = getImageFromSheet("textures/items.png", sheetX + i, sheetY);
-			imagesDrawable[i] = ImageLoader
-				.getImageFromSheet("textures/items.png", sheetX + i, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
-		}
+		assets.textures.loadPacked(itemFile(fileName), t -> ImageUtils.loadSheet(t, images, images.length, 1));
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect) {
-		return images[item.getVisualID() % count];
+		return images[item.getVisualID() % images.length];
 	}
 	
 	@Override
@@ -38,6 +38,6 @@ public class ItemRendererRandom extends ItemRenderer {
 	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(imagesDrawable[item.getVisualID() % count]);
+		return new TextureRegionDrawable(images[item.getVisualID() % images.length]);
 	}
 }
