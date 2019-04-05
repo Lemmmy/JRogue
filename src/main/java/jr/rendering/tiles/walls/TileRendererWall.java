@@ -105,7 +105,7 @@ public class TileRendererWall extends TileRenderer {
 		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
 		
 		if (t != null) {
-			drawTile(batch, t, x, y + 1);
+			drawTile(batch, t, x, y - 1);
 		}
 		
 		if (isTopHorizontal(dungeon, x, y) && x % 2 != 0) {
