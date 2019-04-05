@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.rendering.assets.Assets;
+import jr.rendering.assets.Textures;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -13,7 +14,7 @@ public class TileRendererBasic extends TileRenderer {
 	
 	/**
 	 * @param fileName The file name of the texture to load. It is automatically loaded from the {@code textures/tiles/}
-	 *                 directory, and suffixed with {@code .png}. {@see {@link tileFile(String) }}
+	 *                 directory, and suffixed with {@code .png}. {@see {@link Textures#tileFile(String) }}
 	 */
 	public TileRendererBasic(String fileName) {
 		this.fileName = fileName;

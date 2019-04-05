@@ -24,8 +24,7 @@ void main() {
 	vec4 texel = texture2D(u_texture, nt);
 
 	vec2 fc = (gl_FragCoord.xy - u_tilePositionScreen) / u_tileSizeScreen;
-	float fy = 1.0 - fc.y;
-	float fade = u_fadeAmplitude * fy * fy + u_fadeBase;
+	float fade = u_fadeAmplitude * fc.y * fc.y + u_fadeBase;
 
 	gl_FragColor = v_colour * vec4(texel.rgb, texel.a * fade);
 }
