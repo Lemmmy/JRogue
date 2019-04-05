@@ -36,9 +36,7 @@ public abstract class Room {
 	private int height;
 	
 	/***
-	 * List of rooms this room should be connected to.
-	 *
-	 * @see GeneratorRooms#graphRooms()
+	 * List of rooms this room should be connected to in the room graph.
 	 */
 	private List<Room> touching = new LinkedList<>();
 	
@@ -78,12 +76,11 @@ public abstract class Room {
 	}
 	
 	/**
-	 * Add a room to the list of rooms this room should be connected to during the
-	 * {@link GeneratorRooms#graphRooms() graphing step}.
+	 * Add a room to the list of rooms this room is connected to in the room graph.
 	 *
 	 * @param room The other room this room should be connected to.
 	 *
-	 * @return <tt>true</tt> if the collection changed as a result of this call (as specified by
+	 * @return {@code true} if the collection changed as a result of this call (as specified by
 	 * {@link java.util.Collection#add(Object)}.
 	 */
 	public boolean addTouching(Room room) {
@@ -97,7 +94,7 @@ public abstract class Room {
 	 *
 	 * @param point The connection point to add.
 	 *
-	 * @return <tt>true</tt> if the collection changed as a result of this call (as specified by
+	 * @return {@code true} if the collection changed as a result of this call (as specified by
 	 * {@link java.util.Collection#add(Object)}.
 	 */
 	public boolean addConnectionPoint(GeneratorRooms.ConnectionPoint point) {

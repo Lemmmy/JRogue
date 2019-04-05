@@ -19,8 +19,8 @@ public class EventSystem {
 	private final Set<EventListener> listeners = new HashSet<>();
 	
 	/**
-	 * List of {@link Event}s to be sent to {@link EventListener}s with the flag
-	 * {@link EventHandler#invocationTime()} set to {@link EventInvocationTime#TURN_COMPLETE}.
+	 * List of {@link Event}s to be sent to {@link EventListener}s with the flag {@link EventHandler#invocationTime()}
+	 * set to {@link EventInvocationTime#TURN_COMPLETE}.
 	 */
 	private final List<Event> eventQueueNextTurn = new LinkedList<>();
 	
@@ -30,6 +30,7 @@ public class EventSystem {
 	
 	/**
 	 * Adds an event listener to this dungeon.
+	 *
 	 * @param listener The event listener to add.
 	 */
 	public void addListener(EventListener listener) {
@@ -38,6 +39,7 @@ public class EventSystem {
 	
 	/**
 	 * Removes an event listener from this dungeon.
+	 *
 	 * @param listener The event listener to remove.
 	 */
 	public void removeListener(EventListener listener) {
@@ -54,8 +56,8 @@ public class EventSystem {
 	
 	/**
 	 * Triggers a dungeon event, notifying all listeners.
-	 * @param event The event to trigger.
 	 *
+	 * @param event The event to trigger.
 	 */
 	public void triggerEvent(Event event) {
 		eventQueueNextTurn.add(event);
@@ -64,8 +66,9 @@ public class EventSystem {
 	
 	/**
 	 * Triggers a dungeon event, notifying all listeners.
+	 *
 	 * @param event The event to trigger.
-	 * @param invocationTime When to trigger the event. <code>IMMEDIATELY</code> to trigger it right now or <code>TURN_COMPLETE</code> to delay it to the next turn.
+	 * @param invocationTime When to trigger the event. {@code IMMEDIATELY} to trigger it right now or {@code TURN_COMPLETE} to delay it to the next turn.
 	 */
 	public void triggerEvent(Event event, EventInvocationTime invocationTime) {
 		Set<EventHandlerMethodInstance> handlers = new HashSet<>();

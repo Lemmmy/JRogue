@@ -174,6 +174,8 @@ public class GameAdapter extends Game {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
+		if (width < 1 || height < 1) return;
+		
 		if (screen != null) screen.resize(width, height);
 		if (newScreen != null) newScreen.resize(width, height);
 		

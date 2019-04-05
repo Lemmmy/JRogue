@@ -63,10 +63,11 @@ public class Player extends EntityLiving {
 	
 	@Expose @Getter @Setter private boolean godmode = false;
 	
+	// TODO: ability for multiple familiars, and for any entity to have familiars (not just players)
+	@Getter private EntityReference<Familiar> familiar = new EntityReference<>();
+	
 	public PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
 	private PlayerDefaultEvents defaultEvents = new PlayerDefaultEvents();
-	
-	@Getter @Setter private Familiar familiar;
 	
 	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
 		super(dungeon, level, x, y, 1);
@@ -129,7 +130,7 @@ public class Player extends EntityLiving {
 			spawnPoint = RandomUtils.randomFrom(availableSpawnTiles).getPosition();
 		}
 		
-		QuickSpawn.spawnClass(familiarClass, getLevel(), spawnPoint.getX(), spawnPoint.getY());
+		familiar.set(QuickSpawn.spawnClass(familiarClass, getLevel(), spawnPoint.getX(), spawnPoint.getY()));
 	}
 	
 	@Override

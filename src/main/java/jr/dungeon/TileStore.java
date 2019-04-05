@@ -167,6 +167,7 @@ public class TileStore implements LevelStore {
 	}
 	
 	public void triggerTileSetEvent(Tile tile, TileType oldType, TileType newType) {
+		if (eventsSuppressed) return;
 		level.getDungeon().eventSystem.triggerEvent(new TileChangedEvent(tile, oldType, newType));
 	}
 

@@ -17,8 +17,7 @@ public class ActionEat extends Action {
 	 * Eat action. Takes 1 turn to consume a part of a comestible.
 	 *
 	 * @param item The comestible to eat.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionEat(ItemComestible item, ActionCallback callback) {
 		super(callback);

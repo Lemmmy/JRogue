@@ -48,7 +48,7 @@ public class PlayerDefaultEvents implements EventListener {
 				}
 				
 				player.setAction(new ActionKick(new VectorInt(dx, dy), null));
-				player.getDungeon().turnSystem.turn(player.getDungeon());
+				player.getDungeon().turnSystem.turn();
 				
 				if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
 					player.getDungeon().turnSystem.setDoingBulkAction(false);

@@ -49,7 +49,7 @@ public class Dungeon implements Serialisable, Messenger {
 	/**
 	 * The 'GAME' log level.
 	 */
-	private static org.apache.logging.log4j.Level gameLogLevel;
+	private static org.apache.logging.log4j.Level gameLogLevel = org.apache.logging.log4j.Level.forName("GAME", 350);
 	
 	/**
 	 * The version of the game this dungeon was last saved on
@@ -114,7 +114,7 @@ public class Dungeon implements Serialisable, Messenger {
 	}
 	
 	public void initialise() {
-		gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
+		// gameLogLevel = org.apache.logging.log4j.Level.getLevel("GAME");
 	}
 	
 	@Override
@@ -145,9 +145,19 @@ public class Dungeon implements Serialisable, Messenger {
 	}
 
 	/**
-	 * Creates a new level.
+	 * Creates a new {@link Level}. The {@link DungeonGenerator generatorClass} is invoked to generate the level. The
+	 * {@link Tile source tile} is the tile that the {@link Player} came from before entering this new level. The
+	 * generator will typically generate a staircase or ladder at the beginning, so this source tile is used to know
+	 * where to send the player <em>back</em> to when they climb back up.
+	 *
+	 * For alternative  types of generation, such as from traps, you may want to pass something different to the source
+	 * tile. For example, if you have a broken floor trap, where the player drops into the level below when they step
+	 * into it, you will instead want to search for the natural downstairs in the source level and use that as the
+	 * source tile, so that when the player climbs back up the stairs, they arrive at the source level's downstairs
+	 * rather than back at the trap.
+	 *
 	 * @param depth The depth the level is located at.
-	 * @param sourceTile The tile the player came from (usually a staircase).
+	 * @param sourceTile The {@link Tile} the {@link Player} came from (usually a staircase).
 	 * @param generatorClass The {@link jr.dungeon.generators.DungeonGenerator} to use to generate this level.
 	 * @return The generated level.
 	 */
@@ -187,11 +197,9 @@ public class Dungeon implements Serialisable, Messenger {
 				settings.getPlayerName(),
 				settings.getRole()
 			);
-		} else {
-			player.setPosition(level.getSpawnX(), level.getSpawnY());
 		}
 		
-		player.setLevel(level);
+		player.setLevel(level, Point.getPoint(level.getSpawnX(), level.getSpawnY()));
 		level.entityStore.addEntity(player);
 		
 		eventSystem.triggerEvent(new LevelChangeEvent(level));
@@ -200,32 +208,18 @@ public class Dungeon implements Serialisable, Messenger {
 	}
 
 	/**
-	 * Switches the level to <code>level</code>.
-	 * @param level The level to switch to.
-	 * @param x The x coordinate to spawn the player at.
-	 * @param y The y coordinate to spawn the player at.
-	 */
-	public void changeLevel(Level level, int x, int y) {
-		this.level = level;
-		
-		getPlayer().setLevel(level);
-		getPlayer().setPosition(x, y);
-		
-		turnSystem.turn(true);
-		
-		eventSystem.triggerEvent(new LevelChangeEvent(level));
-		
-		level.entityStore.getEntities().forEach(e -> eventSystem.triggerEvent(new EntityAddedEvent(e, false)));
-	}
-	
-	
-	/**
-	 * Switches the level to <code>level</code>.
+	 * Switches the level to {@code level}.
+	 *
 	 * @param level The level to switch to.
 	 * @param point The position to spawn the player at.
 	 */
 	public void changeLevel(Level level, Point point) {
-		changeLevel(level, point.getX(), point.getY());
+		getPlayer().setLevel(this.level = level, point);
+		
+		turnSystem.turn(true);
+		
+		eventSystem.triggerEvent(new LevelChangeEvent(level));
+		level.entityStore.getEntities().forEach(e -> eventSystem.triggerEvent(new EntityAddedEvent(e, false)));
 	}
 	
 	@Override
@@ -235,7 +229,8 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Displays a message in the dungeon's event log.
-	 * All messages are formatted using {@link java.lang.String}'s <code>format</code> method.
+	 * All messages are formatted using {@link java.lang.String}'s {@code format} method.
+	 *
 	 * @param s The format used for the message.
 	 * @param objects The format parameters.
 	 */
@@ -249,6 +244,7 @@ public class Dungeon implements Serialisable, Messenger {
 
 	/**
 	 * Triggers a {@link Prompt}.
+	 *
 	 * @param prompt The prompt to trigger.
 	 */
 	public void prompt(Prompt prompt) {
@@ -258,6 +254,7 @@ public class Dungeon implements Serialisable, Messenger {
 
 	/**
 	 * Responds to a prompt.
+	 *
 	 * @param response The char response to send.
 	 */
 	public void promptRespond(char response) {
@@ -301,6 +298,7 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Make a wish, used in debug mode.
+	 *
 	 * @see jr.dungeon.wishes.Wishes
 	 * @param wish The wish to make.
 	 */
@@ -343,6 +341,7 @@ public class Dungeon implements Serialisable, Messenger {
 	
 	/**
 	 * Sets the level for internal usage from the {@link DungeonSerialiser}. Do not use this method.
+	 *
 	 * @param level The level to set as the current level.
 	 */
 	public void setLevelInternal(Level level) {

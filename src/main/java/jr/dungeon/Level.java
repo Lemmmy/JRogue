@@ -44,6 +44,7 @@ public class Level implements Serialisable, Debuggable {
 
 	/**
 	 * Constructs a level with a random UUID.
+	 *
 	 * @param dungeon The dungeon this level should belong to.
 	 * @param width The width of this level in tiles.
 	 * @param height The height of this level in tiles.
@@ -55,6 +56,7 @@ public class Level implements Serialisable, Debuggable {
 
 	/**
 	 * Constructs a level with a specified UUID.
+	 *
 	 * @param uuid The UUID to use for this level.
 	 * @param dungeon The dungeon this level should belong to.
 	 * @param width The width of this level in tiles.
@@ -91,6 +93,7 @@ public class Level implements Serialisable, Debuggable {
 
 	/**
 	 * Generates the level.
+	 *
 	 * @param sourceTile The tile the player entered the level from. Usually a staircase.
 	 * @param generatorClass The {@link jr.dungeon.generators.DungeonGenerator} to generate the level with.
 	 */
@@ -99,6 +102,8 @@ public class Level implements Serialisable, Debuggable {
 		
 		do {
 			initialise(dungeon);
+			
+			tileStore.setEventsSuppressed(true);
 			
 			turnCreated = dungeon.turnSystem.getTurn();
 			
@@ -128,6 +133,7 @@ public class Level implements Serialisable, Debuggable {
 	
 	/**
 	 * Sets the level's spawn point in tile coordinates. This is where the player will appear when entering the level.
+	 *
 	 * @param x The x coordinate of the spawn point.
 	 * @param y The y coordinate of the spawn point.
 	 */

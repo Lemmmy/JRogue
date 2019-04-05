@@ -14,6 +14,6 @@ public class WishTile implements Wish {
 	@Override
 	public void grant(Dungeon dungeon, Player player, String... args) {
 		dungeon.getLevel().tileStore.setTileType(player.getX(), player.getY(), tile);
-		dungeon.turnSystem.turn(dungeon);
+		dungeon.turnSystem.turn();
 	}
 }

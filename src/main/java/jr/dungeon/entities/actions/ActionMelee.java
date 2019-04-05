@@ -24,8 +24,7 @@ public class ActionMelee extends Action {
 	 * @param victim The entity that was attacked.
 	 * @param damageSource The source of the damage. See {@link DamageSource}.
 	 * @param damage The amount of damage to deal.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionMelee(EntityLiving victim, DamageSource damageSource, int damage, ActionCallback callback) {
 		super(callback);

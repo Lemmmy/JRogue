@@ -5,8 +5,7 @@ import jr.dungeon.entities.containers.Container;
 import java.util.Optional;
 
 /**
- * This interface is implemented by objects that can have a container associated
- * with them.
+ * This interface is implemented by objects that can have a container associated with them.
  */
 public interface ContainerOwner {
 	/**
@@ -15,7 +14,7 @@ public interface ContainerOwner {
 	Optional<Container> getContainer();
 
 	/**
-	 * @return true if calling <code>getContainer</code> will definitely return a value.
+	 * @return Whether or not {@link #getContainer()} will return a value.
 	 */
 	default boolean isContainerAvailable() {
 		return getContainer().isPresent();

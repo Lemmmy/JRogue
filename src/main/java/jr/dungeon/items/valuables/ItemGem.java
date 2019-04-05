@@ -20,7 +20,7 @@ public class ItemGem extends Item {
 	@Expose private Gem gem;
 	@Expose private boolean worthless = false;
 	
-	public ItemGem() { // unserialisation constructor
+	public ItemGem() { // deserialisation constructor
 		super();
 		
 		addAspect(new AspectGemValue());

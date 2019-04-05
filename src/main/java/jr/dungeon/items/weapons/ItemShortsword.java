@@ -11,7 +11,7 @@ import jr.language.Noun;
 
 @Registered(id="itemShortsword")
 public class ItemShortsword extends ItemSword {
-	public ItemShortsword() { // unserialisation constructor
+	public ItemShortsword() { // deserialisation constructor
 		super();
 	}
 	

@@ -1,10 +1,12 @@
 package jr.dungeon.wishes;
 
+import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.actions.ActionTeleport;
 import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
@@ -37,6 +39,7 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
+import jr.utils.Profiler;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -75,11 +78,15 @@ public class Wishes {
 				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
+		registerWish("(?:discover|see all)", (d, p, a) -> {
+			p.getLevel().visibilityStore.seeAll();
+			p.getLevel().lightStore.buildLight(false);
+		});
 		registerWish("(?:us|upstairs)", (d, p, a) ->
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
 				.findFirst().ifPresent(t -> {
-					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.setPosition(t.getPosition());
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -87,7 +94,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst().ifPresent(t -> {
-					p.defaultVisitors.teleport(t.getX(), t.getY());
+					p.setPosition(t.getPosition());
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -110,7 +117,7 @@ public class Wishes {
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.setPosition(t.getPosition());
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -124,7 +131,7 @@ public class Wishes {
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.defaultVisitors.teleport(t.getX(), t.getY());
+						p.setPosition(t.getPosition());
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -133,7 +140,7 @@ public class Wishes {
 					Arrays.stream(p.getLevel().tileStore.getTiles())
 						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 						.findFirst().ifPresent(t -> {
-							p.defaultVisitors.teleport(t.getX(), t.getY());
+							p.setPosition(t.getPosition());
 							p.defaultVisitors.climbDown();
 							d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 						});
@@ -231,6 +238,10 @@ public class Wishes {
 		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
 		
 		registerWish("cat", new WishSpawn<>(Cat.class));
+		registerWish("summon familiar", (d, p, a) -> p.getFamiliar().ifPresent(p.getLevel(), f -> {
+			f.setAction(new ActionTeleport(p.getPosition(), null));
+			d.turnSystem.turn();
+		}));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
@@ -250,7 +261,7 @@ public class Wishes {
 
 			if (item != null && p.getContainer().isPresent()) {
 				p.getContainer().get().add(new ItemStack(item));
-				d.turnSystem.turn(d);
+				d.turnSystem.turn();
 			}
 		});
 
@@ -329,9 +340,15 @@ public class Wishes {
 	public boolean makeWish(Dungeon dungeon, String wish) {
 		String[] wishes = wish.split("\\s*;\\s*");
 
-		return Arrays.stream(wishes)
+		long start = System.nanoTime();
+		boolean result = Arrays.stream(wishes)
 			.filter(w -> !w.isEmpty())
 			.map(w -> wish(dungeon, w))
 			.reduce(true, (a, b) -> a && b);
+		long end = System.nanoTime();
+		
+		JRogue.getLogger().log(Profiler.LEVEL, String.format("Wish %s took %,d ms", wish, (end - start) / 1_000_000));
+		
+		return result;
 	}
 }

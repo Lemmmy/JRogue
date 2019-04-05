@@ -11,11 +11,11 @@ import jr.dungeon.Level;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
- * Stores a reference to an {@link Entity} within a level via its {@link UUID}. This is primarily used
- * for serialisation. The entity will be serialised as just a {@link JsonPrimitive JSON string} with
- * the UUID:
+ * Stores a reference to an {@link Entity} within a level via its {@link UUID}. This is primarily used or serialisation.
+ * The entity will be serialised as just a {@link JsonPrimitive JSON string} with the UUID:
  *
  * <pre>
  * {
@@ -23,8 +23,8 @@ import java.util.UUID;
  * }
  * </pre>
  *
- * When evaluated using {@link #get}, it will search the given {@link Dungeon} or {@link Level} for
- * the entity, and cache it for later.
+ * When evaluated using {@link #get}, it will search the given {@link Dungeon} or {@link Level} for the entity, and
+ * cache it for later.
  */
 @JsonAdapter(EntityReference.EntityReferenceTypeAdapter.class)
 public class EntityReference<T extends Entity> {
@@ -56,12 +56,11 @@ public class EntityReference<T extends Entity> {
 	public EntityReference() {}
 	
 	/**
-	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated,
-	 * it will search every {@link Level} in the {@link Dungeon} for the entity. If it is not found,
-	 * it will return <code>null</code>.
+	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated, it will search
+	 * every {@link Level} in the {@link Dungeon} for the entity. If it is not found, it will return {@code null}.
 	 *
 	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
-	 * @return The {@link Entity} if one was found, or else <code>null</code>.
+	 * @return The {@link Entity} if one was found, or else {@code null}.
 	 */
 	public T get(Dungeon dungeon) {
 		if (uuid == null) return null;
@@ -76,12 +75,11 @@ public class EntityReference<T extends Entity> {
 	}
 	
 	/**
-	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated,
-	 * it will search the given {@link Level} for it. If it is not found, it will return
-	 * <code>null</code>.
+	 * Return the value of the {@link Entity} reference. If the reference has not yet been evaluated, it will search the
+	 * given {@link Level} for it. If it is not found, it will return {@code null}.
 	 *
 	 * @param level The {@link Level} to search for the {@link Entity} in.
-	 * @return The {@link Entity} if one was found, or else <code>null</code>.
+	 * @return The {@link Entity} if one was found, or else {@code null}.
 	 */
 	public T get(Level level) {
 		if (uuid == null) return null;
@@ -103,6 +101,7 @@ public class EntityReference<T extends Entity> {
 	
 	/**
 	 * Sets the value of the {@link Entity} reference to an unevaluated entity {@link UUID}.
+	 *
 	 * @param uuid The {@link UUID} to set the reference to.
 	 */
 	public void set(UUID uuid) {
@@ -110,8 +109,8 @@ public class EntityReference<T extends Entity> {
 	}
 	
 	/**
-	 * @return Whether or not a UUID for this entity is set. This does not necessarily mean
-	 * 	       that the {@link Entity} definitely exists.
+	 * @return Whether or not a UUID for this entity is set. This does not necessarily mean that the {@link Entity}
+	 *         definitely exists.
 	 */
 	public boolean isSet() {
 		return this.uuid != null;
@@ -126,15 +125,13 @@ public class EntityReference<T extends Entity> {
 	}
 	
 	/**
-	 * Return the value of the {@link Entity} reference if it is set and can be found. If the
-	 * reference has not yet been evaluated, it will search every {@link Level} in the
-	 * {@link Dungeon} for the entity. If it is not found, it will return, it will return
-	 * <code>other</code>.
+	 * Return the value of the {@link Entity} reference if it is set and can be found. If the reference has not yet been
+	 * evaluated, it will search every {@link Level} in the {@link Dungeon} for the entity. If it is not found, it will
+	 * return {@code other}.
 	 *
 	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
-	 * @param other the value to be returned if there is no value present, may be
-	 *              <code>null</code>.
-	 * @return The {@link Entity} if one was found, or else <code>other</code>.
+	 * @param other The value to be returned if there is no value present, may be {@code null}.
+	 * @return The {@link Entity} if one was found, or else {@code other}.
 	 */
 	public T orElse(Dungeon dungeon, T other) {
 		if (uuid == null) return other;
@@ -143,19 +140,41 @@ public class EntityReference<T extends Entity> {
 	}
 	
 	/**
-	 * Return the value of the {@link Entity} reference if it is set and can be found. If the
-	 * reference has not yet been evaluated, it will search the given {@link Level} for it.
-	 * If it is not found, it will return, it will return <code>other</code>.
+	 * Return the value of the {@link Entity} reference if it is set and can be found. If the reference has not yet been
+	 * evaluated, it will search the given {@link Level} for it. If it is not found, it will return {@code other}.
 	 *
 	 * @param level The {@link Level} to search for the {@link Entity} in.
-	 * @param other the value to be returned if there is no value present, may be
-	 *              <code>null</code>.
-	 * @return The {@link Entity} if one was found, or else <code>other</code>.
+	 * @param other The value to be returned if there is no value present, may be {@code null}.
+	 * @return The {@link Entity} if one was found, or else {@code other}.
 	 */
 	public T orElse(Level level, T other) {
 		if (uuid == null) return other;
 		T got = get(level);
 		return got != null ? got : other;
+	}
+	
+	/**
+	 * If an {@link Entity} is {@link #isSet set}, and can be found, invoke the specified consumer with the entity's
+	 * value, otherwise do nothing.
+	 *
+	 * @param level The {@link Level} to search for the {@link Entity} in.
+	 * @param consumer The {@link Consumer} to be executed if the {@link Entity} is present and exists.
+	 */
+	public void ifPresent(Level level, Consumer<T> consumer) {
+		T got = get(level);
+		if (got != null) consumer.accept(got);
+	}
+	
+	/**
+	 * If an {@link Entity} is {@link #isSet set}, and can be found, invoke the specified consumer with the entity's
+	 * value, otherwise do nothing.
+	 *
+	 * @param dungeon The {@link Dungeon} to search for the {@link Entity} in.
+	 * @param consumer The {@link Consumer} to be executed if the {@link Entity} is present and exists.
+	 */
+	public void ifPresent(Dungeon dungeon, Consumer<T> consumer) {
+		T got = get(dungeon);
+		if (got != null) consumer.accept(got);
 	}
 	
 	public class EntityReferenceTypeAdapter extends TypeAdapter<EntityReference> {

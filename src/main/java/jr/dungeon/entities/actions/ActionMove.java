@@ -28,8 +28,7 @@ public class ActionMove extends Action {
 	 * Move/walk action.
 	 *
 	 * @param point The position to move to.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionMove(Point point, ActionCallback callback) {
 		this(point.getX(), point.getY(), callback);
@@ -40,8 +39,7 @@ public class ActionMove extends Action {
 	 *
 	 * @param x The X position to move to.
 	 * @param y The Y position to move to.
-	 * @param callback Callback to call when action-related events occur. See
-	 * {@link Action.ActionCallback}.
+	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionMove(int x, int y, ActionCallback callback) {
 		super(callback);

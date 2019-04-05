@@ -46,8 +46,7 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 			.filter(e -> ((ItemComestible) e.getItem()).getStatusEffects(m).isEmpty())
 			.filter(e -> ai.canSee(e))
 			.filter(e -> ai.canReach(e))
-			.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
-			.findFirst()
+			.min(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 			.ifPresent(e -> {
 				if (e.getPosition() == m.getPosition()) {
 					ai.setCurrentState(new StateConsumeComestible(ai, 3, e));

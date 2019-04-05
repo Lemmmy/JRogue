@@ -36,8 +36,8 @@ public class TraitDefendPartner extends AITrait<FamiliarAI> {
 				.filter(e -> ai.canReach(e))
 				.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
 				.findFirst().ifPresent(e -> {
-				ai.getCurrentTarget().set(e);
-				ai.setCurrentState(new StateMeleeAttackTarget(ai, 0));
+					ai.getCurrentTarget().set(e);
+					ai.setCurrentState(new StateMeleeAttackTarget(ai, 0));
 				});
 		}
 	}

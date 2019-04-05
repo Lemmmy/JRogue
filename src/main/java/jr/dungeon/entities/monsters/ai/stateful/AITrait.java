@@ -61,16 +61,14 @@ public abstract class AITrait<T extends StatefulAI> implements Serialisable, Eve
 	}
 	
 	/**
-	 * @return The {@link Monster}'s current {@link Dungeon}, or <code>null</code> if the monster
-	 *         or {@link AI} is null.
+	 * @return The {@link Monster}'s current {@link Dungeon}, or {@code null} if the monster or {@link AI} is null.
 	 */
 	public Dungeon getDungeon() {
 		return ai != null ? ai.getDungeon() : null;
 	}
 	
 	/**
-	 * @return The {@link Monster}'s current {@link Level}, or <code>null</code> if the monster
-	 *         or {@link AI} is null.
+	 * @return The {@link Monster}'s current {@link Level}, or {@code null} if the monster or {@link AI} is null.
 	 */
 	public Level getLevel() {
 		return ai != null ? ai.getLevel() : null;

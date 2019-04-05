@@ -44,7 +44,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	private void quaffEntity(Player player, Quaffable quaffable) {
 		player.setAction(new ActionQuaffEntity(quaffable, null));
 		
-		player.getDungeon().turnSystem.turn(player.getDungeon());
+		player.getDungeon().turnSystem.turn();
 	}
 	
 	private void quaffItem(Player player) {
@@ -62,7 +62,7 @@ public class PlayerQuaff extends PlayerItemVisitor {
 					(Action.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
 				);
 				
-				player.getDungeon().turnSystem.turn(player.getDungeon());
+				player.getDungeon().turnSystem.turn();
 			}
 		);
 		

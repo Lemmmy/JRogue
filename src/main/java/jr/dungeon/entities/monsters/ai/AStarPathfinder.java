@@ -28,12 +28,12 @@ public class AStarPathfinder {
 	 * @param ty The destination/target Y position.
 	 * @param maxSearchDistance The maximum distance allowed to search for a path within.
 	 * @param allowDiagonalMovement Whether or not moving diagonally should be allowed (i.e. moving on both axis
-	 *                                 simultaneously)
+	 *                              simultaneously)
 	 * @param avoidTiles A List of {@link TileType TileTypes} to avoid. The returned Path will never contain one of
-	 *                      these tiles unless it is the source tile.
+	 *                   these tiles unless it is the source tile.
 	 *
 	 * @return The {@link Path} that was found, or null if one wasn't found within the maximum search distance, or it
-	 * was not possible to reach the target position.
+	 *         was not possible to reach the target position.
 	 */
 	public Path findPath(Level level,
 						 int sx,
@@ -185,8 +185,8 @@ public class AStarPathfinder {
 	
 	/**
 	 * Calculates the <a href="https://en.wikipedia.org/wiki/Heuristic_(computer_science)">heuristic</a> cost of
-	 * moving from tile <code>A</code> to tile <code>B</code>. Uses the octile distance heuristic, using 1 as a cost
-	 * for cardinal movements, and <code>sqrt(2)</code> (<code>~1.41</code>) for diagonal movements.
+	 * moving from tile {@code A} to tile {@code B}. Uses the octile distance heuristic, using 1 as a cost
+	 * for cardinal movements, and {@code sqrt(2)} ({@code ~1.41}) for diagonal movements.
 	 *
 	 * @param level The @link Level} to look at tiles and calculate the cost within.
 	 * @param ax The source X position.
@@ -198,7 +198,7 @@ public class AStarPathfinder {
 	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Heuristic_(computer_science)">Wikipedia article on Heuristics</a>
 	 * @see <a href="http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html">Page 2 of Amit's Thoughts on
-	 * Pathfinding, describing A*'s use of Heuristics in game programming.</a>
+	 *      Pathfinding, describing A*'s use of Heuristics in game programming.</a>
 	 * @see <a href="http://movingai.com/astar.html">Nathan Sturtevant's article on A* tie-breaking.</a>
 	 *
 	 * @see Utils#octileDistance(int, int, int, int, float, float)
