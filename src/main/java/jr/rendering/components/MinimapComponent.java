@@ -45,7 +45,7 @@ public class MinimapComponent extends RendererComponent {
 	private OrthographicCamera minimapCamera;
 	
 	private int tileWidth, tileHeight;
-	private int xOffset;
+	private int xOffset, yOffset;
 	
 	private TextureRegion iconPoint, iconUp, iconDown;
 	
@@ -82,8 +82,9 @@ public class MinimapComponent extends RendererComponent {
 	
 	@Override
 	public void resize(int width, int height) {
-		minimapCamera.setToOrtho(true, width, height);
+		minimapCamera.setToOrtho(false, width, height);
 		xOffset = width - level.getWidth() * tileWidth;
+		yOffset = height - level.getHeight() * tileHeight;
 	}
 	
 	@EventHandler
@@ -146,13 +147,13 @@ public class MinimapComponent extends RendererComponent {
 		}
 		
 		mapBatch.setColor(colour.r, colour.g, colour.b, isVisible ? colour.a : colour.a / 3f);
-		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+		mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
 
 		if (isVisible) {
 			Color lightColour = Utils.colourToGdx(tile.getLightColour(), 1);
 			
 			mapBatch.setColor(lightColour.r, lightColour.g, lightColour.b, 0.5f);
-			mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+			mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
 		}
 	}
 	
@@ -228,7 +229,7 @@ public class MinimapComponent extends RendererComponent {
 		iconBatch.setColor(colour);
 		iconBatch.draw(icon,
 			xOffset + x * tileWidth - icon.getRegionWidth() / 2,
-			y * tileHeight - icon.getRegionHeight() / 2
+			yOffset + y * tileHeight - icon.getRegionHeight() / 2
 		);
 	}
 	
