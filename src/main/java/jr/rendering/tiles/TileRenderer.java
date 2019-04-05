@@ -91,7 +91,7 @@ public abstract class TileRenderer implements UsesAssets {
 			float ty = y * height;
 			
 			if (isDrawingReflection()) {
-				batch.draw(image, tx, ty + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
+				batch.draw(image, tx, ty, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
 			} else {
 				batch.draw(image, tx, ty);
 			}

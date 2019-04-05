@@ -23,7 +23,7 @@ import java.util.List;
 public class TileRendererReflective extends TileRendererBasic {
 	public static void drawReflection(SpriteBatch batch, GameScreen renderer, Dungeon dungeon, int x, int y, @NonNull
 		ReflectionSettings s) {
-		if (y - 1 < 0) return;
+		if (y + 1 < 0) return;
 		
 		ShaderProgram oldShader = batch.getShader();
 		final ShaderProgram reflectionShader = ShaderLoader.getProgram("shaders/reflection");
@@ -36,14 +36,13 @@ public class TileRendererReflective extends TileRendererBasic {
 		reflectionShader.setUniformf("u_fadeBase", s.getFadeBase());
 		
 		Vector3 tps1 = renderer.getCamera().project(new Vector3(x * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0.0f));
-		Vector3 tps2 = renderer.getCamera().project(new Vector3((x + 1) * TileMap.TILE_WIDTH, (y + 1) * TileMap
-			.TILE_HEIGHT, 0.0f));
+		Vector3 tps2 = renderer.getCamera().project(new Vector3((x + 1) * TileMap.TILE_WIDTH, (y + 1) * TileMap.TILE_HEIGHT, 0.0f));
 		reflectionShader.setUniformf("u_tilePositionScreen", tps1.x, tps1.y);
 		reflectionShader.setUniformf("u_tileSizeScreen", tps2.x - tps1.x, tps2.y - tps1.y);
 		
 		reflectionShader.setUniformf("u_time", 0.0f);
 		
-		TileType tileAbove = dungeon.getLevel().tileStore.getTileType(x, y - 1);
+		TileType tileAbove = dungeon.getLevel().tileStore.getTileType(x, y + 1);
 		
 		final boolean doReflect = (tileAbove.getFlags() & TileFlag.DONT_REFLECT) != TileFlag.DONT_REFLECT;
 		final boolean isWall = (tileAbove.getFlags() & TileFlag.WALL) == TileFlag.WALL;
@@ -51,7 +50,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		if (doReflect && isWall) {
 			TileRenderer r = TileMap.valueOf(tileAbove.name()).getRenderer();
 			r.setDrawingReflection(true);
-			r.draw(batch, dungeon, x, y - 1);
+			r.draw(batch, dungeon, x, y + 1);
 			r.setDrawingReflection(false);
 		}
 		
@@ -65,7 +64,7 @@ public class TileRendererReflective extends TileRendererBasic {
 		
 		AnimationProvider animationProvider = renderer.getEntityComponent().getAnimationProvider();
 		
-		List<Entity> entities = dungeon.getLevel().entityStore.getEntitiesAt(x, y - 1);
+		List<Entity> entities = dungeon.getLevel().entityStore.getEntitiesAt(x, y + 1);
 		entities.stream()
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.filter(e -> EntityMap.getRenderer(e.getAppearance()) != null)

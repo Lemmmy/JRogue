@@ -39,7 +39,7 @@ public abstract class EntityRenderer implements UsesAssets {
 			float ey = y * height + 0.01f;
 			
 			if (drawingReflection) {
-				batch.draw(image, ex, ey + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
+				batch.draw(image, ex, ey, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
 			} else {
 				batch.draw(image, ex, ey);
 			}

@@ -19,14 +19,10 @@ public abstract class ItemRenderer implements UsesAssets {
 			if (reflect) {
 				batch.draw(
 					image,
-					x,
-					y + image.getRegionHeight() * 2,
-					0.0f,
-					0.0f,
-					image.getRegionWidth(),
-					image.getRegionHeight(),
-					1.0f,
-					-1.0f,
+					x, y,
+					0.0f, 0.0f,
+					image.getRegionWidth(), image.getRegionHeight(),
+					1.0f, -1.0f,
 					0.0f
 				);
 			} else {

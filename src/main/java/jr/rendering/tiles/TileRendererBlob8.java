@@ -63,7 +63,7 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		atlas = assets.textures.getBlobAtlas();
 		
 		if (fileName != null) {
-			assets.textures.load(blobFile("blob"), t -> loadBlob(new TextureRegion(t), images));
+			assets.textures.load(blobFile(fileName), t -> loadBlob(new TextureRegion(t), images));
 		}
 	}
 	
