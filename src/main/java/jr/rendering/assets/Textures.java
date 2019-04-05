@@ -45,6 +45,10 @@ public class Textures extends AssetHandler<Texture, TextureLoader.TextureParamet
 		return "items/" + fileName + ".png";
 	}
 	
+	public static String hudFile(String fileName) {
+		return "hud/" + fileName + ".png";
+	}
+	
 	@Override
 	protected Class<Texture> getAssetClass() {
 		return Texture.class;

@@ -1,11 +1,14 @@
 package jr.rendering.ui.skin;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import jr.rendering.utils.FontLoader;
 
 @UISkinStyleHandler(priority = 450)
-public class UIFonts implements UISkinStyle {
-	public void add(Skin skin) {
+public class UIFonts extends UISkinStyle {
+	public UIFonts(UISkin skin) {
+		super(skin);
+		
+		// TODO: assetmanager fonts
+		
 		skin.add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true, false));
 		skin.add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false, false));
 		skin.add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true, false));

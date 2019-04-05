@@ -34,7 +34,7 @@ public class WindowBorder extends Dialog {
 		});
 		
 		getTitleTable().getCell(getTitleLabel()).padLeft(-3).padTop(-2);
-		getTitleTable().add(closeButton).size(18, 18).padRight(-4).padTop(-4);
+		getTitleTable().add(closeButton).size(17, 17).padRight(-4).padTop(-4);
 	}
 	
 	public WindowBorder(String title, Skin skin, String styleName, Window owner) {

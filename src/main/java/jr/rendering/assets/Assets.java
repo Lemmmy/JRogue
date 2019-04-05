@@ -7,6 +7,7 @@ import jr.rendering.entities.RoleMap;
 import jr.rendering.items.ItemMap;
 import jr.rendering.particles.ParticleEffectMap;
 import jr.rendering.tiles.TileMap;
+import jr.rendering.ui.skin.UISkin;
 
 import java.util.Arrays;
 
@@ -24,6 +25,7 @@ public class Assets implements Disposable {
 		Arrays.stream(ItemMap.values()).map(ItemMap::getRenderer).forEach(ir -> ir.onLoad(this));
 		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoad(this));
 		Arrays.stream(ParticleEffectMap.values()).forEach(r -> r.onLoad(this));
+		UISkin.getInstance().onLoad(this);
 	}
 	
 	private void loaded() {
@@ -35,6 +37,7 @@ public class Assets implements Disposable {
 		Arrays.stream(ItemMap.values()).map(ItemMap::getRenderer).forEach(ir -> ir.onLoaded(this));
 		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoaded(this));
 		Arrays.stream(ParticleEffectMap.values()).forEach(r -> r.onLoaded(this));
+		UISkin.getInstance().onLoaded(this);
 		
 		textures.afterLoaded();
 		particles.afterLoaded();

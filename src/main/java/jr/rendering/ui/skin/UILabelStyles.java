@@ -2,33 +2,43 @@ package jr.rendering.ui.skin;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import jr.rendering.assets.Assets;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
 import jr.rendering.utils.ImageLoader;
 
 @UISkinStyleHandler(priority = 400)
-public class UILabelStyles implements UISkinStyle {
-	public void add(Skin skin) {
-		addSimpleStyle(skin, "default", "default");
-		addSimpleStyle(skin, "redBackground", "default", "redBackground");
-		addSimpleStyle(skin, "greenBackground", "default", "greenBackground");
-		addSimpleStyle(skin, "large", "large");
-		addSimpleStyle(skin, "windowStyle", "default", Color.WHITE, null);
-		addSimpleStyle(skin, "windowStyleMarkup", "default");
-		addSimpleStyle(skin, "windowStyleLoweredMarkup", "default", null, getLoweredWindowDrawable());
-		addSimpleStyle(skin, "windowStyleRaisedMarkup", "default", null, getRaisedWindowDrawable());
+public class UILabelStyles extends UISkinStyle {
+	public UILabelStyles(UISkin skin) {
+		super(skin);
 	}
 	
-	public void addSimpleStyle(Skin skin, String name, String font) {
-		addSimpleStyle(skin, name, font, null);
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		loadTiledNinePatch(assets, "lowered_background", 1, 1, 1, 1, n -> addSimpleStyle("windowStyleLoweredMarkup", "default", null, n));
+		loadTiledNinePatch(assets, "raised_background", 1, 1, 1, 1, n -> addSimpleStyle("windowStyleRaisedMarkup", "default", null, n));
 	}
 	
-	public void addSimpleStyle(Skin skin, String name, String font, String background) {
-		addSimpleStyle(skin, name, font, null, background != null ? skin.getDrawable(background) : null);
+	@Override
+	public void onLoaded(Assets assets) {
+		addSimpleStyle("default", "default");
+		addSimpleStyle("redBackground", "default", "redBackground");
+		addSimpleStyle("greenBackground", "default", "greenBackground");
+		addSimpleStyle("large", "large");
+		addSimpleStyle("windowStyle", "default", Color.WHITE, null);
+		addSimpleStyle("windowStyleMarkup", "default");
 	}
 	
-	public void addSimpleStyle(Skin skin, String name, String font, Color fontColour, Drawable background) {
+	public void addSimpleStyle(String name, String font) {
+		addSimpleStyle(name, font, null);
+	}
+	
+	public void addSimpleStyle(String name, String font, String background) {
+		addSimpleStyle(name, font, null, background != null ? skin.getDrawable(background) : null);
+	}
+	
+	public void addSimpleStyle(String name, String font, Color fontColour, Drawable background) {
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
 		labelStyle.font = skin.getFont(font);
 		labelStyle.fontColor = fontColour;
