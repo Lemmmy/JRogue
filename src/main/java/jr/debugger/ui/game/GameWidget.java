@@ -37,8 +37,6 @@ public class GameWidget extends Image implements EventListener {
 	private SpriteBatch spriteBatch;
 	private OrthographicCamera camera;
 	
-	private int width, height;
-	
 	@Setter private LevelUtilPopup levelUtilPopup;
 	
 	public GameWidget(DebugUI ui, Skin skin, Dungeon dungeon) {

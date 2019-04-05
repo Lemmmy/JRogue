@@ -10,6 +10,6 @@ public class AnimationItemDrop extends EntityAnimation {
 	
 	@Override
 	public void update(EntityAnimationData data, float t) {
-		data.offsetY -= (float) Math.sin(t * Math.PI) / 2;
+		data.offsetY += (float) Math.sin(t * Math.PI) / 2;
 	}
 }
