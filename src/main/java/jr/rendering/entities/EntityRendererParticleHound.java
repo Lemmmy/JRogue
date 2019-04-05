@@ -29,7 +29,7 @@ public class EntityRendererParticleHound extends EntityRendererBasic {
 	
 	@Override
 	public int getParticleYOffset(Entity entity) {
-		return 10;
+		return 6;
 	}
 	
 	@Override

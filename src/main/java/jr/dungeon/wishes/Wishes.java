@@ -3,6 +3,7 @@ package jr.dungeon.wishes;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.dungeon.TileStore;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
@@ -212,8 +213,12 @@ public class Wishes {
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
 		registerWish("dirt", new WishTile(TileType.TILE_ROOM_DIRT));
 		registerWish("water", new WishTile(TileType.TILE_ROOM_WATER));
+		registerWish("puddle", new WishTile(TileType.TILE_ROOM_PUDDLE));
 		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
 		registerWish("trap", new WishTile(TileType.TILE_TRAP));
+		
+		registerWish("flood", (d, p, a) -> flood(p, TileType.TILE_ROOM_WATER));
+		registerWish("flood puddle", (d, p, a) -> flood(p, TileType.TILE_ROOM_PUDDLE));
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
@@ -350,5 +355,17 @@ public class Wishes {
 		JRogue.getLogger().log(Profiler.LEVEL, String.format("Wish %s took %,d ms", wish, (end - start) / 1_000_000));
 		
 		return result;
+	}
+	
+	private void flood(Player p, TileType tileType) {
+		TileStore ts = p.getLevel().tileStore;
+		
+		for (int y = -6; y < 6; y++) {
+			for (int x = -6; x < 6; x++) {
+				if (ts.getTileType(x + p.getX(), y + p.getY()).isInnerRoomTile()) {
+					ts.setTileType(x + p.getX(), y + p.getY(), tileType);
+				}
+			}
+		}
 	}
 }

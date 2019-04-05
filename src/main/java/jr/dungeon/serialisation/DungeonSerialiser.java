@@ -59,12 +59,7 @@ public class DungeonSerialiser {
 		
 		dungeon.searchForPlayer();
 		if (dungeon.getPlayer() == null) {
-			File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-			
-			if (file.exists() && !file.delete()) {
-				JRogue.getLogger().error("Failed to delete save file. Panic!");
-			}
-			
+			deleteSave();
 			JOptionPane.showMessageDialog(null, "Please restart JRogue.");
 			System.exit(0);
 			return null;
@@ -95,12 +90,7 @@ public class DungeonSerialiser {
 				case JOptionPane.YES_OPTION:
 					break;
 				case JOptionPane.NO_OPTION:
-					File file = new File(Paths.get(dataDir.toString(), "dungeon.save.gz").toString());
-					
-					if (file.exists() && !file.delete()) {
-						JRogue.getLogger().error("Failed to delete save file. Panic!");
-					}
-					
+					deleteSave();
 					JOptionPane.showMessageDialog(null, "Please restart JRogue.");
 					System.exit(0);
 					break;
@@ -138,7 +128,7 @@ public class DungeonSerialiser {
 	/**
 	 * Deletes the game save file.
 	 */
-	public void deleteSave() {
+	public static void deleteSave() {
 		File file = new File(Paths.get(DungeonSerialiser.getDataDir().toString(), "dungeon.save.gz").toString());
 		
 		if (file.exists() && !file.delete()) {

@@ -27,7 +27,7 @@ public class EntityRendererCandlestick extends EntityRendererBasic {
 	
 	@Override
 	public int getParticleYOffset(Entity entity) {
-		return 1;
+		return 15;
 	}
 	
 	@Override

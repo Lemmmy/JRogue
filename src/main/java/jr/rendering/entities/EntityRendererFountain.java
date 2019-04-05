@@ -8,7 +8,7 @@ import jr.rendering.assets.Assets;
 import static jr.rendering.assets.Particles.particleFile;
 
 public class EntityRendererFountain extends EntityRendererRandom {
-	private static final int[] PARTICLE_Y_OFFSETS = new int[]{6, 3};
+	private static final int[] PARTICLE_Y_OFFSETS = new int[]{10, 13};
 	
 	public EntityRendererFountain(String fileName, int count) {
 		super(fileName, count);

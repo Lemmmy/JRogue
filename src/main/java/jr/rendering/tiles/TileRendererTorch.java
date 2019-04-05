@@ -78,7 +78,7 @@ public class TileRendererTorch extends TileRendererWall {
 	
 	@Override
 	public int getParticleYOffset() {
-		return super.getParticleYOffset() - 3;
+		return super.getParticleYOffset() + 3;
 	}
 	
 	@Override

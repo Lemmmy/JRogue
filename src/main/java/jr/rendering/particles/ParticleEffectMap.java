@@ -12,7 +12,7 @@ import static jr.rendering.assets.Particles.particleFile;
 @Getter
 public enum ParticleEffectMap implements UsesAssets {
 	WATER_STEP("water_step", 0, 250),
-	ENTITY_FIRE("entity_fire", 0, 250, EntityMap.ENTITY_WIDTH / 4, EntityMap.ENTITY_HEIGHT - 2);
+	ENTITY_FIRE("entity_fire", 0, 250, EntityMap.ENTITY_WIDTH / 4, 2);
 	
 	private String fileName;
 	
@@ -23,7 +23,7 @@ public enum ParticleEffectMap implements UsesAssets {
 	private float deltaModifier;
 	
 	ParticleEffectMap(String fileName) {
-		this(fileName, 50, 250, 0, 0, 0.25f);
+		this(fileName, 50, 250);
 	}
 	
 	ParticleEffectMap(String fileName, int initialCapacity, int max) {
