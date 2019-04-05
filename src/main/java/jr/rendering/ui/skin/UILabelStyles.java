@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import jr.rendering.assets.Assets;
-import jr.rendering.ui.utils.TiledNinePatchDrawable;
-import jr.rendering.utils.ImageLoader;
 
 @UISkinStyleHandler(priority = 400)
 public class UILabelStyles extends UISkinStyle {
@@ -48,19 +46,5 @@ public class UILabelStyles extends UISkinStyle {
 		}
 		
 		skin.add(name, labelStyle);
-	}
-	
-	public Drawable getLoweredWindowDrawable() {
-		return new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
-			1, 1, 1, 1
-		);
-	}
-	
-	public Drawable getRaisedWindowDrawable() {
-		return new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 113, 70, 24),
-			1, 1, 1, 1
-		);
 	}
 }

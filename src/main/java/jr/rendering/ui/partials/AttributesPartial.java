@@ -3,8 +3,8 @@ package jr.rendering.ui.partials;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Attributes;
+import jr.rendering.ui.skin.UIAttributeIcons;
 import jr.rendering.ui.utils.FunctionalClickListener;
-import jr.rendering.utils.ImageLoader;
 
 public class AttributesPartial extends Table {
 	private Attributes attributes;
@@ -46,8 +46,7 @@ public class AttributesPartial extends Table {
 	}
 	
 	private void addAttribute(Table container, Attribute attribute, int level) {
-		int sheetX = attribute.ordinal();
-		container.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16))).padRight(6);
+		container.add(UIAttributeIcons.getImage(getSkin(), attribute)).padRight(6);
 		
 		String label = String.format("[WHITE]%s:  [P_GREEN_3]%,d[][]", attribute.getName(), level);
 		container.add(new Label(label, getSkin(), "windowStyleMarkup")).width(180).left();

@@ -85,7 +85,6 @@ public class TreeNode {
 				this.name = parentField.getName();
 				this.type = parentField.getGenericType();
 				this.isPrimitive = parentField.getType().isPrimitive();
-				this.showIdenticon = !this.isPrimitive;
 			} else {
 				this.name = String.format(
 					"[P_ORANGE_2]Unknown[] %s",

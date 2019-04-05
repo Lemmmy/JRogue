@@ -1,28 +1,25 @@
 package jr.debugger.ui.tree;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.rendering.utils.ImageLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import jr.rendering.ui.skin.UIIcons;
 import lombok.Getter;
 
 @Getter
 public enum AccessLevelMap {
-	UNKNOWN(32, 192),
-	PACKAGE_PRIVATE(24, 192),
-	PRIVATE(0, 192),
-	PROTECTED(16, 192),
-	PUBLIC(8, 192);
+	UNKNOWN("Unknown"),
+	PACKAGE_PRIVATE("PackagePrivate"),
+	PRIVATE("Private"),
+	PROTECTED("Protected"),
+	PUBLIC("Public");
 	
-	private static final int WIDTH = 8;
-	private static final int HEIGHT = 8;
+	private String iconName;
 	
-	private int sheetX, sheetY;
+	AccessLevelMap(String iconName) {
+		this.iconName = iconName;
+	}
 	
-	private TextureRegion textureRegion;
-	
-	AccessLevelMap(int sheetX, int sheetY) {
-		this.sheetX = sheetX;
-		this.sheetY = sheetY;
-		
-		textureRegion = ImageLoader.getSubimage("textures/hud.png", sheetX, sheetY, WIDTH, HEIGHT);
+	public Image getImage(Skin skin) {
+		return UIIcons.getImage(skin, "debugAccess" + iconName + "Icon");
 	}
 }
