@@ -2,6 +2,7 @@ package jr.rendering.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Disposable;
+import jr.rendering.components.PathComponent;
 import jr.rendering.entities.EntityMap;
 import jr.rendering.entities.RoleMap;
 import jr.rendering.items.ItemMap;
@@ -26,6 +27,7 @@ public class Assets implements Disposable {
 		Arrays.stream(RoleMap.values()).forEach(r -> r.onLoad(this));
 		Arrays.stream(ParticleEffectMap.values()).forEach(r -> r.onLoad(this));
 		UISkin.getInstance().onLoad(this);
+		PathComponent.Components.onLoad(this);
 	}
 	
 	private void loaded() {

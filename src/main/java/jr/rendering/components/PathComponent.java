@@ -9,13 +9,17 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
+import jr.dungeon.tiles.Tile;
+import jr.rendering.assets.Assets;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.Gradient;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.utils.ImageUtils;
 import jr.utils.Path;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static jr.rendering.assets.Textures.hudFile;
 
 public class PathComponent extends RendererComponent {
 	private static final Gradient PATH_GRADIENT = Gradient.getGradient(
@@ -24,7 +28,6 @@ public class PathComponent extends RendererComponent {
 	);
 	
 	private Path lastPath = null;
-	private TextureRegion pathSpot, pathH, pathV, pathUR, pathUL, pathBR, pathBL, pathR, pathL, pathU, pathB;
 	
 	private SpriteBatch mainBatch;
 	private Color oldColour = new Color();
@@ -35,23 +38,7 @@ public class PathComponent extends RendererComponent {
 	
 	@Override
 	public void initialise() {
-		loadPathSprites();
-		
 		mainBatch = renderer.getMainBatch();
-	}
-	
-	private void loadPathSprites() {
-		pathSpot = ImageLoader.getImageFromSheet("textures/hud.png", 0, 11);
-		pathH = ImageLoader.getImageFromSheet("textures/hud.png", 1, 11);
-		pathV = ImageLoader.getImageFromSheet("textures/hud.png", 2, 11);
-		pathUR = ImageLoader.getImageFromSheet("textures/hud.png", 3, 11);
-		pathUL = ImageLoader.getImageFromSheet("textures/hud.png", 4, 11);
-		pathBR = ImageLoader.getImageFromSheet("textures/hud.png", 5, 11);
-		pathBL = ImageLoader.getImageFromSheet("textures/hud.png", 6, 11);
-		pathR = ImageLoader.getImageFromSheet("textures/hud.png", 7, 11);
-		pathL = ImageLoader.getImageFromSheet("textures/hud.png", 8, 11);
-		pathU = ImageLoader.getImageFromSheet("textures/hud.png", 9, 11);
-		pathB = ImageLoader.getImageFromSheet("textures/hud.png", 10, 11);
 	}
 	
 	@EventHandler
@@ -83,39 +70,7 @@ public class PathComponent extends RendererComponent {
 		path.forEach(step -> {
 			i.incrementAndGet();
 			
-			TextureRegion image;
-			
-			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
-
-			/*
-				 3
-				1 0
-				 2
-			 */
-			
-			if (a[0] && !a[1] && !a[2] && !a[3]) {
-				image = pathR;
-			} else if (!a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathL;
-			} else if (!a[0] && !a[1] && !a[2] && a[3]) {
-				image = pathU;
-			} else if (!a[0] && !a[1] && a[2] && !a[3]) {
-				image = pathB;
-			} else if (a[0] && a[1] && !a[2] && !a[3]) {
-				image = pathH;
-			} else if (!a[0] && !a[1] && a[2]) {
-				image = pathV;
-			} else if (!a[0] && a[1] && !a[2]) {
-				image = pathUL;
-			} else if (a[0] && !a[1] && !a[2]) {
-				image = pathUR;
-			} else if (!a[0] && a[1] && !a[3]) {
-				image = pathBL;
-			} else if (a[0] && !a[1] && !a[3]) {
-				image = pathBR;
-			} else {
-				image = pathSpot;
-			}
+			TextureRegion image = Components.getComponentFromMask(Components.getMask(path, step));
 			
 			float point = (float) (i.get() - 1) / (float) (path.getLength() - 1);
 			
@@ -149,5 +104,33 @@ public class PathComponent extends RendererComponent {
 	@Override
 	public void dispose() {
 		
+	}
+	
+	public static class Components {
+		private static int SHEET_WIDTH = 4, SHEET_HEIGHT = 3;
+		private static TextureRegion[] components = new TextureRegion[SHEET_WIDTH * SHEET_HEIGHT];
+		
+		private static final int[] MAP = new int[] {
+			7, 8, 1, 9, 0, 4, 5, 7, 3, 10, 2, 7, 6, 7, 7, 7
+		};
+		
+		public static void onLoad(Assets assets) {
+			assets.textures.loadPacked(hudFile("path"), t -> ImageUtils.loadSheet(t, components, SHEET_WIDTH, SHEET_HEIGHT));
+		}
+		
+		public static TextureRegion getComponentFromMask(int mask) {
+			return components[MAP[mask]];
+		}
+		
+		public static int getMask(Path path, Tile step) {
+			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
+			
+			int n = a[3] ? 1 : 0;
+			int s = a[2] ? 1 : 0;
+			int w = a[1] ? 1 : 0;
+			int e = a[0] ? 1 : 0;
+			
+			return n + 2 * e + 4 * s + 8 * w;
+		}
 	}
 }
