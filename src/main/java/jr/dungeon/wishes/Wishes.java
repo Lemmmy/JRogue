@@ -79,6 +79,7 @@ public class Wishes {
 				.forEach(e -> e.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0)));
 		registerWish("nutrition", (d, p, a) -> p.setNutrition(1000));
 		registerWish("health", (d, p, a) -> p.setHealth(p.getMaxHealth()));
+		registerWish("energy", (d, p, a) -> p.setEnergy(p.getMaxEnergy()));
 		registerWish("(?:discover|see all)", (d, p, a) -> {
 			p.getLevel().visibilityStore.seeAll();
 			p.getLevel().lightStore.buildLight(false);

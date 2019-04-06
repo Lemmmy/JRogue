@@ -65,6 +65,11 @@ public abstract class Familiar extends Monster implements Friendly {
 	}
 	
 	@Override
+	public int getExperienceRewarded() {
+		return 0;
+	}
+	
+	@Override
 	public boolean isHostile() {
 		return false;
 	}
