@@ -1,7 +1,14 @@
 package jr.rendering.entities;
 
 import jr.dungeon.entities.EntityAppearance;
+import jr.rendering.assets.RegisterAssetManager;
+import jr.rendering.assets.UsesAssets;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+@RegisterAssetManager
 public enum EntityMap {
 	APPEARANCE_PLAYER(new EntityRendererPlayer()),
 	
@@ -70,5 +77,9 @@ public enum EntityMap {
 	
 	public static EntityRenderer getRenderer(EntityAppearance appearance) {
 		return valueOf(appearance.name()).getRenderer();
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.stream(values()).map(EntityMap::getRenderer).collect(Collectors.toList());
 	}
 }

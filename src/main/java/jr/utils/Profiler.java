@@ -37,7 +37,7 @@ public class Profiler {
 		long end = System.nanoTime();
 		long duration = end - start;
 		
-		JRogue.getLogger().log(LEVEL, String.format("[%s30]: %,d ms", name, duration / 1_000_000));
+		JRogue.getLogger().log(LEVEL, String.format("[%16s]: %,d ms", name, duration / 1_000_000));
 		
 		return duration;
 	}

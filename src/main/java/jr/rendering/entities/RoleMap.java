@@ -4,11 +4,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.roles.RoleWizard;
 import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.assets.Textures;
 import jr.rendering.assets.UsesAssets;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 @Getter
+@RegisterAssetManager
 public enum RoleMap implements UsesAssets {
 	WIZARD(RoleWizard.class, "player_wizard");
 	
@@ -24,5 +29,9 @@ public enum RoleMap implements UsesAssets {
 	@Override
 	public void onLoad(Assets assets) {
 		assets.textures.loadPacked(Textures.entityFile(fileName), t -> roleTexture = t);
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.asList(values());
 	}
 }

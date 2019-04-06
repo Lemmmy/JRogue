@@ -4,20 +4,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import jr.ErrorHandler;
 import jr.JRogue;
-import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.assets.UsesAssets;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-public class UISkin extends Skin implements UsesAssets {
+@RegisterAssetManager
+public class UISkin extends Skin {
 	private static UISkin INSTANCE;
 	
-	private static List<UISkinStyle> handlers = new ArrayList<>();
+	private List<UISkinStyle> handlers = new ArrayList<>();
 	
 	private UISkin() {
 		JRogue.getReflections().getTypesAnnotatedWith(UISkinStyleHandler.class).stream()
@@ -41,22 +43,6 @@ public class UISkin extends Skin implements UsesAssets {
 		}
 	}
 	
-	@Override
-	public void onLoad(Assets assets) {
-		handlers.forEach(h -> {
-			JRogue.getLogger().debug("UISkin.onLoad {}", h.getClass().getSimpleName());
-			h.onLoad(assets);
-		});
-	}
-	
-	@Override
-	public void onLoaded(Assets assets) {
-		handlers.forEach(h -> {
-			JRogue.getLogger().debug("UISkin.onLoaded {}", h.getClass().getSimpleName());
-			h.onLoaded(assets);
-		});
-	}
-	
 	private void initialiseTooltips() {
 		TooltipManager.getInstance().instant();
 	}
@@ -67,5 +53,9 @@ public class UISkin extends Skin implements UsesAssets {
 		}
 		
 		return INSTANCE;
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return getInstance().handlers;
 	}
 }

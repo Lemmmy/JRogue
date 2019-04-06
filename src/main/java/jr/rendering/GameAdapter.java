@@ -19,6 +19,7 @@ import jr.rendering.screens.BasicScreen;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.screens.utils.ScreenTransition;
+import jr.utils.Profiler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -71,8 +72,10 @@ public class GameAdapter extends Game {
 		
 		ErrorHandler.setGLString();
 		
-		assets.load();
-		assets.syncLoad();
+		Profiler.time("Loading assets", () -> {
+			assets.load();
+			assets.syncLoad();
+		});
 		
 		if (settings.isShowDebugClient()) {
 			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));

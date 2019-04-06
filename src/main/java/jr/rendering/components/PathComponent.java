@@ -11,6 +11,7 @@ import jr.dungeon.events.PathShowEvent;
 import jr.dungeon.events.TurnEvent;
 import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.Gradient;
@@ -106,6 +107,7 @@ public class PathComponent extends RendererComponent {
 		
 	}
 	
+	@RegisterAssetManager
 	public static class Components {
 		private static int SHEET_WIDTH = 4, SHEET_HEIGHT = 3;
 		private static TextureRegion[] components = new TextureRegion[SHEET_WIDTH * SHEET_HEIGHT];
@@ -114,7 +116,7 @@ public class PathComponent extends RendererComponent {
 			7, 8, 1, 9, 0, 4, 5, 7, 3, 10, 2, 7, 6, 7, 7, 7
 		};
 		
-		public static void onLoad(Assets assets) {
+		public static void loadAssets(Assets assets) {
 			assets.textures.loadPacked(hudFile("path"), t -> ImageUtils.loadSheet(t, components, SHEET_WIDTH, SHEET_HEIGHT));
 		}
 		

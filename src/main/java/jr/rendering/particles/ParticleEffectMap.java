@@ -3,13 +3,18 @@ package jr.rendering.particles;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.assets.UsesAssets;
 import jr.rendering.entities.EntityMap;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import static jr.rendering.assets.Particles.particleFile;
 
 @Getter
+@RegisterAssetManager
 public enum ParticleEffectMap implements UsesAssets {
 	WATER_STEP("water_step", 0, 250),
 	ENTITY_FIRE("entity_fire", 0, 250, EntityMap.ENTITY_WIDTH / 4, 2);
@@ -49,5 +54,9 @@ public enum ParticleEffectMap implements UsesAssets {
 	@Override
 	public void onLoad(Assets assets) {
 		assets.particles.load(particleFile(fileName), p -> pool = new ParticleEffectPool(p, initialCapacity, max));
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.asList(values());
 	}
 }

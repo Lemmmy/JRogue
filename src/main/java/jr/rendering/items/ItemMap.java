@@ -1,8 +1,15 @@
 package jr.rendering.items;
 
 import jr.dungeon.items.ItemAppearance;
+import jr.rendering.assets.RegisterAssetManager;
+import jr.rendering.assets.UsesAssets;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+@RegisterAssetManager
 public enum ItemMap {
 	APPEARANCE_CORPSE("corpse"),
 	
@@ -74,5 +81,9 @@ public enum ItemMap {
 	
 	public ItemAppearance getAppearance() {
 		return ItemAppearance.valueOf(name());
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.stream(values()).map(ItemMap::getRenderer).collect(Collectors.toList());
 	}
 }

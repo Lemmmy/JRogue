@@ -2,10 +2,17 @@ package jr.rendering.tiles;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.RegisterAssetManager;
+import jr.rendering.assets.UsesAssets;
 import jr.rendering.tiles.walls.TileRendererSewerWall;
 import jr.rendering.tiles.walls.TileRendererWall;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+@RegisterAssetManager
 public enum TileMap {
 	TILE_GROUND("ground"),
 	TILE_GROUND_WATER(new TileRendererWater("water", "ground", 0.8f)),
@@ -60,5 +67,9 @@ public enum TileMap {
 	
 	public TileType getTile() {
 		return TileType.valueOf(name());
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.stream(values()).map(TileMap::getRenderer).collect(Collectors.toList());
 	}
 }
