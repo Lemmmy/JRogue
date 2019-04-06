@@ -6,18 +6,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.rendering.tiles.TileMap;
 
 public class ImageUtils {
-	public static TextureRegion getTile(TextureRegion sheet, int sheetX, int sheetY) {
-		return getTile(sheet, sheetX, sheetY, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
+	public static void loadSheet(TextureRegion sheet, TextureRegion[] images, int cols, int rows) {
+		loadSheet(sheet, images, cols, rows, TileMap.TILE_WIDTH, TileMap.TILE_HEIGHT);
 	}
 	
-	public static TextureRegion getTile(TextureRegion sheet, int sheetX, int sheetY, int width, int height) {
-		if (sheet == null) return null;
-		return new TextureRegion(sheet, width * sheetX, height * sheetY, width, height);
-	}
-	
-	public static void loadSheet(TextureRegion sheet, TextureRegion[] images, int width, int height) {
+	public static void loadSheet(TextureRegion sheet, TextureRegion[] images, int cols, int rows, int width, int height) {
 		for (int i = 0; i < images.length; i++) {
-			images[i] = ImageUtils.getTile(sheet, i % width, i / width);
+			images[i] = new TextureRegion(
+				sheet,
+				width * (i % cols),
+				height * (i / cols),
+				width, height
+			);
 		}
 	}
 	

@@ -21,7 +21,6 @@ import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.utils.FontLoader;
-import jr.rendering.utils.ImageLoader;
 import jr.rendering.utils.ShaderLoader;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -284,7 +283,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 
 		rendererComponents.forEach(RendererComponent::dispose);
 		
-		ImageLoader.disposeAll();
 		FontLoader.disposeAll();
 		ShaderLoader.disposeAll();
 		LogManager.shutdown();
