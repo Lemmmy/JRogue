@@ -50,7 +50,7 @@ public abstract class AssetHandler<T, P extends AssetLoaderParameters> {
 	 */
 	public void onLoaded() {
 		callbacks.forEach((fileName, callbackSet) -> callbackSet.forEach(c -> c.onLoad(getLoaded(fileName))));
-				callbacks.clear();
+		callbacks.clear();
 	}
 	
 	public void afterLoaded() {}

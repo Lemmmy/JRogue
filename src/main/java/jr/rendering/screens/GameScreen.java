@@ -19,7 +19,6 @@ import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
-import jr.rendering.utils.FontLoader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -272,7 +271,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 
 		rendererComponents.forEach(RendererComponent::dispose);
 		
-		FontLoader.disposeAll();
 		LogManager.shutdown();
 	}
 	

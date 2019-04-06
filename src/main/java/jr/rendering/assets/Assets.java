@@ -17,6 +17,7 @@ public class Assets implements Disposable {
 	public final Textures textures = new Textures(this);
 	public final Particles particles = new Particles(this);
 	public final Shaders shaders = new Shaders(this);
+	public final Fonts fonts = new Fonts(this);
 	
 	private List<Class<?>> managers;
 	public void load() {
@@ -29,6 +30,7 @@ public class Assets implements Disposable {
 	}
 	
 	private void loaded() {
+		fonts.onLoaded();
 		textures.onLoaded();
 		particles.onLoaded();
 		shaders.onLoaded();
@@ -38,6 +40,7 @@ public class Assets implements Disposable {
 			getAssetsFromManager(manager).forEach(a -> a.onLoaded(this));
 		});
 		
+		fonts.afterLoaded();
 		textures.afterLoaded();
 		particles.afterLoaded();
 		shaders.afterLoaded();
