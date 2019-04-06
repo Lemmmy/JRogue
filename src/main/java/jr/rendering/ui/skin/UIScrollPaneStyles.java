@@ -1,16 +1,42 @@
 package jr.rendering.ui.skin;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import jr.rendering.assets.Assets;
 import jr.rendering.ui.utils.TiledNinePatchDrawable;
-import jr.rendering.utils.ImageLoader;
+
+import java.util.function.Consumer;
 
 @UISkinStyleHandler(priority = 300)
-public class UIScrollPaneStyles implements UISkinStyle {
-	public void add(Skin skin) {
+public class UIScrollPaneStyles extends UISkinStyle {
+	private NinePatchDrawable hScroll, hScrollKnob, vScroll, vScrollKnob;
+	private NinePatchDrawable loweredHScroll, loweredHScrollKnob, loweredVScroll, loweredVScrollKnob;
+	private TiledNinePatchDrawable loweredBackground;
+	
+	public UIScrollPaneStyles(UISkin skin) {
+		super(skin);
+	}
+	
+	protected void loadScrollGraphic(Assets assets, String fileName, Consumer<NinePatchDrawable> consumer) {
+		loadNinePatch(assets, fileName, 2, 1, 1, 1, consumer);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		loadScrollGraphic(assets, "scroll_h_scroll", n -> { hScroll = n; vScroll = n; });
+		loadScrollGraphic(assets, "scroll_h_scroll_knob", n -> { hScrollKnob = n; vScrollKnob = n; });
+		
+		loadScrollGraphic(assets, "scroll_lowered_h_scroll", n -> { loweredHScroll = n; loweredVScroll = n; });
+		loadScrollGraphic(assets, "scroll_lowered_h_scroll_knob", n -> { loweredHScrollKnob = n; loweredVScrollKnob = n; });
+		
+		loadTiledNinePatch(assets, "scroll_lowered_background", 1, 1, 1, 1, n -> loweredBackground = n);
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
 		skin.add("default", getScrollPaneStyle());
 		skin.add("lowered", getLoweredScrollPaneStyle());
 	}
@@ -18,8 +44,8 @@ public class UIScrollPaneStyles implements UISkinStyle {
 	public ScrollPane.ScrollPaneStyle getScrollPaneStyle() {
 		ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle();
 		
-		style.hScroll = getHScroll(); style.hScrollKnob = getHScrollKnob();
-		style.vScroll = getVScroll(); style.vScrollKnob = getVScrollKnob();
+		style.hScroll = hScroll; style.hScrollKnob = hScrollKnob;
+		style.vScroll = vScroll; style.vScrollKnob = vScrollKnob;
 		
 		return style;
 	}
@@ -27,62 +53,11 @@ public class UIScrollPaneStyles implements UISkinStyle {
 	public ScrollPane.ScrollPaneStyle getLoweredScrollPaneStyle() {
 		ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle();
 		
-		style.hScroll = getLoweredHScroll(); style.hScrollKnob = getLoweredHScrollKnob();
-		style.vScroll = getLoweredVScroll(); style.vScrollKnob = getLoweredVScrollKnob();
+		style.hScroll = loweredHScroll; style.hScrollKnob = loweredHScrollKnob;
+		style.vScroll = loweredVScroll; style.vScrollKnob = loweredVScrollKnob;
 		
-		style.background = getLoweredBackground();
+		style.background = loweredBackground;
 		
 		return style;
-	}
-	
-	public Drawable getHScroll() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 101, 31, 7, 3),
-			2, 1, 1, 1
-		));
-	}
-	
-	public Drawable getHScrollKnob() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 101, 34, 7, 6),
-			2, 1, 1, 1
-		));
-	}
-	
-	public Drawable getVScroll() {
-		return getHScroll();
-	}
-	
-	public Drawable getVScrollKnob() {
-		return getHScrollKnob();
-	}
-	
-	public Drawable getLoweredBackground() {
-		return new TiledNinePatchDrawable(
-			ImageLoader.getSubimage("textures/hud.png", 0, 89, 70, 24),
-			1, 1, 1, 1
-		);
-	}
-	
-	public Drawable getLoweredHScroll() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 101, 41, 7, 3),
-			2, 1, 1, 1
-		));
-	}
-	
-	public Drawable getLoweredHScrollKnob() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 101, 443, 6, 5),
-			2, 1, 1, 1
-		));
-	}
-	
-	public Drawable getLoweredVScroll() {
-		return getLoweredHScroll();
-	}
-	
-	public Drawable getLoweredVScrollKnob() {
-		return getLoweredHScrollKnob();
 	}
 }

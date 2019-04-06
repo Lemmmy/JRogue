@@ -37,8 +37,6 @@ public class GameWidget extends Image implements EventListener {
 	private SpriteBatch spriteBatch;
 	private OrthographicCamera camera;
 	
-	private int width, height;
-	
 	@Setter private LevelUtilPopup levelUtilPopup;
 	
 	public GameWidget(DebugUI ui, Skin skin, Dungeon dungeon) {
@@ -62,8 +60,11 @@ public class GameWidget extends Image implements EventListener {
 	}
 	
 	private void initialiseCamera() {
+		// TODO: currently, we draw the camera y-down here. this is different to the rest of the game, but it seems that
+		//       the FBO itself is drawn flipped. we probably shouldn't be drawing y-down here, so this needs to be
+		//       investigated.
 		camera = new OrthographicCamera(getMinWidth(), getMinHeight());
-		camera.setToOrtho(false, getMinWidth(), getMinHeight());
+		camera.setToOrtho(true, getMinWidth(), getMinHeight());
 		camera.update();
 	}
 	
@@ -134,7 +135,7 @@ public class GameWidget extends Image implements EventListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			int worldX = (int) (x / TileMap.TILE_WIDTH);
-			int worldY = (int) ((getHeight() - y) / TileMap.TILE_HEIGHT);
+			int worldY = (int) (y / TileMap.TILE_HEIGHT);
 			
 			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) return;
 			

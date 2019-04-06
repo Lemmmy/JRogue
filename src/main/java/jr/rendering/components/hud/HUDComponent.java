@@ -18,10 +18,11 @@ import jr.rendering.components.RendererComponent;
 import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
+import jr.rendering.ui.skin.UIAttributeIcons;
+import jr.rendering.ui.skin.UIIcons;
 import jr.rendering.ui.skin.UISkin;
 import jr.rendering.ui.windows.*;
 import jr.rendering.utils.HUDUtils;
-import jr.rendering.utils.ImageLoader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -66,32 +67,32 @@ public class HUDComponent extends RendererComponent {
 		
 		topStats = new Table();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 3, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "healthIcon"));
 		Label hpLabel = new Label("Health: 0 / 0", skin);
 		hpLabel.setName("health");
 		topStats.add(hpLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 7, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "nutritionIcon"));
 		Label nutritionLabel = new Label("Not hungry", skin);
 		nutritionLabel.setName("nutrition");
 		topStats.add(nutritionLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 12, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "experienceLevelIcon"));
 		Label expLabel = new Label("Level: 1", skin);
 		expLabel.setName("exp");
 		topStats.add(expLabel).pad(0, 2, 0, 8).left().row();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 14, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "energyIcon"));
 		Label energyLabel = new Label("Energy: 0 / 0", skin);
 		energyLabel.setName("energy");
 		topStats.add(energyLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 11, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "goldIcon"));
 		Label goldLabel = new Label("Gold: 0", skin);
 		goldLabel.setName("gold");
 		topStats.add(goldLabel).pad(0, 2, 0, 8).left();
 		
-		topStats.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", 13, 10, 16, 16, false)));
+		topStats.add(UIIcons.getImage(skin, "depthIcon"));
 		Label depthLabel = new Label("Depth: 1", skin);
 		depthLabel.setName("depth");
 		topStats.add(depthLabel).pad(0, 2, 0, 8).left();
@@ -125,8 +126,7 @@ public class HUDComponent extends RendererComponent {
 			String text = String.format("%s: 0", attribute.getName());
 			int sheetX = attribute.ordinal();
 			
-			attributeTable.add(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
-				false)));
+			attributeTable.add(UIAttributeIcons.getImage(skin, attribute));
 			Label attributeLabel = new Label(text, skin);
 			attributeLabel.setName(actorName);
 			attributeTable.add(attributeLabel).pad(0, 2, 0, 8);
@@ -349,10 +349,10 @@ public class HUDComponent extends RendererComponent {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 		
-		int sheetX = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR ? 9 : 8;
+		String name = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR
+			? "brightnessDarkIcon": "brightnessBrightIcon";
 		
-		brightness.addActor(new Image(ImageLoader.getImageFromSheet("textures/hud.png", sheetX, 10, 16, 16,
-			false)));
+		brightness.addActor(UIIcons.getImage(skin, name));
 		brightness.addActor(new Label("Brightness: " + player.getLightLevel(), skin));
 	}
 	

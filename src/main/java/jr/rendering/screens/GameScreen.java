@@ -3,7 +3,6 @@ package jr.rendering.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
@@ -20,9 +19,6 @@ import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
-import jr.rendering.utils.FontLoader;
-import jr.rendering.utils.ImageLoader;
-import jr.rendering.utils.ShaderLoader;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -94,10 +90,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
-	private SpriteBatch debugBatch;
-	private OrthographicCamera debugCamera;
-	private BitmapFont debugFont;
-	
 	/**
 	 * The game's main OpenGL renderer using LibGDX.
 	 *
@@ -120,10 +112,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 		initialiseCamera();
 		initialiseRendererComponents();
 		
-		debugBatch = new SpriteBatch();
-		debugCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
-		
 		dungeon.start();
 	}
 	
@@ -132,7 +120,7 @@ public class GameScreen extends BasicScreen implements EventListener {
 		zoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 4f;
 		
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		updateCameraZoom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
@@ -260,11 +248,10 @@ public class GameScreen extends BasicScreen implements EventListener {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		
-		camera.setToOrtho(true, width, height);
+		camera.setToOrtho(false, width, height);
 		updateCameraZoom(width, height);
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
-		debugCamera.setToOrtho(true, width, height);
 	}
 	
 	@Override
@@ -284,9 +271,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 
 		rendererComponents.forEach(RendererComponent::dispose);
 		
-		ImageLoader.disposeAll();
-		FontLoader.disposeAll();
-		ShaderLoader.disposeAll();
 		LogManager.shutdown();
 	}
 	

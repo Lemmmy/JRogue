@@ -5,28 +5,28 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
 import jr.rendering.tiles.TileRenderer;
 import jr.rendering.utils.BlobUtils;
+import jr.rendering.utils.ImageUtils;
 import jr.utils.WeightedCollection;
 
 import java.util.Random;
 
+import static jr.rendering.assets.Textures.tileFile;
+
 public class TileRendererWall extends TileRenderer {
-	protected static final int BLOB_SHEET_WIDTH = 4;
-	protected static final int BLOB_SHEET_HEIGHT = 4;
-	
-	private static final int PROBABILITY_GRATE = 6;
-	private static final int PROBABILITY_COBWEB = 22;
+	protected static final int SHEET_WIDTH = 4;
+	protected static final int SHEET_HEIGHT = 4;
 	
 	protected final WeightedCollection<WallDecoration> wallDecoration = new WeightedCollection<>();
-	
 	{
-		wallDecoration.add(100, new WallDecoration()); // no decoration
+		wallDecoration.add(100, null); // no decoration
 		wallDecoration.add(30, new WallDecorationCobweb());
 		wallDecoration.add(10, new WallDecorationGrate());
 	}
 	
-	private static TextureRegion[] images = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
+	private static TextureRegion[] images = new TextureRegion[SHEET_WIDTH * SHEET_HEIGHT];
 	private static TextureRegion wallHPillar, wallHPillarExtra;
 	
 	private static final int[] MAP = new int[] {
@@ -35,27 +35,28 @@ public class TileRendererWall extends TileRenderer {
 	
 	private Random rand = new Random();
 	
-	public TileRendererWall() {
-		loadBlob(images, 0, 3);
-		wallHPillar = getImageFromSheet("textures/tiles.png", 11, 1);
-		wallHPillarExtra = getImageFromSheet("textures/tiles.png", 12, 1);
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> wallHPillar = t);
+		assets.textures.loadPacked(tileFile("room_wall_pillar_extra"), t -> wallHPillarExtra = t);
+		
+		assets.textures.loadPacked(tileFile("room_walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
-	protected void loadBlob(TextureRegion[] set, int blobStartX, int blobStartY) {
-		for (int i = 0; i < BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT; i++) {
-			int sheetX = i % BLOB_SHEET_WIDTH + blobStartX;
-			int sheetY = (int) Math.floor(i / BLOB_SHEET_WIDTH) + blobStartY;
-			
-			set[i] = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		}
+	protected boolean isTopHorizontal(Dungeon dungeon, int x, int y) {
+		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
+		
+		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
+		boolean top = adjacentTiles[2].isInnerRoomTile();
+		
+		return h && top;
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
-		if (top && x % 2 == 0) {
+		if (isTopHorizontal(dungeon, x, y) && x % 2 == 0) {
 			return wallHPillar;
 		} else {
 			return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
@@ -64,12 +65,7 @@ public class TileRendererWall extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
-		if (h && top && x % 2 == 0) {
+		if (isTopHorizontal(dungeon, x, y) && x % 2 == 0) {
 			return wallHPillarExtra;
 		}
 		
@@ -94,39 +90,29 @@ public class TileRendererWall extends TileRenderer {
 	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
 		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 		
-		if (h && top && x % 2 != 0) {
+		if (isTopHorizontal(dungeon, x, y) && x % 2 != 0) {
 			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			decoration.draw(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.draw(this, batch, dungeon, x, y, rand);
 		}
 	}
 	
 	@Override
 	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
 		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
 		
 		if (t != null) {
-			drawTile(batch, t, x, y + 1);
+			drawTile(batch, t, x, y - 1);
 		}
 		
-		if (h && top && x % 2 != 0) {
+		if (isTopHorizontal(dungeon, x, y) && x % 2 != 0) {
 			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			decoration.drawExtra(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.drawExtra(this, batch, dungeon, x, y, rand);
 		}
 	}
 }

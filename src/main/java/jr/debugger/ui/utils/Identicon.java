@@ -4,7 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
+import jr.rendering.utils.ImageUtils;
+
+import static jr.rendering.assets.Textures.hudFile;
 
 public class Identicon extends BaseDrawable {
 	private static final Color[] COLOURS = new Color[] {
@@ -50,10 +54,6 @@ public class Identicon extends BaseDrawable {
 	
 	public static final int SHAPE_PADDING = 2;
 	
-	private static TextureRegion[] shapes = new TextureRegion[SHAPE_COUNT];
-	
-	private static boolean initialised = false;
-	
 	private TextureRegion shape1, shape2;
 	private Color bg1, fg1, bg2, fg2, oldColour = new Color();
 	
@@ -74,21 +74,7 @@ public class Identicon extends BaseDrawable {
 		this.setMinHeight(SHAPE_HEIGHT);
 	}
 	
-	public static void initialiseShapes() {
-		initialised = true;
-		
-		for (int i = 0; i < SHAPE_COUNT; i++) {
-			shapes[i] = ImageLoader.getSubimage(
-				"textures/hud.png",
-				SHAPE_START_X + SHAPE_WIDTH * i, SHAPE_START_Y,
-				SHAPE_WIDTH, SHAPE_HEIGHT
-			);
-		}
-	}
-	
 	public static Identicon getIdenticon(int code) {
-		if (!initialised) initialiseShapes();
-		
 		int ibg1 		= (code & 0b11111000000000000000000000000000) >>> 27;
 		int ifg1 		= (code & 0b00000111110000000000000000000000) >>> 22;
 		int ishape1 	= (code & 0b00000000001111000000000000000000) >>> 18;
@@ -99,13 +85,13 @@ public class Identicon extends BaseDrawable {
 		int ishape2 	= (code & 0b00000000000000000000000000111100) >>> 2;
 		int isecurity2 	=  code & 0b00000000000000000000000000000011;
 		
-		TextureRegion shape1 = shapes[ishape1 % shapes.length];
+		TextureRegion shape1 = Shapes.getShape(ishape1);
 		Color bg1 = COLOURS[ibg1 % COLOURS.length];
 		Color fg1 = COLOURS[ifg1 % COLOURS.length];
 		
 		if (ibg1 == ifg1) fg1 = COLOURS[(ifg1 + isecurity1) % COLOURS.length];
 		
-		TextureRegion shape2 = shapes[ishape2 % shapes.length];
+		TextureRegion shape2 = Shapes.getShape(ishape2);
 		Color bg2 = COLOURS[ibg2 % COLOURS.length];
 		Color fg2 = COLOURS[ifg2 % COLOURS.length];
 		
@@ -119,15 +105,33 @@ public class Identicon extends BaseDrawable {
 		oldColour.set(batch.getColor());
 		
 		batch.setColor(bg1);
-		batch.draw(shapes[0], x, y); // shape 1 is a filled shape
+		batch.draw(Shapes.getBlank(), x, y);
 		batch.setColor(fg1);
 		batch.draw(shape1, x, y);
 		
 		batch.setColor(bg2);
-		batch.draw(shapes[0], x + SHAPE_PADDING + SHAPE_WIDTH, y); // shape 1 is a filled shape
+		batch.draw(Shapes.getBlank(), x + SHAPE_PADDING + SHAPE_WIDTH, y);
 		batch.setColor(fg2);
 		batch.draw(shape2, x + SHAPE_PADDING + SHAPE_WIDTH, y);
 		
 		batch.setColor(oldColour);
+	}
+	
+	@RegisterAssetManager
+	public static class Shapes {
+		private static TextureRegion[] shapes = new TextureRegion[SHAPE_COUNT];
+		
+		public static void loadAssets(Assets assets) {
+			assets.textures.loadPacked(hudFile("debug/identicon_shapes"), t ->
+				ImageUtils.loadSheet(t, shapes, SHAPE_COUNT, 1, SHAPE_WIDTH, SHAPE_HEIGHT));
+		}
+		
+		public static TextureRegion getBlank() {
+			return shapes[0];
+		}
+		
+		public static TextureRegion getShape(int index) {
+			return shapes[index % shapes.length];
+		}
 	}
 }

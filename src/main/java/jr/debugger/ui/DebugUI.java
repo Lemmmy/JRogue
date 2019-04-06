@@ -66,7 +66,7 @@ public class DebugUI {
 		stage = new Stage(stageViewport);
 		skin = UISkin.getInstance();
 		
-		addDebugWindow(new DebugUIWindow("Atlas Viewer", AtlasViewer.class));
+		addDebugWindow(new DebugUIWindow("Atlas Viewer", AtlasViewer.class, debugClient.getGameAdapter().assets));
 		
 		// stage.setDebugAll(true);
 		

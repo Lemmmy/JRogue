@@ -1,22 +1,25 @@
 package jr.rendering.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Particles.particleFile;
 
 public class EntityRendererParticleHound extends EntityRendererBasic {
-	protected TextureRegion image;
+	private String particleName;
 	
-	public EntityRendererParticleHound(int sheetX, int sheetY, String particleName) {
-		super("textures/entities.png", sheetX, sheetY);
+	public EntityRendererParticleHound(String fileName, String particleName) {
+		super(fileName);
+		this.particleName = particleName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		ParticleEffect effect = new ParticleEffect();
-		effect.load(Gdx.files.internal("particles/" + particleName + ".particle"), Gdx.files.internal("textures"));
-		
-		effectPool = new ParticleEffectPool(effect, 100, 500);
+		assets.particles.load(particleFile(particleName), p -> effectPool = new ParticleEffectPool(p, 100, 500));
 	}
 	
 	@Override
@@ -26,7 +29,7 @@ public class EntityRendererParticleHound extends EntityRendererBasic {
 	
 	@Override
 	public int getParticleYOffset(Entity entity) {
-		return 10;
+		return 6;
 	}
 	
 	@Override

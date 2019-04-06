@@ -1,47 +1,43 @@
 package jr.rendering.ui.skin;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
 
 @UISkinStyleHandler
-public class UICheckBoxStyles implements UISkinStyle {
+public class UICheckBoxStyles extends UITextButtonStyles {
+	protected TextureRegionDrawable off, offDisabled, on, onDisabled;
+	
+	public UICheckBoxStyles(UISkin skin) {
+		super(skin);
+	}
+	
 	@Override
-	public void add(Skin skin) {
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		loadTextureRegion(assets, "checkbox_off", t -> off = t);
+		loadTextureRegion(assets, "checkbox_off_disabled", t -> offDisabled = t);
+		loadTextureRegion(assets, "checkbox_on", t -> on = t);
+		loadTextureRegion(assets, "checkbox_on_disabled", t -> onDisabled = t);
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
 		skin.add("default", getCheckboxStyle(skin));
 	}
 	
 	private CheckBox.CheckBoxStyle getCheckboxStyle(Skin skin) {
 		CheckBox.CheckBoxStyle style = new CheckBox.CheckBoxStyle();
 		
-		style.checkboxOff = getCheckboxOff();
-		style.checkboxOffDisabled = getCheckboxOffDisabled();
-		style.checkboxOn = getCheckboxOn();
-		style.checkboxOnDisabled = getCheckboxOnDisabled();
+		style.checkboxOff = off;
+		style.checkboxOffDisabled = offDisabled;
+		style.checkboxOn = on;
+		style.checkboxOnDisabled = onDisabled;
 		
-		style.font = skin.getFont("defaultNoShadow");
-		style.fontColor = Color.WHITE; style.downFontColor = Color.WHITE;
-		style.overFontColor = Color.WHITE; style.disabledFontColor = Color.WHITE;
+		applyFontStyle(style);
 		
 		return style;
-	}
-	
-	public Drawable getCheckboxOff() {
-		return new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 143, 43, 16, 16));
-	}
-	
-	public Drawable getCheckboxOffDisabled() {
-		return new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 159, 43, 16, 16));
-	}
-	
-	public Drawable getCheckboxOn() {
-		return new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 175, 43, 16, 16));
-	}
-	
-	public Drawable getCheckboxOnDisabled() {
-		return new TextureRegionDrawable(ImageLoader.getSubimage("textures/hud.png", 191, 43, 16, 16));
 	}
 }

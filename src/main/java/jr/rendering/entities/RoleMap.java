@@ -3,23 +3,35 @@ package jr.rendering.entities;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.entities.player.roles.Role;
 import jr.dungeon.entities.player.roles.RoleWizard;
-import jr.rendering.utils.ImageLoader;
-import lombok.AllArgsConstructor;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
+import jr.rendering.assets.Textures;
+import jr.rendering.assets.UsesAssets;
 import lombok.Getter;
 
-@AllArgsConstructor
+import java.util.Arrays;
+import java.util.Collection;
+
 @Getter
-public enum RoleMap {
-	WIZARD(
-		RoleWizard.class,
-		ImageLoader.getImageFromSheet(
-			"textures/entities.png",
-			1, 0,
-			EntityMap.ENTITY_WIDTH, EntityMap.ENTITY_HEIGHT,
-			false
-		)
-	);
+@RegisterAssetManager
+public enum RoleMap implements UsesAssets {
+	WIZARD(RoleWizard.class, "player_wizard");
 	
 	private Class<? extends Role> roleClass;
+	private String fileName;
 	private TextureRegion roleTexture;
+	
+	RoleMap(Class<? extends Role> roleClass, String fileName) {
+		this.roleClass = roleClass;
+		this.fileName = fileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		assets.textures.loadPacked(Textures.entityFile(fileName), t -> roleTexture = t);
+	}
+	
+	public static Collection<? extends UsesAssets> getAssets() {
+		return Arrays.asList(values());
+	}
 }

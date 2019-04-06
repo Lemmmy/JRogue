@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 @UISkinStyleHandler(priority = 500)
-public class UIColours implements UISkinStyle {
+public class UIColours extends UISkinStyle {
 	static {
 		Colors.put("P_GREY_0", new Color(0x2e2e2eff));
 		Colors.put("P_GREY_1", new Color(0x4d4d4dff));
@@ -47,7 +47,9 @@ public class UIColours implements UISkinStyle {
 		Colors.put("P_PINK_4", new Color(0xf356e6ff));
 	}
 	
-	public void add(Skin skin) {
+	public UIColours(UISkin skin) {
+		super(skin);
+		
 		Colors.getColors().forEach(stringColorEntry -> addColour(
 			skin,
 			stringColorEntry.key.toLowerCase().replace("p_", ""),

@@ -13,8 +13,9 @@ import jr.dungeon.VisibilityStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.UsesAssets;
 import jr.rendering.screens.GameScreen;
-import jr.rendering.utils.ImageLoader;
 import jr.utils.Colour;
 import jr.utils.Utils;
 import lombok.Getter;
@@ -23,7 +24,9 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TileRenderer {
+import static jr.rendering.assets.Textures.tileFile;
+
+public abstract class TileRenderer implements UsesAssets {
 	private static final boolean AO_ENABLED = true;
 
 	private static final Map<Integer, Integer[]> AO_MODES = new HashMap<>();
@@ -43,6 +46,7 @@ public abstract class TileRenderer {
 
 	private static TextureRegion dim;
 	private static TextureRegion dimLight;
+	private static boolean dimLoaded = false;
 	
 	@Getter @Setter
 	protected GameScreen renderer;
@@ -50,15 +54,16 @@ public abstract class TileRenderer {
 	@Getter @Setter
 	private boolean drawingReflection = false;
 	
-	static {
-		dim = getImageFromSheet("textures/tiles.png", 9, 1);
-		dimLight = getImageFromSheet("textures/tiles.png", 10, 1);
-	}
-	
 	protected ParticleEffectPool effectPool;
 	
-	protected static TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
-		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
+	@Override
+	public void onLoad(Assets assets) {
+		if (!dimLoaded) {
+			assets.textures.loadPacked(tileFile("dim"), t -> dim = t);
+			assets.textures.loadPacked(tileFile("dim_light"), t -> dimLight = t);
+			
+			dimLoaded = true;
+		}
 	}
 	
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, int x, int y);
@@ -86,7 +91,7 @@ public abstract class TileRenderer {
 			float ty = y * height;
 			
 			if (isDrawingReflection()) {
-				batch.draw(image, tx, ty + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
+				batch.draw(image, tx, ty, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
 			} else {
 				batch.draw(image, tx, ty);
 			}

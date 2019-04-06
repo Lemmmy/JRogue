@@ -19,12 +19,15 @@ import jr.dungeon.events.LevelChangeEvent;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.screens.GameScreen;
-import jr.rendering.utils.ImageLoader;
 import jr.utils.Utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
+
+import static jr.rendering.assets.Textures.hudFile;
 
 public class MinimapComponent extends RendererComponent {
 	private static final Color SOLID_COLOUR = new Color(0x666666cc);
@@ -45,9 +48,7 @@ public class MinimapComponent extends RendererComponent {
 	private OrthographicCamera minimapCamera;
 	
 	private int tileWidth, tileHeight;
-	private int xOffset;
-	
-	private TextureRegion iconPoint, iconUp, iconDown;
+	private int xOffset, yOffset;
 	
 	private Level level;
 	
@@ -66,24 +67,13 @@ public class MinimapComponent extends RendererComponent {
 		
 		mapBatch = new ShapeRenderer();
 		iconBatch = new SpriteBatch();
-		
-		loadIcons();
-	}
-	
-	private void loadIcons() {
-		iconPoint = ImageLoader.getSubimage("textures/hud.png", 176, 176, 4, 5);
-		iconDown = ImageLoader.getSubimage("textures/hud.png", 180, 176, 3, 5);
-		iconUp = ImageLoader.getSubimage("textures/hud.png", 183, 176, 3, 5);
-		
-		iconPoint.flip(false, true);
-		iconDown.flip(false, true);
-		iconUp.flip(false, true);
 	}
 	
 	@Override
 	public void resize(int width, int height) {
-		minimapCamera.setToOrtho(true, width, height);
+		minimapCamera.setToOrtho(false, width, height);
 		xOffset = width - level.getWidth() * tileWidth;
+		yOffset = height - level.getHeight() * tileHeight;
 	}
 	
 	@EventHandler
@@ -146,13 +136,13 @@ public class MinimapComponent extends RendererComponent {
 		}
 		
 		mapBatch.setColor(colour.r, colour.g, colour.b, isVisible ? colour.a : colour.a / 3f);
-		mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+		mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
 
 		if (isVisible) {
 			Color lightColour = Utils.colourToGdx(tile.getLightColour(), 1);
 			
 			mapBatch.setColor(lightColour.r, lightColour.g, lightColour.b, 0.5f);
-			mapBatch.rect(xOffset + tile.getX() * tileWidth, tile.getY() * tileHeight, tileWidth, tileHeight);
+			mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
 		}
 	}
 	
@@ -167,12 +157,12 @@ public class MinimapComponent extends RendererComponent {
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.UP) == TileFlag.UP)
 			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
-			.forEach(t -> drawIcon(iconUp, t.getX(), t.getY(), Color.WHITE));
+			.forEach(t -> drawIcon(Icons.up, t.getX(), t.getY(), Color.WHITE));
 		
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
-			.forEach(t -> drawIcon(iconDown, t.getX(), t.getY(), Color.WHITE));
+			.forEach(t -> drawIcon(Icons.down, t.getX(), t.getY(), Color.WHITE));
 	}
 	
 	private void drawEntityIcons() {
@@ -185,7 +175,7 @@ public class MinimapComponent extends RendererComponent {
 				!level.visibilityStore.isTileInvisible(e.getX(), e.getY())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> drawIcon(iconPoint, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
+			.forEach(e -> drawIcon(Icons.point, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
@@ -198,7 +188,7 @@ public class MinimapComponent extends RendererComponent {
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.map(e -> (Monster) e)
 			.forEach(m -> drawIcon(
-				iconPoint,
+				Icons.point,
 				m.getLastSeenX(),
 				m.getLastSeenY(),
 				getIconColour(m)
@@ -221,19 +211,30 @@ public class MinimapComponent extends RendererComponent {
 			return;
 		}
 		
-		drawIcon(iconPoint, player.getX(), player.getY(), PLAYER_ICON_COLOUR);
+		drawIcon(Icons.point, player.getX(), player.getY(), PLAYER_ICON_COLOUR);
 	}
 	
 	private void drawIcon(TextureRegion icon, int x, int y, Color colour) {
 		iconBatch.setColor(colour);
 		iconBatch.draw(icon,
 			xOffset + x * tileWidth - icon.getRegionWidth() / 2,
-			y * tileHeight - icon.getRegionHeight() / 2
+			yOffset + y * tileHeight - icon.getRegionHeight() / 2
 		);
 	}
 	
 	@Override
 	public void dispose() {
 		
+	}
+	
+	@RegisterAssetManager
+	public static class Icons {
+		private static TextureRegion point, up, down;
+		
+		public static void loadAssets(Assets assets) {
+			assets.textures.loadPacked(hudFile("minimap_point"), t -> point = t);
+			assets.textures.loadPacked(hudFile("minimap_up"), t -> up = t);
+			assets.textures.loadPacked(hudFile("minimap_down"), t -> down = t);
+		}
 	}
 }

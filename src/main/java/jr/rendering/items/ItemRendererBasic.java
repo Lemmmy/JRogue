@@ -7,16 +7,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Textures.itemFile;
 
 public class ItemRendererBasic extends ItemRenderer {
 	private TextureRegion image;
-	private TextureRegion imageDrawable;
 	
-	public ItemRendererBasic(String sheetName, int sheetX, int sheetY) {
-		image = getImageFromSheet(sheetName, sheetX, sheetY);
-		imageDrawable = ImageLoader
-			.getImageFromSheet(sheetName, sheetX, sheetY, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false);
+	private String fileName;
+	
+	public ItemRendererBasic(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(itemFile(fileName), t -> image = t);
 	}
 	
 	@Override
@@ -31,6 +39,6 @@ public class ItemRendererBasic extends ItemRenderer {
 	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(imageDrawable);
+		return new TextureRegionDrawable(image);
 	}
 }

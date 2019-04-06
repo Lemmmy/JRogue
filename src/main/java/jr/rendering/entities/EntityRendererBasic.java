@@ -5,13 +5,26 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
+import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
+
+import static jr.rendering.assets.Textures.entityFile;
 
 public class EntityRendererBasic extends EntityRenderer {
 	protected TextureRegion image;
+	private String fileName;
 	
-	public EntityRendererBasic(String sheetName, int sheetX, int sheetY) {
-		image = getImageFromSheet(sheetName, sheetX, sheetY);
+	public EntityRendererBasic(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		if (fileName != null) {
+			assets.textures.loadPacked(entityFile(fileName), t -> image = t);
+		}
 	}
 	
 	@Override

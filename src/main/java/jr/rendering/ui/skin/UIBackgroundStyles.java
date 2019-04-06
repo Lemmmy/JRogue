@@ -1,17 +1,20 @@
 package jr.rendering.ui.skin;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
 
 @UISkinStyleHandler
-public class UIBackgroundStyles implements UISkinStyle {
-	public void add(Skin skin) {
-		addBackground(skin, "darkBricks", 70, 89, 68, 22);
-		addBackground(skin, "darkBricksBump", 70, 111, 68, 22);
+public class UIBackgroundStyles extends UISkinStyle {
+	public UIBackgroundStyles(UISkin skin) {
+		super(skin);
 	}
 	
-	public void addBackground(Skin skin, String name, int x, int y, int width, int height) {
-		skin.add(name, new TiledDrawable(ImageLoader.getSubimage("textures/hud.png", x, y, width, height)));
+	public void addBackground(Assets assets, String fileName, String name) {
+		loadTiledDrawable(assets, fileName, t -> skin.add(name, t));
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		addBackground(assets, "dark_bricks", "darkBricks");
 	}
 }

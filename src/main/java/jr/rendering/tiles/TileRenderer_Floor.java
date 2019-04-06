@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRenderer_Floor extends TileRendererBlob8 {
 	private static final float TEXTURE_SPEED = 6;
@@ -21,26 +23,22 @@ public class TileRenderer_Floor extends TileRendererBlob8 {
 	
 	private boolean exclusive;
 	
-	public TileRenderer_Floor(int sheetX,
-							  int sheetY,
-							  ReflectionSettings reflectionSettings,
+	public TileRenderer_Floor(ReflectionSettings reflectionSettings,
 							  boolean exclusive,
 							  TileType... connecting) {
-		super(1, 1);
+		super("_");
 		
 		this.reflectionSettings = reflectionSettings;
 		this.exclusive = exclusive;
 		this.connecting = new ArrayList<>(Arrays.asList(connecting));
-		
-		floor = ImageLoader.getImageFromSheet(
-			"textures/tiles.png",
-			sheetX,
-			sheetY,
-			TileMap.TILE_WIDTH * 2,
-			TileMap.TILE_HEIGHT * 2
-		);
 	}
 	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(tileFile("__floor"), t -> floor = t);
+	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {

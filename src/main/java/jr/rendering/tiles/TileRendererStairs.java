@@ -3,23 +3,35 @@ package jr.rendering.tiles;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRendererStairs extends TileRenderer {
 	private static TextureRegion up;
 	private static TextureRegion down;
+	private static boolean arrowsLoaded;
 	
-	private TextureRegion image;
+	private TextureRegion image; private String fileName;
 	private StairDirection direction;
 	
-	public TileRendererStairs(StairDirection direction, int sheetX, int sheetY) {
-		if (up == null || down == null) {
-			up = getImageFromSheet("textures/tiles.png", 13, 0);
-			down = getImageFromSheet("textures/tiles.png", 14, 0);
+	public TileRendererStairs(StairDirection direction, String fileName) {
+		this.direction = direction;
+		this.fileName = fileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		if (!arrowsLoaded) {
+			assets.textures.loadPacked(tileFile("arrow_up"), t -> up = t);
+			assets.textures.loadPacked(tileFile("arrow_down"), t -> down = t);
+			
+			arrowsLoaded = true;
 		}
 		
-		image = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		
-		this.direction = direction;
+		assets.textures.loadPacked(tileFile(fileName), t -> image = t);
 	}
 	
 	@Override
@@ -29,14 +41,7 @@ public class TileRendererStairs extends TileRenderer {
 	
 	@Override
 	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		switch (direction) {
-			case UP:
-				return up;
-			case DOWN:
-				return down;
-		}
-		
-		return null;
+		return direction == StairDirection.UP ? up : down;
 	}
 	
 	@Override

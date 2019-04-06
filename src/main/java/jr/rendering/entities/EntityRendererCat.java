@@ -4,24 +4,27 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.familiars.Familiar;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
+
+import static jr.rendering.assets.Textures.entityFile;
 
 public class EntityRendererCat extends EntityRendererBasic {
-	private static final int startX = 0;
-	private static final int startY = 7;
 	private static final int imageCount = 12;
 	private static final int ageCount = 3;
 	private static final int breedCount = imageCount / ageCount;
 	
-	private TextureRegion[] images;
+	private TextureRegion[] images = new TextureRegion[imageCount];
 	
 	public EntityRendererCat() {
-		super("textures/entities.png", startX, startY);
+		super(null);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		images = new TextureRegion[imageCount];
-		
-		for (int i = 0; i < imageCount; i++) {
-			images[i] = getImageFromSheet("textures/entities.png", startX + i, startY);
-		}
+		assets.textures.loadPacked(entityFile("cats"), t -> ImageUtils.loadSheet(t, images, imageCount, 1));
 	}
 	
 	@Override

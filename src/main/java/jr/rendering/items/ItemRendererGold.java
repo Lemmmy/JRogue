@@ -7,28 +7,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.dungeon.Dungeon;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import static jr.rendering.assets.Textures.itemFile;
 
 public class ItemRendererGold extends ItemRenderer {
 	private int[] values = new int[]{1, 2, 5, 10, 20, 30, 50, 100, 200, 300};
 	
-	private List<TextureRegion> images = new ArrayList<>();
-	private List<TextureRegion> imagesDrawable = new ArrayList<>();
+	private TextureRegion[] images = new TextureRegion[values.length];
 	
-	public ItemRendererGold() {
-		for (int i = 0; i < values.length; i++) {
-			images.add(getImageFromSheet("textures/items.png", i, 7));
-			imagesDrawable
-				.add(ImageLoader.getImageFromSheet("textures/items.png", i, 7, ItemMap.ITEM_WIDTH, ItemMap.ITEM_HEIGHT, false));
-		}
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(itemFile("gold"), t -> ImageUtils.loadSheet(t, images, values.length, 1));
 	}
 	
 	@Override
 	public TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect) {
-		return getImageFromAmount(itemStack.getCount(), true);
+		return getImageFromAmount(itemStack.getCount());
 	}
 	
 	@Override
@@ -36,7 +34,7 @@ public class ItemRendererGold extends ItemRenderer {
 		drawItem(batch, getTextureRegion(dungeon, itemStack, item, reflect), x, y, reflect);
 	}
 	
-	private TextureRegion getImageFromAmount(int count, boolean flipped) {
+	private TextureRegion getImageFromAmount(int count) {
 		int value = 1;
 		
 		for (int i = 0; i < values.length; i++) {
@@ -47,15 +45,11 @@ public class ItemRendererGold extends ItemRenderer {
 			}
 		}
 		
-		if (flipped) {
-			return images.get(value);
-		} else {
-			return imagesDrawable.get(value);
-		}
+		return images[value];
 	}
 	
 	@Override
 	public Drawable getDrawable(ItemStack itemStack, Item item) {
-		return new TextureRegionDrawable(getImageFromAmount(itemStack.getCount(), false));
+		return new TextureRegionDrawable(getImageFromAmount(itemStack.getCount()));
 	}
 }

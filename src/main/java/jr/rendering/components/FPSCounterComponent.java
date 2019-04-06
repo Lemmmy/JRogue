@@ -9,12 +9,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.screens.GameScreen;
-import jr.rendering.utils.FontLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static jr.rendering.assets.Fonts.fontFile;
 
 public class FPSCounterComponent extends RendererComponent {
 	private static final int GRAPH_WIDTH = 150,
@@ -30,8 +33,6 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private OrthographicCamera counterCamera;
 	
-	private BitmapFont font;
-	
 	public FPSCounterComponent(GameScreen renderer, Dungeon dungeon, Settings settings) {
 		super(renderer, dungeon, settings);
 	}
@@ -42,8 +43,6 @@ public class FPSCounterComponent extends RendererComponent {
 		spriteBatch = new SpriteBatch();
 		
 		counterCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
-		font = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
 	}
 	
 	@Override
@@ -69,7 +68,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private void drawGraph() {
 		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16;
+		int y = 16;
 		
 		shapeBatch.setColor(GRAPH_BACKGROUND);
 		shapeBatch.rect(x, y, GRAPH_WIDTH, GRAPH_HEIGHT);
@@ -82,17 +81,17 @@ public class FPSCounterComponent extends RendererComponent {
 		for (int i = 0; i < frameTimeHistory.size(); i++) {
 			float barHeight = frameTimeHistory.get(i) * scale;
 			
-			shapeBatch.rect(x + i, y + (GRAPH_HEIGHT - barHeight), 1, barHeight);
+			shapeBatch.rect(x + i, y, 1, barHeight);
 		}
 	}
 	
 	private void drawText() {
 		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16;
+		int y = GRAPH_HEIGHT + 16;
 				
 		float peakTime = Collections.max(frameTimeHistory) * 1000;
 		
-		font.draw(
+		Font.font.draw(
 			spriteBatch,
 			String.format("current: %,dfps\npeak: %.2fms", Gdx.graphics.getFramesPerSecond(), peakTime),
 			x,
@@ -111,7 +110,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void resize(int width, int height) {
-		counterCamera.setToOrtho(true, width, height);
+		counterCamera.setToOrtho(false, width, height);
 	}
 	
 	@Override
@@ -122,5 +121,14 @@ public class FPSCounterComponent extends RendererComponent {
 	@Override
 	public void dispose() {
 		
+	}
+	
+	@RegisterAssetManager
+	public static class Font {
+		private static BitmapFont font;
+		
+		public static void loadAssets(Assets assets) {
+			assets.fonts.load(fontFile("Lato-Regular"), 11, false, f -> font = f);
+		}
 	}
 }

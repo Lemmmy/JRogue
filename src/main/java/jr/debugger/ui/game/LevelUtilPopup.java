@@ -68,8 +68,7 @@ public class LevelUtilPopup extends Table {
 		try {
 			Tile tile = dungeon.getLevel().tileStore.getTile(worldX, worldY);
 			TileRenderer tr = TileMap.valueOf(tile.getType().name()).getRenderer();
-			TextureRegion region = new TextureRegion(tr.getTextureRegion(dungeon, worldX, worldY));
-			region.flip(false, true);
+			TextureRegion region = tr.getTextureRegion(dungeon, worldX, worldY);
 			
 			addButton(container, new TextureRegionDrawable(region), tile.getType().name(), (fcl, event, x, y) -> {
 				ui.getDebugClient().findNamedPath("dungeon.level.tileStore.tiles").ifPresent(treeNode -> {
@@ -103,8 +102,7 @@ public class LevelUtilPopup extends Table {
 	private void initialiseEntityButton(Table container, Entity entity) {
 		try {
 			EntityRenderer er = EntityMap.valueOf(entity.getAppearance().name()).getRenderer();
-			TextureRegion region = new TextureRegion(er.getTextureRegion(dungeon, entity));
-			region.flip(false, true);
+			TextureRegion region = er.getTextureRegion(dungeon, entity);
 			
 			addButton(container, new TextureRegionDrawable(region), entity.getName(null).build(Capitalise.first), (fcl, event, x, y) -> {
 				ui.getDebugClient().findNamedPath("dungeon.level.entityStore.entities").ifPresent(treeNode -> {

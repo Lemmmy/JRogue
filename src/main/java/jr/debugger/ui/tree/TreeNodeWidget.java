@@ -5,12 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import jr.debugger.DebugClient;
 import jr.debugger.tree.TreeNode;
 import jr.debugger.ui.DebugUI;
 import jr.debugger.ui.tree.setters.SetterWindow;
 import jr.debugger.ui.utils.Identicon;
+import jr.rendering.ui.skin.UIIcons;
 import jr.rendering.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
@@ -47,10 +47,10 @@ public class TreeNodeWidget extends Table {
 		int rightPad = IDENTICON_PADDING;
 		
 		if (node.getInstance() == null) {
-			identicon = getSkin().get("debugNullIcon", TextureRegionDrawable.class);
+			identicon = UIIcons.getIcon(getSkin(), "debugNullIcon");
 			rightPad += Identicon.SHAPE_PADDING;
-		} else if (node.isPrimitive()) {
-			identicon = getSkin().get("debugPrimitiveIcon", TextureRegionDrawable.class);
+		} else if (node.isPrimitive() || !node.isShowIdenticon()) {
+			identicon = UIIcons.getIcon(getSkin(), "debugPrimitiveIcon");
 			rightPad += Identicon.SHAPE_PADDING;
 		} else {
 			identicon = Identicon.getIdenticon(node.getIdentityHashCode());
@@ -66,7 +66,7 @@ public class TreeNodeWidget extends Table {
 	
 	private void initialiseModifiers(Table container) {
 		AccessLevelMap alm = AccessLevelMap.valueOf(node.getAccessLevel().name());
-		Image almIcon = new Image(new TextureRegionDrawable(alm.getTextureRegion()));
+		Image almIcon = alm.getImage(getSkin());
 		almIcon.addListener(new TextTooltip(node.getAccessLevel().humanName(), getSkin()));
 		container.add(almIcon).left().padRight(ICON_PADDING);
 		
@@ -79,7 +79,7 @@ public class TreeNodeWidget extends Table {
 	}
 	
 	private void addModifierIcon(Table container, String iconName, String iconTooltip) {
-		Image icon = new Image(getSkin().get(iconName, TextureRegionDrawable.class));
+		Image icon = UIIcons.getImage(getSkin(), iconName);
 		icon.addListener(new TextTooltip(iconTooltip, getSkin()));
 		container.add(icon).left().padRight(ICON_PADDING);
 	}
@@ -112,7 +112,7 @@ public class TreeNodeWidget extends Table {
 	private void initialise() {
 		Table nameTable = new Table(getSkin());
 		
-		if (node.isShowIdenticon()) initialiseIdenticon(nameTable);
+		initialiseIdenticon(nameTable);
 		initialiseModifiers(nameTable);
 		initialiseNameLabel(nameTable);
 		

@@ -5,14 +5,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.states.TileState;
 import jr.dungeon.tiles.states.TileStateTrap;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRendererTrap extends TileRenderer {
-	private final TextureRegion trapImage;
+	private TextureRegion trapImage; private String fileName;
 
-	public TileRendererTrap(TextureRegion trapImage) {
-		this.trapImage = trapImage;
+	public TileRendererTrap(String fileName) {
+		this.fileName = fileName;
 	}
-
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(tileFile(fileName), t -> trapImage = t);
+	}
+	
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		TileState state = dungeon.getLevel().tileStore.getTile(x, y).getState();

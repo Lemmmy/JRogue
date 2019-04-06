@@ -4,10 +4,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Textures.blobFile;
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRendererRug extends TileRendererBlob8 {
-	private TextureRegion rug;
-	private TextureRegion floor;
+	private TextureRegion rug; private String rugFileName;
+	private TextureRegion floor; private String floorFileName;
 
 	private TextureRegion[] overlayImages = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
 	private TextureRegion[] cutoutImages = new TextureRegion[BLOB_SHEET_WIDTH * BLOB_SHEET_HEIGHT];
@@ -15,26 +19,34 @@ public class TileRendererRug extends TileRendererBlob8 {
 	private boolean connectToOthers;
 	private TileType self;
 
-	public TileRendererRug(int sheetX, int sheetY, int floorSheetX, int floorSheetY) {
-		this(sheetX, sheetY, floorSheetX, floorSheetY, false, null);
+	public TileRendererRug(String rugFileName, String floorFileName) {
+		this(rugFileName, floorFileName, false, null);
 	}
 
-	public TileRendererRug(int sheetX,
-						   int sheetY,
-						   int floorSheetX,
-						   int floorSheetY,
-						   boolean connectToOthers,
-						   TileType self) {
-		super(1, 0);
+	public TileRendererRug(String rugFileName, String floorFileName, boolean connectToOthers, TileType self) {
+		super(null);
 		
 		this.connectToOthers = connectToOthers;
 		this.self = self;
 		
-		rug = getImageFromSheet("textures/tiles.png", sheetX, sheetY);
-		floor = getImageFromSheet("textures/tiles.png", floorSheetX, floorSheetY);
-
-		loadBlob(overlayImages, 3, 0);
-		loadBlob(cutoutImages, 0, 1);
+		this.rugFileName = rugFileName;
+		this.floorFileName = floorFileName;
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		
+		assets.textures.loadPacked(tileFile(rugFileName), t -> rug = t);
+		assets.textures.loadPacked(tileFile(floorFileName), t -> floor = t);
+		
+		assets.textures.load(blobFile("rug_overlay"), t -> loadBlob(new TextureRegion(t), overlayImages));
+		assets.textures.load(blobFile("rug_cutout"), t -> loadBlob(new TextureRegion(t), cutoutImages));
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
 		
 		bakeBlobs(cutoutImages, "rug", rug, floor);
 	}

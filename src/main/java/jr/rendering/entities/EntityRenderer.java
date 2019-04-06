@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
+import jr.rendering.assets.UsesAssets;
 import jr.rendering.entities.animations.EntityAnimationData;
-import jr.rendering.utils.ImageLoader;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class EntityRenderer {
+public abstract class EntityRenderer implements UsesAssets {
 	protected ParticleEffectPool effectPool;
 	@Getter @Setter private boolean drawingReflection = false;
 	
@@ -30,10 +30,6 @@ public abstract class EntityRenderer {
 	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation);
 	
-	protected TextureRegion getImageFromSheet(String sheetName, int sheetX, int sheetY) {
-		return ImageLoader.getImageFromSheet(sheetName, sheetX, sheetY);
-	}
-	
 	protected void drawEntity(SpriteBatch batch, TextureRegion image, float x, float y) {
 		if (image != null) {
 			int width = EntityMap.ENTITY_WIDTH;
@@ -43,7 +39,7 @@ public abstract class EntityRenderer {
 			float ey = y * height + 0.01f;
 			
 			if (drawingReflection) {
-				batch.draw(image, ex, ey + height * 2, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
+				batch.draw(image, ex, ey, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
 			} else {
 				batch.draw(image, ex, ey);
 			}

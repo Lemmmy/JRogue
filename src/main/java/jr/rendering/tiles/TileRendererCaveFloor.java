@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+import jr.rendering.utils.ImageUtils;
 
 import java.util.Random;
+
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRendererCaveFloor extends TileRendererConnecting {
 	private static final int PROBABILITY_ROCK = 25;
@@ -17,21 +20,19 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 							 ROCK_WIDTH = 8,
 							 ROCK_HEIGHT = 8;
 	
-	private TextureRegion[] rocks;
+	private TextureRegion[] rocks = new TextureRegion[ROCK_SHEET_WIDTH * ROCK_SHEET_HEIGHT];
 	
 	private Random rand = new Random();
 	
 	public TileRendererCaveFloor() {
-		super(6, 2, 7, 2, true, "cavefloor", TileType.TILE_GROUND, TileType.TILE_CAVE_WALL);
+		super("cave_floor", "cave_wall", "cave_floor", true, TileType.TILE_GROUND, TileType.TILE_CAVE_WALL);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
-		rocks = new TextureRegion[6 * 4];
-		
-		for (int i = 0; i < ROCK_SHEET_WIDTH * ROCK_SHEET_HEIGHT; i++) {
-			int sx = i % ROCK_SHEET_WIDTH;
-			int sy = (int) Math.floor(i / ROCK_SHEET_WIDTH);
-			
-			rocks[i] = ImageLoader.getImageFromSheet("textures/rocks.png", sx, sy, ROCK_WIDTH, ROCK_HEIGHT);
-		}
+		assets.textures.loadPacked(tileFile("rocks"), t -> ImageUtils.loadSheet(t, rocks, ROCK_SHEET_WIDTH, ROCK_SHEET_HEIGHT));
 	}
 	
 	@Override

@@ -10,6 +10,6 @@ public class AnimationChestKick extends EntityAnimation {
 	
 	@Override
 	public void update(EntityAnimationData data, float t) {
-		data.offsetY -= (float) Math.sin(t * Math.PI) / 5;
+		data.offsetY += (float) Math.sin(t * Math.PI) / 5;
 	}
 }

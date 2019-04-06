@@ -1,30 +1,51 @@
 package jr.rendering.ui.skin;
 
 import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
 
-@UISkinStyleHandler
-public class UISelectBoxStyles implements UISkinStyle {
+import java.util.function.Consumer;
+
+@UISkinStyleHandler(priority = 200)
+public class UISelectBoxStyles extends UISkinStyle {
 	// TODO: new style
 	
-	public void add(Skin skin) {
+	private NinePatchDrawable background, disabled, over, open;
+	
+	public UISelectBoxStyles(UISkin skin) {
+		super(skin);
+	}
+	
+	protected void loadSelectBoxGraphic(Assets assets, String fileName, Consumer<NinePatchDrawable> consumer) {
+		loadNinePatch(assets, fileName, 2, 2, 2, 2, consumer);
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
+		loadSelectBoxGraphic(assets, "old_select_box_background", n -> background = n);
+		loadSelectBoxGraphic(assets, "old_select_box_background_disabled", n -> disabled = n);
+		loadSelectBoxGraphic(assets, "old_select_box_background_over", n -> over = n);
+		loadSelectBoxGraphic(assets, "old_select_box_background_open", n -> open = n);
+	}
+	
+	@Override
+	public void onLoaded(Assets assets) {
+		super.onLoaded(assets);
 		skin.add("default", getSelectBoxStyle(skin));
 	}
 	
 	public SelectBox.SelectBoxStyle getSelectBoxStyle(Skin skin) {
 		SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle();
 		
-		style.background = getBackground();
-		style.backgroundDisabled = getBackgroundDisabled();
-		style.backgroundOver = getBackgroundOver();
-		style.backgroundOpen = getBackgroundOpen();
+		style.background = background;
+		style.backgroundDisabled = disabled;
+		style.backgroundOver = over;
+		style.backgroundOpen = open;
 		
 		style.font = skin.getFont("defaultNoShadow");
 		style.fontColor = Colors.get("P_GREY_0");
@@ -33,33 +54,5 @@ public class UISelectBoxStyles implements UISkinStyle {
 		style.scrollStyle = skin.get(ScrollPane.ScrollPaneStyle.class);
 		
 		return style;
-	}
-	
-	public Drawable getBackground() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 59, 10, 5, 18),
-			2, 2, 2, 2
-		));
-	}
-	
-	public Drawable getBackgroundDisabled() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 69, 10, 5, 18),
-			2, 2, 2, 2
-		));
-	}
-	
-	public Drawable getBackgroundOver() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 74, 10, 5, 18),
-			2, 2, 2, 2
-		));
-	}
-	
-	public Drawable getBackgroundOpen() {
-		return new NinePatchDrawable(new NinePatch(
-			ImageLoader.getSubimage("textures/hud.png", 79, 10, 5, 18),
-			2, 2, 2, 2
-		));
 	}
 }

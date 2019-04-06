@@ -4,27 +4,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.TileType;
-import jr.rendering.utils.ImageLoader;
+import jr.rendering.assets.Assets;
+
+import static jr.rendering.assets.Textures.tileFile;
 
 public class TileRenderer_Bridge extends TileRendererBlob8 {
 	private static final float TEXTURE_SPEED = 8;
 	
 	private TextureRegion bridge;
 	
-	public TileRenderer_Bridge(int sheetX, int sheetY) {
-		super(1, 1);
+	public TileRenderer_Bridge() {
+		super("_");
+	}
+	
+	@Override
+	public void onLoad(Assets assets) {
+		super.onLoad(assets);
 		
 		// the idea is that the texture is twice the size, so it can scroll and wrap arbitrarily in any direction.
 		// in case of the current texture, you can actually just wrap it after 4 pixels, but this is texture-pack
 		// friendlier.
 		
-		bridge = ImageLoader.getImageFromSheet(
-			"textures/tiles.png",
-			sheetX,
-			sheetY,
-			TileMap.TILE_WIDTH * 2,
-			TileMap.TILE_HEIGHT * 2
-		);
+		// TODO: ^^ is no longer relevant after AssetManager
+		
+		assets.textures.loadPacked(tileFile("__bridge"), t -> bridge = t);
 	}
 	
 	@Override

@@ -14,10 +14,12 @@ import jr.Settings;
 import jr.debugger.DebugClient;
 import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.serialisation.DungeonSerialiser;
+import jr.rendering.assets.Assets;
 import jr.rendering.screens.BasicScreen;
 import jr.rendering.screens.CharacterCreationScreen;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.screens.utils.ScreenTransition;
+import jr.utils.Profiler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +28,8 @@ public class GameAdapter extends Game {
 	 * The game's title in the game windowBorder.
 	 */
 	public static final String WINDOW_TITLE = "JRogue";
+	
+	public final Assets assets = new Assets();
 	
 	private Batch batch;
 	
@@ -67,6 +71,11 @@ public class GameAdapter extends Game {
 		});
 		
 		ErrorHandler.setGLString();
+		
+		Profiler.time("Loading assets", () -> {
+			assets.load();
+			assets.syncLoad();
+		});
 		
 		if (settings.isShowDebugClient()) {
 			this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));
@@ -226,6 +235,8 @@ public class GameAdapter extends Game {
 		newFBO.dispose();
 		
 		if (debugClient != null) debugClient.dispose();
+		
+		assets.dispose();
 	}
 	
 	public void setDebugWindowFocused(boolean debugWindowFocused) {

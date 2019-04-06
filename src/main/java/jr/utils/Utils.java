@@ -15,41 +15,41 @@ public class Utils {
 
 	public static final VectorInt[] DIRECTIONS = new VectorInt[] {
 		new VectorInt(1, 0), new VectorInt(-1, 0),
-		new VectorInt(0, 1), new VectorInt(0, -1)
+		new VectorInt(0, -1), new VectorInt(0, 1)
 	};
 
 	public static final VectorInt[] OCT_DIRECTIONS = new VectorInt[] {
-		new VectorInt(-1, -1), new VectorInt(0, -1), new VectorInt(1, -1),
+		new VectorInt(-1, 1), new VectorInt(0, 1), new VectorInt(1, 1),
 		new VectorInt(-1, 0), new VectorInt(1, 0),
-		new VectorInt(-1, 1), new VectorInt(0, 1), new VectorInt(1, 1)
+		new VectorInt(-1, -1), new VectorInt(0, -1), new VectorInt(1, -1)
 	};
 	
 	private static final Map<Integer, com.badlogic.gdx.graphics.Color> DUMMY_COLOURS = new HashMap<>();
 	
 	static {
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new VectorInt(-1, 1));
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new VectorInt(0, 1));
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new VectorInt(1, 1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_1, new VectorInt(-1, -1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_2, new VectorInt(0, -1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_3, new VectorInt(1, -1));
 		
 		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_4, new VectorInt(-1, 0));
 		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_6, new VectorInt(1, 0));
 		
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new VectorInt(-1, -1));
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new VectorInt(0, -1));
-		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new VectorInt(1, -1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_7, new VectorInt(-1, 1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_8, new VectorInt(0, 1));
+		MOVEMENT_KEYS.put(Input.Keys.NUMPAD_9, new VectorInt(1, 1));
 	}
 	
 	static {
-		MOVEMENT_CHARS.put('1', new VectorInt(-1, 1));
-		MOVEMENT_CHARS.put('2', new VectorInt(0, 1));
-		MOVEMENT_CHARS.put('3', new VectorInt(1, 1));
+		MOVEMENT_CHARS.put('1', new VectorInt(-1, -1));
+		MOVEMENT_CHARS.put('2', new VectorInt(0, -1));
+		MOVEMENT_CHARS.put('3', new VectorInt(1, -1));
 		
 		MOVEMENT_CHARS.put('4', new VectorInt(-1, 0));
 		MOVEMENT_CHARS.put('6', new VectorInt(1, 0));
 		
-		MOVEMENT_CHARS.put('7', new VectorInt(-1, -1));
-		MOVEMENT_CHARS.put('8', new VectorInt(0, -1));
-		MOVEMENT_CHARS.put('9', new VectorInt(1, -1));
+		MOVEMENT_CHARS.put('7', new VectorInt(-1, 1));
+		MOVEMENT_CHARS.put('8', new VectorInt(0, 1));
+		MOVEMENT_CHARS.put('9', new VectorInt(1, 1));
 	}
 	
 	public static int distance(int ax, int ay, int bx, int by) {
