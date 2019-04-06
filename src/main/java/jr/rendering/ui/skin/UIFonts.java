@@ -9,9 +9,9 @@ public class UIFonts extends UISkinStyle {
 		
 		// TODO: assetmanager fonts
 		
-		skin.add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true, false));
-		skin.add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false, false));
-		skin.add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true, false));
-		skin.add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false, false));
+		skin.add("default", FontLoader.getFont("fonts/PixelOperator.ttf", 16, true));
+		skin.add("defaultNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 16, false));
+		skin.add("large", FontLoader.getFont("fonts/PixelOperator.ttf", 32, true));
+		skin.add("largeNoShadow", FontLoader.getFont("fonts/PixelOperator.ttf", 32, false));
 	}
 }

@@ -3,7 +3,6 @@ package jr.rendering.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
@@ -93,10 +92,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 	@Getter(AccessLevel.NONE)
 	private boolean dontSave = false;
 	
-	private SpriteBatch debugBatch;
-	private OrthographicCamera debugCamera;
-	private BitmapFont debugFont;
-	
 	/**
 	 * The game's main OpenGL renderer using LibGDX.
 	 *
@@ -118,10 +113,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 		
 		initialiseCamera();
 		initialiseRendererComponents();
-		
-		debugBatch = new SpriteBatch();
-		debugCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		debugFont = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
 		
 		dungeon.start();
 	}
@@ -263,7 +254,6 @@ public class GameScreen extends BasicScreen implements EventListener {
 		updateCameraZoom(width, height);
 		
 		rendererComponents.forEach(r -> r.resize(width, height));
-		debugCamera.setToOrtho(false, width, height);
 	}
 	
 	@Override

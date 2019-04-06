@@ -105,12 +105,12 @@ public class Identicon extends BaseDrawable {
 		oldColour.set(batch.getColor());
 		
 		batch.setColor(bg1);
-		batch.draw(Shapes.getBlank(), x, y); // shape 1 is a filled shape
+		batch.draw(Shapes.getBlank(), x, y);
 		batch.setColor(fg1);
 		batch.draw(shape1, x, y);
 		
 		batch.setColor(bg2);
-		batch.draw(Shapes.getBlank(), x + SHAPE_PADDING + SHAPE_WIDTH, y); // shape 1 is a filled shape
+		batch.draw(Shapes.getBlank(), x + SHAPE_PADDING + SHAPE_WIDTH, y);
 		batch.setColor(fg2);
 		batch.draw(shape2, x + SHAPE_PADDING + SHAPE_WIDTH, y);
 		

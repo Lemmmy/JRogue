@@ -43,7 +43,7 @@ public class FPSCounterComponent extends RendererComponent {
 		
 		counterCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		font = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false, true);
+		font = FontLoader.getFont("fonts/Lato-Regular.ttf", 11, false);
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private void drawGraph() {
 		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16;
+		int y = GRAPH_HEIGHT + 16;
 		
 		shapeBatch.setColor(GRAPH_BACKGROUND);
 		shapeBatch.rect(x, y, GRAPH_WIDTH, GRAPH_HEIGHT);
@@ -82,13 +82,13 @@ public class FPSCounterComponent extends RendererComponent {
 		for (int i = 0; i < frameTimeHistory.size(); i++) {
 			float barHeight = frameTimeHistory.get(i) * scale;
 			
-			shapeBatch.rect(x + i, y + (GRAPH_HEIGHT - barHeight), 1, barHeight);
+			shapeBatch.rect(x + i, y, 1, barHeight);
 		}
 	}
 	
 	private void drawText() {
 		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = Gdx.graphics.getHeight() - GRAPH_HEIGHT - 16;
+		int y = GRAPH_HEIGHT + 16;
 				
 		float peakTime = Collections.max(frameTimeHistory) * 1000;
 		
@@ -111,7 +111,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	@Override
 	public void resize(int width, int height) {
-		counterCamera.setToOrtho(true, width, height);
+		counterCamera.setToOrtho(false, width, height);
 	}
 	
 	@Override

@@ -12,8 +12,8 @@ import java.util.Map;
 public class FontLoader {
 	private static final Map<String, BitmapFont> fontCache = new HashMap<>();
 	
-	public static BitmapFont getFont(String file, int size, boolean shadow, boolean flipped) {
-		String cacheString = file + "_" + size + (shadow ? "_shadow" : "") + (flipped ? "_flipped" : "");
+	public static BitmapFont getFont(String file, int size, boolean shadow) {
+		String cacheString = file + "_" + size + (shadow ? "_shadow" : "");
 		
 		if (fontCache.containsKey(cacheString)) {
 			return fontCache.get(cacheString);
@@ -28,8 +28,6 @@ public class FontLoader {
 				parameter.shadowOffsetX = size / 16;
 				parameter.shadowOffsetY = size / 16;
 			}
-			
-			parameter.flip = flipped;
 			
 			BitmapFont font = generator.generateFont(parameter);
 			font.getData().markupEnabled = true;
