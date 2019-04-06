@@ -31,10 +31,10 @@ public class AtlasViewer extends Window {
 	
 	@Override
 	public void populateWindow() {
-		getWindowBorder().setSize(580, 580);
+		getWindowBorder().setSize(580, 640);
 		
 		currentHoverLabel = new Label(" \n \n ", getSkin(), "windowStyleLoweredMarkup");
-		getWindowBorder().getContentTable().add(currentHoverLabel).pad(4).spaceBottom(8).growX().left().top().row();
+		getWindowBorder().getContentTable().add(currentHoverLabel).pad(2).spaceBottom(8).growX().left().top().row();
 		
 		Table atlasTable = new Table();
 		

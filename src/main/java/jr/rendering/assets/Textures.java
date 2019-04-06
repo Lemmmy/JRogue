@@ -16,7 +16,7 @@ import java.util.Set;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 
 public class Textures extends AssetHandler<Texture, TextureLoader.TextureParameter> {
-	@Getter private final PixmapPacker mainPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
+	@Getter private final PixmapPacker mainPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 2, false);
 	@Getter private final TextureAtlas mainAtlas = new TextureAtlas();
 	
 	@Getter private final PixmapPacker blobPacker = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 0, false);
