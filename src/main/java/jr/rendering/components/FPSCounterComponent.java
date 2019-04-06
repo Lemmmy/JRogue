@@ -69,7 +69,7 @@ public class FPSCounterComponent extends RendererComponent {
 	
 	private void drawGraph() {
 		int x = Gdx.graphics.getWidth() - GRAPH_WIDTH;
-		int y = GRAPH_HEIGHT + 16;
+		int y = 16;
 		
 		shapeBatch.setColor(GRAPH_BACKGROUND);
 		shapeBatch.rect(x, y, GRAPH_WIDTH, GRAPH_HEIGHT);

@@ -16,6 +16,7 @@ public class Assets implements Disposable {
 	
 	public final Textures textures = new Textures(this);
 	public final Particles particles = new Particles(this);
+	public final Shaders shaders = new Shaders(this);
 	
 	private List<Class<?>> managers;
 	public void load() {
@@ -30,6 +31,7 @@ public class Assets implements Disposable {
 	private void loaded() {
 		textures.onLoaded();
 		particles.onLoaded();
+		shaders.onLoaded();
 		
 		managers.forEach(manager -> {
 			quietInvokeStatic(manager, "afterAssetsLoaded", this);
@@ -38,6 +40,7 @@ public class Assets implements Disposable {
 		
 		textures.afterLoaded();
 		particles.afterLoaded();
+		shaders.afterLoaded();
 	}
 	
 	public void syncLoad() {

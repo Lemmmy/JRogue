@@ -7,16 +7,17 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import jr.dungeon.Dungeon;
 import jr.rendering.assets.Assets;
-import jr.rendering.utils.ShaderLoader;
 import lombok.Getter;
 import lombok.Setter;
+
+import static jr.rendering.assets.Shaders.shaderFile;
 
 @Getter
 @Setter
 public class TileRendererGlobalRepeat extends TileRenderer {
 	private String fileName;
 	private TextureRegion texRegion;
-	private ShaderProgram program;
+	private ShaderProgram shader;
 	
 	private float offsetX, offsetY;
 	private float scaleX, scaleY;
@@ -47,11 +48,8 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 			t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 			texRegion = new TextureRegion(t, 0, 0, t.getWidth(), t.getHeight());
 		});
-	}
-	
-	@Override
-	public void onLoaded(Assets assets) {
-		program = ShaderLoader.getProgram("shaders/global_repeat"); // TODO: AssetManager-based shader loader
+		
+		assets.shaders.load(shaderFile("global_repeat"), s -> shader = s);
 	}
 	
 	@Override
@@ -62,7 +60,7 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 	@Override
 	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
 		ShaderProgram previousShader = batch.getShader();
-		batch.setShader(program);
+		batch.setShader(shader);
 		
 		final Matrix4 levelProjMat = new Matrix4();
 		levelProjMat.setToOrtho2D(
@@ -71,7 +69,7 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 			dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT * scaleY
 		);
 		
-		program.setUniformMatrix("u_proj", levelProjMat);
+		shader.setUniformMatrix("u_proj", levelProjMat);
 		
 		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
 		batch.setShader(previousShader);

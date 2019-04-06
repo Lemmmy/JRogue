@@ -21,7 +21,7 @@ varying vec4 v_colour;
 void main() {
 	float ntx = u_waveAmplitude * sin(2.0 * PI * u_waveFrequency * v_texCoords.y + u_time * u_timeScale) + v_texCoords.x;
 	vec2 nt = vec2(ntx, v_texCoords.y);
-	vec4 texel = texture2D(u_texture, nt);
+	vec4 texel = texture2D(u_texture, nt); // TODO: with atlases, this results in sampling from adjacent textures.
 
 	vec2 fc = (gl_FragCoord.xy - u_tilePositionScreen) / u_tileSizeScreen;
 	float fade = u_fadeAmplitude * fc.y * fc.y + u_fadeBase;

@@ -10,7 +10,7 @@ public class Particles extends AssetHandler<ParticleEffect, ParticleEffectParame
 	}
 	
 	public static String particleFile(String fileName) {
-		return "particles/" + fileName + ".particle";
+		return fileName + ".particle";
 	}
 	
 	@Override
