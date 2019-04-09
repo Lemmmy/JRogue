@@ -52,7 +52,16 @@ public enum EntityMap {
 	APPEARANCE_ARROW(new EntityRendererProjectile("projectile_arrow")),
 	APPEARANCE_STRIKE(new EntityRendererProjectile("projectile_strike")),
 	
-	APPEARANCE_LIGHT_ORB("light_orb");
+	APPEARANCE_LIGHT_ORB("light_orb"),
+	
+	APPEARANCE_STALAGMITES(new EntityRendererRandom("cave_stalagmites", 5)),
+	
+	APPEARANCE_CAVE_CRYSTAL_WHITE("cave_crystal_white"),
+	APPEARANCE_CAVE_CRYSTAL_BLUE("cave_crystal_blue"),
+	APPEARANCE_CAVE_CRYSTAL_CYAN("cave_crystal_cyan"),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_WHITE(new EntityRendererRandom("cave_crystals_white_small", 2)),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_BLUE(new EntityRendererRandom("cave_crystals_blue_small", 2)),
+	APPEARANCE_CAVE_CRYSTAL_SMALL_CYAN(new EntityRendererRandom("cave_crystals_cyan_small", 2));
 	
 	public static final int ENTITY_WIDTH = 16;
 	public static final int ENTITY_HEIGHT = 16;

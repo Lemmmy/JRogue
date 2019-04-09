@@ -4,7 +4,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import jr.dungeon.tiles.states.*;
+import jr.dungeon.tiles.states.TileState;
+import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.dungeon.tiles.states.TileStateDoor;
+import jr.dungeon.tiles.states.TileStateTrap;
 import jr.utils.Colour;
 import lombok.Getter;
 
@@ -34,13 +37,14 @@ public enum TileType {
 	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
 	
 	TILE_ROOM_WALL(11, WALL, SOLID),
-	TILE_ROOM_TORCH(12, WALL, SOLID, TileStateTorch.class),
-	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, WALK_ON),
+	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Colour(0xFF9B26FF), 100, 0),
+	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Colour(0x8BD1ECFF), 100, 0),
+	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM | SPAWNABLE, WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
-	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, WALK_ON),
-	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM, WALK_ON),
-	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM, WALK_ON),
-	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM, WALK_ON),
+	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM | SPAWNABLE, WALK_ON),
+	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM | SPAWNABLE, WALK_ON),
+	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM | SPAWNABLE, WALK_ON),
+	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM | SPAWNABLE, WALK_ON),
 	
 	TILE_ROOM_DOOR_LOCKED(17, WALL | DOOR | DOOR_SHUT, SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_CLOSED(18, WALL | DOOR | DOOR_SHUT, SOLID, TileStateDoor.class),
@@ -61,7 +65,7 @@ public enum TileType {
 	TILE_CORRIDOR(25, BUILDABLE, WALK_ON),
 	
 	TILE_CAVE_WALL(35, BUILDABLE | WALL, SOLID),
-	TILE_CAVE_FLOOR(36, FLOOR, WALK_ON),
+	TILE_CAVE_FLOOR(36, FLOOR | SPAWNABLE, WALK_ON),
 
 	TILE__NOISE(32, BUILDABLE, SOLID),
 	TILE__FLOOR(34, FLOOR, WALK_ON),
@@ -130,7 +134,7 @@ public enum TileType {
 		return (flags & BUILDABLE) == BUILDABLE;
 	}
 	
-	public boolean isWallTile() {
+	public boolean isWall() {
 		return (flags & WALL) == WALL;
 	}
 	
@@ -156,6 +160,10 @@ public enum TileType {
 	
 	public boolean isDoorShut() {
 		return (flags & DOOR_SHUT) == DOOR_SHUT;
+	}
+	
+	public boolean isSpawnable() {
+		return (flags & SPAWNABLE) == SPAWNABLE;
 	}
 	
 	public String onWalk() {

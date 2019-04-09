@@ -5,6 +5,7 @@ import jr.dungeon.generators.rooms.RoomBasic;
 import jr.dungeon.generators.rooms.RoomIce;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
+import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,6 +44,11 @@ public class GeneratorIce extends GeneratorRooms {
 		
 		return super.generate() && verify();
 		
+	}
+	
+	@Override
+	public TileType getTorchTileType() {
+		return TileType.TILE_ROOM_TORCH_ICE;
 	}
 	
 	@Override

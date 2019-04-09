@@ -88,7 +88,7 @@ public class MonsterSpawner {
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
 		List<Tile> validTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.sorted(Comparator.comparingInt(a -> Distance.i(point, a.position)))
@@ -100,7 +100,7 @@ public class MonsterSpawner {
 	private Point getMonsterSpawnPoint() {
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
@@ -114,7 +114,7 @@ public class MonsterSpawner {
 		
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isSpawnable() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.filter(t -> !level.visibilityStore.getVisibleTiles()[t.position.getIndex(level)])

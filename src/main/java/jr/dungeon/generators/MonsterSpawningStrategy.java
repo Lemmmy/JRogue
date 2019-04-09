@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum MonsterSpawningStrategy {
+	// TODO: these would be better moved to their own classes, I think
 	STANDARD(
 		new MonsterSpawn(
 			Range.between(1, 10),
@@ -133,6 +134,14 @@ public enum MonsterSpawningStrategy {
 			Range.between(1, Integer.MAX_VALUE),
 			Range.between(0, 4),
 			MonsterGoblin.class
+		)
+	),
+	
+	CAVE(
+		new MonsterSpawn(
+			Range.between(1, Integer.MAX_VALUE),
+			Range.between(5, 30),
+			MonsterSpider.class
 		)
 	),
 

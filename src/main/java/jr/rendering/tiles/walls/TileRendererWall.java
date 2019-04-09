@@ -50,8 +50,8 @@ public class TileRendererWall extends TileRenderer {
 	protected boolean isTopHorizontal(Tile tile, Point p) {
 		TileStore ts = tile.getLevel().tileStore;
 		
-		return (ts.getTileType(p.add(Directions.WEST)).isWallTile()  ||
-			   	ts.getTileType(p.add(Directions.EAST)).isWallTile()) &&
+		return (ts.getTileType(p.add(Directions.WEST)).isWall()  ||
+			   	ts.getTileType(p.add(Directions.EAST)).isWall()) &&
 			   ts.getTileType(p.add(Directions.SOUTH)).isInnerRoomTile();
 	}
 	
@@ -80,7 +80,7 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	protected boolean isJoinedTile(TileType type) {
-		return type.isWallTile();
+		return type.isWall();
 	}
 	
 	@Override

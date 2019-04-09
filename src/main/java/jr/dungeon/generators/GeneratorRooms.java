@@ -627,7 +627,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * not doors, and this tile is not a wall corner.
 	 */
 	public boolean canPlaceDoor(Point point) {
-		if (tileStore.getTileType(point).isWallTile()) {
+		if (tileStore.getTileType(point).isWall()) {
 			TileType[] adjacentTiles = tileStore.getAdjacentTileTypes(point);
 			
 			for (TileType tile : adjacentTiles) {
@@ -651,8 +651,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * @see Orientation
 	 */
 	protected Orientation getWallOrientation(TileType[] adjacentTiles) {
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
+		boolean h = adjacentTiles[0].isWall() || adjacentTiles[1].isWall();
+		boolean v = adjacentTiles[2].isWall() || adjacentTiles[3].isWall();
 		
 		if (h && !v) {
 			return Orientation.HORIZONTAL;
@@ -832,7 +832,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_TORCH;
+		return TileType.TILE_ROOM_TORCH_FIRE;
 	}
 	
 	public Pair<Colour, Colour> getTorchColours() {

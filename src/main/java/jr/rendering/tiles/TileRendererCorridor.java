@@ -34,7 +34,7 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	
 	@Override
 	boolean isJoinedTile(TileType tile) {
-		return tile == TileType.TILE_CORRIDOR || tile.isWallTile();
+		return tile == TileType.TILE_CORRIDOR || tile.isWall();
 	}
 	
 	@Override

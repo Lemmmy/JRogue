@@ -26,6 +26,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.*;
 
+import static jr.utils.QuickMaths.ipow;
+
 @Getter
 @Setter
 public abstract class EntityLiving extends EntityTurnBased implements ContainerOwner {
@@ -114,7 +116,7 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	public abstract int getBaseArmourClass();
 	
 	public int getXPForLevel(int level) {
-		return (int) Math.pow((float) level / 1.75f, 2) * 2 + 10;
+		return ipow((float) level / 1.75f, 2) * 2 + 10;
 	}
 	
 	public void addExperience(int experience) {

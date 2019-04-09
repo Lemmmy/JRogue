@@ -2,6 +2,11 @@ package jr.dungeon.generators;
 
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.QuickSpawn;
+import jr.dungeon.entities.decoration.EntityCaveCrystal;
+import jr.dungeon.entities.decoration.EntityCaveCrystalSmall;
+import jr.dungeon.entities.decoration.EntityStalagmites;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
@@ -17,10 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Registered(id="generatorCave")
 public class GeneratorCave extends DungeonGenerator {
 	private static final float PROBABILITY_INITIAL_FLOOR = 0.4f;
+	private static final float PROBABILITY_STALAGMITES = 0.25f;
+	private static final float PROBABILITY_SMALL_CRYSTALS = 0.04f;
+	private static final float PROBABILITY_CRYSTAL = 0.01f;
 	
 	private static final int R1_CUTOFF = 5;
 	private static final int R2_CUTOFF = 2;
@@ -49,7 +58,7 @@ public class GeneratorCave extends DungeonGenerator {
 	
 	@Override
 	public MonsterSpawningStrategy getMonsterSpawningStrategy() {
-		return null;
+		return MonsterSpawningStrategy.CAVE;
 	}
 	
 	@Override
@@ -66,6 +75,9 @@ public class GeneratorCave extends DungeonGenerator {
 		
 		chooseSpawn();
 		chooseExit();
+		
+		stalagmitePass();
+		crystalPass();
 		
 		return verify();
 	}
@@ -185,6 +197,38 @@ public class GeneratorCave extends DungeonGenerator {
 			TileStateClimbable tsc = (TileStateClimbable) exitTile.getState();
 			tsc.setDestinationGenerator(getNextGenerator());
 		}
+	}
+	
+	private Stream<Tile> floorAdjacentToWall() {
+		return Arrays.stream(level.tileStore.getTiles())
+			.filter(t -> t.getType() == TileType.TILE_CAVE_FLOOR)
+			.filter(t -> Arrays.stream(level.tileStore.getAdjacentTileTypes(t.position))
+							   .anyMatch(t2 -> t2 == TileType.TILE_CAVE_WALL))
+			.filter(t -> !level.entityStore.getEntitiesAt(t.position).findAny().isPresent());
+	}
+	
+	private void stalagmitePass() {
+		floorAdjacentToWall().forEach(t -> {
+			if (RandomUtils.randomFloat() < PROBABILITY_STALAGMITES) {
+				QuickSpawn.spawnClass(EntityStalagmites.class, level, t.position);
+			}
+		});
+	}
+	
+	private void crystalPass() {
+		floorAdjacentToWall().forEach(t -> {
+			final Class<? extends Entity> crystalType;
+			
+			if (RandomUtils.randomFloat() < PROBABILITY_SMALL_CRYSTALS) {
+				crystalType = EntityCaveCrystalSmall.class;
+			} else if (RandomUtils.randomFloat() < PROBABILITY_CRYSTAL) {
+				crystalType = EntityCaveCrystal.class;
+			} else {
+				return;
+			}
+			
+			QuickSpawn.spawnClass(crystalType, level, t.position);
+		});
 	}
 	
 	public Tile getTempTile(int x, int y) {

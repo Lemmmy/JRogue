@@ -24,8 +24,8 @@ public class TileRendererDoor extends TileRenderer {
 	@Override
 	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		TileStore ts = tile.getLevel().tileStore;
-		return ts.getTileType(p.add(Directions.WEST)).isWallTile() ||
-			   ts.getTileType(p.add(Directions.EAST)).isWallTile()
+		return ts.getTileType(p.add(Directions.WEST)).isWall() ||
+			   ts.getTileType(p.add(Directions.EAST)).isWall()
 			   ? openH : openV;
 	}
 	

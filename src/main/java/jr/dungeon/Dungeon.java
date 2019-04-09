@@ -9,7 +9,7 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.generators.DungeonNameGenerator;
-import jr.dungeon.generators.GeneratorStandard;
+import jr.dungeon.generators.GeneratorCave;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.io.Prompt;
 import jr.dungeon.io.YesNoPrompt;
@@ -186,7 +186,7 @@ public class Dungeon implements Serialisable, Messenger {
 		
 		firstLevelUUID = level.getUUID();
 		
-		level.generate(null, GeneratorStandard.class);
+		level.generate(null, GeneratorCave.class);
 		
 		if (player == null) {
 			player = new Player(

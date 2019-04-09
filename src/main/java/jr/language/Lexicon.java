@@ -24,6 +24,7 @@ public class Lexicon {
 	public static final Noun citrine = new Noun("citrine");
 	public static final Noun corn = new Noun("ear of corn");
 	public static final Noun corpse = new Noun("corpse");
+	public static final Noun crystal = new Noun("crystal");
 	public static final Noun dagger = new Noun("dagger");
 	public static final Noun diamond = new Noun("diamond");
 	public static final Noun diopside = new Noun("diopside");
@@ -70,6 +71,7 @@ public class Lexicon {
 	public static final Noun spider = new Noun("spider");
 	public static final Noun spinel = new Noun("spinel");
 	public static final Noun staff = new Noun("staff");
+	public static final Noun stalagmite = new Noun("stalagmite");
 	public static final Noun strike = new Noun("strike");
 	public static final Noun tanzanite = new Noun("tanzanite");
 	public static final Noun thermometer = new Noun("thermometer");

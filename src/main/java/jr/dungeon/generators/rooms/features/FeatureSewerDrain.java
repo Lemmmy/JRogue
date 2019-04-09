@@ -15,7 +15,7 @@ public class FeatureSewerDrain extends SpecialRoomFeature {
 		Point drainPosition = room.randomPoint().setY(room.position.y);
 		Tile drainTile = room.level.tileStore.getTile(drainPosition);
 		
-		if (drainTile.getType().isWallTile() && !drainTile.getType().isDoor()) {
+		if (drainTile.getType().isWall() && !drainTile.getType().isDoor()) {
 			drainTile.setType(RandomUtils.rollD2() ? TileType.TILE_SEWER_DRAIN : TileType.TILE_SEWER_DRAIN_EMPTY);
 			
 			Tile underTile = room.level.tileStore.getTile(drainPosition.add(0, 1));

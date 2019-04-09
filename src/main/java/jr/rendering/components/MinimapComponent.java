@@ -11,6 +11,7 @@ import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.interfaces.Decorative;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
@@ -170,6 +171,7 @@ public class MinimapComponent extends RendererComponent {
 		level.entityStore.getEntities().stream()
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
+			.filter(e -> !(e instanceof Decorative))
 			.filter(
 				e -> e.isStatic() && level.visibilityStore.isTileDiscovered(e.getPosition()) ||
 				level.visibilityStore.isTileVisible(e.getPosition())
