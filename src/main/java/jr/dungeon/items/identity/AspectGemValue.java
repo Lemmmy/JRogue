@@ -9,13 +9,13 @@ import jr.dungeon.serialisation.Registered;
  */
 @Registered(id="aspectGemValue")
 public class AspectGemValue extends Aspect {
-	@Override
-	public String getName() {
-		return "Gem value";
-	}
-	
-	@Override
-	public boolean isPersistent() {
-		return false;
-	}
+    @Override
+    public String getName() {
+        return "Gem value";
+    }
+    
+    @Override
+    public boolean isPersistent() {
+        return false;
+    }
 }

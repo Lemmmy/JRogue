@@ -28,117 +28,117 @@ import java.util.List;
 @Wishable(name="rat")
 @Registered(id="monsterRat")
 public class MonsterRat extends Monster {
-	@Expose private int speed;
-	
-	public MonsterRat(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position, 1);
-		
-		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
-		
-		StatefulAI ai = new StatefulAI(this);
-		setAI(ai);
-		ai.setDefaultState(new StateLurk(ai, 0));
-	}
-	
-	protected MonsterRat() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.rat.clone(); // science
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_RAT;
-	}
-	
-	@Override
-	public Size getSize() {
-		return Size.SMALL;
-	}
-	
-	@Override
-	public int getMovementSpeed() {
-		return speed;
-	}
-	
-	@Override
-	public boolean isHostile() {
-		return true;
-	}
-	
-	@Override
-	public int getWeight() {
-		return 75;
-	}
-	
-	@Override
-	public int getNutritionalValue() {
-		return 60;
-	}
-	
-	@Override
-	public float getCorpseChance() {
-		return 0.3f;
-	}
-	
-	@Override
-	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
-		return null;
-	}
-	
-	@Override
-	public int getBaseArmourClass() {
-		return 9;
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onKick(EntityKickedEntityEvent e) {
-		int damageChance = 2;
-		
-		if (e.isKickerPlayer()) {
-			Player player = (Player) e.getKicker();
-			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-			damageChance = (int) Math.ceil(strength / 6) + 1;
-		}
-		
-		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
-		}
-	}
-	
-	@Override
-	public int getVisibilityRange() {
-		return 10;
-	}
-	
-	@Override
-	public boolean canMoveDiagonally() {
-		return true;
-	}
-	
-	@Override
-	public boolean canMeleeAttack() {
-		return true;
-	}
-	
-	@Override
-	public boolean canRangedAttack() {
-		return false;
-	}
-	
-	@Override
-	public boolean canMagicAttack() {
-		return false;
-	}
-	
-	@Override
-	public DamageType getMeleeDamageType() {
-		return DamageType.RAT_BITE;
-	}
-	
-	@Override
-	public Verb getMeleeAttackVerb(EntityLiving victim) {
-		return Lexicon.bite.clone();
-	}
+    @Expose private int speed;
+    
+    public MonsterRat(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position, 1);
+        
+        speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
+        
+        StatefulAI ai = new StatefulAI(this);
+        setAI(ai);
+        ai.setDefaultState(new StateLurk(ai, 0));
+    }
+    
+    protected MonsterRat() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.rat.clone(); // science
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_RAT;
+    }
+    
+    @Override
+    public Size getSize() {
+        return Size.SMALL;
+    }
+    
+    @Override
+    public int getMovementSpeed() {
+        return speed;
+    }
+    
+    @Override
+    public boolean isHostile() {
+        return true;
+    }
+    
+    @Override
+    public int getWeight() {
+        return 75;
+    }
+    
+    @Override
+    public int getNutritionalValue() {
+        return 60;
+    }
+    
+    @Override
+    public float getCorpseChance() {
+        return 0.3f;
+    }
+    
+    @Override
+    public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
+        return null;
+    }
+    
+    @Override
+    public int getBaseArmourClass() {
+        return 9;
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onKick(EntityKickedEntityEvent e) {
+        int damageChance = 2;
+        
+        if (e.isKickerPlayer()) {
+            Player player = (Player) e.getKicker();
+            int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+            damageChance = (int) Math.ceil(strength / 6) + 1;
+        }
+        
+        if (RandomUtils.roll(1, damageChance) == 1) {
+            damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
+        }
+    }
+    
+    @Override
+    public int getVisibilityRange() {
+        return 10;
+    }
+    
+    @Override
+    public boolean canMoveDiagonally() {
+        return true;
+    }
+    
+    @Override
+    public boolean canMeleeAttack() {
+        return true;
+    }
+    
+    @Override
+    public boolean canRangedAttack() {
+        return false;
+    }
+    
+    @Override
+    public boolean canMagicAttack() {
+        return false;
+    }
+    
+    @Override
+    public DamageType getMeleeDamageType() {
+        return DamageType.RAT_BITE;
+    }
+    
+    @Override
+    public Verb getMeleeAttackVerb(EntityLiving victim) {
+        return Lexicon.bite.clone();
+    }
 }

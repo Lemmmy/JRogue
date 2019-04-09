@@ -13,28 +13,28 @@ import jr.language.Noun;
 @Wishable(name="arrow")
 @Registered(id="itemArrow")
 public class ItemArrow extends ItemProjectile {
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.arrow.clone();
-	}
-	
-	@Override
-	public float getWeight() {
-		return 1;
-	}
-	
-	@Override
-	public ItemAppearance getAppearance() {
-		return ItemAppearance.APPEARANCE_ARROW;
-	}
-	
-	@Override
-	public ItemCategory getCategory() {
-		return ItemCategory.PROJECTILE;
-	}
-	
-	@Override
-	public Class<? extends EntityProjectile> getProjectileEntity() {
-		return EntityArrow.class;
-	}
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.arrow.clone();
+    }
+    
+    @Override
+    public float getWeight() {
+        return 1;
+    }
+    
+    @Override
+    public ItemAppearance getAppearance() {
+        return ItemAppearance.APPEARANCE_ARROW;
+    }
+    
+    @Override
+    public ItemCategory getCategory() {
+        return ItemCategory.PROJECTILE;
+    }
+    
+    @Override
+    public Class<? extends EntityProjectile> getProjectileEntity() {
+        return EntityArrow.class;
+    }
 }

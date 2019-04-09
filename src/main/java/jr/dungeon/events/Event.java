@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class Event {
-	private boolean cancelled;
-	private Dungeon dungeon;
-	
-	public boolean isSelf(Object other) {
-		return false;
-	}
+    private boolean cancelled;
+    private Dungeon dungeon;
+    
+    public boolean isSelf(Object other) {
+        return false;
+    }
 }

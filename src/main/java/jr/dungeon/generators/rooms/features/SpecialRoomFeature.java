@@ -6,7 +6,7 @@ import jr.language.Noun;
 
 @HasRegistry
 public abstract class SpecialRoomFeature {
-	public abstract void generate(Room room);
-	
-	public abstract Noun getName();
+    public abstract void generate(Room room);
+    
+    public abstract Noun getName();
 }

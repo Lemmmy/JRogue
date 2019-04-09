@@ -11,28 +11,28 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityDeathEvent extends Event {
-	private EntityLiving victim;
-	private Entity attacker;
-	private DamageSource damageSource;
-	private int damage;
-	
-	public EntityDeathEvent(EntityLiving victim, DamageSource damageSource, int damage) {
-		this.victim = victim;
-		this.attacker = damageSource.getAttacker();
-		this.damageSource = damageSource;
-		this.damage = damage;
-	}
-	
-	public boolean isVictimPlayer() {
-		return victim instanceof Player;
-	}
-	
-	public boolean isAttackerPlayer() {
-		return attacker instanceof Player;
-	}
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(victim);
-	}
+    private EntityLiving victim;
+    private Entity attacker;
+    private DamageSource damageSource;
+    private int damage;
+    
+    public EntityDeathEvent(EntityLiving victim, DamageSource damageSource, int damage) {
+        this.victim = victim;
+        this.attacker = damageSource.getAttacker();
+        this.damageSource = damageSource;
+        this.damage = damage;
+    }
+    
+    public boolean isVictimPlayer() {
+        return victim instanceof Player;
+    }
+    
+    public boolean isAttackerPlayer() {
+        return attacker instanceof Player;
+    }
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(victim);
+    }
 }

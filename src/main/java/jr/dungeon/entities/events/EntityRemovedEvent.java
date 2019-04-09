@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityRemovedEvent extends Event {
-	private Entity entity;
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(entity);
-	}
+    private Entity entity;
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(entity);
+    }
 }

@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TilePooledEffect {
-	private Point position;
-	private ParticleEffectPool.PooledEffect pooledEffect;
+    private Point position;
+    private ParticleEffectPool.PooledEffect pooledEffect;
 }

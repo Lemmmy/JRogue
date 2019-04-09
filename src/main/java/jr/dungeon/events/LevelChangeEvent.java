@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LevelChangeEvent extends Event {
-	private Level level;
+    private Level level;
 }

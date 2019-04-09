@@ -7,11 +7,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class WishTile implements Wish {
-	private final TileType tile;
+    private final TileType tile;
 
-	@Override
-	public void grant(Dungeon dungeon, Player player, String... args) {
-		dungeon.getLevel().tileStore.setTileType(player.getPosition(), tile);
-		dungeon.turnSystem.turn();
-	}
+    @Override
+    public void grant(Dungeon dungeon, Player player, String... args) {
+        dungeon.getLevel().tileStore.setTileType(player.getPosition(), tile);
+        dungeon.turnSystem.turn();
+    }
 }

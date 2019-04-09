@@ -8,15 +8,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityAddedEvent extends Event {
-	private Entity entity;
-	
-	/**
-	 * Whether or not the entity was created, and not just spawned from a new level or deserialisation.
-	 */
-	private boolean isNew;
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(entity);
-	}
+    private Entity entity;
+    
+    /**
+     * Whether or not the entity was created, and not just spawned from a new level or deserialisation.
+     */
+    private boolean isNew;
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(entity);
+    }
 }

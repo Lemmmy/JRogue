@@ -14,35 +14,35 @@ import java.util.stream.Stream;
 
 @Getter
 public class DebugUIWindow<WindowT extends Window> {
-	private String windowName;
-	private Class<WindowT> windowClass;
-	private Object[] constructorArgs;
-	
-	public DebugUIWindow(String windowName, Class<WindowT> windowClass, Object... constructorArgs) {
-		this.windowName = windowName;
-		this.windowClass = windowClass;
-		this.constructorArgs = constructorArgs;
-	}
-	
-	public WindowT show(Stage stage, Skin skin) {
-		Object[] ctorArgs = Stream.concat(
-			Arrays.stream(new Object[] { stage, skin }),
-			Arrays.stream(constructorArgs)
-		).toArray();
-		
-		Class<?>[] ctorTypes = Arrays.stream(ctorArgs)
-			.map(Object::getClass)
-			.toArray(Class<?>[]::new);
-		
-		try {
-			Constructor<WindowT> constructor = ConstructorUtils.getMatchingAccessibleConstructor(windowClass, ctorTypes);
-			WindowT window = constructor.newInstance(ctorArgs);
-			window.show();
-			return window;
-		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			ErrorHandler.error("Error instantiating debug window", e);
-		}
-		
-		return null;
-	}
+    private String windowName;
+    private Class<WindowT> windowClass;
+    private Object[] constructorArgs;
+    
+    public DebugUIWindow(String windowName, Class<WindowT> windowClass, Object... constructorArgs) {
+        this.windowName = windowName;
+        this.windowClass = windowClass;
+        this.constructorArgs = constructorArgs;
+    }
+    
+    public WindowT show(Stage stage, Skin skin) {
+        Object[] ctorArgs = Stream.concat(
+            Arrays.stream(new Object[] { stage, skin }),
+            Arrays.stream(constructorArgs)
+        ).toArray();
+        
+        Class<?>[] ctorTypes = Arrays.stream(ctorArgs)
+            .map(Object::getClass)
+            .toArray(Class<?>[]::new);
+        
+        try {
+            Constructor<WindowT> constructor = ConstructorUtils.getMatchingAccessibleConstructor(windowClass, ctorTypes);
+            WindowT window = constructor.newInstance(ctorArgs);
+            window.show();
+            return window;
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            ErrorHandler.error("Error instantiating debug window", e);
+        }
+        
+        return null;
+    }
 }

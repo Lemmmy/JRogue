@@ -10,13 +10,13 @@ import jr.dungeon.serialisation.Registered;
  */
 @Registered(id="aspectBookContents")
 public class AspectBookContents extends Aspect {
-	@Override
-	public String getName() {
-		return "Book contents";
-	}
-	
-	@Override
-	public boolean isPersistent() {
-		return false;
-	}
+    @Override
+    public String getName() {
+        return "Book contents";
+    }
+    
+    @Override
+    public boolean isPersistent() {
+        return false;
+    }
 }

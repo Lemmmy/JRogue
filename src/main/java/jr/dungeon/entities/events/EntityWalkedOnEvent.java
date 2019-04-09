@@ -10,19 +10,19 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityWalkedOnEvent extends Event {
-	private Entity walkedOn;
-	private EntityLiving walker;
-	
-	public boolean isWalkedOnPlayer() {
-		return walkedOn instanceof Player;
-	}
-	
-	public boolean isWalkerPlayer() {
-		return walker instanceof Player;
-	}
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(walkedOn);
-	}
+    private Entity walkedOn;
+    private EntityLiving walker;
+    
+    public boolean isWalkedOnPlayer() {
+        return walkedOn instanceof Player;
+    }
+    
+    public boolean isWalkerPlayer() {
+        return walker instanceof Player;
+    }
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(walkedOn);
+    }
 }

@@ -23,77 +23,77 @@ import jr.utils.RandomUtils;
 @Wishable(name="goblin zombie")
 @Registered(id="monsterGoblinZombie")
 public class MonsterGoblinZombie extends MonsterZombie {
-	public MonsterGoblinZombie(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-		
-		setAI(new StatefulAI(this));
-		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
-	}
-	
-	protected MonsterGoblinZombie() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.goblinZombie.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_GOBLIN_ZOMBIE;
-	}
-	
-	@Override
-	public int getBaseArmourClass() {
-		return 10;
-	}
-	
-	@Override
-	public Size getSize() {
-		return Size.LARGE;
-	}
-	
-	@Override
-	public int getWeight() {
-		return 400;
-	}
-	
-	@Override
-	public int getNutritionalValue() {
-		return 25;
-	}
-	
-	@Override
-	public boolean canRangedAttack() {
-		return false;
-	}
-	
-	@Override
-	public boolean canMagicAttack() {
-		return false;
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onKick(EntityKickedEntityEvent e) {
-		getDungeon().log(
-			"%s %s %s!",
-			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
-			LanguageUtils.autoTense(Lexicon.kick.clone(), e.getKicker()),
-			LanguageUtils.object(e.getVictim())
-		);
-		
-		if (RandomUtils.roll(1, 2) == 1) {
-			// TODO: Make this dependent on player strength and martial arts skill
-			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
-		}
-	}
-	
-	@Override
-	public DamageType getMeleeDamageType() {
-		return DamageType.GOBLIN_ZOMBIE_HIT;
-	}
-	
-	@Override
-	public Verb getMeleeAttackVerb(EntityLiving victim) {
-		return RandomUtils.randomFrom(Lexicon.punch.clone(), Lexicon.hit.clone());
-	}
+    public MonsterGoblinZombie(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+        
+        setAI(new StatefulAI(this));
+        ((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));
+    }
+    
+    protected MonsterGoblinZombie() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.goblinZombie.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_GOBLIN_ZOMBIE;
+    }
+    
+    @Override
+    public int getBaseArmourClass() {
+        return 10;
+    }
+    
+    @Override
+    public Size getSize() {
+        return Size.LARGE;
+    }
+    
+    @Override
+    public int getWeight() {
+        return 400;
+    }
+    
+    @Override
+    public int getNutritionalValue() {
+        return 25;
+    }
+    
+    @Override
+    public boolean canRangedAttack() {
+        return false;
+    }
+    
+    @Override
+    public boolean canMagicAttack() {
+        return false;
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onKick(EntityKickedEntityEvent e) {
+        getDungeon().log(
+            "%s %s %s!",
+            LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+            LanguageUtils.autoTense(Lexicon.kick.clone(), e.getKicker()),
+            LanguageUtils.object(e.getVictim())
+        );
+        
+        if (RandomUtils.roll(1, 2) == 1) {
+            // TODO: Make this dependent on player strength and martial arts skill
+            damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
+        }
+    }
+    
+    @Override
+    public DamageType getMeleeDamageType() {
+        return DamageType.GOBLIN_ZOMBIE_HIT;
+    }
+    
+    @Override
+    public Verb getMeleeAttackVerb(EntityLiving victim) {
+        return RandomUtils.randomFrom(Lexicon.punch.clone(), Lexicon.hit.clone());
+    }
 }

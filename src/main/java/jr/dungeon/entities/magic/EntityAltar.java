@@ -23,64 +23,64 @@ import jr.utils.Point;
 @Wishable(name="altar")
 @Registered(id="entityAltar")
 public class EntityAltar extends Entity {
-	public EntityAltar(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-	}
-	
-	protected EntityAltar() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.holyAltar.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_ALTAR;
-	}
-	
-	@Override
-	public boolean isStatic() {
-		return true;
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onKick(EntityKickedEntityEvent e) {
-		// TODO: player alignment and luck penalty
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onWalk(EntityWalkedOnEvent e) {
-		if (e.isWalkerPlayer()) {
-			getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
-		}
-	}
-	
-	@Override
-	public boolean canBeWalkedOn() {
-		return true;
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onItemDropped(ItemDroppedOnEntityEvent e) {
-		EntityItem itemEntity = e.getItemEntity();
-		Item item = e.getItem();
-		ItemStack itemStack = e.getItemStack();
-		
-		Noun oldName = LanguageUtils.object(getDungeon().getPlayer(), itemEntity.getItem());
-		
-		item.observeAspect(getDungeon().getPlayer(), AspectBeatitude.class);
-		item.getAspect(AspectBeatitude.class).ifPresent(a -> {
-			AspectBeatitude ab = (AspectBeatitude) a;
-			
-			switch (ab.getBeatitude()) {
-				case BLESSED:
-					getDungeon().log("There is an amber glow as %s hits the altar.", oldName);
-					break;
-				case CURSED:
-					getDungeon().log("A black cloud briefly appears around %s as it hits the altar.", oldName);
-					break;
-			}
-		});
-	}
+    public EntityAltar(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+    }
+    
+    protected EntityAltar() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.holyAltar.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_ALTAR;
+    }
+    
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onKick(EntityKickedEntityEvent e) {
+        // TODO: player alignment and luck penalty
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onWalk(EntityWalkedOnEvent e) {
+        if (e.isWalkerPlayer()) {
+            getDungeon().log("There is %s here.", LanguageUtils.anObject(this));
+        }
+    }
+    
+    @Override
+    public boolean canBeWalkedOn() {
+        return true;
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onItemDropped(ItemDroppedOnEntityEvent e) {
+        EntityItem itemEntity = e.getItemEntity();
+        Item item = e.getItem();
+        ItemStack itemStack = e.getItemStack();
+        
+        Noun oldName = LanguageUtils.object(getDungeon().getPlayer(), itemEntity.getItem());
+        
+        item.observeAspect(getDungeon().getPlayer(), AspectBeatitude.class);
+        item.getAspect(AspectBeatitude.class).ifPresent(a -> {
+            AspectBeatitude ab = (AspectBeatitude) a;
+            
+            switch (ab.getBeatitude()) {
+                case BLESSED:
+                    getDungeon().log("There is an amber glow as %s hits the altar.", oldName);
+                    break;
+                case CURSED:
+                    getDungeon().log("A black cloud briefly appears around %s as it hits the altar.", oldName);
+                    break;
+            }
+        });
+    }
 }

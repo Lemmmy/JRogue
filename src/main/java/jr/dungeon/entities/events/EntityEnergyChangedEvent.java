@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityEnergyChangedEvent extends Event {
-	private Entity entity;
-	private int oldEnergy, newEnergy;
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(entity);
-	}
+    private Entity entity;
+    private int oldEnergy, newEnergy;
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(entity);
+    }
 }

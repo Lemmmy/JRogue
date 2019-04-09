@@ -12,21 +12,21 @@ import lombok.Getter;
 @AllArgsConstructor
 @HasRegistry
 public abstract class TileState implements Serialisable, EventListener {
-	private Tile tile;
-	
-	public void init(Tile tile) {
-		this.tile = tile;
-	}
-	
-	public Colour getLightColour() {
-		return null;
-	}
-	
-	public int getLightIntensity() {
-		return -1;
-	}
-	
-	public int getLightAbsorb() {
-		return -1;
-	}
+    private Tile tile;
+    
+    public void init(Tile tile) {
+        this.tile = tile;
+    }
+    
+    public Colour getLightColour() {
+        return null;
+    }
+    
+    public int getLightIntensity() {
+        return -1;
+    }
+    
+    public int getLightAbsorb() {
+        return -1;
+    }
 }

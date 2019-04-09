@@ -17,115 +17,115 @@ import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 
 public class PlayerDefaultEvents implements EventListener {
-	@EventHandler
-	private void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
-		Player player = e.getPlayer();
-		Tile tile = e.getTile();
-		
-		if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			onPlayerWalkedLockedDoor(player, tile, e.getDirection());
-		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
-			onPlayerWalkedClosedDoor(player, tile);
-		}
-	}
-	
-	private void onPlayerWalkedLockedDoor(Player player, Tile tile, VectorInt direction) {
-		String msg = "The door is locked. Kick it down?";
-		
-		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
-			if (!yes) {
-				player.getDungeon().log("Nevermind.");
-				return;
-			}
-			
-			for (int i = 0; i < 15; i++) {
-				if (i != 0) {
-					player.getDungeon().turnSystem.setDoingBulkAction(true);
-				}
-				
-				player.setAction(new ActionKick(direction, null));
-				player.getDungeon().turnSystem.turn();
-				
-				if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
-					player.getDungeon().turnSystem.setDoingBulkAction(false);
-					return;
-				}
-				
-				if (player.getDungeon().turnSystem.isSomethingHappened()) {
-					player.getDungeon().turnSystem.setDoingBulkAction(false);
-					player.getDungeon().log("You stop kicking the door.");
-					return;
-				}
-			}
-			
-			player.getDungeon().turnSystem.setDoingBulkAction(false);
-			
-			player.getDungeon().log("Unable to kick the door down after 15 turns.");
-		}));
-	}
-	
-	private void onPlayerWalkedClosedDoor(Player player, Tile tile) {
-		tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
-		player.getDungeon().You("open the door.");
-	}
-	
-	@EventHandler
-	public void onPlayerKickedTileEvent(EntityKickedTileEvent e) {
-		if (!e.isKickerPlayer()) {
-			return;
-		}
-		
-		Tile tile = e.getTile();
-		TileType tileType = tile.getType();
-		Player player = (Player) e.getKicker();
-		
-		if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
-			onPlayerKickedDoor(tile, tileType, player);
-		} else if (tileType.isWall()) {
-			onPlayerKickedWall(player);
-		} else {
-			player.getDungeon().You("kick it!");
-		}
-	}
-	
-	private void onPlayerKickedDoor(Tile tile, TileType tileType, Player player) {
-		int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-		int damage = RandomUtils.roll((int) Math.ceil(strength / 8) + 1);
-		
-		TileStateDoor doorState = (TileStateDoor) tile.getState();
-		
-		if (doorState.damage(damage) > 0) {
-			player.getDungeon().logRandom(
-				"WHAMM!!",
-				"CRASH!!"
-			);
-		} else {
-			player.getDungeon().logRandom(
-				"The door crashes open!",
-				"The door falls off its hinges!",
-				"You kick the door off its hinges!",
-				"You kick the door down!"
-			);
-		}
-	}
-	
-	private void onPlayerKickedWall(Player player) {
-		player.getDungeon().You("kick the wall!");
-		
-		if (RandomUtils.roll(5) == 1) {
-			if (player.getAttributes().getAttribute(Attribute.STRENGTH) >= 12) {
-				return;
-			}
-			
-			player.getDungeon().logRandom(
-				"[RED]Ouch! That hurt a lot!",
-				"[RED]Ouch! That caused some bad damage to your foot!"
-			);
-			
-			player.damage(new DamageSource(player, null, DamageType.KICKING_A_WALL), 1);
-			player.addStatusEffect(new InjuredFoot(player.getDungeon(), player, RandomUtils.roll(3, 6)));
-		} else {
-			player.getDungeon().log("[ORANGE]Ouch! That hurt!");
-		}
-	}
+    @EventHandler
+    private void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
+        Player player = e.getPlayer();
+        Tile tile = e.getTile();
+        
+        if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
+            onPlayerWalkedLockedDoor(player, tile, e.getDirection());
+        } else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
+            onPlayerWalkedClosedDoor(player, tile);
+        }
+    }
+    
+    private void onPlayerWalkedLockedDoor(Player player, Tile tile, VectorInt direction) {
+        String msg = "The door is locked. Kick it down?";
+        
+        player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+            if (!yes) {
+                player.getDungeon().log("Nevermind.");
+                return;
+            }
+            
+            for (int i = 0; i < 15; i++) {
+                if (i != 0) {
+                    player.getDungeon().turnSystem.setDoingBulkAction(true);
+                }
+                
+                player.setAction(new ActionKick(direction, null));
+                player.getDungeon().turnSystem.turn();
+                
+                if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {
+                    player.getDungeon().turnSystem.setDoingBulkAction(false);
+                    return;
+                }
+                
+                if (player.getDungeon().turnSystem.isSomethingHappened()) {
+                    player.getDungeon().turnSystem.setDoingBulkAction(false);
+                    player.getDungeon().log("You stop kicking the door.");
+                    return;
+                }
+            }
+            
+            player.getDungeon().turnSystem.setDoingBulkAction(false);
+            
+            player.getDungeon().log("Unable to kick the door down after 15 turns.");
+        }));
+    }
+    
+    private void onPlayerWalkedClosedDoor(Player player, Tile tile) {
+        tile.setType(TileType.TILE_ROOM_DOOR_OPEN);
+        player.getDungeon().You("open the door.");
+    }
+    
+    @EventHandler
+    public void onPlayerKickedTileEvent(EntityKickedTileEvent e) {
+        if (!e.isKickerPlayer()) {
+            return;
+        }
+        
+        Tile tile = e.getTile();
+        TileType tileType = tile.getType();
+        Player player = (Player) e.getKicker();
+        
+        if (tileType.isDoorShut() && tile.hasState() && tile.getState() instanceof TileStateDoor) {
+            onPlayerKickedDoor(tile, tileType, player);
+        } else if (tileType.isWall()) {
+            onPlayerKickedWall(player);
+        } else {
+            player.getDungeon().You("kick it!");
+        }
+    }
+    
+    private void onPlayerKickedDoor(Tile tile, TileType tileType, Player player) {
+        int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+        int damage = RandomUtils.roll((int) Math.ceil(strength / 8) + 1);
+        
+        TileStateDoor doorState = (TileStateDoor) tile.getState();
+        
+        if (doorState.damage(damage) > 0) {
+            player.getDungeon().logRandom(
+                "WHAMM!!",
+                "CRASH!!"
+            );
+        } else {
+            player.getDungeon().logRandom(
+                "The door crashes open!",
+                "The door falls off its hinges!",
+                "You kick the door off its hinges!",
+                "You kick the door down!"
+            );
+        }
+    }
+    
+    private void onPlayerKickedWall(Player player) {
+        player.getDungeon().You("kick the wall!");
+        
+        if (RandomUtils.roll(5) == 1) {
+            if (player.getAttributes().getAttribute(Attribute.STRENGTH) >= 12) {
+                return;
+            }
+            
+            player.getDungeon().logRandom(
+                "[RED]Ouch! That hurt a lot!",
+                "[RED]Ouch! That caused some bad damage to your foot!"
+            );
+            
+            player.damage(new DamageSource(player, null, DamageType.KICKING_A_WALL), 1);
+            player.addStatusEffect(new InjuredFoot(player.getDungeon(), player, RandomUtils.roll(3, 6)));
+        } else {
+            player.getDungeon().log("[ORANGE]Ouch! That hurt!");
+        }
+    }
 }

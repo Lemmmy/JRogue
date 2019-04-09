@@ -12,28 +12,28 @@ import jr.language.transformers.TransformerType;
  */
 @Registered(id="aspectRottenness")
 public class AspectRottenness extends Aspect {
-	@Override
-	public String getName() {
-		return "Rottenness";
-	}
-	
-	@Override
-	public Noun applyNameTransformers(Item item, Noun name) {
-		if (item instanceof ItemCorpse && ((ItemCorpse) item).getRottenness() > 7) {
-			name.addInstanceTransformer(Transformer.class, (s, m) -> "rotten " + s);
-		}
-		
-		return name;
-	}
-	
-	public int getNamePriority() {
-		return 30;
-	}
-	
-	@Override
-	public boolean isPersistent() {
-		return false;
-	}
-	
-	public class Transformer implements TransformerType {}
+    @Override
+    public String getName() {
+        return "Rottenness";
+    }
+    
+    @Override
+    public Noun applyNameTransformers(Item item, Noun name) {
+        if (item instanceof ItemCorpse && ((ItemCorpse) item).getRottenness() > 7) {
+            name.addInstanceTransformer(Transformer.class, (s, m) -> "rotten " + s);
+        }
+        
+        return name;
+    }
+    
+    public int getNamePriority() {
+        return 30;
+    }
+    
+    @Override
+    public boolean isPersistent() {
+        return false;
+    }
+    
+    public class Transformer implements TransformerType {}
 }

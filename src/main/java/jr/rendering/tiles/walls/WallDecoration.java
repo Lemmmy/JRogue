@@ -9,7 +9,7 @@ import jr.utils.Point;
 import java.util.Random;
 
 public abstract class WallDecoration implements UsesAssets {
-	public void draw(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random random) {}
-	
-	public void drawExtra(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random rand) {}
+    public void draw(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random random) {}
+    
+    public void drawExtra(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random rand) {}
 }

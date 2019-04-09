@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class TileChangedEvent extends Event {
-	private Tile tile;
-	private TileType oldType;
-	private TileType newType;
+    private Tile tile;
+    private TileType oldType;
+    private TileType newType;
 }

@@ -10,20 +10,20 @@ import lombok.Getter;
 
 @Getter
 public abstract class RendererComponent implements EventListener {
-	private Dungeon dungeon;
-	private Level level;
-	
-	public RendererComponent(Dungeon dungeon) {
-		this.dungeon = dungeon;
-		this.level = dungeon.getLevel();
-		
-		dungeon.eventSystem.addListener(this);
-	}
-	
-	public abstract void draw(SpriteBatch batch);
-	
-	@EventHandler
-	private void onLevelChange(LevelChangeEvent e) {
-		level = dungeon.getLevel();
-	}
+    private Dungeon dungeon;
+    private Level level;
+    
+    public RendererComponent(Dungeon dungeon) {
+        this.dungeon = dungeon;
+        this.level = dungeon.getLevel();
+        
+        dungeon.eventSystem.addListener(this);
+    }
+    
+    public abstract void draw(SpriteBatch batch);
+    
+    @EventHandler
+    private void onLevelChange(LevelChangeEvent e) {
+        level = dungeon.getLevel();
+    }
 }

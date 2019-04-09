@@ -6,10 +6,10 @@ import jr.dungeon.Dungeon;
 import java.lang.reflect.Type;
 
 public class DungeonInstanceCreator implements InstanceCreator<Dungeon> {
-	@Override
-	public Dungeon createInstance(Type type) {
-		Dungeon dungeon = new Dungeon();
-		DungeonSerialiser.currentDeserialisingDungeon = dungeon;
-		return dungeon;
-	}
+    @Override
+    public Dungeon createInstance(Type type) {
+        Dungeon dungeon = new Dungeon();
+        DungeonSerialiser.currentDeserialisingDungeon = dungeon;
+        return dungeon;
+    }
 }

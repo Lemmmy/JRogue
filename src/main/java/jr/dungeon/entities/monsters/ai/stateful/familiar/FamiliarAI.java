@@ -9,24 +9,24 @@ import jr.dungeon.serialisation.Registered;
 
 @Registered(id="aiFamiliar")
 public class FamiliarAI extends StatefulAI {
-	{
-		setPathfinder(new FamiliarPathfinder());
-	}
-	
-	public FamiliarAI(Monster monster) {
-		super(monster);
-		
-		setShouldTargetPlayer(false);
-		
-		removeTrait(TraitIntrinsicFear.class);
-		removeTrait(TraitExtrinsicFear.class);
-		removeTrait(TraitBewareTarget.class);
-		
-		addTrait(new TraitFollowPartner(this));
-		addTrait(new TraitDefendPartner(this));
-		addTrait(new TraitAvoidCursed(this));
-		addTrait(new TraitHunger(this));
-	}
-	
-	protected FamiliarAI() { super(); }
+    {
+        setPathfinder(new FamiliarPathfinder());
+    }
+    
+    public FamiliarAI(Monster monster) {
+        super(monster);
+        
+        setShouldTargetPlayer(false);
+        
+        removeTrait(TraitIntrinsicFear.class);
+        removeTrait(TraitExtrinsicFear.class);
+        removeTrait(TraitBewareTarget.class);
+        
+        addTrait(new TraitFollowPartner(this));
+        addTrait(new TraitDefendPartner(this));
+        addTrait(new TraitAvoidCursed(this));
+        addTrait(new TraitHunger(this));
+    }
+    
+    protected FamiliarAI() { super(); }
 }

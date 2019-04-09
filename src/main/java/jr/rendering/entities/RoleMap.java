@@ -15,23 +15,23 @@ import java.util.Collection;
 @Getter
 @RegisterAssetManager
 public enum RoleMap implements UsesAssets {
-	WIZARD(RoleWizard.class, "player_wizard");
-	
-	private Class<? extends Role> roleClass;
-	private String fileName;
-	private TextureRegion roleTexture;
-	
-	RoleMap(Class<? extends Role> roleClass, String fileName) {
-		this.roleClass = roleClass;
-		this.fileName = fileName;
-	}
-	
-	@Override
-	public void onLoad(Assets assets) {
-		assets.textures.loadPacked(Textures.entityFile(fileName), t -> roleTexture = t);
-	}
-	
-	public static Collection<? extends UsesAssets> getAssets() {
-		return Arrays.asList(values());
-	}
+    WIZARD(RoleWizard.class, "player_wizard");
+    
+    private Class<? extends Role> roleClass;
+    private String fileName;
+    private TextureRegion roleTexture;
+    
+    RoleMap(Class<? extends Role> roleClass, String fileName) {
+        this.roleClass = roleClass;
+        this.fileName = fileName;
+    }
+    
+    @Override
+    public void onLoad(Assets assets) {
+        assets.textures.loadPacked(Textures.entityFile(fileName), t -> roleTexture = t);
+    }
+    
+    public static Collection<? extends UsesAssets> getAssets() {
+        return Arrays.asList(values());
+    }
 }

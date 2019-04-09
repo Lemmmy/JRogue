@@ -13,19 +13,19 @@ import jr.utils.Point;
 @Wishable(name="yellow mold")
 @Registered(id="monsterMoldYellow")
 public class MonsterMoldYellow extends MonsterMold {
-	public MonsterMoldYellow(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-	}
-	
-	protected MonsterMoldYellow() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.yellowMold.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_MOLD_YELLOW;
-	}
+    public MonsterMoldYellow(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+    }
+    
+    protected MonsterMoldYellow() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.yellowMold.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_MOLD_YELLOW;
+    }
 }

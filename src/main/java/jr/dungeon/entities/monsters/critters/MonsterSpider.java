@@ -30,125 +30,125 @@ import java.util.List;
 @Wishable(name="spider")
 @Registered(id="monsterSpawner")
 public class MonsterSpider extends Monster {
-	@Expose private int speed;
-	
-	public MonsterSpider(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position, 1);
-		
-		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
-		
-		StatefulAI ai = new StatefulAI(this);
-		setAI(ai);
-		ai.setDefaultState(new StateLurk(ai, 0));
-	}
-	
-	protected MonsterSpider() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.spider.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_SPIDER;
-	}
-	
-	@Override
-	public Size getSize() {
-		return Size.SMALL;
-	}
-	
-	@Override
-	public int getMovementSpeed() {
-		return speed;
-	}
-	
-	@Override
-	public boolean isHostile() {
-		return true;
-	}
-	
-	@Override
-	public int getWeight() {
-		return 20;
-	}
-	
-	@Override
-	public int getNutritionalValue() {
-		return 5;
-	}
-	
-	@Override
-	public float getCorpseChance() {
-		return 0;
-	}
-	
-	@Override
-	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
-		return null;
-	}
-	
-	@Override
-	public int getBaseArmourClass() {
-		return 9;
-	}
-	
-	@Override
-	@EventHandler(selfOnly = true)
-	public void onKick(EntityKickedEntityEvent e) {
-		getDungeon().log(
-			"%s %s on %s!",
-			LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
-			LanguageUtils.autoTense(Lexicon.step.clone(), e.getKicker()),
-			LanguageUtils.object(e.getVictim())
-		);
-		
-		int damageChance = 2;
-		
-		if (e.isKickerPlayer()) {
-			Player player = (Player) e.getKicker();
-			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-			damageChance = (int) Math.ceil(strength / 6) + 1;
-		}
-		
-		if (RandomUtils.roll(1, damageChance) == 1) {
-			damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
-		}
-	}
-	
-	@Override
-	public int getVisibilityRange() {
-		return 6;
-	}
-	
-	@Override
-	public boolean canMoveDiagonally() {
-		return true;
-	}
-	
-	@Override
-	public boolean canMeleeAttack() {
-		return true;
-	}
-	
-	@Override
-	public boolean canRangedAttack() {
-		return false; // TODO: Web spinning & shooting
-	}
-	
-	@Override
-	public boolean canMagicAttack() {
-		return false;
-	}
-	
-	@Override
-	public DamageType getMeleeDamageType() {
-		return DamageType.SPIDER_BITE;
-	}
-	
-	@Override
-	public Verb getMeleeAttackVerb(EntityLiving victim) {
-		return Lexicon.bite.clone();
-	}
+    @Expose private int speed;
+    
+    public MonsterSpider(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position, 1);
+        
+        speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
+        
+        StatefulAI ai = new StatefulAI(this);
+        setAI(ai);
+        ai.setDefaultState(new StateLurk(ai, 0));
+    }
+    
+    protected MonsterSpider() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.spider.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_SPIDER;
+    }
+    
+    @Override
+    public Size getSize() {
+        return Size.SMALL;
+    }
+    
+    @Override
+    public int getMovementSpeed() {
+        return speed;
+    }
+    
+    @Override
+    public boolean isHostile() {
+        return true;
+    }
+    
+    @Override
+    public int getWeight() {
+        return 20;
+    }
+    
+    @Override
+    public int getNutritionalValue() {
+        return 5;
+    }
+    
+    @Override
+    public float getCorpseChance() {
+        return 0;
+    }
+    
+    @Override
+    public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
+        return null;
+    }
+    
+    @Override
+    public int getBaseArmourClass() {
+        return 9;
+    }
+    
+    @Override
+    @EventHandler(selfOnly = true)
+    public void onKick(EntityKickedEntityEvent e) {
+        getDungeon().log(
+            "%s %s on %s!",
+            LanguageUtils.subject(e.getKicker()).build(Capitalise.first),
+            LanguageUtils.autoTense(Lexicon.step.clone(), e.getKicker()),
+            LanguageUtils.object(e.getVictim())
+        );
+        
+        int damageChance = 2;
+        
+        if (e.isKickerPlayer()) {
+            Player player = (Player) e.getKicker();
+            int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
+            damageChance = (int) Math.ceil(strength / 6) + 1;
+        }
+        
+        if (RandomUtils.roll(1, damageChance) == 1) {
+            damage(new DamageSource(e.getKicker(), null, DamageType.PLAYER_KICK), 1);
+        }
+    }
+    
+    @Override
+    public int getVisibilityRange() {
+        return 6;
+    }
+    
+    @Override
+    public boolean canMoveDiagonally() {
+        return true;
+    }
+    
+    @Override
+    public boolean canMeleeAttack() {
+        return true;
+    }
+    
+    @Override
+    public boolean canRangedAttack() {
+        return false; // TODO: Web spinning & shooting
+    }
+    
+    @Override
+    public boolean canMagicAttack() {
+        return false;
+    }
+    
+    @Override
+    public DamageType getMeleeDamageType() {
+        return DamageType.SPIDER_BITE;
+    }
+    
+    @Override
+    public Verb getMeleeAttackVerb(EntityLiving victim) {
+        return Lexicon.bite.clone();
+    }
 }

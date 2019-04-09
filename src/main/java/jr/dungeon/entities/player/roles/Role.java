@@ -18,37 +18,37 @@ import java.util.Set;
 
 @HasRegistry
 public abstract class Role implements Serialisable {
-	@Getter private static final Set<Class<? extends Role>> roles = new HashSet<>();
-	
-	public static void registerRole(Class<? extends Role> roleClass) {
-		roles.add(roleClass);
-	}
-	
-	public abstract String getName();
-	
-	public abstract int getStartingHealth();
-	
-	public abstract List<ItemStack> getStartingItems();
-	
-	public abstract ItemStack getStartingLeftHand();
-	
-	public abstract ItemStack getStartingRightHand();
-	
-	public abstract Map<Skill, SkillLevel> getStartingSkills();
-	
-	public abstract Map<Character, Spell> getStartingSpells();
-	
-	public abstract void assignAttributes(Attributes attributes);
-	
-	public abstract int getMaxEnergy();
-	
-	public abstract int getSpellcastingSuccessBase();
-	
-	public abstract int getSpellcastingSuccessEscape();
-	
-	public abstract Attribute getSpellcastingSuccessAttribute();
-	
-	public Class<? extends Familiar> getStartingFamiliar() {
-		return null;
-	}
+    @Getter private static final Set<Class<? extends Role>> roles = new HashSet<>();
+    
+    public static void registerRole(Class<? extends Role> roleClass) {
+        roles.add(roleClass);
+    }
+    
+    public abstract String getName();
+    
+    public abstract int getStartingHealth();
+    
+    public abstract List<ItemStack> getStartingItems();
+    
+    public abstract ItemStack getStartingLeftHand();
+    
+    public abstract ItemStack getStartingRightHand();
+    
+    public abstract Map<Skill, SkillLevel> getStartingSkills();
+    
+    public abstract Map<Character, Spell> getStartingSpells();
+    
+    public abstract void assignAttributes(Attributes attributes);
+    
+    public abstract int getMaxEnergy();
+    
+    public abstract int getSpellcastingSuccessBase();
+    
+    public abstract int getSpellcastingSuccessEscape();
+    
+    public abstract Attribute getSpellcastingSuccessAttribute();
+    
+    public Class<? extends Familiar> getStartingFamiliar() {
+        return null;
+    }
 }

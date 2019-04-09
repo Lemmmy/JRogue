@@ -20,44 +20,44 @@ import java.util.Random;
 @Setter
 @Registered(id="aiGhoul")
 public class GhoulAI extends AI {
-	private static final Random RAND = new Random();
-	
-	@Expose private float moveProbability = 0.25f;
-	@Expose private float attackProbability = 0.25f;
-	
-	@Expose private int turnsSinceLastAttack = 0;
-	@Expose private int attackCooldownDuration = 2;
-	
-	public GhoulAI(Monster monster) {
-		super(monster);
-	}
-	
-	protected GhoulAI() { super(); }
-	
-	@Override
-	public void update() {
-		turnsSinceLastAttack++;
-		
-		if (
-			canMeleeAttackPlayer() &&
-			RAND.nextFloat() < attackProbability &&
-			turnsSinceLastAttack >= attackCooldownDuration
-		) {
-			meleeAttackPlayer();
-			
-			turnsSinceLastAttack = 0;
-		} else if (canMoveTowardsPlayer() && (RAND.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
-			moveTowardsPlayer();
-		}
-	}
-	
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
-			.append("moveProbability", moveProbability)
-			.append("attackProbability", attackProbability)
-			.append("turnsSinceLastAttack", turnsSinceLastAttack)
-			.append("attackCooldownDuration", attackCooldownDuration)
-			.toString();
-	}
+    private static final Random RAND = new Random();
+    
+    @Expose private float moveProbability = 0.25f;
+    @Expose private float attackProbability = 0.25f;
+    
+    @Expose private int turnsSinceLastAttack = 0;
+    @Expose private int attackCooldownDuration = 2;
+    
+    public GhoulAI(Monster monster) {
+        super(monster);
+    }
+    
+    protected GhoulAI() { super(); }
+    
+    @Override
+    public void update() {
+        turnsSinceLastAttack++;
+        
+        if (
+            canMeleeAttackPlayer() &&
+            RAND.nextFloat() < attackProbability &&
+            turnsSinceLastAttack >= attackCooldownDuration
+        ) {
+            meleeAttackPlayer();
+            
+            turnsSinceLastAttack = 0;
+        } else if (canMoveTowardsPlayer() && (RAND.nextFloat() < moveProbability || !canMeleeAttackPlayer())) {
+            moveTowardsPlayer();
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+            .append("moveProbability", moveProbability)
+            .append("attackProbability", attackProbability)
+            .append("turnsSinceLastAttack", turnsSinceLastAttack)
+            .append("attackCooldownDuration", attackCooldownDuration)
+            .toString();
+    }
 }

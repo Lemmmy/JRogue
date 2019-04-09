@@ -28,98 +28,98 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Registered(id="entityItem")
 public class EntityItem extends Entity {
-	@Expose	@Getter private ItemStack itemStack;
-	
-	public EntityItem(Dungeon dungeon, Level level, Point position, ItemStack itemStack) {
-		super(dungeon, level, position);
-		
-		this.itemStack = itemStack;
-	}
-	
-	protected EntityItem() { super(); }
-	
-	public Item getItem() {
-		return itemStack.getItem();
-	}
-	
-	@Override
-	public int getDepth() {
-		return 2;
-	}
-	
-	@Override
-	public boolean isStatic() {
-		return true;
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_ITEM;
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		itemStack.getItem().update(this);
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onKick(EntityKickedEntityEvent e) {
-		Point newPosition = getPosition().add(e.getDirection());
-		
-		if (getItem() instanceof Shatterable) {
-			getDungeon().log(
-				"%s shatters into a thousand pieces!",
-				LanguageUtils.object(this).build(Capitalise.first)
-			);
-			
-			if (getItem() instanceof ItemThermometer) {
-				e.getKicker().addStatusEffect(new MercuryPoisoning());
-			}
-			
-			remove();
-			return;
-		}
-		
-		TileType tile = getLevel().tileStore.getTileType(newPosition);
-		
-		if (tile == null || tile.getSolidity() == Solidity.SOLID) {
-			getDungeon().log(
-				"%s strikes the side of the wall.",
-				LanguageUtils.object(this).build(Capitalise.first)
-			);
-			
-			return;
-		}
-		
-		setPosition(newPosition);
-	}
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return itemStack.getName(observer);
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onSpawn(EntityAddedEvent event) {
-		if (event.isNew()) {
-			getDungeon().eventSystem.triggerEvent(new ItemDroppedEvent(this));
-			
-			getLevel().entityStore.getEntitiesAt(getPosition())
-				.filter(e -> !e.equals(this))
-				.forEach(e -> getDungeon().eventSystem.triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
-		}
-	}
-	
-	@Override
-	public boolean canBeWalkedOn() {
-		return true;
-	}
-	
-	@Override
-	public ToStringBuilder toStringBuilder() {
-		return super.toStringBuilder()
-			.append("itemStack", itemStack.toStringBuilder());
-	}
+    @Expose    @Getter private ItemStack itemStack;
+    
+    public EntityItem(Dungeon dungeon, Level level, Point position, ItemStack itemStack) {
+        super(dungeon, level, position);
+        
+        this.itemStack = itemStack;
+    }
+    
+    protected EntityItem() { super(); }
+    
+    public Item getItem() {
+        return itemStack.getItem();
+    }
+    
+    @Override
+    public int getDepth() {
+        return 2;
+    }
+    
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_ITEM;
+    }
+    
+    @Override
+    public void update() {
+        super.update();
+        
+        itemStack.getItem().update(this);
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onKick(EntityKickedEntityEvent e) {
+        Point newPosition = getPosition().add(e.getDirection());
+        
+        if (getItem() instanceof Shatterable) {
+            getDungeon().log(
+                "%s shatters into a thousand pieces!",
+                LanguageUtils.object(this).build(Capitalise.first)
+            );
+            
+            if (getItem() instanceof ItemThermometer) {
+                e.getKicker().addStatusEffect(new MercuryPoisoning());
+            }
+            
+            remove();
+            return;
+        }
+        
+        TileType tile = getLevel().tileStore.getTileType(newPosition);
+        
+        if (tile == null || tile.getSolidity() == Solidity.SOLID) {
+            getDungeon().log(
+                "%s strikes the side of the wall.",
+                LanguageUtils.object(this).build(Capitalise.first)
+            );
+            
+            return;
+        }
+        
+        setPosition(newPosition);
+    }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return itemStack.getName(observer);
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onSpawn(EntityAddedEvent event) {
+        if (event.isNew()) {
+            getDungeon().eventSystem.triggerEvent(new ItemDroppedEvent(this));
+            
+            getLevel().entityStore.getEntitiesAt(getPosition())
+                .filter(e -> !e.equals(this))
+                .forEach(e -> getDungeon().eventSystem.triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
+        }
+    }
+    
+    @Override
+    public boolean canBeWalkedOn() {
+        return true;
+    }
+    
+    @Override
+    public ToStringBuilder toStringBuilder() {
+        return super.toStringBuilder()
+            .append("itemStack", itemStack.toStringBuilder());
+    }
 }

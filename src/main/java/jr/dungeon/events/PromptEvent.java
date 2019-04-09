@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PromptEvent extends Event {
-	private Prompt prompt;
+    private Prompt prompt;
 }

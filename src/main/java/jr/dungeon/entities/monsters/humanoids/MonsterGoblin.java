@@ -34,133 +34,133 @@ import java.util.List;
 @Wishable(name="goblin")
 @Registered(id="monsterGoblin")
 public class MonsterGoblin extends Monster {
-	private static final float DAGGER_DROP_CHANCE = 0.75f;
-	
-	public MonsterGoblin(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-		
-		StatefulAI ai = new StatefulAI(this);
-		setAI(ai);
-		ai.setDefaultState(new StateLurk(ai, 0));
-		
-		setInventoryContainer(new Container("Inventory"));
-		
-		getContainer().ifPresent(c -> c.add(new ItemStack(new ItemDagger(Material.IRON))).ifPresent(this::setRightHand));
-	}
-	
-	protected MonsterGoblin() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.goblin.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_GOBLIN;
-	}
-	
-	@Override
-	public int getBaseArmourClass() {
-		return 10;
-	}
-	
-	@Override
-	public int getMovementSpeed() {
-		return 9;
-	}
-	
-	@Override
-	public Size getSize() {
-		return Size.LARGE;
-	}
-	
-	@Override
-	public boolean isHostile() {
-		return true;
-	}
-	
-	@Override
-	public int getWeight() {
-		return 400;
-	}
-	
-	@Override
-	public int getNutritionalValue() {
-		return 120;
-	}
-	
-	@Override
-	public float getCorpseChance() {
-		return 0.8f;
-	}
-	
-	@Override
-	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
-		return null;
-	}
-	
-	@Override
-	public int getVisibilityRange() {
-		return 12;
-	}
-	
-	@Override
-	public boolean canMoveDiagonally() {
-		return true;
-	}
-	
-	@Override
-	public boolean canMeleeAttack() {
-		return true;
-	}
-	
-	@Override
-	public boolean canRangedAttack() {
-		return false;
-	}
-	
-	@Override
-	public boolean canMagicAttack() {
-		return false;
-	}
-	
-	@Override
-	public void meleeAttack(EntityLiving victim) {
-		DamageSource source = new DamageSource(this, DamageType.GOBLIN_HIT);
-		
-		if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
-			source.setType(((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSourceType());
-			source.setItem(getRightHand().getItem());
-		}
-		
-		setAction(new ActionMelee(
-			getDungeon().getPlayer(),
-			source,
-			RandomUtils.roll(3),
-			(Action.CompleteCallback) entity -> getDungeon().orange(
-				"%s %s %s with a dagger!",
-				LanguageUtils.subject(this).build(Capitalise.first),
-				LanguageUtils.autoTense(Lexicon.hit.clone(), this),
-				LanguageUtils.object(victim)
-			)
-		));
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onDamage(EntityDamagedEvent e) {
-		getDungeon().logRandom(
-			"It yelps.",
-			"It yells.",
-			"It cries.",
-			"It screams."
-		);
-	}
-	
-	@EventHandler(selfOnly = true)
-	public void onDie(EntityDeathEvent e) {
-		if (getRightHand() != null && RandomUtils.randomFloat() < DAGGER_DROP_CHANCE) {
-			dropItem(getRightHand().getStack());
-		}
-	}
+    private static final float DAGGER_DROP_CHANCE = 0.75f;
+    
+    public MonsterGoblin(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+        
+        StatefulAI ai = new StatefulAI(this);
+        setAI(ai);
+        ai.setDefaultState(new StateLurk(ai, 0));
+        
+        setInventoryContainer(new Container("Inventory"));
+        
+        getContainer().ifPresent(c -> c.add(new ItemStack(new ItemDagger(Material.IRON))).ifPresent(this::setRightHand));
+    }
+    
+    protected MonsterGoblin() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.goblin.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_GOBLIN;
+    }
+    
+    @Override
+    public int getBaseArmourClass() {
+        return 10;
+    }
+    
+    @Override
+    public int getMovementSpeed() {
+        return 9;
+    }
+    
+    @Override
+    public Size getSize() {
+        return Size.LARGE;
+    }
+    
+    @Override
+    public boolean isHostile() {
+        return true;
+    }
+    
+    @Override
+    public int getWeight() {
+        return 400;
+    }
+    
+    @Override
+    public int getNutritionalValue() {
+        return 120;
+    }
+    
+    @Override
+    public float getCorpseChance() {
+        return 0.8f;
+    }
+    
+    @Override
+    public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
+        return null;
+    }
+    
+    @Override
+    public int getVisibilityRange() {
+        return 12;
+    }
+    
+    @Override
+    public boolean canMoveDiagonally() {
+        return true;
+    }
+    
+    @Override
+    public boolean canMeleeAttack() {
+        return true;
+    }
+    
+    @Override
+    public boolean canRangedAttack() {
+        return false;
+    }
+    
+    @Override
+    public boolean canMagicAttack() {
+        return false;
+    }
+    
+    @Override
+    public void meleeAttack(EntityLiving victim) {
+        DamageSource source = new DamageSource(this, DamageType.GOBLIN_HIT);
+        
+        if (getRightHand() != null && getRightHand().getItem() instanceof ItemWeaponMelee) {
+            source.setType(((ItemWeaponMelee) getRightHand().getItem()).getMeleeDamageSourceType());
+            source.setItem(getRightHand().getItem());
+        }
+        
+        setAction(new ActionMelee(
+            getDungeon().getPlayer(),
+            source,
+            RandomUtils.roll(3),
+            (Action.CompleteCallback) entity -> getDungeon().orange(
+                "%s %s %s with a dagger!",
+                LanguageUtils.subject(this).build(Capitalise.first),
+                LanguageUtils.autoTense(Lexicon.hit.clone(), this),
+                LanguageUtils.object(victim)
+            )
+        ));
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onDamage(EntityDamagedEvent e) {
+        getDungeon().logRandom(
+            "It yelps.",
+            "It yells.",
+            "It cries.",
+            "It screams."
+        );
+    }
+    
+    @EventHandler(selfOnly = true)
+    public void onDie(EntityDeathEvent e) {
+        if (getRightHand() != null && RandomUtils.randomFloat() < DAGGER_DROP_CHANCE) {
+            dropItem(getRightHand().getStack());
+        }
+    }
 }

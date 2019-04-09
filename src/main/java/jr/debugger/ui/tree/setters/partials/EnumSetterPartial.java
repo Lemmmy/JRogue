@@ -6,13 +6,13 @@ import jr.debugger.tree.valuemanagers.settertypes.EnumSetter;
 
 @SetterPartialHandler({ EnumSetter.class })
 public class EnumSetterPartial extends DropdownSetterPartial<Enum, EnumSetter> {
-	public EnumSetterPartial(Skin skin,
-							 EnumSetter setter, TreeNode node) {
-		super(skin, setter, node);
-	}
-	
-	@Override
-	public Enum[] getItems() {
-		return getSetter().getValues();
-	}
+    public EnumSetterPartial(Skin skin,
+                             EnumSetter setter, TreeNode node) {
+        super(skin, setter, node);
+    }
+    
+    @Override
+    public Enum[] getItems() {
+        return getSetter().getValues();
+    }
 }

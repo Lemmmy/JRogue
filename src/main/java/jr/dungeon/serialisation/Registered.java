@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Registered {
-	/**
-	 * @return A unique ID referring to this object class.
-	 */
-	String id();
+    /**
+     * @return A unique ID referring to this object class.
+     */
+    String id();
 }

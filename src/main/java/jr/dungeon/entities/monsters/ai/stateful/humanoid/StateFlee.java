@@ -15,44 +15,44 @@ import java.util.stream.Collectors;
 
 @Registered(id="aiStateHumanoidFlee")
 public class StateFlee extends AIState<StatefulAI> {
-	@Expose private Point dest;
-	
-	public StateFlee(StatefulAI ai, int duration) {
-		super(ai, duration);
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		Monster m = ai.getMonster();
-		
-		if (dest == null) {
-			dest = getRandomDestination();
-		}
-		
-		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
-			ai.setCurrentState(null);
-			ai.addSafePoint(m.getPosition());
-		} else {
-			ai.moveTowards(dest);
-		}
-	}
-	
-	private Point getRandomDestination() {
-		val safePoint = ai.getSafePoint();
-		Monster m = ai.getMonster();
-		
-		return safePoint.orElseGet(() -> RandomUtils
-			.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getPosition(), 7).stream()
-				.filter(t -> t.getType().getSolidity() != Solidity.SOLID)
-				.map(t -> t.position)
-				.collect(Collectors.toList())));
-	}
-	
-	@Override
-	public ToStringBuilder toStringBuilder() {
-		return super.toStringBuilder()
-			.append("dest", dest);
-	}
+    @Expose private Point dest;
+    
+    public StateFlee(StatefulAI ai, int duration) {
+        super(ai, duration);
+    }
+    
+    @Override
+    public void update() {
+        super.update();
+        
+        Monster m = ai.getMonster();
+        
+        if (dest == null) {
+            dest = getRandomDestination();
+        }
+        
+        if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
+            ai.setCurrentState(null);
+            ai.addSafePoint(m.getPosition());
+        } else {
+            ai.moveTowards(dest);
+        }
+    }
+    
+    private Point getRandomDestination() {
+        val safePoint = ai.getSafePoint();
+        Monster m = ai.getMonster();
+        
+        return safePoint.orElseGet(() -> RandomUtils
+            .randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getPosition(), 7).stream()
+                .filter(t -> t.getType().getSolidity() != Solidity.SOLID)
+                .map(t -> t.position)
+                .collect(Collectors.toList())));
+    }
+    
+    @Override
+    public ToStringBuilder toStringBuilder() {
+        return super.toStringBuilder()
+            .append("dest", dest);
+    }
 }

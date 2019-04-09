@@ -31,283 +31,283 @@ import static jr.utils.QuickMaths.ipow;
 @Getter
 @Setter
 public abstract class EntityLiving extends EntityTurnBased implements ContainerOwner {
-	/**
-	 * The Entity's health.
-	 */
-	@Expose private int health;
-	/**
-	 * The Entity's maximum health.
-	 */
-	@Expose protected int maxHealth;
-	
-	/**
-	 * The Entity's experience level - i.e. how much they've levelled up.
-	 */
-	@Expose private int experienceLevel = 1;
-	/**
-	 * The Entity's progress through their current experience level.
-	 *
-	 * @see #getXPForLevel(int)
-	 */
-	@Expose private int experience = 0;
-	
-	/**
-	 * The current turn counter for the Entity's healing cooldown.
-	 */
-	@Setter(AccessLevel.NONE)
-	@Expose private int healingTurns = 0;
-	
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	@Expose private Container inventory;
-	
-	private Container.ContainerEntry leftHand;
-	private Container.ContainerEntry rightHand;
-	
-	@Expose private Character leftHandLetter;
-	@Expose private Character rightHandLetter;
-	
-	/**
-	 * known persistent aspects per item class
-	 * the key is the hashcode of an items list of persistent aspects
-	 */
-	@Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
-	
-	public EntityLiving(Dungeon dungeon, Level level, Point position, int experienceLevel) {
-		super(dungeon, level, position);
-		
-		maxHealth = getBaseMaxHealth();
-		health = getMaxHealth();
-	}
-	
-	protected EntityLiving() { super(); }
-	
-	protected int getBaseMaxHealth() {
-		return RandomUtils.roll(experienceLevel, 6);
-	}
-	
-	public boolean isAlive() {
-		return health > 0;
-	}
-	
-	public void setHealth(int health) {
-		int oldHealth = this.health;
-		this.health = health;
-		int newHealth = this.health;
-		
-		if (oldHealth != newHealth) {
-			getDungeon().eventSystem
-				.triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
-		}
-	}
-	
-	public void heal(int amount) {
-		setHealth(Math.min(maxHealth, health + amount));
-	}
-	
-	public int getHealingRate() {
-		return 40;
-	}
-	
-	public int getArmourClass() {
-		return getBaseArmourClass();
-	}
-	
-	public abstract int getBaseArmourClass();
-	
-	public int getXPForLevel(int level) {
-		return ipow((float) level / 1.75f, 2) * 2 + 10;
-	}
-	
-	public void addExperience(int experience) {
-		int xpForLevel = getXPForLevel(experienceLevel);
-		
-		for (int i = 0; i < experience; i++) {
-			if (++this.experience > xpForLevel) {
-				experienceLevel++;
-				this.experience = 0;
-				
-				xpForLevel = getXPForLevel(experienceLevel);
-				
-				getDungeon().eventSystem.triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
-			}
-		}
-	}
-	
-	public int getMovementSpeed() {
-		if (!hasStatusEffect(Paralysis.class)) {
-			return Dungeon.NORMAL_SPEED;
-		} else {
-			return 0;
-		}
-	}
-	
-	@Override
-	public int getDepth() {
-		switch (getSize()) {
-			case SMALL:
-				return 3;
-			
-			case LARGE:
-				return 4;
-			
-			default:
-				return 0;
-		}
-	}
-	
-	public abstract Size getSize();
-	
-	public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
-		return isAspectKnown(item, Item.getAspectID(aspectClass));
-	}
-	
-	public boolean isAspectKnown(Item item, String aspectID) {
-		return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectID);
-	}
-	
-	public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
-		observeAspect(item, Item.getAspectID(aspectClass));
-	}
-	
-	public void observeAspect(Item item, String aspectID) {
-		int code = item.getPersistentAspects().hashCode();
-		
-		if (!knownAspects.containsKey(code)) {
-			knownAspects.put(code, new HashSet<>());
-		}
-		
-		knownAspects.get(code).add(aspectID);
-	}
-	
-	@Override
-	public Optional<Container> getContainer() {
-		return Optional.ofNullable(inventory);
-	}
-	
-	protected void setInventoryContainer(Container container) {
-		this.inventory = container;
-	}
-	
-	public void swapHands() {
-		Container.ContainerEntry left = getLeftHand();
-		Container.ContainerEntry right = getRightHand();
-		
-		setLeftHand(right);
-		setRightHand(left);
-	}
-	
-	@Override
-	public void beforeSerialise() {
-		if (leftHand != null) leftHandLetter = leftHand.getLetter();
-		if (rightHand != null) rightHandLetter = rightHand.getLetter();
-	}
-	
-	@Override
-	public void afterDeserialise() {
-		super.afterDeserialise();
-		
-		if (leftHandLetter != null) leftHand = inventory.get(leftHandLetter).orElse(null);
-		if (rightHandLetter != null) rightHand = inventory.get(rightHandLetter).orElse(null);
-	}
-	
-	@Override
-	public Set<EventListener> getSubListeners() {
-		val subListeners = super.getSubListeners();
-		
-		getContainer().ifPresent(c -> {
-			subListeners.add(c);
-			subListeners.addAll(c.getSubListeners());
-		});
-		
-		return subListeners;
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		setHealth(Math.max(0, Math.min(getMaxHealth(), getHealth())));
-		
-		if (getHealth() < getMaxHealth()) {
-			healingTurns++;
-		}
-		
-		if (healingTurns >= getHealingRate()) {
-			heal(1);
-			healingTurns = 0;
-		}
-		
-		if (inventory != null) {
-			inventory.update(this);
-		}
-	}
-	
-	public boolean damage(DamageSource damageSource, int damage) {
-		int damageModifier = getDamageModifier(damageSource, damage);
-		
-		setHealth(Math.max(0, health - damageModifier));
-		healingTurns = 0;
-		
-		getDungeon().eventSystem.triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
-		
-		if (health <= 0) {
-			kill(damageSource, damage);
-		}
-		
-		return health <= 0;
-	}
-	
-	public int getDamageModifier(DamageSource damageSource, int damage) {
-		return damage;
-	}
-	
-	public void kill(DamageSource damageSource, int damage) {
-		health = 0;
-		healingTurns = 0;
-		
-		getDungeon().eventSystem.triggerEvent(new EntityDeathEvent(this, damageSource, damage));
-		remove();
-	}
-	
-	public void dropItem(ItemStack item) {
-		if (leftHand != null && leftHand.getItem().equals(item.getItem())) {
-			leftHand = null;
-		}
-		
-		if (rightHand != null && rightHand.getItem().equals(item.getItem())) {
-			rightHand = null;
-		}
-		
-		Optional<EntityItem> ent = getLevel().entityStore.getItemsAt(getPosition())
-			.filter(e -> e.getItem() == item.getItem())
-			.findFirst();
-		
-		if (ent.isPresent()) {
-			ent.get().getItemStack().addCount(item.getCount());
-		} else {
-			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getPosition(), item);
-			getLevel().entityStore.addEntity(entityItem);
-		}
-	}
-	
-	@Override
-	public ToStringBuilder toStringBuilder() {
-		ToStringBuilder tsb = super.toStringBuilder()
-			.append("health", String.format("%,d/%,d", health, maxHealth))
-			.append("healingTurns", String.format("%,d", healingTurns))
-			.append("xp", String.format("lvl %,d, %,d xp", experienceLevel, experience))
-			.append("rightHand", rightHand != null ? rightHand.getItem().toStringBuilder() : "none")
-			.append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
-			.append("hasInventory", getContainer().isPresent());
-		
-		knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a)));
-		
-		return tsb;
-	}
-	
-	public enum Size {
-		SMALL,
-		LARGE
-	}
+    /**
+     * The Entity's health.
+     */
+    @Expose private int health;
+    /**
+     * The Entity's maximum health.
+     */
+    @Expose protected int maxHealth;
+    
+    /**
+     * The Entity's experience level - i.e. how much they've levelled up.
+     */
+    @Expose private int experienceLevel = 1;
+    /**
+     * The Entity's progress through their current experience level.
+     *
+     * @see #getXPForLevel(int)
+     */
+    @Expose private int experience = 0;
+    
+    /**
+     * The current turn counter for the Entity's healing cooldown.
+     */
+    @Setter(AccessLevel.NONE)
+    @Expose private int healingTurns = 0;
+    
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @Expose private Container inventory;
+    
+    private Container.ContainerEntry leftHand;
+    private Container.ContainerEntry rightHand;
+    
+    @Expose private Character leftHandLetter;
+    @Expose private Character rightHandLetter;
+    
+    /**
+     * known persistent aspects per item class
+     * the key is the hashcode of an items list of persistent aspects
+     */
+    @Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
+    
+    public EntityLiving(Dungeon dungeon, Level level, Point position, int experienceLevel) {
+        super(dungeon, level, position);
+        
+        maxHealth = getBaseMaxHealth();
+        health = getMaxHealth();
+    }
+    
+    protected EntityLiving() { super(); }
+    
+    protected int getBaseMaxHealth() {
+        return RandomUtils.roll(experienceLevel, 6);
+    }
+    
+    public boolean isAlive() {
+        return health > 0;
+    }
+    
+    public void setHealth(int health) {
+        int oldHealth = this.health;
+        this.health = health;
+        int newHealth = this.health;
+        
+        if (oldHealth != newHealth) {
+            getDungeon().eventSystem
+                .triggerEvent(new EntityHealthChangedEvent(this, oldHealth, newHealth));
+        }
+    }
+    
+    public void heal(int amount) {
+        setHealth(Math.min(maxHealth, health + amount));
+    }
+    
+    public int getHealingRate() {
+        return 40;
+    }
+    
+    public int getArmourClass() {
+        return getBaseArmourClass();
+    }
+    
+    public abstract int getBaseArmourClass();
+    
+    public int getXPForLevel(int level) {
+        return ipow((float) level / 1.75f, 2) * 2 + 10;
+    }
+    
+    public void addExperience(int experience) {
+        int xpForLevel = getXPForLevel(experienceLevel);
+        
+        for (int i = 0; i < experience; i++) {
+            if (++this.experience > xpForLevel) {
+                experienceLevel++;
+                this.experience = 0;
+                
+                xpForLevel = getXPForLevel(experienceLevel);
+                
+                getDungeon().eventSystem.triggerEvent(new EntityLevelledUpEvent(this, experienceLevel));
+            }
+        }
+    }
+    
+    public int getMovementSpeed() {
+        if (!hasStatusEffect(Paralysis.class)) {
+            return Dungeon.NORMAL_SPEED;
+        } else {
+            return 0;
+        }
+    }
+    
+    @Override
+    public int getDepth() {
+        switch (getSize()) {
+            case SMALL:
+                return 3;
+            
+            case LARGE:
+                return 4;
+            
+            default:
+                return 0;
+        }
+    }
+    
+    public abstract Size getSize();
+    
+    public boolean isAspectKnown(Item item, Class<? extends Aspect> aspectClass) {
+        return isAspectKnown(item, Item.getAspectID(aspectClass));
+    }
+    
+    public boolean isAspectKnown(Item item, String aspectID) {
+        return knownAspects.get(item.getPersistentAspects().hashCode()).contains(aspectID);
+    }
+    
+    public void observeAspect(Item item, Class<? extends Aspect> aspectClass) {
+        observeAspect(item, Item.getAspectID(aspectClass));
+    }
+    
+    public void observeAspect(Item item, String aspectID) {
+        int code = item.getPersistentAspects().hashCode();
+        
+        if (!knownAspects.containsKey(code)) {
+            knownAspects.put(code, new HashSet<>());
+        }
+        
+        knownAspects.get(code).add(aspectID);
+    }
+    
+    @Override
+    public Optional<Container> getContainer() {
+        return Optional.ofNullable(inventory);
+    }
+    
+    protected void setInventoryContainer(Container container) {
+        this.inventory = container;
+    }
+    
+    public void swapHands() {
+        Container.ContainerEntry left = getLeftHand();
+        Container.ContainerEntry right = getRightHand();
+        
+        setLeftHand(right);
+        setRightHand(left);
+    }
+    
+    @Override
+    public void beforeSerialise() {
+        if (leftHand != null) leftHandLetter = leftHand.getLetter();
+        if (rightHand != null) rightHandLetter = rightHand.getLetter();
+    }
+    
+    @Override
+    public void afterDeserialise() {
+        super.afterDeserialise();
+        
+        if (leftHandLetter != null) leftHand = inventory.get(leftHandLetter).orElse(null);
+        if (rightHandLetter != null) rightHand = inventory.get(rightHandLetter).orElse(null);
+    }
+    
+    @Override
+    public Set<EventListener> getSubListeners() {
+        val subListeners = super.getSubListeners();
+        
+        getContainer().ifPresent(c -> {
+            subListeners.add(c);
+            subListeners.addAll(c.getSubListeners());
+        });
+        
+        return subListeners;
+    }
+    
+    @Override
+    public void update() {
+        super.update();
+        
+        setHealth(Math.max(0, Math.min(getMaxHealth(), getHealth())));
+        
+        if (getHealth() < getMaxHealth()) {
+            healingTurns++;
+        }
+        
+        if (healingTurns >= getHealingRate()) {
+            heal(1);
+            healingTurns = 0;
+        }
+        
+        if (inventory != null) {
+            inventory.update(this);
+        }
+    }
+    
+    public boolean damage(DamageSource damageSource, int damage) {
+        int damageModifier = getDamageModifier(damageSource, damage);
+        
+        setHealth(Math.max(0, health - damageModifier));
+        healingTurns = 0;
+        
+        getDungeon().eventSystem.triggerEvent(new EntityDamagedEvent(this, damageSource, damage));
+        
+        if (health <= 0) {
+            kill(damageSource, damage);
+        }
+        
+        return health <= 0;
+    }
+    
+    public int getDamageModifier(DamageSource damageSource, int damage) {
+        return damage;
+    }
+    
+    public void kill(DamageSource damageSource, int damage) {
+        health = 0;
+        healingTurns = 0;
+        
+        getDungeon().eventSystem.triggerEvent(new EntityDeathEvent(this, damageSource, damage));
+        remove();
+    }
+    
+    public void dropItem(ItemStack item) {
+        if (leftHand != null && leftHand.getItem().equals(item.getItem())) {
+            leftHand = null;
+        }
+        
+        if (rightHand != null && rightHand.getItem().equals(item.getItem())) {
+            rightHand = null;
+        }
+        
+        Optional<EntityItem> ent = getLevel().entityStore.getItemsAt(getPosition())
+            .filter(e -> e.getItem() == item.getItem())
+            .findFirst();
+        
+        if (ent.isPresent()) {
+            ent.get().getItemStack().addCount(item.getCount());
+        } else {
+            EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getPosition(), item);
+            getLevel().entityStore.addEntity(entityItem);
+        }
+    }
+    
+    @Override
+    public ToStringBuilder toStringBuilder() {
+        ToStringBuilder tsb = super.toStringBuilder()
+            .append("health", String.format("%,d/%,d", health, maxHealth))
+            .append("healingTurns", String.format("%,d", healingTurns))
+            .append("xp", String.format("lvl %,d, %,d xp", experienceLevel, experience))
+            .append("rightHand", rightHand != null ? rightHand.getItem().toStringBuilder() : "none")
+            .append("leftHand", leftHand != null ? leftHand.getItem().toStringBuilder() : "none")
+            .append("hasInventory", getContainer().isPresent());
+        
+        knownAspects.forEach((h, a) -> tsb.append(h.toString(), StringUtils.join(a)));
+        
+        return tsb;
+    }
+    
+    public enum Size {
+        SMALL,
+        LARGE
+    }
 }

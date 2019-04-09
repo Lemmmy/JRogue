@@ -12,30 +12,30 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Getter
 @Registered(id="aiTraitHumanoidIntrinsicFear")
 public class TraitIntrinsicFear extends AITrait<StatefulAI> {
-	@Expose private float fear;
-	
-	public TraitIntrinsicFear(StatefulAI ai) {
-		super(ai);
-	}
-	
-	@Override
-	public void update() {
-		// TODO: ensure this is balanced
-		
-		EntityLiving currentTarget = ai.getCurrentTarget().get(getLevel());
-		
-		if (
-			currentTarget != null &&
-			Distance.chebyshev(currentTarget.getPosition(), getMonster().getPosition()) < 5
-		) {
-			fear = (getMonster().getArmourClass() - currentTarget.getArmourClass()) / 10f;
-			fear = Math.max(0, Math.min(1, fear));
-		}
-	}
-	
-	@Override
-	public ToStringBuilder toStringBuilder() {
-		return super.toStringBuilder()
-			.append("fear", fear);
-	}
+    @Expose private float fear;
+    
+    public TraitIntrinsicFear(StatefulAI ai) {
+        super(ai);
+    }
+    
+    @Override
+    public void update() {
+        // TODO: ensure this is balanced
+        
+        EntityLiving currentTarget = ai.getCurrentTarget().get(getLevel());
+        
+        if (
+            currentTarget != null &&
+            Distance.chebyshev(currentTarget.getPosition(), getMonster().getPosition()) < 5
+        ) {
+            fear = (getMonster().getArmourClass() - currentTarget.getArmourClass()) / 10f;
+            fear = Math.max(0, Math.min(1, fear));
+        }
+    }
+    
+    @Override
+    public ToStringBuilder toStringBuilder() {
+        return super.toStringBuilder()
+            .append("fear", fear);
+    }
 }

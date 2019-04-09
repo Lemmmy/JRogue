@@ -21,52 +21,52 @@ import lombok.Getter;
 @Wishable(name="cave crystal")
 @Registered(id="caveCrystal")
 public class EntityCaveCrystal extends Entity implements Decorative, LightEmitter {
-	@Expose private CrystalColour colour;
-	
-	public EntityCaveCrystal(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-		
-		colour = RandomUtils.randomFrom(CrystalColour.values());
-	}
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.crystal;
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return colour.getAppearance();
-	}
-	
-	@Override
-	public boolean canBeWalkedOn() {
-		return true;
-	}
-	
-	@Override
-	public boolean isStatic() {
-		return true;
-	}
-	
-	@Override
-	public Colour getLightColour() {
-		return colour.getLightColour();
-	}
-	
-	@Override
-	public int getLightIntensity() {
-		return 50;
-	}
-	
-	@AllArgsConstructor
-	@Getter
-	public enum CrystalColour {
-		WHITE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_WHITE, Colour.WHITE),
-		BLUE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_BLUE, new Colour(0x4BA2FEFF)),
-		CYAN(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_CYAN, new Colour(0x58C8DBFF));
-		
-		private EntityAppearance appearance;
-		private Colour lightColour;
-	}
+    @Expose private CrystalColour colour;
+    
+    public EntityCaveCrystal(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+        
+        colour = RandomUtils.randomFrom(CrystalColour.values());
+    }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.crystal;
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return colour.getAppearance();
+    }
+    
+    @Override
+    public boolean canBeWalkedOn() {
+        return true;
+    }
+    
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
+    
+    @Override
+    public Colour getLightColour() {
+        return colour.getLightColour();
+    }
+    
+    @Override
+    public int getLightIntensity() {
+        return 50;
+    }
+    
+    @AllArgsConstructor
+    @Getter
+    public enum CrystalColour {
+        WHITE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_WHITE, Colour.WHITE),
+        BLUE(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_BLUE, new Colour(0x4BA2FEFF)),
+        CYAN(EntityAppearance.APPEARANCE_CAVE_CRYSTAL_CYAN, new Colour(0x58C8DBFF));
+        
+        private EntityAppearance appearance;
+        private Colour lightColour;
+    }
 }

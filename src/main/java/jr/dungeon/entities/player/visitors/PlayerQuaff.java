@@ -14,85 +14,85 @@ import jr.dungeon.items.quaffable.potions.ItemPotion;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerQuaff extends PlayerItemVisitor {
-	@Override
-	public void visit(Player player) {
-		AtomicBoolean cancelled = new AtomicBoolean(false);
-		
-		// TODO: allow quaffing items straight off the floor?
-		player.getLevel().entityStore.getEntitiesAt(player.getPosition())
-			.filter(Quaffable.class::isInstance)
-			.map(e -> (Quaffable) e)
-			.filter(q -> q.canQuaff(player))
-			.findFirst()
-			.ifPresent(q -> {
-				String msg = q.getQuaffConfirmationMessage(player);
-				
-				player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
-					if (yes) quaffEntity(player, q);
-					else quaffItem(player);
-				}));
-				
-				cancelled.set(true);
-			});
-		
-		if (cancelled.get()) {
-			return;
-		}
-		
-		quaffItem(player);
-	}
-	
-	private void quaffEntity(Player player, Quaffable quaffable) {
-		player.setAction(new ActionQuaffEntity(quaffable, null));
-		
-		player.getDungeon().turnSystem.turn();
-	}
-	
-	private void quaffItem(Player player) {
-		String msg = "Quaff what?";
-		
-		InventoryUseResult result = useInventoryItem(
-			player,
-			msg,
-			s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(player), (c, ce, inv) -> {
-				ItemStack stack = ce.getStack();
-				ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
-				
-				player.setAction(new ActionQuaffItem(
-					quaffable,
-					(Action.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
-				);
-				
-				player.getDungeon().turnSystem.turn();
-			}
-		);
-		
-		switch (result) {
-			case NO_CONTAINER:
-			case NO_ITEM:
-				player.getDungeon().yellowYou("have nothing to quaff.");
-				break;
-			default:
-				break;
-		}
-	}
-	
-	private void quaffItemCallback(Container.ContainerEntry ce, Container inv, ItemStack stack, ItemQuaffable quaffable) {
-		if (stack.getCount() == 1) {
-			inv.remove(ce.getLetter());
-		} else {
-			stack.subtractCount(1);
-		}
-		
-		if (quaffable instanceof ItemPotion) {
-			ItemPotion potion = (ItemPotion) quaffable;
-			
-			ItemPotion emptyPotion = new ItemPotion();
-			emptyPotion.setPotionType(potion.getPotionType());
-			emptyPotion.setBottleType(potion.getBottleType());
-			emptyPotion.setPotionColour(potion.getPotionColour());
-			emptyPotion.setEmpty(true);
-			inv.add(new ItemStack(emptyPotion, 1));
-		}
-	}
+    @Override
+    public void visit(Player player) {
+        AtomicBoolean cancelled = new AtomicBoolean(false);
+        
+        // TODO: allow quaffing items straight off the floor?
+        player.getLevel().entityStore.getEntitiesAt(player.getPosition())
+            .filter(Quaffable.class::isInstance)
+            .map(e -> (Quaffable) e)
+            .filter(q -> q.canQuaff(player))
+            .findFirst()
+            .ifPresent(q -> {
+                String msg = q.getQuaffConfirmationMessage(player);
+                
+                player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
+                    if (yes) quaffEntity(player, q);
+                    else quaffItem(player);
+                }));
+                
+                cancelled.set(true);
+            });
+        
+        if (cancelled.get()) {
+            return;
+        }
+        
+        quaffItem(player);
+    }
+    
+    private void quaffEntity(Player player, Quaffable quaffable) {
+        player.setAction(new ActionQuaffEntity(quaffable, null));
+        
+        player.getDungeon().turnSystem.turn();
+    }
+    
+    private void quaffItem(Player player) {
+        String msg = "Quaff what?";
+        
+        InventoryUseResult result = useInventoryItem(
+            player,
+            msg,
+            s -> s.getItem() instanceof ItemQuaffable && ((ItemQuaffable) s.getItem()).canQuaff(player), (c, ce, inv) -> {
+                ItemStack stack = ce.getStack();
+                ItemQuaffable quaffable = (ItemQuaffable) stack.getItem();
+                
+                player.setAction(new ActionQuaffItem(
+                    quaffable,
+                    (Action.CompleteCallback) entity -> quaffItemCallback(ce, inv, stack, quaffable))
+                );
+                
+                player.getDungeon().turnSystem.turn();
+            }
+        );
+        
+        switch (result) {
+            case NO_CONTAINER:
+            case NO_ITEM:
+                player.getDungeon().yellowYou("have nothing to quaff.");
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private void quaffItemCallback(Container.ContainerEntry ce, Container inv, ItemStack stack, ItemQuaffable quaffable) {
+        if (stack.getCount() == 1) {
+            inv.remove(ce.getLetter());
+        } else {
+            stack.subtractCount(1);
+        }
+        
+        if (quaffable instanceof ItemPotion) {
+            ItemPotion potion = (ItemPotion) quaffable;
+            
+            ItemPotion emptyPotion = new ItemPotion();
+            emptyPotion.setPotionType(potion.getPotionType());
+            emptyPotion.setBottleType(potion.getBottleType());
+            emptyPotion.setPotionColour(potion.getPotionColour());
+            emptyPotion.setEmpty(true);
+            inv.add(new ItemStack(emptyPotion, 1));
+        }
+    }
 }

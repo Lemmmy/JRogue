@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LogEvent extends Event {
-	private String entry;
+    private String entry;
 }

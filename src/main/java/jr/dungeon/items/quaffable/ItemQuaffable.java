@@ -5,12 +5,12 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemCategory;
 
 public abstract class ItemQuaffable extends Item {
-	public abstract void quaff(EntityLiving quaffer);
-	
-	public abstract boolean canQuaff(EntityLiving quaffer);
-	
-	@Override
-	public ItemCategory getCategory() {
-		return ItemCategory.QUAFFABLE;
-	}
+    public abstract void quaff(EntityLiving quaffer);
+    
+    public abstract boolean canQuaff(EntityLiving quaffer);
+    
+    @Override
+    public ItemCategory getCategory() {
+        return ItemCategory.QUAFFABLE;
+    }
 }

@@ -9,11 +9,11 @@ import lombok.Setter;
 
 @Registered(id="tileStateTrap")
 public class TileStateTrap extends TileState {
-	@Expose @Getter @Setter private TileType disguise;
-	@Expose @Getter @Setter private boolean identified;
+    @Expose @Getter @Setter private TileType disguise;
+    @Expose @Getter @Setter private boolean identified;
 
-	public TileStateTrap(Tile tile) {
-		super(tile);
-		disguise = TileType.TILE_ROOM_FLOOR;
-	}
+    public TileStateTrap(Tile tile) {
+        super(tile);
+        disguise = TileType.TILE_ROOM_FLOOR;
+    }
 }

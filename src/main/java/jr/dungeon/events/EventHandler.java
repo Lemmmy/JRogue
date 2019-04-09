@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface EventHandler {
-	boolean selfOnly() default false;
-	EventInvocationTime invocationTime() default EventInvocationTime.IMMEDIATELY;
-	EventPriority priority() default EventPriority.NORMAL;
+    boolean selfOnly() default false;
+    EventInvocationTime invocationTime() default EventInvocationTime.IMMEDIATELY;
+    EventPriority priority() default EventPriority.NORMAL;
 }

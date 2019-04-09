@@ -10,19 +10,19 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityTeleportedToEvent extends Event {
-	private Entity teleportedTo;
-	private EntityLiving teleporter;
-	
-	public boolean isTeleportedToPlayer() {
-		return teleportedTo instanceof Player;
-	}
-	
-	public boolean isTeleporterPlayer() {
-		return teleporter instanceof Player;
-	}
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(teleportedTo);
-	}
+    private Entity teleportedTo;
+    private EntityLiving teleporter;
+    
+    public boolean isTeleportedToPlayer() {
+        return teleportedTo instanceof Player;
+    }
+    
+    public boolean isTeleporterPlayer() {
+        return teleporter instanceof Player;
+    }
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(teleportedTo);
+    }
 }

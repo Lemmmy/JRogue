@@ -5,15 +5,15 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
 
 public class PlayerClimbDown implements PlayerVisitor {
-	@Override
-	public void visit(Player player) {
-		Tile tile = player.getLevel().tileStore.getTile(player.getPosition());
-		
-		if (!((tile.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)) {
-			player.getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
-			return;
-		}
-		
-		player.defaultVisitors.climb(tile, false);
-	}
+    @Override
+    public void visit(Player player) {
+        Tile tile = player.getLevel().tileStore.getTile(player.getPosition());
+        
+        if (!((tile.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)) {
+            player.getDungeon().log("[YELLOW]There is nothing to climb down here.[]");
+            return;
+        }
+        
+        player.defaultVisitors.climb(tile, false);
+    }
 }

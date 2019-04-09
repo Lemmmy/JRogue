@@ -6,8 +6,8 @@ import jr.debugger.tree.valuemanagers.settertypes.NumberSetter;
 
 @SetterPartialHandler({ NumberSetter.class })
 public class NumberSetterPartial extends TextFieldSetterPartial<NumberSetter<?>> {
-	public NumberSetterPartial(Skin skin,
-							   NumberSetter setter, TreeNode node) {
-		super(skin, setter, node);
-	}
+    public NumberSetterPartial(Skin skin,
+                               NumberSetter setter, TreeNode node) {
+        super(skin, setter, node);
+    }
 }

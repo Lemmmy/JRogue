@@ -20,76 +20,76 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @see Action
  */
 public abstract class EntityTurnBased extends Entity {
-	/**
-	 * The amount of movement points the Entity currently has free.
-	 */
-	@Expose @Getter @Setter private int movementPoints = 0;
-	/**
-	 * The next {@link Action} this Entity is going to perform when it gets a chance to move.
-	 */
-	private Action nextAction;
-	
-	/**
-	 * @param dungeon The {@link Dungeon} this Entity is part of.
-	 * @param level The {@link Level} this Entity is on.
-	 * @param position The starting position of this Entity in the {@link Level}.
-	 */
-	public EntityTurnBased(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-	}
-	
-	protected EntityTurnBased() { super(); }
-	
-	/**
-	 * @param action Sets the next action to perform when this Entity gets a chance to move.
-	 */
-	public void setAction(Action action) {
-		nextAction = action;
-	}
-	
-	/**
-	 * Unsets the next action, meaning the Entity will do nothing when it next gets a chance to move.
-	 */
-	public void removeAction() {
-		nextAction = null;
-	}
-	
-	/**
-	 * Called during the {@link jr.dungeon.TurnSystem#moveEntities() Dungeon's turn loop - performs the next
-	 * {@link Action}} if the Entity has one to perform.
-	 */
-	public void move() {
-		if (hasAction()) {
-			nextAction.execute(this, getDungeon());
-			nextAction = null;
-		}
-	}
-	
-	/**
-	 * @return true if the Entity's nextAction is null.
-	 */
-	public boolean hasAction() {
-		return nextAction != null;
-	}
-	
-	/**
-	 * @return The amount of movement 'ticks' this entity performs per turn.
-	 */
-	public abstract int getMovementSpeed();
-	
-	/**
-	 * Adds this Entity's movement speed to its stored movementSpeed, with a small random 'bonus'. You can override
-	 * this to change the bonus, but make sure at least some bonus is applied otherwise the turn loop will hang in an
-	 * infinite loop if the Entity is slowed down.
-	 */
-	public void applyMovementPoints() {
-		movementPoints += getMovementSpeed() + Math.max(1, RandomUtils.random(2, 4));
-	}
-	
-	@Override
-	public ToStringBuilder toStringBuilder() {
-		return super.toStringBuilder()
-			.append("movementPoints", movementPoints)
-			.append("nextAction", nextAction);
-	}
+    /**
+     * The amount of movement points the Entity currently has free.
+     */
+    @Expose @Getter @Setter private int movementPoints = 0;
+    /**
+     * The next {@link Action} this Entity is going to perform when it gets a chance to move.
+     */
+    private Action nextAction;
+    
+    /**
+     * @param dungeon The {@link Dungeon} this Entity is part of.
+     * @param level The {@link Level} this Entity is on.
+     * @param position The starting position of this Entity in the {@link Level}.
+     */
+    public EntityTurnBased(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+    }
+    
+    protected EntityTurnBased() { super(); }
+    
+    /**
+     * @param action Sets the next action to perform when this Entity gets a chance to move.
+     */
+    public void setAction(Action action) {
+        nextAction = action;
+    }
+    
+    /**
+     * Unsets the next action, meaning the Entity will do nothing when it next gets a chance to move.
+     */
+    public void removeAction() {
+        nextAction = null;
+    }
+    
+    /**
+     * Called during the {@link jr.dungeon.TurnSystem#moveEntities() Dungeon's turn loop - performs the next
+     * {@link Action}} if the Entity has one to perform.
+     */
+    public void move() {
+        if (hasAction()) {
+            nextAction.execute(this, getDungeon());
+            nextAction = null;
+        }
+    }
+    
+    /**
+     * @return true if the Entity's nextAction is null.
+     */
+    public boolean hasAction() {
+        return nextAction != null;
+    }
+    
+    /**
+     * @return The amount of movement 'ticks' this entity performs per turn.
+     */
+    public abstract int getMovementSpeed();
+    
+    /**
+     * Adds this Entity's movement speed to its stored movementSpeed, with a small random 'bonus'. You can override
+     * this to change the bonus, but make sure at least some bonus is applied otherwise the turn loop will hang in an
+     * infinite loop if the Entity is slowed down.
+     */
+    public void applyMovementPoints() {
+        movementPoints += getMovementSpeed() + Math.max(1, RandomUtils.random(2, 4));
+    }
+    
+    @Override
+    public ToStringBuilder toStringBuilder() {
+        return super.toStringBuilder()
+            .append("movementPoints", movementPoints)
+            .append("nextAction", nextAction);
+    }
 }

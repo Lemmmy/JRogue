@@ -15,46 +15,46 @@ import jr.language.transformers.Capitalise;
 
 @Registered(id="aiTraitFamiliarAvoidCursed")
 public class TraitAvoidCursed extends AITrait<FamiliarAI> {
-	/**
-	 * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
-	 *
-	 * @param ai The {@link FamiliarAI} that hosts this trait.
-	 */
-	public TraitAvoidCursed(FamiliarAI ai) {
-		super(ai);
-	}
-	
-	protected TraitAvoidCursed() { super(); }
-	
-	@EventHandler(selfOnly = true)
-	private void onStepOnCursed(EntityMovedEvent event) {
-		Monster m = getMonster();
-		Level l = m.getLevel();
-		Dungeon d = m.getDungeon();
-		Player p = d.getPlayer();
-		
-		if (l != p.getLevel()) return;
-		if (event.getLastPosition().equals(event.getNewPosition())) return;
-		
-		l.entityStore.getItemsAt(event.getNewPosition())
-			.filter(e -> e.getItem().getAspect(AspectBeatitude.class).isPresent())
-			.filter(e -> !e.getItem().isAspectKnown(p, AspectBeatitude.class))
-			.filter(e -> ((AspectBeatitude) e.getItem().getAspect(AspectBeatitude.class).get()).getBeatitude()
-				== AspectBeatitude.Beatitude.CURSED)
-			.findFirst()
-			.ifPresent(e -> {
-				d.log(
-					"%s %s only reluctantly.",
-					LanguageUtils.subject(m).build(Capitalise.first),
-					LanguageUtils.autoTense(Lexicon.move.clone(), getMonster())
-				);
-				
-				e.getItem().observeAspect(p, AspectBeatitude.class);
-			});
-	}
-	
-	@Override
-	public void update() {
-		
-	}
+    /**
+     * Intrinsic or extrinsic pieces of information that can affect the way a {@link FamiliarAI} behaves.
+     *
+     * @param ai The {@link FamiliarAI} that hosts this trait.
+     */
+    public TraitAvoidCursed(FamiliarAI ai) {
+        super(ai);
+    }
+    
+    protected TraitAvoidCursed() { super(); }
+    
+    @EventHandler(selfOnly = true)
+    private void onStepOnCursed(EntityMovedEvent event) {
+        Monster m = getMonster();
+        Level l = m.getLevel();
+        Dungeon d = m.getDungeon();
+        Player p = d.getPlayer();
+        
+        if (l != p.getLevel()) return;
+        if (event.getLastPosition().equals(event.getNewPosition())) return;
+        
+        l.entityStore.getItemsAt(event.getNewPosition())
+            .filter(e -> e.getItem().getAspect(AspectBeatitude.class).isPresent())
+            .filter(e -> !e.getItem().isAspectKnown(p, AspectBeatitude.class))
+            .filter(e -> ((AspectBeatitude) e.getItem().getAspect(AspectBeatitude.class).get()).getBeatitude()
+                == AspectBeatitude.Beatitude.CURSED)
+            .findFirst()
+            .ifPresent(e -> {
+                d.log(
+                    "%s %s only reluctantly.",
+                    LanguageUtils.subject(m).build(Capitalise.first),
+                    LanguageUtils.autoTense(Lexicon.move.clone(), getMonster())
+                );
+                
+                e.getItem().observeAspect(p, AspectBeatitude.class);
+            });
+    }
+    
+    @Override
+    public void update() {
+    
+    }
 }

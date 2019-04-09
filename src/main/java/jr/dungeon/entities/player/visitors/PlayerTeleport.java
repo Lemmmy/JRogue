@@ -8,11 +8,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class PlayerTeleport implements PlayerVisitor {
-	private Point position;
-	
-	@Override
-	public void visit(Player player) {
-		player.setAction(new ActionTeleport(position, new Action.NoCallback()));
-		player.getDungeon().turnSystem.turn();
-	}
+    private Point position;
+    
+    @Override
+    public void visit(Player player) {
+        player.setAction(new ActionTeleport(position, new Action.NoCallback()));
+        player.getDungeon().turnSystem.turn();
+    }
 }

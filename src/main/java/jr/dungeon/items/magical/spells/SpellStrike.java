@@ -17,68 +17,68 @@ import jr.utils.VectorInt;
 
 @Registered(id="spellStrike")
 public class SpellStrike extends Spell {
-	@Override
-	public Noun getName() {
-		return Lexicon.strike.clone();
-	}
-	
-	@Override
-	public MagicalSchool getMagicalSchool() {
-		return MagicalSchool.ATTACK;
-	}
-	
-	@Override
-	public DirectionType getDirectionType() {
-		return DirectionType.BEAM;
-	}
-	
-	@Override
-	public int getTurnsToRead() {
-		return 5;
-	}
-	
-	@Override
-	public int getLevel() {
-		return 1;
-	}
-	
-	@Override
-	public boolean canCastAtSelf() {
-		return true; // but it's a very bad idea
-	}
-	
-	@Override
-	public void castNonDirectional(EntityLiving caster) {
-		castDirectional(caster, VectorInt.ZERO); // cast straight down at the player, dealing splash damage to those around them
-	}
-	
-	@Override
-	public void castDirectional(EntityLiving caster, VectorInt direction) {
-		if (direction == VectorInt.ZERO) {
-			splash(caster, caster.getPosition());
-			return;
-		}
-		
-		EntityStrike strike = QuickSpawn.spawnClass(EntityStrike.class, caster.getLevel(), caster.getPosition());
-		strike.setDirection(direction);
-		strike.setTravelRange(3);
-		strike.setSource(caster);
-		caster.getLevel().entityStore.addEntity(strike);
-	}
-	
-	private int getDamage() {
-		return RandomUtils.roll(2, 12);
-	}
-	
-	private int getSplashRange() {
-		return 3;
-	}
-	
-	private void splash(EntityLiving caster, Point position) {
-		caster.getLevel().entityStore.getEntities().stream()
-			.filter(e -> Distance.i(position, e.getPosition()) <= getSplashRange())
-			.filter(EntityLiving.class::isInstance)
-			.map(e -> (EntityLiving) e)
-			.forEach(e -> e.damage(new DamageSource(caster, null, DamageType.STRIKE_SPELL), getDamage()));
-	}
+    @Override
+    public Noun getName() {
+        return Lexicon.strike.clone();
+    }
+    
+    @Override
+    public MagicalSchool getMagicalSchool() {
+        return MagicalSchool.ATTACK;
+    }
+    
+    @Override
+    public DirectionType getDirectionType() {
+        return DirectionType.BEAM;
+    }
+    
+    @Override
+    public int getTurnsToRead() {
+        return 5;
+    }
+    
+    @Override
+    public int getLevel() {
+        return 1;
+    }
+    
+    @Override
+    public boolean canCastAtSelf() {
+        return true; // but it's a very bad idea
+    }
+    
+    @Override
+    public void castNonDirectional(EntityLiving caster) {
+        castDirectional(caster, VectorInt.ZERO); // cast straight down at the player, dealing splash damage to those around them
+    }
+    
+    @Override
+    public void castDirectional(EntityLiving caster, VectorInt direction) {
+        if (direction == VectorInt.ZERO) {
+            splash(caster, caster.getPosition());
+            return;
+        }
+        
+        EntityStrike strike = QuickSpawn.spawnClass(EntityStrike.class, caster.getLevel(), caster.getPosition());
+        strike.setDirection(direction);
+        strike.setTravelRange(3);
+        strike.setSource(caster);
+        caster.getLevel().entityStore.addEntity(strike);
+    }
+    
+    private int getDamage() {
+        return RandomUtils.roll(2, 12);
+    }
+    
+    private int getSplashRange() {
+        return 3;
+    }
+    
+    private void splash(EntityLiving caster, Point position) {
+        caster.getLevel().entityStore.getEntities().stream()
+            .filter(e -> Distance.i(position, e.getPosition()) <= getSplashRange())
+            .filter(EntityLiving.class::isInstance)
+            .map(e -> (EntityLiving) e)
+            .forEach(e -> e.damage(new DamageSource(caster, null, DamageType.STRIKE_SPELL), getDamage()));
+    }
 }

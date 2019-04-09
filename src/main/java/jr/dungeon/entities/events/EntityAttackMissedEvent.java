@@ -12,28 +12,28 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityAttackMissedEvent extends Event {
-	private EntityLiving victim;
-	private Entity attacker;
-	private DamageSource damageSource;
-	private Hit hit;
-	
-	public EntityAttackMissedEvent(EntityLiving victim, DamageSource damageSource, Hit hit) {
-		this.victim = victim;
-		this.attacker = damageSource.getAttacker();
-		this.damageSource = damageSource;
-		this.hit = hit;
-	}
-	
-	public boolean isVictimPlayer() {
-		return victim instanceof Player;
-	}
-	
-	public boolean isAttackerPlayer() {
-		return attacker instanceof Player;
-	}
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(victim);
-	}
+    private EntityLiving victim;
+    private Entity attacker;
+    private DamageSource damageSource;
+    private Hit hit;
+    
+    public EntityAttackMissedEvent(EntityLiving victim, DamageSource damageSource, Hit hit) {
+        this.victim = victim;
+        this.attacker = damageSource.getAttacker();
+        this.damageSource = damageSource;
+        this.hit = hit;
+    }
+    
+    public boolean isVictimPlayer() {
+        return victim instanceof Player;
+    }
+    
+    public boolean isAttackerPlayer() {
+        return attacker instanceof Player;
+    }
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(victim);
+    }
 }

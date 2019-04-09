@@ -9,13 +9,13 @@ import jr.language.Noun;
 
 @Registered(id="specialRoomFeatureFountain")
 public class FeatureFountain extends SpecialRoomFeature {
-	@Override
-	public void generate(Room room) {
-		QuickSpawn.spawnClass(EntityFountain.class, room.level, room.randomPoint());
-	}
-	
-	@Override
-	public Noun getName() {
-		return Lexicon.fountain.clone();
-	}
+    @Override
+    public void generate(Room room) {
+        QuickSpawn.spawnClass(EntityFountain.class, room.level, room.randomPoint());
+    }
+    
+    @Override
+    public Noun getName() {
+        return Lexicon.fountain.clone();
+    }
 }

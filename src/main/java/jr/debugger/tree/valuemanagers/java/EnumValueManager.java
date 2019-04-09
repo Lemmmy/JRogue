@@ -8,18 +8,18 @@ import java.lang.reflect.Field;
 
 @TypeValueManagerHandler({ Enum.class })
 public class EnumValueManager extends TypeValueManager<Enum, EnumSetter> {
-	@Override
-	public String valueToString(Field field, Enum instance) {
-		return instance.name();
-	}
-	
-	@Override
-	public boolean canSet(Field field, Enum instance) {
-		return true;
-	}
-	
-	@Override
-	public EnumSetter getSetter(Field field, Enum instance) {
-		return new EnumSetter(instance);
-	}
+    @Override
+    public String valueToString(Field field, Enum instance) {
+        return instance.name();
+    }
+    
+    @Override
+    public boolean canSet(Field field, Enum instance) {
+        return true;
+    }
+    
+    @Override
+    public EnumSetter getSetter(Field field, Enum instance) {
+        return new EnumSetter(instance);
+    }
 }

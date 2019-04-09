@@ -9,24 +9,24 @@ import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.utils.VectorInt;
 
 public abstract class ItemWeapon extends Item implements Wieldable {
-	public abstract void hit(EntityLiving attacker, EntityLiving victim);
-	
-	public abstract void zap(EntityLiving attacker, EntityLiving victim, VectorInt direction);
-	
-	public abstract boolean fire(EntityLiving attacker, ItemProjectile projectile, VectorInt direction);
-	
-	public abstract boolean isMelee();
-	
-	public abstract boolean isRanged();
-	
-	public abstract boolean isMagic();
-	
-	public abstract int getToHitBonus();
-	
-	public abstract Skill getSkill();
-	
-	@Override
-	public ItemCategory getCategory() {
-		return ItemCategory.WEAPON;
-	}
+    public abstract void hit(EntityLiving attacker, EntityLiving victim);
+    
+    public abstract void zap(EntityLiving attacker, EntityLiving victim, VectorInt direction);
+    
+    public abstract boolean fire(EntityLiving attacker, ItemProjectile projectile, VectorInt direction);
+    
+    public abstract boolean isMelee();
+    
+    public abstract boolean isRanged();
+    
+    public abstract boolean isMagic();
+    
+    public abstract int getToHitBonus();
+    
+    public abstract Skill getSkill();
+    
+    @Override
+    public ItemCategory getCategory() {
+        return ItemCategory.WEAPON;
+    }
 }

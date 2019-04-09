@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PlayerVisitorsContainer {
-	private Player player;
+    private Player player;
 }

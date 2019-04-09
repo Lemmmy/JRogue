@@ -11,46 +11,46 @@ import lombok.Setter;
 
 @Registered(id="aiStateFamiliarApproachComestible")
 public class StateApproachComestible extends AIState<FamiliarAI> {
-	@Expose @Setter(AccessLevel.NONE)
-	private EntityReference<EntityItem> targetComestible = new EntityReference<>();
-	
-	/**
-	 * @param ai The {@link FamiliarAI} that hosts this state.
-	 * @param duration How many turns the state should run for. 0 for indefinite.
-	 * @param targetComestible The comestible to approach.
-	 */
-	public StateApproachComestible(FamiliarAI ai, int duration, EntityItem targetComestible) {
-		super(ai, duration);
-		this.targetComestible.set(targetComestible);
-	}
-	
-	protected StateApproachComestible() { super(); }
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		EntityItem target = targetComestible.get(getLevel());
-		
-		if (
-			target == null ||
-			target.getLevel() != getLevel() ||
-			target.getLevel() == null ||
-			!getLevel().entityStore.hasEntity(target)
-		) {
-			ai.setCurrentState(null);
-			return;
-		}
-		
-		if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
-			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
-			return;
-		}
-		
-		ai.moveTowards(target);
-		
-		if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
-			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
-		}
-	}
+    @Expose @Setter(AccessLevel.NONE)
+    private EntityReference<EntityItem> targetComestible = new EntityReference<>();
+    
+    /**
+     * @param ai The {@link FamiliarAI} that hosts this state.
+     * @param duration How many turns the state should run for. 0 for indefinite.
+     * @param targetComestible The comestible to approach.
+     */
+    public StateApproachComestible(FamiliarAI ai, int duration, EntityItem targetComestible) {
+        super(ai, duration);
+        this.targetComestible.set(targetComestible);
+    }
+    
+    protected StateApproachComestible() { super(); }
+    
+    @Override
+    public void update() {
+        super.update();
+        
+        EntityItem target = targetComestible.get(getLevel());
+        
+        if (
+            target == null ||
+            target.getLevel() != getLevel() ||
+            target.getLevel() == null ||
+            !getLevel().entityStore.hasEntity(target)
+        ) {
+            ai.setCurrentState(null);
+            return;
+        }
+        
+        if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+            ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
+            return;
+        }
+        
+        ai.moveTowards(target);
+        
+        if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+            ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
+        }
+    }
 }

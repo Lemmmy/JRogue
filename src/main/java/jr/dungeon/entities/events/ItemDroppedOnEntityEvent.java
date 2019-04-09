@@ -11,19 +11,19 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ItemDroppedOnEntityEvent extends Event {
-	private Entity droppedOn;
-	private EntityItem itemEntity;
-	
-	public ItemStack getItemStack() {
-		return itemEntity.getItemStack();
-	}
-	
-	public Item getItem() {
-		return itemEntity.getItem();
-	}
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(droppedOn);
-	}
+    private Entity droppedOn;
+    private EntityItem itemEntity;
+    
+    public ItemStack getItemStack() {
+        return itemEntity.getItemStack();
+    }
+    
+    public Item getItem() {
+        return itemEntity.getItem();
+    }
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(droppedOn);
+    }
 }

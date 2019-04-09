@@ -19,36 +19,36 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 @HasRegistry
 public abstract class Aspect implements Serialisable {
-	public abstract String getName();
-	
-	public Noun applyNameTransformers(Item item, Noun name) {
-		return name;
-	}
-	
-	public int getNamePriority() {
-		return 0;
-	}
-	
-	/**
-	 * persistent aspects are known by all livingents of the same type permanently:
-	 * 	 a bow's shape is persistent: once a player knows this style of bow is elven, it will know all future bows with
-	 * 	 the same style are elven
-	 *
-	 * on the other hand, non-persistent aspects are per item instance:
-	 *   an item's BUC status is non-persistent: it differs between all items
-	 *
-	 * @return Whether or not the Aspect is persistent.
-	 */
-	public abstract boolean isPersistent();
-	
-	@Override
-	public String toString() {
-		return toStringBuilder().build();
-	}
-	
-	public ToStringBuilder toStringBuilder() {
-		return new ToStringBuilder(this, DebugToStringStyle.STYLE)
-			.append("persistent", isPersistent() ? "yes" : "no")
-			.append("namePriority", getNamePriority());
-	}
+    public abstract String getName();
+    
+    public Noun applyNameTransformers(Item item, Noun name) {
+        return name;
+    }
+    
+    public int getNamePriority() {
+        return 0;
+    }
+    
+    /**
+     * persistent aspects are known by all livingents of the same type permanently:
+     *      a bow's shape is persistent: once a player knows this style of bow is elven, it will know all future bows with
+     *      the same style are elven
+     *
+     * on the other hand, non-persistent aspects are per item instance:
+     *   an item's BUC status is non-persistent: it differs between all items
+     *
+     * @return Whether or not the Aspect is persistent.
+     */
+    public abstract boolean isPersistent();
+    
+    @Override
+    public String toString() {
+        return toStringBuilder().build();
+    }
+    
+    public ToStringBuilder toStringBuilder() {
+        return new ToStringBuilder(this, DebugToStringStyle.STYLE)
+            .append("persistent", isPersistent() ? "yes" : "no")
+            .append("namePriority", getNamePriority());
+    }
 }

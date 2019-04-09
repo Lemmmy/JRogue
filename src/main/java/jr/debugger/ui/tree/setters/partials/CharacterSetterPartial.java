@@ -6,8 +6,8 @@ import jr.debugger.tree.valuemanagers.settertypes.CharacterSetter;
 
 @SetterPartialHandler({ CharacterSetter.class })
 public class CharacterSetterPartial extends TextFieldSetterPartial<CharacterSetter> {
-	public CharacterSetterPartial(Skin skin,
-								  CharacterSetter setter, TreeNode node) {
-		super(skin, setter, node);
-	}
+    public CharacterSetterPartial(Skin skin,
+                                  CharacterSetter setter, TreeNode node) {
+        super(skin, setter, node);
+    }
 }

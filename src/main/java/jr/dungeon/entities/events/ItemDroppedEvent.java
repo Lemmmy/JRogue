@@ -10,13 +10,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ItemDroppedEvent extends Event {
-	private EntityItem itemEntity;
-	
-	public ItemStack getItemStack() {
-		return itemEntity.getItemStack();
-	}
-	
-	public Item getItem() {
-		return itemEntity.getItem();
-	}
+    private EntityItem itemEntity;
+    
+    public ItemStack getItemStack() {
+        return itemEntity.getItemStack();
+    }
+    
+    public Item getItem() {
+        return itemEntity.getItem();
+    }
 }

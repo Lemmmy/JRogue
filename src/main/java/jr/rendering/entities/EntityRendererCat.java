@@ -9,31 +9,31 @@ import jr.rendering.utils.ImageUtils;
 import static jr.rendering.assets.Textures.entityFile;
 
 public class EntityRendererCat extends EntityRendererBasic {
-	private static final int imageCount = 12;
-	private static final int ageCount = 3;
-	private static final int breedCount = imageCount / ageCount;
-	
-	private TextureRegion[] images = new TextureRegion[imageCount];
-	
-	public EntityRendererCat() {
-		super(null);
-	}
-	
-	@Override
-	public void onLoad(Assets assets) {
-		super.onLoad(assets);
-		
-		assets.textures.loadPacked(entityFile("cats"), t -> ImageUtils.loadSheet(t, images, imageCount, 1));
-	}
-	
-	@Override
-	public TextureRegion getTextureRegion(Entity entity) {
-		if (entity instanceof Familiar) {
-			int breed = entity.getVisualID() % breedCount;
-			int age = ((Familiar) entity).getAge();
-			return images[breed * ageCount + age];
-		} else {
-			return images[0];
-		}
-	}
+    private static final int imageCount = 12;
+    private static final int ageCount = 3;
+    private static final int breedCount = imageCount / ageCount;
+    
+    private TextureRegion[] images = new TextureRegion[imageCount];
+    
+    public EntityRendererCat() {
+        super(null);
+    }
+    
+    @Override
+    public void onLoad(Assets assets) {
+        super.onLoad(assets);
+        
+        assets.textures.loadPacked(entityFile("cats"), t -> ImageUtils.loadSheet(t, images, imageCount, 1));
+    }
+    
+    @Override
+    public TextureRegion getTextureRegion(Entity entity) {
+        if (entity instanceof Familiar) {
+            int breed = entity.getVisualID() % breedCount;
+            int age = ((Familiar) entity).getAge();
+            return images[breed * ageCount + age];
+        } else {
+            return images[0];
+        }
+    }
 }

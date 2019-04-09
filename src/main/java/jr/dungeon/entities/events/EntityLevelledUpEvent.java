@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class EntityLevelledUpEvent extends Event {
-	private Entity entity;
-	private int newExperienceLevel;
-	
-	@Override
-	public boolean isSelf(Object other) {
-		return other.equals(entity);
-	}
+    private Entity entity;
+    private int newExperienceLevel;
+    
+    @Override
+    public boolean isSelf(Object other) {
+        return other.equals(entity);
+    }
 }

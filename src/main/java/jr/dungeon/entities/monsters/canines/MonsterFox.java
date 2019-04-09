@@ -16,49 +16,49 @@ import java.util.List;
 @Wishable(name="fox")
 @Registered(id="monsterFox")
 public class MonsterFox extends MonsterCanine {
-	public MonsterFox(Dungeon dungeon, Level level, Point position) {
-		super(dungeon, level, position);
-	}
-	
-	protected MonsterFox() { super(); }
-	
-	@Override
-	public Noun getName(EntityLiving observer) {
-		return Lexicon.fox.clone();
-	}
-	
-	@Override
-	public EntityAppearance getAppearance() {
-		return EntityAppearance.APPEARANCE_FOX;
-	}
-	
-	@Override
-	public EntityLiving.Size getSize() {
-		return EntityLiving.Size.SMALL;
-	}
-	
-	@Override
-	public int getMovementSpeed() {
-		return Dungeon.NORMAL_SPEED + 3;
-	}
-	
-	@Override
-	public int getWeight() {
-		return 250;
-	}
-	
-	@Override
-	public int getNutritionalValue() {
-		return 200;
-	}
-	
-	@Override
-	public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
-		return null;
-	}
-	
-	@Override
-	public int getVisibilityRange() {
-		return 15;
-	}
+    public MonsterFox(Dungeon dungeon, Level level, Point position) {
+        super(dungeon, level, position);
+    }
+    
+    protected MonsterFox() { super(); }
+    
+    @Override
+    public Noun getName(EntityLiving observer) {
+        return Lexicon.fox.clone();
+    }
+    
+    @Override
+    public EntityAppearance getAppearance() {
+        return EntityAppearance.APPEARANCE_FOX;
+    }
+    
+    @Override
+    public EntityLiving.Size getSize() {
+        return EntityLiving.Size.SMALL;
+    }
+    
+    @Override
+    public int getMovementSpeed() {
+        return Dungeon.NORMAL_SPEED + 3;
+    }
+    
+    @Override
+    public int getWeight() {
+        return 250;
+    }
+    
+    @Override
+    public int getNutritionalValue() {
+        return 200;
+    }
+    
+    @Override
+    public List<StatusEffect> getCorpseEffects(EntityLiving victim) {
+        return null;
+    }
+    
+    @Override
+    public int getVisibilityRange() {
+        return 15;
+    }
 }

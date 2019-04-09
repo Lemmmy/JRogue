@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface SetterPartialHandler {
-	Class<? extends TypeValueSetter>[] value();
+    Class<? extends TypeValueSetter>[] value();
 }

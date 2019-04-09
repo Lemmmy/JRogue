@@ -30,109 +30,109 @@ import java.util.List;
 
 @Registered(id="specialRoomFeatureChest")
 public class FeatureChest extends SpecialRoomFeature {
-	private static final WeightedCollection<ItemGroup> ITEM_GROUPS = new WeightedCollection<>();
-	
-	static {
-		// FOOD
-		ITEM_GROUPS.add(30, new ItemGroup(
-			ItemApple.class,
-			ItemBanana.class,
-			ItemBread.class,
-			ItemCarrot.class,
-			ItemCherries.class,
-			ItemCorn.class,
-			ItemLemon.class,
-			ItemOrange.class
-		));
-		
-		// WEAPONS
-		ITEM_GROUPS.add(6, new ItemGroup(
-			ItemDagger.class,
-			ItemShortsword.class,
-			ItemLongsword.class
-		));
-		
-		// GEMS
-		ITEM_GROUPS.add(4, new ItemGroup(
-			ItemGem.class
-		));
-		
-		// MISC
-		ITEM_GROUPS.add(1, new ItemGroup(
-			ItemThermometer.class,
-			ItemSpellbook.class
-		));
-	}
-	
-	@Override
-	public void generate(Room room) {
-		EntityChest chest = new EntityChest(room.level.getDungeon(), room.level, room.randomPoint());
-		populateChest(room, chest);
-		room.level.entityStore.addEntity(chest);
-	}
-	
-	@Override
-	public Noun getName() {
-		return Lexicon.chest.clone();
-	}
-	
-	private void populateChest(Room room, EntityChest chest) {
-		if (!chest.getContainer().isPresent()) {
-			return;
-		}
-		
-		Container container = chest.getContainer().get();
-		
-		int itemAmount = RandomUtils.roll(4) - 1; // possibility that chests can be empty
-		
-		for (int i = 0; i < itemAmount; i++) {
-			ItemGroup group = ITEM_GROUPS.next();
-			Class<? extends Item> itemClass = group.getRandomItem();
-			
-			populateChestItem(room, chest, container, itemClass);
-		}
-	}
-	
-	private void populateChestItem(Room room, EntityChest chest, Container container, Class<? extends Item> itemClass) {
-		Constructor<? extends Item> constructor = ConstructorUtils.getAccessibleConstructor(itemClass, Level.class);
-		Item item;
-		
-		if (constructor != null) {
-			try {
-				item = constructor.newInstance(room.level);
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error adding chest items", e);
-				return;
-			}
-		} else {
-			constructor = ConstructorUtils.getAccessibleConstructor(itemClass);
-			
-			try {
-				item = constructor.newInstance();
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-				JRogue.getLogger().error("Error adding chest items", e);
-				return;
-			}
-		}
-		
-		if (item instanceof SpecialChestSpawn) {
-			((SpecialChestSpawn) item).onSpawnInChest(chest, container);
-		} else {
-			ItemStack stack = new ItemStack(item, 1);
-			container.add(stack);
-		}
-	}
-		
-	protected static class ItemGroup {
-		private List<Class<? extends Item>> items = new ArrayList<>();
-		
-		@SafeVarargs
-		private ItemGroup(Class<? extends Item>... items) {
-			this.items.addAll(Arrays.asList(items));
-		}
-		
-		public Class<? extends Item> getRandomItem() {
-			return RandomUtils.randomFrom(items);
-		}
-	}
+    private static final WeightedCollection<ItemGroup> ITEM_GROUPS = new WeightedCollection<>();
+    
+    static {
+        // FOOD
+        ITEM_GROUPS.add(30, new ItemGroup(
+            ItemApple.class,
+            ItemBanana.class,
+            ItemBread.class,
+            ItemCarrot.class,
+            ItemCherries.class,
+            ItemCorn.class,
+            ItemLemon.class,
+            ItemOrange.class
+        ));
+        
+        // WEAPONS
+        ITEM_GROUPS.add(6, new ItemGroup(
+            ItemDagger.class,
+            ItemShortsword.class,
+            ItemLongsword.class
+        ));
+        
+        // GEMS
+        ITEM_GROUPS.add(4, new ItemGroup(
+            ItemGem.class
+        ));
+        
+        // MISC
+        ITEM_GROUPS.add(1, new ItemGroup(
+            ItemThermometer.class,
+            ItemSpellbook.class
+        ));
+    }
+    
+    @Override
+    public void generate(Room room) {
+        EntityChest chest = new EntityChest(room.level.getDungeon(), room.level, room.randomPoint());
+        populateChest(room, chest);
+        room.level.entityStore.addEntity(chest);
+    }
+    
+    @Override
+    public Noun getName() {
+        return Lexicon.chest.clone();
+    }
+    
+    private void populateChest(Room room, EntityChest chest) {
+        if (!chest.getContainer().isPresent()) {
+            return;
+        }
+        
+        Container container = chest.getContainer().get();
+        
+        int itemAmount = RandomUtils.roll(4) - 1; // possibility that chests can be empty
+        
+        for (int i = 0; i < itemAmount; i++) {
+            ItemGroup group = ITEM_GROUPS.next();
+            Class<? extends Item> itemClass = group.getRandomItem();
+            
+            populateChestItem(room, chest, container, itemClass);
+        }
+    }
+    
+    private void populateChestItem(Room room, EntityChest chest, Container container, Class<? extends Item> itemClass) {
+        Constructor<? extends Item> constructor = ConstructorUtils.getAccessibleConstructor(itemClass, Level.class);
+        Item item;
+        
+        if (constructor != null) {
+            try {
+                item = constructor.newInstance(room.level);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                JRogue.getLogger().error("Error adding chest items", e);
+                return;
+            }
+        } else {
+            constructor = ConstructorUtils.getAccessibleConstructor(itemClass);
+            
+            try {
+                item = constructor.newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                JRogue.getLogger().error("Error adding chest items", e);
+                return;
+            }
+        }
+        
+        if (item instanceof SpecialChestSpawn) {
+            ((SpecialChestSpawn) item).onSpawnInChest(chest, container);
+        } else {
+            ItemStack stack = new ItemStack(item, 1);
+            container.add(stack);
+        }
+    }
+    
+    protected static class ItemGroup {
+        private List<Class<? extends Item>> items = new ArrayList<>();
+        
+        @SafeVarargs
+        private ItemGroup(Class<? extends Item>... items) {
+            this.items.addAll(Arrays.asList(items));
+        }
+        
+        public Class<? extends Item> getRandomItem() {
+            return RandomUtils.randomFrom(items);
+        }
+    }
 }

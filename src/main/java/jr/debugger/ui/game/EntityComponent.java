@@ -9,29 +9,29 @@ import jr.rendering.entities.EntityMap;
 import java.util.Comparator;
 
 public class EntityComponent extends RendererComponent {
-	public EntityComponent(Dungeon dungeon) {
-		super(dungeon);
-	}
-	
-	@Override
-	public void draw(SpriteBatch batch) {
-		drawEntities(batch);
-	}
-	
-	private void drawEntities(SpriteBatch batch) {
-		Dungeon dungeon = getDungeon();
-		EntityStore entityStore = getLevel().entityStore;
-		
-		entityStore.getEntities().stream()
-			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> {
-				try {
-					EntityMap em = EntityMap.valueOf(e.getAppearance().name());
-					
-					if (em.getRenderer() != null) {
-						em.getRenderer().draw(batch, e, null, false);
-					}
-				} catch (IllegalArgumentException ignored) {}
-			});
-	}
+    public EntityComponent(Dungeon dungeon) {
+        super(dungeon);
+    }
+    
+    @Override
+    public void draw(SpriteBatch batch) {
+        drawEntities(batch);
+    }
+    
+    private void drawEntities(SpriteBatch batch) {
+        Dungeon dungeon = getDungeon();
+        EntityStore entityStore = getLevel().entityStore;
+        
+        entityStore.getEntities().stream()
+            .sorted(Comparator.comparingInt(Entity::getDepth))
+            .forEach(e -> {
+                try {
+                    EntityMap em = EntityMap.valueOf(e.getAppearance().name());
+                    
+                    if (em.getRenderer() != null) {
+                        em.getRenderer().draw(batch, e, null, false);
+                    }
+                } catch (IllegalArgumentException ignored) {}
+            });
+    }
 }

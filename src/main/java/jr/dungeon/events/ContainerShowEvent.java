@@ -9,19 +9,19 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ContainerShowEvent extends Event {
-	private Entity containerEntity;
-	private Container container;
-	
-	public ContainerShowEvent(Entity containerEntity) {
-		this.containerEntity = containerEntity;
+    private Entity containerEntity;
+    private Container container;
+    
+    public ContainerShowEvent(Entity containerEntity) {
+        this.containerEntity = containerEntity;
 
-		if (containerEntity instanceof ContainerOwner) {
-			ContainerOwner co = (ContainerOwner)containerEntity;
-			co.getContainer().ifPresent(c -> container = c);
-		}
-	}
-	
-	public ContainerShowEvent(Container container) {
-		this.container = container;
-	}
+        if (containerEntity instanceof ContainerOwner) {
+            ContainerOwner co = (ContainerOwner)containerEntity;
+            co.getContainer().ifPresent(c -> container = c);
+        }
+    }
+    
+    public ContainerShowEvent(Container container) {
+        this.container = container;
+    }
 }

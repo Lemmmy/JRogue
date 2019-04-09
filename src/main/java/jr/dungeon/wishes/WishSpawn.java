@@ -8,11 +8,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class WishSpawn<T extends Entity> implements Wish {
-	private Class<T> entityClass;
+    private Class<T> entityClass;
 
-	@Override
-	public void grant(Dungeon dungeon, Player player, String... args) {
-		QuickSpawn.spawnClass(entityClass, dungeon.getLevel(), player.getPosition());
-		dungeon.turnSystem.turn();
-	}
+    @Override
+    public void grant(Dungeon dungeon, Player player, String... args) {
+        QuickSpawn.spawnClass(entityClass, dungeon.getLevel(), player.getPosition());
+        dungeon.turnSystem.turn();
+    }
 }
