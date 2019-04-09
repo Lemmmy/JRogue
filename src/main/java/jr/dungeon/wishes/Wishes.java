@@ -14,6 +14,9 @@ import jr.dungeon.entities.decoration.EntityFountain;
 import jr.dungeon.entities.effects.*;
 import jr.dungeon.entities.magic.EntityAltar;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.generators.GeneratorCave;
+import jr.dungeon.generators.GeneratorIce;
+import jr.dungeon.generators.GeneratorSewer;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
@@ -148,6 +151,11 @@ public class Wishes {
 			f.setAction(new ActionTeleport(p.getPosition(), null));
 			d.turnSystem.turn();
 		}));
+		
+		// Levels
+		registerWish("cave level", new WishLevel<>(GeneratorCave.class));
+		registerWish("sewer level", new WishLevel<>(GeneratorSewer.class));
+		registerWish("ice level", new WishLevel<>(GeneratorIce.class));
 		
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
