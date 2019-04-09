@@ -34,7 +34,7 @@ public class TileStore implements LevelStore {
     @Expose private int width;
     @Expose private int height;
     
-    @Setter    private boolean eventsSuppressed = true; // start off suppressed during initialisation
+    @Setter private boolean eventsSuppressed = true; // start off suppressed during initialisation
     
     public TileStore(Level level) {
         this.level = level;

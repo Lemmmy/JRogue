@@ -49,9 +49,9 @@ public class HUDComponent extends RendererComponent {
     private Player player;
     
     private List<LogEntry> log = new ArrayList<>();
-    @Getter    private List<WindowBase> windows = new ArrayList<>();
+    @Getter private List<WindowBase> windows = new ArrayList<>();
     
-    @Getter    private List<Actor> singleTurnActors = new ArrayList<>();
+    @Getter private List<Actor> singleTurnActors = new ArrayList<>();
     private Map<Entity, Boolean> entityShowDebug = new HashMap<>();
     private List<Actor> entityDebugActors = new ArrayList<>();
     private List<Runnable> nextFrameDeferred = new ArrayList<>();

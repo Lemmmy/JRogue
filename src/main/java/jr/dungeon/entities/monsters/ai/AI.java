@@ -40,7 +40,7 @@ import java.util.Set;
 public abstract class AI implements Serialisable, EventListener {
     @NonNull @Getter @Setter private Monster monster;
     
-    @Getter @Setter    private AStarPathfinder pathfinder = new AStarPathfinder();
+    @Getter @Setter private AStarPathfinder pathfinder = new AStarPathfinder();
     @Expose private List<TileType> avoidTiles = new ArrayList<>();
     
     protected int suppressTurns = 0;

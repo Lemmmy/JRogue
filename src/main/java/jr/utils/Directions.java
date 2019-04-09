@@ -8,15 +8,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public final class Directions {
-    public static VectorInt SOUTH_WEST     = VectorInt.get(-1, -1);
-    public static VectorInt SOUTH         = VectorInt.get( 0, -1);
-    public static VectorInt SOUTH_EAST     = VectorInt.get( 1, -1);
-    public static VectorInt WEST         = VectorInt.get(-1,  0);
-    public static VectorInt CENTER         = VectorInt.ZERO;
-    public static VectorInt EAST         = VectorInt.get( 1,  0);
-    public static VectorInt NORTH_WEST     = VectorInt.get(-1,  1);
-    public static VectorInt NORTH         = VectorInt.get( 0,  1);
-    public static VectorInt NORTH_EAST     = VectorInt.get( 1,  1);
+    public static VectorInt SOUTH_WEST = VectorInt.get(-1, -1);
+    public static VectorInt SOUTH      = VectorInt.get( 0, -1);
+    public static VectorInt SOUTH_EAST = VectorInt.get( 1, -1);
+    public static VectorInt WEST       = VectorInt.get(-1,  0);
+    public static VectorInt CENTER     = VectorInt.ZERO;
+    public static VectorInt EAST       = VectorInt.get( 1,  0);
+    public static VectorInt NORTH_WEST = VectorInt.get(-1,  1);
+    public static VectorInt NORTH      = VectorInt.get( 0,  1);
+    public static VectorInt NORTH_EAST = VectorInt.get( 1,  1);
     
     /**
      * The four cardinal directions as {@link VectorInt VectorInts}, in the following order:
@@ -56,9 +56,9 @@ public final class Directions {
      * </ul>
      */
     public static final VectorInt[] COMPASS = new VectorInt[] {
-        NORTH_WEST,     NORTH,         NORTH_EAST,
-        WEST,                         EAST,
-        SOUTH_WEST,     SOUTH,         SOUTH_EAST
+        NORTH_WEST, NORTH, NORTH_EAST,
+        WEST,              EAST,
+        SOUTH_WEST, SOUTH, SOUTH_EAST
     };
     
     /**

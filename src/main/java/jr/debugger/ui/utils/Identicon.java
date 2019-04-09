@@ -75,15 +75,15 @@ public class Identicon extends BaseDrawable {
     }
     
     public static Identicon getIdenticon(int code) {
-        int ibg1         = (code & 0b11111000000000000000000000000000) >>> 27;
-        int ifg1         = (code & 0b00000111110000000000000000000000) >>> 22;
+        int ibg1        = (code & 0b11111000000000000000000000000000) >>> 27;
+        int ifg1        = (code & 0b00000111110000000000000000000000) >>> 22;
         int ishape1     = (code & 0b00000000001111000000000000000000) >>> 18;
-        int isecurity1     = (code & 0b00000000000000110000000000000000) >>> 16;
+        int isecurity1  = (code & 0b00000000000000110000000000000000) >>> 16;
         
-        int ibg2         = (code & 0b00000000000000001111100000000000) >>> 11;
-        int ifg2         = (code & 0b00000000000000000000011111000000) >>> 6;
+        int ibg2        = (code & 0b00000000000000001111100000000000) >>> 11;
+        int ifg2        = (code & 0b00000000000000000000011111000000) >>> 6;
         int ishape2     = (code & 0b00000000000000000000000000111100) >>> 2;
-        int isecurity2     =  code & 0b00000000000000000000000000000011;
+        int isecurity2  =  code & 0b00000000000000000000000000000011;
         
         TextureRegion shape1 = Shapes.getShape(ishape1);
         Color bg1 = COLOURS[ibg1 % COLOURS.length];

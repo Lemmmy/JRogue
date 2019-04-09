@@ -159,13 +159,13 @@ public class TreeNode {
         
         int modifiers = parentField.getModifiers();
         
-        isStatic     = Modifier.isStatic(modifiers);
-        isFinal     = Modifier.isFinal(modifiers);
+        isStatic = Modifier.isStatic(modifiers);
+        isFinal  = Modifier.isFinal(modifiers);
         
-        if         (Modifier.isPublic(modifiers))         accessLevel = AccessLevel.PUBLIC;
-        else if (Modifier.isProtected(modifiers))     accessLevel = AccessLevel.PROTECTED;
-        else if (Modifier.isPrivate(modifiers))     accessLevel = AccessLevel.PRIVATE;
-        else                                        accessLevel = AccessLevel.PACKAGE_PRIVATE;
+        if      (Modifier.isPublic(modifiers))    accessLevel = AccessLevel.PUBLIC;
+        else if (Modifier.isProtected(modifiers)) accessLevel = AccessLevel.PROTECTED;
+        else if (Modifier.isPrivate(modifiers))   accessLevel = AccessLevel.PRIVATE;
+        else                                      accessLevel = AccessLevel.PACKAGE_PRIVATE;
     }
     
     private void checkDebuggableInstance() {

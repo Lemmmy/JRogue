@@ -684,9 +684,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
     protected ConnectionPoint getConnectionPoint(Room a, Room b) {
         VectorInt d = VectorInt.between(a.getCenter(), b.getCenter()).abs();
         
-        /* bottom  left */     Point abl = a.position;     Point bbl = b.position;
-        /*    center    */    Point ac  = a.getCenter();     Point bc  = b.getCenter();
-        /*  top  right     */    Point atr = a.position.add(a.width, a.height);
+        /* bottom  left */  Point abl = a.position;    Point bbl = b.position;
+        /*    center    */  Point ac  = a.getCenter(); Point bc  = b.getCenter();
+        /*  top  right  */  Point atr = a.position.add(a.width, a.height);
                             Point btr = b.position.add(b.width, b.height);
         
         if (d.x > d.y) {

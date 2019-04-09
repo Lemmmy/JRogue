@@ -91,7 +91,7 @@ public class TileRendererWall extends TileRenderer {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);
-            if (decoration != null)    decoration.draw(this, batch, tile, p, rand);
+            if (decoration != null) decoration.draw(this, batch, tile, p, rand);
         }
     }
     
@@ -104,7 +104,7 @@ public class TileRendererWall extends TileRenderer {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);
-            if (decoration != null)    decoration.drawExtra(this, batch, tile, p, rand);
+            if (decoration != null) decoration.drawExtra(this, batch, tile, p, rand);
         }
     }
 }

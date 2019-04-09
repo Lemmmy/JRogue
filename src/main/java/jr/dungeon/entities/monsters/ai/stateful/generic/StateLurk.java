@@ -23,9 +23,9 @@ public class StateLurk extends AIState<StatefulAI> {
     
     @Expose private Point dest;
     
-    @Expose @Getter    @Setter private int lurkRadius = DEFAULT_LURK_RADIUS;
-    @Expose @Getter    @Setter private float lurkMoveProbability = DEFAULT_LURK_PROBABILITY;
-    @Expose @Getter    private EntityReference<Entity> lurkTarget = new EntityReference<>();
+    @Expose @Getter @Setter private int lurkRadius = DEFAULT_LURK_RADIUS;
+    @Expose @Getter @Setter private float lurkMoveProbability = DEFAULT_LURK_PROBABILITY;
+    @Expose @Getter private EntityReference<Entity> lurkTarget = new EntityReference<>();
     
     public StateLurk(StatefulAI ai, int duration, int lurkRadius, float lurkMoveProbability) {
         super(ai, duration);

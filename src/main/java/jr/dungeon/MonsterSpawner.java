@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 public class MonsterSpawner {
     private static final int MIN_MONSTER_SPAWN_DISTANCE = 15;
     
-    @Expose @Getter @Setter    private MonsterSpawningStrategy monsterSpawningStrategy = MonsterSpawningStrategy.STANDARD;
+    @Expose @Getter @Setter
+    private MonsterSpawningStrategy monsterSpawningStrategy = MonsterSpawningStrategy.STANDARD;
     
     private Dungeon dungeon;
     private Level level;
