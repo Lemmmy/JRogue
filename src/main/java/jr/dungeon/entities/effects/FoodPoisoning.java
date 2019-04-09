@@ -8,9 +8,11 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.io.Messenger;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Wishable(name="food poisoning")
 @Registered(id="statusEffectFoodPoisoning")
 public class FoodPoisoning extends StatusEffect {
 	@Expose private ItemComestible sourceFood;

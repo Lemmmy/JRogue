@@ -4,13 +4,11 @@ import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.player.Player;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class WishSpawn<T extends Entity> implements Wish {
 	private Class<T> entityClass;
-
-	public WishSpawn(Class<T> entityClass) {
-		this.entityClass = entityClass;
-	}
 
 	@Override
 	public void grant(Dungeon dungeon, Player player, String... args) {

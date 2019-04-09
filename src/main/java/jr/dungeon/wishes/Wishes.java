@@ -11,7 +11,7 @@ import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.containers.EntityWeaponRack;
 import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityFountain;
-import jr.dungeon.entities.effects.*;
+import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.magic.EntityAltar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.generators.GeneratorCave;
@@ -61,7 +61,7 @@ public class Wishes {
 		
 		// Basic wishes
 		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0));
-		registerWish("kill\\s+all", (d, p, a) ->
+		registerWish("kill all", (d, p, a) ->
 			d.getLevel().entityStore.getEntities().stream()
 				.filter(e -> e instanceof EntityLiving && !(e instanceof Player))
 				.map(e -> (EntityLiving) e)
@@ -144,6 +144,10 @@ public class Wishes {
 				i.getItem().observeAspect(p, AspectBeatitude.class);
 			}));
 		});
+		registerWish("cure(?: effects)?", (d, p, a) -> {
+			p.getStatusEffects().forEach(s -> s.setDuration(0));
+			d.turnSystem.turn();
+		});
 		registerWish("debug (.)", (d, p, a) -> p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
 			d.log(i.getItem().toString());
 		})));
@@ -164,15 +168,6 @@ public class Wishes {
 		registerWish("puddle", new WishTile(TileType.TILE_ROOM_PUDDLE));
 		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
 		registerWish("trap", new WishTile(TileType.TILE_TRAP));
-
-		// Status effects
-		// NOTE: Please add a new wish here for any status effects you implement.
-		registerWish("paralysis", new WishEffect(Paralysis.class));
-		registerWish("food poisoning", new WishEffect(FoodPoisoning.class));
-		registerWish("injured foot", new WishEffect(InjuredFoot.class));
-		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
-		registerWish("strained leg", new WishEffect(StrainedLeg.class));
-		registerWish("fire", new WishEffect(Ablaze.class));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
@@ -227,6 +222,8 @@ public class Wishes {
 					registerWish(name, new WishSpawn<>((Class<? extends Entity>) clazz));
 				} else if (Item.class.isAssignableFrom(clazz)) {
 					registerWish(name, new WishItem<>((Class<? extends Item>) clazz));
+				} else if (StatusEffect.class.isAssignableFrom(clazz)) {
+					registerWish(name + "(?: (\\d+|\\-1))?", new WishEffect<>((Class<? extends StatusEffect>) clazz));
 				}
 			});
 	}

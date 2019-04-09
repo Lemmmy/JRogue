@@ -4,8 +4,10 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Wishable(name="poison")
 @Registered(id="statusEffectPoison")
 public class Poison extends StatusEffect {
 	public Poison() {

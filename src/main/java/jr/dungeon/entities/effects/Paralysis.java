@@ -1,8 +1,10 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.utils.RandomUtils;
 
+@Wishable(name="paralysis")
 @Registered(id="statusEffectParalysis")
 public class Paralysis extends StatusEffect {
     public Paralysis() {

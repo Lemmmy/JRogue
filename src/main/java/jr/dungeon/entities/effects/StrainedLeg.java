@@ -1,7 +1,9 @@
 package jr.dungeon.entities.effects;
 
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 
+@Wishable(name="strained leg")
 @Registered(id="statusEffectStrainedLeg")
 public class StrainedLeg extends StatusEffect {
 	public StrainedLeg(int duration) {

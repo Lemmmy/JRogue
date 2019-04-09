@@ -19,7 +19,7 @@ public abstract class StatusEffect implements Serialisable, EventListener {
 	@Setter private Messenger messenger = new BlankMessenger();
 	@Setter private Entity entity;
 	
-	@Expose private int duration;
+	@Expose @Setter private int duration;
 	@Expose @Setter(AccessLevel.PROTECTED) int turnsPassed = 0;
 	
 	public StatusEffect(Messenger messenger, Entity entity, int duration) {

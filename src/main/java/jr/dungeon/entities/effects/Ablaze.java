@@ -5,12 +5,14 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Fire status effect.
  */
+@Wishable(name="ablaze|on fire|burn")
 @Registered(id="statusEffectAblaze")
 public class Ablaze extends StatusEffect {
 	@Expose private Severity severity;

@@ -2,7 +2,9 @@ package jr.dungeon.entities.effects;
 
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 
+@Wishable(name="mercury poisoning")
 @Registered(id="statusEffectMercuryPoisoning")
 public class MercuryPoisoning extends Poison {
 	@Override
