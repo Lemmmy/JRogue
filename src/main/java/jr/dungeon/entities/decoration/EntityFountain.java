@@ -11,11 +11,13 @@ import jr.dungeon.entities.interfaces.Quaffable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.generators.Climate;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 
+@Wishable(name="fountain")
 @Registered(id="entityFountain")
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
 	public EntityFountain(Dungeon dungeon, Level level, Point position) {

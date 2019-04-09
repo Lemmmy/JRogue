@@ -14,6 +14,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Wishable(name="chest")
 @Registered(id="entityChest")
 public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;

@@ -6,9 +6,11 @@ import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.ItemCategory;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Wishable(name="arrow")
 @Registered(id="itemArrow")
 public class ItemArrow extends ItemProjectile {
 	@Override

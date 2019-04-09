@@ -8,6 +8,8 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Decorative;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
@@ -16,6 +18,8 @@ import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Wishable(name="cave crystal")
+@Registered(id="caveCrystal")
 public class EntityCaveCrystal extends Entity implements Decorative, LightEmitter {
 	@Expose private CrystalColour colour;
 	

@@ -56,7 +56,7 @@ public class RoomBasic extends Room {
 	}
 	
 	protected TileType getTorchTileType(GeneratorRooms generator) {
-		return generator == null ? TileType.TILE_ROOM_TORCH_FIRE : generator.getTorchTileType();
+		return generator == null ? TileType.TILE_ROOM_TORCH : generator.getTorchTileType();
 	}
 	
 	public Pair<Colour, Colour> getTorchColours(GeneratorRooms generator) {

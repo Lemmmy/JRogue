@@ -21,6 +21,7 @@ import jr.dungeon.items.Material;
 import jr.dungeon.items.weapons.ItemDagger;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -30,6 +31,7 @@ import jr.utils.RandomUtils;
 
 import java.util.List;
 
+@Wishable(name="goblin")
 @Registered(id="monsterGoblin")
 public class MonsterGoblin extends Monster {
 	private static final float DAGGER_DROP_CHANCE = 0.75f;

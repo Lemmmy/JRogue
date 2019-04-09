@@ -4,9 +4,11 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.*;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Wishable(name="thermometer")
 @Registered(id="itemThermometer")
 public class ItemThermometer extends Item implements ReadableItem, Shatterable {
 	@Override

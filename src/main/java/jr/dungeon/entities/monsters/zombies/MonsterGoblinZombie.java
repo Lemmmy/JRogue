@@ -11,6 +11,7 @@ import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -19,6 +20,7 @@ import jr.language.transformers.Capitalise;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 
+@Wishable(name="goblin zombie")
 @Registered(id="monsterGoblinZombie")
 public class MonsterGoblinZombie extends MonsterZombie {
 	public MonsterGoblinZombie(Dungeon dungeon, Level level, Point position) {

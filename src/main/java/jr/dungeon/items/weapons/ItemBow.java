@@ -6,12 +6,14 @@ import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Wishable(name="bow")
 @Registered(id="itemBow")
 public class ItemBow extends ItemProjectileLauncher {
 	@Override

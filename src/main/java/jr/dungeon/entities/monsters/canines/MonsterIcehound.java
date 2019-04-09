@@ -7,6 +7,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
@@ -14,6 +15,7 @@ import jr.utils.Point;
 
 import java.util.List;
 
+@Wishable(name="icehound")
 @Registered(id="monsterIcehound")
 public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0x8BD1ECFF);

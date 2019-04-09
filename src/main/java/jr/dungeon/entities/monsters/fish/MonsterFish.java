@@ -11,12 +11,14 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.FishAI;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 
 import java.util.List;
 
+@Wishable(name="fish")
 @Registered(id="monsterFish")
 public class MonsterFish extends Monster {
 	@Expose private FishColour colour;

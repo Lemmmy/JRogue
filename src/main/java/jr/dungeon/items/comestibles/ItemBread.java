@@ -3,9 +3,11 @@ package jr.dungeon.items.comestibles;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
+@Wishable(name="bread")
 @Registered(id="itemBread")
 public class ItemBread extends ItemComestible {
 	@Override

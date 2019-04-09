@@ -6,12 +6,14 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 
 import java.util.List;
 
+@Wishable(name="hound")
 @Registered(id="monsterHound")
 public class MonsterHound extends MonsterCanine {
 	public MonsterHound(Dungeon dungeon, Level level, Point position) {

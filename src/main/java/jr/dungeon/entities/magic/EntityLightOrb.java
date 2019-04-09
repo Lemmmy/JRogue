@@ -12,6 +12,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -20,6 +21,7 @@ import jr.utils.Colour;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 
+@Wishable(name="light orb")
 @Registered(id="entityLightOrb")
 public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xAAFFECFF);

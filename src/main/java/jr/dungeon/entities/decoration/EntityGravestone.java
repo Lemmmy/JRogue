@@ -11,12 +11,14 @@ import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ReadableEntity;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 
+@Wishable(name="gravestone")
 @Registered(id="entityGravestone")
 public class EntityGravestone extends Entity implements ReadableEntity {
 	private static final String[] GRAVE_MESSAGES = new String[] {

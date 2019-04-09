@@ -5,10 +5,12 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 
+@Wishable(name="green mold")
 @Registered(id="monsterMoldGreen")
 public class MonsterMoldGreen extends MonsterMold {
 	public MonsterMoldGreen(Dungeon dungeon, Level level, Point position) {

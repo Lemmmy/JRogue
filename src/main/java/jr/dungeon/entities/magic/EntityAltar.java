@@ -14,11 +14,13 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.AspectBeatitude;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 
+@Wishable(name="altar")
 @Registered(id="entityAltar")
 public class EntityAltar extends Entity {
 	public EntityAltar(Dungeon dungeon, Level level, Point position) {

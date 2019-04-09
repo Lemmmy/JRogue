@@ -16,6 +16,7 @@ import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -26,6 +27,7 @@ import jr.utils.RandomUtils;
 
 import java.util.List;
 
+@Wishable(name="spider")
 @Registered(id="monsterSpawner")
 public class MonsterSpider extends Monster {
 	@Expose private int speed;

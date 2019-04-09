@@ -14,6 +14,7 @@ import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
@@ -22,6 +23,7 @@ import jr.utils.RandomUtils;
 
 import java.util.List;
 
+@Wishable(name="skeleton")
 @Registered(id="monsterSkeleton")
 public class MonsterSkeleton extends Monster {
 	public MonsterSkeleton(Dungeon dungeon, Level level, Point position) {

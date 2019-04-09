@@ -6,11 +6,13 @@ import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.ItemAppearance;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.utils.VectorInt;
 
+@Wishable(name="staff")
 @Registered(id="itemStaff")
 public class ItemStaff extends ItemWeaponMelee {
 	@Override

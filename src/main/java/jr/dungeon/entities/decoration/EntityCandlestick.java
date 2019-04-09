@@ -11,12 +11,14 @@ import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
 import jr.utils.Point;
 
+@Wishable(name="candlestick")
 @Registered(id="entityCandlestick")
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private static final int LIGHT_INTENSITY = 60;

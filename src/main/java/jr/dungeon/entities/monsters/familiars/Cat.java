@@ -8,12 +8,14 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.FamiliarAI;
 import jr.dungeon.entities.monsters.ai.stateful.familiar.StateFollowPlayer;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 
+@Wishable(name="cat")
 @Registered(id="familiarCat")
 public class Cat extends Familiar {
 	public Cat(Dungeon dungeon, Level level, Point position) {

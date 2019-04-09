@@ -2,9 +2,9 @@ package jr.dungeon.wishes;
 
 import jr.JRogue;
 import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.actions.ActionTeleport;
 import jr.dungeon.entities.containers.EntityChest;
@@ -13,32 +13,18 @@ import jr.dungeon.entities.decoration.EntityCandlestick;
 import jr.dungeon.entities.decoration.EntityFountain;
 import jr.dungeon.entities.effects.*;
 import jr.dungeon.entities.magic.EntityAltar;
-import jr.dungeon.entities.monsters.canines.*;
-import jr.dungeon.entities.monsters.critters.MonsterLizard;
-import jr.dungeon.entities.monsters.critters.MonsterRat;
-import jr.dungeon.entities.monsters.critters.MonsterSpider;
-import jr.dungeon.entities.monsters.familiars.Cat;
-import jr.dungeon.entities.monsters.fish.MonsterPufferfish;
-import jr.dungeon.entities.monsters.humanoids.MonsterGoblin;
-import jr.dungeon.entities.monsters.humanoids.MonsterSkeleton;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Material;
-import jr.dungeon.items.comestibles.*;
 import jr.dungeon.items.identity.AspectBeatitude;
-import jr.dungeon.items.magical.ItemSpellbook;
-import jr.dungeon.items.magical.spells.SpellLightOrb;
-import jr.dungeon.items.projectiles.ItemArrow;
 import jr.dungeon.items.quaffable.potions.BottleType;
 import jr.dungeon.items.quaffable.potions.ItemPotion;
 import jr.dungeon.items.quaffable.potions.PotionType;
-import jr.dungeon.items.valuables.ItemThermometer;
-import jr.dungeon.items.weapons.*;
-import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileFlag;
+import jr.dungeon.items.weapons.ItemDagger;
+import jr.dungeon.items.weapons.ItemLongsword;
+import jr.dungeon.items.weapons.ItemShortsword;
 import jr.dungeon.tiles.TileType;
-import jr.utils.Point;
 import jr.utils.Profiler;
 import jr.utils.RandomUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,7 +34,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,6 +54,8 @@ public class Wishes {
 	}
 
 	private Wishes() {
+		findWishes();
+		
 		// Basic wishes
 		registerWish("death", (d, p, a) -> p.kill(new DamageSource(null, null, DamageType.WISH_FOR_DEATH), 0));
 		registerWish("kill\\s+all", (d, p, a) ->
@@ -99,58 +86,7 @@ public class Wishes {
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
-		registerWish("explore", (d, p, a) -> {
-			boolean isGod = p.isGodmode();
-			p.setGodmode(true);
-			
-			Level firstLevel = d.getLevel();
-			Point firstLevelSpawn = p.getPosition();
-			
-			AtomicReference<Tile> firstSewerDown = new AtomicReference<>();
-			
-			for (int i = 0; i < 7; i++) {
-				if (firstSewerDown.get() == null) {
-					Arrays.stream(p.getLevel().tileStore.getTiles())
-						.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
-						.findFirst().ifPresent(firstSewerDown::set);
-				}
-				
-				Arrays.stream(p.getLevel().tileStore.getTiles())
-					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
-					.findFirst().ifPresent(t -> {
-						p.setPosition(t.position);
-						p.defaultVisitors.climbDown();
-						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
-					});
-			}
-			
-			if (firstSewerDown.get() != null) {
-				Tile fsdt = firstSewerDown.get();
-				
-				d.changeLevel(fsdt.getLevel(), fsdt.position);
-				
-				Arrays.stream(p.getLevel().tileStore.getTiles())
-					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
-					.findFirst().ifPresent(t -> {
-						p.setPosition(t.position);
-						p.defaultVisitors.climbDown();
-						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
-					});
-				
-				for (int i = 0; i < 7; i++) {
-					Arrays.stream(p.getLevel().tileStore.getTiles())
-						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
-						.findFirst().ifPresent(t -> {
-							p.setPosition(t.position);
-							p.defaultVisitors.climbDown();
-							d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
-						});
-				}
-			}
-			
-			d.changeLevel(firstLevel, firstLevelSpawn);
-			p.setGodmode(isGod);
-		});
+		registerWish("explore", new WishExplore());
 		registerWish("find chest", (d, p, a) -> {
 			AtomicBoolean found = new AtomicBoolean(false);
 			
@@ -208,6 +144,10 @@ public class Wishes {
 		registerWish("debug (.)", (d, p, a) -> p.getContainer().ifPresent(c -> c.get(a[0].charAt(0)).ifPresent(i -> {
 			d.log(i.getItem().toString());
 		})));
+		registerWish("summon familiar", (d, p, a) -> p.getFamiliar().ifPresent(p.getLevel(), f -> {
+			f.setAction(new ActionTeleport(p.getPosition(), null));
+			d.turnSystem.turn();
+		}));
 		
 		// Tiles
 		registerWish("rug", new WishTile(TileType.TILE_ROOM_RUG));
@@ -225,25 +165,6 @@ public class Wishes {
 		registerWish("mercury poisoning", new WishEffect(MercuryPoisoning.class));
 		registerWish("strained leg", new WishEffect(StrainedLeg.class));
 		registerWish("fire", new WishEffect(Ablaze.class));
-
-		// Monsters
-		registerWish("jackal", new WishSpawn<>(MonsterJackal.class));
-		registerWish("fox", new WishSpawn<>(MonsterFox.class));
-		registerWish("lizard", new WishSpawn<>(MonsterLizard.class));
-		registerWish("hound", new WishSpawn<>(MonsterHound.class));
-		registerWish("hellhound", new WishSpawn<>(MonsterHellhound.class));
-		registerWish("icehound", new WishSpawn<>(MonsterIcehound.class));
-		registerWish("spider", new WishSpawn<>(MonsterSpider.class));
-		registerWish("rat", new WishSpawn<>(MonsterRat.class));
-		registerWish("skeleton", new WishSpawn<>(MonsterSkeleton.class));
-		registerWish("pufferfish", new WishSpawn<>(MonsterPufferfish.class));
-		registerWish("goblin", new WishSpawn<>(MonsterGoblin.class));
-		
-		registerWish("cat", new WishSpawn<>(Cat.class));
-		registerWish("summon familiar", (d, p, a) -> p.getFamiliar().ifPresent(p.getLevel(), f -> {
-			f.setAction(new ActionTeleport(p.getPosition(), null));
-			d.turnSystem.turn();
-		}));
 
 		// Items
 		registerWish(wishSword, (d, p, a) -> {
@@ -277,20 +198,6 @@ public class Wishes {
 			p.setEmpty(false);
 			p.setPotency(potency);
 		}));
-
-		registerWish("bread", new WishItem<>(ItemBread.class));
-		registerWish("apple", new WishItem<>(ItemApple.class));
-		registerWish("orange", new WishItem<>(ItemOrange.class));
-		registerWish("lemon", new WishItem<>(ItemLemon.class));
-		registerWish("banana", new WishItem<>(ItemBanana.class));
-		registerWish("carrot", new WishItem<>(ItemCarrot.class));
-		registerWish("cherries", new WishItem<>(ItemCherries.class));
-		registerWish("corn", new WishItem<>(ItemCorn.class));
-		registerWish("staff", new WishItem<>(ItemStaff.class));
-		registerWish("spellbook", new WishItem<>(ItemSpellbook.class, s -> s.setSpell(new SpellLightOrb())));
-		registerWish("bow", new WishItem<>(ItemBow.class));
-		registerWish("arrow", new WishItem<>(ItemArrow.class));
-		registerWish("thermometer", new WishItem<>(ItemThermometer.class));
 	}
 
 	public void registerWish(Pattern pattern, Wish wish) {
@@ -299,6 +206,21 @@ public class Wishes {
 
 	public void registerWish(String pattern, Wish wish) {
 		registerWish(Pattern.compile("^" + pattern + "$"), wish);
+	}
+	
+	private void findWishes() {
+		JRogue.getReflections().getTypesAnnotatedWith(Wishable.class).stream()
+			.filter(clazz -> clazz.getAnnotation(Wishable.class) != null)
+			.forEach(clazz -> {
+				Wishable wishable = clazz.getAnnotation(Wishable.class);
+				String name = wishable.name();
+				
+				if (Entity.class.isAssignableFrom(clazz)) {
+					registerWish(name, new WishSpawn<>((Class<? extends Entity>) clazz));
+				} else if (Item.class.isAssignableFrom(clazz)) {
+					registerWish(name, new WishItem<>((Class<? extends Item>) clazz));
+				}
+			});
 	}
 
 	private boolean wish(Dungeon dungeon, String _wish) {

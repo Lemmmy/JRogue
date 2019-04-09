@@ -11,6 +11,7 @@ import jr.dungeon.entities.interfaces.ContainerOwner;
 import jr.dungeon.entities.interfaces.Lootable;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
@@ -18,6 +19,7 @@ import jr.utils.Point;
 
 import java.util.Optional;
 
+@Wishable(name="weapon rack")
 @Registered(id="entityWeaponRack")
 public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;

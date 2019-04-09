@@ -10,6 +10,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateLurk;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
@@ -17,6 +18,7 @@ import jr.utils.Point;
 
 import java.util.List;
 
+@Wishable(name="lizard")
 @Registered(id="monsterLizard")
 public class MonsterLizard extends Monster {
 	public MonsterLizard(Dungeon dungeon, Level level, Point position) {

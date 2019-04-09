@@ -4,10 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import jr.dungeon.tiles.states.TileState;
-import jr.dungeon.tiles.states.TileStateClimbable;
-import jr.dungeon.tiles.states.TileStateDoor;
-import jr.dungeon.tiles.states.TileStateTrap;
+import jr.dungeon.tiles.states.*;
 import jr.utils.Colour;
 import lombok.Getter;
 
@@ -37,8 +34,7 @@ public enum TileType {
 	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
 	
 	TILE_ROOM_WALL(11, WALL, SOLID),
-	TILE_ROOM_TORCH_FIRE(12, WALL, Solidity.SOLID, new Colour(0xFF9B26FF), 100, 0),
-	TILE_ROOM_TORCH_ICE(13, WALL, Solidity.SOLID, new Colour(0x8BD1ECFF), 100, 0),
+	TILE_ROOM_TORCH(12, WALL, SOLID, TileStateTorch.class),
 	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM | SPAWNABLE, WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
 	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM | SPAWNABLE, WALK_ON),

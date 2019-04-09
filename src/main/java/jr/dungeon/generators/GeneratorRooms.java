@@ -832,7 +832,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	public TileType getTorchTileType() {
-		return TileType.TILE_ROOM_TORCH_FIRE;
+		return TileType.TILE_ROOM_TORCH;
 	}
 	
 	public Pair<Colour, Colour> getTorchColours() {

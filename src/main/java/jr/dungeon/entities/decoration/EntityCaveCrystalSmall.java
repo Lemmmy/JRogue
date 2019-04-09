@@ -7,6 +7,8 @@ import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.interfaces.Decorative;
+import jr.dungeon.serialisation.Registered;
+import jr.dungeon.wishes.Wishable;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
@@ -14,6 +16,8 @@ import jr.utils.RandomUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Wishable(name="small cave crystal|cave crystal small")
+@Registered(id="caveCrystalSmall")
 public class EntityCaveCrystalSmall extends Entity implements Decorative {
 	@Expose private CrystalColour colour;
 	
