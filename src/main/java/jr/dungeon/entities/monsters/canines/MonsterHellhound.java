@@ -11,6 +11,7 @@ import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
+import jr.utils.Point;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ import java.util.List;
 public class MonsterHellhound extends MonsterHound implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9B26FF);
 	
-	public MonsterHellhound(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterHellhound(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		getAI().addAvoidTile(TileType.TILE_GROUND_WATER);
 		getAI().addAvoidTile(TileType.TILE_ROOM_PUDDLE);

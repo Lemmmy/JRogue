@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,25 +54,25 @@ public class TileRendererGlobalRepeat extends TileRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return texRegion;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
 		ShaderProgram previousShader = batch.getShader();
 		batch.setShader(shader);
 		
 		final Matrix4 levelProjMat = new Matrix4();
 		levelProjMat.setToOrtho2D(
 			getOffsetX(), getOffsetY(),
-			dungeon.getLevel().getWidth() * TileMap.TILE_WIDTH * scaleX,
-			dungeon.getLevel().getHeight() * TileMap.TILE_HEIGHT * scaleY
+			tile.getLevel().getWidth() * TileMap.TILE_WIDTH * scaleX,
+			tile.getLevel().getHeight() * TileMap.TILE_HEIGHT * scaleY
 		);
 		
 		shader.setUniformMatrix("u_proj", levelProjMat);
 		
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+		drawTile(batch, getTextureRegion(tile, p), p);
 		batch.setShader(previousShader);
 	}
 }

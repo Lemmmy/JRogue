@@ -3,29 +3,22 @@ package jr.dungeon.entities.events;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.events.Event;
 import jr.utils.Point;
+import jr.utils.VectorInt;
 import lombok.Getter;
 
 @Getter
 public class EntityMovedEvent extends Event {
 	private Entity entity;
-	private int lastX, lastY, newX, newY, deltaX, deltaY;
+	private Point lastPosition, newPosition;
+	private VectorInt delta;
 	
-	public EntityMovedEvent(Entity entity, int lastX, int lastY, int newX, int newY) {
+	public EntityMovedEvent(Entity entity, Point lastPosition, Point newPosition) {
 		this.entity = entity;
-		this.lastX = lastX;
-		this.lastY = lastY;
-		this.newX = newX;
-		this.newY = newY;
-		this.deltaX = newX - lastX;
-		this.deltaY = newY - lastY;
-	}
-	
-	public Point getLastPosition() {
-		return Point.getPoint(lastX, lastY);
-	}
-	
-	public Point getNewPosition() {
-		return Point.getPoint(newX, newY);
+		
+		this.lastPosition = lastPosition;
+		this.newPosition = newPosition;
+		
+		this.delta = VectorInt.between(lastPosition, newPosition);
 	}
 	
 	@Override

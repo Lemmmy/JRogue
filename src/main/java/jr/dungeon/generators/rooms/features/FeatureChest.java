@@ -1,6 +1,5 @@
 package jr.dungeon.generators.rooms.features;
 
-import com.github.alexeyr.pcg.Pcg32;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.entities.containers.Container;
@@ -65,16 +64,11 @@ public class FeatureChest extends SpecialRoomFeature {
 		));
 	}
 	
-	private static final Pcg32 RAND = new Pcg32();
-	
 	@Override
 	public void generate(Room room) {
-		int chestX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
-		int chestY = RAND.nextInt(room.getHeight() - 2) + room.getY() + 1;
-		
-		EntityChest chest = new EntityChest(room.getLevel().getDungeon(), room.getLevel(), chestX, chestY);
+		EntityChest chest = new EntityChest(room.level.getDungeon(), room.level, room.randomPoint());
 		populateChest(room, chest);
-		room.getLevel().entityStore.addEntity(chest);
+		room.level.entityStore.addEntity(chest);
 	}
 	
 	@Override
@@ -105,7 +99,7 @@ public class FeatureChest extends SpecialRoomFeature {
 		
 		if (constructor != null) {
 			try {
-				item = constructor.newInstance(room.getLevel());
+				item = constructor.newInstance(room.level);
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 				JRogue.getLogger().error("Error adding chest items", e);
 				return;

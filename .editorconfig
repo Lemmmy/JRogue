@@ -8,14 +8,6 @@ tab_width=4
 [*.java]
 max_line_length=120
 
-[{*.mod,*.dtd,*.ent,*.elt}]
-indent_style=space
-indent_size=4
-
 [{*.jhm,*.xjb,*.rng,*.wsdl,*.fxml,*.plan,*.pom,*.xslt,*.jrxml,*.ant,*.svg,*.xul,*.xsl,*.xsd,*.tld,*.jnlp,*.wsdd,*.wadl,*.xml}]
-indent_style=space
-indent_size=4
-
-[{*.wlua,*.lua,*.doclua,*.}]
 indent_style=space
 indent_size=4

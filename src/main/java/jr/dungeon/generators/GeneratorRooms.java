@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.dungeon.Level;
+import jr.dungeon.TileStore;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.generators.rooms.Room;
 import jr.dungeon.generators.rooms.RoomBasic;
@@ -27,6 +28,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+import static jr.dungeon.generators.BuildingUtils.buildLine;
+import static jr.dungeon.generators.BuildingUtils.fillArea;
+import static jr.utils.QuickMaths.iceil;
+import static jr.utils.QuickMaths.ifloor;
 
 /**
  * Dungeon generator that generates rooms connected with corridors.
@@ -109,7 +117,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected int maxRoomOffsetY = 4;
 	
 	/**
-	 * Maximum slope (between 0 and 1) at which the coridoors will be L-shaped or S shaped, and instead turn into a
+	 * Maximum slope (between 0 and 1) at which the corridors will be L-shaped or S shaped, and instead turn into a
 	 * straight line.
 	 */
 	protected static final float CORRIDOR_LINE_SLOPE = 0.2f;
@@ -195,19 +203,14 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	@Override
 	public boolean generate() {
 		if (getGroundTileType() != TileType.TILE_GROUND) {
-			for (int y = 0; y < level.getHeight(); ++y) {
-				for (int x = 0; x < level.getWidth(); ++x) {
-					level.tileStore.setTileType(x, y, getGroundTileType());
-				}
-			}
+			fillArea(tileStore, Point.ZERO, levelWidth, levelHeight, getGroundTileType());
 		}
 		
 		int width = nextInt(minRoomWidth, maxRoomWidth);
 		int height = nextInt(minRoomHeight, maxRoomHeight);
 
 		createRooms(
-			nextInt(1, level.getWidth() - width - 1),
-			nextInt(1, level.getHeight() - height - 1),
+			Point.get(nextInt(1, levelWidth - width - 1), nextInt(1, levelHeight - height - 1)),
 			width,
 			height
 		);
@@ -228,28 +231,32 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	/**
 	 * Recursive method that fills the map with rooms.
 	 *
-	 * @param roomX The X coordinate of the top left corner of the first room.
-	 * @param roomY The Y coordinate of the top right corner of the first room.
+	 * @param point The position of the top left corner of the first room.
 	 * @param roomWidth The width of the first room.
 	 * @param roomHeight The height of the first room.
 	 */
-	protected void createRooms(int roomX, int roomY, int roomWidth, int roomHeight) {
-		buildRoom(roomTypes.next(), roomX, roomY, roomWidth, roomHeight);
+	private static int roomCalls = 0;
+	protected void createRooms(Point position, int roomWidth, int roomHeight) {
+		if (roomCalls++ >= 5000) System.exit(1);
 		
-		for (VectorInt direction : Utils.DIRECTIONS) {
+		buildRoom(roomTypes.next(), position, roomWidth, roomHeight);
+		
+		for (VectorInt direction : Directions.CARDINAL) {
 			for (int attempts = 1; attempts < 5; ++attempts) {
 				int newRoomWidth = nextInt(minRoomWidth, maxRoomWidth);
 				int newRoomHeight = nextInt(minRoomHeight, maxRoomHeight);
 				
-				int newRoomX = roomX + direction.getX() * roomWidth +
-					direction.getX() * nextInt(minRoomDistanceX, maxRoomDistanceX) +
-					direction.getY() * nextInt(minRoomOffsetX, maxRoomOffsetX);
-				int newRoomY = roomY + direction.getY() * roomHeight +
-					direction.getY() * nextInt(minRoomDistanceY, maxRoomDistanceY) +
-					direction.getX() * nextInt(minRoomOffsetY, maxRoomOffsetY);
+				Point newPosition = Point.get(
+					position.x + direction.x * roomWidth +
+					direction.x * nextInt(minRoomDistanceX, maxRoomDistanceX) +
+					direction.y * nextInt(minRoomOffsetX, maxRoomOffsetX),
+					position.y + direction.y * roomHeight +
+					direction.y * nextInt(minRoomDistanceY, maxRoomDistanceY) +
+					direction.x * nextInt(minRoomOffsetY, maxRoomOffsetY)
+				);
 				
-				if (canBuildRoom(newRoomX, newRoomY, newRoomWidth, newRoomHeight)) {
-					createRooms(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
+				if (canBuildRoom(newPosition, newRoomWidth, newRoomHeight)) {
+					createRooms(newPosition, newRoomWidth, newRoomHeight);
 					break;
 				}
 			}
@@ -264,18 +271,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			for (Room b : rooms) {
 				boolean skip = false;
 				
-				double abDist = Math.pow(a.getCenterX() - b.getCenterX(), 2) +
-					Math.pow(a.getCenterY() - b.getCenterY(), 2);
+				double abDist = Distance.sqf(a.getCenter(), b.getCenter());
 				
 				for (Room c : rooms) {
-					if (c.equals(a) || c.equals(b)) {
-						continue;
-					}
+					if (c.equals(a) || c.equals(b)) continue;
 					
-					double acDist = Math.pow(a.getCenterX() - c.getCenterX(), 2) +
-						Math.pow(a.getCenterY() - c.getCenterY(), 2);
-					double bcDist = Math.pow(b.getCenterX() - c.getCenterX(), 2) +
-						Math.pow(b.getCenterY() - c.getCenterY(), 2);
+					double acDist = Distance.sqf(a.getCenter(), c.getCenter());
+					double bcDist = Distance.sqf(b.getCenter(), c.getCenter());
 					
 					if (acDist < abDist && bcDist < abDist) {
 						skip = true;
@@ -287,7 +289,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 				}
 				
 				if (!skip) {
-					a.addTouching(b);
+					a.addConnected(b);
 				}
 			}
 		}
@@ -297,62 +299,36 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * Places a random door and fills the surrounding ground with corridors to ensure it's reachable.
 	 * Door is chosen by getting a random value from the weighted #doorTypes collection.
 	 *
-	 * @param x The X coordinate to place the door.
-	 * @param y The Y coordinate to place the door.
+	 * @param point The position to place the door.
 	 */
-	protected void safePlaceDoor(int x, int y) {
-		level.tileStore.setTileType(x, y, doorTypes.next());
-
-		for (VectorInt direction : Utils.DIRECTIONS) {
-			int nx = x + direction.getX();
-			int ny = y + direction.getY();
-			
-			TileType t = level.tileStore.getTileType(nx, ny);
-			
-			if (t == TileType.TILE_GROUND) {
-				level.tileStore.setTileType(nx, ny, TileType.TILE_CORRIDOR);
-			}
-		}
-	}
-
-	protected void safePlaceDoor(Point p) {
-		safePlaceDoor(p.getX(), p.getY());
+	protected void safePlaceDoor(Point point) {
+		tileStore.setTileType(point, doorTypes.next());
+		
+		Directions.cardinal()
+			.map(point::add)
+			.filter(p -> tileStore.getTileType(p) == TileType.TILE_GROUND)
+			.forEach(p -> tileStore.setTileType(p, TileType.TILE_CORRIDOR));
 	}
 	
 	/**
 	 * Places a line of tiles, placing a door if it intersects a wall.
 	 *
-	 * @see DungeonGenerator#buildLine(int, int, int, int, TileType)
+	 * @see BuildingUtils#buildLine(TileStore, Point, Point, BuildingUtils.TileBuilder)
 	 *
-	 * @param startX The starting X position of the line.
-	 * @param startY The starting Y position of the line.
-	 * @param endX The ending X position of the line.
-	 * @param endY The ending Y position of the line.
+	 * @param start The starting position of the line.
+	 * @param end The ending position of the line.
 	 * @param tile The tile to build the line with.
 	 */
-	protected void buildLineWithDoors(int startX,
-							 int startY,
-							 int endX,
-							 int endY,
-							 TileType tile) {
-		float diffX = endX - startX;
-		float diffY = endY - startY;
-		
-		float dist = Math.abs(diffX) + Math.abs(diffY);
-		
-		float dx = diffX / dist;
-		float dy = diffY / dist;
-		
-		for (int i = 0; i <= Math.ceil(dist); i++) {
-			int x = Math.round(startX + dx * i);
-			int y = Math.round(startY + dy * i);
-			
-			if (level.tileStore.getTileType(x, y).isBuildable()) {
-				level.tileStore.setTileType(x, y, tile);
-			} else if (canPlaceDoor(x, y)) {
-				safePlaceDoor(x, y);
+	protected void buildLineWithDoors(Point start, Point end, TileType tile) {
+		buildLine(tileStore, start, end, (t, p) -> {
+			if (tileStore.getTileType(p).isBuildable()) {
+				return tile;
+			} else if (canPlaceDoor(p)) {
+				safePlaceDoor(p);
 			}
-		}
+			
+			return null;
+		});
 	}
 	
 	/**
@@ -363,16 +339,12 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 */
 	protected void buildCorridors() {
 		for (Room a : rooms) {
-			for (Room b : a.getTouching()) {
-				float dx = b.getCenterX() - a.getCenterX();
-				float dy = b.getCenterY() - a.getCenterY();
+			for (Room b : a.getConnectedRooms()) {
+				VectorInt d = VectorInt.between(a.getCenter(), b.getCenter());
 				
-				if (dx > 0) {
-					float slope = Math.abs(dy / dx);
-					
-					if (slope > 0.5f) {
-						slope = Math.abs(-1f / slope);
-					}
+				if (d.x > 0) {
+					float slope = abs(d.y / d.x);
+					if (slope > 0.5f) slope = abs(-1f / slope);
 					
 					ConnectionPoint point = getConnectionPoint(a, b);
 					
@@ -382,7 +354,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 					if (slope <= CORRIDOR_LINE_SLOPE) {
 						TileType tile = getCorridorTileType();
 						
-						buildLineWithDoors(point.getAx(), point.getAy(), point.getBx(), point.getBy(), tile);
+						buildLineWithDoors(point.a, point.b, tile);
 					} else {
 						if (point.getOrientationA() == point.getOrientationB()) {
 							buildSCorridor(point);
@@ -391,39 +363,32 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 						}
 					}
 					
-					safePlaceDoor(point.getAx(), point.getAy());
-					safePlaceDoor(point.getBx(), point.getBy());
+					safePlaceDoor(point.a);
+					safePlaceDoor(point.b);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Builds an L-shaped corridoor between two points.
+	 * Builds an L-shaped corridor between two points.
 	 *
 	 * @param point The {@link ConnectionPoint connection point} containing
 	 *                 the room connection data.
 	 */
 	protected void buildLCorridor(ConnectionPoint point) {
-		int ax = point.getAx();
-		int ay = point.getAy();
-		
-		int bx = point.getBx();
-		int by = point.getBy();
-		
-		int dx = bx - ax;
-		int dy = by - ay;
-		
+		Point a = point.a; Point b = point.b;
+		VectorInt d = VectorInt.between(a, b);
 		TileType tile = getCorridorTileType();
 		
-		if (Math.abs(dx) < 1 || Math.abs(dy) < 1) {
-			buildLineWithDoors(ax, ay, bx, by, tile);
+		if (abs(d.x) < 1 || abs(d.y) < 1) {
+			buildLineWithDoors(a, b, tile);
 			
 			return;
 		}
 		
-		buildLineWithDoors(ax, ay, bx, ay, tile);
-		buildLineWithDoors(bx, ay, bx, by, tile);
+		buildLineWithDoors(a, Point.get(b.x, a.y), tile);
+		buildLineWithDoors(Point.get(b.x, a.y), b, tile);
 	}
 	
 	/**
@@ -433,25 +398,18 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 *                 the room connection data.
 	 */
 	protected void buildSCorridor(ConnectionPoint point) {
-		int ax = point.getAx();
-		int ay = point.getAy();
-		
-		int bx = point.getBx();
-		int by = point.getBy();
-		
-		int dx = bx - ax;
-		int dy = by - ay;
-		
+		Point a = point.a; Point b = point.b;
+		VectorInt d = VectorInt.between(a, b);
 		TileType tile = getCorridorTileType();
 		
 		if (point.getIntendedOrientation() == Orientation.HORIZONTAL) {
-			buildLineWithDoors(ax, ay, ax + (int) Math.ceil(dx / 2), ay, tile);
-			buildLineWithDoors(ax + Math.round(dx / 2), ay, ax + (int) Math.floor(dx / 2), by, tile);
-			buildLineWithDoors(bx, by, ax + (int) Math.floor(dx / 2), by, tile);
+			buildLineWithDoors(a, Point.get(a.x + iceil(d.x / 2), a.y), tile);
+			buildLineWithDoors(Point.get(a.x + round(d.x / 2), a.y), Point.get(a.x + ifloor(d.x / 2), b.y), tile);
+			buildLineWithDoors(b, Point.get(a.x + ifloor(d.x / 2), b.y), tile);
 		} else {
-			buildLineWithDoors(ax, ay, ax, ay + (int) Math.ceil(dy / 2), tile);
-			buildLineWithDoors(ax, ay + Math.round(dy / 2), bx, ay + (int) Math.floor(dy / 2), tile);
-			buildLineWithDoors(bx, by, bx, ay + (int) Math.floor(dy / 2), tile);
+			buildLineWithDoors(a, Point.get(a.x, a.y + iceil(d.y / 2)), tile);
+			buildLineWithDoors(Point.get(a.x, a.y + round(d.y / 2)), Point.get(b.x, a.y + ifloor(d.y / 2)), tile);
+			buildLineWithDoors(b, Point.get(b.x, a.y + ifloor(d.y / 2)), tile);
 		}
 	}
 	
@@ -506,10 +464,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected void addRandomDrops() {
 		rooms.forEach(r -> {
 			if (RAND.nextDouble() < PROBABILITY_GOLD_DROP) {
-				int x = RAND.nextInt(r.getWidth() - 2) + r.getX() + 1;
-				int y = RAND.nextInt(r.getHeight() - 2) + r.getY() + 1;
-				
-				QuickSpawn.spawnGold(level, x, y, RandomUtils.roll(Math.abs(level.getDepth()) + 2, 6));
+				QuickSpawn.spawnGold(level, r.randomPoint(), RandomUtils.roll(abs(level.getDepth()) + 2, 6));
 			}
 		});
 	}
@@ -527,22 +482,15 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			.filter(room -> room.getConnectionPoints().size() == temp.get(temp.size() - 1)
 				.getConnectionPoints().size())
 			.collect(Collectors.toList());
-		
-		if (temp2.isEmpty()) {
-			return false;
-		}
+		if (temp2.isEmpty()) return false;
 		
 		Room spawnRoom = RandomUtils.randomFrom(temp2);
+		if (spawnRoom == null) return false;
 		
-		if (spawnRoom == null) {
-			return false;
-		}
-		
-		int stairX = nextInt(spawnRoom.getX() + 2, spawnRoom.getX() + spawnRoom.getWidth() - 2);
-		int stairY = nextInt(spawnRoom.getY() + 2, spawnRoom.getY() + spawnRoom.getHeight() - 2);
+		Point stairPoint = spawnRoom.randomPoint();
 		
 		if (sourceTile != null) {
-			Tile spawnTile = level.tileStore.getTile(stairX, stairY);
+			Tile spawnTile = tileStore.getTile(stairPoint);
 			spawnTile.setType(getUpstairsTileType());
 			
 			if (sourceTile.getLevel().getDepth() < level.getDepth()) {
@@ -552,13 +500,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 			if (spawnTile.getState() instanceof TileStateClimbable) {
 				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
 				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
-				tsc.setDestinationPosition(sourceTile.getX(), sourceTile.getY());
+				tsc.setDestinationPosition(sourceTile.position);
 			}
 		}
 		
 		spawnRoom.setSpawn(true);
-		startTile = level.tileStore.getTile(stairX, stairY);
-		level.setSpawnPoint(stairX, stairY);
+		startTile = tileStore.getTile(stairPoint);
+		level.setSpawnPoint(stairPoint);
 		
 		return true;
 	}
@@ -567,52 +515,35 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * Chooses a room to contain the primary level exit (e.g. the stairs down).
 	 */
 	protected void chooseNextStairsRoom() {
-		Optional<Room> spawnRoom = rooms.stream()
+		Room spawnRoom = rooms.stream()
 			.filter(Room::isSpawn)
-			.findFirst();
+			.findFirst()
+			.orElseThrow(() -> new IllegalStateException("Spawn room is missing?!"));
 		
-		List<Room> temp = rooms.stream()
+		List<Room> possibleRooms = rooms.stream()
 			.filter(room -> !room.isSpawn())
-			.collect(Collectors.toList());
-		
-		spawnRoom.ifPresent(room -> temp.sort(Comparator.comparingDouble(a -> Utils.distanceSq(
-			a.getCenterX(),
-			a.getCenterY(),
-			spawnRoom.get().getCenterX(),
-			spawnRoom.get().getCenterX()
-			))
-		));
-		
-		List<Room> possibleRooms = temp.stream()
-			.skip(temp.size() - 5)
+			.sorted(Comparator.<Room>comparingDouble(a -> Distance.sqf(a.getCenter(), spawnRoom.getCenter())).reversed())
+			.limit(5)
 			.collect(Collectors.toList());
 		
 		Room nextStairsRoom = RandomUtils.randomFrom(possibleRooms);
 		assert nextStairsRoom != null;
+		Point stairPoint = nextStairsRoom.randomPoint();
 		
-		int stairX = nextInt(
-			nextStairsRoom.getX() + 2,
-			nextStairsRoom.getX() + nextStairsRoom.getWidth() - 2
-		);
-		int stairY = nextInt(
-			nextStairsRoom.getY() + 2,
-			nextStairsRoom.getY() + nextStairsRoom.getHeight() - 2
-		);
-		
-		level.tileStore.setTileType(stairX, stairY, getDownstairsTileType());
+		tileStore.setTileType(stairPoint, getDownstairsTileType());
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.tileStore.setTileType(stairX, stairY, getUpstairsTileType());
+			tileStore.setTileType(stairPoint, getUpstairsTileType());
 		}
 		
-		Tile stairTile = level.tileStore.getTile(stairX, stairY);
+		Tile stairTile = tileStore.getTile(stairPoint);
 		
 		if (stairTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) stairTile.getState();
 			tsc.setDestinationGenerator(getNextGenerator());
 		}
 		
-		endTile = level.tileStore.getTile(stairX, stairY);
+		endTile = tileStore.getTile(stairPoint);
 	}
 	
 	/**
@@ -624,10 +555,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	protected boolean verify() {
 		Path path = pathfinder.findPath(
 			level,
-			startTile.getX(),
-			startTile.getY(),
-			endTile.getX(),
-			endTile.getY(),
+			startTile.position,
+			endTile.position,
 			Integer.MAX_VALUE,
 			true,
 			new ArrayList<>()
@@ -641,19 +570,20 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	/**
-	 * @param roomX The X position of the room's top-left corner.
-	 * @param roomY The Y position of the room's top-right corner.
+	 * @param p The position of the room's top-left corner.
 	 * @param roomWidth The width of the room.
 	 * @param roomHeight The height of the room.
 	 *
 	 * @return Whether or not it's possible to build a room at the specified location.
 	 */
-	protected boolean canBuildRoom(int roomX, int roomY, int roomWidth, int roomHeight) {
+	protected boolean canBuildRoom(Point p, int roomWidth, int roomHeight) {
 		// the offsets are to prevent rooms directly touching each other
 		
-		for (int y = roomY - 2; y < roomY + roomHeight + 2; y++) {
-			for (int x = roomX - 2; x < roomX + roomWidth + 2; x++) {
-				if (level.tileStore.getTileType(x, y) == null || !level.tileStore.getTileType(x, y).isBuildable()) {
+		for (int y = p.y - 2; y <= p.y + roomHeight + 2; y++) {
+			for (int x = p.x - 2; x <= p.x + roomWidth + 2; x++) {
+				TileType t = tileStore.getTileType(Point.get(x, y));
+				
+				if (t == null || !t.isBuildable()) {
 					return false;
 				}
 			}
@@ -666,41 +596,39 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * Builds a room from a room class with the specified dimensions and adds it to the #rooms list.
 	 *
 	 * @param roomType The room class to instantiate and build.
-	 * @param roomX The X position of the top left corner of the room.
-	 * @param roomY The Y position of the top left corner of the room.
+	 * @param position The position of the top left corner of the room.
 	 * @param roomWidth The width of the room.
 	 * @param roomHeight The height of the room.
 	 *
 	 * @return The newly built room.
 	 */
-	protected Room buildRoom(Class<? extends Room> roomType, int roomX, int roomY, int roomWidth, int roomHeight) {
+	protected Room buildRoom(Class<? extends Room> roomType, Point position, int roomWidth, int roomHeight) {
 		try {
 			Constructor<? extends Room> roomConstructor = roomType.getConstructor(
-				Level.class, int.class, int.class, int.class, int.class
+				Level.class, Point.class, int.class, int.class
 			);
 			
-			Room room = roomConstructor.newInstance(level, roomX, roomY, roomWidth, roomHeight);
+			Room room = roomConstructor.newInstance(level, position, roomWidth, roomHeight);
 			room.build(this);
 			
 			rooms.add(room);
 			return room;
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			JRogue.getLogger().error("Error building rooms", e);
+			ErrorHandler.error("Error building rooms", e);
 		}
 		
 		return null;
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return Whether or not its possible to place a door here - checks if the tile is a wall, all adjacent tiles are
 	 * not doors, and this tile is not a wall corner.
 	 */
-	public boolean canPlaceDoor(int x, int y) {
-		if (level.tileStore.getTileType(x, y).isWallTile()) {
-			TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(x, y);
+	public boolean canPlaceDoor(Point point) {
+		if (tileStore.getTileType(point).isWallTile()) {
+			TileType[] adjacentTiles = tileStore.getAdjacentTileTypes(point);
 			
 			for (TileType tile : adjacentTiles) {
 				if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
@@ -713,14 +641,10 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		
 		return false;
 	}
-
-	public boolean canPlaceDoor(Point p) {
-		return canPlaceDoor(p.getX(), p.getY());
-	}
 	
 	/**
 	 * @param adjacentTiles The list of adjacent tile types from
-	 * {@link jr.dungeon.TileStore#getAdjacentTileTypes(int, int)}.
+	 * {@link jr.dungeon.TileStore#getAdjacentTileTypes(Point)}.
 	 *
 	 * @return The {@link Orientation} of the wall.
 	 *
@@ -740,17 +664,12 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return The {@link Orientation} of the wall.
 	 */
-	protected Orientation getWallOrientation(int x, int y) {
-		return getWallOrientation(level.tileStore.getAdjacentTileTypes(x, y));
-	}
-
-	protected Orientation getWallOrientation(Point p) {
-		return getWallOrientation(p.getX(), p.getY());
+	protected Orientation getWallOrientation(Point point) {
+		return getWallOrientation(tileStore.getAdjacentTileTypes(point));
 	}
 	
 	/**
@@ -763,75 +682,79 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	 * @return The {@link ConnectionPoint} between the two rooms.
 	 */
 	protected ConnectionPoint getConnectionPoint(Room a, Room b) {
-		int dx = Math.abs(b.getCenterX() - a.getCenterX());
-		int dy = Math.abs(b.getCenterY() - a.getCenterY());
+		VectorInt d = VectorInt.between(a.getCenter(), b.getCenter()).abs();
 		
-		if (dx > dy) {
+		/* bottom  left */ 	Point abl = a.position; 	Point bbl = b.position;
+		/*    center    */	Point ac  = a.getCenter(); 	Point bc  = b.getCenter();
+		/*  top  right 	*/	Point atr = a.position.add(a.width, a.height);
+							Point btr = b.position.add(b.width, b.height);
+		
+		if (d.x > d.y) {
 			if (
-				dx <= 5 ||
-				b.getCenterX() < a.getCenterX() ||
-				a.getX() + a.getWidth() >= b.getX() ||
-				b.getX() + b.getWidth() <= a.getX()
+				d.x <= 5 ||
+				bc.x < ac.x ||
+				atr.x >= bbl.x ||
+				btr.x <= abl.x
 			) {
-				if (b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
+				if (btr.x > atr.x) {
 					return new ConnectionPoint(
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
+						Point.get(atr.x - 1, ac.y),
+						Point.get(bc.x, btr.y - 1),
 						Orientation.HORIZONTAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
+						Point.get(btr.x - 1, bc.y),
+						Point.get(ac.x, atr.y - 1),
 						Orientation.HORIZONTAL
 					);
 				}
 			} else {
-				if (b.getX() > a.getX() || b.getX() + b.getWidth() > a.getX() + a.getWidth()) {
+				if (bbl.x > abl.x || btr.x > atr.x) {
 					return new ConnectionPoint(
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
-						b.getX(), b.getCenterY(),
+						Point.get(atr.x - 1, ac.y),
+						Point.get(bbl.x, bc.y),
 						Orientation.HORIZONTAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
-						a.getX(), a.getCenterY(),
+						Point.get(btr.x - 1, bc.y),
+						Point.get(abl.x, ac.y),
 						Orientation.HORIZONTAL
 					);
 				}
 			}
 		} else {
 			if (
-				dy <= 5 ||
-				b.getCenterX() - a.getCenterX() < 0 ||
-				a.getY() + a.getHeight() == b.getY() ||
-				b.getY() + b.getHeight() == a.getY()
+				d.y <= 5 ||
+				bc.x - ac.x < 0 ||
+				atr.y == bbl.y ||
+				btr.y == abl.y
 			) {
-				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
+				if (btr.y > atr.y) {
 					return new ConnectionPoint(
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
-						b.getX() + b.getWidth() - 1, b.getCenterY(),
+						Point.get(ac.x, atr.y - 1),
+						Point.get(btr.x - 1, bc.y),
 						Orientation.VERTICAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
-						a.getX() + a.getWidth() - 1, a.getCenterY(),
+						Point.get(bc.x, btr.y - 1),
+						Point.get(atr.x - 1, ac.y),
 						Orientation.VERTICAL
 					);
 				}
 			} else {
-				if (b.getY() + b.getHeight() > a.getY() + a.getHeight()) {
+				if (btr.y > atr.y) {
 					return new ConnectionPoint(
-						a.getCenterX(), a.getY() + a.getHeight() - 1,
-						b.getCenterX(), b.getY(),
+						Point.get(ac.x, atr.y - 1),
+						Point.get(bc.x, bbl.y),
 						Orientation.VERTICAL
 					);
 				} else {
 					return new ConnectionPoint(
-						b.getCenterX(), b.getY() + b.getHeight() - 1,
-						a.getCenterX(), a.getY(),
+						Point.get(bc.x, btr.y - 1),
+						Point.get(ac.x, abl.y),
 						Orientation.VERTICAL
 					);
 				}
@@ -864,21 +787,13 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 	@Getter
 	public class ConnectionPoint {
 		/**
-		 * The X position of the first room's door.
+		 * The position of the first room's door.
 		 */
-		private int ax;
+		protected final Point a;
 		/**
-		 * The Y position of the first room's door.
+		 * The position of the second room's door.
 		 */
-		private int ay;
-		/**
-		 * The X position of the second room's door.
-		 */
-		private int bx;
-		/**
-		 * The Y position of the second room's door.
-		 */
-		private int by;
+		protected final Point b;
 		
 		/**
 		 * The intended orientation of the corridor to be built.
@@ -894,21 +809,17 @@ public abstract class GeneratorRooms extends DungeonGenerator {
 		private Orientation orientationB;
 		
 		/**
-		 * @param ax The X position of the first room's door.
-		 * @param ay The Y position of the first room's door.
-		 * @param bx The X position of the second room's door.
-		 * @param by The Y position of the second room's door.
+		 * @param a The position of the first room's door.
+		 * @param b The position of the second room's door.
 		 * @param intendedOrientation The intended orientation of the corridor to be built.
 		 */
-		public ConnectionPoint(int ax, int ay, int bx, int by, Orientation intendedOrientation) {
-			this.ax = ax;
-			this.ay = ay;
-			this.bx = bx;
-			this.by = by;
+		public ConnectionPoint(Point a, Point b, Orientation intendedOrientation) {
+			this.a = a;
+			this.b = b;
 			
 			this.intendedOrientation = intendedOrientation;
-			this.orientationA = getWallOrientation(ax, ay);
-			this.orientationB = getWallOrientation(bx, by);
+			this.orientationA = getWallOrientation(a);
+			this.orientationB = getWallOrientation(b);
 		}
 	}
 	

@@ -13,9 +13,9 @@ import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.DungeonRegistries;
 import jr.dungeon.serialisation.DungeonRegistry;
 import jr.dungeon.serialisation.Registered;
-import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.Solidity;
+import jr.utils.Distance;
 import jr.utils.Point;
-import jr.utils.Utils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -94,12 +94,12 @@ public class StatefulAI extends AI {
 	}
 	
 	public boolean canSee(Entity e) {
-		int startX = getMonster().getX();
-		int startY = getMonster().getY();
-		int endX = e.getX();
-		int endY = e.getY();
+		int startX = getMonster().getPosition().x;
+		int startY = getMonster().getPosition().y;
+		int endX = e.getPosition().x;
+		int endY = e.getPosition().y;
 		
-		int preDistance = Utils.distance(startX, startY, endX, endY);
+		int preDistance = Distance.i(startX, startY, endX, endY);
 		
 		if (preDistance > getVisibilityRange()) {
 			return false;
@@ -114,10 +114,9 @@ public class StatefulAI extends AI {
 		float dy = diffY / dist;
 		
 		for (int i = 0; i <= Math.ceil(dist); i++) {
-			int x = Math.round(startX + dx * i);
-			int y = Math.round(startY + dy * i);
+			Point pos = Point.get(Math.round(startX + dx * i), Math.round(startY + dy * i));
 			
-			if (getMonster().getLevel().tileStore.getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
+			if (getLevel().tileStore.getTileType(pos).getSolidity() == Solidity.SOLID) {
 				return false;
 			}
 		}
@@ -175,8 +174,8 @@ public class StatefulAI extends AI {
 		return subListeners;
 	}
 	
-	public void addSafePoint(Point p) {
-		safePoints.add(p);
+	public void addSafePoint(Point point) {
+		safePoints.add(point);
 	}
 	
 	public Optional<Point> getSafePoint() {
@@ -185,7 +184,7 @@ public class StatefulAI extends AI {
 		Point tp = currentTarget.get(getLevel()).getPosition();
 		
 		val ps = safePoints.stream()
-			.sorted(Comparator.comparingDouble(p -> Utils.chebyshevDistance(p.getX(), p.getY(), tp.getX(), tp.getY())))
+			.sorted(Comparator.comparingDouble(p -> Distance.chebyshev(p.x, p.y, tp.x, tp.y)))
 			.collect(Collectors.toList());
 		
 		Collections.reverse(ps);

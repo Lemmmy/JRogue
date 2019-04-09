@@ -2,14 +2,13 @@ package jr.dungeon.items.valuables;
 
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.player.Player;
-import jr.dungeon.items.Readable;
 import jr.dungeon.items.*;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 
 @Registered(id="itemThermometer")
-public class ItemThermometer extends Item implements Readable, Shatterable {
+public class ItemThermometer extends Item implements ReadableItem, Shatterable {
 	@Override
 	public Noun getName(EntityLiving observer) {
 		return Lexicon.thermometer.clone();

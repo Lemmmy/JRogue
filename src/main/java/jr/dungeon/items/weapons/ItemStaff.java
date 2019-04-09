@@ -9,6 +9,7 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
+import jr.utils.VectorInt;
 
 @Registered(id="itemStaff")
 public class ItemStaff extends ItemWeaponMelee {
@@ -28,10 +29,10 @@ public class ItemStaff extends ItemWeaponMelee {
 	}
 	
 	@Override
-	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {}
+	public void zap(EntityLiving attacker, EntityLiving victim, VectorInt direction) {}
 	
 	@Override
-	public boolean fire(EntityLiving attacker, ItemProjectile projectile, int dx, int dy) {
+	public boolean fire(EntityLiving attacker, ItemProjectile projectile, VectorInt direction) {
 		return false;
 	}
 	

@@ -19,6 +19,7 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -27,8 +28,8 @@ import java.util.List;
 public class MonsterRat extends Monster {
 	@Expose private int speed;
 	
-	public MonsterRat(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y, 1);
+	public MonsterRat(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position, 1);
 		
 		speed = Dungeon.NORMAL_SPEED + 4 - RandomUtils.random(8);
 		

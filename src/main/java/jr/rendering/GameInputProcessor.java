@@ -10,8 +10,8 @@ import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.events.EntityDebugUpdatedEvent;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
+import jr.utils.Directions;
 import jr.utils.Point;
-import jr.utils.Utils;
 import jr.utils.VectorInt;
 import lombok.val;
 
@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import static jr.utils.QuickMaths.ifloor;
 
 public class GameInputProcessor implements InputProcessor {
 	private Dungeon dungeon;
@@ -77,9 +79,9 @@ public class GameInputProcessor implements InputProcessor {
 	}
 	
 	private boolean handleMovementCommands(int keycode) {
-		if (Utils.MOVEMENT_KEYS.containsKey(keycode)) {
-			VectorInt d = Utils.MOVEMENT_KEYS.get(keycode);
-			dungeon.getPlayer().defaultVisitors.walk(d.getX(), d.getY());
+		if (Directions.MOVEMENT_KEYS.containsKey(keycode)) {
+			VectorInt direction = Directions.MOVEMENT_KEYS.get(keycode);
+			dungeon.getPlayer().defaultVisitors.walk(direction);
 			return true;
 		}
 		
@@ -146,11 +148,11 @@ public class GameInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.LEFT) {
 			if (dungeon.getPlayer().isDebugger() && teleporting) {
-				dungeon.getPlayer().defaultVisitors.teleport(pos.getX(), pos.getY());
+				dungeon.getPlayer().defaultVisitors.teleport(pos);
 				teleporting = false;
 				return true;
 			} else {
-				dungeon.getPlayer().defaultVisitors.travelPathfind(pos.getX(), pos.getY());
+				dungeon.getPlayer().defaultVisitors.travelPathfind(pos);
 				return true;
 			}
 		}
@@ -167,7 +169,7 @@ public class GameInputProcessor implements InputProcessor {
 			if (dungeon.getPlayer().isDebugger()) {
 				AtomicBoolean handled = new AtomicBoolean(false);
 				
-				dungeon.getLevel().entityStore.getEntitiesAt(pos).stream()
+				dungeon.getLevel().entityStore.getEntitiesAt(pos)
 					.findFirst()
 					.ifPresent(entity -> {
 						hudComponent.toggleShowEntityDebug(entity);
@@ -185,9 +187,9 @@ public class GameInputProcessor implements InputProcessor {
 	private Point screenToWorldPos(int screenX, int screenY) {
 		Vector3 unprojected = renderer.getCamera().unproject(new Vector3(screenX, screenY, 0));
 		
-		return new Point(
-			(int) unprojected.x / TileMap.TILE_WIDTH,
-			(int) unprojected.y / TileMap.TILE_HEIGHT
+		return Point.get(
+			ifloor(unprojected.x / TileMap.TILE_WIDTH),
+			ifloor(unprojected.y / TileMap.TILE_HEIGHT)
 		);
 	}
 	

@@ -2,9 +2,10 @@ package jr.dungeon.generators;
 
 import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
+import jr.dungeon.TileStore;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
+import jr.utils.RandomUtils;
 import lombok.Getter;
 
 import java.util.Random;
@@ -17,7 +18,11 @@ public abstract class DungeonGenerator {
 	/**
 	 * The {@link Level} that this generator is generating for.
 	 */
-	@Getter protected Level level;
+	@Getter protected final Level level;
+	
+	protected final TileStore tileStore;
+	protected final int levelWidth, levelHeight;
+	
 	/**
 	 * The tile that the Player enters this level via, typically the staircase down in the previous level. Usually
 	 * used for assigning generator types.
@@ -41,6 +46,10 @@ public abstract class DungeonGenerator {
 	 */
 	public DungeonGenerator(Level level, Tile sourceTile) {
 		this.level = level;
+		this.tileStore = level.tileStore;
+		this.levelWidth = level.getWidth();
+		this.levelHeight = level.getHeight();
+		
 		this.sourceTile = sourceTile;
 	}
 	
@@ -65,38 +74,6 @@ public abstract class DungeonGenerator {
 	 * @return A (hopefully) random number within the min/max bounds.
 	 */
 	protected int nextInt(int min, int max) {
-		return RAND.nextInt(max - min) + min;
-	}
-	
-	/**
-	 * Places a line of tiles.
-	 *
-	 * @param startX The starting X position of the line.
-	 * @param startY The starting Y position of the line.
-	 * @param endX The ending X position of the line.
-	 * @param endY The ending Y position of the line.
-	 * @param tile The tile to build the line with.
-	 */
-	protected void buildLine(int startX,
-							 int startY,
-							 int endX,
-							 int endY,
-							 TileType tile) {
-		float diffX = endX - startX;
-		float diffY = endY - startY;
-		
-		float dist = Math.abs(diffX) + Math.abs(diffY);
-		
-		float dx = diffX / dist;
-		float dy = diffY / dist;
-		
-		for (int i = 0; i <= Math.ceil(dist); i++) {
-			int x = Math.round(startX + dx * i);
-			int y = Math.round(startY + dy * i);
-			
-			if (level.tileStore.getTileType(x, y).isBuildable()) {
-				level.tileStore.setTileType(x, y, tile);
-			}
-		}
+		return RandomUtils.random(min, max);
 	}
 }

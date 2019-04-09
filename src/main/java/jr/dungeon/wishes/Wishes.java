@@ -3,7 +3,6 @@ package jr.dungeon.wishes;
 import jr.JRogue;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.TileStore;
 import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
@@ -88,7 +87,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_UP)
 				.findFirst().ifPresent(t -> {
-					p.setPosition(t.getPosition());
+					p.setPosition(t.position);
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -96,7 +95,7 @@ public class Wishes {
 			Arrays.stream(p.getLevel().tileStore.getTiles())
 				.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 				.findFirst().ifPresent(t -> {
-					p.setPosition(t.getPosition());
+					p.setPosition(t.position);
 					p.defaultVisitors.climbDown();
 					d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 				}));
@@ -119,7 +118,7 @@ public class Wishes {
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_ROOM_STAIRS_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.setPosition(t.getPosition());
+						p.setPosition(t.position);
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -128,12 +127,12 @@ public class Wishes {
 			if (firstSewerDown.get() != null) {
 				Tile fsdt = firstSewerDown.get();
 				
-				d.changeLevel(fsdt.getLevel(), fsdt.getPosition());
+				d.changeLevel(fsdt.getLevel(), fsdt.position);
 				
 				Arrays.stream(p.getLevel().tileStore.getTiles())
 					.filter(t -> t.getType() == TileType.TILE_LADDER_DOWN)
 					.findFirst().ifPresent(t -> {
-						p.setPosition(t.getPosition());
+						p.setPosition(t.position);
 						p.defaultVisitors.climbDown();
 						d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 					});
@@ -142,7 +141,7 @@ public class Wishes {
 					Arrays.stream(p.getLevel().tileStore.getTiles())
 						.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
 						.findFirst().ifPresent(t -> {
-							p.setPosition(t.getPosition());
+							p.setPosition(t.position);
 							p.defaultVisitors.climbDown();
 							d.greenYou("traverse to [CYAN]%s[].", d.getLevel());
 						});
@@ -217,9 +216,6 @@ public class Wishes {
 		registerWish("puddle", new WishTile(TileType.TILE_ROOM_PUDDLE));
 		registerWish("ice", new WishTile(TileType.TILE_ROOM_ICE));
 		registerWish("trap", new WishTile(TileType.TILE_TRAP));
-		
-		registerWish("flood", (d, p, a) -> flood(p, TileType.TILE_ROOM_WATER));
-		registerWish("flood puddle", (d, p, a) -> flood(p, TileType.TILE_ROOM_PUDDLE));
 
 		// Status effects
 		// NOTE: Please add a new wish here for any status effects you implement.
@@ -356,17 +352,5 @@ public class Wishes {
 		JRogue.getLogger().log(Profiler.LEVEL, String.format("Wish %s took %,d ms", wish, (end - start) / 1_000_000));
 		
 		return result;
-	}
-	
-	private void flood(Player p, TileType tileType) {
-		TileStore ts = p.getLevel().tileStore;
-		
-		for (int y = -6; y < 6; y++) {
-			for (int x = -6; x < 6; x++) {
-				if (ts.getTileType(x + p.getX(), y + p.getY()).isInnerRoomTile()) {
-					ts.setTileType(x + p.getX(), y + p.getY(), tileType);
-				}
-			}
-		}
 	}
 }

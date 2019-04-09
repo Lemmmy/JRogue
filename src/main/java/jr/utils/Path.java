@@ -18,26 +18,11 @@ public class Path implements Iterable<Tile> {
 		return steps.get(index);
 	}
 	
-	public boolean[] getAdjacentSteps(int x, int y) {
-		boolean[] adjacentSteps = new boolean[Utils.DIRECTIONS.length];
-		
-		for (int i = 0; i < Utils.DIRECTIONS.length; i++) {
-			VectorInt direction = Utils.DIRECTIONS[i];
-			int dx = x + direction.getX();
-			int dy = y + direction.getY();
-			
-			adjacentSteps[i] = steps.stream().anyMatch(step -> step.getX() == dx && step.getY() == dy);
-		}
-		
-		return adjacentSteps;
-	}
-	
-	public int getX(int index) {
-		return steps.get(index).getX();
-	}
-	
-	public int getY(int index) {
-		return steps.get(index).getY();
+	public Boolean[] getAdjacentSteps(Point point) {
+		return Directions.cardinal()
+			.map(point::add)
+			.map(p -> steps.stream().anyMatch(step -> step.position.equals(p)))
+			.toArray(Boolean[]::new);
 	}
 	
 	public void addStep(Tile step) {

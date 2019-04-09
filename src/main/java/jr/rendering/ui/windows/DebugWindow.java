@@ -36,7 +36,7 @@ public class DebugWindow extends WindowBase {
 		
 		getWindowBorder().getContentTable().add(
 			new Label(
-				String.format("Pos: %d, %d", getDungeon().getPlayer().getX(), getDungeon().getPlayer().getY()),
+				String.format("Pos: %s", getDungeon().getPlayer().getPosition()),
 				getSkin(),
 				"windowStyle"
 			)

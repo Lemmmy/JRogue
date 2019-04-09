@@ -7,30 +7,27 @@ import jr.dungeon.items.magical.DirectionType;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Point;
+import jr.utils.VectorInt;
 
 public class PlayerDefaultVisitors extends PlayerVisitorsContainer {
 	public PlayerDefaultVisitors(Player player) {
 		super(player);
 	}
 	
-	public void teleport(int x, int y) {
-		getPlayer().acceptVisitor(new PlayerTeleport(x, y));
-	}
-
-	public void teleport(Point p) {
-		teleport(p.getX(), p.getY());
+	public void teleport(Point position) {
+		getPlayer().acceptVisitor(new PlayerTeleport(position));
 	}
 	
-	public void walk(int dx, int dy) {
-		getPlayer().acceptVisitor(new PlayerWalk(dx, dy));
+	public void walk(VectorInt direction) {
+		getPlayer().acceptVisitor(new PlayerWalk(direction));
 	}
 	
 	public void travelDirectional() {
 		getPlayer().acceptVisitor(new PlayerTravelDirectional());
 	}
 	
-	public void travelPathfind(int tx, int ty) {
-		getPlayer().acceptVisitor(new PlayerTravelPathfind(tx, ty));
+	public void travelPathfind(Point position) {
+		getPlayer().acceptVisitor(new PlayerTravelPathfind(position));
 	}
 	
 	public void kick() {

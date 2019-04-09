@@ -14,7 +14,7 @@ public class WishSpawn<T extends Entity> implements Wish {
 
 	@Override
 	public void grant(Dungeon dungeon, Player player, String... args) {
-		QuickSpawn.spawnClass(entityClass, dungeon.getLevel(), player.getX(), player.getY());
+		QuickSpawn.spawnClass(entityClass, dungeon.getLevel(), player.getPosition());
 		dungeon.turnSystem.turn();
 	}
 }

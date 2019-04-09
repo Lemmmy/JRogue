@@ -1,5 +1,6 @@
 package jr.dungeon.entities.actions;
 
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.containers.EntityItem;
@@ -13,6 +14,7 @@ import jr.language.transformers.Capitalise;
 import jr.utils.Point;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,8 +23,7 @@ import java.util.stream.Collectors;
  * @see Action
  */
 public class ActionMove extends Action {
-	private int x;
-	private int y;
+	private Point point;
 	
 	/**
 	 * Move/walk action.
@@ -31,36 +32,21 @@ public class ActionMove extends Action {
 	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
 	public ActionMove(Point point, ActionCallback callback) {
-		this(point.getX(), point.getY(), callback);
-	}
-	
-	/**
-	 * Move/walk action.
-	 *
-	 * @param x The X position to move to.
-	 * @param y The Y position to move to.
-	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
-	 */
-	public ActionMove(int x, int y, ActionCallback callback) {
 		super(callback);
-		this.x = x;
-		this.y = y;
+		this.point = point;
 	}
 	
 	@Override
 	public void execute(Entity entity, Messenger msg) {
+		Level level = entity.getLevel();
 		runBeforeRunCallback(entity);
 		
-		List<Entity> unwalkable = entity.getLevel().entityStore.getUnwalkableEntitiesAt(x, y);
-		
-		if (unwalkable.size() > 0) {
+		Optional<Entity> optUnwalkable = level.entityStore.getUnwalkableEntitiesAt(point).findFirst();
+		if (optUnwalkable.isPresent()) {
 			if (entity instanceof Player) {
-				Entity unwalkableEnt = unwalkable.get(0);
+				Entity unwalkableEnt = optUnwalkable.get();
 				
-				if (
-					unwalkableEnt.getLastX() != unwalkableEnt.getX() ||
-					unwalkableEnt.getLastY() != unwalkableEnt.getY()
-				) {
+				if (!unwalkableEnt.getLastPosition().equals(unwalkableEnt.getPosition())) {
 					msg.log(
 						"%s beats you to it!",
 						LanguageUtils.subject(unwalkableEnt).build(Capitalise.first)
@@ -71,24 +57,22 @@ public class ActionMove extends Action {
 			return;
 		}
 		
-		entity.setPosition(x, y);
+		entity.setPosition(point);
 		
 		if (entity instanceof Player) {
-			Tile tile = entity.getLevel().tileStore.getTile(x, y);
+			Tile tile = level.tileStore.getTile(point);
 			
 			if (tile.getType().onWalk() != null) {
 				msg.log(tile.getType().onWalk());
 			}
 		}
 		
-		List<Entity> walkable = entity.getLevel().entityStore.getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.walk((EntityLiving) entity));
-		
-		List<EntityItem> items = walkable.stream().filter(EntityItem.class::isInstance).map(e -> (EntityItem) e)
-			.collect(Collectors.toList());
-		
+		level.entityStore.getWalkableEntitiesAt(point)
+			.forEach(e -> e.walk((EntityLiving) entity));
 		
 		if (entity instanceof Player) {
+			List<EntityItem> items = level.entityStore.getItemsAt(point).collect(Collectors.toList());
+			
 			if (items.size() == 1) {
 				ItemStack stack = items.get(0).getItemStack();
 				

@@ -16,12 +16,13 @@ import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="monsterGoblinZombie")
 public class MonsterGoblinZombie extends MonsterZombie {
-	public MonsterGoblinZombie(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterGoblinZombie(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		setAI(new StatefulAI(this));
 		((StatefulAI) getAI()).setDefaultState(new StateLurk((StatefulAI) getAI(), 0));

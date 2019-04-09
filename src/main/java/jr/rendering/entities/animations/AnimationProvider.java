@@ -80,10 +80,7 @@ public class AnimationProvider implements EventListener {
 	}
 	
 	private void entityBeginLerp(EntityMovedEvent e) {
-		int dx = e.getNewX() - e.getLastX();
-		int dy = e.getNewY() - e.getLastY();
-		
-		addAnimation(new AnimationEntityMove(renderer, e.getEntity(), dx, dy));
+		addAnimation(new AnimationEntityMove(renderer, e.getEntity(), e.getDelta()));
 	}
 	
 	@EventHandler

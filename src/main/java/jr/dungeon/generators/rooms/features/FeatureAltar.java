@@ -1,6 +1,5 @@
 package jr.dungeon.generators.rooms.features;
 
-import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.decoration.EntityCandlestick;
@@ -10,40 +9,37 @@ import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
+import jr.utils.RandomUtils;
 
 @Registered(id="specialRoomFeatureAltar")
 public class FeatureAltar extends SpecialRoomFeature {
-	private static final double PROBABILITY_ALTAR_CANDLESTICK = 0.5;
-	
-	private static final Pcg32 RAND = new Pcg32();
+	private static final float PROBABILITY_ALTAR_CANDLESTICK = 0.5f;
 	
 	@Override
 	public void generate(Room room) {
-		Level level = room.getLevel();
-		int altarX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
-		int altarY = RAND.nextInt(room.getHeight() - 2) + room.getY() + 1;
+		Level level = room.level;
 		
-		EntityAltar altar = new EntityAltar(level.getDungeon(), level, altarX, altarY);
+		Point altarPos = room.randomPoint();
+		EntityAltar altar = new EntityAltar(level.getDungeon(), level, altarPos);
 		level.entityStore.addEntity(altar);
 		
-		for (int y = altarY - 1; y < altarY + 2; y++) {
-			for (int x = altarX - 1; x < altarX + 2; x++) {
-				if (level.tileStore.getTileType(x, y).isFloor()) {
-					level.tileStore.setTileType(x, y, TileType.TILE_ROOM_RUG);
+		for (int y = altarPos.y - 1; y < altarPos.y + 2; y++) {
+			for (int x = altarPos.x - 1; x < altarPos.x + 2; x++) {
+				if (level.tileStore.getTileType(altarPos).isFloor()) {
+					level.tileStore.setTileType(altarPos, TileType.TILE_ROOM_RUG);
 				}
 			}
 		}
 		
-		if (RAND.nextDouble() < PROBABILITY_ALTAR_CANDLESTICK) {
-			int currentX = altarX - 1;
+		if (RandomUtils.randomFloat() < PROBABILITY_ALTAR_CANDLESTICK) {
+			Point current = altarPos.add(-1, 0);
+			if (level.tileStore.getTileType(current).isFloor())
+				QuickSpawn.spawnClass(EntityCandlestick.class, level, current);
 			
-			if (level.tileStore.getTileType(currentX, altarY).isFloor())
-				QuickSpawn.spawnClass(EntityCandlestick.class, level, currentX, altarY);
-			
-			currentX = altarX + 1;
-			
-			if (level.tileStore.getTileType(currentX, altarY).isFloor())
-				QuickSpawn.spawnClass(EntityCandlestick.class, level, currentX, altarY);
+			current = altarPos.add(1, 0);
+			if (level.tileStore.getTileType(current).isFloor())
+				QuickSpawn.spawnClass(EntityCandlestick.class, level, current);
 		}
 	}
 	

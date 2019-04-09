@@ -23,6 +23,7 @@ import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.Article;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.val;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -33,12 +34,12 @@ import java.util.Set;
 public abstract class Monster extends EntityLiving {
 	@Expose private AI ai;
 	
-	public Monster(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y, experienceLevel);
+	public Monster(Dungeon dungeon, Level level, Point position, int experienceLevel) {
+		super(dungeon, level, position, experienceLevel);
 	}
 	
-	public Monster(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y, Math.abs(level.getDepth()));
+	public Monster(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position, Math.abs(level.getDepth()));
 	}
 	
 	protected Monster() { super(); }

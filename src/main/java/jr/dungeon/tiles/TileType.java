@@ -11,61 +11,63 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static jr.dungeon.tiles.Solidity.SOLID;
+import static jr.dungeon.tiles.Solidity.WALK_ON;
 import static jr.dungeon.tiles.TileFlag.*;
 
 @Getter
 @JsonAdapter(TileType.TileTypeAdapter.class)
 public enum TileType {
-	TILE_IDENTITY(-1, Solidity.WALK_ON),
-	TILE_DUMMY(0, Solidity.WALK_ON),
+	TILE_IDENTITY(-1, WALK_ON),
+	TILE_DUMMY(0, WALK_ON),
 	
-	TILE_DEBUG_A(1, Solidity.WALK_ON),
-	TILE_DEBUG_B(2, Solidity.WALK_ON),
-	TILE_DEBUG_C(3, Solidity.WALK_ON),
-	TILE_DEBUG_D(4, Solidity.WALK_ON),
-	TILE_DEBUG_E(5, Solidity.WALK_ON),
-	TILE_DEBUG_F(6, Solidity.WALK_ON),
-	TILE_DEBUG_G(7, Solidity.WALK_ON),
-	TILE_DEBUG_H(8, Solidity.WALK_ON),
+	TILE_DEBUG_A(1, WALK_ON),
+	TILE_DEBUG_B(2, WALK_ON),
+	TILE_DEBUG_C(3, WALK_ON),
+	TILE_DEBUG_D(4, WALK_ON),
+	TILE_DEBUG_E(5, WALK_ON),
+	TILE_DEBUG_F(6, WALK_ON),
+	TILE_DEBUG_G(7, WALK_ON),
+	TILE_DEBUG_H(8, WALK_ON),
 	
-	TILE_GROUND(9, BUILDABLE, Solidity.SOLID),
+	TILE_GROUND(9, BUILDABLE, SOLID),
 	TILE_GROUND_WATER(10, BUILDABLE | WATER, Solidity.WATER, new Colour(0x3072D6FF), 40, 5),
 	
-	TILE_ROOM_WALL(11, WALL, Solidity.SOLID),
-	TILE_ROOM_TORCH(12, WALL, Solidity.SOLID, TileStateTorch.class),
-	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_WALL(11, WALL, SOLID),
+	TILE_ROOM_TORCH(12, WALL, SOLID, TileStateTorch.class),
+	TILE_ROOM_FLOOR(14, FLOOR | INNER_ROOM, WALK_ON),
 	TILE_ROOM_WATER(15, WATER | INNER_ROOM, Solidity.WATER),
-	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM, Solidity.WALK_ON),
-	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM, Solidity.WALK_ON),
+	TILE_ROOM_PUDDLE(16, WATER | INNER_ROOM, WALK_ON),
+	TILE_ROOM_RUG(26, FLOOR | INNER_ROOM, WALK_ON),
+	TILE_ROOM_DIRT(31, FLOOR | INNER_ROOM, WALK_ON),
+	TILE_ROOM_ICE(33, FLOOR | INNER_ROOM, WALK_ON),
 	
-	TILE_ROOM_DOOR_LOCKED(17, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
-	TILE_ROOM_DOOR_CLOSED(18, WALL | DOOR | DOOR_SHUT, Solidity.SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_LOCKED(17, WALL | DOOR | DOOR_SHUT, SOLID, TileStateDoor.class),
+	TILE_ROOM_DOOR_CLOSED(18, WALL | DOOR | DOOR_SHUT, SOLID, TileStateDoor.class),
 	TILE_ROOM_DOOR_OPEN(19, WALL | DOOR | SEMI_TRANSPARENT, Solidity.WALK_THROUGH, TileStateDoor.class),
 	TILE_ROOM_DOOR_BROKEN(20, WALL | DOOR | SEMI_TRANSPARENT, Solidity.WALK_THROUGH, TileStateDoor.class),
 	
-	TILE_ROOM_STAIRS_UP(21, INNER_ROOM | STAIRS | UP, Solidity.WALK_ON, TileStateClimbable.class),
-	TILE_ROOM_STAIRS_DOWN(22, INNER_ROOM | STAIRS | DOWN, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_STAIRS_UP(21, INNER_ROOM | STAIRS | UP, WALK_ON, TileStateClimbable.class),
+	TILE_ROOM_STAIRS_DOWN(22, INNER_ROOM | STAIRS | DOWN, WALK_ON, TileStateClimbable.class),
 	
-	TILE_LADDER_UP(23, INNER_ROOM | LADDER | UP, Solidity.WALK_ON, TileStateClimbable.class),
-	TILE_LADDER_DOWN(24, INNER_ROOM | LADDER | DOWN, Solidity.WALK_ON, TileStateClimbable.class),
+	TILE_LADDER_UP(23, INNER_ROOM | LADDER | UP, WALK_ON, TileStateClimbable.class),
+	TILE_LADDER_DOWN(24, INNER_ROOM | LADDER | DOWN, WALK_ON, TileStateClimbable.class),
 	
-	TILE_SEWER_WALL(28, WALL, Solidity.SOLID),
+	TILE_SEWER_WALL(28, WALL, SOLID),
 	TILE_SEWER_WATER(27, WATER | INNER_ROOM, Solidity.WATER),
-	TILE_SEWER_DRAIN_EMPTY(29, WALL, Solidity.SOLID),
-	TILE_SEWER_DRAIN(30, WALL, Solidity.SOLID),
+	TILE_SEWER_DRAIN_EMPTY(29, WALL, SOLID),
+	TILE_SEWER_DRAIN(30, WALL, SOLID),
 	
-	TILE_CORRIDOR(25, BUILDABLE, Solidity.WALK_ON),
+	TILE_CORRIDOR(25, BUILDABLE, WALK_ON),
 	
-	TILE_CAVE_WALL(35, BUILDABLE | WALL, Solidity.SOLID),
-	TILE_CAVE_FLOOR(36, FLOOR, Solidity.WALK_ON),
+	TILE_CAVE_WALL(35, BUILDABLE | WALL, SOLID),
+	TILE_CAVE_FLOOR(36, FLOOR, WALK_ON),
 
-	TILE__NOISE(32, BUILDABLE, Solidity.SOLID),
-	TILE__FLOOR(34, FLOOR, Solidity.WALK_ON),
-	TILE__BRIDGE(37, FLOOR, Solidity.WALK_ON),
+	TILE__NOISE(32, BUILDABLE, SOLID),
+	TILE__FLOOR(34, FLOOR, WALK_ON),
+	TILE__BRIDGE(37, FLOOR, WALK_ON),
 
-	TILE_TRAP(38, FLOOR, Solidity.WALK_ON, TileStateTrap.class);
+	TILE_TRAP(38, FLOOR, WALK_ON, TileStateTrap.class);
 	
 	private short id;
 	private int flags;
@@ -115,7 +117,7 @@ public enum TileType {
 		this.lightAbsorb = lightAbsorb;
 		
 		if (lightColour == null) {
-			if (solidity == Solidity.SOLID) {
+			if (solidity == SOLID) {
 				this.lightColour = new Colour(0x404040FF);
 				this.lightAbsorb = 40;
 			} else {
@@ -182,13 +184,6 @@ public enum TileType {
 			.filter(t -> t.getID() == id)
 			.findFirst()
 			.orElse(TileType.TILE_GROUND);
-	}
-	
-	public enum Solidity {
-		SOLID, // walls etc
-		WALK_ON, // ground
-		WALK_THROUGH, // disturbs automove - doors and such
-		WATER // the player can swim in it
 	}
 	
 	public class TileTypeAdapter extends TypeAdapter<TileType> {

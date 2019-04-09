@@ -1,13 +1,17 @@
 package jr.dungeon.entities.monsters.ai;
 
 import jr.dungeon.Level;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Distance;
 import jr.utils.Path;
-import jr.utils.Utils;
+import jr.utils.Point;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static jr.utils.QuickMaths.ifloor;
 
 /**
  * Attempts to find and return a {@link Path} according to the
@@ -22,10 +26,8 @@ public class AStarPathfinder {
 	 * <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* pathfinding algorithm</a>.
 	 *
 	 * @param level The Level to search for a path on.
-	 * @param sx The start/source X position.
-	 * @param sy The start/source Y position.
-	 * @param tx The destination/target X position.
-	 * @param ty The destination/target Y position.
+	 * @param src The start/source position.
+	 * @param dest The destination/target position.
 	 * @param maxSearchDistance The maximum distance allowed to search for a path within.
 	 * @param allowDiagonalMovement Whether or not moving diagonally should be allowed (i.e. moving on both axis
 	 *                              simultaneously)
@@ -36,16 +38,14 @@ public class AStarPathfinder {
 	 *         was not possible to reach the target position.
 	 */
 	public Path findPath(Level level,
-						 int sx,
-						 int sy,
-						 int tx,
-						 int ty,
+						 Point src,
+						 Point dest,
 						 int maxSearchDistance,
 						 boolean allowDiagonalMovement,
 						 List<TileType> avoidTiles) {
 		// For full description of algorithm, see https://en.wikipedia.org/wiki/A*_search_algorithm
 		
-		if (level.tileStore.getTileType(tx, ty).getSolidity() == TileType.Solidity.SOLID) {
+		if (level.tileStore.getTileType(dest).getSolidity() == Solidity.SOLID) {
 			return null; // don't do anything if we can't even go there in the first place
 		}
 		
@@ -60,19 +60,22 @@ public class AStarPathfinder {
 		// Initialise every possible node in the level.
 		Node[] nodes = new Node[width * height];
 		
-		for (int i = 0; i < width * height; i++) {
-			nodes[i] = new Node(i % width, (int) Math.floor(i / width));
+		for (int i = 0; i < width * height; i++) { // TODO: this could be expensive
+			nodes[i] = new Node(Point.get(i % width, ifloor(i / width)));
 		}
 		
+		int srcIndex = width * src.y + src.x;
+		int destIndex = width * dest.y + dest.x;
+		
 		// We're already at the source node, so set the cost and depth to zero.
-		nodes[width * sy + sx].cost = 0;
-		nodes[width * sy + sx].depth = 0;
+		nodes[srcIndex].cost = 0;
+		nodes[srcIndex].depth = 0;
 		
 		// Starts the list of open nodes off with the source node.
-		open.add(nodes[width * sy + sx]);
+		open.add(nodes[srcIndex]);
 		
 		// The target node has no parent yet.
-		nodes[width * ty + tx].parent = null;
+		nodes[destIndex].parent = null;
 		
 		// While we haven't exceeded our maximum search depth,
 		int maxDepth = 0;
@@ -83,7 +86,7 @@ public class AStarPathfinder {
 			
 			Node current = open.get(0);
 			
-			if (current == nodes[width * ty + tx]) {
+			if (current == nodes[destIndex]) {
 				// We've reached the target.
 				break;
 			}
@@ -108,15 +111,14 @@ public class AStarPathfinder {
 						}
 					}
 					
-					int xp = x + current.x;
-					int yp = y + current.y;
+					Point next = current.position.add(x, y);
 					
 					// Check if the tile is in the map, non-solid, and not in the list of tiles to avoid.
-					if (isValidLocation(level, xp, yp, avoidTiles)) {
+					if (isValidLocation(level, next, avoidTiles)) {
 						// The cost to get to this node is the current node's cost plus the movement cost to reach
 						// this node. Note that the heuristic value is only used in the sorted open list.
-						float nextStepCost = current.cost + getHeuristicCost(level, current.x, current.y, xp, yp);
-						Node neighbour = nodes[width * yp + xp];
+						float nextStepCost = current.cost + getHeuristicCost(level, current.position, next);
+						Node neighbour = nodes[width * next.y + next.x];
 						
 						// Checks we haven't found a better route to a node we'd previously considered searched (i.e.
 						// it's in the open or closed lists). If we've found a better route to the node (the cost is
@@ -131,7 +133,7 @@ public class AStarPathfinder {
 						// current cost, and add it as a next possible step (i.e. to the open list).
 						if (!open.contains(neighbour) && !closed.contains(neighbour)) {
 							neighbour.cost = nextStepCost;
-							neighbour.heuristic = getHeuristicCost(level, xp, yp, tx, ty);
+							neighbour.heuristic = getHeuristicCost(level, next, dest);
 							maxDepth = Math.max(maxDepth, neighbour.setParent(current));
 							open.add(neighbour);
 						}
@@ -140,24 +142,24 @@ public class AStarPathfinder {
 			}
 		}
 		
-		if (nodes[width * ty + tx].parent == null) {
+		if (nodes[destIndex].parent == null) {
 			// No path was found.
 			return null;
 		}
 		
 		// Create and return a {@link Path} containing our nodes.
 		Path path = new Path();
-		Node target = nodes[width * ty + tx];
+		Node target = nodes[destIndex];
 		
 		// Since we know the path we can traverse the parents of the target node until we reach the source to build
 		// the path. Since we work backwards, we prepend the steps.
-		while (target != nodes[width * sy + sx]) {
-			path.prependStep(level.tileStore.getTile(target.x, target.y));
+		while (target != nodes[srcIndex]) {
+			path.prependStep(level.tileStore.getTile(target.position));
 			target = target.parent;
 		}
 		
 		// Finally add the source to the path too.
-		path.prependStep(level.tileStore.getTile(sx, sy));
+		path.prependStep(level.tileStore.getTile(src));
 		
 		path.lock();
 		
@@ -169,18 +171,16 @@ public class AStarPathfinder {
 	 * is in the list of {@link TileType TileTypes} to avoid.
 	 *
 	 * @param level The level to check against.
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param position The position to check.
 	 * @param avoidTiles The list of {@link TileType TileTypes} to avoid. Can be empty.
 	 *
 	 * @return Whether or not this tile can be moved to.
 	 */
-	public boolean isValidLocation(Level level, int x, int y, List<TileType> avoidTiles) {
-		return !(x < 0 || x >= level.getWidth() ||
-			y < 0 || y >= level.getHeight()) &&
-			level.tileStore.getTile(x, y) != null &&
-			level.tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID &&
-			!avoidTiles.contains(level.tileStore.getTileType(x, y));
+	public boolean isValidLocation(Level level, Point position, List<TileType> avoidTiles) {
+		return position.insideLevel(level) &&
+			level.tileStore.getTile(position) != null &&
+			level.tileStore.getTileType(position).getSolidity() != Solidity.SOLID &&
+			!avoidTiles.contains(level.tileStore.getTileType(position));
 	}
 	
 	/**
@@ -189,22 +189,20 @@ public class AStarPathfinder {
 	 * for cardinal movements, and {@code sqrt(2)} ({@code ~1.41}) for diagonal movements.
 	 *
 	 * @param level The @link Level} to look at tiles and calculate the cost within.
-	 * @param ax The source X position.
-	 * @param ay The source Y position.
-	 * @param bx The target X position.
-	 * @param by The target Y position.
+	 * @param a The source position.
+	 * @param b The target position.
 	 *
-	 * @return The heuristic cost for moving from A to B.
+	 * @return The heuristic cost for moving from {@code a} to {@code b}.
 	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Heuristic_(computer_science)">Wikipedia article on Heuristics</a>
 	 * @see <a href="http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html">Page 2 of Amit's Thoughts on
 	 *      Pathfinding, describing A*'s use of Heuristics in game programming.</a>
 	 * @see <a href="http://movingai.com/astar.html">Nathan Sturtevant's article on A* tie-breaking.</a>
 	 *
-	 * @see Utils#octileDistance(int, int, int, int, float, float)
+	 * @see Distance#octile(int, int, int, int, float, float)
 	 */
-	public float getHeuristicCost(Level level, int ax, int ay, int bx, int by) {
-		return Utils.octileDistance(ax, ay, bx, by, d, d2);
+	public float getHeuristicCost(Level level, Point a, Point b) {
+		return Distance.octile(a.x, a.y, b.x, b.y, d, d2);
 	}
 	
 	/**
@@ -213,10 +211,8 @@ public class AStarPathfinder {
 	 */
 	@Getter
 	public class Node implements Comparable<Node> {
-		/** The X coordinate of the node. */
-		private int x;
-		/** The Y coordinate of the node. */
-		private int y;
+		/** The position of the node. */
+		private Point position;
 		/** The search depth of the node. */
 		private int depth;
 		/** The path cost of the node. */
@@ -224,7 +220,7 @@ public class AStarPathfinder {
 		/**
 		 * The heuristic cost of the node.
 		 *
-		 * @see AStarPathfinder#getHeuristicCost(Level, int, int, int, int)
+		 * @see AStarPathfinder#getHeuristicCost(Level, Point, Point)
 		 */
 		private float heuristic;
 		/** The parent of the node - how we reached it in the search. */
@@ -234,12 +230,10 @@ public class AStarPathfinder {
 		 * Simple object for the {@link AStarPathfinder}'s nodes - embodies a point in a {@link Level}, the search depth
 		 * of the node, path and heuristic cost, and parent node.
 		 *
-		 * @param x The X coordinate of the node.
-		 * @param y The Y coordinate of the node.
+		 * @param position The position of the node.
 		 */
-		public Node(int x, int y) {
-			this.x = x;
-			this.y = y;
+		public Node(Point position) {
+			this.position = position;
 		}
 		
 		/**

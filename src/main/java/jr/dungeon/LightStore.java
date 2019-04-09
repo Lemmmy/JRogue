@@ -7,6 +7,7 @@ import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Colour;
+import jr.utils.Directions;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -129,9 +130,9 @@ public class LightStore implements LevelStore {
 				
 				if (index < 0 || index >= LIGHT_MAX_LIGHT_LEVEL) { return; }
 				
-				Tile tile = new Tile(level, TileType.TILE_DUMMY, e.getX(), e.getY());
+				Tile tile = new Tile(level, TileType.TILE_DUMMY, e.getPosition());
 				
-				if (!level.visibilityStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+				if (!level.visibilityStore.isTileInvisible(tile.position) && !isInitial) {
 					tile.setLightColour(lightEmitter.getLightColour().copy());
 					tile.setLightIntensity(lightEmitter.getLightIntensity());
 				}
@@ -140,7 +141,7 @@ public class LightStore implements LevelStore {
 			});
 		
 		for (int i = LIGHT_MAX_LIGHT_LEVEL - 1; i >= 0; i--) {
-			java.util.List<Tile> lights = lightTiles.get(i);
+			List<Tile> lights = lightTiles.get(i);
 			
 			//noinspection ForLoopReplaceableByForEach because it's not
 			for (int j = 0; j < lights.size(); j++) {
@@ -161,14 +162,11 @@ public class LightStore implements LevelStore {
 		}
 		
 		Arrays.stream(level.tileStore.getTiles())
-			.filter(t -> !level.visibilityStore.isTileInvisible(t.getX(), t.getY()))
+			.filter(t -> !level.visibilityStore.isTileInvisible(t.position))
 			.forEach(Tile::resetLight);
 	}
 	
 	public void propagateLighting(Tile tile, boolean isInitial) {
-		int x = tile.getX();
-		int y = tile.getY();
-		
 		int intensity = tile.getLightIntensity() - tile.getLightAbsorb();
 		
 		if (intensity < 0) {
@@ -178,10 +176,7 @@ public class LightStore implements LevelStore {
 		workingColour.set(tile.getLightColour());
 		reapplyIntensity(workingColour, tile.getLightIntensity(), intensity);
 		
-		if (x > 0) { setIntensity(level.tileStore.getTile(x - 1, y), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1) { setIntensity(level.tileStore.getTile(x + 1, y), intensity, workingColour, isInitial); }
-		if (y > 0) { setIntensity(level.tileStore.getTile(x, y - 1), intensity, workingColour, isInitial); }
-		if (y < level.getHeight() - 1) { setIntensity(level.tileStore.getTile(x, y + 1), intensity, workingColour, isInitial); }
+		propagate(tile, level, intensity, workingColour, isInitial);
 		
 		workingColour.set(
 			workingColour.r * 0.9f,
@@ -190,10 +185,14 @@ public class LightStore implements LevelStore {
 			workingColour.a
 		);
 		
-		if (x > 0 && y < level.getWidth() - 1) { setIntensity(level.tileStore.getTile(x - 1, y + 1), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1 && y > 0) { setIntensity(level.tileStore.getTile(x + 1, y - 1), intensity, workingColour, isInitial); }
-		if (x > 0 && y < 0) { setIntensity(level.tileStore.getTile(x - 1, y - 1), intensity, workingColour, isInitial); }
-		if (x < level.getWidth() - 1 && y < level.getHeight() - 1) { setIntensity(level.tileStore.getTile(x + 1, y + 1), intensity, workingColour, isInitial);}
+		propagate(tile, level, intensity, workingColour, isInitial);
+	}
+	
+	private void propagate(Tile tile, Level level, int intensity, Colour workingColour, boolean isInitial) {
+		Directions.cardinal()
+			.map(tile.position::add)
+			.filter(p -> p.insideLevel(level))
+			.forEach(p -> setIntensity(level.tileStore.getTile(p), intensity, workingColour, isInitial));
 	}
 	
 	public void reapplyIntensity(Colour colour, int intensityOld, int intensityNew) {
@@ -211,7 +210,7 @@ public class LightStore implements LevelStore {
 	}
 	
 	public void setIntensity(Tile tile, int intensity, Colour colour, boolean isInitial) {
-		if (tile == null || level.visibilityStore.isTileInvisible(tile.getX(), tile.getY()) && !isInitial) {
+		if (tile == null || level.visibilityStore.isTileInvisible(tile.position) && !isInitial) {
 			return;
 		}
 		

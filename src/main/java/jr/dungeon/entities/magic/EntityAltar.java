@@ -17,11 +17,12 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 @Registered(id="entityAltar")
 public class EntityAltar extends Entity {
-	public EntityAltar(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityAltar(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected EntityAltar() { super(); }

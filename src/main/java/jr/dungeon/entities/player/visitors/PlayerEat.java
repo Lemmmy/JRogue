@@ -1,6 +1,5 @@
 package jr.dungeon.entities.player.visitors;
 
-import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.ActionEat;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.player.Player;
@@ -9,22 +8,18 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.language.LanguageUtils;
 
-import java.util.List;
 import java.util.Optional;
 
 public class PlayerEat extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
-		List<Entity> floorEntities = player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY());
-		
-		Optional<Entity> floorFood = floorEntities.stream()
+		Optional<EntityItem> floorFood = player.getLevel().entityStore.getItemsAt(player.getPosition())
 			/* health and safety note: floor food is dangerous */
-			.filter(e -> e instanceof EntityItem)
-			.filter(e -> ((EntityItem) e).getItem() instanceof ItemComestible)
+			.filter(e -> e.getItem() instanceof ItemComestible)
 			.findFirst();
 		
 		if (floorFood.isPresent()) {
-			eatFromFloor(player, (EntityItem) floorFood.get());
+			eatFromFloor(player, floorFood.get());
 		} else {
 			eatFromInventory(player);
 		}
@@ -54,8 +49,7 @@ public class PlayerEat extends PlayerItemVisitor {
 				EntityItem newStack = new EntityItem(
 					player.getDungeon(),
 					player.getLevel(),
-					player.getX(),
-					player.getY(),
+					player.getPosition(),
 					new ItemStack(item, 1)
 				);
 				

@@ -5,7 +5,7 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.serialisation.Registered;
-import jr.utils.Utils;
+import jr.utils.Distance;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -26,7 +26,7 @@ public class TraitIntrinsicFear extends AITrait<StatefulAI> {
 		
 		if (
 			currentTarget != null &&
-			Utils.chebyshevDistance(currentTarget.getPosition(), getMonster().getPosition()) < 5
+			Distance.chebyshev(currentTarget.getPosition(), getMonster().getPosition()) < 5
 		) {
 			fear = (getMonster().getArmourClass() - currentTarget.getArmourClass()) / 10f;
 			fear = Math.max(0, Math.min(1, fear));

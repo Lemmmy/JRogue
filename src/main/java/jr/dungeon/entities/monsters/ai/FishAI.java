@@ -1,6 +1,5 @@
 package jr.dungeon.entities.monsters.ai;
 
-import com.github.alexeyr.pcg.Pcg32;
 import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.serialisation.Registered;
@@ -11,12 +10,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Registered(id="aiFish")
 public class FishAI extends AI {
 	private static final int SLEEP_DISTANCE = 20;
-	
-	private static final Pcg32 RAND = new Pcg32();
 	
 	@Expose @Getter @Setter private float moveProbability = 0.1f;
 	
@@ -32,16 +30,16 @@ public class FishAI extends AI {
 			return; // no need to move if we're far away from the player
 		}
 		
-		if (RAND.nextFloat() < moveProbability) {
-			Tile[] tiles = getMonster().getLevel().tileStore
-				.getAdjacentTiles(getMonster().getX(), getMonster().getY());
-			Tile[] waterTiles = Arrays.stream(tiles).filter(t -> t != null && t.getType() != null && t
-				.getType() == TileType.TILE_GROUND_WATER).toArray(Tile[]::new);
+		if (RandomUtils.randomFloat() < moveProbability) {
+			Tile[] tiles = getLevel().tileStore.getAdjacentTiles(getMonster().getPosition());
+			Tile[] waterTiles = Arrays.stream(tiles)
+				.filter(Objects::nonNull)
+				.filter(t -> t.getType() == TileType.TILE_GROUND_WATER)
+				.toArray(Tile[]::new);
 			
 			if (waterTiles.length > 0) {
 				Tile destination = RandomUtils.randomFrom(waterTiles);
-				
-				moveTowards(destination.getX(), destination.getY());
+				moveTowards(destination.position);
 			}
 		}
 	}

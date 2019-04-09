@@ -2,13 +2,13 @@ package jr.rendering.entities;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import jr.dungeon.entities.Entity;
+import jr.utils.Point;
 
 public class EntityPooledEffect {
 	private Entity entity;
 	private EntityRenderer renderer;
 	
-	private int x;
-	private int y;
+	public final Point position;
 	
 	private boolean over;
 	
@@ -16,14 +16,12 @@ public class EntityPooledEffect {
 	
 	public EntityPooledEffect(Entity entity,
 							  EntityRenderer renderer,
-							  int x,
-							  int y,
+							  Point position,
 							  boolean over,
 							  ParticleEffectPool.PooledEffect pooledEffect) {
 		this.entity = entity;
 		this.renderer = renderer;
-		this.x = x;
-		this.y = y;
+		this.position = position;
 		this.over = over;
 		
 		this.pooledEffect = pooledEffect;
@@ -35,14 +33,6 @@ public class EntityPooledEffect {
 	
 	public EntityRenderer getRenderer() {
 		return renderer;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
 	}
 	
 	public boolean shouldDrawOver() {

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.rendering.entities.animations.EntityAnimationData;
@@ -21,7 +20,7 @@ public class EntityRendererItem extends EntityRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+	public TextureRegion getTextureRegion(Entity entity) {
 		EntityItem item = (EntityItem) entity;
 		
 		if (item.getAppearance() != null) {
@@ -30,14 +29,14 @@ public class EntityRendererItem extends EntityRenderer {
 			
 			ItemRenderer renderer = ItemMap.valueOf(item.getItem().getAppearance().name()).getRenderer();
 			
-			return renderer.getTextureRegion(dungeon, item.getItemStack(), item.getItem(), isDrawingReflection());
+			return renderer.getTextureRegion(entity.getDungeon(), item.getItemStack(), item.getItem(), isDrawingReflection());
 		}
 		
 		return null;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
+	public void draw(SpriteBatch batch, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
 		EntityItem item = (EntityItem) entity;
 		
 		if (item.getAppearance() != null) {
@@ -54,7 +53,7 @@ public class EntityRendererItem extends EntityRenderer {
 				
 				renderer.draw(
 					batch,
-					dungeon,
+					entity.getDungeon(),
 					item.getItemStack(),
 					item.getItem(),
 					(int) (x * width),

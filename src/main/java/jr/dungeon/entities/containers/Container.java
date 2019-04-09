@@ -11,7 +11,6 @@ import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.items.quaffable.ItemQuaffable;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
-import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +18,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Container implements EventListener {
+	public static final char[] INVENTORY_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		.toCharArray();
 	@Expose	@Getter @Setter	private String name;
 	
 	@Expose @Getter private Map<Character, ItemStack> items = new LinkedHashMap<>();
@@ -82,7 +83,7 @@ public class Container implements EventListener {
 	}
 	
 	public char getAvailableInventoryLetter() {
-		for (char letter : Utils.INVENTORY_CHARS) {
+		for (char letter : INVENTORY_CHARS) {
 			if (!items.containsKey(letter)) {
 				return letter;
 			}

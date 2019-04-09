@@ -11,8 +11,9 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.events.TileChangedEvent;
 import jr.dungeon.tiles.states.TileState;
+import jr.utils.Directions;
+import jr.utils.Distance;
 import jr.utils.Point;
-import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+
+import static jr.utils.QuickMaths.ifloor;
 
 @Getter
 public class TileStore implements LevelStore {
@@ -49,7 +52,7 @@ public class TileStore implements LevelStore {
 		Tile[] tiles = new Tile[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
-			tiles[i] = new Tile(level, TileType.TILE_GROUND, i % width, (int) Math.floor(i / width));
+			tiles[i] = new Tile(level, TileType.TILE_GROUND, i % width, ifloor(i / width));
 		}
 		
 		return tiles;
@@ -65,8 +68,8 @@ public class TileStore implements LevelStore {
 			.filter(Tile::hasState)
 			.forEach(tile -> {
 				JsonObject serialisedTileState = tileStateAdapter.toJsonTree(tile.getState()).getAsJsonObject();
-				serialisedTileState.addProperty("x", tile.getX());
-				serialisedTileState.addProperty("y", tile.getY());
+				serialisedTileState.addProperty("x", tile.position.x);
+				serialisedTileState.addProperty("y", tile.position.y);
 				tileStates.add(serialisedTileState);
 			});
 		out.add("tileStates", tileStates);
@@ -102,7 +105,7 @@ public class TileStore implements LevelStore {
 			int x = serialisedTileState.get("x").getAsInt();
 			int y = serialisedTileState.get("y").getAsInt();
 			
-			Tile tile = getTile(x, y);
+			Tile tile = getTile(Point.get(x, y));
 			TileState tileState = tileStateAdapter.fromJsonTree(serialisedTileState);
 			tileState.init(tile);
 			tile.setState(tileState);
@@ -137,33 +140,36 @@ public class TileStore implements LevelStore {
 	public Tile[] getTiles() {
 		return tiles;
 	}
-
-	public Tile getTile(int x, int y) {
+	
+	public Tile getTile(Point point) {
+		if (!point.insideLevel(level)) return null;
+		return tiles[point.getIndex(level)];
+	}
+	
+	/**
+	 * Raw tile getter, only for extremely hot loops. Use {@link Point} where possible.
+	 */
+	public Tile getTileRaw(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return tiles[y * width + x];
 	}
 	
-	public Tile getTile(Point point) {
-		return getTile(point.getX(), point.getY());
-	}
-	
-	public TileType getTileType(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) return null;
-		return getTile(x, y).getType();
-	}
-	
 	public TileType getTileType(Point point) {
-		return getTileType(point.getX(), point.getY());
+		if (!point.insideLevel(level)) return null;
+		return getTile(point).getType();
 	}
 	
-	public void setTileType(int x, int y, TileType tile) {
-		if (tile.getID() < 0) return;
-		if (x < 0 || y < 0 || x >= width || y >= height) return;
-		tiles[y * width + x].setType(tile);
+	/**
+	 * Raw tile type getter, only for extremely hot loops. Use {@link Point} where possible.
+	 */
+	public TileType getTileTypeRaw(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) return null;
+		return tiles[y * width + x].getType();
 	}
-
-	public void setTileType(Point p, TileType tile) {
-		setTileType(p.getX(), p.getY(), tile);
+	
+	public Tile setTileType(Point point, TileType tile) {
+		if (tile == null || tile.getID() < 0 || !point.insideLevel(level)) return null;
+		return tiles[point.getIndex(level)].setType(tile);
 	}
 	
 	public void triggerTileSetEvent(Tile tile, TileType oldType, TileType newType) {
@@ -171,65 +177,47 @@ public class TileStore implements LevelStore {
 		level.getDungeon().eventSystem.triggerEvent(new TileChangedEvent(tile, oldType, newType));
 	}
 
-	public Tile[] getAdjacentTiles(int x, int y) {
-		return Arrays.stream(Utils.DIRECTIONS)
-			.map(d -> getTile(x + d.getX(), y + d.getY()))
+	public Tile[] getAdjacentTiles(Point point) {
+		return Directions.cardinal()
+			.map(point::add)
+			.map(this::getTile)
 			.toArray(Tile[]::new);
 	}
 
-	public Tile[] getAdjacentTiles(Point p) {
-		return getAdjacentTiles(p.getX(), p.getY());
-	}
-
-	public TileType[] getAdjacentTileTypes(int x, int y) {
-		return Arrays.stream(Utils.DIRECTIONS)
-			.map(d -> getTileType(x + d.getX(), y + d.getY()))
+	public TileType[] getAdjacentTileTypes(Point point) {
+		return Directions.cardinal()
+			.map(point::add)
+			.map(this::getTileType)
 			.toArray(TileType[]::new);
 	}
-
-	public TileType[] getAdjacentTileTypes(Point p) {
-		return getAdjacentTileTypes(p.getX(), p.getY());
-	}
 	
-	public Tile[] getOctAdjacentTiles(int x, int y) {
-		return Arrays.stream(Utils.OCT_DIRECTIONS)
-			.map(d -> getTile(x + d.getX(), y + d.getY()))
+	public Tile[] getOctAdjacentTiles(Point point) {
+		return Directions.compass()
+			.map(point::add)
+			.map(this::getTile)
 			.toArray(Tile[]::new);
 	}
-
-	public Tile[] getOctAdjacentTiles(Point p) {
-		return getOctAdjacentTiles(p.getX(), p.getY());
-	}
 	
-	public TileType[] getOctAdjacentTileTypes(int x, int y) {
-		return Arrays.stream(Utils.OCT_DIRECTIONS)
-			.map(d -> getTileType(x + d.getX(), y + d.getY()))
+	public TileType[] getOctAdjacentTileTypes(Point point) {
+		return Directions.compass()
+			.map(point::add)
+			.map(this::getTileType)
 			.toArray(TileType[]::new);
 	}
-
-	public TileType[] getOctAdjacentTileTypes(Point p) {
-		return getOctAdjacentTileTypes(p.getX(), p.getY());
-	}
 	
-	public List<Tile> getTilesInRadius(int x, int y, int r) {
+	public List<Tile> getTilesInRadius(Point point, int r) {
 		List<Tile> found = new LinkedList<>();
+		
+		int x = point.x; int y = point.y;
 		
 		for (int j = y - r; j < y + r; j++) {
 			for (int i = x - r; i < x + r; i++) {
-				if (Utils.distance(x, y, i, j) <= r) {
-					Tile t = getTile(i, j);
-					
-					if (t != null) {
-						found.add(t);
-					}
+				if (i > 0 && j > 0 && i < level.getWidth() && j < level.getHeight() && Distance.i(x, y, i, j) <= r) {
+					found.add(tiles[j * level.getWidth() + i]);
 				}
 			}
 		}
 		
 		return found;
-	}
-
-	public List<Tile> getTilesInRadius(Point p, int r) {
-		return getTilesInRadius(p.getX(), p.getY(), r);
 	}
 }

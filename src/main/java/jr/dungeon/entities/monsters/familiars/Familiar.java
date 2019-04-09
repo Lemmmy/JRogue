@@ -18,6 +18,7 @@ import jr.dungeon.events.EventPriority;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.language.transformers.Possessive;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -39,8 +40,8 @@ public abstract class Familiar extends Monster implements Friendly {
 	@Expose @Getter @Setter private float nutrition = 1400;
 	@Getter private NutritionState lastNutritionState;
 	
-	public Familiar(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public Familiar(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected Familiar() { super(); }
@@ -129,9 +130,9 @@ public abstract class Familiar extends Monster implements Friendly {
 		
 		if (
 			e.getSrc().getLevel().equals(getLevel()) &&
-			(e.getSrc().isAdjacentTo(getPosition()) || e.getSrc().getPosition() == getPosition())
+			(e.getSrc().isAdjacentTo(getPosition()) || e.getSrc().position.equals(getPosition()))
 		) {
-			setLevel(e.getDest().getLevel(), e.getDest().getPosition());
+			setLevel(e.getDest().getLevel(), e.getDest().position);
 			getAI().suppress(2);
 		}
 	}

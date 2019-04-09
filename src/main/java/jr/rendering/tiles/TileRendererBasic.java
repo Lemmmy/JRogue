@@ -2,9 +2,10 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
 import jr.rendering.assets.Textures;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -28,12 +29,12 @@ public class TileRendererBasic extends TileRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return image;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 	}
 }

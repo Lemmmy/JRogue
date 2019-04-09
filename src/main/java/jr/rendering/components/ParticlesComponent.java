@@ -15,6 +15,7 @@ import jr.dungeon.events.TurnEvent;
 import jr.rendering.particles.ParticleEffectMap;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +38,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 	@Override
 	public void render(float dt) {
 		pooledEffects.forEach(p -> {
-			if (dungeon.getLevel().visibilityStore.isTileInvisible(p.getX(), p.getY())) {
+			if (dungeon.getLevel().visibilityStore.isTileInvisible(p.getPosition())) {
 				return;
 			}
 			
@@ -92,34 +93,26 @@ public abstract class ParticlesComponent extends RendererComponent {
 		PooledEffect e = new PooledEffect(
 			effect,
 			effect.getPool().obtain(),
-			attachedEntity.getX(),
-			attachedEntity.getY(),
+			attachedEntity.getPosition(),
 			duration
 		);
 		
-		e.getPooledEffect().setPosition(
-			attachedEntity.getX() * TileMap.TILE_WIDTH + effect.getXOffset(),
-			attachedEntity.getY() * TileMap.TILE_HEIGHT + effect.getYOffset()
-		);
+		applyPosition(e.getPooledEffect(), effect, attachedEntity.getPosition());
 		
 		e.setAttachedEntity(attachedEntity);
 		
 		pooledEffects.add(e);
 	}
 	
-	public void addEffect(ParticleEffectMap effect, int x, int y, int duration) {
+	public void addEffect(ParticleEffectMap effect, Point position, int duration) {
 		PooledEffect e = new PooledEffect(
 			effect,
 			effect.getPool().obtain(),
-			x,
-			y,
+			position,
 			duration
 		);
 		
-		e.getPooledEffect().setPosition(
-			x * TileMap.TILE_WIDTH + effect.getXOffset(),
-			y * TileMap.TILE_HEIGHT + effect.getYOffset()
-		);
+		applyPosition(e.getPooledEffect(), effect, position);
 		
 		pooledEffects.add(e);
 	}
@@ -129,6 +122,13 @@ public abstract class ParticlesComponent extends RendererComponent {
 		return true;
 	}
 	
+	private static void applyPosition(ParticleEffectPool.PooledEffect pooledEffect, ParticleEffectMap effect, Point position) {
+		pooledEffect.setPosition(
+			position.x * TileMap.TILE_WIDTH + effect.getXOffset(),
+			position.y * TileMap.TILE_HEIGHT + effect.getYOffset()
+		);
+	}
+	
 	@Getter
 	public class PooledEffect {
 		private ParticleEffectMap originalEffect;
@@ -136,8 +136,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 		
 		@Setter private Entity attachedEntity;
 		
-		private int x;
-		private int y;
+		private Point position;
 		
 		/**
 		 * Duration in turns
@@ -150,14 +149,13 @@ public abstract class ParticlesComponent extends RendererComponent {
 		public PooledEffect(
 			ParticleEffectMap originalEffect,
 			ParticleEffectPool.PooledEffect pooledEffect,
-			int x, int y,
+			Point position,
 			int duration
 		) {
 			this.originalEffect = originalEffect;
 			this.pooledEffect = pooledEffect;
 			
-			this.x = x;
-			this.y = y;
+			this.position = position;
 			
 			this.duration = duration;
 		}
@@ -166,13 +164,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 			turnsTaken++;
 			
 			if (attachedEntity != null) {
-				this.x = attachedEntity.getX();
-				this.y = attachedEntity.getY();
-				
-				pooledEffect.setPosition(
-					x * TileMap.TILE_WIDTH + originalEffect.getXOffset(),
-					y * TileMap.TILE_HEIGHT + originalEffect.getYOffset()
-				);
+				applyPosition(pooledEffect, originalEffect, attachedEntity.getPosition());
 			}
 		}
 	}
@@ -197,7 +189,7 @@ public abstract class ParticlesComponent extends RendererComponent {
 				!(e instanceof MonsterFish) &&
 				!(e instanceof MonsterPufferfish)
 			) {
-				addEffect(ParticleEffectMap.WATER_STEP, e.getX(), e.getY(), 0);
+				addEffect(ParticleEffectMap.WATER_STEP, e.getPosition(), 0);
 			}
 		}
 	}

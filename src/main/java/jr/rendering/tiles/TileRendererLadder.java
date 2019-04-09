@@ -2,8 +2,9 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 
 import java.util.Arrays;
 
@@ -13,31 +14,28 @@ public class TileRendererLadder extends TileRendererBasic {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		return getFloorImage(dungeon, x, y);
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
+		return getFloorImage(tile, tile.position);
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
 		return image;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		getFloorRenderer(dungeon, x, y).draw(batch, dungeon, x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		getFloorRenderer(tile, p).draw(batch, tile, p);
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
-		
-		if (t != null) {
-			drawTile(batch, t, x, y);
-		}
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion t = getTextureRegionExtra(tile, p);
+		drawTile(batch, t, p);
 	}
 	
-	public TileRenderer getFloorRenderer(Dungeon dungeon, int x, int y) {
-		TileType t = Arrays.stream(dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y))
+	public TileRenderer getFloorRenderer(Tile tile, Point p) {
+		TileType t = Arrays.stream(tile.getLevel().tileStore.getAdjacentTileTypes(p))
 			.filter(TileType::isFloor)
 			.findAny()
 			.orElse(TileType.TILE_ROOM_FLOOR);
@@ -45,8 +43,8 @@ public class TileRendererLadder extends TileRendererBasic {
 		return TileMap.valueOf(t.name()).getRenderer();
 	}
 	
-	public TextureRegion getFloorImage(Dungeon dungeon, int x, int y) {
-		return getFloorRenderer(dungeon, x, y).getTextureRegion(dungeon, x, y);
+	public TextureRegion getFloorImage(Tile tile, Point p) {
+		return getFloorRenderer(tile, p).getTextureRegion(tile, p);
 	}
 	
 	protected enum StairDirection {

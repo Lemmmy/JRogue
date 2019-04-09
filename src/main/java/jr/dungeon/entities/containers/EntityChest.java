@@ -18,6 +18,7 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 
@@ -32,8 +33,8 @@ public class EntityChest extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;
 	@Expose	@Getter private boolean locked;
 	
-	public EntityChest(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityChest(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		container = new Container(getName(null));
 		locked = RandomUtils.rollD2();

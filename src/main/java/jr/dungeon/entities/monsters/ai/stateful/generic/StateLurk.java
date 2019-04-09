@@ -7,8 +7,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.serialisation.Registered;
-import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.Solidity;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.Getter;
@@ -57,9 +56,7 @@ public class StateLurk extends AIState<StatefulAI> {
 		
 		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
 			dest = getRandomDestination();
-			
-			Point safePoint = Point.getPoint(m.getX(), m.getY());
-			ai.addSafePoint(safePoint);
+			ai.addSafePoint(m.getPosition());
 		}
 		
 		if (dest == null) return;
@@ -74,8 +71,8 @@ public class StateLurk extends AIState<StatefulAI> {
 		if (RandomUtils.randomFloat() > lurkMoveProbability) return null;
 		
 		return RandomUtils.randomFrom(monster.getLevel().tileStore.getTilesInRadius(target.getPosition(), lurkRadius).stream()
-			.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
-			.map(Tile::getPosition)
+			.filter(t -> t.getType().getSolidity() != Solidity.SOLID)
+		    .map(t -> t.position)
 			.collect(Collectors.toList()));
 	}
 	

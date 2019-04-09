@@ -3,13 +3,14 @@ package jr.dungeon.generators;
 import jr.JRogue;
 import jr.dungeon.Level;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
+import jr.utils.Distance;
 import jr.utils.Path;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
-import jr.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,31 +71,28 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void initialiseTempTiles(boolean firstPass) {
-		int width = level.getWidth();
-		int height = level.getHeight();
+		tempTiles = new Tile[levelWidth * levelHeight];
 		
-		tempTiles = new Tile[width * height];
-		
-		for (int i = 0; i < width * height; i++) {
-			int x = i % width;
-			int y = (int) Math.floor(i / width);
+		for (int i = 0; i < levelWidth * levelHeight; i++) {
+			int x = i % levelWidth;
+			int y = (int) Math.floor(i / levelWidth);
 			
 			tempTiles[i] = new Tile(
 				level,
 				firstPass ? TileType.TILE_GROUND
-						  : level.tileStore.getTileType(x, y),
+						  : tileStore.getTileType(Point.get(x, y)),
 				x, y
 			);
 		}
 	}
 	
 	private void flushTempTiles() {
-		Arrays.stream(tempTiles).forEach(t -> level.tileStore.setTileType(t.getX(), t.getY(), t.getType()));
+		Arrays.stream(tempTiles).forEach(t -> tileStore.setTileType(t.position, t.getType()));
 	}
 	
 	private void airPass() {
-		Arrays.stream(level.tileStore.getTiles())
-			.filter(this::isTileInBounds)
+		Arrays.stream(tileStore.getTiles())
+			.filter(this::notByEdge)
 			.forEach(t -> {
 				if (RAND.nextFloat() <= PROBABILITY_INITIAL_FLOOR) {
 					t.setType(TileType.TILE_CAVE_FLOOR); // TODO: cave floor tile
@@ -105,10 +103,10 @@ public class GeneratorCave extends DungeonGenerator {
 	private void pass(boolean firstPass) {
 		initialiseTempTiles(firstPass);
 		
-		Arrays.stream(level.tileStore.getTiles())
-			.filter(this::isTileInBounds)
+		Arrays.stream(tileStore.getTiles())
+			.filter(this::notByEdge)
 			.forEach(t -> setTempTileType(
-				t.getX(), t.getY(),
+				t.position,
 				tilePass(t) ? TileType.TILE_GROUND : TileType.TILE_CAVE_FLOOR
 			));
 		
@@ -116,20 +114,17 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private boolean tilePass(Tile tile) {
-		int x = tile.getX(),
-			y = tile.getY();
-		
-		int cr1 = getAdjacentCountR1(x, y),
-			cr2 = getAdjacentCountR2(x, y);
+		int cr1 = getAdjacentCountR1(tile.position),
+			cr2 = getAdjacentCountR2(tile.position);
 		
 		return cr1 >= R1_CUTOFF || cr2 <= R2_CUTOFF;
 	}
 	
 	private void wallPass() {
-		Arrays.stream(level.tileStore.getTiles())
+		Arrays.stream(tileStore.getTiles())
 			.filter(t -> t.getType() == TileType.TILE_GROUND)
 			.forEach(t -> {
-				TileType[] adjacentTileTypes = level.tileStore.getOctAdjacentTileTypes(t.getX(), t.getY());
+				TileType[] adjacentTileTypes = tileStore.getOctAdjacentTileTypes(t.position);
 				
 				Arrays.stream(adjacentTileTypes)
 					.filter(t2 -> t2 == TileType.TILE_CAVE_FLOOR)
@@ -139,18 +134,15 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	private void chooseSpawn() {
-		List<Tile> validSpawnTiles = Arrays.stream(level.tileStore.getTiles())
+		List<Tile> validSpawnTiles = Arrays.stream(tileStore.getTiles())
 			.filter(t -> t.getType().isFloor())
-			.filter(t -> Arrays.stream(level.tileStore.getAdjacentTileTypes(t.getX(), t.getY()))
+			.filter(t -> Arrays.stream(tileStore.getAdjacentTileTypes(t.position))
 				.filter(TileType::isFloor)
 				.count() == 4)
 			.collect(Collectors.toList());
 		
 		spawnTile = RandomUtils.randomFrom(validSpawnTiles);
 		assert spawnTile != null;
-		
-		int spawnX = spawnTile.getX();
-		int spawnY = spawnTile.getY();
 		
 		if (sourceTile != null) {
 			spawnTile.setType(TileType.TILE_LADDER_UP);
@@ -162,35 +154,32 @@ public class GeneratorCave extends DungeonGenerator {
 			if (spawnTile.getState() instanceof TileStateClimbable) {
 				TileStateClimbable tsc = (TileStateClimbable) spawnTile.getState();
 				tsc.setLinkedLevelUUID(sourceTile.getLevel().getUUID());
-				tsc.setDestinationPosition(sourceTile.getX(), sourceTile.getY());
+				tsc.setDestinationPosition(sourceTile.position);
 			}
 		}
 		
-		level.setSpawnPoint(spawnX, spawnY);
+		level.setSpawnPoint(spawnTile.position);
 	}
 	
 	private void chooseExit() {
-		List<Tile> validExitTiles = Arrays.stream(level.tileStore.getTiles())
+		List<Tile> validExitTiles = Arrays.stream(tileStore.getTiles())
 			.filter(t -> t.getType().isFloor())
-			.filter(t -> Arrays.stream(level.tileStore.getAdjacentTileTypes(t.getX(), t.getY()))
+			.filter(t -> Arrays.stream(tileStore.getAdjacentTileTypes(t.position))
 							.filter(TileType::isFloor)
 							.count() == 4)
-			.filter(t -> Utils.chebyshevDistance(t.getX(), t.getY(), spawnTile.getX(), spawnTile.getY()) > DISTANCE_SPAWN_EXIT)
+			.filter(t -> Distance.chebyshev(t.position, spawnTile.position) > DISTANCE_SPAWN_EXIT)
 			.collect(Collectors.toList());
 		
 		exitTile = RandomUtils.randomFrom(validExitTiles);
 		assert exitTile != null;
 		
-		int exitX = exitTile.getX();
-		int exitY = exitTile.getY();
-		
-		level.tileStore.setTileType(exitX, exitY, TileType.TILE_LADDER_DOWN);
+		tileStore.setTileType(exitTile.position, TileType.TILE_LADDER_DOWN);
 		
 		if (sourceTile != null && sourceTile.getLevel().getDepth() < level.getDepth()) {
-			level.tileStore.setTileType(exitX, exitY, TileType.TILE_LADDER_UP);
+			tileStore.setTileType(exitTile.position, TileType.TILE_LADDER_UP);
 		}
 		
-		exitTile = level.tileStore.getTile(exitX, exitY);
+		exitTile = tileStore.getTile(exitTile.position);
 		
 		if (exitTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) exitTile.getState();
@@ -199,65 +188,57 @@ public class GeneratorCave extends DungeonGenerator {
 	}
 	
 	public Tile getTempTile(int x, int y) {
-		int width = level.getWidth();
-		int height = level.getHeight();
+		int width = levelWidth;
+		int height = levelHeight;
 		
 		if (x < 0 || y < 0 || x >= width || y >= height) return null;
 		return tempTiles[y * width + x];
 	}
 
-	public Tile getTempTile(Point p) {
-		return getTempTile(p.getX(), p.getY());
+	public Tile getTempTile(Point point) {
+		return getTempTile(point.x, point.y);
 	}
 	
 	public TileType getTempTileType(int x, int y) {
 		return getTempTile(x, y).getType();
 	}
 
-	public TileType getTempTileType(Point p) {
-		return getTempTileType(p.getX(), p.getY());
+	public TileType getTempTileType(Point point) {
+		return getTempTileType(point.x, point.y);
 	}
 	
 	public void setTempTileType(int x, int y, TileType tile) {
-		int width = level.getWidth();
-		int height = level.getHeight();
+		int width = levelWidth;
+		int height = levelHeight;
 		
 		if (tile.getID() < 0) return;
 		if (x < 0 || y < 0 || x >= width || y >= height) return;
 		tempTiles[y * width + x].setType(tile);
 	}
 
-	public void setTempTileType(Point p, TileType tile) {
-		setTempTileType(p.getX(), p.getY(), tile);
+	public void setTempTileType(Point point, TileType tile) {
+		setTempTileType(point.x, point.y, tile);
 	}
 	
-	private int getAdjacentCountR1(int x, int y) {
-		return (int) Arrays.stream(level.tileStore.getOctAdjacentTiles(x, y))
+	private int getAdjacentCountR1(Point p) {
+		return (int) Arrays.stream(tileStore.getOctAdjacentTiles(p))
 			.filter(Objects::nonNull)
-			.filter(t -> t.getType().getSolidity() == TileType.Solidity.SOLID)
+			.filter(t -> t.getType().getSolidity() == Solidity.SOLID)
 			.count();
 	}
-
-	private int getAdjacentCountR1(Point p) {
-		return getAdjacentCountR1(p.getX(), p.getY());
-	}
 	
-	private int getAdjacentCountR2(int x, int y) {
+	private int getAdjacentCountR2(Point p) {
 		int c = 0;
 		
-		for (int j = y - 2; j <= y + 2; j++) {
-			for (int i = x - 2; i <= x + 2; i++) {
-				if (Math.abs(j - y) == 2 && Math.abs(i - x) == 2) {
+		for (int j = p.y - 2; j <= p.y + 2; j++) {
+			for (int i = p.x - 2; i <= p.x + 2; i++) {
+				if (Math.abs(j - p.y) == 2 && Math.abs(i - p.x) == 2) {
 					continue;
 				}
 				
-				TileType t = level.tileStore.getTileType(i, j);
+				TileType t = tileStore.getTileType(Point.get(i, j));
 				
-				if (t == null) {
-					continue;
-				}
-				
-				if (t.getSolidity() == TileType.Solidity.SOLID) {
+				if (t != null && t.getSolidity() == Solidity.SOLID) {
 					c++;
 				}
 			}
@@ -265,25 +246,17 @@ public class GeneratorCave extends DungeonGenerator {
 		
 		return c;
 	}
-
-	private int getAdjacentCountR2(Point p) {
-		return getAdjacentCountR2(p.getX(), p.getY());
-	}
 	
-	private boolean isTileInBounds(Tile t) {
-		return t.getX() > 0 &&
-			   t.getY() > 0 &&
-			   t.getX() < level.getWidth() - 1 &&
-			   t.getY() < level.getHeight() - 1;
+	private boolean notByEdge(Tile t) {
+		Point p = t.position;
+		return p.x > 0 && p.y > 0 && p.x < levelWidth - 1 && p.y < levelHeight - 1;
 	}
 	
 	public boolean verify() {
 		Path path = pathfinder.findPath(
 			level,
-			spawnTile.getX(),
-			spawnTile.getY(),
-			exitTile.getX(),
-			exitTile.getY(),
+			spawnTile.position,
+			exitTile.position,
 			Integer.MAX_VALUE,
 			true,
 			new ArrayList<>()

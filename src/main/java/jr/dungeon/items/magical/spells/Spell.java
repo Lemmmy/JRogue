@@ -12,6 +12,7 @@ import jr.dungeon.items.magical.MagicalSchool;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.serialisation.Serialisable;
 import jr.language.Noun;
+import jr.utils.VectorInt;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,7 +37,7 @@ public abstract class Spell implements Serialisable {
 	
 	public abstract void castNonDirectional(EntityLiving caster);
 	
-	public abstract void castDirectional(EntityLiving caster, int dx, int dy);
+	public abstract void castDirectional(EntityLiving caster, VectorInt direction);
 	
 	public void update() {
 		if (known) {

@@ -43,35 +43,21 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	@Expose private UUID uuid;
 	
 	/**
-	 * The X position of this Entity in the {@link Level}.
+	 * The position of this Entity in the {@link Level}.
 	 */
-	@Setter @Expose private int x;
-	/**
-	 * The Y position of this Entity in the {@link Level}.
-	 */
-	@Setter @Expose private int y;
+	@Expose private Point position;
 	
 	/**
-	 * The last X position of this Entity in the {@link Level}. This is not necessarily the position last turn, but the
+	 * The last position of this Entity in the {@link Level}. This is not necessarily the position last turn, but the
 	 * position before it was last assigned.
 	 */
-	@Setter @Expose private int lastX;
-	/**
-	 * The last Y position of this Entity in the {@link Level}. This is not necessarily the position last turn, but the
-	 * position before it was last assigned.
-	 */
-	@Setter @Expose private int lastY;
+	@Setter @Expose private Point lastPosition;
 	
 	/**
-	 * The last X position of this Entity in the {@link Level} that was seen by the
+	 * The last position of this Entity in the {@link Level} that was seen by the
 	 * {@link jr.dungeon.entities.player.Player}.
 	 */
-	@Setter @Expose private int lastSeenX;
-	/**
-	 * The last Y position of this Entity in the {@link Level} that was seen by the
-	 * {@link jr.dungeon.entities.player.Player}.
-	 */
-	@Setter @Expose private int lastSeenY;
+	@Setter @Expose private Point lastSeenPosition;
 	
 	/**
 	 * A random non-unique number between 0 and 1000 used for randomisation inside the renderer. You can use this number
@@ -109,26 +95,21 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 * Base Entity class. An entity is a unique game object that exists inside a {@link Level}. All entities have a
 	 * position and a UUID, as well as a few other intrinsic properties. Additionally, all entities are a
 	 * {@link EventListener}, and can listen to dungeon events with {@link EventHandler} methods.
-	 *
-	 * @param dungeon The {@link Dungeon} that this Entity is a part of.
+	 *  @param dungeon The {@link Dungeon} that this Entity is a part of.
 	 * @param level The {@link Level} that this Entity is inside.
-	 * @param x The starting X position of the Entity inside the {@link Level}.
-	 * @param y The starting Y position of the Entity inside the {@link Level}.
+	 * @param position The starting position of the Entity inside the {@link Level}.
 	 */
-	public Entity(Dungeon dungeon, Level level, int x, int y) {
+	public Entity(Dungeon dungeon, Level level, Point position) {
 		this.uuid = UUID.randomUUID();
 		
 		this.dungeon = dungeon;
 		this.level = level;
 		
-		this.x = x;
-		this.y = y;
-		this.lastX = x;
-		this.lastY = y;
-		this.lastSeenX = x;
-		this.lastSeenY = y;
+		this.position = position;
+		lastPosition = position;
+		lastSeenPosition = position;
 		
-		this.visualID = RandomUtils.random(1000);
+		visualID = RandomUtils.random(1000);
 	}
 	
 	protected Entity() {} // deserialisation constructor
@@ -160,17 +141,16 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	public abstract EntityAppearance getAppearance();
 	
 	/**
-	 * @return The Entity's X and Y coordinates in the {@link Level} as a {@link Point}.
+	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates, and triggers
+	 * an {@link EntityMovedEvent},
+	 *
+	 * @param point The entity's new position.
 	 */
-	public Point getPosition() {
-		return Point.getPoint(x, y);
-	}
-
-	/**
-	 * @return The Entity's X and Y coordinates in the {@link Level} as a {@link VectorInt}.
-	 */
-	public VectorInt getPositionVector() {
-		return new VectorInt(x, y);
+	public void setPosition(@NonNull Point point) {
+		lastPosition = position;
+		position = point;
+		
+		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, lastPosition, position));
 	}
 
 	/**
@@ -181,12 +161,20 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 * @param y The Entity's new Y position.
 	 */
 	public void setPosition(int x, int y) {
-		setLastX(getX());
-		setLastY(getY());
-		setX(x);
-		setY(y);
+		setPosition(Point.get(x, y));
+	}
+	
+	/**
+	 * Sets the Entity's position in the {@link Level}, resets the last position, and triggers an
+	 * {@link EntityMovedEvent}.
+	 *
+	 * @param point The entity's new position.
+	 */
+	public void setPositionFresh(@NonNull Point point) {
+		lastPosition = point;
+		position = point;
 		
-		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, getLastX(), getLastY(), x, y));
+		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, lastPosition, position));
 	}
 	
 	/**
@@ -197,47 +185,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 * @param y The Entity's new Y position.
 	 */
 	public void setPositionFresh(int x, int y) {
-		setLastX(x);
-		setLastY(y);
-		setX(x);
-		setY(y);
-		
-		dungeon.eventSystem.triggerEvent(new EntityMovedEvent(this, x, y, x, y));
-	}
-	
-	/**
-	 * Sets the Entity's position in the {@link Level}, updates the Entity's lastX and lastY coordinates, and triggers
-	 * an {@link EntityMovedEvent},
-	 *
-	 * @param point The entity's new position.
-	 */
-	public void setPosition(@NonNull Point point) {
-		setPosition(point.getX(), point.getY());
-	}
-	
-	/**
-	 * Sets the Entity's position in the {@link Level}, resets the last position, and triggers an
-	 * {@link EntityMovedEvent}.
-	 *
-	 * @param point The entity's new position.
-	 */
-	public void setPositionFresh(@NonNull Point point) {
-		setPositionFresh(point.getX(), point.getY());
-	}
-	
-	/**
-	 * @return The Entity's last X and Y coordinates in the {@link Level} as a {@link Point}.
-	 */
-	public Point getLastPosition() {
-		return Point.getPoint(lastX, lastY);
-	}
-	
-	/**
-	 * @return The position the {@link jr.dungeon.entities.player.Player} last saw this Entity in the {@link Level} as
-	 * a {@link Point}.
-	 */
-	public Point getLastSeenPosition() {
-		return Point.getPoint(lastSeenX, lastSeenY);
+		setPositionFresh(Point.get(x, y));
 	}
 	
 	/**
@@ -299,11 +247,10 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	 * Kicks this entity. Will trigger an {@link jr.dungeon.entities.events.EntityKickedEntityEvent}.
 	 *
 	 * @param kicker The entity that is kicking this entity.
-	 * @param dx The x direction to kick in.
-	 * @param dy The y direction to kick in.
+	 * @param direction The direction to kick in.
 	 */
-	public void kick(EntityLiving kicker, int dx, int dy) {
-		getDungeon().eventSystem.triggerEvent(new EntityKickedEntityEvent(this, kicker, dx, dy));
+	public void kick(EntityLiving kicker, VectorInt direction) {
+		getDungeon().eventSystem.triggerEvent(new EntityKickedEntityEvent(this, kicker, direction));
 	}
 
 	/**
@@ -352,13 +299,13 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 	}
 	
 	public void setLevel(Level level, Point newPosition) {
-		Tile oldTile = newPosition != null ? this.level.tileStore.getTile(getPosition()) : null;
+		Tile oldTile = newPosition != null ? this.level.tileStore.getTile(position) : null;
 		
 		this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
 		this.level.entityStore.processEntityQueues(false);
 		
 		setLevelInternal(level);
-		if (newPosition != null) setPositionFresh(newPosition);
+		setPositionFresh(newPosition);
 		
 		level.entityStore.addEntity(this);
 		level.entityStore.processEntityQueues(false);
@@ -405,10 +352,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
 			name = getName(player).build(Capitalise.first);
 		}
 		
-		return String.format(
-			"[P_GREY_3]%s[] %,d, %,d",
-			name, x, y
-		);
+		return String.format("[P_GREY_3]%s[] %s", name, position);
 	}
 	
 	@Override

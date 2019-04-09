@@ -5,14 +5,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.Settings;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.TileStore;
 import jr.dungeon.VisibilityStore;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TilePooledEffect;
 import jr.rendering.tiles.TileRenderer;
+import jr.utils.Point;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,31 +48,28 @@ public class LevelComponent extends RendererComponent {
 	}
 	
 	private void drawLevel(boolean extra) {
-		TileStore tileStore = level.tileStore;
 		VisibilityStore visibilityStore = level.visibilityStore;
 		
 		int width = level.getWidth();
 		int height = level.getHeight();
 		
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				if (!TileRenderer.shouldDrawTile(camera, x, y)) {
-					continue;
-				}
-				
-				if (!settings.isShowLevelDebug() && !visibilityStore.isTileDiscovered(x, y)) {
-					TileMap.TILE_GROUND.getRenderer().draw(mainBatch, dungeon, x, y);
-					continue;
-				}
-				
-				TileMap tm = TileMap.valueOf(tileStore.getTileType(x, y).name());
-				if (tm.getRenderer() == null) continue;
-				
-				if (extra) {
-					tm.getRenderer().drawExtra(mainBatch, dungeon, x, y);
-				} else {
-					tm.getRenderer().draw(mainBatch, dungeon, x, y);
-				}
+		for (Tile tile : level.tileStore.getTiles()) {
+			final Point pos = tile.position;
+			
+			if (!TileRenderer.shouldDrawTile(camera, pos)) continue;
+			
+			if (!settings.isShowLevelDebug() && !visibilityStore.isTileDiscovered(pos)) {
+				TileMap.TILE_GROUND.getRenderer().draw(mainBatch, tile, pos);
+				continue;
+			}
+			
+			TileMap tm = TileMap.valueOf(tile.getType().name());
+			if (tm.getRenderer() == null) continue;
+			
+			if (extra) {
+				tm.getRenderer().drawExtra(mainBatch, tile, pos);
+			} else {
+				tm.getRenderer().draw(mainBatch, tile, pos);
 			}
 		}
 	}
@@ -82,7 +80,7 @@ public class LevelComponent extends RendererComponent {
 			
 			effect.getPooledEffect().update(dt * 0.25f);
 			
-			if (!level.visibilityStore.isTileDiscovered(effect.getX(), effect.getY())) {
+			if (!level.visibilityStore.isTileDiscovered(effect.getPosition())) {
 				continue;
 			}
 			
@@ -97,6 +95,7 @@ public class LevelComponent extends RendererComponent {
 	
 	@Override
 	public void update(float dt) {
+	
 	}
 	
 	@Override
@@ -123,32 +122,28 @@ public class LevelComponent extends RendererComponent {
 		tilePooledEffects.forEach(e -> e.getPooledEffect().free());
 		tilePooledEffects.clear();
 		
-		for (int y = 0; y < level.getHeight(); y++) {
-			for (int x = 0; x < level.getWidth(); x++) {
-				TileMap tm = TileMap.valueOf(level.tileStore.getTileType(x, y).name());
-				
-				if (tm.getRenderer() == null) {
-					continue;
-				}
-				
-				TileRenderer renderer = tm.getRenderer();
-				
-				if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(dungeon, x, y)) {
-					continue;
-				}
-				
-				ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
-				
-				renderer.applyParticleChanges(dungeon, x, y, effect);
-				
-				effect.setPosition(
-					x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(),
-					y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset()
-				);
-				
-				TilePooledEffect tilePooledEffect = new TilePooledEffect(x, y, effect);
-				tilePooledEffects.add(tilePooledEffect);
+		for (Tile tile : level.tileStore.getTiles()) {
+			final Point pos = tile.position;
+			
+			TileMap tm = TileMap.valueOf(level.tileStore.getTileType(pos).name());
+			if (tm.getRenderer() == null) continue;
+			
+			TileRenderer renderer = tm.getRenderer();
+			if (renderer.getParticleEffectPool() == null || !renderer.shouldDrawParticles(tile, pos)) {
+				continue;
 			}
+			
+			ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool().obtain();
+			
+			renderer.applyParticleChanges(tile, pos, effect);
+			
+			effect.setPosition(
+				pos.x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(),
+				pos.y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset()
+			);
+			
+			TilePooledEffect tilePooledEffect = new TilePooledEffect(pos, effect);
+			tilePooledEffects.add(tilePooledEffect);
 		}
 	}
 	

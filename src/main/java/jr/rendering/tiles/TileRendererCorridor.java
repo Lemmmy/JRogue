@@ -2,9 +2,10 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -37,13 +38,13 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return corridor;
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawBakedBlob(batch, dungeon, x, y, "corridor");
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawBakedBlob(batch, tile, p, "corridor");
 	}
 	
 	@Override
@@ -52,7 +53,7 @@ public class TileRendererCorridor extends TileRendererBlob8 {
 	}
 	
 	@Override
-	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, corridor, x, y);
+	public void drawBasic(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, corridor, p);
 	}
 }

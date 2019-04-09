@@ -10,10 +10,12 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
+import jr.utils.VectorInt;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +23,7 @@ import java.util.Optional;
 
 @Registered(id="projectile")
 public abstract class EntityProjectile extends EntityTurnBased {
-	@Expose private int dx = 0, dy = 0;
+	@Expose @Getter private VectorInt direction;
 	@Expose @Getter private int range = Integer.MAX_VALUE;
 	@Expose @Getter private int distanceTravelled = 0;
 	
@@ -29,28 +31,16 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	@Getter @Setter private ItemProjectile originalItem;
 	
-	public EntityProjectile(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityProjectile(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		setMovementPoints(getMovementSpeed());
 	}
 	
 	protected EntityProjectile() { super(); }
 	
-	public int getDeltaX() {
-		return dx;
-	}
-	
-	public int getDeltaY() {
-		return dy;
-	}
-	
-	public void setTravelDirection(int dx, int dy) {
-		dx = Math.max(-1, Math.min(1, dx));
-		dy = Math.max(-1, Math.min(1, dy));
-		
-		this.dx = dx;
-		this.dy = dy;
+	public void setDirection(VectorInt direction) {
+		this.direction = direction;
 	}
 	
 	public void setTravelRange(int range) {
@@ -64,22 +54,21 @@ public abstract class EntityProjectile extends EntityTurnBased {
 	
 	@Override
 	public void move() {
-		int x = getX() + dx;
-		int y = getY() + dy;
+		Point newPosition = getPosition().add(direction);
 		
-		if (getLevel().tileStore.getTile(x, y).getType().getSolidity() != TileType.Solidity.SOLID) {
-			setPosition(x, y);
+		if (getLevel().tileStore.getTile(newPosition).getType().getSolidity() != Solidity.SOLID) {
+			setPosition(newPosition);
 			distanceTravelled++;
 			
-			getLevel().entityStore.getEntitiesAt(x, y).stream()
-				.filter(e -> !(e == this))
+			getLevel().entityStore.getEntitiesAt(newPosition)
+				.filter(e -> e != this)
 				.forEach(this::onHitEntity);
 			
 			if (distanceTravelled > range) {
 				killProjectile();
 			}
 		} else {
-			onHitTile(getLevel().tileStore.getTile(x, y));
+			onHitTile(getLevel().tileStore.getTile(newPosition));
 			killProjectile();
 		}
 	}
@@ -109,9 +98,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			return;
 		}
 		
-		Optional<EntityItem> existingItem = getLevel().entityStore.getEntitiesAt(getX(), getY()).stream()
-			.filter(EntityItem.class::isInstance)
-			.map(e -> (EntityItem) e)
+		Optional<EntityItem> existingItem = getLevel().entityStore.getItemsAt(getPosition())
 			.filter(e -> e.getItem().equals(originalItem))
 			.findFirst();
 		
@@ -121,8 +108,7 @@ public abstract class EntityProjectile extends EntityTurnBased {
 			EntityItem droppedItem = new EntityItem(
 				getDungeon(),
 				getLevel(),
-				getX(),
-				getY(),
+				getPosition(),
 				new ItemStack(originalItem, 1)
 			);
 			

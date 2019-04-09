@@ -3,6 +3,7 @@ package jr.dungeon;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jr.dungeon.entities.player.Player;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
 import jr.utils.Point;
 import jr.utils.SerialisationUtils;
@@ -10,6 +11,8 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Base64;
+
+import static jr.utils.QuickMaths.ifloor;
 
 public class VisibilityStore implements LevelStore {
 	@Getter private boolean[] discoveredTiles;
@@ -57,63 +60,34 @@ public class VisibilityStore implements LevelStore {
 		);
 	}
 	
-	public void markTile(boolean[] arr, int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) return;
-		arr[y * width + x] = true;
+	public void markTile(boolean[] arr, Point point) {
+		if (!point.insideLevel(level)) return;
+		arr[point.getIndex(level)] = true;
 	}
 	
-	public boolean isTileDiscovered(int x, int y) {
-		return x >= 0 && y >= 0 && x < width && y < height && discoveredTiles[y * width + x];
+	public boolean isTileDiscovered(Point point) {
+		return point.insideLevel(level) && discoveredTiles[point.getIndex(level)];
 	}
 
-	public boolean isTileDiscovered(Point p) {
-		return isTileDiscovered(p.getX(), p.getY());
+	public void discoverTile(Point point) {
+		markTile(discoveredTiles, point);
 	}
 
-	public void discoverTile(int x, int y) {
-		markTile(discoveredTiles, x, y);
-	}
-
-	public void discoverTile(Point p) {
-		discoverTile(p.getX(), p.getY());
-	}
-
-	public boolean isTileVisible(int x, int y) {
-		return !isTileInvisible(x, y);
+	public boolean isTileVisible(Point point) {
+		return !isTileInvisible(point);
 	}
 	
-	public boolean isTileVisible(Point p) {
-		return isTileVisible(p.getX(), p.getY());
+	public boolean isTileInvisible(Point point) {
+		return !point.insideLevel(level) || !visibleTiles[point.getIndex(level)];
 	}
 	
-	public boolean isTileInvisible(int x, int y) {
-		return x < 0 || y < 0 || x >= width || y >= height || !visibleTiles[y * width + x];
-	}
-	
-	public boolean isTileInvisible(Point p) {
-		return isTileInvisible(p.getX(), p.getY());
-	}
-	
-	public void seeTile(int x, int y) {
-		markTile(visibleTiles, x, y);
-		
-		level.entityStore.getEntities().stream()
-			.filter(e -> e.getX() == x && e.getY() == y)
-			.forEach(e -> {
-				e.setLastSeenX(x);
-				e.setLastSeenY(y);
-			});
-	}
-
-	public void seeTile(Point p) {
-		seeTile(p.getX(), p.getY());
+	public void seeTile(Point point) {
+		markTile(visibleTiles, point);
+		level.entityStore.getEntitiesAt(point).forEach(e -> e.setLastSeenPosition(point));
 	}
 	
 	public void updateSight(Player player) {
 		Arrays.fill(visibleTiles, false);
-		
-		float x = player.getX() + 0.5f;
-		float y = player.getY() + 0.5f;
 		
 		for (int r = 0; r < 360; r++) {
 			int corridorVisibility = 0;
@@ -121,9 +95,13 @@ public class VisibilityStore implements LevelStore {
 			
 			for (int i = 0; i < player.getVisibilityRange(); i++) {
 				double a = Math.toRadians(r);
-				int dx = (int) Math.floor(x + i * Math.cos(a));
-				int dy = (int) Math.floor(y + i * Math.sin(a));
-				TileType type = level.tileStore.getTileType(dx, dy);
+				
+				Point pos = Point.get(
+					ifloor(player.getPosition().x + i * Math.cos(a)),
+					ifloor(player.getPosition().y + i * Math.sin(a))
+				);
+				
+				TileType type = level.tileStore.getTileType(pos);
 				
 				if (type == TileType.TILE_CORRIDOR) {
 					corridorVisibility += 1;
@@ -133,19 +111,19 @@ public class VisibilityStore implements LevelStore {
 					break;
 				}
 				
-				discoverTile(dx, dy);
-				seeTile(dx, dy);
+				discoverTile(pos);
+				seeTile(pos);
 				
 				if (
-					dx < 0 || dy < 0 || dx >= width || dy >= height ||
-					type.getSolidity() == TileType.Solidity.SOLID ||
-					!(dx == player.getX() && dy == player.getY()) && type.isSemiTransparent() ||
+					!pos.insideLevel(level) ||
+					type.getSolidity() == Solidity.SOLID ||
+					!pos.equals(player.getPosition()) && type.isSemiTransparent() ||
 					breakNext
 				) {
 					break;
 				}
 				
-				if (dx == player.getX() && dy == player.getY() && type.isSemiTransparent()) {
+				if (pos.equals(player.getPosition()) && type.isSemiTransparent()) {
 					breakNext = true;
 				}
 			}

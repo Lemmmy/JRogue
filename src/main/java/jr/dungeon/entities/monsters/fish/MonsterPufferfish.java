@@ -13,14 +13,15 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Registered(id="monsterPufferfish")
 public class MonsterPufferfish extends Monster {
-	public MonsterPufferfish(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y, 1);
+	public MonsterPufferfish(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position, 1);
 		
 		setAI(new FishAI(this));
 	}

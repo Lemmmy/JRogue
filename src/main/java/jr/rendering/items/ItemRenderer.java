@@ -9,7 +9,6 @@ import jr.dungeon.items.ItemStack;
 import jr.rendering.assets.UsesAssets;
 
 public abstract class ItemRenderer implements UsesAssets {
-	
 	public abstract TextureRegion getTextureRegion(Dungeon dungeon, ItemStack itemStack, Item item, boolean reflect);
 	
 	public abstract void draw(SpriteBatch batch, Dungeon dungeon, ItemStack itemStack, Item item, int x, int y, boolean reflect);

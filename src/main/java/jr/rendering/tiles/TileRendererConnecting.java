@@ -2,9 +2,10 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,12 +56,12 @@ public class TileRendererConnecting extends TileRendererBlob8 {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return fg;
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawBakedBlob(batch, dungeon, x, y, atlasName);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawBakedBlob(batch, tile, p, atlasName);
 	}
 }

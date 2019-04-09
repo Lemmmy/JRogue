@@ -8,13 +8,14 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.entities.events.EntityDamagedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.events.EventHandler;
+import jr.utils.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MonsterZombie extends Monster {
-	public MonsterZombie(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterZombie(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected MonsterZombie() { super(); }

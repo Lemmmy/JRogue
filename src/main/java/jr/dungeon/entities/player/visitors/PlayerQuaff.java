@@ -18,7 +18,8 @@ public class PlayerQuaff extends PlayerItemVisitor {
 	public void visit(Player player) {
 		AtomicBoolean cancelled = new AtomicBoolean(false);
 		
-		player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
+		// TODO: allow quaffing items straight off the floor?
+		player.getLevel().entityStore.getEntitiesAt(player.getPosition())
 			.filter(Quaffable.class::isInstance)
 			.map(e -> (Quaffable) e)
 			.filter(q -> q.canQuaff(player))

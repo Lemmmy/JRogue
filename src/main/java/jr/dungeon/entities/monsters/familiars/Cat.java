@@ -11,12 +11,13 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="familiarCat")
 public class Cat extends Familiar {
-	public Cat(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public Cat(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		FamiliarAI ai = new FamiliarAI(this);
 		setAI(ai);

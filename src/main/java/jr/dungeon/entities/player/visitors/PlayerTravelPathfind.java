@@ -4,8 +4,8 @@ import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionMove;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.PathShowEvent;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
 import jr.utils.Path;
 import jr.utils.Point;
 import lombok.AllArgsConstructor;
@@ -16,23 +16,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @AllArgsConstructor
 public class PlayerTravelPathfind implements PlayerVisitor {
-	private int tx, ty;
+	private Point position;
 	
 	@Override
 	public void visit(Player player) {
-		Tile destTile = player.getLevel().tileStore.getTile(tx, ty);
+		Tile destTile = player.getLevel().tileStore.getTile(position);
 		
-		if (destTile == null || !player.getLevel().visibilityStore.isTileDiscovered(tx, ty)) {
+		if (destTile == null || !player.getLevel().visibilityStore.isTileDiscovered(position)) {
 			player.getDungeon().You("can't travel there.");
 			return;
 		}
 		
 		Path path = player.getPathfinder().findPath(
 			player.getLevel(),
-			player.getX(),
-			player.getY(),
-			tx,
-			ty,
+			player.getPosition(),
+			position,
 			50,
 			true,
 			new ArrayList<>()
@@ -52,9 +50,9 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			i.incrementAndGet();
 			
 			if (stop.get()) { return; }
-			if (player.getPosition().equals(step.getPosition())) { return; }
+			if (player.getPosition().equals(step.position)) { return; }
 			
-			if (step.getType().getSolidity() == TileType.Solidity.SOLID) {
+			if (step.getType().getSolidity() == Solidity.SOLID) {
 				stop.set(true);
 				return;
 			}
@@ -62,7 +60,7 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 			Point oldPos = player.getPosition();
 			
 			pathTaken.addStep(step);
-			player.setAction(new ActionMove(step.getX(), step.getY(), new Action.NoCallback()));
+			player.setAction(new ActionMove(step.position, new Action.NoCallback()));
 			player.getDungeon().turnSystem.turn();
 			
 			if (oldPos.equals(player.getPosition())) {
@@ -70,8 +68,7 @@ public class PlayerTravelPathfind implements PlayerVisitor {
 				return;
 			}
 			
-			if (i.get() > 2 && player.getLevel().entityStore
-				.getAdjacentMonsters(player.getX(), player.getY()).size() > 0) {
+			if (i.get() > 2 && player.getLevel().entityStore.getAdjacentMonsters(player.getPosition()).findAny().isPresent()) {
 				stop.set(true);
 			}
 		});

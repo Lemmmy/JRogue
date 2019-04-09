@@ -21,11 +21,14 @@ import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.Article;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
+import static jr.utils.QuickMaths.iceil;
+
 public abstract class MonsterCanine extends Monster {
-	public MonsterCanine(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y, 1);
+	public MonsterCanine(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position, 1);
 		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);
@@ -92,7 +95,7 @@ public abstract class MonsterCanine extends Monster {
 		if (e.isKickerPlayer()) {
 			Player player = (Player) kicker;
 			int strength = player.getAttributes().getAttribute(Attribute.STRENGTH);
-			damageChance = (int) Math.ceil(strength / 6) + 1;
+			damageChance = iceil(strength / 6) + 1;
 		}
 		
 		if (RandomUtils.roll(1, damageChance) == 1) {

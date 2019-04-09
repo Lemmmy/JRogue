@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
+import jr.utils.Point;
 
 public class LevelComponent extends RendererComponent {
 	public LevelComponent(Dungeon dungeon) {
@@ -26,21 +28,17 @@ public class LevelComponent extends RendererComponent {
 		int width = level.getWidth();
 		int height = level.getHeight();
 		
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				TileMap tm = TileMap.valueOf(tileStore.getTileType(x, y).name());
-				TileRenderer tr = tm.getRenderer();
-				if (tr == null) continue;
-				
-				if (tr.canDrawBasic()) {
-					tr.drawBasic(batch, dungeon, x, y);
-				} else {
-					if (extra) {
-						tr.drawExtra(batch, dungeon, x, y);
-					} else {
-						tr.draw(batch, dungeon, x, y);
-					}
-				}
+		for (Tile tile : tileStore.getTiles()) {
+			final Point position = tile.position;
+			final TileRenderer tr = TileMap.valueOf(tile.getType().name()).getRenderer();
+			if (tr == null) continue;
+			
+			if (tr.canDrawBasic()) {
+				tr.drawBasic(batch, tile, position);
+			} else if (extra) {
+				tr.drawExtra(batch, tile, position);
+			} else {
+				tr.draw(batch, tile, position);
 			}
 		}
 	}

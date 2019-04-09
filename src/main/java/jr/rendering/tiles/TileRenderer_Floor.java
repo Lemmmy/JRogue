@@ -2,9 +2,10 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,13 +42,13 @@ public class TileRenderer_Floor extends TileRendererBlob8 {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return floor;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion blobImage = getImageFromMask(getPositionMask(tile, p));
 		
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
@@ -57,8 +58,8 @@ public class TileRenderer_Floor extends TileRendererBlob8 {
 		
 		batch.draw(
 			floor.getTexture(),
-			x * width,
-			y * height,
+			p.x * width,
+			p.y * height,
 			width,
 			height,
 			floor.getRegionX() + offset,
@@ -69,8 +70,8 @@ public class TileRenderer_Floor extends TileRendererBlob8 {
 			false
 		);
 		
-		TileRendererReflective.drawReflection(batch, renderer, dungeon, x, y, reflectionSettings);
-		drawTile(batch, blobImage, x, y);
+		TileRendererReflective.drawReflection(batch, renderer, tile, p, reflectionSettings);
+		drawTile(batch, blobImage, p);
 	}
 	
 	@Override

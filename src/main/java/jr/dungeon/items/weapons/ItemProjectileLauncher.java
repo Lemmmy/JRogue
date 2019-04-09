@@ -1,15 +1,15 @@
 package jr.dungeon.items.weapons;
 
-import jr.JRogue;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.dungeon.entities.skills.Skill;
 import jr.dungeon.items.projectiles.ItemProjectile;
+import jr.utils.VectorInt;
 
 import java.util.List;
-import java.util.Optional;
 
 public abstract class ItemProjectileLauncher extends ItemWeapon {
 	@Override
@@ -18,25 +18,24 @@ public abstract class ItemProjectileLauncher extends ItemWeapon {
 	}
 	
 	@Override
-	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {
+	public void zap(EntityLiving attacker, EntityLiving victim, VectorInt direction) {
 		
 	}
 	
 	@Override
-	public boolean fire(EntityLiving attacker, ItemProjectile projectileItem, int dx, int dy) {
-		Optional<? extends EntityProjectile> projectileOpt = projectileItem.createProjectile(attacker, 0, 0);
+	public boolean fire(EntityLiving attacker, ItemProjectile projectileItem, VectorInt direction) {
+		EntityProjectile projectile = QuickSpawn.spawnClass(
+			projectileItem.getProjectileEntity(),
+			attacker.getLevel(),
+			attacker.getPosition().add(direction)
+		);
 		
-		if (!projectileOpt.isPresent()) {
-			JRogue.getLogger().error("Failed to fire projectile!");
-			return false;
-		}
-		
-		EntityProjectile projectile = projectileOpt.get();
 		projectile.setSource(attacker);
 		projectile.setTravelRange(getTravelRange(attacker, projectileItem));
-		projectile.setTravelDirection(dx, dy);
+		projectile.setDirection(direction);
 		projectile.setOriginalItem(projectileItem);
 		projectile.update();
+		
 		attacker.getLevel().entityStore.addEntity(projectile);
 		
 		return true;

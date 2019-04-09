@@ -1,19 +1,17 @@
 package jr.rendering.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.BlobUtils;
 import jr.rendering.utils.ImageUtils;
+import jr.utils.Point;
 
 import java.util.Arrays;
 
@@ -110,8 +108,8 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 		}
 	}
 	
-	protected int getPositionMask(Level level, int x, int y) {
-		return BlobUtils.getPositionMask8(this::isJoinedTile, level, x, y);
+	protected int getPositionMask(Tile tile, Point p) {
+		return BlobUtils.getPositionMask8(tile, p, this::isJoinedTile);
 	}
 	
 	abstract boolean isJoinedTile(TileType tile);
@@ -127,26 +125,9 @@ public abstract class TileRendererBlob8 extends TileRenderer {
 	protected TextureRegion getBakedImageFromMask(String name, int mask) {
 		return atlas.findRegion(getBlobAtlasName(name, MAP[mask]));
 	}
-
-	@Deprecated
-	public void drawGenericBlob(SpriteBatch batch, Dungeon dungeon, int x, int y, TextureRegion fg, TextureRegion bg) {
-		TextureRegion blobImage = getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
-
-		drawTile(batch, fg, x, y);
-		
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ZERO);
-		Gdx.gl.glColorMask(false, false, false, true);
-		drawTile(batch, blobImage, x, y);
-		
-		batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
-		Gdx.gl.glColorMask(true, true, true, true);
-		drawTile(batch, bg, x, y);
-
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-	}
 	
-	public void drawBakedBlob(SpriteBatch batch, Dungeon dungeon, int x, int y, String name) {
-		TextureRegion blobImage = getBakedImageFromMask(name, getPositionMask(dungeon.getLevel(), x, y));
-		drawTile(batch, blobImage, x, y);
+	public void drawBakedBlob(SpriteBatch batch, Tile tile, Point p, String name) {
+		TextureRegion blobImage = getBakedImageFromMask(name, getPositionMask(tile, p));
+		drawTile(batch, blobImage, p);
 	}
 }

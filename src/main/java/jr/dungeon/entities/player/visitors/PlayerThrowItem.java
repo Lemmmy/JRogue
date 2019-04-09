@@ -7,7 +7,7 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.projectiles.ItemProjectile;
 import jr.dungeon.items.weapons.ItemProjectileLauncher;
-import jr.utils.Utils;
+import jr.utils.Directions;
 import jr.utils.VectorInt;
 
 public class PlayerThrowItem extends PlayerItemVisitor {
@@ -24,7 +24,7 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 			player.getDungeon().prompt(new Prompt(msg2, null, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
 				@Override
 				public void onResponse(char response) {
-					if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+					if (!Directions.MOVEMENT_CHARS.containsKey(response)) {
 						player.getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
 						return;
 					}
@@ -52,17 +52,15 @@ public class PlayerThrowItem extends PlayerItemVisitor {
 						   ItemStack stack,
 						   Container inv,
 						   Container.ContainerEntry ce) {
-		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
-		int dx = d.getX();
-		int dy = d.getY();
+		VectorInt direction = Directions.MOVEMENT_CHARS.get(response);
 		
 		if (
 			item instanceof ItemProjectile &&
-				player.getRightHand() != null &&
-				player.getRightHand().getItem() instanceof ItemProjectileLauncher
-			) {
+			player.getRightHand() != null &&
+			player.getRightHand().getItem() instanceof ItemProjectileLauncher
+		) {
 			ItemProjectileLauncher launcher = (ItemProjectileLauncher) player.getRightHand().getItem();
-			boolean fired = launcher.fire(player, (ItemProjectile) item, dx, dy);
+			boolean fired = launcher.fire(player, (ItemProjectile) item, direction);
 			
 			if (fired) {
 				if (stack.getCount() <= 1) {

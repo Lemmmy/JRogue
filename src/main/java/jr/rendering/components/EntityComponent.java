@@ -19,6 +19,7 @@ import jr.rendering.entities.animations.AnimationProvider;
 import jr.rendering.entities.animations.EntityAnimationData;
 import jr.rendering.screens.GameScreen;
 import jr.rendering.tiles.TileMap;
+import jr.utils.Point;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -58,14 +59,11 @@ public class EntityComponent extends RendererComponent {
 	
 	private void drawEntityParticles(float dt, boolean over) {
 		for (Iterator<EntityPooledEffect> iterator = entityPooledEffects.iterator(); iterator.hasNext(); ) {
-			EntityPooledEffect effect = iterator.next();
+			final EntityPooledEffect effect = iterator.next();
+			final Entity entity = effect.getEntity();
+			final Point p = entity.getPosition();
 			
-			boolean shouldDrawParticles = effect.getRenderer().shouldDrawParticles(
-				dungeon,
-				effect.getEntity(),
-				effect.getEntity().getX(),
-				effect.getEntity().getY()
-			);
+			boolean shouldDrawParticles = effect.getRenderer().shouldDrawParticles(entity, p);
 			
 			if (!shouldDrawParticles) {
 				effect.getPooledEffect().free();
@@ -74,16 +72,11 @@ public class EntityComponent extends RendererComponent {
 			
 			if (effect.shouldDrawOver() != over) continue;
 			
-			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(
-				dungeon,
-				effect.getEntity(),
-				effect.getEntity().getX(),
-				effect.getEntity().getY()
-			);
+			float deltaMultiplier = effect.getRenderer().getParticleDeltaMultiplier(entity, p);
 			
 			effect.getPooledEffect().update(dt * deltaMultiplier);
 			
-			if (!settings.isShowLevelDebug() && level.visibilityStore.isTileInvisible(effect.getEntity().getX(), effect.getEntity().getY())) {
+			if (!settings.isShowLevelDebug() && level.visibilityStore.isTileInvisible(p)) {
 				continue;
 			}
 			
@@ -98,16 +91,13 @@ public class EntityComponent extends RendererComponent {
 	
 	private void drawEntities() {
 		level.entityStore.getEntities().stream()
+			.filter(e -> e.isStatic() || !e.getLevel().visibilityStore.isTileInvisible(e.getPosition()))
 			.sorted(Comparator.comparingInt(Entity::getDepth))
 			.forEach(e -> {
-				if (!e.isStatic() && level.visibilityStore.isTileInvisible(e.getX(), e.getY())) {
-					return;
-				}
-				
 				EntityMap em = EntityMap.valueOf(e.getAppearance().name());
 				
 				if (em.getRenderer() != null && em.getRenderer().shouldRenderReal(e)) {
-					em.getRenderer().draw(mainBatch, dungeon, e, animationProvider.getEntityAnimationData(e), true);
+					em.getRenderer().draw(mainBatch, e, animationProvider.getEntityAnimationData(e), true);
 				}
 			});
 	}
@@ -134,12 +124,13 @@ public class EntityComponent extends RendererComponent {
 	
 	@EventHandler
 	private void onEntityAdded(EntityAddedEvent e) {
-		Entity entity = e.getEntity();
+		final Entity entity = e.getEntity();
+		final Point p = entity.getPosition();
 		
-		EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+		final EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
 		if (em.getRenderer() == null)return;
 		
-		EntityRenderer renderer = em.getRenderer();
+		final EntityRenderer renderer = em.getRenderer();
 		if (renderer.getParticleEffectPool(entity) == null) return;
 		
 		AtomicBoolean found = new AtomicBoolean(false);
@@ -153,17 +144,16 @@ public class EntityComponent extends RendererComponent {
 		ParticleEffectPool.PooledEffect effect = renderer.getParticleEffectPool(entity).obtain();
 		
 		effect.setPosition(
-			entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
-			entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
+			p.x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity),
+			p.y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity)
 		);
 		
-		boolean over = renderer.shouldDrawParticlesOver(dungeon, entity, entity.getX(), entity.getY());
+		boolean over = renderer.shouldDrawParticlesOver(entity, p);
 		
 		EntityPooledEffect entityPooledEffect = new EntityPooledEffect(
 			entity,
 			renderer,
-			entity.getX(),
-			entity.getY(),
+			p,
 			over,
 			effect
 		);
@@ -179,17 +169,13 @@ public class EntityComponent extends RendererComponent {
 	private void entityParticleCheck(Entity entity) {
 		for (EntityPooledEffect e : entityPooledEffects) {
 			if (e.getEntity() == entity) {
-				EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+				final EntityMap em = EntityMap.valueOf(entity.getAppearance().name());
+				if (em.getRenderer() == null) return;
 				
-				if (em.getRenderer() == null) {
-					return;
-				}
+				final EntityRenderer renderer = em.getRenderer();
+				if (renderer.getParticleEffectPool(entity) == null) return;
 				
-				EntityRenderer renderer = em.getRenderer();
-				
-				if (renderer.getParticleEffectPool(entity) == null) {
-					return;
-				}
+				final Point p = entity.getPosition();
 				
 				EntityAnimationData anim = animationProvider.getEntityAnimationData(entity);
 				
@@ -197,8 +183,8 @@ public class EntityComponent extends RendererComponent {
 				float offsetY = anim != null ? anim.offsetY : 0;
 				
 				e.getPooledEffect().setPosition(
-					entity.getX() * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + offsetX,
-					entity.getY() * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity) + offsetY
+					p.x * TileMap.TILE_WIDTH + renderer.getParticleXOffset(entity) + offsetX,
+					p.y * TileMap.TILE_HEIGHT + renderer.getParticleYOffset(entity) + offsetY
 				);
 			}
 		}

@@ -10,60 +10,48 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.entities.player.events.PlayerWalkedIntoSolidEvent;
 import jr.dungeon.io.YesNoPrompt;
 import jr.dungeon.items.weapons.ItemWeaponMelee;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
+import jr.utils.VectorInt;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
 public class PlayerWalk implements PlayerVisitor {
-	private int dx, dy;
+	private VectorInt direction;
 	
 	@Override
 	public void visit(Player player) {
-		dx = Math.max(-1, Math.min(1, dx));
-		dy = Math.max(-1, Math.min(1, dy));
+		Point newPosition = player.getPosition().add(direction);
 		
-		int newX = player.getX() + dx;
-		int newY = player.getY() + dy;
-		
-		Tile tile = player.getLevel().tileStore.getTile(newX, newY);
-		
-		if (tile == null) {
-			return;
-		}
-		
-		List<Entity> destEntities = player.getLevel().entityStore.getEntitiesAt(newX, newY);
+		Tile tile = player.getLevel().tileStore.getTile(newPosition);
+		if (tile == null) return;
 		
 		boolean acted = true;
 		
-		if (destEntities.size() > 0) {
-			Optional<Entity> optionalEnt = destEntities.stream()
-				.filter(e -> e instanceof EntityLiving)
-				.findFirst();
+		Optional<Entity> optEntity = player.getLevel().entityStore.getEntitiesAt(newPosition)
+			.filter(e -> e instanceof EntityLiving)
+			.findFirst();
+		
+		// TODO: if multiple entities occupy this tile, popup a dialog asking which one to attack
+		
+		if (optEntity.isPresent()) {
+			Entity entity = optEntity.get();
 			
-			// TODO: if multiple entities occupy this tile, popup a dialog asking which one to attack
-			
-			if (optionalEnt.isPresent()) {
-				Entity ent = optionalEnt.get();
-				
-				if (ent instanceof Friendly && ((Friendly) ent).isFriendly()) {
-					if (ent instanceof Familiar) {
-						swapPlaces(player, (Familiar) ent, tile, newX, newY);
-					} else {
-						friendlyQuery(player, ent);
-						acted = false;
-					}
+			if (entity instanceof Friendly && ((Friendly) entity).isFriendly()) {
+				if (entity instanceof Familiar) {
+					swapPlaces(player, (Familiar) entity, tile, newPosition);
 				} else {
-					meleeAction(player, ent);
+					friendlyQuery(player, entity);
+					acted = false;
 				}
 			} else {
-				walkAction(player, tile, newX, newY);
+				meleeAction(player, entity);
 			}
 		} else {
-			walkAction(player, tile, newX, newY);
+			walkAction(player, tile, newPosition);
 		}
 		
 		if (acted) {
@@ -71,8 +59,8 @@ public class PlayerWalk implements PlayerVisitor {
 		}
 	}
 	
-	private void swapPlaces(Player player, EntityLiving ent, Tile tile, int newX, int newY) {
-		walkAction(player, tile, newX, newY);
+	private void swapPlaces(Player player, EntityLiving ent, Tile tile, Point newPosition) {
+		walkAction(player, tile, newPosition);
 		ent.setAction(new ActionMove(player.getLastPosition(), new Action.NoCallback()));
 		
 		player.getDungeon().You("swap places with [CYAN]%s[].", ent.getName(player));
@@ -101,12 +89,12 @@ public class PlayerWalk implements PlayerVisitor {
 		}
 	}
 	
-	private void walkAction(Player player, Tile tile, int x, int y) {
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
-			player.setAction(new ActionMove(x, y, new Action.NoCallback()));
+	private void walkAction(Player player, Tile tile, Point newPosition) {
+		if (tile.getType().getSolidity() != Solidity.SOLID) {
+			player.setAction(new ActionMove(newPosition, new Action.NoCallback()));
 		} else {
 			player.getDungeon().eventSystem
-				.triggerEvent(new PlayerWalkedIntoSolidEvent(player, tile, x, y, dx, dy));
+				.triggerEvent(new PlayerWalkedIntoSolidEvent(player, tile, newPosition, direction));
 		}
 	}
 }

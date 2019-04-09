@@ -6,6 +6,9 @@ import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.utils.OpenSimplexNoise;
+import jr.utils.Point;
+
+import static jr.dungeon.generators.BuildingUtils.buildArea;
 
 @Registered(id="generatorSewer")
 public class GeneratorSewer extends GeneratorRooms {
@@ -55,15 +58,15 @@ public class GeneratorSewer extends GeneratorRooms {
 	}
 	
 	private void addWaterBodies() {
-		for (int y = 0; y < level.getHeight(); y++) {
-			for (int x = 0; x < level.getWidth(); x++) {
-				double noise = simplexNoise.eval(x * SCALE_WATER_NOISE, y * SCALE_WATER_NOISE);
-				
-				if (noise > THRESHOLD_WATER_NOISE && level.tileStore.getTileType(x, y) == TileType.TILE_ROOM_FLOOR) {
-					level.tileStore.setTileType(x, y, TileType.TILE_SEWER_WATER);
-				}
+		buildArea(tileStore, Point.ZERO, levelWidth, levelHeight, (t, p) -> {
+			double noise = simplexNoise.eval(p.x * SCALE_WATER_NOISE, p.y * SCALE_WATER_NOISE);
+			
+			if (noise > THRESHOLD_WATER_NOISE && t.getType() == TileType.TILE_ROOM_FLOOR) {
+				return TileType.TILE_SEWER_WATER;
 			}
-		}
+			
+			return null;
+		});
 	}
 	
 	@Override

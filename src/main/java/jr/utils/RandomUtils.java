@@ -33,6 +33,15 @@ public class RandomUtils {
 		return rand.nextInt(i);
 	}
 	
+	/**
+	 * Quick utility method for generating a random number within a range. Uses the {@link #rand} instance
+	 * (<a href="http://www.pcg-random.org/">PCG32</a> algorithm).
+	 *
+	 * @param min The minimum bound for the random number (inclusive).
+	 * @param max The maximum bound for the random number (exclusive).
+	 *
+	 * @return A (hopefully) random number within the min/max bounds.
+	 */
 	public static int random(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}

@@ -18,6 +18,7 @@ import jr.rendering.entities.EntityRenderer;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
 import jr.rendering.ui.utils.FunctionalClickListener;
+import jr.utils.Point;
 
 public class LevelUtilPopup extends Table {
 	private FunctionalClickListener stageClickListener;
@@ -27,9 +28,9 @@ public class LevelUtilPopup extends Table {
 	private Skin skin;
 	
 	private Dungeon dungeon;
-	private int worldX, worldY;
+	private Point position;
 	
-	public LevelUtilPopup(DebugUI ui, GameWidget gameWidget, Skin skin, Dungeon dungeon, int worldX, int worldY) {
+	public LevelUtilPopup(DebugUI ui, GameWidget gameWidget, Skin skin, Dungeon dungeon, Point position) {
 		super(skin);
 		
 		this.ui = ui;
@@ -37,8 +38,7 @@ public class LevelUtilPopup extends Table {
 		this.skin = skin;
 		
 		this.dungeon = dungeon;
-		this.worldX = worldX;
-		this.worldY = worldY;
+		this.position = position;
 		
 		initialise();
 	}
@@ -56,7 +56,7 @@ public class LevelUtilPopup extends Table {
 	}
 	
 	private void initialiseCoordsLabel(Table container) {
-		addLabel(container, String.format("%,d[P_GREY_3],[] %,d", worldX, worldY));
+		addLabel(container, position.toString());
 	}
 	
 	private void initialiseButtons(Table container) {
@@ -66,9 +66,9 @@ public class LevelUtilPopup extends Table {
 	
 	private void initialiseTileButton(Table container) {
 		try {
-			Tile tile = dungeon.getLevel().tileStore.getTile(worldX, worldY);
+			Tile tile = dungeon.getLevel().tileStore.getTile(position);
 			TileRenderer tr = TileMap.valueOf(tile.getType().name()).getRenderer();
-			TextureRegion region = tr.getTextureRegion(dungeon, worldX, worldY);
+			TextureRegion region = tr.getTextureRegion(tile, position);
 			
 			addButton(container, new TextureRegionDrawable(region), tile.getType().name(), (fcl, event, x, y) -> {
 				ui.getDebugClient().findNamedPath("dungeon.level.tileStore.tiles").ifPresent(treeNode -> {
@@ -95,14 +95,14 @@ public class LevelUtilPopup extends Table {
 	}
 	
 	private void initialiseEntityButtons(Table container) {
-		dungeon.getLevel().entityStore.getEntitiesAt(worldX, worldY)
+		dungeon.getLevel().entityStore.getEntitiesAt(position)
 			.forEach(e -> initialiseEntityButton(container, e));
 	}
 	
 	private void initialiseEntityButton(Table container, Entity entity) {
 		try {
 			EntityRenderer er = EntityMap.valueOf(entity.getAppearance().name()).getRenderer();
-			TextureRegion region = er.getTextureRegion(dungeon, entity);
+			TextureRegion region = er.getTextureRegion(entity);
 			
 			addButton(container, new TextureRegionDrawable(region), entity.getName(null).build(Capitalise.first), (fcl, event, x, y) -> {
 				ui.getDebugClient().findNamedPath("dungeon.level.entityStore.entities").ifPresent(treeNode -> {

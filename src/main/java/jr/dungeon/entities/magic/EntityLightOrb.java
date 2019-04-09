@@ -10,12 +10,14 @@ import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.interfaces.LightEmitter;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
 import jr.utils.Colour;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="entityLightOrb")
@@ -24,8 +26,8 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	
 	@Expose private int turnsLeft;
 	
-	public EntityLightOrb(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityLightOrb(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		turnsLeft = RandomUtils.roll(3, 5);
 	}
@@ -65,12 +67,11 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		int x = getX() + e.getDeltaY();
-		int y = getY() + e.getDeltaY();
+		Point newPosition = getPosition().add(e.getDirection());
 		
-		TileType tile = getLevel().tileStore.getTileType(x, y);
+		TileType tile = getLevel().tileStore.getTileType(newPosition);
 		
-		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
+		if (tile == null || tile.getSolidity() == Solidity.SOLID) {
 			getDungeon().log(
 				"%s strikes the side of the wall.",
 				LanguageUtils.subject(this).build(Capitalise.first)
@@ -79,7 +80,7 @@ public class EntityLightOrb extends EntityTurnBased implements LightEmitter {
 			return;
 		}
 		
-		setPosition(x, y);
+		setPosition(newPosition);
 	}
 	
 	@Override

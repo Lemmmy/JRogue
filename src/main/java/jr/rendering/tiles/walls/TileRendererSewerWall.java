@@ -2,10 +2,10 @@ package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
-import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -23,22 +23,16 @@ public class TileRendererSewerWall extends TileRendererWall {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
+		return getImageFromMask(getPositionMask(tile, p));
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
+		boolean shouldMoss = (p.x + p.y) % 3 == 0;
 		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean v = adjacentTiles[2].isWallTile() || adjacentTiles[3].isWallTile();
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
-		boolean shouldMoss = (x + y) % 3 == 0;
-		
-		if (h && !v && top && shouldMoss) {
-			int mossNumber = (x + y) % mosses.length;
+		if (isTopHorizontal(tile, p) && shouldMoss) {
+			int mossNumber = (p.x + p.y) % mosses.length;
 			return mosses[mossNumber];
 		}
 		
@@ -46,11 +40,8 @@ public class TileRendererSewerWall extends TileRendererWall {
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
-		
-		if (t != null) {
-			drawTile(batch, t, x, y);
-		}
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion t = getTextureRegionExtra(tile, p);
+		drawTile(batch, t, p);
 	}
 }

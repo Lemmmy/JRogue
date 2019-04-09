@@ -2,7 +2,6 @@ package jr.dungeon.entities.monsters.ai.stateful.familiar;
 
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
-import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.events.EntityMovedEvent;
 import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
@@ -35,11 +34,9 @@ public class TraitAvoidCursed extends AITrait<FamiliarAI> {
 		Player p = d.getPlayer();
 		
 		if (l != p.getLevel()) return;
-		if (event.getLastPosition() == event.getNewPosition()) return;
+		if (event.getLastPosition().equals(event.getNewPosition())) return;
 		
-		l.entityStore.getEntitiesAt(event.getNewPosition()).stream()
-			.filter(EntityItem.class::isInstance)
-			.map(EntityItem.class::cast)
+		l.entityStore.getItemsAt(event.getNewPosition())
 			.filter(e -> e.getItem().getAspect(AspectBeatitude.class).isPresent())
 			.filter(e -> !e.getItem().isAspectKnown(p, AspectBeatitude.class))
 			.filter(e -> ((AspectBeatitude) e.getItem().getAspect(AspectBeatitude.class).get()).getBeatitude()

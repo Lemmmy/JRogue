@@ -1,7 +1,6 @@
 package jr.rendering.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.rendering.assets.Assets;
@@ -28,7 +27,7 @@ public class EntityRendererCat extends EntityRendererBasic {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+	public TextureRegion getTextureRegion(Entity entity) {
 		if (entity instanceof Familiar) {
 			int breed = entity.getVisualID() % breedCount;
 			int age = ((Familiar) entity).getAge();

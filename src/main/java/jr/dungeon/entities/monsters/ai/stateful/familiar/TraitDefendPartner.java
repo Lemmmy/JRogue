@@ -4,7 +4,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AITrait;
 import jr.dungeon.entities.monsters.ai.stateful.generic.StateMeleeAttackTarget;
 import jr.dungeon.serialisation.Registered;
-import jr.utils.Utils;
+import jr.utils.Distance;
 
 import java.util.Comparator;
 
@@ -31,10 +31,10 @@ public class TraitDefendPartner extends AITrait<FamiliarAI> {
 				.filter(Monster.class::isInstance)
 				.map(Monster.class::cast)
 				.filter(Monster::isHostile)
-				.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
+				.filter(e -> Distance.chebyshev(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
 				.filter(e -> ai.canSee(e))
 				.filter(e -> ai.canReach(e))
-				.sorted(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
+				.sorted(Comparator.comparingInt(e -> Distance.chebyshev(e.getPosition(), m.getPosition())))
 				.findFirst().ifPresent(e -> {
 					ai.getCurrentTarget().set(e);
 					ai.setCurrentState(new StateMeleeAttackTarget(ai, 0));

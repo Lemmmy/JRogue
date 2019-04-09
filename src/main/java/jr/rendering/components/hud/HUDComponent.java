@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import jr.Settings;
 import jr.dungeon.Dungeon;
+import jr.dungeon.Level;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
@@ -244,20 +245,17 @@ public class HUDComponent extends RendererComponent {
 			return;
 		}
 		
-		int w = dungeon.getLevel().getWidth();
-		
-		dungeon.getLevel().entityStore.getEntities().stream()
+		Level level = dungeon.getLevel();
+		level.entityStore.getEntities().stream()
 			.filter(this::getShowEntityDebug)
-			.sorted((e1, e2) -> Integer.compare(e1.getY() * w + e1.getX(), e2.getY() * w + e1.getY()))
+			.sorted(Comparator.comparingInt(e -> e.getPosition().getIndex(level)))
 			.forEach(e -> {
-				int x = e.getX();
-				int y = e.getY();
-				
 				renderer.updateCamera();
 				
-				Vector3 pos = renderer.getCamera().project(
-					new Vector3((x + 0.5f) * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT, 0)
-				);
+				Vector3 pos = renderer.getCamera().project(new Vector3(
+					(e.getPosition().x + 0.5f) * TileMap.TILE_WIDTH,
+					e.getPosition().y * TileMap.TILE_HEIGHT, 0
+				));
 				
 				Table outerDebugTable = new Table(skin);
 				outerDebugTable.setBackground("blackTransparent");
@@ -349,7 +347,7 @@ public class HUDComponent extends RendererComponent {
 	private void updateBrightness(Player player) {
 		brightness.clearChildren();
 		
-		String name = player.getLevel().tileStore.getTileType(player.getX(), player.getY()) == TileType.TILE_CORRIDOR
+		String name = player.getLevel().tileStore.getTileType(player.getPosition()) == TileType.TILE_CORRIDOR
 			? "brightnessDarkIcon": "brightnessBrightIcon";
 		
 		brightness.addActor(UIIcons.getImage(skin, name));

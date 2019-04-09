@@ -2,8 +2,9 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -35,27 +36,24 @@ public class TileRendererStairs extends TileRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return image;
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
 		return direction == StairDirection.UP ? up : down;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
-		
-		if (t != null) {
-			drawTile(batch, t, x, y);
-		}
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion t = getTextureRegionExtra(tile, p);
+		drawTile(batch, t, p);
 	}
 	
 	protected enum StairDirection {

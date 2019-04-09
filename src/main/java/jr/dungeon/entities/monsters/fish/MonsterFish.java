@@ -13,6 +13,7 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ import java.util.List;
 public class MonsterFish extends Monster {
 	@Expose private FishColour colour;
 	
-	public MonsterFish(Dungeon dungeon, Level level, int x, int y, FishColour colour) {
-		super(dungeon, level, x, y, 1);
+	public MonsterFish(Dungeon dungeon, Level level, Point position, FishColour colour) {
+		super(dungeon, level, position, 1);
 		
 		this.colour = colour;
 		

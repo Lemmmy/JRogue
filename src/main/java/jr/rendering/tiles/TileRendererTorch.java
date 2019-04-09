@@ -4,13 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.states.TileStateTorch;
 import jr.rendering.assets.Assets;
 import jr.rendering.tiles.walls.TileRendererWall;
 import jr.utils.Colour;
-import jr.utils.Utils;
+import jr.utils.Point;
 
 import java.util.Arrays;
 
@@ -41,38 +40,35 @@ public class TileRendererTorch extends TileRendererWall {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
 		// TODO: this is slightly different than what it used to be. is this still correct?
-		return isTopHorizontal(dungeon, x, y) ? torch : null;
+		return isTopHorizontal(tile, p) ? torch : null;
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
+		return getImageFromMask(getPositionMask(tile, p));
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion t = getTextureRegionExtra(tile, p);
+		if (t == null) return;
 		
-		if (t != null) {
-			drawTile(batch, t, x, y);
-			
-			Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
-			
-			if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
-				oldColour.set(batch.getColor());
-				batch.setColor(Utils.colourToGdx(tile.getLightColour(), 0));
-				drawTile(batch, torchGlow, x, y);
-				batch.setColor(oldColour);
-			} else {
-				drawTile(batch, torchGlow, x, y);
-			}
+		drawTile(batch, t, p);
+		
+		if (tile.hasState() && tile.getState() instanceof TileStateTorch) {
+			oldColour.set(batch.getColor());
+			batch.setColor(Colour.colourToGdx(tile.getLightColour(), 0));
+			drawTile(batch, torchGlow, p);
+			batch.setColor(oldColour);
+		} else {
+			drawTile(batch, torchGlow, p);
 		}
 	}
 	
@@ -82,17 +78,15 @@ public class TileRendererTorch extends TileRendererWall {
 	}
 	
 	@Override
-	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
-		return isTopHorizontal(dungeon, x, y);
+	public boolean shouldDrawParticles(Tile tile, Point p) {
+		return isTopHorizontal(tile, p);
 	}
 	
 	@Override
-	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {
-		super.applyParticleChanges(dungeon, x, y, effect);
+	public void applyParticleChanges(Tile tile, Point p, ParticleEffectPool.PooledEffect effect) {
+		super.applyParticleChanges(tile, p, effect);
 		
-		Tile tile = dungeon.getLevel().tileStore.getTile(x, y);
-		
-		if (tile != null && tile.hasState() && tile.getState() instanceof TileStateTorch) {
+		if (tile.hasState() && tile.getState() instanceof TileStateTorch) {
 			Colour c1 = tile.getLightColour();
 			Colour c2 = ((TileStateTorch) tile.getState()).getParticleDarkColour();
 			

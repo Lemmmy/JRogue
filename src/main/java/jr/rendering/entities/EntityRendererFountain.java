@@ -1,9 +1,9 @@
 package jr.rendering.entities;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.rendering.assets.Assets;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Particles.particleFile;
 
@@ -32,17 +32,17 @@ public class EntityRendererFountain extends EntityRendererRandom {
 	}
 	
 	@Override
-	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
+	public boolean shouldDrawParticles(Entity entity, Point p) {
 		return true;
 	}
 	
 	@Override
-	public boolean shouldDrawParticlesOver(Dungeon dungeon, Entity entity, int x, int y) {
+	public boolean shouldDrawParticlesOver(Entity entity, Point p) {
 		return true;
 	}
 	
 	@Override
-	public float getParticleDeltaMultiplier(Dungeon dungeon, Entity entity, int x, int y) {
+	public float getParticleDeltaMultiplier(Entity entity, Point p) {
 		return 0.75f;
 	}
 }

@@ -2,11 +2,12 @@ package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
 import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
 import jr.rendering.utils.ImageUtils;
+import jr.utils.Point;
 
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public class WallDecorationCobweb extends WallDecoration {
 	}
 	
 	@Override
-	public void drawExtra(TileRenderer tr, SpriteBatch batch, Dungeon dungeon, int x, int y, Random rand) {
-		tr.drawTile(batch, cobwebs[rand.nextInt(cobwebs.length)], x, y + 1f / TileMap.TILE_HEIGHT * 3);
+	public void drawExtra(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random rand) {
+		tr.drawTile(batch, cobwebs[rand.nextInt(cobwebs.length)], p.x, p.y + 1f / TileMap.TILE_HEIGHT * 3);
 	}
 }

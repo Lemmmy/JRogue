@@ -2,9 +2,10 @@ package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
 import jr.rendering.tiles.TileRenderer;
+import jr.utils.Point;
 
 import java.util.Random;
 
@@ -21,7 +22,7 @@ public class WallDecorationGrate extends WallDecoration {
 	}
 	
 	@Override
-	public void draw(TileRenderer tr, SpriteBatch batch, Dungeon dungeon, int x, int y, Random random) {
-		tr.drawTile(batch, grate, x, y);
+	public void draw(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random random) {
+		tr.drawTile(batch, grate, p);
 	}
 }

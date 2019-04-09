@@ -11,14 +11,15 @@ import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="projectileStrike")
 public class EntityStrike extends EntityProjectile implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0x75E5F6FF);
 	
-	public EntityStrike(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityStrike(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected EntityStrike() { super(); }

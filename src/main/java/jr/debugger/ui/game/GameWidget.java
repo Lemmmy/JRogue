@@ -20,7 +20,10 @@ import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.events.LevelChangeEvent;
 import jr.rendering.tiles.TileMap;
+import jr.utils.Point;
 import lombok.Setter;
+
+import static jr.utils.QuickMaths.ifloor;
 
 public class GameWidget extends Image implements EventListener {
 	private DebugUI ui;
@@ -134,14 +137,12 @@ public class GameWidget extends Image implements EventListener {
 	private class GameWidgetClickListener extends ClickListener {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			int worldX = (int) (x / TileMap.TILE_WIDTH);
-			int worldY = (int) (y / TileMap.TILE_HEIGHT);
-			
-			if (worldX < 0 || worldX > level.getWidth() || worldY < 0 || worldY > level.getHeight()) return;
-			
 			if (levelUtilPopup != null) return;
 			
-			levelUtilPopup = new LevelUtilPopup(ui, GameWidget.this, skin, dungeon, worldX, worldY);
+			Point worldPos = Point.get(ifloor(x / TileMap.TILE_WIDTH), ifloor(y / TileMap.TILE_HEIGHT));
+			if (!worldPos.insideLevel(level)) return;
+			
+			levelUtilPopup = new LevelUtilPopup(ui, GameWidget.this, skin, dungeon, worldPos);
 			getStage().addActor(levelUtilPopup);
 			levelUtilPopup.setPosition(event.getStageX(), event.getStageY());
 		}

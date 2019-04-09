@@ -3,11 +3,11 @@ package jr.rendering.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.projectiles.EntityProjectile;
 import jr.rendering.assets.Assets;
 import jr.rendering.entities.animations.EntityAnimationData;
+import jr.utils.VectorInt;
 
 import static jr.rendering.assets.Textures.entityFile;
 
@@ -26,12 +26,12 @@ public class EntityRendererProjectile extends EntityRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+	public TextureRegion getTextureRegion(Entity entity) {
 		return image;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
+	public void draw(SpriteBatch batch, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
 		int width = EntityMap.ENTITY_WIDTH;
 		int height = EntityMap.ENTITY_HEIGHT;
 		float worldX = getPositionX(anim, entity, useMemoryLocation);
@@ -44,14 +44,15 @@ public class EntityRendererProjectile extends EntityRenderer {
 		
 		if (entity instanceof EntityProjectile) {
 			EntityProjectile projectile = (EntityProjectile) entity;
-			rotation = (float) (Math.atan2(projectile.getDeltaY(), projectile.getDeltaX()) * (180 / Math.PI));
+			VectorInt direction = projectile.getDirection();
+			rotation = (float) (Math.atan2(direction.y, direction.x) * (180 / Math.PI));
 		}
 		
 		Color oldColour = setAnimationColour(anim, batch, entity);
 		
 		if (isDrawingReflection()) {
 			batch.draw(
-				getTextureRegion(dungeon, entity),
+				getTextureRegion(entity),
 				x, y + height,
 				originX, originY,
 				width, height,
@@ -60,7 +61,7 @@ public class EntityRendererProjectile extends EntityRenderer {
 			);
 		} else {
 			batch.draw(
-				getTextureRegion(dungeon, entity),
+				getTextureRegion(entity),
 				x, y,
 				originX, originY,
 				width, height,

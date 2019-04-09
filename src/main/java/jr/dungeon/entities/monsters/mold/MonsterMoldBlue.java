@@ -7,11 +7,12 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 @Registered(id="monsterMoldBlue")
 public class MonsterMoldBlue extends MonsterMold {
-	public MonsterMoldBlue(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterMoldBlue(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected MonsterMoldBlue() { super(); }

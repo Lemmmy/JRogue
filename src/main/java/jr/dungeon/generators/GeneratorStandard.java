@@ -9,10 +9,14 @@ import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateClimbable;
 import jr.utils.OpenSimplexNoise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
+import static jr.dungeon.generators.BuildingUtils.buildArea;
 
 @Registered(id="generatorStandard")
 public class GeneratorStandard extends GeneratorRooms {
@@ -81,40 +85,28 @@ public class GeneratorStandard extends GeneratorRooms {
 	}
 	
 	private void addWaterBodies() {
-		for (int y = 0; y < level.getHeight(); y++) {
-			for (int x = 0; x < level.getWidth(); x++) {
-				double noise = simplexNoise.eval(x * scaleWaterNoise, y * scaleWaterNoise);
-				
-				if (noise > thresholdWaterNoise && (level.tileStore
-					.getTileType(x, y) == getGroundTileType() || level.tileStore.getTileType(x, y) ==
-					getFloorTileType())
-				) {
-					if (level.tileStore.getTileType(x, y) == getFloorTileType() && noise > thresholdWaterNoisePuddle) {
-						level.tileStore.setTileType(x, y, getPuddleTileType());
-					} else {
-						TileType[] adjacentTiles = level.tileStore.getAdjacentTileTypes(x, y);
-						
-						boolean skip = false;
-						
-						for (TileType tile : adjacentTiles) {
-							if (tile != null && tile != getGroundTileType() && tile != getGroundWaterTileType()) {
-								skip = true;
-							}
-						}
-						
-						if (skip) {
-							continue;
-						}
-						
-						level.tileStore.setTileType(x, y, getGroundWaterTileType());
-					}
+		buildArea(tileStore, Point.ZERO, levelWidth, levelHeight, (t, p) -> {
+			double noise = simplexNoise.eval(p.x * scaleWaterNoise, p.y * scaleWaterNoise);
+			
+			if (noise > thresholdWaterNoise && (t.getType() == getGroundTileType() || t.getType() == getFloorTileType())) {
+				if (t.getType() == getFloorTileType() && noise > thresholdWaterNoisePuddle) {
+					// put puddles in rooms
+					return getPuddleTileType();
+				} else {
+					// skip if adjacent tile not ground or water (e.g. don't get water near rooms)
+					return Arrays.stream(tileStore.getAdjacentTileTypes(p))
+					   .filter(Objects::nonNull)
+					   .anyMatch(a -> a != getGroundTileType() && a != getGroundWaterTileType())
+						   ? null : getGroundWaterTileType();
 				}
 			}
-		}
+			
+			return null;
+		});
 	}
 	
 	private void spawnFish() {
-		Tile[] waterTiles = Arrays.stream(level.tileStore.getTiles())
+		Tile[] waterTiles = Arrays.stream(tileStore.getTiles())
 			.filter(t -> t.getType() == getGroundWaterTileType())
 			.toArray(Tile[]::new);
 		
@@ -126,17 +118,16 @@ public class GeneratorStandard extends GeneratorRooms {
 		for (int i = 0; i < swarmCount; i++) {
 			Tile swarmTile = RandomUtils.jrandomFrom(waterTiles);
 			
-			List<Tile> surroundingTiles = level.tileStore
-				.getTilesInRadius(swarmTile.getX(), swarmTile.getY(), JRAND.nextInt(2) + 2);
+			List<Tile> surroundingTiles = tileStore.getTilesInRadius(swarmTile.position, JRAND.nextInt(2) + 2);
 			
 			if (RandomUtils.roll(4) == 1) { // spawn a swarm of pufferfish
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == getGroundWaterTileType() &&
 						JRAND.nextDouble() <= probabilityPufferfish &&
-						level.entityStore.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
+						!level.entityStore.areEntitiesAt(tile.position)) {
 						
 						level.entityStore
-							.addEntity(new MonsterPufferfish(level.getDungeon(), level, tile.getX(), tile.getY()));
+							.addEntity(new MonsterPufferfish(level.getDungeon(), level, tile.position));
 					}
 				}
 			} else { // regular swarm of two fish colours
@@ -149,11 +140,11 @@ public class GeneratorStandard extends GeneratorRooms {
 				for (Tile tile : surroundingTiles) {
 					if (tile.getType() == getGroundWaterTileType() &&
 						JRAND.nextDouble() < probabilityFish &&
-						level.entityStore.getEntitiesAt(tile.getX(), tile.getY()).size() == 0) {
+						!level.entityStore.areEntitiesAt(tile.position)) {
 						
 						MonsterFish.FishColour colour = RAND.nextFloat() < 0.5f ? fishColour1 : fishColour2;
 						level.entityStore
-							.addEntity(new MonsterFish(level.getDungeon(), level, tile.getX(), tile.getY(), colour));
+							.addEntity(new MonsterFish(level.getDungeon(), level, tile.position, colour));
 					}
 				}
 			}
@@ -164,11 +155,7 @@ public class GeneratorStandard extends GeneratorRooms {
 		Room room = RandomUtils.randomFrom(rooms);
 		if (room == null) return;
 		
-		int ladderX = RAND.nextInt(room.getWidth() - 2) + room.getX() + 1;
-		int ladderY = RAND.nextInt(room.getHeight() - 2) + room.getY() + 1;
-		
-		Tile ladderTile = level.tileStore.getTile(ladderX, ladderY);
-		ladderTile.setType(TileType.TILE_LADDER_DOWN);
+		Tile ladderTile = tileStore.setTileType(room.randomPoint(), TileType.TILE_LADDER_DOWN);
 		
 		if (ladderTile.getState() instanceof TileStateClimbable) {
 			TileStateClimbable tsc = (TileStateClimbable) ladderTile.getState();

@@ -1,18 +1,19 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.entities.interfaces.ReadableEntity;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.ItemStack;
-import jr.dungeon.items.Readable;
+import jr.dungeon.items.ReadableItem;
 
 import java.util.Optional;
 
 public class PlayerRead extends PlayerItemVisitor {
 	@Override
 	public void visit(Player player) {
-		Optional<jr.dungeon.entities.interfaces.Readable> or =
-			player.getLevel().entityStore.getEntitiesAt(player.getX(), player.getY()).stream()
-			.filter(jr.dungeon.entities.interfaces.Readable.class::isInstance)
-			.map(e -> (jr.dungeon.entities.interfaces.Readable) e)
+		Optional<ReadableEntity> or =
+			player.getLevel().entityStore.getEntitiesAt(player.getPosition())
+			.filter(ReadableEntity.class::isInstance)
+			.map(e -> (ReadableEntity) e)
 			.filter(r -> r.canRead(player))
 			.findFirst();
 		
@@ -29,9 +30,9 @@ public class PlayerRead extends PlayerItemVisitor {
 		InventoryUseResult result = useInventoryItem(
 			player,
 			msg,
-			s -> s.getItem() instanceof Readable, (c, ce, inv) -> {
+			s -> s.getItem() instanceof ReadableItem, (c, ce, inv) -> {
 				ItemStack stack = ce.getStack();
-				Readable readable = (Readable) stack.getItem();
+				ReadableItem readable = (ReadableItem) stack.getItem();
 				
 				readable.onRead(player);
 			}

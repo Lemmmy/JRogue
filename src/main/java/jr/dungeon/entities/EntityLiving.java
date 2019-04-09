@@ -15,6 +15,7 @@ import jr.dungeon.events.EventListener;
 import jr.dungeon.items.Item;
 import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.identity.Aspect;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -70,8 +71,8 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 	 */
 	@Expose private final Map<Integer, Set<String>> knownAspects = new HashMap<>();
 	
-	public EntityLiving(Dungeon dungeon, Level level, int x, int y, int experienceLevel) {
-		super(dungeon, level, x, y);
+	public EntityLiving(Dungeon dungeon, Level level, Point position, int experienceLevel) {
+		super(dungeon, level, position);
 		
 		maxHealth = getBaseMaxHealth();
 		health = getMaxHealth();
@@ -276,17 +277,14 @@ public abstract class EntityLiving extends EntityTurnBased implements ContainerO
 			rightHand = null;
 		}
 		
-		List<Entity> entities = getLevel().entityStore.getEntitiesAt(getX(), getY());
-		
-		Optional<Entity> ent = entities.stream()
-			.filter(e -> e instanceof EntityItem && ((EntityItem) e).getItem() == item.getItem())
+		Optional<EntityItem> ent = getLevel().entityStore.getItemsAt(getPosition())
+			.filter(e -> e.getItem() == item.getItem())
 			.findFirst();
 		
 		if (ent.isPresent()) {
-			EntityItem entItem = (EntityItem) ent.get();
-			entItem.getItemStack().addCount(item.getCount());
+			ent.get().getItemStack().addCount(item.getCount());
 		} else {
-			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getX(), getY(), item);
+			EntityItem entityItem = new EntityItem(getDungeon(), getLevel(), getPosition(), item);
 			getLevel().entityStore.addEntity(entityItem);
 		}
 	}

@@ -15,20 +15,21 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
+import jr.utils.Point;
 
 @Registered(id="entityCandlestick")
 public class EntityCandlestick extends Entity implements LightEmitter, Extinguishable {
 	private static final int LIGHT_INTENSITY = 60;
 	private static final Colour LIGHT_COLOUR = new Colour(0xFF9329FF);
 	
-	@Expose private boolean lit = true;
+	@Expose private boolean lit;
 	
-	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityCandlestick(Dungeon dungeon, Level level, Point position) {
+		this(dungeon, level, position, true);
 	}
 	
-	public EntityCandlestick(Dungeon dungeon, Level level, int x, int y, boolean isLit) {
-		super(dungeon, level, x, y);
+	public EntityCandlestick(Dungeon dungeon, Level level, Point position, boolean isLit) {
+		super(dungeon, level, position);
 		lit = isLit;
 	}
 	

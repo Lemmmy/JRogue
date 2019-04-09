@@ -16,13 +16,14 @@ import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.events.LevelChangeEvent;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
-import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.screens.GameScreen;
-import jr.utils.Utils;
+import jr.utils.Colour;
+import jr.utils.Point;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -115,34 +116,34 @@ public class MinimapComponent extends RendererComponent {
 	
 	private void drawMap() {
 		for (Tile tile : level.tileStore.getTiles()) {
-			boolean discovered = level.visibilityStore
-				.isTileDiscovered(tile.getX(), tile.getY());
-			boolean visible = !level.visibilityStore
-				.isTileInvisible(tile.getX(), tile.getY());
+			Point p = tile.position;
+			
+			boolean discovered = level.visibilityStore.isTileDiscovered(p);
+			boolean visible = !level.visibilityStore.isTileInvisible(p);
 			
 			if (discovered) {
-				drawTile(tile, visible);
+				drawTile(tile, p, visible);
 			}
 		}
 	}
 	
-	private void drawTile(Tile tile, boolean isVisible) {
+	private void drawTile(Tile tile, Point p, boolean isVisible) {
 		Color colour = SOLID_COLOUR;
 		
-		if (tile.getType().getSolidity() != TileType.Solidity.SOLID) {
+		if (tile.getType().getSolidity() != Solidity.SOLID) {
 			colour = NONSOLID_COLOUR;
 		} else if (tile.getType().isDoorShut()) {
 			colour = DOOR_COLOUR;
 		}
 		
 		mapBatch.setColor(colour.r, colour.g, colour.b, isVisible ? colour.a : colour.a / 3f);
-		mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
+		mapBatch.rect(xOffset + p.x * tileWidth, yOffset + p.y * tileHeight, tileWidth, tileHeight);
 
 		if (isVisible) {
-			Color lightColour = Utils.colourToGdx(tile.getLightColour(), 1);
+			Color lightColour = Colour.colourToGdx(tile.getLightColour(), 1);
 			
 			mapBatch.setColor(lightColour.r, lightColour.g, lightColour.b, 0.5f);
-			mapBatch.rect(xOffset + tile.getX() * tileWidth, yOffset + tile.getY() * tileHeight, tileWidth, tileHeight);
+			mapBatch.rect(xOffset + p.x * tileWidth, yOffset + p.y * tileHeight, tileWidth, tileHeight);
 		}
 	}
 	
@@ -156,13 +157,13 @@ public class MinimapComponent extends RendererComponent {
 	private void drawStairIcons() {
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.UP) == TileFlag.UP)
-			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
-			.forEach(t -> drawIcon(Icons.up, t.getX(), t.getY(), Color.WHITE));
+			.filter(t -> level.visibilityStore.isTileDiscovered(t.position))
+			.forEach(t -> drawIcon(Icons.up, t.position, Color.WHITE));
 		
 		Arrays.stream(level.tileStore.getTiles())
 			.filter(t -> (t.getType().getFlags() & TileFlag.DOWN) == TileFlag.DOWN)
-			.filter(t -> level.visibilityStore.isTileDiscovered(t.getX(), t.getY()))
-			.forEach(t -> drawIcon(Icons.down, t.getX(), t.getY(), Color.WHITE));
+			.filter(t -> level.visibilityStore.isTileDiscovered(t.position))
+			.forEach(t -> drawIcon(Icons.down, t.position, Color.WHITE));
 	}
 	
 	private void drawEntityIcons() {
@@ -170,27 +171,23 @@ public class MinimapComponent extends RendererComponent {
 			.filter(e -> !(e instanceof Player))
 			.filter(e -> !(e instanceof Monster))
 			.filter(
-				e -> e.isStatic() && level.visibilityStore
-					.isTileDiscovered(e.getX(), e.getY()) ||
-				!level.visibilityStore.isTileInvisible(e.getX(), e.getY())
+				e -> e.isStatic() && level.visibilityStore.isTileDiscovered(e.getPosition()) ||
+				level.visibilityStore.isTileVisible(e.getPosition())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.forEach(e -> drawIcon(Icons.point, e.getLastSeenX(), e.getLastSeenY(), ENTITY_ICON_COLOUR));
+			.forEach(e -> drawIcon(Icons.point, e.getLastSeenPosition(), ENTITY_ICON_COLOUR));
 	}
 	
 	private void drawMonsterIcons() {
-		level.entityStore.getMonsters().stream()
+		level.entityStore.getMonsters()
 			.filter(
-				e -> e.isStatic() && level.visibilityStore
-					.isTileDiscovered(e.getX(), e.getY()) ||
-				!level.visibilityStore.isTileInvisible(e.getX(), e.getY())
+				e -> e.isStatic() && level.visibilityStore.isTileDiscovered(e.getPosition()) ||
+				level.visibilityStore.isTileVisible(e.getPosition())
 			)
 			.sorted(Comparator.comparingInt(Entity::getDepth))
-			.map(e -> (Monster) e)
 			.forEach(m -> drawIcon(
 				Icons.point,
-				m.getLastSeenX(),
-				m.getLastSeenY(),
+				m.getLastSeenPosition(),
 				getIconColour(m)
 			));
 	}
@@ -206,19 +203,16 @@ public class MinimapComponent extends RendererComponent {
 	
 	private void drawPlayerIcon() {
 		Player player = dungeon.getPlayer();
+		if (player == null || !player.isAlive()) return;
 		
-		if (player == null || !player.isAlive()) {
-			return;
-		}
-		
-		drawIcon(Icons.point, player.getX(), player.getY(), PLAYER_ICON_COLOUR);
+		drawIcon(Icons.point, player.getPosition(), PLAYER_ICON_COLOUR);
 	}
 	
-	private void drawIcon(TextureRegion icon, int x, int y, Color colour) {
+	private void drawIcon(TextureRegion icon, Point p, Color colour) {
 		iconBatch.setColor(colour);
 		iconBatch.draw(icon,
-			xOffset + x * tileWidth - icon.getRegionWidth() / 2,
-			yOffset + y * tileHeight - icon.getRegionHeight() / 2
+			xOffset + p.x * tileWidth - icon.getRegionWidth() / 2,
+			yOffset + p.y * tileHeight - icon.getRegionHeight() / 2
 		);
 	}
 	

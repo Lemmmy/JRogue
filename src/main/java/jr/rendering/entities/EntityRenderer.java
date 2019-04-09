@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.generators.Climate;
 import jr.rendering.assets.UsesAssets;
 import jr.rendering.entities.animations.EntityAnimationData;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,17 +26,17 @@ public abstract class EntityRenderer implements UsesAssets {
 		return entity.getLevel().getClimate() != Climate.__;
 	}
 
-	public abstract TextureRegion getTextureRegion(Dungeon dungeon, Entity entity);
+	public abstract TextureRegion getTextureRegion(Entity entity);
 	
-	public abstract void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation);
+	public abstract void draw(SpriteBatch batch, Entity entity, EntityAnimationData anim, boolean useMemoryLocation);
 	
 	protected void drawEntity(SpriteBatch batch, TextureRegion image, float x, float y) {
 		if (image != null) {
 			int width = EntityMap.ENTITY_WIDTH;
 			int height = EntityMap.ENTITY_HEIGHT;
 			
-			float ex = x * width + 0.01f;
-			float ey = y * height + 0.01f;
+			float ex = x * width;
+			float ey = y * height;
 			
 			if (drawingReflection) {
 				batch.draw(image, ex, ey, 0.0f, 0.0f, width, height, 1.0f, -1.0f, 0.0f);
@@ -58,25 +58,25 @@ public abstract class EntityRenderer implements UsesAssets {
 		return EntityMap.ENTITY_HEIGHT / 2;
 	}
 	
-	public boolean shouldDrawParticles(Dungeon dungeon, Entity entity, int x, int y) {
+	public boolean shouldDrawParticles(Entity entity, Point p) {
 		return true;
 	}
 	
-	public boolean shouldDrawParticlesOver(Dungeon dungeon, Entity entity, int x, int y) {
+	public boolean shouldDrawParticlesOver(Entity entity, Point p) {
 		return false;
 	}
 	
-	public float getParticleDeltaMultiplier(Dungeon dungeon, Entity entity, int x, int y) {
+	public float getParticleDeltaMultiplier(Entity entity, Point p) {
 		return 0.25f;
 	}
 	
 	public float getPositionX(EntityAnimationData anim, Entity entity, boolean useMemoryLocation) {
-		return (useMemoryLocation ? entity.getLastSeenX() : entity.getX()) +
+		return (useMemoryLocation ? entity.getLastSeenPosition().x : entity.getPosition().x) +
 			(anim != null ? anim.offsetX : 0f);
 	}
 	
 	public float getPositionY(EntityAnimationData anim, Entity entity, boolean useMemoryLocation) {
-		return (useMemoryLocation ? entity.getLastSeenY() : entity.getY()) +
+		return (useMemoryLocation ? entity.getLastSeenPosition().y : entity.getPosition().y) +
 			(anim != null ? anim.offsetY : 0f);
 	}
 	

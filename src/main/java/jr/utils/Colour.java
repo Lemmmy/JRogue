@@ -1,11 +1,14 @@
 package jr.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class representing a colour.
@@ -16,6 +19,8 @@ public class Colour {
 	public static final Colour WHITE = new Colour(0xFFFFFFFF);
 	/** Pure black (0x000000FF). */
 	public static final Colour BLACK = new Colour(0x000000FF);
+	
+	private static final Map<Integer, Color> DUMMY_COLOURS = new HashMap<>();
 	
 	public float r, g, b, a;
 
@@ -70,7 +75,7 @@ public class Colour {
 	public Colour(int rgba8888) {
 		rgba8888ToColour(this, rgba8888);
 	}
-
+	
 	/**
 	 * Copies the given colour's attributes into the colour.
 	 *
@@ -378,6 +383,18 @@ public class Colour {
 	
 	public Colour copy() {
 		return new Colour(this);
+	}
+	
+	public static Color colourToGdx(Colour colour, int dummyID) {
+		if (DUMMY_COLOURS.containsKey(dummyID)) {
+			Color c = DUMMY_COLOURS.get(dummyID);
+			c.set(colour.r, colour.g, colour.b, colour.a);
+			return c;
+		} else {
+			Color c = new Color(colour.r, colour.g, colour.b, colour.a);
+			DUMMY_COLOURS.put(dummyID, c);
+			return c;
+		}
 	}
 	
 	public class ColourTypeAdapter extends TypeAdapter<Colour> {

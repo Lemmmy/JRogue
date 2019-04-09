@@ -17,14 +17,15 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.List;
 
 @Registered(id="monsterSkeleton")
 public class MonsterSkeleton extends Monster {
-	public MonsterSkeleton(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterSkeleton(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);

@@ -5,7 +5,7 @@ import jr.dungeon.entities.EntityReference;
 import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.serialisation.Registered;
-import jr.utils.Utils;
+import jr.utils.Distance;
 import lombok.AccessLevel;
 import lombok.Setter;
 
@@ -42,14 +42,14 @@ public class StateApproachComestible extends AIState<FamiliarAI> {
 			return;
 		}
 		
-		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+		if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
 			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 			return;
 		}
 		
 		ai.moveTowards(target);
 		
-		if (Utils.chebyshevDistance(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
+		if (Distance.chebyshev(target.getPosition(), ai.getMonster().getPosition()) <= 1) {
 			ai.setCurrentState(new StateConsumeComestible(ai, 3, target));
 		}
 	}

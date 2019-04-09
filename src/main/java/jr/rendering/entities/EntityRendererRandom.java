@@ -1,7 +1,6 @@
 package jr.rendering.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
@@ -27,7 +26,7 @@ public class EntityRendererRandom extends EntityRendererBasic {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+	public TextureRegion getTextureRegion(Entity entity) {
 		return images[entity.getVisualID() % images.length];
 	}
 }

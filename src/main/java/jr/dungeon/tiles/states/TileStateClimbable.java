@@ -17,8 +17,7 @@ import java.util.UUID;
 @Registered(id="tileStateClimbable")
 public class TileStateClimbable extends TileState {
 	@Expose @Setter private UUID linkedLevelUUID;
-	@Expose @Getter private int destX = 0;
-	@Expose @Getter private int destY = 0;
+	@Expose @Getter @Setter private Point destinationPosition;
 	@Expose @Getter private String generatorName;
 	
 	public TileStateClimbable(Tile tile) {
@@ -31,15 +30,6 @@ public class TileStateClimbable extends TileState {
 		} else {
 			return Optional.empty();
 		}
-	}
-	
-	public void setDestinationPosition(int x, int y) {
-		destX = x;
-		destY = y;
-	}
-	
-	public Point getDestinationPosition() {
-		return Point.getPoint(destX, destY);
 	}
 	
 	public static DungeonRegistry<DungeonGenerator> getGeneratorRegistry() {
@@ -68,7 +58,7 @@ public class TileStateClimbable extends TileState {
 		Level newLevel = sourceLevel.getDungeon().newLevel(depth, sourceTile, generatorClass);
 		
 		setLinkedLevelUUID(newLevel.getUUID());
-		setDestinationPosition(newLevel.getSpawnX(), newLevel.getSpawnY());
+		destinationPosition = newLevel.getSpawnPoint();
 		
 		return newLevel;
 	}

@@ -21,6 +21,7 @@ import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -29,8 +30,8 @@ import java.util.List;
 public class MonsterSpider extends Monster {
 	@Expose private int speed;
 	
-	public MonsterSpider(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y, 1);
+	public MonsterSpider(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position, 1);
 		
 		speed = Dungeon.NORMAL_SPEED - RandomUtils.random(6);
 		

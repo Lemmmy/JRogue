@@ -3,7 +3,6 @@ package jr.rendering.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
 import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.player.Player;
 import jr.rendering.assets.Assets;
@@ -33,12 +32,12 @@ public class EntityRendererPlayer extends EntityRenderer {
 	}
 
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, Entity entity) {
+	public TextureRegion getTextureRegion(Entity entity) {
 		return getTextureFromPlayer((Player) entity);
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
+	public void draw(SpriteBatch batch, Entity entity, EntityAnimationData anim, boolean useMemoryLocation) {
 		float x = getPositionX(anim, entity, useMemoryLocation);
 		float y = getPositionY(anim, entity, useMemoryLocation);
 		
@@ -47,7 +46,7 @@ public class EntityRendererPlayer extends EntityRenderer {
 		}
 		
 		Color oldColour = setAnimationColour(anim, batch, entity);
-		drawEntity(batch, getTextureRegion(dungeon, entity), x, y);
+		drawEntity(batch, getTextureRegion(entity), x, y);
 		batch.setColor(oldColour);
 	}
 	

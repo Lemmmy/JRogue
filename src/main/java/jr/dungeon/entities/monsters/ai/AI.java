@@ -13,11 +13,12 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.EventListener;
 import jr.dungeon.serialisation.HasRegistry;
 import jr.dungeon.serialisation.Serialisable;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
 import jr.utils.DebugToStringStyle;
+import jr.utils.Distance;
 import jr.utils.Path;
 import jr.utils.Point;
-import jr.utils.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -68,19 +69,13 @@ public abstract class AI implements Serialisable, EventListener {
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return Whether or not the AI can move to this position - checks if its inside the map and if its not solid.
 	 */
-	public boolean canMoveTo(int x, int y) {
-		return !(x < 0 || x > monster.getLevel().getWidth() ||
-			y < 0 || y > monster.getLevel().getHeight()) &&
-			monster.getLevel().tileStore.getTileType(x, y).getSolidity() != TileType.Solidity.SOLID;
-	}
-
-	public boolean canMoveTo(Point p) {
-		return canMoveTo(p.getX(), p.getY());
+	public boolean canMoveTo(Point point) {
+		return point.insideLevel(getLevel()) &&
+			getLevel().tileStore.getTileType(point).getSolidity() != Solidity.SOLID;
 	}
 
 	/**
@@ -96,10 +91,7 @@ public abstract class AI implements Serialisable, EventListener {
 	 * @return Returns the linear distance between the entity and the monster.
 	 */
 	public float distanceFrom(Entity entity) {
-		return Utils.distance(
-			(float) monster.getX(), (float) monster.getY(),
-			(float) entity.getX(), (float) entity.getY()
-		);
+		return Distance.f(monster.getPosition(), entity.getPosition());
 	}
 	
 	/**
@@ -129,15 +121,10 @@ public abstract class AI implements Serialisable, EventListener {
 	 * @param target The target to check adjacency to.
 	 *
 	 * @return Whether or not the monster is adjacent to the target - checks for a
-	 * {@link Utils#chebyshevDistance(int, int, int, int) Chebyshev distance} of 1 or less.
+	 * {@link Distance#chebyshev(int, int, int, int) Chebyshev distance} of 1 or less.
 	 */
 	public boolean isAdjacentTo(EntityLiving target) {
-		int ax = target.getX();
-		int ay = target.getY();
-		int bx = monster.getX();
-		int by = monster.getY();
-		
-		return Utils.chebyshevDistance(ax, ay, bx, by) <= 1;
+		return Distance.chebyshev(target.getPosition(), monster.getPosition()) <= 1;
 	}
 	
 	/**
@@ -226,34 +213,21 @@ public abstract class AI implements Serialisable, EventListener {
 	}
 	
 	/**
-	 * {@link #moveTowards(int, int) Moves towards} the specified point.
+	 * Finds a path towards the specified {@link Point} and move towards it.
 	 *
-	 * @param point The position to {@link #moveTowards(int, int) move towards.}
-	 */
-	public void moveTowards(Point point) {
-		moveTowards(point.getX(), point.getY());
-	}
-	
-	/**
-	 * Finds a path towards the specified destX and destY coordinates.
-	 *
-	 * @param destX The X position to pathfind towards.
-	 * @param destY The Y position to pathfind towards.
+	 * @param dest The position to move towards.
 	 *
 	 * @see AStarPathfinder
 	 */
-	public void moveTowards(int destX, int destY) {
+	public void moveTowards(Point dest) {
 		if (monster.hasAction()) return;
 		
-		int sourceX = getMonster().getX();
-		int sourceY = getMonster().getY();
+		Point src = monster.getPosition();
 		
 		Path path = pathfinder.findPath(
 			monster.getLevel(),
-			sourceX,
-			sourceY,
-			destX,
-			destY,
+			src,
+			dest,
 			monster.getVisibilityRange(),
 			monster.canMoveDiagonally(),
 			avoidTiles
@@ -261,23 +235,17 @@ public abstract class AI implements Serialisable, EventListener {
 		
 		if (path != null) {
 			path.getSteps().stream()
-				.filter(t -> t.getX() != sourceX || t.getY() != sourceY)
+				.filter(t -> !t.position.equals(src))
 				.findFirst()
-				.ifPresent(t -> monster.setAction(new ActionMove(
-					t.getX(),
-					t.getY(),
-					new Action.NoCallback()
-				)));
+				.ifPresent(t -> monster.setAction(new ActionMove(t.position, new Action.NoCallback())));
 		}
 	}
 	
-	public boolean canReach(Entity e) {
+	public boolean canReach(Entity entity) {
 		Path path = pathfinder.findPath(
 			monster.getLevel(),
-			getMonster().getX(),
-			getMonster().getY(),
-			e.getX(),
-			e.getY(),
+			monster.getPosition(),
+			entity.getPosition(),
 			monster.getVisibilityRange(),
 			monster.canMoveDiagonally(),
 			avoidTiles

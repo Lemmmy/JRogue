@@ -6,18 +6,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import jr.JRogue;
-import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.dungeon.VisibilityStore;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileFlag;
-import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.assets.UsesAssets;
 import jr.rendering.screens.GameScreen;
 import jr.utils.Colour;
-import jr.utils.Utils;
+import jr.utils.Point;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,20 +65,24 @@ public abstract class TileRenderer implements UsesAssets {
 		}
 	}
 	
-	public abstract TextureRegion getTextureRegion(Dungeon dungeon, int x, int y);
+	public abstract TextureRegion getTextureRegion(Tile tile, Point p);
 	
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
 		return null;
 	}
 	
-	public abstract void draw(SpriteBatch batch, Dungeon dungeon, int x, int y);
+	public abstract void draw(SpriteBatch batch, Tile tile, Point p);
 	
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {}
 	
-	public void drawBasic(SpriteBatch batch, Dungeon dungeon, int x, int y) {}
+	public void drawBasic(SpriteBatch batch, Tile tile, Point p) {}
 	
 	public ParticleEffectPool getParticleEffectPool() {
 		return effectPool;
+	}
+	
+	public void drawTile(SpriteBatch batch, TextureRegion image, Point p) {
+		drawTile(batch, image, p.x, p.y);
 	}
 	
 	public void drawTile(SpriteBatch batch, TextureRegion image, float x, float y) {
@@ -115,57 +118,56 @@ public abstract class TileRenderer implements UsesAssets {
 		return 3 - (aoVal(s1) + aoVal(s2) + aoVal(c));
 	}
 	
-	public void drawLight(ShapeRenderer batch, Dungeon dungeon, int x, int y) {
+	public void drawLight(ShapeRenderer batch, Level level, Point p) {
+		TileStore ts = level.tileStore;
+		VisibilityStore vs = level.visibilityStore;
+		
 		float width = TileMap.TILE_WIDTH;
 		float height = TileMap.TILE_HEIGHT;
+		
+		Point ptr = p.add(1, 0);
+		Point pbr = p.add(1, 1);
+		Point pbl = p.add(0, 1);
 		
 		Colour ctl = Colour.BLACK;
 		Colour ctr = Colour.BLACK;
 		Colour cbr = Colour.BLACK;
 		Colour cbl = Colour.BLACK;
 
-		Level lvl = dungeon.getLevel();
-		TileStore ts = lvl.tileStore;
+		Tile tl = ts.getTile(p);
+		Tile tr = ts.getTile(ptr);
+		Tile br = ts.getTile(pbr);
+		Tile bl = ts.getTile(pbl);
+		
+		if (tl != null && vs.isTileDiscovered(p)) ctl = tl.getLightColour();
+		if (tr != null && vs.isTileDiscovered(ptr)) ctr = tr.getLightColour();
+		if (br != null && vs.isTileDiscovered(pbr)) cbr = br.getLightColour();
+		if (bl != null && vs.isTileDiscovered(pbl)) cbl = bl.getLightColour();
 
-		Tile tl = ts.getTile(x, y);
-		Tile tr = ts.getTile(x + 1, y);
-		Tile br = ts.getTile(x + 1, y + 1);
-		Tile bl = ts.getTile(x, y + 1);
-
-		VisibilityStore vs = lvl.visibilityStore;
-
-		if (tl != null && vs.isTileDiscovered(x, y)) ctl = tl.getLightColour();
-		if (tr != null && vs.isTileDiscovered(x + 1, y)) ctr = tr.getLightColour();
-		if (br != null && vs.isTileDiscovered(x + 1, y + 1)) cbr = br.getLightColour();
-		if (bl != null && vs.isTileDiscovered(x, y + 1)) cbl = bl.getLightColour();
-
-		float lx = (x + 0.5f) * width;
-		float ly = (y + 0.5f) * height;
+		float lx = ((float) p.x + 0.5f) * width;
+		float ly = ((float) p.y + 0.5f) * height;
 
 		// Lighting
 		batch.rect(
 			lx, ly, width, height,
-			Utils.colourToGdx(ctl, 0),
-			Utils.colourToGdx(ctr, 1),
-			Utils.colourToGdx(cbr, 2),
-			Utils.colourToGdx(cbl, 3)
+			Colour.colourToGdx(ctl, 0),
+			Colour.colourToGdx(ctr, 1),
+			Colour.colourToGdx(cbr, 2),
+			Colour.colourToGdx(cbl, 3)
 		);
 
 		// Ambient occlusion
 		if (AO_ENABLED && tl != null && (tl.getType().getFlags() & TileFlag.WALL) != TileFlag.WALL) {
-			Tile al = dungeon.getLevel().tileStore.getTile(x - 1, y);
-			Tile ar = dungeon.getLevel().tileStore.getTile(x + 1, y);
-			Tile at = dungeon.getLevel().tileStore.getTile(x, y - 1);
-			Tile ab = dungeon.getLevel().tileStore.getTile(x, y + 1);
-			Tile atl = dungeon.getLevel().tileStore.getTile(x - 1, y - 1);
-			Tile atr = dungeon.getLevel().tileStore.getTile(x + 1, y - 1);
-			Tile abl = dungeon.getLevel().tileStore.getTile(x - 1, y + 1);
-			Tile abr = dungeon.getLevel().tileStore.getTile(x + 1, y + 1);
-
+			Tile al = ts.getTileRaw(p.x - 1, p.y);
+			Tile at = ts.getTileRaw(p.x, p.y - 1);
+			Tile atl = ts.getTileRaw(p.x - 1, p.y - 1);
+			Tile atr = ts.getTileRaw(p.x + 1, p.y - 1);
+			Tile abl = ts.getTileRaw(p.x - 1, p.y + 1);
+			
 			int aotl = vAO(al, at, atl);
-			int aotr = vAO(ar, at, atr);
-			int aobl = vAO(al, ab, abl);
-			int aobr = vAO(ar, ab, abr);
+			int aotr = vAO(tr, at, atr);
+			int aobl = vAO(al, bl, abl);
+			int aobr = vAO(tr, bl, br);
 
 			Colour caotl = vAOCol(aotl);
 			Colour caotr = vAOCol(aotr);
@@ -173,31 +175,31 @@ public abstract class TileRenderer implements UsesAssets {
 			Colour caobr = vAOCol(aobr);
 
 			batch.rect(
-				x * width, y * height, width, height,
-				Utils.colourToGdx(caotl, 0),
-				Utils.colourToGdx(caotr, 1),
-				Utils.colourToGdx(caobr, 2),
-				Utils.colourToGdx(caobl, 3)
+				p.x * width, p.y * height, width, height,
+				Colour.colourToGdx(caotl, 0),
+				Colour.colourToGdx(caotr, 1),
+				Colour.colourToGdx(caobr, 2),
+				Colour.colourToGdx(caobl, 3)
 			);
 		}
 	}
 	
-	public void drawDim(SpriteBatch batch, Dungeon dungeon, int x, int y) {
+	public void drawDim(SpriteBatch batch, Tile tile, Point p) {
 		int width = TileMap.TILE_WIDTH;
 		int height = TileMap.TILE_HEIGHT;
 		
-		if (dungeon.getLevel().visibilityStore.isTileInvisible(x, y)) {
-			if (dungeon.getLevel().tileStore.getTileType(x, y).getSolidity() == TileType.Solidity.SOLID) {
-				batch.draw(dimLight, x * width, y * height, width, height);
+		if (tile.getLevel().visibilityStore.isTileInvisible(p)) {
+			if (tile.getType().getSolidity() == Solidity.SOLID) {
+				batch.draw(dimLight, p.x * width, p.y * height, width, height);
 			} else {
-				batch.draw(dim, x * width, y * height, width, height);
+				batch.draw(dim, p.x * width, p.y * height, width, height);
 			}
 		}
 	}
 	
-	public static boolean shouldDrawTile(Camera camera, int x, int y) {
-		float tx = (x + 0.5f) * TileMap.TILE_WIDTH;
-		float ty = (y + 0.5f) * TileMap.TILE_HEIGHT;
+	public static boolean shouldDrawTile(Camera camera, Point p) {
+		float tx = (p.x + 0.5f) * TileMap.TILE_WIDTH;
+		float ty = (p.y + 0.5f) * TileMap.TILE_HEIGHT;
 		
 		return camera.frustum.boundsInFrustum(
 			tx, ty, 0.0f,
@@ -216,11 +218,11 @@ public abstract class TileRenderer implements UsesAssets {
 		return TileMap.TILE_HEIGHT / 2;
 	}
 	
-	public boolean shouldDrawParticles(Dungeon dungeon, int x, int y) {
+	public boolean shouldDrawParticles(Tile tile, Point p) {
 		return true;
 	}
 	
-	public void applyParticleChanges(Dungeon dungeon, int x, int y, ParticleEffectPool.PooledEffect effect) {}
+	public void applyParticleChanges(Tile tile, Point p, ParticleEffectPool.PooledEffect effect) {}
 	
 	public boolean canDrawBasic() {
 		return false;

@@ -6,8 +6,9 @@ import jr.debugger.utils.Debuggable;
 import jr.dungeon.Level;
 import jr.dungeon.tiles.states.TileState;
 import jr.utils.Colour;
+import jr.utils.Distance;
 import jr.utils.Point;
-import jr.utils.Utils;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 @Getter
 @Setter
 public class Tile implements Debuggable {
-	private int x;
-	private int y;
+	@Getter(AccessLevel.NONE)
+	public final Point position;
 	
 	@Expose private TileType type;
 	@Expose private TileState state;
@@ -29,18 +30,17 @@ public class Tile implements Debuggable {
 	
 	private Level level;
 
-	public Tile(Level level, TileType type, int x, int y) {
+	public Tile(Level level, TileType type, Point position) {
 		this.level = level;
 		this.type = type;
 		
-		this.x = x;
-		this.y = y;
+		this.position = position;
 		
 		initialiseState();
 	}
 	
-	public jr.utils.Point getPosition() {
-		return jr.utils.Point.getPoint(x, y);
+	public Tile(Level level, TileType type, int x, int y) {
+		this(level, type, Point.get(x, y));
 	}
 	
 	public void resetLight() {
@@ -73,51 +73,52 @@ public class Tile implements Debuggable {
 		return state != null;
 	}
 	
-	public void setType(TileType type) {
+	public Tile setType(TileType type) {
 		TileType oldType = this.type;
+		this.type = type;
 		
-		if (type.getStateClass() != this.type.getStateClass()) {
-			this.type = type;
-			
+		if (type.getStateClass() == null) {
+			state = null;
+		} else if (!type.getStateClass().equals(oldType.getStateClass())) {
 			initialiseState();
-		} else {
-			this.type = type;
 		}
 		
 		level.tileStore.triggerTileSetEvent(this, oldType, type);
+		
+		return this;
 	}
 	
 	/**
 	 * @param target The target to check adjacency to.
 	 *
 	 * @return Whether or not the tile is adjacent to the target - checks for a
-	 * {@link Utils#chebyshevDistance(int, int, int, int) Chebyshev distance} of 1 or less.
+	 * {@link Distance#chebyshev(int, int, int, int) Chebyshev distance} of 1 or less.
 	 */
 	public boolean isAdjacentTo(Tile target) {
-		return Utils.chebyshevDistance(x, y, target.getX(), target.getY()) <= 1;
+		return Distance.chebyshev(position, target.position) <= 1;
 	}
 	
 	/**
 	 * @param target The target to check adjacency to.
 	 *
 	 * @return Whether or not the tile is adjacent to the target - checks for a
-	 * {@link Utils#octileDistance(int, int, int, int, float, float)} Octile distance} of 1 or less.
+	 * {@link Distance#octile(int, int, int, int, float, float)} Octile distance} of 1 or less.
 	 */
 	public boolean isAdjacentTo(Point target) {
-		return Utils.octileDistance(x, y, target.getX(), target.getY(), 1, 1) <= 1;
+		return Distance.octile(position, target, 1, 1) <= 1;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Tile && ((Tile) o).getX() == x && ((Tile) o).getY() == y;
+		return o instanceof Tile && ((Tile) o).position.equals(position) && ((Tile) o).level == level;
 	}
 	
 	@Override
 	public String getValueString() {
 		return String.format(
-			"[P_GREY_3]%s[] %,d, %,d",
+			"[P_GREY_3]%s[] %s",
 			type.name().replaceFirst("^TILE_", ""),
-			x, y
+			position
 		);
 	}
 }

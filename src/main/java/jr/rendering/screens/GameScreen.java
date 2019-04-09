@@ -189,8 +189,8 @@ public class GameScreen extends BasicScreen implements EventListener {
 		if (p != null && !settings.isShowLevelDebug()) {
 			EntityAnimationData data = entityComponent.getAnimationProvider().getEntityAnimationData(p);
 			
-			float worldX = p.getX() + (data != null ? data.cameraX : 0);
-			float worldY = p.getY() + (data != null ? data.cameraY : 0);
+			float worldX = p.getPosition().x + (data != null ? data.cameraX : 0);
+			float worldY = p.getPosition().y + (data != null ? data.cameraY : 0);
 			
 			float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
 			float camY = worldY * TileMap.TILE_HEIGHT;

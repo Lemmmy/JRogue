@@ -9,11 +9,13 @@ import jr.dungeon.entities.events.EntityKickedTileEvent;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.io.Messenger;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import jr.utils.VectorInt;
 
@@ -56,27 +58,24 @@ public class ActionKick extends Action {
 		runBeforeRunCallback(entity);
 		
 		boolean isLivingEntity = entity instanceof EntityLiving;
-		
-		if (!isLivingEntity) {
-			return;
-		}
+		if (!isLivingEntity) return;
 		
 		boolean isPlayer = entity instanceof Player;
 		EntityLiving entityLiving = (EntityLiving) entity;
 		
 		if (kickedEntity != null) {
-			entityKick(msg, entity, entityLiving, isPlayer, direction);
+			entityKick(msg, entityLiving, isPlayer, direction);
 		} else {
-			VectorInt kickPos = entity.getPositionVector().add(direction);
-			tileKick(msg, entity, entityLiving, isPlayer, kickPos);
+			Point kickPos = entity.getPosition().add(direction);
+			tileKick(msg, entityLiving, isPlayer, direction, kickPos);
 		}
 		
 		runOnCompleteCallback(entity);
 	}
 	
-	private void entityKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, VectorInt direction) {
+	private void entityKick(Messenger msg, EntityLiving kicker, boolean isPlayer, VectorInt direction) {
 		if (kickedEntity.isStatic()) {
-			entity.getDungeon().log(
+			kicker.getDungeon().log(
 				"%s %s %s!",
 				LanguageUtils.subject(kicker).build(Capitalise.first),
 				LanguageUtils.autoTense(Lexicon.kick.clone(), kicker),
@@ -84,17 +83,14 @@ public class ActionKick extends Action {
 			);
 		}
 		
-		kickedEntity.kick(kicker, direction.getX(), direction.getY());
+		kickedEntity.kick(kicker, direction);
 	}
 	
-	private void tileKick(Messenger msg, Entity entity, EntityLiving kicker, boolean isPlayer, VectorInt pos) {
-		int x = pos.getX();
-		int y = pos.getY();
-
-		Tile tile = entity.getLevel().tileStore.getTile(x, y);
-		TileType tileType = entity.getLevel().tileStore.getTileType(x, y);
+	private void tileKick(Messenger msg, EntityLiving kicker, boolean isPlayer, VectorInt direction, Point position) {
+		Tile tile = kicker.getLevel().tileStore.getTile(position);
+		TileType tileType = kicker.getLevel().tileStore.getTileType(position);
 		
-		if (tileType == null || tileType.getSolidity() != TileType.Solidity.SOLID) {
+		if (tileType == null || tileType.getSolidity() != Solidity.SOLID) {
 			if (RandomUtils.roll(5) == 1) {
 				if (isPlayer) {
 					Player player = (Player) kicker;
@@ -117,13 +113,13 @@ public class ActionKick extends Action {
 				kicker.addStatusEffect(new StrainedLeg(RandomUtils.roll(3, 6)));
 			} else {
 				if (isPlayer) {
-					entity.getDungeon().You("kick thin air.");
+					kicker.getDungeon().You("kick thin air.");
 				}
 			}
 			
 			return;
 		}
 		
-		kicker.getDungeon().eventSystem.triggerEvent(new EntityKickedTileEvent(kicker, tile));
+		kicker.getDungeon().eventSystem.triggerEvent(new EntityKickedTileEvent(kicker, tile, direction));
 	}
 }

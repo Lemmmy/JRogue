@@ -9,7 +9,6 @@ import jr.dungeon.entities.containers.EntityChest;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.io.YesNoPrompt;
-import jr.dungeon.items.Readable;
 import jr.dungeon.items.*;
 import jr.dungeon.items.identity.AspectBookContents;
 import jr.dungeon.items.magical.spells.Spell;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Registered(id="itemSpellbook")
-public class ItemSpellbook extends Item implements Readable, SpecialChestSpawn {
+public class ItemSpellbook extends Item implements ReadableItem, SpecialChestSpawn {
 	private static final Map<Class<? extends Spell>, Integer> spellLevelMap = new HashMap<>();
 	
 	static {

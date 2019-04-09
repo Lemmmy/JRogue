@@ -192,14 +192,13 @@ public class Dungeon implements Serialisable, Messenger {
 			player = new Player(
 				this,
 				level,
-				level.getSpawnX(),
-				level.getSpawnY(),
+				level.getSpawnPoint(),
 				settings.getPlayerName(),
 				settings.getRole()
 			);
 		}
 		
-		player.setLevel(level, Point.getPoint(level.getSpawnX(), level.getSpawnY()));
+		player.setLevel(level, level.getSpawnPoint());
 		level.entityStore.addEntity(player);
 		
 		eventSystem.triggerEvent(new LevelChangeEvent(level));

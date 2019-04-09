@@ -219,7 +219,7 @@ public class TurnSystem {
 		}
 		
 		if (
-			l.entityStore.getHostileMonsters().size() < Math.abs(l.getDepth() * 2 + 10) &&
+			l.entityStore.getHostileMonsters().count() < Math.abs(l.getDepth() * 2 + 10) &&
 			--monsterSpawnCounter <= 0
 		) {
 			l.monsterSpawner.spawnNewMonsters();

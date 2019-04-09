@@ -9,14 +9,15 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="projectileArrow")
 public class EntityArrow extends EntityProjectile {
 	private boolean canPenetrate = false;
 	
-	public EntityArrow(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityArrow(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected EntityArrow() { super(); }

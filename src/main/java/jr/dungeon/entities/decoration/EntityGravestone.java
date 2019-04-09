@@ -8,16 +8,17 @@ import jr.dungeon.entities.EntityAppearance;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
-import jr.dungeon.entities.interfaces.Readable;
+import jr.dungeon.entities.interfaces.ReadableEntity;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 @Registered(id="entityGravestone")
-public class EntityGravestone extends Entity implements Readable {
+public class EntityGravestone extends Entity implements ReadableEntity {
 	private static final String[] GRAVE_MESSAGES = new String[] {
 		"Rest in peace",
 		"R.I.P.",
@@ -26,8 +27,8 @@ public class EntityGravestone extends Entity implements Readable {
 	
 	@Expose private String message;
 	
-	public EntityGravestone(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityGravestone(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		message = RandomUtils.randomFrom(GRAVE_MESSAGES);
 	}

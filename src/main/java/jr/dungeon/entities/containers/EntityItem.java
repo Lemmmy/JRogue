@@ -17,10 +17,12 @@ import jr.dungeon.items.ItemStack;
 import jr.dungeon.items.Shatterable;
 import jr.dungeon.items.valuables.ItemThermometer;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.TileType;
 import jr.language.LanguageUtils;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -28,8 +30,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class EntityItem extends Entity {
 	@Expose	@Getter private ItemStack itemStack;
 	
-	public EntityItem(Dungeon dungeon, Level level, int x, int y, ItemStack itemStack) {
-		super(dungeon, level, x, y);
+	public EntityItem(Dungeon dungeon, Level level, Point position, ItemStack itemStack) {
+		super(dungeon, level, position);
 		
 		this.itemStack = itemStack;
 	}
@@ -64,8 +66,7 @@ public class EntityItem extends Entity {
 	
 	@EventHandler(selfOnly = true)
 	public void onKick(EntityKickedEntityEvent e) {
-		int x = getX() + e.getDeltaX();
-		int y = getY() + e.getDeltaY();
+		Point newPosition = getPosition().add(e.getDirection());
 		
 		if (getItem() instanceof Shatterable) {
 			getDungeon().log(
@@ -81,9 +82,9 @@ public class EntityItem extends Entity {
 			return;
 		}
 		
-		TileType tile = getLevel().tileStore.getTileType(x, y);
+		TileType tile = getLevel().tileStore.getTileType(newPosition);
 		
-		if (tile == null || tile.getSolidity() == TileType.Solidity.SOLID) {
+		if (tile == null || tile.getSolidity() == Solidity.SOLID) {
 			getDungeon().log(
 				"%s strikes the side of the wall.",
 				LanguageUtils.object(this).build(Capitalise.first)
@@ -92,7 +93,7 @@ public class EntityItem extends Entity {
 			return;
 		}
 		
-		setPosition(x, y);
+		setPosition(newPosition);
 	}
 	
 	@Override
@@ -105,7 +106,7 @@ public class EntityItem extends Entity {
 		if (event.isNew()) {
 			getDungeon().eventSystem.triggerEvent(new ItemDroppedEvent(this));
 			
-			getLevel().entityStore.getEntitiesAt(getX(), getY()).stream()
+			getLevel().entityStore.getEntitiesAt(getPosition())
 				.filter(e -> !e.equals(this))
 				.forEach(e -> getDungeon().eventSystem.triggerEvent(new ItemDroppedOnEntityEvent(e, this)));
 		}

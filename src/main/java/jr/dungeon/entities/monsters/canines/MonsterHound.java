@@ -8,13 +8,14 @@ import jr.dungeon.entities.effects.StatusEffect;
 import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 import java.util.List;
 
 @Registered(id="monsterHound")
 public class MonsterHound extends MonsterCanine {
-	public MonsterHound(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterHound(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected MonsterHound() { super(); }

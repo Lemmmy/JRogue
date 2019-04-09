@@ -14,6 +14,7 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 import java.util.Optional;
 
@@ -21,8 +22,8 @@ import java.util.Optional;
 public class EntityWeaponRack extends Entity implements Lootable, ContainerOwner {
 	@Expose private Container container;
 	
-	public EntityWeaponRack(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityWeaponRack(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		container = new WeaponRackContainer(getName(null));
 	}

@@ -25,6 +25,7 @@ import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.language.transformers.Capitalise;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.List;
@@ -33,8 +34,8 @@ import java.util.List;
 public class MonsterGoblin extends Monster {
 	private static final float DAGGER_DROP_CHANCE = 0.75f;
 	
-	public MonsterGoblin(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterGoblin(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 		
 		StatefulAI ai = new StatefulAI(this);
 		setAI(ai);

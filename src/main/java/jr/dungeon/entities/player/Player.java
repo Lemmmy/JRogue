@@ -27,13 +27,12 @@ import jr.dungeon.items.Item;
 import jr.dungeon.items.magical.spells.Spell;
 import jr.dungeon.items.weapons.ItemWeapon;
 import jr.dungeon.serialisation.Registered;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
-import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -69,8 +68,8 @@ public class Player extends EntityLiving {
 	public PlayerDefaultVisitors defaultVisitors = new PlayerDefaultVisitors(this);
 	private PlayerDefaultEvents defaultEvents = new PlayerDefaultEvents();
 	
-	public Player(Dungeon dungeon, Level level, int x, int y, String name, Role role) {
-		super(dungeon, level, x, y, 1);
+	public Player(Dungeon dungeon, Level level, Point position, String name, Role role) {
+		super(dungeon, level, position, 1);
 		
 		this.name = name;
 		this.role = role;
@@ -121,16 +120,16 @@ public class Player extends EntityLiving {
 		
 		List<Tile> availableSpawnTiles = Arrays.stream(getLevel().tileStore.getOctAdjacentTiles(getPosition()))
 			.filter(Objects::nonNull)
-			.filter(t -> t.getType().getSolidity() == TileType.Solidity.WALK_ON)
+			.filter(t -> t.getType().getSolidity() == Solidity.WALK_ON)
 			.collect(Collectors.toList());
 		
 		if (availableSpawnTiles.isEmpty()) {
 			spawnPoint = getPosition();
 		} else {
-			spawnPoint = RandomUtils.randomFrom(availableSpawnTiles).getPosition();
+			spawnPoint = RandomUtils.randomFrom(availableSpawnTiles).position;
 		}
 		
-		familiar.set(QuickSpawn.spawnClass(familiarClass, getLevel(), spawnPoint.getX(), spawnPoint.getY()));
+		familiar.set(QuickSpawn.spawnClass(familiarClass, getLevel(), spawnPoint));
 	}
 	
 	@Override
@@ -185,7 +184,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public char getAvailableSpellLetter() {
-		for (char letter : Utils.INVENTORY_CHARS) {
+		for (char letter : Container.INVENTORY_CHARS) {
 			if (!knownSpells.containsKey(letter)) {
 				return letter;
 			}
@@ -264,7 +263,7 @@ public class Player extends EntityLiving {
 	}
 	
 	public int getLightLevel() {
-		return getLevel().tileStore.getTile(getX(), getY()).getLightIntensity();
+		return getLevel().tileStore.getTile(getPosition()).getLightIntensity();
 	}
 	
 	public int getCorridorVisibilityRange() {

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
 import jr.dungeon.entities.actions.Action;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,11 +32,10 @@ public abstract class EntityTurnBased extends Entity {
 	/**
 	 * @param dungeon The {@link Dungeon} this Entity is part of.
 	 * @param level The {@link Level} this Entity is on.
-	 * @param x The starting X position of this Entity in the {@link Level}.
-	 * @param y The starting Y position of this Entity in the {@link Level}.
+	 * @param position The starting position of this Entity in the {@link Level}.
 	 */
-	public EntityTurnBased(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityTurnBased(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected EntityTurnBased() { super(); }

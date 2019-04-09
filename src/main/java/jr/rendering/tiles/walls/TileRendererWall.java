@@ -2,13 +2,15 @@ package jr.rendering.tiles.walls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
-import jr.dungeon.Level;
+import jr.dungeon.TileStore;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.tiles.TileRenderer;
 import jr.rendering.utils.BlobUtils;
 import jr.rendering.utils.ImageUtils;
+import jr.utils.Directions;
+import jr.utils.Point;
 import jr.utils.WeightedCollection;
 
 import java.util.Random;
@@ -45,31 +47,24 @@ public class TileRendererWall extends TileRenderer {
 		assets.textures.loadPacked(tileFile("room_walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
 	}
 	
-	protected boolean isTopHorizontal(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
+	protected boolean isTopHorizontal(Tile tile, Point p) {
+		TileStore ts = tile.getLevel().tileStore;
 		
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		boolean top = adjacentTiles[2].isInnerRoomTile();
-		
-		return h && top;
+		return (ts.getTileType(p.add(Directions.WEST)).isWallTile()  ||
+			   	ts.getTileType(p.add(Directions.EAST)).isWallTile()) &&
+			   ts.getTileType(p.add(Directions.SOUTH)).isInnerRoomTile();
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		if (isTopHorizontal(dungeon, x, y) && x % 2 == 0) {
-			return wallHPillar;
-		} else {
-			return getImageFromMask(getPositionMask(dungeon.getLevel(), x, y));
-		}
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
+		return isTopHorizontal(tile, p) && p.x % 2 == 0
+			   ? wallHPillar : getImageFromMask(getPositionMask(tile, p));
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		if (isTopHorizontal(dungeon, x, y) && x % 2 == 0) {
-			return wallHPillarExtra;
-		}
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
+		return isTopHorizontal(tile, p) && p.x % 2 == 0 ? wallHPillarExtra : null;
 		
-		return null;
 	}
 	
 	protected TextureRegion getImageFromMask(int mask) {
@@ -80,8 +75,8 @@ public class TileRendererWall extends TileRenderer {
 		return set[MAP[mask]];
 	}
 	
-	protected int getPositionMask(Level level, int x, int y) {
-		return BlobUtils.getPositionMask4(this::isJoinedTile, level, x, y);
+	protected int getPositionMask(Tile tile, Point p) {
+		return BlobUtils.getPositionMask4(tile, p, this::isJoinedTile);
 	}
 	
 	protected boolean isJoinedTile(TileType type) {
@@ -89,30 +84,27 @@ public class TileRendererWall extends TileRenderer {
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 		
-		if (isTopHorizontal(dungeon, x, y) && x % 2 != 0) {
-			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
+		if (isTopHorizontal(tile, p) && p.x % 2 != 0) {
+			rand.setSeed(p.getIndex(tile.getLevel()));
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			if (decoration != null)	decoration.draw(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.draw(this, batch, tile, p, rand);
 		}
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		TextureRegion t = getTextureRegionExtra(dungeon, x, y);
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		TextureRegion t = getTextureRegionExtra(tile, p);
+		drawTile(batch, t, p.add(Directions.SOUTH));
 		
-		if (t != null) {
-			drawTile(batch, t, x, y - 1);
-		}
-		
-		if (isTopHorizontal(dungeon, x, y) && x % 2 != 0) {
-			rand.setSeed(y * dungeon.getLevel().getWidth() + x);
+		if (isTopHorizontal(tile, p) && p.x % 2 != 0) {
+			rand.setSeed(p.getIndex(tile.getLevel()));
 			
 			WallDecoration decoration = wallDecoration.next(rand);
-			if (decoration != null)	decoration.drawExtra(this, batch, dungeon, x, y, rand);
+			if (decoration != null)	decoration.drawExtra(this, batch, tile, p, rand);
 		}
 	}
 }

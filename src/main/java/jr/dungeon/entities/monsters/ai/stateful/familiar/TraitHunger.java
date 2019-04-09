@@ -8,7 +8,7 @@ import jr.dungeon.entities.monsters.familiars.Familiar;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.items.comestibles.ItemComestible;
 import jr.dungeon.serialisation.Registered;
-import jr.utils.Utils;
+import jr.utils.Distance;
 
 import java.util.Comparator;
 
@@ -39,16 +39,16 @@ public class TraitHunger extends AITrait<FamiliarAI> {
 		if (m.getNutrition() > 650) return;
 		
 		l.entityStore.getEntities().stream()
-			.filter(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
+			.filter(e -> Distance.chebyshev(e.getPosition(), m.getPosition()) < m.getVisibilityRange())
 			.filter(EntityItem.class::isInstance)
 			.map(EntityItem.class::cast)
 			.filter(e -> e.getItem() instanceof ItemComestible)
 			.filter(e -> ((ItemComestible) e.getItem()).getStatusEffects(m).isEmpty())
 			.filter(e -> ai.canSee(e))
 			.filter(e -> ai.canReach(e))
-			.min(Comparator.comparingInt(e -> Utils.chebyshevDistance(e.getPosition(), m.getPosition())))
+			.min(Comparator.comparingInt(e -> Distance.chebyshev(e.getPosition(), m.getPosition())))
 			.ifPresent(e -> {
-				if (e.getPosition() == m.getPosition()) {
+				if (e.getPosition().equals(m.getPosition())) {
 					ai.setCurrentState(new StateConsumeComestible(ai, 3, e));
 				} else {
 					ai.setCurrentState(new StateApproachComestible(ai, 5, e));

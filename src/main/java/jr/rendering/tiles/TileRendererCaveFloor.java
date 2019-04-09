@@ -2,10 +2,11 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
 import jr.rendering.utils.ImageUtils;
+import jr.utils.Point;
 
 import java.util.Random;
 
@@ -36,10 +37,8 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		super.drawExtra(batch, dungeon, x, y);
-		
-		rand.setSeed(x * y);
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		rand.setSeed(p.getIndex(tile.getLevel()));
 		
 		// i'd normally do a randFloat() comparison here but
 		// for some reason there was a REALLY strange problem where any branch here with a randFloat() in it
@@ -54,8 +53,8 @@ public class TileRendererCaveFloor extends TileRendererConnecting {
 			
 			batch.draw(
 				rockRegion,
-				x * TileMap.TILE_WIDTH + rockX,
-				y * TileMap.TILE_HEIGHT + rockY
+				p.x * TileMap.TILE_WIDTH + rockX,
+				p.y * TileMap.TILE_HEIGHT + rockY
 			);
 		}
 	}

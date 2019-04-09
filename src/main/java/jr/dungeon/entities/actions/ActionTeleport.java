@@ -7,52 +7,37 @@ import jr.dungeon.io.Messenger;
 import jr.dungeon.tiles.Tile;
 import jr.utils.Point;
 
-import java.util.List;
-
 /**
  * Teleport action.
  *
  * @see Action
  */
 public class ActionTeleport extends Action {
-	private int x;
-	private int y;
+	private Point position;
 	
 	/**
 	 * Teleport action.
 	 *
-	 * @param point The point to teleport to.
+	 * @param position The point to teleport to.
 	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
 	 */
-	public ActionTeleport(Point point, ActionCallback callback) {
-		this(point.getX(), point.getY(), callback);
-	}
-	
-	/**
-	 * Teleport action.
-	 *
-	 * @param x The X position to teleport to.
-	 * @param y The Y position to teleport to.
-	 * @param callback {@link Action.ActionCallback Callback} to call when action-related events occur.
-	 */
-	public ActionTeleport(int x, int y, ActionCallback callback) {
+	public ActionTeleport(Point position, ActionCallback callback) {
 		super(callback);
-		this.x = x;
-		this.y = y;
+		this.position = position;
 	}
 	
 	@Override
 	public void execute(Entity entity, Messenger msg) {
 		runBeforeRunCallback(entity);
 		
-		Tile tile = entity.getLevel().tileStore.getTile(x, y);
+		Tile tile = entity.getLevel().tileStore.getTile(position);
 		
 		if (tile == null) {
 			runOnCompleteCallback(entity);
 			return;
 		}
 		
-		entity.setPosition(x, y);
+		entity.setPosition(position);
 		
 		if (entity instanceof Player) {
 			if (tile.getType().onWalk() != null) {
@@ -60,8 +45,8 @@ public class ActionTeleport extends Action {
 			}
 		}
 		
-		List<Entity> walkable = entity.getLevel().entityStore.getWalkableEntitiesAt(x, y);
-		walkable.forEach(e -> e.teleport((EntityLiving) entity));
+		entity.getLevel().entityStore.getWalkableEntitiesAt(position)
+			.forEach(e -> e.teleport((EntityLiving) entity));
 		
 		runOnCompleteCallback(entity);
 	}

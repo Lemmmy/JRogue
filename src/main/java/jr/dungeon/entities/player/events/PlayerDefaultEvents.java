@@ -21,19 +21,15 @@ public class PlayerDefaultEvents implements EventListener {
 	private void onPlayerWalkedIntoSolidEvent(PlayerWalkedIntoSolidEvent e) {
 		Player player = e.getPlayer();
 		Tile tile = e.getTile();
-		int x = e.getX();
-		int y = e.getY();
-		int dx = e.getDirectionX();
-		int dy = e.getDirectionY();
 		
 		if (tile.getType() == TileType.TILE_ROOM_DOOR_LOCKED) {
-			onPlayerWalkedLockedDoor(player, tile, dx, dy);
+			onPlayerWalkedLockedDoor(player, tile, e.getDirection());
 		} else if (tile.getType() == TileType.TILE_ROOM_DOOR_CLOSED) {
 			onPlayerWalkedClosedDoor(player, tile);
 		}
 	}
 	
-	private void onPlayerWalkedLockedDoor(Player player, Tile tile, int dx, int dy) {
+	private void onPlayerWalkedLockedDoor(Player player, Tile tile, VectorInt direction) {
 		String msg = "The door is locked. Kick it down?";
 		
 		player.getDungeon().prompt(new YesNoPrompt(msg, true, yes -> {
@@ -47,7 +43,7 @@ public class PlayerDefaultEvents implements EventListener {
 					player.getDungeon().turnSystem.setDoingBulkAction(true);
 				}
 				
-				player.setAction(new ActionKick(new VectorInt(dx, dy), null));
+				player.setAction(new ActionKick(direction, null));
 				player.getDungeon().turnSystem.turn();
 				
 				if (tile.getType() != TileType.TILE_ROOM_DOOR_LOCKED) {

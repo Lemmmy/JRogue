@@ -1,6 +1,5 @@
 package jr.dungeon.generators.rooms;
 
-import com.github.alexeyr.pcg.Pcg32;
 import jr.dungeon.Level;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.entities.decoration.EntityGravestone;
@@ -8,6 +7,7 @@ import jr.dungeon.entities.monsters.zombies.MonsterGoblinZombie;
 import jr.dungeon.entities.monsters.zombies.MonsterZombie;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Point;
 import jr.utils.RandomUtils;
 
 import java.util.ArrayList;
@@ -26,10 +26,8 @@ public class RoomGraveyard extends RoomBasic {
 		ZOMBIE_CLASSES.add(MonsterGoblinZombie.class);
 	}
 	
-	private static final Pcg32 RAND = new Pcg32();
-	
-	public RoomGraveyard(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
-		super(level, roomX, roomY, roomWidth, roomHeight);
+	public RoomGraveyard(Level level, Point position, int roomWidth, int roomHeight) {
+		super(level, position, roomWidth, roomHeight);
 	}
 	
 	@Override
@@ -38,7 +36,7 @@ public class RoomGraveyard extends RoomBasic {
 		
 		int graveCount = RandomUtils.random(
 			MIN_GRAVES,
-			Math.max(MIN_MAX_GRAVES, (getWidth() - 2) * (getHeight() - 2) / 10)
+			Math.max(MIN_MAX_GRAVES, (width - 2) * (height - 2) / 10)
 		);
 		
 		for (int i = 0; i < graveCount; i++) {
@@ -47,20 +45,19 @@ public class RoomGraveyard extends RoomBasic {
 	}
 	
 	private void addGravestone() {
-		int x = RAND.nextInt(getWidth() - 2) + getX() + 1;
-		int y = RAND.nextInt(getHeight() - 2) + getY() + 1;
+		Point point = randomPoint();
 		
 		if (
-			getLevel().tileStore.getTileType(x, y).isFloor() &&
-			getLevel().entityStore.getEntitiesAt(x, y).size() == 0
+			tileStore.getTileType(point).isFloor() &&
+			!level.entityStore.areEntitiesAt(point)
 		) {
-			getLevel().entityStore.addEntity(new EntityGravestone(getLevel().getDungeon(), getLevel(), x, y));
+			level.entityStore.addEntity(new EntityGravestone(level.getDungeon(), level, point));
 			
 			if (RandomUtils.rollD2()) {
 				int zombieCount = RandomUtils.random(MIN_ZOMBIES, MAX_ZOMBIES);
 				
 				for (int i = 0; i < zombieCount; i++) {
-					QuickSpawn.spawnClass(RandomUtils.randomFrom(ZOMBIE_CLASSES), getLevel(), x, y);
+					QuickSpawn.spawnClass(RandomUtils.randomFrom(ZOMBIE_CLASSES), level, point);
 				}
 			}
 		}

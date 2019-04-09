@@ -7,6 +7,7 @@ import jr.dungeon.generators.Climate;
 import jr.dungeon.generators.DungeonGenerator;
 import jr.dungeon.serialisation.Serialisable;
 import jr.dungeon.tiles.Tile;
+import jr.utils.Point;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +28,7 @@ public class Level implements Serialisable, Debuggable {
 	@Expose private int height;
 	@Expose private int depth;
 	
-	@Expose private int spawnX;
-	@Expose private int spawnY;
+	@Expose @Setter private Point spawnPoint;
 	
 	@Expose private long turnCreated;
 	
@@ -129,17 +129,6 @@ public class Level implements Serialisable, Debuggable {
 		tileStore.setEventsSuppressed(false);
 		
 		monsterSpawner.spawnMonsters();
-	}
-	
-	/**
-	 * Sets the level's spawn point in tile coordinates. This is where the player will appear when entering the level.
-	 *
-	 * @param x The x coordinate of the spawn point.
-	 * @param y The y coordinate of the spawn point.
-	 */
-	public void setSpawnPoint(int x, int y) {
-		spawnX = x;
-		spawnY = y;
 	}
 
 	/**

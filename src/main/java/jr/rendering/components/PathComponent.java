@@ -76,7 +76,7 @@ public class PathComponent extends RendererComponent {
 			float point = (float) (i.get() - 1) / (float) (path.getLength() - 1);
 			
 			mainBatch.setColor(PATH_GRADIENT.getColourAtPoint(point));
-			mainBatch.draw(image, step.getX() * TileMap.TILE_WIDTH + 0.01f, step.getY() * TileMap.TILE_HEIGHT + 0.01f);
+			mainBatch.draw(image, step.position.x * TileMap.TILE_WIDTH, step.position.y * TileMap.TILE_HEIGHT);
 		});
 		
 		mainBatch.setColor(oldColour);
@@ -125,7 +125,7 @@ public class PathComponent extends RendererComponent {
 		}
 		
 		public static int getMask(Path path, Tile step) {
-			boolean[] a = path.getAdjacentSteps(step.getX(), step.getY());
+			Boolean[] a = path.getAdjacentSteps(step.position);
 			
 			int n = a[3] ? 1 : 0;
 			int s = a[2] ? 1 : 0;

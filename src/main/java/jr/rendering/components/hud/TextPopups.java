@@ -83,7 +83,7 @@ public class TextPopups implements EventListener {
 		}
 		
 		Vector3 pos = renderer.getCamera().project(
-			new Vector3((worldPos.getX() + 0.5f) * TileMap.TILE_WIDTH, worldPos.getY() * TileMap.TILE_HEIGHT, 0)
+			new Vector3((worldPos.x + 0.5f) * TileMap.TILE_WIDTH, worldPos.y * TileMap.TILE_HEIGHT, 0)
 		);
 		
 		Table table = new Table(hudComponent.getSkin());

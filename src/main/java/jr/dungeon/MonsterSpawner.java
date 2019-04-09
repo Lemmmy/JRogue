@@ -6,11 +6,12 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.MonsterSpawn;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.generators.MonsterSpawningStrategy;
+import jr.dungeon.tiles.Solidity;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
+import jr.utils.Distance;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
-import jr.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,7 +52,7 @@ public class MonsterSpawner {
 				int count = RandomUtils.jrandom(s.getRangePerLevel());
 				
 				for (int j = 0; j < count; j++) {
-					jr.utils.Point point = getMonsterSpawnPoint();
+					Point point = getMonsterSpawnPoint();
 					
 					if (s.isPack()) {
 						spawnPackAtPoint(s.getMonsterClass(), point, RandomUtils.random(s.getPackRange()));
@@ -67,7 +68,7 @@ public class MonsterSpawner {
 			return;
 		}
 		
-		jr.utils.Point point = getMonsterSpawnPointAwayFromPlayer();
+		Point point = getMonsterSpawnPointAwayFromPlayer();
 		
 		if (point != null) {
 			List<MonsterSpawn> possibleMonsterSpawns = monsterSpawningStrategy.getSpawns().stream()
@@ -81,55 +82,46 @@ public class MonsterSpawner {
 	}
 	
 	void spawnMonsterAtPoint(Class<? extends Monster> monsterClass, Point point) {
-		QuickSpawn.spawnClass(monsterClass, level, point.getX(), point.getY());
+		QuickSpawn.spawnClass(monsterClass, level, point);
 	}
 	
 	private void spawnPackAtPoint(Class<? extends Monster> monsterClass, Point point, int amount) {
 		List<Tile> validTiles = Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.sorted(Comparator.comparingInt(a -> Utils.distance(
-				point.getX(), point.getY(),
-				a.getX(), a.getY()
-			)))
+			.sorted(Comparator.comparingInt(a -> Distance.i(point, a.position)))
 			.collect(Collectors.toList());
 		
-		validTiles.subList(0, amount).forEach(t ->
-			spawnMonsterAtPoint(monsterClass, new jr.utils.Point(t.getX(), t.getY())));
+		validTiles.subList(0, amount).forEach(t -> spawnMonsterAtPoint(monsterClass, t.position));
 	}
 	
-	private jr.utils.Point getMonsterSpawnPoint() {
+	private Point getMonsterSpawnPoint() {
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
 			.collect(Collectors.toList())
 		);
 		
-		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
+		return tile != null ? tile.position : null;
 	}
 	
-	private jr.utils.Point getMonsterSpawnPointAwayFromPlayer() {
+	private Point getMonsterSpawnPointAwayFromPlayer() {
 		Player player = dungeon.getPlayer();
 		
 		Tile tile = RandomUtils.randomFrom(Arrays.stream(level.tileStore.getTiles())
 			.filter(t ->
-				t.getType().getSolidity() != TileType.Solidity.SOLID && t.getType().isInnerRoomTile() ||
+				t.getType().getSolidity() != Solidity.SOLID && t.getType().isInnerRoomTile() ||
 				t.getType() == TileType.TILE_CORRIDOR
 			)
-			.filter(t -> !level.visibilityStore.getVisibleTiles()[level.getWidth() * t.getY() + t.getX()])
-			.filter(t -> Utils.distance(
-				t.getX(),
-				t.getY(),
-				player.getX(),
-				player.getY()
-			) > MIN_MONSTER_SPAWN_DISTANCE)
+			.filter(t -> !level.visibilityStore.getVisibleTiles()[t.position.getIndex(level)])
+			.filter(t -> Distance.i(t.position, player.getPosition()) > MIN_MONSTER_SPAWN_DISTANCE)
 			.collect(Collectors.toList())
 		);
 		
-		return tile == null ? null : new jr.utils.Point(tile.getX(), tile.getY());
+		return tile != null ? tile.position : null;
 	}
 }

@@ -2,8 +2,10 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
+import jr.utils.Directions;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -20,26 +22,23 @@ public class TileRendererSewerDrain extends TileRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
 		return drain;
 	}
 	
 	@Override
-	public TextureRegion getTextureRegionExtra(Dungeon dungeon, int x, int y) {
-		return water;
+	public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
+		return tile.getLevel().tileStore.getTileType(p.add(Directions.SOUTH)).isWater()
+			   ? water : null;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 	}
 	
 	@Override
-	public void drawExtra(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		super.drawExtra(batch, dungeon, x, y);
-		
-		if (dungeon.getLevel().tileStore.getTileType(x, y - 1).isWater()) {
-			drawTile(batch, getTextureRegionExtra(dungeon, x, y), x, y - 1);
-		}
+	public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegionExtra(tile, p), p.add(Directions.SOUTH));
 	}
 }

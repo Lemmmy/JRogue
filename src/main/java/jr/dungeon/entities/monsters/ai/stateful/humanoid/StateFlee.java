@@ -5,8 +5,7 @@ import jr.dungeon.entities.monsters.Monster;
 import jr.dungeon.entities.monsters.ai.stateful.AIState;
 import jr.dungeon.entities.monsters.ai.stateful.StatefulAI;
 import jr.dungeon.serialisation.Registered;
-import jr.dungeon.tiles.Tile;
-import jr.dungeon.tiles.TileType;
+import jr.dungeon.tiles.Solidity;
 import jr.utils.Point;
 import jr.utils.RandomUtils;
 import lombok.val;
@@ -32,11 +31,9 @@ public class StateFlee extends AIState<StatefulAI> {
 			dest = getRandomDestination();
 		}
 		
-		if (m.getPosition() == dest || m.getPosition() == m.getLastPosition()) {
+		if (m.getPosition().equals(dest) || m.getPosition().equals(m.getLastPosition())) {
 			ai.setCurrentState(null);
-			
-			Point safePoint = Point.getPoint(m.getX(), m.getY());
-			ai.addSafePoint(safePoint);
+			ai.addSafePoint(m.getPosition());
 		} else {
 			ai.moveTowards(dest);
 		}
@@ -47,9 +44,9 @@ public class StateFlee extends AIState<StatefulAI> {
 		Monster m = ai.getMonster();
 		
 		return safePoint.orElseGet(() -> RandomUtils
-			.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getX(), m.getY(), 7).stream()
-				.filter(t -> t.getType().getSolidity() != TileType.Solidity.SOLID)
-				.map(Tile::getPosition)
+			.randomFrom(m.getLevel().tileStore.getTilesInRadius(m.getPosition(), 7).stream()
+				.filter(t -> t.getType().getSolidity() != Solidity.SOLID)
+				.map(t -> t.position)
 				.collect(Collectors.toList())));
 	}
 	

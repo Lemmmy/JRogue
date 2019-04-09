@@ -2,9 +2,11 @@ package jr.rendering.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jr.dungeon.Dungeon;
-import jr.dungeon.tiles.TileType;
+import jr.dungeon.TileStore;
+import jr.dungeon.tiles.Tile;
 import jr.rendering.assets.Assets;
+import jr.utils.Directions;
+import jr.utils.Point;
 
 import static jr.rendering.assets.Textures.tileFile;
 
@@ -20,15 +22,15 @@ public class TileRendererDoor extends TileRenderer {
 	}
 	
 	@Override
-	public TextureRegion getTextureRegion(Dungeon dungeon, int x, int y) {
-		TileType[] adjacentTiles = dungeon.getLevel().tileStore.getAdjacentTileTypes(x, y);
-		boolean h = adjacentTiles[0].isWallTile() || adjacentTiles[1].isWallTile();
-		
-		return h ? openH : openV;
+	public TextureRegion getTextureRegion(Tile tile, Point p) {
+		TileStore ts = tile.getLevel().tileStore;
+		return ts.getTileType(p.add(Directions.WEST)).isWallTile() ||
+			   ts.getTileType(p.add(Directions.EAST)).isWallTile()
+			   ? openH : openV;
 	}
 	
 	@Override
-	public void draw(SpriteBatch batch, Dungeon dungeon, int x, int y) {
-		drawTile(batch, getTextureRegion(dungeon, x, y), x, y);
+	public void draw(SpriteBatch batch, Tile tile, Point p) {
+		drawTile(batch, getTextureRegion(tile, p), p);
 	}
 }

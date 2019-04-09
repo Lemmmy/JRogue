@@ -79,8 +79,7 @@ public class StateConsumeComestible extends AIState<FamiliarAI> {
 				EntityItem newStack = new EntityItem(
 					f.getDungeon(),
 					f.getLevel(),
-					f.getX(),
-					f.getY(),
+					f.getPosition(),
 					new ItemStack(item, 1)
 				);
 				

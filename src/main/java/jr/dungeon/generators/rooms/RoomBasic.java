@@ -1,45 +1,47 @@
 package jr.dungeon.generators.rooms;
 
 import jr.dungeon.Level;
-import jr.dungeon.TileStore;
+import jr.dungeon.generators.BuildingUtils;
 import jr.dungeon.generators.GeneratorRooms;
+import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.dungeon.tiles.states.TileStateTorch;
 import jr.utils.Colour;
+import jr.utils.Point;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class RoomBasic extends Room {
-	public RoomBasic(Level level, int roomX, int roomY, int roomWidth, int roomHeight) {
-		super(level, roomX, roomY, roomWidth, roomHeight);
+	public RoomBasic(Level level, Point position, int roomWidth, int roomHeight) {
+		super(level, position, roomWidth, roomHeight);
+	}
+	
+	private void buildTorch(GeneratorRooms generator, Tile tile) {
+		TileType torchType = getTorchTileType(generator);
+		
+		if (torchType != null) {
+			tile.setType(torchType);
+			
+			if (tile.hasState() && tile.getState() instanceof TileStateTorch) {
+				((TileStateTorch) tile.getState()).setColours(getTorchColours(generator));
+			}
+		}
 	}
 	
 	@Override
 	public void build(GeneratorRooms generator) {
-		TileStore ts = getLevel().tileStore;
-		
-		for (int y = getY(); y < getY() + getHeight(); y++) {
-			for (int x = getX(); x < getX() + getWidth(); x++) {
-				boolean wall = x == getX() || x == getX() + getWidth() - 1 ||
-					y == getY() || y == getY() + getHeight() - 1;
-				
-				if (wall) {
-					if (x > getX() && x < getX() + getWidth() - 1 && x % 4 == 0) {
-						ts.setTileType(x, y, getTorchTileType(generator));
-						
-						if (getTorchTileType(generator) != null
-							&& ts.getTile(x, y).hasState()
-							&& ts.getTile(x, y).getState() instanceof TileStateTorch) {
-							((TileStateTorch) ts.getTile(x, y).getState()).setColours(getTorchColours(generator));
-						}
-					} else {
-						ts.setTileType(x, y, getWallTileType(generator));
-					}
+		BuildingUtils.buildArea(tileStore, position, width, height, (t, p) -> {
+			if (isEdgePoint(p)) { // should be a wall
+				if (p.x > position.x && p.x < position.x + width - 1 && p.x % 4 == 0) {
+					buildTorch(generator, t);
+					return null;
 				} else {
-					ts.setTileType(x, y, getFloorTileType(generator));
+					return getWallTileType(generator);
 				}
+			} else {
+				return getFloorTileType(generator);
 			}
-		}
+		});
 	}
 	
 	@Override

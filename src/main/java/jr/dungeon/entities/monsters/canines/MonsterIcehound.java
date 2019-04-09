@@ -10,6 +10,7 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.Lexicon;
 import jr.language.Noun;
 import jr.utils.Colour;
+import jr.utils.Point;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ import java.util.List;
 public class MonsterIcehound extends MonsterHound implements LightEmitter {
 	private static final Colour LIGHT_COLOUR = new Colour(0x8BD1ECFF);
 	
-	public MonsterIcehound(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public MonsterIcehound(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected MonsterIcehound() { super(); }

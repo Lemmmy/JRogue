@@ -14,11 +14,12 @@ import jr.dungeon.serialisation.Registered;
 import jr.language.LanguageUtils;
 import jr.language.Lexicon;
 import jr.language.Noun;
+import jr.utils.Point;
 
 @Registered(id="entityFountain")
 public class EntityFountain extends Entity implements PassiveSoundEmitter, Quaffable {
-	public EntityFountain(Dungeon dungeon, Level level, int x, int y) {
-		super(dungeon, level, x, y);
+	public EntityFountain(Dungeon dungeon, Level level, Point position) {
+		super(dungeon, level, position);
 	}
 	
 	protected EntityFountain() { super(); }

@@ -2,15 +2,16 @@ package jr.dungeon;
 
 import com.google.gson.annotations.Expose;
 import jr.dungeon.entities.Entity;
+import jr.dungeon.entities.containers.EntityItem;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.events.EntityRemovedEvent;
 import jr.dungeon.entities.monsters.Monster;
+import jr.utils.Directions;
 import jr.utils.Point;
-import jr.utils.Utils;
 import lombok.Getter;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Store class for {@link Entity Entities}. Handles storage, serialisation, deserialisation, getters and setters
@@ -116,102 +117,89 @@ public class EntityStore {
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return All {@link Entity Entities} at the specified location.
 	 */
-	public List<Entity> getEntitiesAt(int x, int y) {
+	public Stream<Entity> getEntitiesAt(Point point) {
 		return entities.values().stream()
-			.filter(e -> e.getX() == x && e.getY() == y)
-			.collect(Collectors.toList());
+			.filter(e -> e.getPosition().equals(point));
 	}
 	
-	/**
-	 * @param p The position to check.
-	 *
-	 * @return All {@link Entity Entities} at the specified location.
-	 */
-	public List<Entity> getEntitiesAt(Point p) {
-		return entities.values().stream()
-			.filter(e -> e.getPosition().equals(p))
-			.collect(Collectors.toList());
+	public boolean areEntitiesAt(Point point) {
+		return getEntitiesAt(point).findAny().isPresent();
 	}
 	
 	/**
 	 * @return All {@link Monster Monster entities} in the store.
 	 */
-	public List<Entity> getMonsters() {
+	public Stream<Monster> getMonsters() {
 		return entities.values().stream()
 			.filter(Monster.class::isInstance)
-			.collect(Collectors.toList());
+			.map(Monster.class::cast);
 	}
 	
 	/**
 	 * @return All {@link Monster#isHostile() hostile} {@link Monster Monster entities} in the store.
 	 */
-	public List<Entity> getHostileMonsters() {
-		return entities.values().stream()
-			.filter(Monster.class::isInstance)
-			.filter(e -> ((Monster) e).isHostile())
-			.collect(Collectors.toList());
+	public Stream<Monster> getHostileMonsters() {
+		return getMonsters().filter(Monster::isHostile);
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
-	 * @return All {@link Entity Entities} adjacent to this tile.
-	 *
-	 * @see Utils#DIRECTIONS
+	 * @return All {@link EntityItem EntityItems} at the specified location.
 	 */
-	public List<Entity> getAdjacentEntities(int x, int y) {
-		List<Entity> entities = new ArrayList<>();
-		
-		Arrays.stream(Utils.DIRECTIONS).forEach(d -> entities.addAll(getEntitiesAt(x + d.getX(), y + d.getY())));
-		
-		return entities;
+	public Stream<EntityItem> getItemsAt(Point point) {
+		return getEntitiesAt(point)
+			.filter(EntityItem.class::isInstance)
+			.map(EntityItem.class::cast);
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
+	 *
+	 * @return All {@link Entity Entities} cardinally adjacent to this tile.
+	 *
+	 * @see Directions#CARDINAL
+	 */
+	public Stream<Entity> getAdjacentEntities(Point point) {
+		return Directions.cardinal()
+			.map(point::add)
+			.flatMap(this::getEntitiesAt);
+	}
+	
+	/**
+	 * @param point The position to check.
 	 *
 	 * @return All {@link Monster Monster entities} adjacent to this tile.
 	 *
-	 * @see Utils#DIRECTIONS
+	 * @see Directions#CARDINAL
 	 */
-	public List<Entity> getAdjacentMonsters(int x, int y) {
-		return getAdjacentEntities(x, y).stream()
-			.filter(e -> e instanceof Monster)
-			.collect(Collectors.toList());
+	public Stream<Entity> getAdjacentMonsters(Point point) {
+		return getAdjacentEntities(point)
+			.filter(Monster.class::isInstance);
 	}
 	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return All {@link Entity Entities} at the specified location that
 	 * {@link Entity#canBeWalkedOn() cannot be walked on}.
 	 */
-	public List<Entity> getUnwalkableEntitiesAt(int x, int y) {
-		return entities.values().stream()
-			.filter(e -> e.getX() == x && e.getY() == y && !e.canBeWalkedOn())
-			.collect(Collectors.toList());
+	public Stream<Entity> getUnwalkableEntitiesAt(Point point) {
+		return getEntitiesAt(point).filter(e -> !e.canBeWalkedOn());
 	}
 	
-	
 	/**
-	 * @param x The X position to check.
-	 * @param y The Y position to check.
+	 * @param point The position to check.
 	 *
 	 * @return All {@link Entity Entities} at the specified location that
 	 * {@link Entity#canBeWalkedOn() can be walked on}.
 	 */
-	public List<Entity> getWalkableEntitiesAt(int x, int y) {
-		return entities.values().stream()
-			.filter(e -> e.getX() == x && e.getY() == y && e.canBeWalkedOn())
-			.collect(Collectors.toList());
+	public Stream<Entity> getWalkableEntitiesAt(Point point) {
+		return getEntitiesAt(point).filter(Entity::canBeWalkedOn);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import jr.language.Noun;
 import jr.language.Verb;
 import jr.language.transformers.TransformerType;
 import jr.utils.RandomUtils;
+import jr.utils.VectorInt;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,10 +72,10 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
 	}
 	
 	@Override
-	public void zap(EntityLiving attacker, EntityLiving victim, int dx, int dy) {}
+	public void zap(EntityLiving attacker, EntityLiving victim, VectorInt direction) {}
 	
 	@Override
-	public boolean fire(EntityLiving attacker, ItemProjectile projectile, int dx, int dy) {
+	public boolean fire(EntityLiving attacker, ItemProjectile projectile, VectorInt direction) {
 		return false;
 	}
 	

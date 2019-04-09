@@ -1,5 +1,6 @@
 package jr.dungeon.entities.player.visitors;
 
+import jr.dungeon.entities.Entity;
 import jr.dungeon.entities.actions.Action;
 import jr.dungeon.entities.actions.ActionKick;
 import jr.dungeon.entities.effects.InjuredFoot;
@@ -7,8 +8,11 @@ import jr.dungeon.entities.effects.StrainedLeg;
 import jr.dungeon.entities.player.Attribute;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.io.Prompt;
-import jr.utils.Utils;
+import jr.utils.Directions;
+import jr.utils.Point;
 import jr.utils.VectorInt;
+
+import java.util.Optional;
 
 public class PlayerKick implements PlayerVisitor {
 	@Override
@@ -18,7 +22,7 @@ public class PlayerKick implements PlayerVisitor {
 		player.getDungeon().prompt(new Prompt(msg, null, true, new Prompt.SimplePromptCallback(player.getDungeon()) {
 			@Override
 			public void onResponse(char response) {
-				if (!Utils.MOVEMENT_CHARS.containsKey(response)) {
+				if (!Directions.MOVEMENT_CHARS.containsKey(response)) {
 					player.getDungeon().log(String.format("Invalid direction '[YELLOW]%s[]'.", response));
 					return;
 				}
@@ -43,18 +47,15 @@ public class PlayerKick implements PlayerVisitor {
 			}
 		}
 		
-		VectorInt d = Utils.MOVEMENT_CHARS.get(response);
-		int dx = d.getX();
-		int dy = d.getY();
+		VectorInt direction = Directions.MOVEMENT_CHARS.get(response);
+		Point targetPosition = player.getPosition().add(direction);
 		
-		if (player.getLevel().entityStore.getEntitiesAt(player.getX() + dx, player.getY() + dy).size() > 0) {
-			player.setAction(new ActionKick(
-				d,
-				player.getLevel().entityStore.getEntitiesAt(player.getX() + dx, player.getY() + dy).get(0),
-				new Action.NoCallback()
-			));
+		Optional<Entity> entity = player.getLevel().entityStore.getEntitiesAt(targetPosition).findFirst();
+		
+		if (entity.isPresent()) {
+			player.setAction(new ActionKick(direction, entity.get(), new Action.NoCallback()));
 		} else {
-			player.setAction(new ActionKick(d, new Action.NoCallback()));
+			player.setAction(new ActionKick(direction, new Action.NoCallback()));
 		}
 		
 		player.getDungeon().turnSystem.turn();
