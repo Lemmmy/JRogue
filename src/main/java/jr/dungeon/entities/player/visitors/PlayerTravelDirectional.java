@@ -34,9 +34,9 @@ public class PlayerTravelDirectional implements PlayerVisitor {
         Path pathTaken = new Path();
         
         VectorInt direction = Directions.MOVEMENT_CHARS.get(response);
-        Point newPosition = player.getPosition().add(direction);
         
         for (int i = 0; i < 50; i++) { // max 50 steps in one move
+            Point newPosition = player.getPosition().add(direction);
             Tile destTile = player.getLevel().tileStore.getTile(newPosition);
             
             if (

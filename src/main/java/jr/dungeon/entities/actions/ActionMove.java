@@ -46,7 +46,8 @@ public class ActionMove extends Action {
             if (entity instanceof Player) {
                 Entity unwalkableEnt = optUnwalkable.get();
                 
-                if (!unwalkableEnt.getLastPosition().equals(unwalkableEnt.getPosition())) {
+                if (!(unwalkableEnt instanceof Player) &&
+                    !unwalkableEnt.getLastPosition().equals(unwalkableEnt.getPosition())) {
                     msg.log(
                         "%s beats you to it!",
                         LanguageUtils.subject(unwalkableEnt).build(Capitalise.first)
