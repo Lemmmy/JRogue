@@ -630,13 +630,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
         if (tileStore.getTileType(point).isWall()) {
             TileType[] adjacentTiles = tileStore.getAdjacentTileTypes(point);
             
-            for (TileType tile : adjacentTiles) {
-                if (tile == TileType.TILE_ROOM_DOOR_CLOSED) {
-                    return false;
-                }
-            }
-            
-            return getWallOrientation(adjacentTiles) != Orientation.CORNER;
+            return Arrays.stream(adjacentTiles).noneMatch(TileType::isDoor) &&
+                   getWallOrientation(adjacentTiles) != Orientation.CORNER;
         }
         
         return false;
