@@ -82,6 +82,26 @@ public abstract class Room {
         );
     }
     
+    public Point randomPointAlongWall(WallSide side) {
+        Point random = randomPoint();
+        
+        switch (side) {
+            default:
+            case TOP:
+                return Point.get(random.x, position.y + height - 1);
+            case BOTTOM:
+                return Point.get(random.x, position.y);
+            case LEFT:
+                return Point.get(position.x, random.y);
+            case RIGHT:
+                return Point.get(position.x + width - 1, random.y);
+        }
+    }
+    
+    public Point doorPointAlongWall(WallSide side) {
+        return randomPointAlongWall(side);
+    }
+    
     /**
      * Returns whether or not the given {@link Point} is on or outside the edge of the room.
      *
@@ -130,4 +150,8 @@ public abstract class Room {
      * Add special features (like {@link jr.dungeon.entities.Entity Entities} to this room.
      */
     public abstract void addFeatures();
+    
+    public enum WallSide {
+        TOP, BOTTOM, LEFT, RIGHT
+    }
 }

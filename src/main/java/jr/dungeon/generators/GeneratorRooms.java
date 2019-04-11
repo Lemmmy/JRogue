@@ -7,6 +7,7 @@ import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.generators.rooms.Room;
+import jr.dungeon.generators.rooms.Room.WallSide;
 import jr.dungeon.generators.rooms.Rooms;
 import jr.dungeon.generators.rooms.features.FeatureAltar;
 import jr.dungeon.generators.rooms.features.FeatureChest;
@@ -682,28 +683,28 @@ public abstract class GeneratorRooms extends DungeonGenerator {
             ) {
                 if (btr.x > atr.x) {
                     return new ConnectionPoint(
-                        Point.get(atr.x - 1, ac.y),
-                        Point.get(bc.x, btr.y - 1),
+                        a.doorPointAlongWall(WallSide.RIGHT),
+                        b.doorPointAlongWall(WallSide.TOP),
                         Orientation.HORIZONTAL
                     );
                 } else {
                     return new ConnectionPoint(
-                        Point.get(btr.x - 1, bc.y),
-                        Point.get(ac.x, atr.y - 1),
+                        b.doorPointAlongWall(WallSide.RIGHT),
+                        a.doorPointAlongWall(WallSide.TOP),
                         Orientation.HORIZONTAL
                     );
                 }
             } else {
                 if (bbl.x > abl.x || btr.x > atr.x) {
                     return new ConnectionPoint(
-                        Point.get(atr.x - 1, ac.y),
-                        Point.get(bbl.x, bc.y),
+                        a.doorPointAlongWall(WallSide.RIGHT),
+                        b.doorPointAlongWall(WallSide.LEFT),
                         Orientation.HORIZONTAL
                     );
                 } else {
                     return new ConnectionPoint(
-                        Point.get(btr.x - 1, bc.y),
-                        Point.get(abl.x, ac.y),
+                        b.doorPointAlongWall(WallSide.RIGHT),
+                        a.doorPointAlongWall(WallSide.LEFT),
                         Orientation.HORIZONTAL
                     );
                 }
@@ -717,28 +718,28 @@ public abstract class GeneratorRooms extends DungeonGenerator {
             ) {
                 if (btr.y > atr.y) {
                     return new ConnectionPoint(
-                        Point.get(ac.x, atr.y - 1),
-                        Point.get(btr.x - 1, bc.y),
+                        a.doorPointAlongWall(WallSide.TOP),
+                        b.doorPointAlongWall(WallSide.RIGHT),
                         Orientation.VERTICAL
                     );
                 } else {
                     return new ConnectionPoint(
-                        Point.get(bc.x, btr.y - 1),
-                        Point.get(atr.x - 1, ac.y),
+                        b.doorPointAlongWall(WallSide.TOP),
+                        a.doorPointAlongWall(WallSide.RIGHT),
                         Orientation.VERTICAL
                     );
                 }
             } else {
                 if (btr.y > atr.y) {
                     return new ConnectionPoint(
-                        Point.get(ac.x, atr.y - 1),
-                        Point.get(bc.x, bbl.y),
+                        a.doorPointAlongWall(WallSide.TOP),
+                        b.doorPointAlongWall(WallSide.BOTTOM),
                         Orientation.VERTICAL
                     );
                 } else {
                     return new ConnectionPoint(
-                        Point.get(bc.x, btr.y - 1),
-                        Point.get(ac.x, abl.y),
+                        b.doorPointAlongWall(WallSide.TOP),
+                        a.doorPointAlongWall(WallSide.BOTTOM),
                         Orientation.VERTICAL
                     );
                 }
