@@ -239,7 +239,6 @@ public class DebugUI {
     public void dispose() {
         try {
             if (stage != null) stage.dispose();
-            skin.dispose();
             profiler.disable();
         } catch (Exception ignored) {}
     }

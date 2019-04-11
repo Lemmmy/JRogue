@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import jr.dungeon.Dungeon;
 import jr.dungeon.Level;
+import jr.rendering.GameAdapter;
 import jr.rendering.components.hud.HUDComponent;
 
 public class DebugWindow extends WindowBase {
@@ -42,14 +43,19 @@ public class DebugWindow extends WindowBase {
             )
         );
         getWindowBorder().getContentTable().row();
-        
-        Button seeAllButton = new TextButton("See all", getSkin());
-        seeAllButton.addListener(new ChangeListener() {
+    
+        GameAdapter game = getHud().renderer.getGame();
+        Button debugClientButton = new TextButton("Open debug client", getSkin());
+        debugClientButton.setDisabled(game.getDebugClient() != null);
+        debugClientButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getLevel().visibilityStore.seeAll();
+                if (game.getDebugClient() != null) return;
+                
+                game.openDebugClient();
+                debugClientButton.setDisabled(true);
             }
         });
-        getWindowBorder().getContentTable().add(seeAllButton).width(50f);
+        getWindowBorder().getContentTable().add(debugClientButton);
     }
 }

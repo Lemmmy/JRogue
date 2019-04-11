@@ -78,8 +78,7 @@ public class GameAdapter extends Game {
         });
         
         if (settings.isShowDebugClient()) {
-            this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));
-            this.debugClientThread.start();
+            openDebugClient();
         }
         
         batch = new SpriteBatch();
@@ -237,6 +236,23 @@ public class GameAdapter extends Game {
         if (debugClient != null) debugClient.dispose();
         
         assets.dispose();
+    }
+    
+    public void openDebugClient() {
+        this.debugClientThread = new Thread(() -> this.debugClient = new DebugClient(this, rootDebugObject));
+        this.debugClientThread.start();
+    }
+    
+    public void debugWindowClosing() {
+        this.debugClient = null;
+        
+        try {
+            this.debugClientThread.join();
+        } catch (InterruptedException e) {
+            ErrorHandler.error("Error stopping debug client thread", e);
+        }
+        
+        setDebugWindowFocused(false);
     }
     
     public void setDebugWindowFocused(boolean debugWindowFocused) {

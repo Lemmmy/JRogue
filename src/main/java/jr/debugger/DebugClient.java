@@ -181,6 +181,7 @@ public class DebugClient extends ApplicationAdapter implements EventListener {
         } catch (Exception ignored) {
         } finally {
             if (window != null) window.closeWindow();
+            gameAdapter.debugWindowClosing();
         }
     }
 }
