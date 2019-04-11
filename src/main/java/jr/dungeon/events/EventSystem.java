@@ -101,8 +101,9 @@ public class EventSystem {
     private void fetchEventMethods(Set<EventHandlerMethodInstance> handlers, EventListener listener, Event event, EventInvocationTime invocationTime) {
         event.setDungeon(dungeon);
         
-        List<Method> listenerMethods = new LinkedList<>();
+        Set<Method> listenerMethods = new HashSet<>();
         
+        boolean found = false;
         for (Class<?> listenerClass = listener.getClass(); listenerClass != null; listenerClass = listenerClass.getSuperclass()) {
             Method[] methods = listenerClass.getDeclaredMethods();
             
@@ -113,8 +114,13 @@ public class EventSystem {
                     method.getParameterTypes()[0].isAssignableFrom(event.getClass())
                 ) {
                     listenerMethods.add(method);
+                    
+                    found = true;
+                    break;
                 }
             }
+            
+            if (found) break;
         }
         
         listenerMethods.forEach(method -> {

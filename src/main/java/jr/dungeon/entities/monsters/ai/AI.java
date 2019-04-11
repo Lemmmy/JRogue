@@ -276,8 +276,8 @@ public abstract class AI implements Serialisable, EventListener {
         return new ToStringBuilder(this, DebugToStringStyle.STYLE);
     }
     
-    public List<EventListener> getSubListeners() {
-        return new ArrayList<>();
+    public Set<EventListener> getSubListeners() {
+        return new HashSet<>();
     }
     
     public void suppress(int turns) {

@@ -164,7 +164,7 @@ public class StatefulAI extends AI {
     }
     
     @Override
-    public List<EventListener> getSubListeners() {
+    public Set<EventListener> getSubListeners() {
         val subListeners = super.getSubListeners();
         
         subListeners.add(currentState);

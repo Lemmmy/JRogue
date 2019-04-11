@@ -167,8 +167,8 @@ public class Container implements EventListener {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
     
-    public List<EventListener> getSubListeners() {
-        List<EventListener> subListeners = new ArrayList<>();
+    public Set<EventListener> getSubListeners() {
+        Set<EventListener> subListeners = new HashSet<>();
         
         items.values().forEach(i -> subListeners.add(i.getItem()));
         
