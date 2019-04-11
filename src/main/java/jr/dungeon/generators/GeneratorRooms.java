@@ -7,9 +7,7 @@ import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.dungeon.entities.QuickSpawn;
 import jr.dungeon.generators.rooms.Room;
-import jr.dungeon.generators.rooms.RoomBasic;
-import jr.dungeon.generators.rooms.RoomGraveyard;
-import jr.dungeon.generators.rooms.RoomWater;
+import jr.dungeon.generators.rooms.Rooms;
 import jr.dungeon.generators.rooms.features.FeatureAltar;
 import jr.dungeon.generators.rooms.features.FeatureChest;
 import jr.dungeon.generators.rooms.features.FeatureFountain;
@@ -40,18 +38,6 @@ import static jr.utils.QuickMaths.ifloor;
  * Dungeon generator that generates rooms connected with corridors.
  */
 public abstract class GeneratorRooms extends DungeonGenerator {
-    /**
-     * {@link WeightedCollection Weighted collection} containing probability that certain room types would spawn.
-     * When overriding, clear the collection first then add your own.
-     */
-    protected final WeightedCollection<Class<? extends Room>> roomTypes = new WeightedCollection<>();
-    
-    {
-        roomTypes.add(49, RoomBasic.class);
-        roomTypes.add(2, RoomWater.class);
-        roomTypes.add(1, RoomGraveyard.class);
-    }
-    
     /**
      * {@link WeightedCollection Weighted collection} containing probability that certain doors would spawn.
      * When overriding, clear the collection first then add your own.
@@ -239,7 +225,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
     protected void createRooms(Point position, int roomWidth, int roomHeight) {
         if (roomCalls++ >= 5000) System.exit(1);
         
-        buildRoom(roomTypes.next(), position, roomWidth, roomHeight);
+        Class<? extends Room> room = Rooms.getRandomRoom(level, this);
+        buildRoom(room, position, roomWidth, roomHeight);
         
         for (VectorInt direction : Directions.CARDINAL) {
             for (int attempts = 1; attempts < 5; ++attempts) {
@@ -302,6 +289,8 @@ public abstract class GeneratorRooms extends DungeonGenerator {
      * @param point The position to place the door.
      */
     protected void safePlaceDoor(Point point) {
+        if (!canPlaceDoor(point)) return;
+        
         tileStore.setTileType(point, doorTypes.next());
         
         Directions.cardinal()
@@ -323,7 +312,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
         buildLine(tileStore, start, end, (t, p) -> {
             if (tileStore.getTileType(p).isBuildable()) {
                 return tile;
-            } else if (canPlaceDoor(p)) {
+            } else {
                 safePlaceDoor(p);
             }
             
@@ -836,5 +825,9 @@ public abstract class GeneratorRooms extends DungeonGenerator {
     
     public TileType getCorridorTileType() {
         return TileType.TILE_CORRIDOR;
+    }
+    
+    public int getDefaultRoomWeight() {
+        return 50;
     }
 }

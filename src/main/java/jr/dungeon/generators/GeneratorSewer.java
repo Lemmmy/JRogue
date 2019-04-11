@@ -38,8 +38,7 @@ public class GeneratorSewer extends GeneratorRooms {
     
     @Override
     public Class<? extends DungeonGenerator> getNextGenerator() {
-        return level.getDepth() <= -7 ? GeneratorStandard.class :
-                                           GeneratorSewer.class;
+        return level.getDepth() <= -7 ? GeneratorStandard.class : GeneratorSewer.class;
     }
     
     @Override
@@ -84,6 +83,7 @@ public class GeneratorSewer extends GeneratorRooms {
         return TileType.TILE_SEWER_WALL;
     }
     
+    @Override
     public TileType getTorchTileType() {
         return TileType.TILE_SEWER_WALL;
     }
