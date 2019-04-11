@@ -308,7 +308,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
     public void setLevel(Level level, Point newPosition) {
         Tile oldTile = newPosition != null ? this.level.tileStore.getTile(position) : null;
         
-        this.level.entityStore.removeEntity(this); // TODO: is this safe to replace with remove()?
+        this.level.entityStore.removeEntity(this);
         this.level.entityStore.processEntityQueues(false);
         
         setLevelInternal(level);
@@ -317,11 +317,7 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
         level.entityStore.addEntity(this);
         level.entityStore.processEntityQueues(false);
         
-        dungeon.eventSystem.triggerEvent(new EntityChangeLevelEvent(
-            this,
-            oldTile,
-            level.tileStore.getTile(newPosition)
-        ));
+        dungeon.eventSystem.triggerEvent(new EntityChangeLevelEvent(this, oldTile, level.tileStore.getTile(newPosition)));
     }
     
     public void setLevelInternal(Level level) {

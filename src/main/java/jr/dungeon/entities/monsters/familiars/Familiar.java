@@ -7,7 +7,7 @@ import jr.dungeon.entities.DamageSource;
 import jr.dungeon.entities.DamageType;
 import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.effects.StatusEffect;
-import jr.dungeon.entities.events.EntityChangeLevelEvent;
+import jr.dungeon.entities.events.BeforePlayerChangeLevelEvent;
 import jr.dungeon.entities.events.EntityDeathEvent;
 import jr.dungeon.entities.interfaces.Friendly;
 import jr.dungeon.entities.monsters.Monster;
@@ -125,15 +125,13 @@ public abstract class Familiar extends Monster implements Friendly {
     }
     
     @EventHandler
-    public void onPlayerChangeLevel(EntityChangeLevelEvent e) {
-        if (!e.isEntityPlayer()) return;
-        
+    public void onPlayerChangeLevel(BeforePlayerChangeLevelEvent e) {
         if (
             e.getSrc().getLevel().equals(getLevel()) &&
-            (e.getSrc().isAdjacentTo(getPosition()) || e.getSrc().position.equals(getPosition()))
+            getAI().distanceFromPlayer() <= 3
         ) {
+            removeAction();
             setLevel(e.getDest().getLevel(), e.getDest().position);
-            getAI().suppress(2);
         }
     }
     

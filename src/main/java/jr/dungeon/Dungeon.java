@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import jr.JRogue;
 import jr.Settings;
 import jr.dungeon.entities.EntityLiving;
+import jr.dungeon.entities.events.BeforePlayerChangeLevelEvent;
 import jr.dungeon.entities.events.EntityAddedEvent;
 import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
@@ -213,6 +214,12 @@ public class Dungeon implements Serialisable, Messenger {
      * @param point The position to spawn the player at.
      */
     public void changeLevel(Level level, Point point) {
+        eventSystem.triggerEvent(new BeforePlayerChangeLevelEvent(
+            player,
+            this.level.tileStore.getTile(player.getPosition()),
+            level.tileStore.getTile(point)
+        ), EventInvocationTime.IMMEDIATELY);
+        
         getPlayer().setLevel(this.level = level, point);
         
         turnSystem.turn(true);
