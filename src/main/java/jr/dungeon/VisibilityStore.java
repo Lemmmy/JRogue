@@ -97,8 +97,8 @@ public class VisibilityStore implements LevelStore {
                 double a = Math.toRadians(r);
                 
                 Point pos = Point.get(
-                    ifloor(player.getPosition().x + i * Math.cos(a)),
-                    ifloor(player.getPosition().y + i * Math.sin(a))
+                    ifloor(player.getPosition().x + 0.5f + i * Math.cos(a)),
+                    ifloor(player.getPosition().y + 0.5f + i * Math.sin(a))
                 );
                 
                 TileType type = level.tileStore.getTileType(pos);
