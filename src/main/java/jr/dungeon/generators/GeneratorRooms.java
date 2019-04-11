@@ -222,10 +222,7 @@ public abstract class GeneratorRooms extends DungeonGenerator {
      * @param roomWidth The width of the first room.
      * @param roomHeight The height of the first room.
      */
-    private static int roomCalls = 0;
     protected void createRooms(Point position, int roomWidth, int roomHeight) {
-        if (roomCalls++ >= 5000) System.exit(1);
-        
         Class<? extends Room> room = Rooms.getRandomRoom(level, this);
         buildRoom(room, position, roomWidth, roomHeight);
         

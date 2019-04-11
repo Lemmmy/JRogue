@@ -4,7 +4,6 @@ import jr.dungeon.Level;
 import jr.dungeon.TileStore;
 import jr.dungeon.generators.GeneratorRooms;
 import jr.utils.Point;
-import jr.utils.RandomUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -75,32 +74,9 @@ public abstract class Room {
         );
     }
     
-    public Point randomPoint() {
-        return Point.get(
-            RandomUtils.random(position.x + 1, position.x + width - 2),
-            RandomUtils.random(position.y + 1, position.y + height - 2)
-        );
-    }
-    
-    public Point randomPointAlongWall(WallSide side) {
-        Point random = randomPoint();
-        
-        switch (side) {
-            default:
-            case TOP:
-                return Point.get(random.x, position.y + height - 1);
-            case BOTTOM:
-                return Point.get(random.x, position.y);
-            case LEFT:
-                return Point.get(position.x, random.y);
-            case RIGHT:
-                return Point.get(position.x + width - 1, random.y);
-        }
-    }
-    
-    public Point doorPointAlongWall(WallSide side) {
-        return randomPointAlongWall(side);
-    }
+    public abstract Point randomPoint();
+    public abstract Point randomPointAlongWall(WallSide side);
+    public abstract Point doorPointAlongWall(WallSide side);
     
     /**
      * Returns whether or not the given {@link Point} is on or outside the edge of the room.
@@ -111,6 +87,17 @@ public abstract class Room {
     public boolean isEdgePoint(Point point) {
         return point.x == position.x || point.x == position.x + width  - 1 ||
                point.y == position.y || point.y == position.y + height - 1;
+    }
+    
+    /**
+     * Returns whether or not the given {@link Point} is on the outside corner of this room.
+     *
+     * @param point The {@link Point} to check.
+     * @return Whether or not the {@link Point} is on the outside corner of this room.
+     */
+    public boolean isCornerPoint(Point point) {
+        return (point.x == position.x || point.x == position.x + width  - 1) &&
+               (point.y == position.y || point.y == position.y + height - 1);
     }
     
     /**

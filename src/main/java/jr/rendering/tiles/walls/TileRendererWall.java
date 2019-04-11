@@ -6,6 +6,7 @@ import jr.dungeon.TileStore;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
 import jr.rendering.assets.Assets;
+import jr.rendering.tiles.TileMap;
 import jr.rendering.tiles.TileRenderer;
 import jr.rendering.utils.BlobUtils;
 import jr.rendering.utils.ImageUtils;
@@ -29,7 +30,7 @@ public class TileRendererWall extends TileRenderer {
     }
     
     private static TextureRegion[] images = new TextureRegion[SHEET_WIDTH * SHEET_HEIGHT];
-    private static TextureRegion wallHPillar, wallHPillarExtra;
+    private static TextureRegion pillar;
     
     private static final int[] MAP = new int[] {
         12, 8, 13, 9, 0, 4, 1, 5, 15, 11, 14, 10, 3, 7, 2, 6
@@ -41,9 +42,7 @@ public class TileRendererWall extends TileRenderer {
     public void onLoad(Assets assets) {
         super.onLoad(assets);
         
-        assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> wallHPillar = t);
-        assets.textures.loadPacked(tileFile("room_wall_pillar_extra"), t -> wallHPillarExtra = t);
-        
+        assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> pillar = t);
         assets.textures.loadPacked(tileFile("room_walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
     }
     
@@ -51,20 +50,18 @@ public class TileRendererWall extends TileRenderer {
         TileStore ts = tile.getLevel().tileStore;
         
         return (ts.getTileType(p.add(Directions.WEST)).isWall()  ||
-                   ts.getTileType(p.add(Directions.EAST)).isWall()) &&
+                ts.getTileType(p.add(Directions.EAST)).isWall()) &&
                ts.getTileType(p.add(Directions.SOUTH)).isInnerRoomTile();
     }
     
     @Override
     public TextureRegion getTextureRegion(Tile tile, Point p) {
-        return isTopHorizontal(tile, p) && p.x % 2 == 0
-               ? wallHPillar : getImageFromMask(getPositionMask(tile, p));
+        return getImageFromMask(getPositionMask(tile, p));
     }
     
     @Override
     public TextureRegion getTextureRegionExtra(Tile tile, Point p) {
-        return isTopHorizontal(tile, p) && p.x % 2 == 0 ? wallHPillarExtra : null;
-        
+        return isTopHorizontal(tile, p) && p.x % 2 == 0 ? pillar : null;
     }
     
     protected TextureRegion getImageFromMask(int mask) {
@@ -87,7 +84,7 @@ public class TileRendererWall extends TileRenderer {
     public void draw(SpriteBatch batch, Tile tile, Point p) {
         drawTile(batch, getTextureRegion(tile, p), p);
         
-        if (isTopHorizontal(tile, p) && p.x % 2 != 0) {
+        if (getTextureRegionExtra(tile, p) == null) {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);
@@ -98,9 +95,9 @@ public class TileRendererWall extends TileRenderer {
     @Override
     public void drawExtra(SpriteBatch batch, Tile tile, Point p) {
         TextureRegion t = getTextureRegionExtra(tile, p);
-        drawTile(batch, t, p.add(Directions.SOUTH));
+        drawTile(batch, t, p.x, p.y - 3f / TileMap.TILE_WIDTH);
         
-        if (isTopHorizontal(tile, p) && p.x % 2 != 0) {
+        if (t == null) {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);

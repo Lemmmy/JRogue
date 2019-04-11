@@ -6,6 +6,8 @@ import jr.dungeon.entities.player.Attributes;
 import jr.rendering.ui.skin.UIAttributeIcons;
 import jr.rendering.ui.utils.FunctionalClickListener;
 
+import java.util.Comparator;
+
 public class AttributesPartial extends Table {
     private Attributes attributes;
     private boolean canDecrement;
@@ -30,7 +32,9 @@ public class AttributesPartial extends Table {
     private void populate() {
         Table attributesTable = new Table();
         addAvailableLabel(attributesTable);
-        attributes.getAttributeMap().forEach((a, l) -> addAttribute(attributesTable, a, l));
+        attributes.getAttributeMap().entrySet().stream()
+            .sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
+            .forEach(e-> addAttribute(attributesTable, e.getKey(), e.getValue()));
         add(attributesTable).row();
     }
     
