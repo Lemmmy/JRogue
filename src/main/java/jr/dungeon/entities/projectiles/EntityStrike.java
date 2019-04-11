@@ -5,6 +5,7 @@ import jr.dungeon.Level;
 import jr.dungeon.entities.*;
 import jr.dungeon.entities.interfaces.Extinguishable;
 import jr.dungeon.entities.interfaces.LightEmitter;
+import jr.dungeon.entities.interfaces.Strikable;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.tiles.Tile;
 import jr.dungeon.tiles.TileType;
@@ -71,6 +72,10 @@ public class EntityStrike extends EntityProjectile implements LightEmitter {
         
         if (victim instanceof Extinguishable) {
             ((Extinguishable) victim).extinguish();
+        }
+        
+        if (victim instanceof Strikable) {
+            ((Strikable) victim).onStrike(this, getSource());
         }
     }
     

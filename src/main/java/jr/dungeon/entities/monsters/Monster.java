@@ -61,9 +61,7 @@ public abstract class Monster extends EntityLiving {
     
     @Override
     public void update() {
-        if (ai != null) {
-            ai.update();
-        }
+        if (ai != null) ai.update();
         
         super.update();
     }
@@ -81,28 +79,12 @@ public abstract class Monster extends EntityLiving {
     @EventHandler(selfOnly = true)
     public void onDie(EntityDeathEvent e) {
         Player p = getDungeon().getPlayer();
-        
-        Noun attacker = LanguageUtils.subject(e.getAttacker());
-        boolean canSeeAttacker = true;
-        
-        if (
-            e.getAttacker().getLevel() != p.getLevel() ||
-            e.getAttacker().getLevel().visibilityStore.isTileInvisible(e.getAttacker().getPosition())
-        ) {
-            attacker = Lexicon.it.clone(); // can't see it, so don't know what it is
-            canSeeAttacker = false;
-        }
-        
-        Noun victim = LanguageUtils.object(e.getVictim());
-        boolean canSeeVictim = true;
-        
-        if (
-            e.getVictim().getLevel() != p.getLevel() ||
-            e.getVictim().getLevel().visibilityStore.isTileInvisible(e.getVictim().getPosition())
-        ) {
-            victim = Lexicon.it.clone(); // can't see it, so don't know what it is
-            canSeeVictim = false;
-        }
+    
+        boolean canSeeAttacker = e.getAttacker().isVisible();
+        Noun attacker = canSeeAttacker ? LanguageUtils.subject(e.getAttacker()) : Lexicon.it.clone();
+    
+        boolean canSeeVictim = e.getVictim().isVisible();
+        Noun victim = canSeeVictim ? LanguageUtils.object(e.getVictim()) : Lexicon.it.clone();
         
         if (!canSeeAttacker && !canSeeVictim) {
             getDungeon().logRandom(

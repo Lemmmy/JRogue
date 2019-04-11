@@ -9,6 +9,8 @@ import jr.dungeon.entities.EntityLiving;
 import jr.dungeon.entities.events.EntityKickedEntityEvent;
 import jr.dungeon.entities.events.EntityWalkedOnEvent;
 import jr.dungeon.entities.interfaces.ReadableEntity;
+import jr.dungeon.entities.interfaces.Strikable;
+import jr.dungeon.entities.projectiles.EntityStrike;
 import jr.dungeon.events.EventHandler;
 import jr.dungeon.serialisation.Registered;
 import jr.dungeon.wishes.Wishable;
@@ -20,7 +22,7 @@ import jr.utils.RandomUtils;
 
 @Wishable(name="gravestone")
 @Registered(id="entityGravestone")
-public class EntityGravestone extends Entity implements ReadableEntity {
+public class EntityGravestone extends Entity implements ReadableEntity, Strikable {
     private static final String[] GRAVE_MESSAGES = new String[] {
         "Rest in peace",
         "R.I.P.",
@@ -72,5 +74,21 @@ public class EntityGravestone extends Entity implements ReadableEntity {
     @Override
     public boolean canRead(EntityLiving reader) {
         return true;
+    }
+    
+    @Override
+    public void onStrike(EntityStrike strike, Entity source) {
+        remove();
+        
+        if (isVisible()) {
+            getDungeon().logRandom(
+                "The gravestone is pulverized.",
+                "The gravestone fizzles into dust.",
+                "The gravestone crumbles into dust.",
+                "The gravestone disappears into thin air.",
+                "The gravestone is torn up out of the ground and crumbles into dust.",
+                "The gravestone is ripped out of the ground and crumbles into dust."
+            );
+        }
     }
 }

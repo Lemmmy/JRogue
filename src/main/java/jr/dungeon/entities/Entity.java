@@ -196,10 +196,17 @@ public abstract class Entity implements Serialisable, EventListener, Debuggable 
     }
 
     /**
-     * @return true if this entity is immobile and should be shown outside of the player's view.
+     * @return {@code true} if this entity is immobile and should be shown outside of the player's view.
      */
     public boolean isStatic() {
         return false;
+    }
+    
+    /**
+     * @return {@code true} if this entity can be seen by the player.
+     */
+    public boolean isVisible() {
+        return dungeon.getPlayer().getLevel() == level && level.visibilityStore.isTileVisible(position);
     }
 
     public void update() {
