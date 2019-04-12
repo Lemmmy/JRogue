@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -29,6 +30,11 @@ public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory 
         return new TypeAdapter<T>() {
             @Override
             public void write(JsonWriter out, T value) throws IOException {
+                if (value == null) {
+                    out.nullValue();
+                    return;
+                }
+                
                 Class<? extends T> valueClass = (Class<? extends T>) value.getClass();
                 String id = registry.getID(valueClass)
                     .orElseThrow(() -> new JsonParseException(String.format(
@@ -57,7 +63,12 @@ public class DungeonRegistryTypeAdapterFactory<T> implements TypeAdapterFactory 
             }
             
             @Override
-            public T read(JsonReader in) {
+            public T read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.NULL) {
+                    in.nextNull();
+                    return null;
+                }
+                
                 JsonElement element = Streams.parse(in);
                 JsonElement sourceID = element.getAsJsonObject().remove(getFieldName()); // get and remove the id (dont bring it back to the object)
                 
