@@ -117,6 +117,8 @@ public class JRogue {
             adapter = new GameAdapter();
             
             new Lwjgl3Application(adapter, config);
+    
+            LogManager.shutdown();
         } catch (Exception e) {
             if (adapter != null) Gdx.app.exit();
             ErrorHandler.error("Top level error:", e);
