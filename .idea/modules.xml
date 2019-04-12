@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JRogue.iml" filepath="$PROJECT_DIR$/.idea/modules/JRogue.iml" group="JRogue" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JRogue_main.iml" filepath="$PROJECT_DIR$/.idea/modules/JRogue_main.iml" group="JRogue" />
+    </modules>
+  </component>
+</project>
