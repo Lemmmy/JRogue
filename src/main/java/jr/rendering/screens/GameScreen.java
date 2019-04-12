@@ -21,7 +21,6 @@ import jr.rendering.screens.utils.SlidingTransition;
 import jr.rendering.tiles.TileMap;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -270,8 +269,6 @@ public class GameScreen extends BasicScreen implements EventListener {
         mainBatch.dispose();
 
         rendererComponents.forEach(RendererComponent::dispose);
-        
-        LogManager.shutdown();
     }
     
     @EventHandler

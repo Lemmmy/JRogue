@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import jr.ErrorHandler;
 import jr.JRogue;
 import jr.Settings;
@@ -220,22 +221,24 @@ public class GameAdapter extends Game {
     
     @Override
     public void dispose() {
-        if (screen != null) {
-            screen.hide();
-            screen.dispose();
-        }
+        try {
+            if (screen != null) {
+                screen.hide();
+                screen.dispose();
+            }
+            
+            if (newScreen != null) {
+                newScreen.hide();
+                newScreen.dispose();
+            }
+            
+            oldFBO.dispose();
+            newFBO.dispose();
+            
+            if (debugClient != null) debugClient.dispose();
         
-        if (newScreen != null) {
-            newScreen.hide();
-            newScreen.dispose();
-        }
-        
-        oldFBO.dispose();
-        newFBO.dispose();
-        
-        if (debugClient != null) debugClient.dispose();
-        
-        assets.dispose();
+            assets.dispose();
+        } catch (GdxRuntimeException ignored) {} // TODO
     }
     
     public void openDebugClient() {

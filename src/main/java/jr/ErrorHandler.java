@@ -3,6 +3,7 @@ package jr;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import jr.utils.OperatingSystem;
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.opengl.GL11;
 
 import javax.swing.*;
@@ -24,12 +25,12 @@ public class ErrorHandler {
     /**
      * URL to post issues to.
      */
-    private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue-issues/issues/new?title=%s&body=%s";
+    private static final String ISSUES_URL = "https://github.com/Lemmmy/JRogue/issues/new?title=%s&body=%s";
     
     /**
      * The textarea containing error details.
      */
-    private static final JTextArea textArea = new JTextArea(7, 50);
+    private static final JTextArea textArea = new JTextArea(15, 50);
     
     static {
         textArea.setEditable(false);
@@ -109,6 +110,9 @@ public class ErrorHandler {
         } catch (Exception e) {
             JRogue.getLogger().error("An error occurred in the crash popup.", e);
         }
+        
+        LogManager.shutdown();
+        System.exit(1);
     }
     
     private static URI getIssueURI(String error, Throwable trace, String traceString) {

@@ -2,7 +2,7 @@
 <Configuration packages="jr.utils.log4j2">
     <Appenders>
         <AnsiConsoleAppender name="CONSOLE">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%-5level] %msg%n" />
+            <PatternLayout pattern="%style{%d{HH:mm:ss.SSS}}{dim} [%highlight{%-5level}] %msg%n" />
         </AnsiConsoleAppender>
 
         <RollingFile
@@ -30,8 +30,8 @@
         <Logger name="org.apache.log4j.xml" level="INFO" />
 
         <Root level="ALL">
-            <AppenderRef ref="FILE" />
-            <AppenderRef ref="CONSOLE" />
+            <AppenderRef ref="FILE" level="TRACE" />
+            <AppenderRef ref="CONSOLE" level="TRACE" />
         </Root>
     </Loggers>
 </Configuration>

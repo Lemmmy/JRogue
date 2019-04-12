@@ -95,7 +95,6 @@ public final class AnsiConsoleAppender extends AbstractAppender {
         return outputStream;
     }
     
-    
     /**
      * An implementation of OutputStream that redirects to the current System.err.
      */

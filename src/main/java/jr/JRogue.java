@@ -118,11 +118,8 @@ public class JRogue {
             
             new Lwjgl3Application(adapter, config);
         } catch (Exception e) {
-            ErrorHandler.error(null, e);
-            
-            if (adapter != null) {
-                Gdx.app.exit();
-            }
+            if (adapter != null) Gdx.app.exit();
+            ErrorHandler.error("Top level error:", e);
         }
     }
     
