@@ -14,8 +14,8 @@ import jr.rendering.ui.skin.UIIcons;
 import jr.rendering.ui.utils.FunctionalClickListener;
 import lombok.Getter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class TreeNodeWidget extends Table {
     private static final int INDENT_SIZE = 16;
@@ -27,7 +27,7 @@ public class TreeNodeWidget extends Table {
     
     @Getter private TreeNode node;
     
-    private Map<Integer, TreeNodeWidget> children = new LinkedHashMap<>();
+    private Set<TreeNodeWidget> children = new LinkedHashSet<>();
     
     private ClickListener clickListener;
     
@@ -91,21 +91,12 @@ public class TreeNodeWidget extends Table {
     
     private void initialiseChildren() {
         if (node.isOpen()) {
-            node.getChildren().values().stream()
-                .forEach(child -> {
-                    int id = child.getIdentityHashCode();
-                    
-                    if (children.containsKey(id)) {
-                        removeActor(children.get(id));
-                        ui.unregisterNodeWidget(children.get(id));
-                        children.remove(id);
-                    }
-                    
-                    TreeNodeWidget childWidget = new TreeNodeWidget(debugClient, child, getSkin());
-                    ui.registerNodeWidget(childWidget);
-                    children.put(child.getIdentityHashCode(), childWidget);
-                    add(childWidget).padLeft(INDENT_SIZE).left().row();
-                });
+            node.getChildren().forEach(child -> {
+                TreeNodeWidget childWidget = new TreeNodeWidget(debugClient, child, getSkin());
+                ui.registerNodeWidget(childWidget);
+                children.add(childWidget);
+                add(childWidget).padLeft(INDENT_SIZE).left().row();
+            });
         }
     }
     

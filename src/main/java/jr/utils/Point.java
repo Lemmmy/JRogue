@@ -6,6 +6,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import jr.debugger.utils.HideFromDebugger;
 import jr.dungeon.Level;
 
 import java.io.IOException;
@@ -13,16 +14,18 @@ import java.util.HashMap;
 
 @JsonAdapter(Point.PointTypeAdapter.class)
 public final class Point {
-    @Expose public final int x, y;
+    @HideFromDebugger @Expose public final int x, y;
     
-    private static final HashMap<Long, Point> pointCache = new HashMap<>();
-    public static Point ZERO = Point.get(0, 0);
+    @HideFromDebugger private static final HashMap<Long, Point> pointCache = new HashMap<>();
+    @HideFromDebugger public static Point ZERO = Point.get(0, 0);
     
     public static Point get(int x, int y) {
         long hash = hash(x, y);
         
         if (pointCache.containsKey(hash)) {
-            return pointCache.get(hash);
+            Point cachedPoint = pointCache.get(hash);
+            assert cachedPoint.x == x && cachedPoint.y == y;
+            return cachedPoint;
         } else {
             Point newPoint = new Point(x, y);
             pointCache.put(hash, newPoint);

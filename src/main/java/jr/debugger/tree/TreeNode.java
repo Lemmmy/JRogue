@@ -72,7 +72,7 @@ public class TreeNode {
     private boolean open = false;
     
     private TreeNode parent;
-    private Map<Integer, TreeNode> children = new LinkedHashMap<>();
+    private Set<TreeNode> children = new LinkedHashSet<>();
     
     public TreeNode(TreeNode parent, Field parentField, Object instance) {
         this.parent = parent;
@@ -208,7 +208,7 @@ public class TreeNode {
             try {
                 Object instance = field.get(this.instance);
                 TreeNode node = new TreeNode(this, field, instance);
-                children.put(node.getIdentityHashCode(), node);
+                children.add(node);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -220,7 +220,7 @@ public class TreeNode {
             Object instance = array[i];
             TreeNode node = new TreeNode(this, parentField, instance);
             node.name = Integer.toString(i);
-            children.put(node.getIdentityHashCode(), node);
+            children.add(node);
         }
     }
     
@@ -258,7 +258,7 @@ public class TreeNode {
     }
     
     private void updateChildren() {
-        children.values().forEach(TreeNode::refresh);
+        children.forEach(TreeNode::refresh);
     }
     
     @SuppressWarnings("unchecked")
@@ -357,7 +357,7 @@ public class TreeNode {
     public Stream<TreeNode> flattened() {
         return Stream.concat(
             Stream.of(this),
-            children.values().stream().flatMap(TreeNode::flattened)
+            children.stream().flatMap(TreeNode::flattened)
         );
     }
     
@@ -374,13 +374,16 @@ public class TreeNode {
     }
     
     public TreeNode getChild(int identityHashCode) {
-        return children.get(identityHashCode);
+        return children.stream()
+            .filter(c -> c.getIdentityHashCode() == identityHashCode)
+            .findFirst()
+            .orElse(null);
     }
     
     public Optional<TreeNode> getNamedChild(String name) {
         if (!open) open();
         
-        return children.values().stream()
+        return children.stream()
             .filter(c -> c.getParentField() != null)
             .filter(c -> c.getParentField().getName().equalsIgnoreCase(name))
             .findFirst();

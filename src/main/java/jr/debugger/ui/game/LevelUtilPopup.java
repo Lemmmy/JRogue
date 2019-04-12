@@ -74,7 +74,7 @@ public class LevelUtilPopup extends Table {
                 ui.getDebugClient().findNamedPath("dungeon.level.tileStore.tiles").ifPresent(treeNode -> {
                     treeNode.open();
                     
-                    treeNode.getChildren().values().stream()
+                    treeNode.getChildren().stream()
                         .filter(t -> t.getInstance() != null)
                         .filter(t -> t.getInstance().equals(tile))
                         .findFirst()
@@ -108,7 +108,7 @@ public class LevelUtilPopup extends Table {
                 ui.getDebugClient().findNamedPath("dungeon.level.entityStore.entities").ifPresent(treeNode -> {
                     treeNode.open();
                     
-                    treeNode.getChildren().values().stream()
+                    treeNode.getChildren().stream()
                         .filter(t -> t.getInstance() != null)
                         .filter(t -> t.getInstance() instanceof MapEntry)
                         .filter(t -> ((MapEntry) t.getInstance()).getValue() != null)

@@ -6,16 +6,17 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import jr.debugger.utils.HideFromDebugger;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 @JsonAdapter(VectorInt.VectorIntTypeAdapter.class)
 public final class VectorInt {
-    @Expose public final int x, y;
+    @HideFromDebugger @Expose public final int x, y;
     
-    private static final HashMap<Long, VectorInt> vectorCache = new HashMap<>();
-    public static VectorInt ZERO = VectorInt.get(0, 0);
+    @HideFromDebugger private static final HashMap<Long, VectorInt> vectorCache = new HashMap<>();
+    @HideFromDebugger public static VectorInt ZERO = VectorInt.get(0, 0);
     
     public static VectorInt get(int x, int y) {
         long hash = hash(x, y);
