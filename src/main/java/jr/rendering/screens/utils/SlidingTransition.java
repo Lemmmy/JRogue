@@ -69,7 +69,7 @@ public class SlidingTransition implements ScreenTransition {
             0, 0,
             (int) width,
             (int) height,
-            false,true
+            false, true
         );
         batch.draw(
             texTop,
@@ -80,7 +80,7 @@ public class SlidingTransition implements ScreenTransition {
             0,
             0, 0,
             newTex.getWidth(), newTex.getHeight(),
-            false,true
+            false, true
         );
         batch.end();
     }

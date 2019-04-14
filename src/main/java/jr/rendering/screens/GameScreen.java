@@ -3,7 +3,11 @@ package jr.rendering.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import jr.JRogue;
@@ -14,6 +18,8 @@ import jr.dungeon.entities.player.Player;
 import jr.dungeon.events.*;
 import jr.rendering.GameAdapter;
 import jr.rendering.GameInputProcessor;
+import jr.rendering.assets.Assets;
+import jr.rendering.assets.RegisterAssetManager;
 import jr.rendering.components.*;
 import jr.rendering.components.hud.HUDComponent;
 import jr.rendering.entities.animations.EntityAnimationData;
@@ -25,6 +31,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static jr.rendering.assets.Shaders.shaderFile;
 
 /**
  * The game's renderer. Houses the {@link RendererComponent components} used for rendering, and also handles the main
@@ -77,8 +85,12 @@ public class GameScreen extends BasicScreen implements EventListener {
     private MinimapComponent minimapComponent;
     private FPSCounterComponent fpsCounterComponent;
     
-    private float zoom = 1.0f;
-    private float zoomRounding = 1 / zoom * TileMap.TILE_WIDTH * 4;
+    private FrameBuffer fbo;
+    private SpriteBatch fboBatch;
+    private ShaderProgram xbr;
+    
+    private float zoom = 0.5f;
+    private float zoomRounding = 0.5f / zoom * TileMap.TILE_WIDTH * 4;
     
     private float renderTime;
     
@@ -108,6 +120,16 @@ public class GameScreen extends BasicScreen implements EventListener {
         
         mainBatch = new SpriteBatch();
         
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth() * 2, Gdx.graphics.getHeight() * 2, false);
+        fboBatch = new SpriteBatch();
+        
+        xbr = RequiredAssets.xbr;
+        if (!xbr.isCompiled()) {
+            System.err.println(xbr.getLog());
+        }
+        
+        ShaderProgram.pedantic = false;
+        
         initialiseCamera();
         initialiseRendererComponents();
         
@@ -115,21 +137,21 @@ public class GameScreen extends BasicScreen implements EventListener {
     }
     
     private void initialiseCamera() {
-        zoom = 1f / settings.getZoom();
-        zoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 4f;
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
         
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new OrthographicCamera(width, height);
         
-        updateCameraZoom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
-        camera.update();
+        updateCameraZoom();
     }
     
-    private void updateCameraZoom(int width, int height) {
-        if (!settings.isShowLevelDebug()) {
-            camera.zoom = 0.5f;
-        }
+    private void updateCameraZoom() {
+        zoom = 1f / settings.getZoom();
+        zoomRounding = 2f / zoom * TileMap.TILE_WIDTH * 4f;
+        
+        camera.zoom = 1f;
+    
+        camera.update();
     }
     
     private void initialiseRendererComponents() {
@@ -222,6 +244,8 @@ public class GameScreen extends BasicScreen implements EventListener {
         
         if (settings.isShowTurnAnimations()) updateCamera();
         
+        fbo.begin();
+        
         mainBatch.setProjectionMatrix(camera.combined);
         
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT |
@@ -235,10 +259,30 @@ public class GameScreen extends BasicScreen implements EventListener {
             .forEach(r -> r.render(delta));
         
         mainBatch.end();
+        fbo.end();
+    
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
+        fboBatch.begin();
+        fboBatch.disableBlending();
+        Texture fboTex = fbo.getColorBufferTexture();
+        fboBatch.setShader(xbr);
+        xbr.setUniformf("u_size", fbo.getWidth() * 2, fbo.getHeight() * 2);
+        fboBatch.draw(
+            fboTex,
+            0f, 0f,
+            fbo.getWidth(), fbo.getHeight(),
+            0, 0,
+            fboTex.getWidth(), fboTex.getHeight(),
+            false, true
+        );
+        fboBatch.end();
+    
+        mainBatch.begin();
         rendererComponents.stream()
             .filter(r -> !r.useMainBatch())
             .forEach(r -> r.render(delta));
+        mainBatch.end();
         
         if (settings.isShowTurnAnimations()) updateCamera();
     }
@@ -246,9 +290,13 @@ public class GameScreen extends BasicScreen implements EventListener {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
+    
+        if (width < 1 || height < 1) return;
+    
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width * 2, height * 2, false);
         
         camera.setToOrtho(false, width, height);
-        updateCameraZoom(width, height);
+        updateCameraZoom();
         
         rendererComponents.forEach(r -> r.resize(width, height));
     }
@@ -318,5 +366,16 @@ public class GameScreen extends BasicScreen implements EventListener {
     
     public Matrix4 getCombinedTransform() {
         return camera.combined;
+    }
+    
+    @RegisterAssetManager
+    public static class RequiredAssets {
+        private static ShaderProgram scale2x;
+        private static ShaderProgram xbr;
+    
+        public static void loadAssets(Assets assets) {
+            assets.shaders.load(shaderFile("scale2x"), s -> scale2x = s);
+            assets.shaders.load(shaderFile("xbr"), s -> xbr = s);
+        }
     }
 }
