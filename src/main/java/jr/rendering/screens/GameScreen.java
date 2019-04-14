@@ -67,7 +67,7 @@ public class GameScreen extends BasicScreen implements EventListener {
     /**
      * The 'main camera' - the camera inside the {@link jr.dungeon.Level} that follows the {@link Player}.
      */
-    private OrthographicCamera camera;
+    private OrthographicCamera camera, mainBatchCamera;
     
     /**
      * The list of renderer components - components that get a change to render to the screen at their specified
@@ -89,8 +89,7 @@ public class GameScreen extends BasicScreen implements EventListener {
     private SpriteBatch fboBatch;
     private ShaderProgram xbr;
     
-    private float zoom = 0.5f;
-    private float zoomRounding = 0.5f / zoom * TileMap.TILE_WIDTH * 4;
+    private float zoom, zoomRounding, mainBatchZoomRounding;
     
     private float renderTime;
     
@@ -141,17 +140,21 @@ public class GameScreen extends BasicScreen implements EventListener {
         int height = Gdx.graphics.getHeight();
         
         camera = new OrthographicCamera(width, height);
+        mainBatchCamera = new OrthographicCamera(width * 2, height * 2);
         
         updateCameraZoom();
     }
     
     private void updateCameraZoom() {
         zoom = 1f / settings.getZoom();
-        zoomRounding = 2f / zoom * TileMap.TILE_WIDTH * 4f;
+        zoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 8f;
+        mainBatchZoomRounding = 1f / zoom * TileMap.TILE_WIDTH * 8f;
         
-        camera.zoom = 1f;
-    
+        camera.zoom = 0.5f;
         camera.update();
+        
+        mainBatchCamera.zoom = 0.5f;
+        mainBatchCamera.update();
     }
     
     private void initialiseRendererComponents() {
@@ -177,7 +180,7 @@ public class GameScreen extends BasicScreen implements EventListener {
         
         rendererComponents.sort(Comparator.comparingInt(RendererComponent::getZIndex));
         
-        rendererComponents.forEach(r -> r.setCamera(camera));
+        rendererComponents.forEach(r -> r.setCamera(r.useMainBatch() ? mainBatchCamera : camera));
         rendererComponents.forEach(r -> dungeon.eventSystem.addListener(r));
         rendererComponents.forEach(RendererComponent::initialise);
         
@@ -214,13 +217,17 @@ public class GameScreen extends BasicScreen implements EventListener {
             float worldY = p.getPosition().y + (data != null ? data.cameraY : 0);
             
             float camX = (worldX + 0.5f) * TileMap.TILE_WIDTH;
-            float camY = worldY * TileMap.TILE_HEIGHT;
+            float camY = (worldY + 0.5f) * TileMap.TILE_HEIGHT;
             
             camera.position.x = Math.round(camX * zoomRounding) / zoomRounding;
             camera.position.y = Math.round(camY * zoomRounding) / zoomRounding;
+    
+            mainBatchCamera.position.x = Math.round(camX * mainBatchZoomRounding) / mainBatchZoomRounding;
+            mainBatchCamera.position.y = Math.round(camY * mainBatchZoomRounding) / mainBatchZoomRounding;
         }
         
         camera.update();
+        mainBatchCamera.update();
     }
     
     public void render(float delta) {
@@ -246,7 +253,7 @@ public class GameScreen extends BasicScreen implements EventListener {
         
         fbo.begin();
         
-        mainBatch.setProjectionMatrix(camera.combined);
+        mainBatch.setProjectionMatrix(mainBatchCamera.combined);
         
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT |
             (Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
@@ -270,7 +277,7 @@ public class GameScreen extends BasicScreen implements EventListener {
         xbr.setUniformf("u_size", fbo.getWidth() * 2, fbo.getHeight() * 2);
         fboBatch.draw(
             fboTex,
-            0f, 0f,
+            -fbo.getWidth() / 4, -fbo.getHeight() / 4,
             fbo.getWidth(), fbo.getHeight(),
             0, 0,
             fboTex.getWidth(), fboTex.getHeight(),
@@ -278,24 +285,23 @@ public class GameScreen extends BasicScreen implements EventListener {
         );
         fboBatch.end();
     
-        mainBatch.begin();
         rendererComponents.stream()
             .filter(r -> !r.useMainBatch())
             .forEach(r -> r.render(delta));
-        mainBatch.end();
         
         if (settings.isShowTurnAnimations()) updateCamera();
     }
+    
     
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
     
-        if (width < 1 || height < 1) return;
-    
         fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width * 2, height * 2, false);
+        fboBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         
         camera.setToOrtho(false, width, height);
+        mainBatchCamera.setToOrtho(false, width * 2, height * 2);
         updateCameraZoom();
         
         rendererComponents.forEach(r -> r.resize(width, height));

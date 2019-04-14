@@ -3,8 +3,8 @@
 precision highp float;
 
 #define XBR_SCALE 2.0
-#define XBR_Y_WEIGHT 64.0
-#define XBR_EQ_THRESHOLD 25.0
+#define XBR_Y_WEIGHT 75.0
+#define XBR_EQ_THRESHOLD 50.0
 #define XBR_LV2_COEFFICIENT 2.0
 
 varying vec4 v_texCoords[8];
