@@ -14,6 +14,7 @@ import jr.utils.Directions;
 import jr.utils.Point;
 import jr.utils.WeightedCollection;
 
+import java.util.Objects;
 import java.util.Random;
 
 import static jr.rendering.assets.Textures.tileFile;
@@ -44,6 +45,17 @@ public class TileRendererWall extends TileRenderer {
         
         assets.textures.loadPacked(tileFile("room_wall_pillar"), t -> pillar = t);
         assets.textures.loadPacked(tileFile("room_walls"), t -> ImageUtils.loadSheet(t, images, SHEET_WIDTH, SHEET_HEIGHT));
+        
+        wallDecoration.getMap().values().stream()
+            .filter(Objects::nonNull)
+            .forEach(d -> d.onLoad(assets));
+    }
+    
+    @Override
+    public void onLoaded(Assets assets) {
+        wallDecoration.getMap().values().stream()
+            .filter(Objects::nonNull)
+            .forEach(d -> d.onLoaded(assets));
     }
     
     protected boolean isTopHorizontal(Tile tile, Point p) {
@@ -84,7 +96,7 @@ public class TileRendererWall extends TileRenderer {
     public void draw(SpriteBatch batch, Tile tile, Point p) {
         drawTile(batch, getTextureRegion(tile, p), p);
         
-        if (getTextureRegionExtra(tile, p) == null) {
+        if (getTextureRegionExtra(tile, p) == null && isTopHorizontal(tile, p) && p.x % 2 != 0) {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);
@@ -97,7 +109,7 @@ public class TileRendererWall extends TileRenderer {
         TextureRegion t = getTextureRegionExtra(tile, p);
         drawTile(batch, t, p.x, p.y - 3f / TileMap.TILE_WIDTH);
         
-        if (t == null) {
+        if (t == null && isTopHorizontal(tile, p) && p.x % 2 != 0) {
             rand.setSeed(p.getIndex(tile.getLevel()));
             
             WallDecoration decoration = wallDecoration.next(rand);

@@ -26,6 +26,6 @@ public class WallDecorationCobweb extends WallDecoration {
     
     @Override
     public void drawExtra(TileRenderer tr, SpriteBatch batch, Tile tile, Point p, Random rand) {
-        tr.drawTile(batch, cobwebs[rand.nextInt(cobwebs.length)], p.x, p.y + 1f / TileMap.TILE_HEIGHT * 3);
+        tr.drawTile(batch, cobwebs[rand.nextInt(cobwebs.length)], p.x, p.y - 1f / TileMap.TILE_HEIGHT * 3);
     }
 }

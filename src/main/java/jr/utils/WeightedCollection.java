@@ -1,6 +1,7 @@
 package jr.utils;
 
 import com.github.alexeyr.pcg.Pcg32;
+import lombok.Getter;
 
 import java.util.NavigableMap;
 import java.util.Random;
@@ -9,7 +10,7 @@ import java.util.TreeMap;
 public class WeightedCollection<E> {
     private static final Pcg32 rand = new Pcg32();
     
-    private NavigableMap<Integer, E> map = new TreeMap<>();
+    @Getter private NavigableMap<Integer, E> map = new TreeMap<>();
     private int total;
     
     public void add(int weight, E object) {
