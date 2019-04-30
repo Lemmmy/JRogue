@@ -59,7 +59,7 @@ public class ItemCorpse extends ItemComestible {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         observeAspect(observer, AspectEatenState.class);
         
         return Lexicon.corpse.clone()

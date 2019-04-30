@@ -46,7 +46,7 @@ public abstract class ItemSword extends ItemWeaponMelee implements HasMaterial {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return getSwordName().clone()
             .addInstanceTransformer(MaterialTransformer.class, (s, m) -> this.material.getName() + " " + s);
     }

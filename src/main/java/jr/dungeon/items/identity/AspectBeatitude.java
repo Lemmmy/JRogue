@@ -28,7 +28,7 @@ public class AspectBeatitude extends Aspect {
     
     @Override
     public Noun applyNameTransformers(Item item, Noun name) {
-        return name.addInstanceTransformer(Transformer.class, (s, m) -> beatitude.name().toLowerCase());
+        return name.addInstanceTransformer(Transformer.class, (s, m) -> beatitude.name().toLowerCase() + " " + s);
     }
     
     @Override

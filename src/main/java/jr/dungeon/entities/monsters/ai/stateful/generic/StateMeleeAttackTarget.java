@@ -50,7 +50,7 @@ public class StateMeleeAttackTarget extends AIState<StatefulAI> {
             getAI().setCurrentState(new StateFlee(getAI(), RandomUtils.roll(3, 5)));
             
             if (m.getDungeon().getPlayer().getLevel() == getLevel()) {
-                m.getDungeon().The("%s turns to flee!", m.getName(m.getDungeon().getPlayer(), false));
+                m.getDungeon().The("%s turns to flee!", m.getBaseName(m.getDungeon().getPlayer(), false));
             }
         }*/
     }

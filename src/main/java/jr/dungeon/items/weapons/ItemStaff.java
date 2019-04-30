@@ -16,7 +16,7 @@ import jr.utils.VectorInt;
 @Registered(id="itemStaff")
 public class ItemStaff extends ItemWeaponMelee {
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.staff.clone();
     }
     

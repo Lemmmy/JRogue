@@ -6,6 +6,8 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JRogue.main" target="1.8" />
+      <module name="JRogue.test" target="1.8" />
       <module name="JRogue_main" target="1.8" />
       <module name="JRogue_test" target="1.8" />
     </bytecodeTargetLevel>

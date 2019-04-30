@@ -43,10 +43,10 @@ public abstract class Item implements Serialisable, EventListener {
         return true;
     }
     
-    public abstract Noun getName(EntityLiving observer);
+    public abstract Noun getBaseName(EntityLiving observer);
     
-    public Noun getTransformedName(EntityLiving observer) {
-        Noun name = getName(observer);
+    public Noun getName(EntityLiving observer) {
+        Noun name = getBaseName(observer);
         applyNameTransformers(observer, name);
         return name;
     }

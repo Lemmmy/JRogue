@@ -14,7 +14,7 @@ import jr.language.Noun;
 @Registered(id="itemArrow")
 public class ItemArrow extends ItemProjectile {
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.arrow.clone();
     }
     

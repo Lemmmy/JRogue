@@ -12,7 +12,7 @@ import jr.language.Noun;
 @Registered(id="itemThermometer")
 public class ItemThermometer extends Item implements ReadableItem, Shatterable {
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.thermometer.clone();
     }
     

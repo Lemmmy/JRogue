@@ -11,7 +11,7 @@ import jr.language.Noun;
 @Registered(id="itemCarrot")
 public class ItemCarrot extends ItemComestible {
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.carrot.clone();
     }
     

@@ -41,7 +41,7 @@ public class ItemGem extends Item {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         String colour = gem.getAppearance().name().replace("APPEARANCE_GEM_", "").toLowerCase();
         
         if (isAspectKnown(observer, AspectGemValue.class)) {

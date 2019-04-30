@@ -53,7 +53,7 @@ public class ItemSpellbook extends Item implements ReadableItem, SpecialChestSpa
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         if (!isAspectKnown(observer, AspectBookContents.class)) {
             return Lexicon.book.clone();
         } else {

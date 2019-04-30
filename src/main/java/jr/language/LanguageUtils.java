@@ -29,15 +29,15 @@ public class LanguageUtils {
     }
     
     public static Noun object(EntityLiving observer, Item item) {
-        if (item.getName(observer).isUncountable()) {
-            return item.getName(observer).clone();
+        if (item.getBaseName(observer).isUncountable()) {
+            return item.getBaseName(observer).clone();
         } else {
-            return Article.addTheIfPossible(item.getName(observer).clone(), false);
+            return Article.addTheIfPossible(item.getBaseName(observer).clone(), false);
         }
     }
     
     public static Noun object(EntityLiving observer, ItemStack itemStack) {
-        if (itemStack.getItem().getName(observer).isUncountable()) {
+        if (itemStack.getItem().getBaseName(observer).isUncountable()) {
             return itemStack.getName(observer).clone();
         } else {
             return Article.addTheIfPossible(itemStack.getName(observer).clone(), false);
@@ -51,15 +51,15 @@ public class LanguageUtils {
     }
     
     public static Noun anObject(EntityLiving observer, Item item) {
-        if (item.getName(observer).isUncountable()) {
-            return item.getName(observer).clone();
+        if (item.getBaseName(observer).isUncountable()) {
+            return item.getBaseName(observer).clone();
         } else {
-            return Article.addAIfPossible(item.getName(observer).clone());
+            return Article.addAIfPossible(item.getBaseName(observer).clone());
         }
     }
     
     public static Noun anObject(EntityLiving observer, ItemStack itemStack) {
-        if (itemStack.getItem().getName(observer).isUncountable()) {
+        if (itemStack.getItem().getBaseName(observer).isUncountable()) {
             return itemStack.getName(observer).clone();
         } else {
             return Article.addAIfPossible(itemStack.getName(observer).clone());

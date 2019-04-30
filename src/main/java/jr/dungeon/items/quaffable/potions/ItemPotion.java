@@ -31,7 +31,7 @@ public class ItemPotion extends ItemQuaffable implements Shatterable {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         if (empty) {
             return Lexicon.glassBottle.clone();
         } else {

@@ -15,7 +15,7 @@ public class ItemGold extends Item {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.gold.clone();
     }
     

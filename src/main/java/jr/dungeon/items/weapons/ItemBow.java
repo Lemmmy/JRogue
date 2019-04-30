@@ -37,7 +37,7 @@ public class ItemBow extends ItemProjectileLauncher {
     }
     
     @Override
-    public Noun getName(EntityLiving observer) {
+    public Noun getBaseName(EntityLiving observer) {
         return Lexicon.bow.clone();
     }
     
