@@ -21,7 +21,6 @@ public class EntityRendererPlayer extends EntityRenderer {
     public void onLoad(Assets assets) {
         super.onLoad(assets);
         
-        assets.textures.loadPacked(entityFile("player_justyn"), t -> playerJustyn = t);
         assets.textures.loadPacked(entityFile("player_wizard"), t -> playerWizard = t);
         assets.textures.loadPacked(tileFile("highlight"), t -> playerHighlight = t);
     }
@@ -51,10 +50,6 @@ public class EntityRendererPlayer extends EntityRenderer {
     }
     
     private TextureRegion getTextureFromPlayer(Player player) {
-        if (player.getName(null).getWord().equalsIgnoreCase("justyn")) {
-            return playerJustyn;
-        }
-        
         return playerWizard; // TODO
     }
 }
